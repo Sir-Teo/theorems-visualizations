@@ -169,27 +169,118 @@ export default {
     },
     // ───────────────────────────────────────────────────────────── 7
     {
-      n: 7,
-      title: 'Scale, generalization and representation',
-      summary: String.raw`A map is a deliberate simplification. Its scale decides what can be shown, and coastlines reveal that measured length depends on the ruler. Generalization algorithms such as Douglas–Peucker thin lines, Töpfer's law says how many features to keep, and the way areas are aggregated or resized — choropleths, the modifiable areal unit problem, cartograms — can change the story a map tells. Four colours always suffice to tell neighbours apart.`,
-      items: [
-        { num: '7.1', kind: 'Definition', name: 'Map scale and the representative fraction', deps: ['geog-3.3'], refs: ['Snyder §1'],
-          pic: 'Zoom a map and watch the representative fraction change: on a world map the stated scale holds only along standard lines, and a scale bar is shown varying with latitude on Mercator.' },
-        { num: '7.2', kind: 'Paradox', name: 'The coastline paradox', deps: ['geog-7.1'], refs: ['Haggett'],
-          pic: 'Measure a fractal coastline with rulers of decreasing length: the total keeps growing, and log length against log ruler size gives Richardson’s straight line whose slope reads the fractal dimension.' },
-        { num: '7.3', kind: 'Algorithm', name: 'Douglas–Peucker line simplification', deps: ['geog-7.1'], refs: ['Haggett'],
-          pic: 'Simplify a digitized coastline with a tolerance slider: the algorithm keeps the farthest point recursively, the vertex count falls fast, and the maximum deviation never exceeds the tolerance.' },
-        { num: '7.4', kind: 'Law', name: 'Töpfer’s radical law of selection', deps: ['geog-7.1'], refs: ['Haggett'],
-          pic: 'Reduce the map scale and keep n_f = n_a √(M_a/M_f) features: towns are dropped in order of size, compared with keeping all of them, which clutters the small map illegibly.' },
-        { num: '7.5', kind: 'Concept', name: 'Contours and the representation of relief', deps: ['geog-7.1', 'vcalc-3.3'], refs: ['Haggett'],
-          pic: 'Generate a terrain surface and slice it at regular heights: contour spacing reveals slope, the gradient arrows cross contours at right angles, and a hillshade toggle shows the same relief by illumination.' },
-        { num: '7.6', kind: 'Paradox', name: 'The modifiable areal unit problem', deps: ['geog-7.1'], refs: ['Haggett'],
-          pic: 'Aggregate the same point data into different zone systems: the choropleth map and the computed correlation between two variables change dramatically with the zoning, even reversing sign.' },
-        { num: '7.7', kind: 'Method', name: 'Density-equalizing cartograms', deps: ['geog-3.6', 'thermo-7.4'], refs: ['Haggett'],
-          pic: 'Let population diffuse until density is uniform, dragging the map with it (the Gastner–Newman method): countries swell or shrink to areas proportional to their populations while staying recognizable.' },
-        { num: '7.8', kind: 'Theorem', name: 'Four colour theorem for maps', deps: ['geog-7.1'], refs: ['Haggett'],
-          pic: 'Colour a map of regions so neighbours differ: a greedy colouring may need five or six colours, but backtracking always succeeds with four, and the adjacency graph is shown to be planar.' },
-      ],
+      "n": 7,
+      "title": "Scale, generalization and representation",
+      "summary": "Scale, resolution and zoning are choices. Local projection scale changes a ruler, recursive simplification trades vertices for a bounded geometric error, and an empirical selection rule gives a target count without choosing the features. Contours describe relief, aggregation changes statistics, diffusion changes area, and planar adjacency constrains map colouring.",
+      "items": [
+        {
+          "num": "7.1",
+          "kind": "Definition",
+          "name": "Map scale and the representative fraction",
+          "deps": [
+            "geog-3.3"
+          ],
+          "refs": [
+            "USGS Maps Booklet (1994), scale and map detail",
+            "Snyder (1987), §7, spherical Mercator scale"
+          ],
+          "pic": "Choose the reference denominator, enlargement and latitude. The upper panel compares local Mercator scale factors; the lower panel measures the ground metres represented by a calibrated one-centimetre map ruler at each latitude. The highlighted value is computed from the selected latitude, rather than treating the nominal equatorial scale as global."
+        },
+        {
+          "num": "7.2",
+          "kind": "Paradox",
+          "name": "The coastline paradox",
+          "deps": [
+            "geog-7.1"
+          ],
+          "refs": [
+            "Fractal Foundation, Koch Curve and Coastlines, construction activity",
+            "Rothman, MIT12.006J (2022), Lecture23, pp2–3, self-similar scaling"
+          ],
+          "pic": "Refine the actual finite Koch polyline. Its length is measured by summing its generated segment lengths. Each lower-panel point comes from a separately generated level; the highlighted canonical ruler length is the segment length at the selected level. This is a constructed boundary, not a measured national coastline."
+        },
+        {
+          "num": "7.3",
+          "kind": "Algorithm",
+          "name": "Douglas–Peucker line simplification",
+          "deps": [
+            "geog-7.1"
+          ],
+          "refs": [
+            "Dodgson–Robinson, Cambridge Computer Graphics & Image Processing (2013), slides76–77",
+            "Clayton, NOAA NOS112 (1985), pp13–15, endpoint-fitting routines"
+          ],
+          "pic": "Select a deterministic polyline and move the tolerance. The original is faint, the computed simplification is thick, and retained vertices are marked. The lower panel compares the actual worst terminal-subchain deviation with the chosen tolerance. Zero tolerance and a returning loop expose degenerate cases."
+        },
+        {
+          "num": "7.4",
+          "kind": "Law",
+          "name": "Töpfer’s radical law of selection",
+          "deps": [
+            "geog-7.1"
+          ],
+          "refs": [
+            "Töpfer–Pillewizer (1966), The Principles of Selection, publisher abstract",
+            "Clayton, NOAA NOS112 (1985), p5, equation1 and selection limitation"
+          ],
+          "pic": "Shrink the derived map and compare all source symbols with the selected subset. The target count comes from the radical rule; synthetic town sizes provide a separate ranking. Labels give both the unrounded target and the integer actually drawn. Equal scales preserve every town. Fixed-size symbols can still overlap at large reductions: the count rule alone does not solve placement."
+        },
+        {
+          "num": "7.5",
+          "kind": "Concept",
+          "name": "Contours and the representation of relief",
+          "deps": [
+            "geog-7.1",
+            "vcalc-3.3"
+          ],
+          "refs": [
+            "USGS, US Topo Map Symbol Guide, contour paragraph",
+            "Analytic level-set and surface-normal derivation supplied here"
+          ],
+          "pic": "Change the anisotropy of the analytic hill and the contour interval. Drag the probe to inspect its gradient; a short normal arrow crosses the analytic ellipse contour. Toggle hillshade and rotate its light azimuth to change illumination while all elevations stay fixed. The cross-section below plots actual terrain height along y=0."
+        },
+        {
+          "num": "7.6",
+          "kind": "Paradox",
+          "name": "The modifiable areal unit problem",
+          "deps": [
+            "stat-1.7"
+          ],
+          "refs": [
+            "Openshaw, The Modifiable Areal Unit Problem, CATMOG38, §III, pp8–10",
+            "QMRG preserved original PDF, Figure1 and aggregation definitions"
+          ],
+          "pic": "Choose rows, columns or four square blocks, each with four zones, then compare a coarser two-zone split. The left panel retains all sixteen synthetic observations. The middle colors the actual zone average of y; the right plots the zone pairs used to compute Pearson correlation. Exposure totals and undefined-variance cases are reported explicitly."
+        },
+        {
+          "num": "7.7",
+          "kind": "Method",
+          "name": "Density-equalizing cartograms",
+          "deps": [
+            "geog-3.6",
+            "pde-1.4"
+          ],
+          "refs": [
+            "Gastner–Newman (2004), PNAS101, pp7499–7501, equations1–11",
+            "Exact separable Neumann heat solution and cumulative-flow derivation supplied here"
+          ],
+          "pic": "Change both initial density amplitudes and diffusion time. The left square shows the initial grid, colored by each cell’s exact population. The right shows its actual separable diffusion flow. Compare finite time with the exact uniform-density limit: only in that limit does each cell’s area equal its initial population fraction. The numbers compare independently calculated initial integrals and mapped areas."
+        },
+        {
+          "num": "7.8",
+          "kind": "Theorem",
+          "name": "Four colour theorem for maps",
+          "deps": [
+            "graph-4.6.1a",
+            "graph-5.1.1"
+          ],
+          "refs": [
+            "Robertson–Sanders–Seymour–Thomas (1997), The Four-Colour Theorem, introduction",
+            "Robin Thomas, The Four Color Theorem, author proof outline and map-adjacency convention"
+          ],
+          "pic": "Choose a map and vertex order. Region boundaries compute the adjacency graph: a corner contact alone creates no edge. Compare actual greedy colouring with bounded four-colour backtracking. The wheel has a three-colouring but a poor greedy order uses four; the four-region map requires four. Both the map and its dual show the computed colours, with the actual edge-conflict count."
+        }
+      ]
     },
     // ───────────────────────────────────────────────────────────── 8
     {
