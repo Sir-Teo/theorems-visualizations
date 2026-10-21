@@ -24,7 +24,7 @@
       "Acceptedwrittenprerequisitegatecomplete:all64nonmathcollections\u226525writteninputs,0shortfall/unknowns,48furthercollections meettarget. Sourcequeue5unchanged.",
       "Latest immutable checkpoint14 (5eb8fb42) passes all 2,233 tests on existing CI major Node22.23.3, strict/static/queue/inventory checks pass. Prior Node26 checkpoint13 failure and independent diagnostics remain unresolved compatibility evidence; no assertion/model/runtime policy changed.",
       "Rejected chunk prototype remains unaccepted. Original-only control reproduces its cold/warm discrepancy; no renderer or timing acceptance.",
-      "Frozen light/dark paired cases independently accepted. Current light case at d7d07ed8 exits zero, but all twelve alternate draws use original fallback after optional metadata drops; independent saved-evidence review pending. No current optimized binding, wider matrix, native lifecycle or 60 fps acceptance.",
+      "Frozen light/dark optimized cases independently accepted. The current light case at d7d07ed8 independently passes fallback/protocol review at053f24f2: all twelve alternate draws bind original indices after initialization metadata drops. Current optimized binding, wider matrix, native lifecycle and 60 fps remain open.",
       "Frozen BIGHIST3.5 service restriction persists; no retry or edge acceptance."
     ]
   },
@@ -63,7 +63,7 @@
       "agent": "imaging_source",
       "worktree": "/Users/teodev/.codex/worktrees/atlas-imaging-source/theorems-visualizations",
       "status": "current-offline-peer",
-      "current": "Hold released; auditing saved current-light raw/pixel/trace/resource/binding evidence, then tiny first-stop and protocol proposal offline. No browser retry.",
+      "current": "Current-light offline fallback/protocol peer accepted; now independently auditing tiny first-stop and exact error protocol proposal offline/model only. No browser retry.",
       "owns": [
         "Unique CLIMATE peer evidence; REL producer boundary complete"
       ],
@@ -3317,12 +3317,14 @@
   },
   "currentLightRootResult": {
     "commit": "d7d07ed84da592a04c8c038ffc405d5b5607bfc0",
-    "status": "runner-pass-all-fallback-independent-peer-pending",
+    "status": "independently-accepted-one-current-light-fallback-protocol-case",
     "report": "docs/verification/map-current-light-state-root.md",
     "output": "/tmp/atlas-root-current-light-state",
     "optimizedDraws": 0,
     "draws": 12,
     "productionAccepted": false,
-    "performanceAccepted": false
+    "performanceAccepted": false,
+    "peer": "053f24f27b5a7322327e6183a091e7eeec98d92b",
+    "peerReport": "docs/verification/map-current-light-run-independent-imaging-peer.md"
   }
 }
