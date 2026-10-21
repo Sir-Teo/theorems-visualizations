@@ -4,7 +4,7 @@
   "counting": "Unique directed prerequisite edges from a non-math collection to a different field; separate written and planned availability. Related links and same-field cross-collection links do not count.",
   "limitation": "Counts alone do not establish that any prerequisite is pedagogically or factually justified. Correct links require source/proof review; do not add arbitrary links to meet a quota.",
   "collections": 64,
-  "publishedBelowTarget": 3,
+  "publishedBelowTarget": 1,
   "wholeSyllabusBelowTarget": 0,
   "entries": [
     {
@@ -2826,10 +2826,10 @@
       "collection": "pl",
       "field": "cs",
       "target": 25,
-      "writtenToWritten": 23,
-      "writtenToKnown": 23,
-      "wholeSyllabus": 27,
-      "publishedShortfall": 2,
+      "writtenToWritten": 25,
+      "writtenToKnown": 25,
+      "wholeSyllabus": 29,
+      "publishedShortfall": 0,
       "unknown": [],
       "edges": [
         {
@@ -2896,6 +2896,13 @@
           "prerequisiteWritten": true
         },
         {
+          "item": "pl-2.11",
+          "prerequisite": "alg-1.20",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
           "item": "pl-2.2",
           "prerequisite": "logic-3.2",
           "prerequisiteField": "math",
@@ -2905,6 +2912,13 @@
         {
           "item": "pl-2.2",
           "prerequisite": "alg-1.25",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "pl-2.3",
+          "prerequisite": "comb-1.2",
           "prerequisiteField": "math",
           "itemWritten": true,
           "prerequisiteWritten": true
@@ -20234,10 +20248,10 @@
       "collection": "bighist",
       "field": "humanities",
       "target": 25,
-      "writtenToWritten": 19,
-      "writtenToKnown": 25,
-      "wholeSyllabus": 48,
-      "publishedShortfall": 6,
+      "writtenToWritten": 25,
+      "writtenToKnown": 31,
+      "wholeSyllabus": 54,
+      "publishedShortfall": 0,
       "unknown": [],
       "edges": [
         {
@@ -20265,6 +20279,27 @@
           "item": "bighist-1.5",
           "prerequisite": "geol-1.4",
           "prerequisiteField": "earth",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "bighist-1.5",
+          "prerequisite": "ladr-6.14",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "bighist-1.8",
+          "prerequisite": "pma-6.21",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "bighist-1.8",
+          "prerequisite": "ladr-6.61",
+          "prerequisiteField": "math",
           "itemWritten": true,
           "prerequisiteWritten": true
         },
@@ -20311,9 +20346,30 @@
           "prerequisiteWritten": false
         },
         {
+          "item": "bighist-2.5",
+          "prerequisite": "mech-2.12",
+          "prerequisiteField": "physics",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "bighist-2.5",
+          "prerequisite": "mech-2.8",
+          "prerequisiteField": "physics",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
           "item": "bighist-2.6",
           "prerequisite": "astro-3.3",
           "prerequisiteField": "physics",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "bighist-2.7",
+          "prerequisite": "geol-3.4",
+          "prerequisiteField": "earth",
           "itemWritten": true,
           "prerequisiteWritten": true
         },
@@ -20635,43 +20691,15 @@
       "03d24499ebb31470c602c1f0d1eaa85ae0155942",
       "87b7e79557341cfe8d41ce1b3cadc29fc0bc7ce3",
       "3aa8196b89808d38b4285fc509f07ed21f749e46",
-      "006ab24910012de6cfb789d8f8d46739dc5b0b42"
+      "006ab24910012de6cfb789d8f8d46739dc5b0b42",
+      "d909f3040db8d5b849e309a7621d98a34576dc36",
+      "1b8d84001f8d8ee583728f76a7db684a1bc44f6e"
     ],
     "excludedUnacceptedEdges": [
       {
         "item": "bighist-3.5",
         "prerequisite": "pma-8.6",
         "reason": "Frozen service-restricted candidate; not accepted. No source peer retry."
-      },
-      {
-        "item": "bighist-1.5",
-        "prerequisite": "ladr-6.14",
-        "reason": "Pending independent proof-use peer of unrestricted four-consumer candidate d909f304; no accepted quota credit."
-      },
-      {
-        "item": "bighist-1.8",
-        "prerequisite": "pma-6.21",
-        "reason": "Pending independent proof-use peer of unrestricted four-consumer candidate d909f304; no accepted quota credit."
-      },
-      {
-        "item": "bighist-1.8",
-        "prerequisite": "ladr-6.61",
-        "reason": "Pending independent proof-use peer of unrestricted four-consumer candidate d909f304; no accepted quota credit."
-      },
-      {
-        "item": "bighist-2.5",
-        "prerequisite": "mech-2.12",
-        "reason": "Pending independent proof-use peer of unrestricted four-consumer candidate d909f304; no accepted quota credit."
-      },
-      {
-        "item": "bighist-2.5",
-        "prerequisite": "mech-2.8",
-        "reason": "Pending independent proof-use peer of unrestricted four-consumer candidate d909f304; no accepted quota credit."
-      },
-      {
-        "item": "bighist-2.7",
-        "prerequisite": "geol-3.4",
-        "reason": "Pending independent proof-use peer of unrestricted four-consumer candidate d909f304; no accepted quota credit."
       }
     ]
   }

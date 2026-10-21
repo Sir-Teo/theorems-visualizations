@@ -3,8 +3,8 @@
 2026-10-20. The executable inventory in `cross-field-dependencies.json` checks
 MASTER_PLAN §7.3 against accepted written and planned prerequisite records. Its acceptance metadata explicitly excludes the frozen BIGHIST3.5candidate edge.
 
-Of 64 non-math collections, **3 have fewer than 25 published prerequisite edges to
-written ideas in a different field**. Their combined shortfall is 10 edges. Even
+Of 64 non-math collections, **1 has fewer than 25 published prerequisite edges to
+written ideas in a different field**. Their combined shortfall is 2 edges. Even
 including planned items and planned prerequisites, **every whole syllabus meets 25**.
 The wave gate is open. Counts are not evidence that a prerequisite is justified.
 
@@ -326,3 +326,7 @@ ART18directinputs reach25/30/46; all five alternate paths were independently ass
 ## Final ARCH and combined CPLX acceptance
 
 ARCH18 reaches25/27/42. CPLX eight direct inputs compose with separately accepted finite-halting input to reach25; root ran both full source guards against independent baselines to verify composition. Independent mathematics, complete narrow fields/personal pixels and integrated64ARCH/CPLXdefault tests pass. Initial root ARCH guard used incorrect arguments and failed beforecomparison; corrected three-archive check passes. Accepted shortfall10 acrossPL2/GAME2/BIGHIST6; every whole syllabus meets25. Six unrestricted BIGHISTcandidate edges and frozen3.5remain separately excluded. No source closure.
+
+## PL and unrestricted BIGHIST final inputs
+
+PL twoactualinputs reach25/25/29; full46objects/functions/115rows/full46lists and independent fresh fields/controls pass. Inherited compact-canvas clipping remains separately open. Six independently reviewed unrestricted BIGHISTinputs across1.5/1.8/2.5/2.7reach25/31/54. Full40files/32objects/functions/88rows/full32lists,10381ownmathchecks and70personallyreadfreshpictures pass. Frozen3.5wasnotretried/reviewed/rendered/accepted, and itsedge remainssoleexclusion. Acceptedshortfall2:GAMEonly. No sourceclosure.

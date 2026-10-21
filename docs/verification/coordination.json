@@ -21,7 +21,7 @@
       "Full immutable checkpoints and unrelated gate analysis"
     ],
     "current": [
-      "Accepted prerequisite shortfall10;3/64publishedcollectionsbelow25;allwhole syllabi meet25;45furthercollectionsmeetwritten target. Sourcequeue5unchanged.",
+      "Accepted prerequisite shortfall2;GAMEsolepublishedcollectionbelow25;allwhole syllabi meet25;47furthercollectionsmeetwrittentarget. Sourcequeue5unchanged.",
       "Latest immutable checkpoint11 onee15d812 passes2230tests, all6UIgroups, strict/static0/0.",
       "Rejected chunk prototype remains unaccepted. Original-only control reproduces its cold/warm discrepancy; no renderer or timing acceptance.",
       "Private actual font census passes source/model/tiny independent peer. Full-map rerun deferred: frozen selected item lacks statement, implying actual async shard callback after synchronous history. Explicit finite readiness proposal pending; no alternate/timing acceptance.",
@@ -2792,15 +2792,51 @@
       "report": "docs/verification/arch-independent-imaging-peer.md",
       "followup": "18directinputs18consumers yield25/27/42. Full40objects/functions94rows/full40lists;14227independentmath15groups,49existingtests,160personallyinspectedfreshfields/control/bannerpictures. Fourqualifiers/fiveequivalentwraps/onebannerliteral only. Rootthree-archiveguard/math/default64ARCH+CPLXpass; initialrootguardwrongargumentstoppedbeforecomparison,correctedpristine prerequisite archivepasses. Suspected3.8contradictionwithdrawn:crackfacevscontactpivotareoppositefaces,geometry/modelconsistent.",
       "sourceClosure": "None;flagsunchanged."
+    },
+    {
+      "collection": "pl",
+      "commits": [
+        "1b8d84001f8d8ee583728f76a7db684a1bc44f6e",
+        "ca9c711e069da7266b1b734183f7e4e37dab6efd"
+      ],
+      "publishedBefore": 23,
+      "publishedAfter": 25,
+      "status": "accepted-prerequisite-only",
+      "producer": "ctrl_prereqs",
+      "peer": "logic_peer",
+      "report": "docs/verification/pl-two-inputs-logic-peer.md",
+      "followup": "Two actualinputs: finitefreshnameexistence andfixed-contextnamelessencode/decodeinverse. Full46objects/functions16files115rows/full46lists;58300independentchecks,46personallyinspectedfreshfields/controlpictures. No-credit3.7/4.1rawrowbackfills. Integratedfullguard/math/default12pass. Inherited2.3/2.11canvasclipping remains separately open, notcertified.",
+      "sourceClosure": "None;flagsunchanged."
+    },
+    {
+      "collection": "bighist",
+      "commits": [
+        "d909f3040db8d5b849e309a7621d98a34576dc36",
+        "0274960b271f09735379f9e50c7ae067b7c0e47f",
+        "bde9cc8c75b30fd9360a83ec56f32ed59431389f",
+        "83b88e7b700dac2839ca1a6e4cbf9b7a56a905e5",
+        "a0653d8bd49a1455ece8c7dea3f27b04666b99de",
+        "ad59decab02280ad37490d54e007037f973ec475",
+        "ce43d55badbc70cf7d4aa40b9fa31ddd5edd61e3",
+        "2d4b8e4634aea6a3f75ec6e4cbc2fbf46acd6b77"
+      ],
+      "publishedBefore": 19,
+      "publishedAfter": 25,
+      "status": "accepted-unrestricted-four-consumer-only",
+      "producer": "coordinator-root",
+      "peer": "arch_source",
+      "report": "docs/verification/bighist-four-consumer-independent-peer.md",
+      "followup": "Sixgenuineinputs across1.5/1.8/2.5/2.7only,25/31/54. Full40files32objects/functions88rows/full32lists;10381independentchecks6groups,70personallyinspectedfreshfields/actualcontrols. Fivefinite-samplingqualifierfields/literals incltwopeerfindings. Existing1.3/1.5rowbackfillsnocredit. Integratedindependentguard/mathpass. Frozen3.5onlybyte-preserved: never retried/reviewed/rendered/accepted; its edge remainssoleexcludedcandidate.",
+      "sourceClosure": "None;frozen3.5 remains unaccepted; allflagsunchanged."
     }
   ],
   "currentPrerequisiteGate": {
-    "publishedShortfall": 10,
-    "publishedBelow25": 3,
+    "publishedShortfall": 2,
+    "publishedBelow25": 1,
     "collections": 64,
     "wholeSyllabusBelow25": 0,
     "date": "2026-10-20",
-    "acceptedSnapshot": "Forty-five further collections meet written target; CPLX25 andARCH25accepted. PL2/GAME2/BIGHIST6remain; sixunrestrictedBIGHISTinputs pendingexcluded, frozen3.5 persists."
+    "acceptedSnapshot": "Forty-seven further collections meet written target; PL25andunrestrictedBIGHIST25accepted. OnlyGAMEtwoinputsshort,pendingpeer. FrozenBIGHIST3.5edge remainsexcluded."
   },
   "previousSessionWorkers": [
     {
