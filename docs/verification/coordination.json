@@ -24,7 +24,7 @@
       "Acceptedwrittenprerequisitegatecomplete:all64nonmathcollections\u226525writteninputs,0shortfall/unknowns,48furthercollections meettarget. Sourcequeue5unchanged.",
       "Latest fully passing immutable checkpoint12 remains 94a77908 (2,230 tests). New checkpoint13 d4bceece completes 2,232/2,233: one unchanged MATHBIO4.14 convergence assertion fails; isolated diagnostic passes but does not waive it. Strict/static/queue/prerequisite checks pass; independent diagnosis underway.",
       "Rejected chunk prototype remains unaccepted. Original-only control reproduces its cold/warm discrepancy; no renderer or timing acceptance.",
-      "Single frozen light3840/DPR2 paired case independently accepted87e95436. Separate reviewed dark mirror d05e26f1 runnerpasses all exactpixel/history/resource/DOMgates; independent saved-evidence peerpending. Allsixholdsreleased. Separate current23955-edge sourcepreparation underway; no current/matrix/lifecycle/performance acceptance.",
+      "Frozen light and dark 3840/DPR2 paired cases independently accepted at 87e95436 and e3c5e6f6. Actual optimized main pixels, exact renderer histories and logical-resource gates pass for those two cases. FontFace preparation-order differences remain disclosed. Current 23,955-edge source preparation, unused private lifecycle repair native-tiny work and numerical-test diagnosis continue. No broader/current matrix, lifecycle or 60 fps acceptance.",
       "Frozen BIGHIST3.5 service restriction persists; no retry or edge acceptance."
     ]
   },
@@ -3101,14 +3101,16 @@
     },
     {
       "candidate": "d05e26f13e358eccd36dc8180017821dbb5bdeff",
-      "status": "runner-pass-independent-dark-raw-pixel-peer-pending",
+      "status": "accepted-single-frozen-dark-paired-case",
       "report": "docs/verification/map-paired-dark-state-root.md",
       "evidence": "/tmp/atlas-root-paired-dark-state",
       "mainSHA256": "d710b4dc30d7f61ceee13ab2b8f55a137774d0d369833b4280360472d3b8c34a",
       "transportPieces": 998,
       "transportBytes": 1041274897,
       "chunkLogicalPeakBytes": 63895600,
-      "scope": "One reviewed dark mirror, same frozen inputs and12ordinals. All8rawmatch,7493renderertraceexact,zero late events/callbacks, actualmainoptimizedbindings, existingresource/DOMgatespass. Two callback FontFace ordering differences retained; independentauditpending. Rootallclosed andsixholdsreleased. No current/matrix/lifecycle/production/timing acceptance."
+      "scope": "Independent raw, whole-image, exact renderer-history and logical-resource audit accepts one dark case only. Both FontFace ordering differences, including cross-context protected-prefix inequality, remain explicit; required within-context prefix integrity and zero quiet/tails pass. No current-atlas, wider matrix, lifecycle, production or performance acceptance.",
+      "peer": "e3c5e6f614056c77f16e9508ba31ce8916929dc3",
+      "peerReport": "docs/verification/map-paired-dark-run-independent-imaging-peer.md"
     }
   ],
   "accountingSafeguards": [
@@ -3222,6 +3224,15 @@
       "8be65ef2ec6fbb303fc43c8c02fcd9f6f61e9a2e"
     ],
     "report": "docs/verification/map-optional-lifetime-independent-peer.md",
-    "scope": "Actual private scene/chunk classes under deterministic recordingGL/Worker fixtures reproduce releaseGroup-only deleted-handle replay, free-map worker error redraw, and late rejection mutation after dispose/destroy. Negative safety assertions remain failing; stronger independent cleanup census passes. Root integrated negative peer reproduces four failures and proper cleanup. Private repair proposal e643 remains unused/unaccepted pending independent adverse-case review. No production bug or native lifecycle acceptance claimed."
+    "scope": "Actual private scene/chunk classes under deterministic recordingGL/Worker fixtures reproduce releaseGroup-only deleted-handle replay, free-map worker error redraw, and late rejection mutation after dispose/destroy. Negative safety assertions remain failing; stronger independent cleanup census passes. Root integrated negative peer reproduces four failures and proper cleanup. Private repair proposal e643 remains unused/unaccepted pending independent adverse-case review. No production bug or native lifecycle acceptance claimed.",
+    "privateProposal": {
+      "commits": [
+        "e643c359b86ec04b8ba0e5717f8bee167d7f70bd",
+        "0221abe1e55a2a656089e5f2e374364d77c03336"
+      ],
+      "status": "accepted-unused-source-model-only",
+      "report": "docs/verification/map-private-lifecycle-repair-independent-peer.md",
+      "scope": "Three exact reversible snippets. Same 31 source-model cases give old9fail/new0; 12 independent adverse cases give old7fail/new0. Root integrated paired/adverse checks pass. Production and existing static fixtures remain byte-exact. Separate native tiny producer assigned; no runner wiring or native acceptance."
+    }
   }
 }
