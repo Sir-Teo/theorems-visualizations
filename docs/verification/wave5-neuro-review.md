@@ -1,0 +1,42 @@
+# Wave 5 NEURO5 independent review
+
+**Independently accepted after the two bounded repairs below.** Reviewer owns only this report and temporary independent artifacts. No chapter content, shared runtime, generated data, Git or global suite was edited or run.
+
+## Sources and hypotheses actually checked
+
+All11 statements, proof ideas, scopes, prerequisites, widgets, local helper algorithms and14final focused tests were read. The official EPFL *Neuronal Dynamics* pages were opened independently: §1.3 (passive ODE, events/reset, filtered history), §5.2 (exponential drift/rheobase and numerical cutoff), §6.1 (adaptation ODE/jumps), §6.4 (SRM causal input and complete event history), §3.1 (conductance/reversal, normalized rise/decay model family, NMDA magnesium factor and units), §1.4.2 (reversal versus shunting). Source URLs are the authored official EPFL links; actual successful HTML source files are also present under `/tmp/wave5-neuro-sources/`.
+
+The current sign is declared inward in this chapter, opposite the outward-current notation of EPFL Eq3.1, and is consistently placed on the voltage-equation RHS. pF·mV/ms=pA and pA·ms=fC are correct. LIF spikes require finite upward threshold arrival; equality at rheobase remains no finite event. General reset is separated from the illustrated rest-equals-reset case. EIF local saddle-node/minimum is not mislabeled a global SNIC. Finite RK4/cutoff traces do not claim exact blow-up or empirical recordings. SRM equality includes all reset history and both left/right event limits, with no refractory clamp in that special comparison. Conductance peaks are explicitly sampled; magnesium controls are irrelevant/hidden outside NMDA. The coincidence charge is explicitly a finite0.2ms quadrature of an imposed clamp, not a solved voltage trajectory or perfect AND gate. Shunting concerns incremental resistance/equilibrium rather than an unmodeled dendritic location.
+
+Actual primary Tsodyks–Markram1997 pp.719–720 Eq1–2 and Tsodyks–Pawelzik–Markram1998 pp.822–824 §2 Eqs2.1–2.3 were independently extracted and selected original pages rendered/inspected. Local receipts: `/tmp/wave5-neuro-review-tm97.txt`, `/tmp/wave5-neuro-review-tm98.txt`, `/tmp/wave5-neuro-review-tm97-719.png`, `/tmp/wave5-neuro-review-tm98-823.png` (actually printed822), and `/tmp/wave5-neuro-review-tm98-823-actual.png` (printed823). The latter explicitly confirms utilization decays toward zero between impulses and the jump precedes the utilization of the current impulse. The authored instantaneous-inactivation reduction is declared; its periodic-input fixed point is not confused with a Poisson mean-field approximation.
+
+Original del Castillo–Katz full-body CAPTCHA uncertainty remains `verify:true`. The indexed primary PubMed record was independently opened: https://pubmed.ncbi.nlm.nih.gov/13175199/ verifies1954Jun28, JPhysiol124(3):560–573, authors/title and DOI10.1113/jphysiol.1954.sp005129, and has no abstract. No original full-body retry, alternate route or claim of original-figure inspection was made. The widget contains explicitly synthetic modern count laws, not reconstructed historical data. This retained historical-source uncertainty is separate from bounded acceptance of the declared mathematics.
+
+## Findings repaired through the author
+
+1. Item5.11 originally called its K0–20 Poisson plot complete, although its positive upper tail was omitted. The author now names the finite displayed range, extends theoretical bins to include every observed count, and reports a positive upper-tail recurrence. Finite-site20 remains complete. Independent15-case SciPy survival-function checks (means.1,.317,1,3.29,8; cutoffs20,23,30) agree with relative error at most1.12e−14; the mean8/K20 tail is approximately9.39679e−5. No subtraction-from-nearly-one cancellation is used.
+2. Item5.8’s proof uses addition of independent indicator variances, but originally had only a physiology prerequisite. The author added actual written `prob-2.2.1` (reviewed statement/proof, reaching moments and independence) and supplied the short fixed-k binomial-to-Poisson argument. Chapter-only syllabus metadata was synchronized. The comparison no longer silently relies on an unwritten proof input.
+
+## Independent mathematical calculations
+
+The author’s14final focused groups were independently rerun and pass. Scoped static:11items,0errors,0warnings.
+
+Fresh independent artifacts `/tmp/wave5-neuro-review-{export.mjs,oracle.json,oracle.py,oracle.log}` pass **13,687 scalar comparisons**. Python uses75-digit mpmath for LIF/TM/shunt and independent SciPy DOP853/quadrature for voltage models; it never imports the chapter helper. Cases include off-grid parameters, next-representable LIF rheobase, EIF sharpness1/4 beyond the author’s delta2-only external oracle, adaptive reset/jump combinations, all three receptors, exact independent binomial probabilities and finite-clamp integration.
+
+- LIF event intervals/rates and all finite event times agree with75-digit formulas; maximum event-time error6.37e−12ms.
+- Fresh EIF/AdEx integration: maximum event-time discrepancy8.14e−5ms, final-state8.64e−5, sampled smooth-trace1.98e−4 model units. Trace comparisons deliberately exclude a0.02ms neighborhood of reset discontinuities; all event counts and jumps are checked separately.
+- AMPA/GABA use an independent analytic integrating factor with quadrature of the original linear voltage equation; NMDA uses an independent nonlinear DOP853 integration. Maximum voltage discrepancy1.38e−8mV. Effective conductance and inward current agree to3.56e−15nS/1.14e−13pA.
+- TM finite releases are compared with independently constructed75-digit utilization closed form and resource recurrence, including fixed points; maximum2.23e−16. Binomial law comparison maximum3.34e−16. Exact shunt equilibrium/trajectory discrepancies at most1.43e−14mV, including subnormal zero-effect cases.
+- A separate continuous piecewise-clamp integral differs from the declared0.2ms grid charge by at most0.622fC on the tested off-grid delays. This is expected grid/jump quadrature error and is not called an exact continuum integral by the product.
+
+These are bounded numerical diagnostics, not certified global error bounds or proofs of biological validity.
+
+## Completed independent native/visual gate
+
+Reviewer-only `/tmp/wave5-neuro-review-native.mjs` ran the actual production renderer, separately capturing to `/tmp/wave5-neuro-review-production`. Final log `/tmp/wave5-neuro-review-native.log`: **44groups,520native actions,240URL checks pass** on final source bytes. This is the reviewer’s own run, not inherited author evidence. It includes all11items × actual1200/320px × light/dark, all select modes, range Home/End and physical intermediate changes, scalar native/model equality, numeric readouts, edited Create-link replay, off-grid states, invalid integer/out-of-range/malformed states, exact/next-representable rheobase, GABA at rest and high/low count means. The240checks include72physical Create-link replays (44ordinary plus28critical cases).
+
+The copy adds **both full readout scrollHeight/clientHeight and scrollWidth/clientWidth** assertions; every state passes these alongside complete formula/text, paper-citation, canvas glyph/halo, path/rectangle/bar stroke and full dot/ring bounds. Minimum mark/stroke clearance5.886CSSpx; minimum glyph clearance3.118CSSpx. Magnesium visibility follows receptor mode. Paper citation/introduces/verify metadata is injected as in production and asserted. No runtime error, nonfinite displayed estimate or clipped readout was found.
+
+All22 final narrow default widgets were independently inspected in four temporary contact sheets. Complete rich pages5.2/5.9/5.11 were inspected in both themes, including all statement/scope/proof formulas, references and actual historical citation/qualification. Selected NMDA and finite20 alternatives were inspected individually. Full-page trips were split into temporary1600px strips only for inspection; source captures remain intact. The controls/readouts distinguish finite unresolved estimates from zero and display the new positive Poisson tail.
+
+No remaining required source/model/native/visual finding within the declared scope. The original Katz full-body access flag remains intentionally unresolved; independent mathematical acceptance does not claim access to that unseen text. **Accepted content/model/test bytes remain frozen; reviewer browser is closed.**
