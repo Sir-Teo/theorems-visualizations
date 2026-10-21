@@ -3409,5 +3409,23 @@
     "rootRuntime": "Node22.23.3",
     "nativeRun": false,
     "prerequisite": "Separate reviewed edge-only tiny native correctness gate must pass before the one full current-light case. Source callbacks/lifecycle and production/performance remain outside this acceptance."
+  },
+  "curveEdgeTiny": {
+    "source": "83add753c6db71a142f7c58dd772390f5b809f58",
+    "sourceClosing": "67a3e2946bf8e9b7587c82af50cb37a3732cd363",
+    "sourcePeer": "896191f5f626b9a316d5470a3f4c98eaec30f49a",
+    "stageCommit": "292e0f2288f0fc7e688a50da52fd780965722213",
+    "status": "native-32-cases-pass-independent-saved-evidence-peer-pending",
+    "report": "docs/verification/map-curve-edge-tiny-root-result.md",
+    "output": "/tmp/atlas-root-curve-edge-native",
+    "cases": 32,
+    "subjects": 64,
+    "allPairsExact": true,
+    "browserVersion": "155.0.8059.85",
+    "maximumOwnedPeak": 63995904,
+    "rootAudit": "/tmp/atlas-continuation/curve-edge-root-audit.json",
+    "fullMapAccepted": false,
+    "lifecycleAccepted": false,
+    "performanceAccepted": false
   }
 }
