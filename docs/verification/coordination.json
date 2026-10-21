@@ -21,7 +21,7 @@
       "Full immutable checkpoints and unrelated gate analysis"
     ],
     "current": [
-      "Accepted prerequisite shortfall55;6/64 published collections and1 whole syllabi below target;42 further collections meet25 written inputs. Source queue5 unchanged.",
+      "Acceptedprerequisiteshortfall36;5/64publishedcollectionsand1wholesyllabusbelowtarget;43furthercollectionsmeet25writteninputs. Sourcequeue5unchanged.",
       "Latest immutable checkpoint11 onee15d812 passes2230tests, all6UIgroups, strict/static0/0.",
       "Rejected chunk prototype remains unaccepted. Original-only control reproduces its cold/warm discrepancy; no renderer or timing acceptance.",
       "Private source/tiny fixed-quiescence successor passes independent review; full-map original-only attempt still stops on late normal400 Newsreader loading during transfer. Callback provenance captured; all raw/history retained, alternate/timing unrun.",
@@ -2691,15 +2691,52 @@
       "report": "docs/verification/ling-independent-prerequisite-peer.md",
       "followup": "20 direct inputs across17humanitiesconsumers;25/26/39. Ideal radiation separated from L1 tract proof; four equivalent statement splits including independently found4.4inner overflow. Full52objects/functions/136rows,1715ownchecks; complete final both-theme native fields personally inspected. Integrated full guards/math/default checks pass.",
       "sourceClosure": "None; flags unchanged."
+    },
+    {
+      "collection": "art",
+      "commits": [
+        "03d24499ebb31470c602c1f0d1eaa85ae0155942",
+        "5439dff1a066157c47dd97767647cbdbf4e0887a",
+        "9fe4579f3f76ae42415dbfcf98c4f7f7d264d0f1",
+        "408536daef969f3b542f36e5f163cd217032b567",
+        "d86c205f29fb6d0c0891ffe045b11c704a71c272",
+        "b94b256d26dba409a0cd3329261851a877359306",
+        "cd5957b2e62f3eaea73aa0fd48866c441bd35b5d",
+        "e79defb12fe4e777b592a2605cd3999f7c8d3e12"
+      ],
+      "publishedBefore": 7,
+      "publishedAfter": 25,
+      "status": "accepted",
+      "producer": "imaging_source",
+      "peer": "arch_source",
+      "report": "docs/verification/art-prerequisites-independent-peer.md",
+      "followup": "18distinctdirectmathinputs across17consumers;25/30/46. Allfivealternatepaths individuallyassessed actualdistinctstep. Full55objects/functions139rows/28files;5449ownmathchecks17groups,32existingtests,38native states/114personallyreadpictures. Fourvisible runtime literals only, bounded geometric/numerical qualifications and equivalent wraps. Integratedguard/math/default32pass.",
+      "sourceClosure": "None;flagsunchanged."
+    },
+    {
+      "collection": "cplx",
+      "commits": [
+        "87b7e79557341cfe8d41ce1b3cadc29fc0bc7ce3",
+        "126c6b1bdd076f345088e1771cc98db1c0e10e03",
+        "558985003156260c69feafdc35068afb89682180"
+      ],
+      "publishedBefore": 16,
+      "publishedAfter": 17,
+      "status": "accepted",
+      "producer": "ctrl_prereqs",
+      "peer": "deep_peer",
+      "report": "docs/verification/cplx-alternation-independent-peer.md",
+      "followup": "OneactualLOGIC2.10finitebranching/allbranchhaltingtree input. Separatecomplement/resourcequalifierscorrectleastfixedpointloopcounterexample. Full53objects/functions158rows16files;8412ownchecks,15existingtests,30personallyreadfreshfields/controlpixels. Integratedguard/mathpass; eightotherinputsremainpending.",
+      "sourceClosure": "None;flagsunchanged."
     }
   ],
   "currentPrerequisiteGate": {
-    "publishedShortfall": 55,
-    "publishedBelow25": 6,
+    "publishedShortfall": 36,
+    "publishedBelow25": 5,
     "collections": 64,
     "wholeSyllabusBelow25": 1,
     "date": "2026-10-20",
-    "acceptedSnapshot": "Forty-two further collections meet written target. GAME19 yields23; PHARM18 and LING20 reach25. Frozen BIGHIST3.5 excluded."
+    "acceptedSnapshot": "Forty-three further collections meet written target; ART18 reaches25. CPLX3.8singleinput reaches17, eightpending. BIGHISTsixunrestrictedinputs pendingexcluded; frozen3.5 persists."
   },
   "previousSessionWorkers": [
     {

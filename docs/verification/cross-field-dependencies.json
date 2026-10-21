@@ -4,7 +4,7 @@
   "counting": "Unique directed prerequisite edges from a non-math collection to a different field; separate written and planned availability. Related links and same-field cross-collection links do not count.",
   "limitation": "Counts alone do not establish that any prerequisite is pedagogically or factually justified. Correct links require source/proof review; do not add arbitrary links to meet a quota.",
   "collections": 64,
-  "publishedBelowTarget": 6,
+  "publishedBelowTarget": 5,
   "wholeSyllabusBelowTarget": 1,
   "entries": [
     {
@@ -1798,10 +1798,10 @@
       "collection": "cplx",
       "field": "cs",
       "target": 25,
-      "writtenToWritten": 16,
-      "writtenToKnown": 18,
-      "wholeSyllabus": 25,
-      "publishedShortfall": 9,
+      "writtenToWritten": 17,
+      "writtenToKnown": 19,
+      "wholeSyllabus": 26,
+      "publishedShortfall": 8,
       "unknown": [],
       "edges": [
         {
@@ -1842,6 +1842,13 @@
         {
           "item": "cplx-2.13",
           "prerequisite": "logic-1.3",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "cplx-3.8",
+          "prerequisite": "logic-2.10",
           "prerequisiteField": "math",
           "itemWritten": true,
           "prerequisiteWritten": true
@@ -18242,12 +18249,61 @@
       "collection": "art",
       "field": "arts",
       "target": 25,
-      "writtenToWritten": 7,
-      "writtenToKnown": 12,
-      "wholeSyllabus": 28,
-      "publishedShortfall": 18,
+      "writtenToWritten": 25,
+      "writtenToKnown": 30,
+      "wholeSyllabus": 46,
+      "publishedShortfall": 0,
       "unknown": [],
       "edges": [
+        {
+          "item": "art-1.9",
+          "prerequisite": "vcalc-1.2",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "art-1.11",
+          "prerequisite": "ladr-9.23",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "art-1.12",
+          "prerequisite": "vcalc-1.3",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "art-1.13",
+          "prerequisite": "ladr-2.43",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "art-1.4",
+          "prerequisite": "pma-3.3",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "art-2.8",
+          "prerequisite": "ladr-7.29",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "art-2.9",
+          "prerequisite": "ladr-9.50",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
         {
           "item": "art-2.2",
           "prerequisite": "mech-5.2",
@@ -18275,6 +18331,13 @@
           "prerequisiteField": "physics",
           "itemWritten": true,
           "prerequisiteWritten": false
+        },
+        {
+          "item": "art-3.9",
+          "prerequisite": "ladr-3.43",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
         },
         {
           "item": "art-3.10",
@@ -18305,6 +18368,27 @@
           "prerequisiteWritten": false
         },
         {
+          "item": "art-3.2",
+          "prerequisite": "pma-6.12",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "art-3.2",
+          "prerequisite": "ladr-9.46",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "art-3.3",
+          "prerequisite": "opt-2.1",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
           "item": "art-3.4",
           "prerequisite": "mech-5.2",
           "prerequisiteField": "physics",
@@ -18312,8 +18396,57 @@
           "prerequisiteWritten": true
         },
         {
+          "item": "art-3.4",
+          "prerequisite": "pma-5.8",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "art-3.6",
+          "prerequisite": "ode-1.5",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "art-4.10",
+          "prerequisite": "pma-5.8",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "art-4.12",
+          "prerequisite": "vcalc-1.3",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "art-4.15",
+          "prerequisite": "opt-2.1",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "art-4.16",
+          "prerequisite": "ladr-9.50",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
           "item": "art-4.2",
           "prerequisite": "ladr-2.28",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "art-4.2",
+          "prerequisite": "ladr-6.70",
           "prerequisiteField": "math",
           "itemWritten": true,
           "prerequisiteWritten": true
@@ -20316,7 +20449,9 @@
       "39d613103324c621d968bd1068d97a63d915be05",
       "3a08b79379bb98322e16a10adebc000a1d53aea6",
       "d02ad69fedb2db4abc9f1e411c6be20df5a5e010",
-      "f0ac876e6c36942bb7be490bc0d81f1a64990ed7"
+      "f0ac876e6c36942bb7be490bc0d81f1a64990ed7",
+      "03d24499ebb31470c602c1f0d1eaa85ae0155942",
+      "87b7e79557341cfe8d41ce1b3cadc29fc0bc7ce3"
     ],
     "excludedUnacceptedEdges": [
       {
