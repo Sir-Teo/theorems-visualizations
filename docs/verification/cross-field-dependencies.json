@@ -20323,6 +20323,36 @@
         "item": "bighist-3.5",
         "prerequisite": "pma-8.6",
         "reason": "Frozen service-restricted candidate; not accepted. No source peer retry."
+      },
+      {
+        "item": "bighist-1.5",
+        "prerequisite": "ladr-6.14",
+        "reason": "Pending independent proof-use peer of unrestricted four-consumer candidate d909f304; no accepted quota credit."
+      },
+      {
+        "item": "bighist-1.8",
+        "prerequisite": "pma-6.21",
+        "reason": "Pending independent proof-use peer of unrestricted four-consumer candidate d909f304; no accepted quota credit."
+      },
+      {
+        "item": "bighist-1.8",
+        "prerequisite": "ladr-6.61",
+        "reason": "Pending independent proof-use peer of unrestricted four-consumer candidate d909f304; no accepted quota credit."
+      },
+      {
+        "item": "bighist-2.5",
+        "prerequisite": "mech-2.12",
+        "reason": "Pending independent proof-use peer of unrestricted four-consumer candidate d909f304; no accepted quota credit."
+      },
+      {
+        "item": "bighist-2.5",
+        "prerequisite": "mech-2.8",
+        "reason": "Pending independent proof-use peer of unrestricted four-consumer candidate d909f304; no accepted quota credit."
+      },
+      {
+        "item": "bighist-2.7",
+        "prerequisite": "geol-3.4",
+        "reason": "Pending independent proof-use peer of unrestricted four-consumer candidate d909f304; no accepted quota credit."
       }
     ]
   }
