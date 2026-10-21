@@ -22,7 +22,7 @@
     ],
     "current": [
       "Acceptedwrittenprerequisitegatecomplete:all64nonmathcollections\u226525writteninputs,0shortfall/unknowns,48furthercollections meettarget. Sourcequeue5unchanged.",
-      "Latest immutable checkpoint11 onee15d812 passes2230tests, all6UIgroups, strict/static0/0.",
+      "Latest immutable checkpoint12 on 94a77908: 2,230 tests, all six UI groups, strict/static zero errors and warnings, accepted prerequisite shortfall0.",
       "Rejected chunk prototype remains unaccepted. Original-only control reproduces its cold/warm discrepancy; no renderer or timing acceptance.",
       "Privateone-shard readiness source/tiny pending closingpeer: imagingfound6protectedstate/prefixguardgaps in0fed; authorizedminimalguard-onlysuccessor. No fullmap/alternate/timingrununtilindependentclosingreview.",
       "Frozen BIGHIST3.5 service restriction persists; no retry or edge acceptance."
@@ -1367,15 +1367,15 @@
   },
   "currentPendingSourceReviews": 5,
   "latestCheckpoint": {
-    "testedContentCommit": "ee15d812c4ccf430d9a826f910210e89fa9bc2bc",
-    "acceptedContentCommit": "ee15d812",
-    "report": "docs/verification/checkpoint-ee15d812.md",
+    "testedContentCommit": "94a77908068d8c6a3be5fbe10808d0910195facf",
+    "acceptedContentCommit": "94a77908",
+    "report": "docs/verification/checkpoint-94a77908.md",
     "defaultTests": 2230,
     "uiTests": 6,
     "testFailures": 0,
     "testCancelled": 0,
     "testSkipped": 0,
-    "testDurationSeconds": 114.216040917,
+    "testDurationSeconds": 105.444316709,
     "testConcurrency": 2,
     "strictBuildErrors": 0,
     "strictBuildWarnings": 0,
@@ -1386,13 +1386,13 @@
     "plannedItems": 6890,
     "chapters": 450,
     "collections": 85,
-    "homeGzipBytes": 113180,
+    "homeGzipBytes": 113187,
     "pendingSourceReviews": 5,
     "acceptedTeamEntriesAtSnapshot": 146,
-    "publishedCrossFieldShortfall": 55,
-    "publishedCollectionsBelowTarget": 6,
+    "publishedCrossFieldShortfall": 0,
+    "publishedCollectionsBelowTarget": 0,
     "nonMathCollections": 64,
-    "wholeSyllabusBelowTarget": 1,
+    "wholeSyllabusBelowTarget": 0,
     "wave5Status": "prepared-unstarted",
     "wave5Chapters": 80,
     "wave5NewItems": 1031,
@@ -1400,16 +1400,16 @@
     "map60fps": "open; no benchmark amid competing browser jobs",
     "flagshipProofCuration": "2/100 alongside-wave work",
     "evidence": [
-      "/tmp/atlas-continuation/checkpoint11-build.log",
-      "/tmp/atlas-continuation/checkpoint11-tests.log",
-      "/tmp/atlas-continuation/checkpoint11-static.log",
-      "/tmp/atlas-continuation/checkpoint11-queue.log",
-      "/tmp/atlas-continuation/checkpoint11-crossfield-accepted.log"
+      "/tmp/atlas-continuation/checkpoint12-build.log",
+      "/tmp/atlas-continuation/checkpoint12-tests.log",
+      "/tmp/atlas-continuation/checkpoint12-static.log",
+      "/tmp/atlas-continuation/checkpoint12-queue.log",
+      "/tmp/atlas-continuation/checkpoint12-crossfield-accepted.log"
     ],
     "limitations": [
-      "Includes accepted CM/NEURO/PL/GAME/PHARM/LING and ODE correction, contrast, both original-only stopped histories and read-only normal400diagnosis. Excludes pending ART/ARCH/CPLX and unrestricted BIGHISTproducer.",
-      "Frozen BIGHIST3.5 candidate/edge remains unaccepted; default tests do not replace restricted source peer.",
-      "Both original-only attempts stop before alternate. Main raw equality does not accept post-history callbacks, alternate binding, lifecycle, production or timing."
+      "Includes all accepted prerequisite inputs through final GAME; zero accepted shortfall/unknowns. Includes ARCH right-reaction and ART plan label repairs. Excludes pending PL compact-canvas and CPLX count/ID/preset corrections and one-shard readiness/guard implementation.",
+      "Frozen BIGHIST3.5 remains unaccepted and excluded; source queue5 unchanged. Default tests do not replace source review.",
+      "Both old original-only map attempts stop before alternate opens. New source/model/tiny readiness does not accept a full map, lifecycle or timing."
     ]
   },
   "openStateFindings": [
