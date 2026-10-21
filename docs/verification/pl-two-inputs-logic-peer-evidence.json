@@ -1,0 +1,1391 @@
+{
+  "candidate": "1b8d84001f8d8ee583728f76a7db684a1bc44f6e",
+  "baseline": "ee15d812c4ccf430d9a826f910210e89fa9bc2bc",
+  "ownMath": {
+    "checks": 58300,
+    "trees": 6382,
+    "forbiddenSets": 16384,
+    "proof": "finite avoidance; two-sided inverse on fixed finite free context; independent binding-path invariance",
+    "scope": "finite witnesses supplement structural proof; no runtime clipping acceptance"
+  },
+  "inventory": {
+    "before": {
+      "collection": "pl",
+      "field": "cs",
+      "target": 25,
+      "writtenToWritten": 23,
+      "writtenToKnown": 23,
+      "wholeSyllabus": 27,
+      "publishedShortfall": 2,
+      "unknown": [],
+      "edges": [
+        {
+          "item": "pl-1.7",
+          "prerequisite": "alg-2.6",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "pl-1.9",
+          "prerequisite": "alg-2.1",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "pl-1.10",
+          "prerequisite": "alg-1.15",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "pl-1.10",
+          "prerequisite": "logic-3.4",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "pl-1.11",
+          "prerequisite": "logic-3.4",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "pl-1.2",
+          "prerequisite": "logic-2.2",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "pl-1.3",
+          "prerequisite": "alg-2.1",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "pl-2.7",
+          "prerequisite": "alg-1.15",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "pl-2.7",
+          "prerequisite": "alg-2.1",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "pl-2.2",
+          "prerequisite": "logic-3.2",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "pl-2.2",
+          "prerequisite": "alg-1.25",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "pl-2.4",
+          "prerequisite": "alg-1.20a",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "pl-2.6",
+          "prerequisite": "logic-2.3",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "pl-3.9",
+          "prerequisite": "alg-2.6",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "pl-3.10",
+          "prerequisite": "logic-4.1",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "pl-3.10",
+          "prerequisite": "logic-4.2",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "pl-3.1",
+          "prerequisite": "alg-2.1",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "pl-4.7",
+          "prerequisite": "logic-4.2",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "pl-4.8",
+          "prerequisite": "logic-2.1",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "pl-4.11",
+          "prerequisite": "logic-2.2",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "pl-4.11",
+          "prerequisite": "logic-2.10",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "pl-4.13",
+          "prerequisite": "logic-2.2",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "pl-4.5",
+          "prerequisite": "alg-2.1",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "pl-10.1",
+          "prerequisite": "pma-1.8",
+          "prerequisiteField": "math",
+          "itemWritten": false,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "pl-10.1",
+          "prerequisite": "pma-1.10",
+          "prerequisiteField": "math",
+          "itemWritten": false,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "pl-10.1",
+          "prerequisite": "comb-8.1",
+          "prerequisiteField": "math",
+          "itemWritten": false,
+          "prerequisiteWritten": false
+        },
+        {
+          "item": "pl-10.2",
+          "prerequisite": "pma-1.5",
+          "prerequisiteField": "math",
+          "itemWritten": false,
+          "prerequisiteWritten": true
+        }
+      ]
+    },
+    "after": {
+      "collection": "pl",
+      "field": "cs",
+      "target": 25,
+      "writtenToWritten": 25,
+      "writtenToKnown": 25,
+      "wholeSyllabus": 29,
+      "publishedShortfall": 0,
+      "unknown": [],
+      "edges": [
+        {
+          "item": "pl-1.7",
+          "prerequisite": "alg-2.6",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "pl-1.9",
+          "prerequisite": "alg-2.1",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "pl-1.10",
+          "prerequisite": "alg-1.15",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "pl-1.10",
+          "prerequisite": "logic-3.4",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "pl-1.11",
+          "prerequisite": "logic-3.4",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "pl-1.2",
+          "prerequisite": "logic-2.2",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "pl-1.3",
+          "prerequisite": "alg-2.1",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "pl-2.7",
+          "prerequisite": "alg-1.15",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "pl-2.7",
+          "prerequisite": "alg-2.1",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "pl-2.11",
+          "prerequisite": "alg-1.20",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "pl-2.2",
+          "prerequisite": "logic-3.2",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "pl-2.2",
+          "prerequisite": "alg-1.25",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "pl-2.3",
+          "prerequisite": "comb-1.2",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "pl-2.4",
+          "prerequisite": "alg-1.20a",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "pl-2.6",
+          "prerequisite": "logic-2.3",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "pl-3.9",
+          "prerequisite": "alg-2.6",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "pl-3.10",
+          "prerequisite": "logic-4.1",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "pl-3.10",
+          "prerequisite": "logic-4.2",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "pl-3.1",
+          "prerequisite": "alg-2.1",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "pl-4.7",
+          "prerequisite": "logic-4.2",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "pl-4.8",
+          "prerequisite": "logic-2.1",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "pl-4.11",
+          "prerequisite": "logic-2.2",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "pl-4.11",
+          "prerequisite": "logic-2.10",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "pl-4.13",
+          "prerequisite": "logic-2.2",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "pl-4.5",
+          "prerequisite": "alg-2.1",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "pl-10.1",
+          "prerequisite": "pma-1.8",
+          "prerequisiteField": "math",
+          "itemWritten": false,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "pl-10.1",
+          "prerequisite": "pma-1.10",
+          "prerequisiteField": "math",
+          "itemWritten": false,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "pl-10.1",
+          "prerequisite": "comb-8.1",
+          "prerequisiteField": "math",
+          "itemWritten": false,
+          "prerequisiteWritten": false
+        },
+        {
+          "item": "pl-10.2",
+          "prerequisite": "pma-1.5",
+          "prerequisiteField": "math",
+          "itemWritten": false,
+          "prerequisiteWritten": true
+        }
+      ]
+    }
+  },
+  "controls": [
+    {
+      "num": "2.3",
+      "theme": "light",
+      "index": 0,
+      "label": "capture",
+      "readout": "Expected free variables \n{\n\ud835\udc66\n,\n\u2009\n\ud835\udc67\n}\n{y,z}. Naive: \n{\n\ud835\udc67\n}\n{z} \u2717 (a free variable was captured) \u00b7 Capture-avoiding: \n{\n\ud835\udc66\n,\n\u2009\n\ud835\udc67\n}\n{y,z} \u2713 \u00b7 agrees with \u201crename all binders apart, then replace blindly\u201d: \u2713",
+      "canvases": [
+        {
+          "width": 286,
+          "height": 200,
+          "clientWidth": 286,
+          "clientHeight": 200
+        }
+      ]
+    },
+    {
+      "num": "2.3",
+      "theme": "light",
+      "index": 1,
+      "label": "capture, shadowing",
+      "readout": "Expected free variables \n{\n\ud835\udc67\n}\n{z}. Naive: \n\u2205\n\u2205 \u2717 (a free variable was captured) \u00b7 Capture-avoiding: \n{\n\ud835\udc67\n}\n{z} \u2713 \u00b7 agrees with \u201crename all binders apart, then replace blindly\u201d: \u2713",
+      "canvases": [
+        {
+          "width": 286,
+          "height": 200,
+          "clientWidth": 286,
+          "clientHeight": 200
+        }
+      ]
+    },
+    {
+      "num": "2.3",
+      "theme": "light",
+      "index": 2,
+      "label": "no clash",
+      "readout": "Expected free variables \n{\n\ud835\udc64\n}\n{w}. Naive: \n{\n\ud835\udc64\n}\n{w} \u2713 \u00b7 Capture-avoiding: \n{\n\ud835\udc64\n}\n{w} \u2713 \u00b7 agrees with \u201crename all binders apart, then replace blindly\u201d: \u2713",
+      "canvases": [
+        {
+          "width": 286,
+          "height": 200,
+          "clientWidth": 286,
+          "clientHeight": 200
+        }
+      ]
+    },
+    {
+      "num": "2.3",
+      "theme": "light",
+      "index": 3,
+      "label": "two binders",
+      "readout": "Expected free variables \n{\n\ud835\udc65\n,\n\u2009\n\ud835\udc66\n}\n{x,y}. Naive: \n\u2205\n\u2205 \u2717 (a free variable was captured) \u00b7 Capture-avoiding: \n{\n\ud835\udc65\n,\n\u2009\n\ud835\udc66\n}\n{x,y} \u2713 \u00b7 agrees with \u201crename all binders apart, then replace blindly\u201d: \u2713",
+      "canvases": [
+        {
+          "width": 286,
+          "height": 200,
+          "clientWidth": 286,
+          "clientHeight": 200
+        }
+      ]
+    },
+    {
+      "num": "2.3",
+      "theme": "light",
+      "index": 4,
+      "label": "x is bound",
+      "readout": "Expected free variables \n{\n\ud835\udc66\n}\n{y}. Naive: \n{\n\ud835\udc66\n}\n{y} \u2713 \u00b7 Capture-avoiding: \n{\n\ud835\udc66\n}\n{y} \u2713 \u00b7 agrees with \u201crename all binders apart, then replace blindly\u201d: \u2713",
+      "canvases": [
+        {
+          "width": 286,
+          "height": 200,
+          "clientWidth": 286,
+          "clientHeight": 200
+        }
+      ]
+    },
+    {
+      "num": "2.11",
+      "theme": "light",
+      "index": 0,
+      "label": "\u03b1-equal pair",
+      "readout": "Context \n\u0393\n\u0393 = \n\ud835\udc67\n\u21a6\n0\nz\u21a60 (outside all binders) \u00b7 \n\ud835\udc61\n1\n\u2261\n\ud835\udefc\n\ud835\udc61\n2\nt\n1\n\t\u200b\n\n\u2261\n\u03b1\n\t\u200b\n\nt\n2\n\t\u200b\n\n by names: yes; nameless forms identical: yes \u2014 \u2713 they agree.",
+      "canvases": [
+        {
+          "width": 286,
+          "height": 141,
+          "clientWidth": 286,
+          "clientHeight": 141
+        },
+        {
+          "width": 286,
+          "height": 127,
+          "clientWidth": 286,
+          "clientHeight": 127
+        }
+      ]
+    },
+    {
+      "num": "2.11",
+      "theme": "light",
+      "index": 1,
+      "label": "different",
+      "readout": "Context \n\u0393\n\u0393 = empty \u00b7 \n\ud835\udc61\n1\n\u2261\n\ud835\udefc\n\ud835\udc61\n2\nt\n1\n\t\u200b\n\n\u2261\n\u03b1\n\t\u200b\n\nt\n2\n\t\u200b\n\n by names: no; nameless forms identical: no \u2014 \u2713 they agree.",
+      "canvases": [
+        {
+          "width": 286,
+          "height": 141,
+          "clientWidth": 286,
+          "clientHeight": 141
+        },
+        {
+          "width": 286,
+          "height": 127,
+          "clientWidth": 286,
+          "clientHeight": 127
+        }
+      ]
+    },
+    {
+      "num": "2.11",
+      "theme": "light",
+      "index": 2,
+      "label": "free y",
+      "readout": "Context \n\u0393\n\u0393 = \n\ud835\udc66\n\u21a6\n0\ny\u21a60 (outside all binders) \u00b7 \n\ud835\udc61\n1\n\u2261\n\ud835\udefc\n\ud835\udc61\n2\nt\n1\n\t\u200b\n\n\u2261\n\u03b1\n\t\u200b\n\nt\n2\n\t\u200b\n\n by names: yes; nameless forms identical: yes \u2014 \u2713 they agree.",
+      "canvases": [
+        {
+          "width": 286,
+          "height": 141,
+          "clientWidth": 286,
+          "clientHeight": 141
+        },
+        {
+          "width": 286,
+          "height": 127,
+          "clientWidth": 286,
+          "clientHeight": 127
+        }
+      ]
+    },
+    {
+      "num": "2.11",
+      "theme": "light",
+      "index": 3,
+      "label": "shadow",
+      "readout": "Context \n\u0393\n\u0393 = empty \u00b7 \n\ud835\udc61\n1\n\u2261\n\ud835\udefc\n\ud835\udc61\n2\nt\n1\n\t\u200b\n\n\u2261\n\u03b1\n\t\u200b\n\nt\n2\n\t\u200b\n\n by names: yes; nameless forms identical: yes \u2014 \u2713 they agree.",
+      "canvases": [
+        {
+          "width": 286,
+          "height": 141,
+          "clientWidth": 286,
+          "clientHeight": 141
+        },
+        {
+          "width": 286,
+          "height": 127,
+          "clientWidth": 286,
+          "clientHeight": 127
+        }
+      ]
+    },
+    {
+      "num": "2.3",
+      "theme": "dark",
+      "index": 0,
+      "label": "capture",
+      "readout": "Expected free variables \n{\n\ud835\udc66\n,\n\u2009\n\ud835\udc67\n}\n{y,z}. Naive: \n{\n\ud835\udc67\n}\n{z} \u2717 (a free variable was captured) \u00b7 Capture-avoiding: \n{\n\ud835\udc66\n,\n\u2009\n\ud835\udc67\n}\n{y,z} \u2713 \u00b7 agrees with \u201crename all binders apart, then replace blindly\u201d: \u2713",
+      "canvases": [
+        {
+          "width": 286,
+          "height": 200,
+          "clientWidth": 286,
+          "clientHeight": 200
+        }
+      ]
+    },
+    {
+      "num": "2.3",
+      "theme": "dark",
+      "index": 1,
+      "label": "capture, shadowing",
+      "readout": "Expected free variables \n{\n\ud835\udc67\n}\n{z}. Naive: \n\u2205\n\u2205 \u2717 (a free variable was captured) \u00b7 Capture-avoiding: \n{\n\ud835\udc67\n}\n{z} \u2713 \u00b7 agrees with \u201crename all binders apart, then replace blindly\u201d: \u2713",
+      "canvases": [
+        {
+          "width": 286,
+          "height": 200,
+          "clientWidth": 286,
+          "clientHeight": 200
+        }
+      ]
+    },
+    {
+      "num": "2.3",
+      "theme": "dark",
+      "index": 2,
+      "label": "no clash",
+      "readout": "Expected free variables \n{\n\ud835\udc64\n}\n{w}. Naive: \n{\n\ud835\udc64\n}\n{w} \u2713 \u00b7 Capture-avoiding: \n{\n\ud835\udc64\n}\n{w} \u2713 \u00b7 agrees with \u201crename all binders apart, then replace blindly\u201d: \u2713",
+      "canvases": [
+        {
+          "width": 286,
+          "height": 200,
+          "clientWidth": 286,
+          "clientHeight": 200
+        }
+      ]
+    },
+    {
+      "num": "2.3",
+      "theme": "dark",
+      "index": 3,
+      "label": "two binders",
+      "readout": "Expected free variables \n{\n\ud835\udc65\n,\n\u2009\n\ud835\udc66\n}\n{x,y}. Naive: \n\u2205\n\u2205 \u2717 (a free variable was captured) \u00b7 Capture-avoiding: \n{\n\ud835\udc65\n,\n\u2009\n\ud835\udc66\n}\n{x,y} \u2713 \u00b7 agrees with \u201crename all binders apart, then replace blindly\u201d: \u2713",
+      "canvases": [
+        {
+          "width": 286,
+          "height": 200,
+          "clientWidth": 286,
+          "clientHeight": 200
+        }
+      ]
+    },
+    {
+      "num": "2.3",
+      "theme": "dark",
+      "index": 4,
+      "label": "x is bound",
+      "readout": "Expected free variables \n{\n\ud835\udc66\n}\n{y}. Naive: \n{\n\ud835\udc66\n}\n{y} \u2713 \u00b7 Capture-avoiding: \n{\n\ud835\udc66\n}\n{y} \u2713 \u00b7 agrees with \u201crename all binders apart, then replace blindly\u201d: \u2713",
+      "canvases": [
+        {
+          "width": 286,
+          "height": 200,
+          "clientWidth": 286,
+          "clientHeight": 200
+        }
+      ]
+    },
+    {
+      "num": "2.11",
+      "theme": "dark",
+      "index": 0,
+      "label": "\u03b1-equal pair",
+      "readout": "Context \n\u0393\n\u0393 = \n\ud835\udc67\n\u21a6\n0\nz\u21a60 (outside all binders) \u00b7 \n\ud835\udc61\n1\n\u2261\n\ud835\udefc\n\ud835\udc61\n2\nt\n1\n\t\u200b\n\n\u2261\n\u03b1\n\t\u200b\n\nt\n2\n\t\u200b\n\n by names: yes; nameless forms identical: yes \u2014 \u2713 they agree.",
+      "canvases": [
+        {
+          "width": 286,
+          "height": 141,
+          "clientWidth": 286,
+          "clientHeight": 141
+        },
+        {
+          "width": 286,
+          "height": 127,
+          "clientWidth": 286,
+          "clientHeight": 127
+        }
+      ]
+    },
+    {
+      "num": "2.11",
+      "theme": "dark",
+      "index": 1,
+      "label": "different",
+      "readout": "Context \n\u0393\n\u0393 = empty \u00b7 \n\ud835\udc61\n1\n\u2261\n\ud835\udefc\n\ud835\udc61\n2\nt\n1\n\t\u200b\n\n\u2261\n\u03b1\n\t\u200b\n\nt\n2\n\t\u200b\n\n by names: no; nameless forms identical: no \u2014 \u2713 they agree.",
+      "canvases": [
+        {
+          "width": 286,
+          "height": 141,
+          "clientWidth": 286,
+          "clientHeight": 141
+        },
+        {
+          "width": 286,
+          "height": 127,
+          "clientWidth": 286,
+          "clientHeight": 127
+        }
+      ]
+    },
+    {
+      "num": "2.11",
+      "theme": "dark",
+      "index": 2,
+      "label": "free y",
+      "readout": "Context \n\u0393\n\u0393 = \n\ud835\udc66\n\u21a6\n0\ny\u21a60 (outside all binders) \u00b7 \n\ud835\udc61\n1\n\u2261\n\ud835\udefc\n\ud835\udc61\n2\nt\n1\n\t\u200b\n\n\u2261\n\u03b1\n\t\u200b\n\nt\n2\n\t\u200b\n\n by names: yes; nameless forms identical: yes \u2014 \u2713 they agree.",
+      "canvases": [
+        {
+          "width": 286,
+          "height": 141,
+          "clientWidth": 286,
+          "clientHeight": 141
+        },
+        {
+          "width": 286,
+          "height": 127,
+          "clientWidth": 286,
+          "clientHeight": 127
+        }
+      ]
+    },
+    {
+      "num": "2.11",
+      "theme": "dark",
+      "index": 3,
+      "label": "shadow",
+      "readout": "Context \n\u0393\n\u0393 = empty \u00b7 \n\ud835\udc61\n1\n\u2261\n\ud835\udefc\n\ud835\udc61\n2\nt\n1\n\t\u200b\n\n\u2261\n\u03b1\n\t\u200b\n\nt\n2\n\t\u200b\n\n by names: yes; nameless forms identical: yes \u2014 \u2713 they agree.",
+      "canvases": [
+        {
+          "width": 286,
+          "height": 141,
+          "clientWidth": 286,
+          "clientHeight": 141
+        },
+        {
+          "width": 286,
+          "height": 127,
+          "clientWidth": 286,
+          "clientHeight": 127
+        }
+      ]
+    }
+  ],
+  "bounds": [
+    {
+      "theme": "light",
+      "num": "2.3",
+      "kind": "text253-proof",
+      "inner": 253,
+      "client": 253,
+      "scroll": 253,
+      "overflow": [],
+      "display": [],
+      "tex": 0
+    },
+    {
+      "theme": "light",
+      "num": "2.3",
+      "kind": "statement",
+      "inner": 253,
+      "client": 285,
+      "scroll": 285,
+      "overflow": [],
+      "display": [],
+      "tex": 0
+    },
+    {
+      "theme": "light",
+      "num": "2.3",
+      "kind": "proof",
+      "inner": 288,
+      "client": 288,
+      "scroll": 288,
+      "overflow": [],
+      "display": [],
+      "tex": 0
+    },
+    {
+      "theme": "light",
+      "num": "2.3",
+      "kind": "caption",
+      "inner": 280,
+      "client": 288,
+      "scroll": 288,
+      "overflow": [],
+      "display": [],
+      "tex": 0
+    },
+    {
+      "theme": "light",
+      "num": "2.11",
+      "kind": "text253-proof",
+      "inner": 253,
+      "client": 253,
+      "scroll": 253,
+      "overflow": [],
+      "display": [],
+      "tex": 0
+    },
+    {
+      "theme": "light",
+      "num": "2.11",
+      "kind": "statement",
+      "inner": 253,
+      "client": 285,
+      "scroll": 285,
+      "overflow": [],
+      "display": [],
+      "tex": 0
+    },
+    {
+      "theme": "light",
+      "num": "2.11",
+      "kind": "proof",
+      "inner": 288,
+      "client": 288,
+      "scroll": 288,
+      "overflow": [],
+      "display": [],
+      "tex": 0
+    },
+    {
+      "theme": "light",
+      "num": "2.11",
+      "kind": "caption",
+      "inner": 280,
+      "client": 288,
+      "scroll": 288,
+      "overflow": [],
+      "display": [],
+      "tex": 0
+    },
+    {
+      "theme": "dark",
+      "num": "2.3",
+      "kind": "text253-proof",
+      "inner": 253,
+      "client": 253,
+      "scroll": 253,
+      "overflow": [],
+      "display": [],
+      "tex": 0
+    },
+    {
+      "theme": "dark",
+      "num": "2.3",
+      "kind": "statement",
+      "inner": 253,
+      "client": 285,
+      "scroll": 285,
+      "overflow": [],
+      "display": [],
+      "tex": 0
+    },
+    {
+      "theme": "dark",
+      "num": "2.3",
+      "kind": "proof",
+      "inner": 288,
+      "client": 288,
+      "scroll": 288,
+      "overflow": [],
+      "display": [],
+      "tex": 0
+    },
+    {
+      "theme": "dark",
+      "num": "2.3",
+      "kind": "caption",
+      "inner": 280,
+      "client": 288,
+      "scroll": 288,
+      "overflow": [],
+      "display": [],
+      "tex": 0
+    },
+    {
+      "theme": "dark",
+      "num": "2.11",
+      "kind": "text253-proof",
+      "inner": 253,
+      "client": 253,
+      "scroll": 253,
+      "overflow": [],
+      "display": [],
+      "tex": 0
+    },
+    {
+      "theme": "dark",
+      "num": "2.11",
+      "kind": "statement",
+      "inner": 253,
+      "client": 285,
+      "scroll": 285,
+      "overflow": [],
+      "display": [],
+      "tex": 0
+    },
+    {
+      "theme": "dark",
+      "num": "2.11",
+      "kind": "proof",
+      "inner": 288,
+      "client": 288,
+      "scroll": 288,
+      "overflow": [],
+      "display": [],
+      "tex": 0
+    },
+    {
+      "theme": "dark",
+      "num": "2.11",
+      "kind": "caption",
+      "inner": 280,
+      "client": 288,
+      "scroll": 288,
+      "overflow": [],
+      "display": [],
+      "tex": 0
+    }
+  ],
+  "text253": {
+    "browser": "153.0.8010.12",
+    "rows": [
+      {
+        "num": "2.3",
+        "theme": "light",
+        "done": {
+          "ok": true,
+          "errors": [],
+          "texErrors": [],
+          "canvases": 1,
+          "quality": {
+            "handles": 0,
+            "drags": 0,
+            "clicks": 0,
+            "hover": 0,
+            "animate": 0,
+            "stages": 1,
+            "controls": 4,
+            "readout": true,
+            "interactive": 4
+          },
+          "blank": []
+        },
+        "statement-scope": {
+          "left": 37,
+          "right": 290,
+          "contentWidth": 253,
+          "client": 285,
+          "scroll": 285,
+          "text": "The substitution [x\u21a6s]\u2009t[x\\mapsto s]\\,t[x\u21a6s]t of a term sss for the free occurrences of xxx in ttt is defined by recursion on ttt: [x\u21a6s]\u2009x=s[x\\mapsto s]\\,x=s[x\u21a6s]x=s; [x\u21a6s]\u2009y=y[x\\mapsto s]\\,y=y[x\u21a6s]y=y for y\u2260xy\\ne xy\ue020=x; [x\u21a6s](t1\u2009t2)=([x\u21a6s]t1)\u2009([x\u21a6s]t2)[x\\mapsto s](t_1\\,t_2)=([x\\mapsto s]t_1)\\,([x\\mapsto s]t_2)[x\u21a6s](t1\u200bt2\u200b)=([x\u21a6s]t1\u200b)([x\u21a6s]t2\u200b); [x\u21a6s](\u03bbx.\u2009t)=\u03bbx.\u2009t[x\\mapsto s](\\lambda x.\\,t)=\\lambda x.\\,t[x\u21a6s](\u03bbx.t)=\u03bbx.t; and for a binder \u03bby.\u2009t\\lambda y.\\,t\u03bby.t with y\u2260xy\\ne xy\ue020=x: [x\u21a6s](\u03bby.\u2009t)=\u03bby.\u2009[x\u21a6s]t[x\\mapsto s](\\lambda y.\\,t)=\\lambda y.\\,[x\\mapsto s]t[x\u21a6s](\u03bby.t)=\u03bby.[x\u21a6s]t provided y\u2209FV(s)y\\notin\\mathrm{FV}(s)y\u2208/FV(s) (or x\u2209FV(t)x\\notin\\mathrm{FV}(t)x\u2208/FV(t)). When y\u2208FV(s)y\\in\\mathrm{FV}(s)y\u2208FV(s) and x\u2208FV(t)x\\in\\mathrm{FV}(t)x\u2208FV(t) one first renames the binder (an \u03b1-step) to a fresh name, which is always possible. Free variables of sss are then never captured: FV([x\u21a6s]t)=(FV(t)\u2216{x})\u222aFV(s)\\mathrm{FV}([x\\mapsto s]t)=(\\mathrm{FV}(t)\\setminus\\{x\\})\\cup\\mathrm{FV}(s)FV([x\u21a6s]t)=(FV(t)\u2216{x})\u222aFV(s) when x\u2208FV(t)x\\in\\mathrm{FV}(t)x\u2208FV(t).",
+          "overflow": []
+        },
+        "proof": {
+          "left": 18,
+          "right": 271,
+          "contentWidth": 253,
+          "client": 253,
+          "scroll": 253,
+          "text": "Replacing text blindly gives the wrong function: in [x\u21a6y]\u2009\u03bby.\u2009x\u2009y[x\\mapsto y]\\,\\lambda y.\\,x\\,y[x\u21a6y]\u03bby.xy the yyy coming from outside would land under \u03bby\\lambda y\u03bby and be tied to the wrong binder, turning \u201cthe outer yyy applied to the argument\u201d into \u201cthe argument applied to itself\u201d. Since bound names are placeholders (2.2), we are free to choose them, so the definition picks a name that clashes with nothing. The recursion on ttt is well-founded only up to this renaming, a reason why implementations use a supply of fresh names or the nameless terms of 2.11.The fresh-name existence step uses the pigeonhole principle (COMB 1.2), separately from the capture condition in 2.2. Use the usual countably infinite variable supply. The finite syntax of the argument and body mentions only finitely many forbidden names; include their bound names as well as free ones, and the substituted variable. If this set has k names, take k+1 distinct candidate names. They cannot all be forbidden: otherwise these distinct candidates would occupy k name boxes with at most one candidate per box. When k=0 any candidate works. Choosing an unused candidate therefore makes the required alpha-renaming possible. Repeating a base name with successively more apostrophes is one such distinct supply; no fixed finite reserve of names would give this guarantee.",
+          "overflow": []
+        },
+        "caption": {
+          "left": 18,
+          "right": 271,
+          "contentWidth": 253,
+          "client": 253,
+          "scroll": 253,
+          "text": "Edit the term ttt, the variable xxx and the term sss (or choose an example). The first row replaces xxx textually: inserted copies of sss are orange and every variable of sss that is swallowed by a binder is red and underlined. The second row is the definition above: renamed binders are green. The readout compares the free variables of both results with the formula, and with \u201crename every binder apart, then replace blindly\u201d.",
+          "overflow": []
+        }
+      },
+      {
+        "num": "2.11",
+        "theme": "light",
+        "done": {
+          "ok": true,
+          "errors": [],
+          "texErrors": [],
+          "canvases": 2,
+          "quality": {
+            "handles": 0,
+            "drags": 0,
+            "clicks": 0,
+            "hover": 0,
+            "animate": 0,
+            "stages": 2,
+            "controls": 4,
+            "readout": true,
+            "interactive": 4
+          },
+          "blank": []
+        },
+        "statement-scope": {
+          "left": 37,
+          "right": 290,
+          "contentWidth": 253,
+          "client": 285,
+          "scroll": 285,
+          "text": "A nameless term (de Bruijn term) is built from natural numbers nnn (variables), abstractions \u03bb.\u2009t\\lambda.\\,t\u03bb.t without a name, and applications. The index nnn counts the binders between the occurrence and the \u03bb\\lambda\u03bb that binds it (000 = nearest); an index \u2265\\ge\u2265 the number of enclosing binders refers to a free variable, numbered by a fixed context \u0393\\Gamma\u0393. Translating a named term replaces each bound occurrence by its distance to its binder, and two named terms are \u03b1\\alpha\u03b1-equivalent iff their nameless forms are identical. Substitution uses shifting: \u2191cd\\uparrow^{d}_{c}\u2191cd\u200b adds ddd to every index \u2265c\\ge c\u2265c, and \u03b2\\beta\u03b2-reduction is (\u03bb.\u2009t)\u2009u\u2192\u00a0\u21910\u22121([0\u21a6\u219101u]\u2009t)(\\lambda.\\,t)\\,u\\to\\ \\uparrow^{-1}_{0}\\bigl([0\\mapsto\\uparrow^{1}_{0}u]\\,t\\bigr)(\u03bb.t)u\u2192\u00a0\u21910\u22121\u200b([0\u21a6\u219101\u200bu]t).",
+          "overflow": []
+        },
+        "proof": {
+          "left": 18,
+          "right": 271,
+          "contentWidth": 253,
+          "client": 253,
+          "scroll": 253,
+          "text": "Names exist only to connect an occurrence to its binder; the index is that connection in coordinates, so renaming problems (2.2, 2.3) disappear. The price is bookkeeping. When the argument uuu is pushed under a binder its free indices must be shifted by 111 so that they keep pointing past the new \u03bb\\lambda\u03bb; when the binder of the redex is removed, every free index of the result moves down by one. The shifting is a correct, mechanical version of the renaming performed by the capture-avoiding substitution of 2.3.The alpha-equivalence test can be justified by the two-sided inverse criterion (ALG 1.20). Fix one ordered finite context Gamma of distinct free names and restrict to terms whose free names lie in it. Let E send an alpha-class to its nameless tree; at binder depth d, a free name in context position j gets index d+j, and a bound name gets its distance to the nearest matching binder. Define D on well-scoped nameless trees to return the alpha-class obtained by choosing distinct fresh binder names outside Gamma, interpreting index i<d by the corresponding binder and index d+j by Gamma's jth name. Constructor induction preserves each binding connection, giving E(D(q))=q and D(E([t]))=[t]. The target's inverse argument now makes E a bijection, so equal nameless trees mean exactly equal alpha-classes. The same fixed context is essential on both sides; separately renumbering each term's free names could wrongly identify different free variables. This is a mathematical decoder with an unbounded fresh-name supply, not a claim about malformed indices.",
+          "overflow": []
+        },
+        "caption": {
+          "left": 18,
+          "right": 271,
+          "contentWidth": 253,
+          "client": 253,
+          "scroll": 253,
+          "text": "Top: two named terms and their nameless forms; each index has the colour of its binder, free variables are red and are numbered after the binders (here in alphabetical order). The terms are \u03b1\\alpha\u03b1-equivalent exactly when the nameless rows read the same. Bottom: step through \u03b2\\beta\u03b2-reduction of the first term\u2019s outermost-leftmost redex in nameless form: shift the argument, substitute for index 000, shift down; the result is checked against named substitution.",
+          "overflow": []
+        }
+      },
+      {
+        "num": "2.3",
+        "theme": "dark",
+        "done": {
+          "ok": true,
+          "errors": [],
+          "texErrors": [],
+          "canvases": 1,
+          "quality": {
+            "handles": 0,
+            "drags": 0,
+            "clicks": 0,
+            "hover": 0,
+            "animate": 0,
+            "stages": 1,
+            "controls": 4,
+            "readout": true,
+            "interactive": 4
+          },
+          "blank": []
+        },
+        "statement-scope": {
+          "left": 37,
+          "right": 290,
+          "contentWidth": 253,
+          "client": 285,
+          "scroll": 285,
+          "text": "The substitution [x\u21a6s]\u2009t[x\\mapsto s]\\,t[x\u21a6s]t of a term sss for the free occurrences of xxx in ttt is defined by recursion on ttt: [x\u21a6s]\u2009x=s[x\\mapsto s]\\,x=s[x\u21a6s]x=s; [x\u21a6s]\u2009y=y[x\\mapsto s]\\,y=y[x\u21a6s]y=y for y\u2260xy\\ne xy\ue020=x; [x\u21a6s](t1\u2009t2)=([x\u21a6s]t1)\u2009([x\u21a6s]t2)[x\\mapsto s](t_1\\,t_2)=([x\\mapsto s]t_1)\\,([x\\mapsto s]t_2)[x\u21a6s](t1\u200bt2\u200b)=([x\u21a6s]t1\u200b)([x\u21a6s]t2\u200b); [x\u21a6s](\u03bbx.\u2009t)=\u03bbx.\u2009t[x\\mapsto s](\\lambda x.\\,t)=\\lambda x.\\,t[x\u21a6s](\u03bbx.t)=\u03bbx.t; and for a binder \u03bby.\u2009t\\lambda y.\\,t\u03bby.t with y\u2260xy\\ne xy\ue020=x: [x\u21a6s](\u03bby.\u2009t)=\u03bby.\u2009[x\u21a6s]t[x\\mapsto s](\\lambda y.\\,t)=\\lambda y.\\,[x\\mapsto s]t[x\u21a6s](\u03bby.t)=\u03bby.[x\u21a6s]t provided y\u2209FV(s)y\\notin\\mathrm{FV}(s)y\u2208/FV(s) (or x\u2209FV(t)x\\notin\\mathrm{FV}(t)x\u2208/FV(t)). When y\u2208FV(s)y\\in\\mathrm{FV}(s)y\u2208FV(s) and x\u2208FV(t)x\\in\\mathrm{FV}(t)x\u2208FV(t) one first renames the binder (an \u03b1-step) to a fresh name, which is always possible. Free variables of sss are then never captured: FV([x\u21a6s]t)=(FV(t)\u2216{x})\u222aFV(s)\\mathrm{FV}([x\\mapsto s]t)=(\\mathrm{FV}(t)\\setminus\\{x\\})\\cup\\mathrm{FV}(s)FV([x\u21a6s]t)=(FV(t)\u2216{x})\u222aFV(s) when x\u2208FV(t)x\\in\\mathrm{FV}(t)x\u2208FV(t).",
+          "overflow": []
+        },
+        "proof": {
+          "left": 18,
+          "right": 271,
+          "contentWidth": 253,
+          "client": 253,
+          "scroll": 253,
+          "text": "Replacing text blindly gives the wrong function: in [x\u21a6y]\u2009\u03bby.\u2009x\u2009y[x\\mapsto y]\\,\\lambda y.\\,x\\,y[x\u21a6y]\u03bby.xy the yyy coming from outside would land under \u03bby\\lambda y\u03bby and be tied to the wrong binder, turning \u201cthe outer yyy applied to the argument\u201d into \u201cthe argument applied to itself\u201d. Since bound names are placeholders (2.2), we are free to choose them, so the definition picks a name that clashes with nothing. The recursion on ttt is well-founded only up to this renaming, a reason why implementations use a supply of fresh names or the nameless terms of 2.11.The fresh-name existence step uses the pigeonhole principle (COMB 1.2), separately from the capture condition in 2.2. Use the usual countably infinite variable supply. The finite syntax of the argument and body mentions only finitely many forbidden names; include their bound names as well as free ones, and the substituted variable. If this set has k names, take k+1 distinct candidate names. They cannot all be forbidden: otherwise these distinct candidates would occupy k name boxes with at most one candidate per box. When k=0 any candidate works. Choosing an unused candidate therefore makes the required alpha-renaming possible. Repeating a base name with successively more apostrophes is one such distinct supply; no fixed finite reserve of names would give this guarantee.",
+          "overflow": []
+        },
+        "caption": {
+          "left": 18,
+          "right": 271,
+          "contentWidth": 253,
+          "client": 253,
+          "scroll": 253,
+          "text": "Edit the term ttt, the variable xxx and the term sss (or choose an example). The first row replaces xxx textually: inserted copies of sss are orange and every variable of sss that is swallowed by a binder is red and underlined. The second row is the definition above: renamed binders are green. The readout compares the free variables of both results with the formula, and with \u201crename every binder apart, then replace blindly\u201d.",
+          "overflow": []
+        }
+      },
+      {
+        "num": "2.11",
+        "theme": "dark",
+        "done": {
+          "ok": true,
+          "errors": [],
+          "texErrors": [],
+          "canvases": 2,
+          "quality": {
+            "handles": 0,
+            "drags": 0,
+            "clicks": 0,
+            "hover": 0,
+            "animate": 0,
+            "stages": 2,
+            "controls": 4,
+            "readout": true,
+            "interactive": 4
+          },
+          "blank": []
+        },
+        "statement-scope": {
+          "left": 37,
+          "right": 290,
+          "contentWidth": 253,
+          "client": 285,
+          "scroll": 285,
+          "text": "A nameless term (de Bruijn term) is built from natural numbers nnn (variables), abstractions \u03bb.\u2009t\\lambda.\\,t\u03bb.t without a name, and applications. The index nnn counts the binders between the occurrence and the \u03bb\\lambda\u03bb that binds it (000 = nearest); an index \u2265\\ge\u2265 the number of enclosing binders refers to a free variable, numbered by a fixed context \u0393\\Gamma\u0393. Translating a named term replaces each bound occurrence by its distance to its binder, and two named terms are \u03b1\\alpha\u03b1-equivalent iff their nameless forms are identical. Substitution uses shifting: \u2191cd\\uparrow^{d}_{c}\u2191cd\u200b adds ddd to every index \u2265c\\ge c\u2265c, and \u03b2\\beta\u03b2-reduction is (\u03bb.\u2009t)\u2009u\u2192\u00a0\u21910\u22121([0\u21a6\u219101u]\u2009t)(\\lambda.\\,t)\\,u\\to\\ \\uparrow^{-1}_{0}\\bigl([0\\mapsto\\uparrow^{1}_{0}u]\\,t\\bigr)(\u03bb.t)u\u2192\u00a0\u21910\u22121\u200b([0\u21a6\u219101\u200bu]t).",
+          "overflow": []
+        },
+        "proof": {
+          "left": 18,
+          "right": 271,
+          "contentWidth": 253,
+          "client": 253,
+          "scroll": 253,
+          "text": "Names exist only to connect an occurrence to its binder; the index is that connection in coordinates, so renaming problems (2.2, 2.3) disappear. The price is bookkeeping. When the argument uuu is pushed under a binder its free indices must be shifted by 111 so that they keep pointing past the new \u03bb\\lambda\u03bb; when the binder of the redex is removed, every free index of the result moves down by one. The shifting is a correct, mechanical version of the renaming performed by the capture-avoiding substitution of 2.3.The alpha-equivalence test can be justified by the two-sided inverse criterion (ALG 1.20). Fix one ordered finite context Gamma of distinct free names and restrict to terms whose free names lie in it. Let E send an alpha-class to its nameless tree; at binder depth d, a free name in context position j gets index d+j, and a bound name gets its distance to the nearest matching binder. Define D on well-scoped nameless trees to return the alpha-class obtained by choosing distinct fresh binder names outside Gamma, interpreting index i<d by the corresponding binder and index d+j by Gamma's jth name. Constructor induction preserves each binding connection, giving E(D(q))=q and D(E([t]))=[t]. The target's inverse argument now makes E a bijection, so equal nameless trees mean exactly equal alpha-classes. The same fixed context is essential on both sides; separately renumbering each term's free names could wrongly identify different free variables. This is a mathematical decoder with an unbounded fresh-name supply, not a claim about malformed indices.",
+          "overflow": []
+        },
+        "caption": {
+          "left": 18,
+          "right": 271,
+          "contentWidth": 253,
+          "client": 253,
+          "scroll": 253,
+          "text": "Top: two named terms and their nameless forms; each index has the colour of its binder, free variables are red and are numbered after the binders (here in alphabetical order). The terms are \u03b1\\alpha\u03b1-equivalent exactly when the nameless rows read the same. Bottom: step through \u03b2\\beta\u03b2-reduction of the first term\u2019s outermost-leftmost redex in nameless form: shift the argument, substitute for index 000, shift down; the result is checked against named substitution.",
+          "overflow": []
+        }
+      }
+    ],
+    "errors": []
+  },
+  "rawFiles": {
+    "native/2.3-light-text253-proof.png": {
+      "bytes": 116122,
+      "sha256": "005d0eb77014f3b37586d8ed60f59b5eb80bbaedb8254a0433ce687e30cbb15d"
+    },
+    "native-built/2.11-light-proof.png": {
+      "bytes": 135514,
+      "sha256": "e062dbcc4e63cbd6d37631e9ddb9fa82f7965aa4989ac0c18e291962b1dfbf15"
+    },
+    "native-built/2.3-dark-caption.png": {
+      "bytes": 27092,
+      "sha256": "f54ad0d8a62f9a6b8b2fa4dce4ced43caf7989062b53b137eeb4fea4c9039e4c"
+    },
+    "native-built/2.11-dark-proof.png": {
+      "bytes": 137659,
+      "sha256": "827991c66054bd9e70d032bebbc6bbb70f5c939aef50bd364010f4bb8199e4e7"
+    },
+    "native-built/controls.json": {
+      "bytes": 9157,
+      "sha256": "405f9c6694836994033b151646624020cc2b61b55dc191c4444af57b72fc42b5"
+    },
+    "native-built/2.3-dark-proof.png": {
+      "bytes": 114660,
+      "sha256": "24d00611ee6f6de70343968dcd303cc8eb5bdd70042600fc0c1f1d636900faf6"
+    },
+    "native-built/2.3-light-text253-proof.png": {
+      "bytes": 116112,
+      "sha256": "b2f81991513eb69d5aa98c1be470e3446fb6b8dd956cb65961512c525b3563d7"
+    },
+    "native-built/2.11-dark-preset-0.png": {
+      "bytes": 76902,
+      "sha256": "51e878c68c4685e504b4f4ffd8c9c9ae189a99275141abba47496951a68a5bd0"
+    },
+    "native-built/2.3-dark-statement.png": {
+      "bytes": 52146,
+      "sha256": "ada4ed2390a61e9128af0d39ab844572c8531921b975e6221427e6ec824e1b93"
+    },
+    "native-built/2.11-dark-preset-1.png": {
+      "bytes": 53237,
+      "sha256": "2b7bbc209686d3e76758229bd07891f77ae379821d64218fe1a98fc5f3cd5c23"
+    },
+    "native-built/2.11-dark-preset-3.png": {
+      "bytes": 57418,
+      "sha256": "71e74f6a4099eeed61d9436112823ee627039f19e90bfa1258ac3b9353da95aa"
+    },
+    "native-built/2.11-dark-text253-proof.png": {
+      "bytes": 141575,
+      "sha256": "c4967345a60b37dd8e4e9aca9daae5c8dd2899767eb9d8647853ceeede27ba89"
+    },
+    "native-built/2.3-light-proof.png": {
+      "bytes": 113336,
+      "sha256": "211375a2a637f5c338610a0869f00440757ff60e0fc804219e280c5299d397d7"
+    },
+    "native-built/2.11-dark-preset-2.png": {
+      "bytes": 67726,
+      "sha256": "358d94f17bf8dbb581700960893f73bd5e5463d9f02cc1d63cbe9897945f5420"
+    },
+    "native-built/2.3-light-preset-4.png": {
+      "bytes": 32887,
+      "sha256": "ba44126f64258567e71200a4b482851f03729d7c346c2a54cdaf075795dafb15"
+    },
+    "native-built/2.3-light-preset-0.png": {
+      "bytes": 40620,
+      "sha256": "b75f0ce6ede73a8f662bf94980cbc032d0470577d191d36f2e7b7174fdd5a092"
+    },
+    "native-built/2.3-light-preset-1.png": {
+      "bytes": 40209,
+      "sha256": "4a25e7d7cc20cacbaecb01629d1cba3058fd35d28502f957a4501c9d72550df4"
+    },
+    "native-built/2.3-light-preset-3.png": {
+      "bytes": 41003,
+      "sha256": "92ca46c9145f9cbabd26269686bd99dfa087b65967af666d34e8e398e0e43ba4"
+    },
+    "native-built/bounds.json": {
+      "bytes": 2906,
+      "sha256": "728bc5521803a0f31897885dc5b047bdfcf7dc7287afe53003035f7cc1abdce6"
+    },
+    "native-built/2.3-light-caption.png": {
+      "bytes": 27525,
+      "sha256": "90a23cee14e723709e35bc84a50f9bc64843357f2f531e3febe87899e6d37899"
+    },
+    "native-built/2.3-light-preset-2.png": {
+      "bytes": 32972,
+      "sha256": "eff0e3aa551a52156f1b83a18f18cee13115f6ed91c213272429dc68b33997fb"
+    },
+    "native-built/2.3-dark-text253-proof.png": {
+      "bytes": 117014,
+      "sha256": "6c0de3989deb396448c4900a7461105184716acee6ac0357e802573fe2be109c"
+    },
+    "native-built/2.3-light-statement.png": {
+      "bytes": 52499,
+      "sha256": "13ec65f4093ea790d802c45f7a12ca691c4aee5a74ab6b53904e9c4006ad9021"
+    },
+    "native-built/issues.json": {
+      "bytes": 2,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    "native-built/2.11-light-statement.png": {
+      "bytes": 54856,
+      "sha256": "982374af3ae6fc542527904074db15019eb188c05376ec824f1a005ee402fd85"
+    },
+    "native-built/2.11-light-text253-proof.png": {
+      "bytes": 139716,
+      "sha256": "86f58c90c2cc3ab01d6cb146d4843a6c600a7420a8f9e4547f66c1ba0967cfc6"
+    },
+    "native-built/2.11-light-caption.png": {
+      "bytes": 29797,
+      "sha256": "b0629763f99e95cbd912a50d5add021b6404f43a5b932452103fc966c1f0c25d"
+    },
+    "native-built/2.11-light-preset-2.png": {
+      "bytes": 67627,
+      "sha256": "066a53cbd7adaf3c8af33d509f20a7140e689a0c4d37636cb8d929baac0d475c"
+    },
+    "native-built/2.3-dark-preset-4.png": {
+      "bytes": 32667,
+      "sha256": "b9362397d8820794d410ab7c3b6afd9e5d420a7eba395a0f03aa27ad080e9ad6"
+    },
+    "native-built/2.11-light-preset-3.png": {
+      "bytes": 57371,
+      "sha256": "d7f60565ecf5141ab844e925c632718093d0ca934673b82e3e50c5f17dd9ddfe"
+    },
+    "native-built/2.11-light-preset-1.png": {
+      "bytes": 53462,
+      "sha256": "55887b84c3325db152b29e330a9bf016100e7165b7440747c40a4133fc9ad6df"
+    },
+    "native-built/2.11-light-preset-0.png": {
+      "bytes": 76730,
+      "sha256": "23949107f1fe464e3a2ae4036e596a1f4ba1a583c497be0c46150ebab9aa6f52"
+    },
+    "native-built/2.3-dark-preset-2.png": {
+      "bytes": 32809,
+      "sha256": "d86221879dd85a0ecf68ed9ba6ffb972e12ac09938fd8a405f7c96b9bdf8ff65"
+    },
+    "native-built/2.3-dark-preset-3.png": {
+      "bytes": 40830,
+      "sha256": "16b6b0f96e0a59c342b64058b826367dc7874cbebde6e99321a7309de65369cf"
+    },
+    "native-built/2.11-dark-caption.png": {
+      "bytes": 29576,
+      "sha256": "2c6a9fde271abceb42a46e9fa879871bb79d4116ce90b11b10fda3feb74b3dab"
+    },
+    "native-built/2.11-dark-statement.png": {
+      "bytes": 55343,
+      "sha256": "66b14381a396682d9ee0ca0b2e6a01fcffe8ff4f759eba80b56ab13d9d72767c"
+    },
+    "native-built/2.3-dark-preset-1.png": {
+      "bytes": 40207,
+      "sha256": "468406d8ad5f04082a7d64dc7071646b52fbd2a96ffb1c278f32ffe505b47e5f"
+    },
+    "native-built/2.3-dark-preset-0.png": {
+      "bytes": 40257,
+      "sha256": "9c440bdd246026df0f96a6442c063ef12b71f5c0f10cd70a0d321f88020f4d7d"
+    },
+    "text253-final/pl-2.11-dark-proof.png": {
+      "bytes": 141575,
+      "sha256": "ecf32e72c80e5708aa9f98628a047f0d4f5aa01038b14f89b064dc013c2051e2"
+    },
+    "text253-final/pl-2.3-dark-caption.png": {
+      "bytes": 25093,
+      "sha256": "618a9312beaa99af30f58d08dcfd40eb3a16f42112cafd46f2cca9c50a25fb80"
+    },
+    "text253-final/pl-2.11-light-proof.png": {
+      "bytes": 139723,
+      "sha256": "39eb2d392dcfa6777d25ebc7126d1936cc09c354937188ba49aa2a2b9a2608f8"
+    },
+    "text253-final/pl-2.3-dark-statement-scope.png": {
+      "bytes": 50403,
+      "sha256": "aff45f3370c9565f3b904986b6100846c84024c5949aeccb2581a2583d61f68f"
+    },
+    "text253-final/pl-2.3-light-proof.png": {
+      "bytes": 116114,
+      "sha256": "8d50c6080985034c6870371c4b9372dcd63f27709424a5b885b981349bc55a2a"
+    },
+    "text253-final/pl-2.11-dark-caption.png": {
+      "bytes": 27901,
+      "sha256": "2101523c41201439cc26a277853e0843dc7126a06f3065d2efe563393496c89b"
+    },
+    "text253-final/pl-2.3-light-statement-scope.png": {
+      "bytes": 50496,
+      "sha256": "7800acf92dcbe82b13dd444f1324b08041aecd4bf59077cf919cf8211866ffb8"
+    },
+    "text253-final/pl-2.11-light-caption.png": {
+      "bytes": 28361,
+      "sha256": "f78973531f8b6e4521fd8f16219092865132c7ba3fa374984fdbbe6d0bde30f8"
+    },
+    "text253-final/pl-2.3-light-caption.png": {
+      "bytes": 25528,
+      "sha256": "1b3579cf2495a6f5814fa9c416e16c81d6df48c6f5e5d74f7ce88b92ba3579c7"
+    },
+    "text253-final/pl-2.11-light-statement-scope.png": {
+      "bytes": 52982,
+      "sha256": "d8ef09d92e02270ab91ea947fb2d0b861e9f58db5de3e0d01f2c3e4bb2131ee0"
+    },
+    "text253-final/pl-2.11-dark-statement-scope.png": {
+      "bytes": 53011,
+      "sha256": "c22c5a5fe1126d9e8d3363bd97a9f50779531ea1829c683e5f7500e11e9b0937"
+    },
+    "text253-final/text.json": {
+      "bytes": 15936,
+      "sha256": "0057be169eddb25cb85d10aa243213855caac958c400ca1104c3511af10307d3"
+    },
+    "text253-final/pl-2.3-dark-proof.png": {
+      "bytes": 117020,
+      "sha256": "ec30c041961b393efa4dda4d6f2da3eb0a294af5682f7765facb9f1075a8b5b6"
+    },
+    "personal/2.3-light-g0-0.png": {
+      "bytes": 325651,
+      "sha256": "32a72f718d85ff6de70ea0ae77dc58e912614c7415764c904ba8eb5e22a201b8"
+    },
+    "personal/2.11-light-g0-1.png": {
+      "bytes": 157788,
+      "sha256": "426627be9b59e9687d210c556e6a6c500055ae4e64ab95bdb01ae51a902ff8c4"
+    },
+    "personal/2.11-light-g0-0.png": {
+      "bytes": 434313,
+      "sha256": "70a5774a4ed55d41d9364d3157c45c4c3d1ca67c8fca9db9aeaa3093c37830cf"
+    },
+    "personal/2.3-light-g0-1.png": {
+      "bytes": 122463,
+      "sha256": "f9122d0bc7afab92b54b069432ae95c2c4ac805435b14fc9c8675dabb35222af"
+    },
+    "personal/2.11-dark-g0-0.png": {
+      "bytes": 322156,
+      "sha256": "5729040920ee261635ef55ae3bafda9d94139b8f9a11d7c812c653d12ae24293"
+    },
+    "personal/2.11-dark-g0-1.png": {
+      "bytes": 372096,
+      "sha256": "821665e03d97619f5f53061189c19923a542e786ade6d59c59f06f2bdf23807e"
+    },
+    "personal/2.3-light-g0-2.png": {
+      "bytes": 55599,
+      "sha256": "73ff5c6dd2acafc378530dc1746a25c2adac4f40cbde56b5ef97ee99e2a98963"
+    },
+    "personal/2.11-dark-g1-0.png": {
+      "bytes": 291757,
+      "sha256": "be93f9fa1befcc5b88d33b9f147bd9bb1b60873da7357611e9573a1a0b8ba607"
+    },
+    "personal/2.3-light-g1-0.png": {
+      "bytes": 256438,
+      "sha256": "26f03236a6af6bea39a41c9faadc463ec1712ee41ba9a32d1b71db93eab12c66"
+    },
+    "personal/2.11-light-g1-0.png": {
+      "bytes": 293045,
+      "sha256": "ddc47f172b6d2de66183f55ff52cd4f315738a3589919c17fa9ac71771a314cd"
+    },
+    "personal/2.3-dark-g1-0.png": {
+      "bytes": 255210,
+      "sha256": "b5e829f09f83dbf9c27cfd4210d4301fb6bc09b07d5d998ca82dbe43ff8a57d6"
+    },
+    "personal/2.3-dark-g0-0.png": {
+      "bytes": 365087,
+      "sha256": "daaa504acf0544f7cc04ecd3fe5893f69b015f845ec9c0156ff4e7ddaeb607a4"
+    },
+    "personal/2.3-dark-g0-1.png": {
+      "bytes": 87644,
+      "sha256": "2f91085d52dcac2db8d17a0dde382b7c4062064d5247254d55f6e03c65f1318e"
+    },
+    "personal/2.3-dark-g0-2.png": {
+      "bytes": 42433,
+      "sha256": "a5f78bd63b99d7810b5863a86a02a457620df5c36d2f8007adfc4a85c7d80cc0"
+    }
+  }
+}
