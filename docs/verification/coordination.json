@@ -24,7 +24,7 @@
       "Acceptedwrittenprerequisitegatecomplete:all64nonmathcollections\u226525writteninputs,0shortfall/unknowns,48furthercollections meettarget. Sourcequeue5unchanged.",
       "Latest immutable checkpoint12 on 94a77908: 2,230 tests, all six UI groups, strict/static zero errors and warnings, accepted prerequisite shortfall0.",
       "Rejected chunk prototype remains unaccepted. Original-only control reproduces its cold/warm discrepancy; no renderer or timing acceptance.",
-      "One-shard readiness plus guard closing independently accepted for source/model/tiny only. Nine old false accepts retained and fixed. Root integrated32+7models/prepare-only pass. Awaiting final lane quiet acknowledgement before one isolated exact paired-map case; no timing/matrix acceptance.",
+      "Single isolated light3840/DPR2 paired case on immutable f778d8eb passes all runner gates. All eight raw arrays exact, 7,493-event traces match, no late events/callbacks, original priority histories exact. Root rechecked all 998 checked pieces (1,041,265,381 bytes). Independent saved-evidence/pixel peer pending. All holds released. Dark mirror source-only preparation underway; no matrix/lifecycle/performance acceptance.",
       "Frozen BIGHIST3.5 service restriction persists; no retry or edge acceptance."
     ]
   },
@@ -33,7 +33,7 @@
       "agent": "logic_peer",
       "worktree": "/Users/teodev/.codex/worktrees/atlas-logic-peer/theorems-visualizations",
       "status": "working",
-      "current": "PL2peeraccepted; read-only explicit one-shard readiness proposal",
+      "current": "Independent source/model/prepare peer of forthcoming exact dark mirror; no full execution.",
       "owns": [
         "Unique isolated prototype/model/native/resource reports; production and shared runtime preserved"
       ],
@@ -42,8 +42,8 @@
     {
       "agent": "deep_peer",
       "worktree": "/Users/teodev/.codex/worktrees/atlas-deep-peer/theorems-visualizations",
-      "status": "working",
-      "current": "Independent CPLX1.9count peer pending producer; fontcensus source/tiny accepted",
+      "status": "available-hold-released",
+      "current": "Root single exact paired-map case finished; all root browser/server jobs closed and hold explicitly released.",
       "owns": [
         "Unique independent binding/pixel/resource/lifecycle evidence after immutable producer boundary"
       ],
@@ -52,8 +52,8 @@
     {
       "agent": "arch_source",
       "worktree": "/Users/teodev/.codex/worktrees/atlas-arch-source/theorems-visualizations",
-      "status": "working",
-      "current": "Independent unrestricted four-consumer BIGHIST6peer; frozen3.5excluded",
+      "status": "available-hold-released",
+      "current": "Root single exact paired-map case finished; all root browser/server jobs closed and hold explicitly released.",
       "owns": [
         "QINFO content and bounded correctness/metadata successors"
       ],
@@ -63,7 +63,7 @@
       "agent": "imaging_source",
       "worktree": "/Users/teodev/.codex/worktrees/atlas-imaging-source/theorems-visualizations",
       "status": "working",
-      "current": "Separate ARCH1.3reaction and ART2.1annotation layout producers",
+      "current": "Independent offline audit and personal pixel inspection of saved light paired-map case; no browser rerun.",
       "owns": [
         "Unique CLIMATE peer evidence; REL producer boundary complete"
       ],
@@ -72,8 +72,8 @@
     {
       "agent": "thermo_prereqs",
       "worktree": "/Users/teodev/.codex/worktrees/atlas-thermo-prereqs/theorems-visualizations",
-      "status": "working",
-      "current": "Actualoffered CPLX1.9empty-count reproduction/correction producer",
+      "status": "available-hold-released",
+      "current": "Root single exact paired-map case finished; all root browser/server jobs closed and hold explicitly released.",
       "owns": [
         "Unique REL peer evidence; CLIMATE producer boundary complete"
       ],
@@ -83,7 +83,7 @@
       "agent": "ctrl_prereqs",
       "worktree": "/Users/teodev/.codex/worktrees/atlas-ctrl-prereqs/theorems-visualizations",
       "status": "working",
-      "current": "GAME2producer with separately bounded tremble/perfection scope and diagnostic-label fix; PLcanvaslayout next",
+      "current": "Prepare source-only single dark mirror; no full execution until separate peer/integration/root quiet authorization.",
       "owns": [
         "CM producer; GEOG independent peer complete"
       ],
@@ -1475,11 +1475,18 @@
       "report": "docs/verification/neuro-compartment-contrast-independent-peer.md"
     },
     {
-      "status": "open-authorized-bounded-producer",
+      "status": "accepted-closed",
       "id": "cplx-1.9-empty-colour-count",
       "owner": "thermo_prereqs",
       "finding": "Unchanged snap seeds max with0thenadds1; source suggests0vertices reports1colour. Actual offered delete-all reproduction required before edit.",
-      "scope": "Separate count-only correction after actualwitness; preservepartition/isomorphism/control/geometry. Independent deep peer required."
+      "scope": "Four exact local runtime/data literals only: empty colour-class count, canonical graph-kit string identities, and corrected isomorphic-pair chord. Independent full 16-module/53-object/function/158-row guard, 67,460 assertions, actual delete/add/edge/restore controls, all 62 saved PNGs inspected. Root integrated guard, 67,459 model assertions over 3,302 cases and three focused default tests pass. No prerequisite/source closure or shared-runtime change.",
+      "commits": [
+        "e3575de1ddd88a410b399cf7074ff6b2c358ba0c",
+        "2c7f0acbd0ca746e84a158b3670ca9ddf0403fef",
+        "1ef47c09630096f051edcdeffc4a364a3ad91cc8",
+        "78c39762084d524e1db10fe2459ceb718247c211"
+      ],
+      "report": "docs/verification/cplx-local-runtime-independent-peer.md"
     },
     {
       "status": "accepted-closed",
@@ -1505,19 +1512,45 @@
       "report": "docs/verification/art-plan-label-independent-logic-peer.md"
     },
     {
-      "status": "open-authorized-bounded-producer",
+      "status": "accepted-closed",
       "id": "pl-2.3-2.11-compact-canvas-rows",
       "owner": "ctrl_prereqs",
       "finding": "Actual320PL2.3canvas286x200clipscapture-saferowy218;PL2.11panels286x141/127clip lowery176/y146. Prerequisitepeers explicitly donotcertifythese.",
-      "scope": "Separate local layout literals only; preservecapture/substitution/deBruijn models/controls/readout; freshrealcasesboth themes/personalpixels/independentpeer."
+      "scope": "Local canvas heights, row placement and text wrapping only. All 16 modules, 46 objects/functions and 115 raw rows preserved except declared presentation literals/imports. Independent 40 matched native cases in both themes preserve complete readouts and painted character/color streams; observed glyph clips fall from 40 to zero. Root integrated preservation guard passes. Arbitrarily long input is outside the bounded layout claim.",
+      "commits": [
+        "ab54787f48eff9ac3e62e5a0702a2ed88426713e",
+        "ed6ee5170e7d7cddd924572639a860a99605a896"
+      ],
+      "report": "docs/verification/pl-local-layout-independent-peer.md",
+      "rootEvidence": "/tmp/atlas-continuation/pl-layout-integrated-guard.log"
     },
     {
       "id": "cplx-1.9-empty-restore-node-id",
-      "status": "open-authorized-bounded-producer",
+      "status": "accepted-closed",
       "owner": "thermo_prereqs",
       "finding": "Actual offered Alt-delete toempty then addfirstvertex creates 'n0'; local unary+ suffix lookup requestsNaN adjacency and throws Cannot read properties of undefined (reading map), leavingstale readout.",
       "evidence": "/tmp/atlas-cplx-empty-count/before/light-both-empty-viz.png and before-complete/native-progress.json; separateaddfailure preserved by producer",
-      "scope": "Separate successor aftercount-only boundary: normalize localadjOf keys/endpoints to actualkitStringidentity andremove unary+ lookup. Preservepartition/refinement/isomorphism/geometry/controls/sharedkit/flags/deps; actualempty\u2192addvertex/edge/both themes andindependentdeep peerrequired."
+      "scope": "Four exact local runtime/data literals only: empty colour-class count, canonical graph-kit string identities, and corrected isomorphic-pair chord. Independent full 16-module/53-object/function/158-row guard, 67,460 assertions, actual delete/add/edge/restore controls, all 62 saved PNGs inspected. Root integrated guard, 67,459 model assertions over 3,302 cases and three focused default tests pass. No prerequisite/source closure or shared-runtime change.",
+      "commits": [
+        "e3575de1ddd88a410b399cf7074ff6b2c358ba0c",
+        "2c7f0acbd0ca746e84a158b3670ca9ddf0403fef",
+        "1ef47c09630096f051edcdeffc4a364a3ad91cc8",
+        "78c39762084d524e1db10fe2459ceb718247c211"
+      ],
+      "report": "docs/verification/cplx-local-runtime-independent-peer.md"
+    },
+    {
+      "id": "cplx-1.9-isomorphic-preset-chord",
+      "status": "accepted-closed",
+      "finding": "Actual offered isomorphic-pair preset had a right chord at distance two rather than three; old offered controls produce unequal histograms and a nonisomorphism certificate.",
+      "commits": [
+        "e3575de1ddd88a410b399cf7074ff6b2c358ba0c",
+        "2c7f0acbd0ca746e84a158b3670ca9ddf0403fef",
+        "1ef47c09630096f051edcdeffc4a364a3ad91cc8",
+        "78c39762084d524e1db10fe2459ceb718247c211"
+      ],
+      "report": "docs/verification/cplx-local-runtime-independent-peer.md",
+      "scope": "Single right chord [0,4] changed to [0,6]; explicit permutation maps all 49 adjacency entries, with equal histograms at every offered step. Root focused model/default checks pass."
     }
   ],
   "stateFollowups": [
@@ -3039,6 +3072,19 @@
       "mainSHA256": "ea66776de451ea6c270235cbfc5ea9dfa22d1392de7e2b5f0de5166816bce5d7",
       "transportPieces": 498,
       "limitation": "Main saved bytes stable and direct-Canvas numeric bound passes; strict post-history gate fails. No alternate/matrix/lifecycle/production/timing acceptance. All holds released."
+    },
+    {
+      "candidate": "f778d8ebf95df00fb6c2bb4cb506dd37e2728312",
+      "status": "runner-pass-independent-raw-pixel-peer-pending",
+      "report": "docs/verification/map-paired-selected-state-root.md",
+      "evidence": "/tmp/atlas-root-paired-selected-state",
+      "method": "One isolated light3840x2160/DPR2 case, frozen checkpoint5; six explicit browser/heavy holds. Fresh original then chunk, explicit one-shard missing-to-available readiness and actual-role font census. All 12 ordinals, exact original histories, resource and direct Canvas gates pass.",
+      "mainSHA256": "ea66776de451ea6c270235cbfc5ea9dfa22d1392de7e2b5f0de5166816bce5d7",
+      "transportPieces": 998,
+      "transportBytes": 1041265381,
+      "chunkLogicalRetainedBytes": 62471764,
+      "chunkLogicalPeakBytes": 63895600,
+      "limitation": "One frozen input/history only. Old stopping attempts remain failures. Current atlas, wider matrix, lifecycle, physical memory, production and timing are not accepted. Root browser/server closed, all holds explicitly released."
     }
   ],
   "accountingSafeguards": [
