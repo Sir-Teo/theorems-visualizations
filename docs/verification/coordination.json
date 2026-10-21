@@ -32,8 +32,8 @@
     {
       "agent": "logic_peer",
       "worktree": "/Users/teodev/.codex/worktrees/atlas-logic-peer/theorems-visualizations",
-      "status": "timing-deadline-source-successor",
-      "current": "Narrow actual deadline/cancellation/outer-watchdog revision authorised after independent stalled-RAF finding; no native.",
+      "status": "curve-timing-quiet-hold",
+      "current": "Fresh explicit quiet acknowledgement: all jobs closed; light reading only until root releases after the one bounded timing pair.",
       "owns": [
         "Unique isolated prototype/model/native/resource reports; production and shared runtime preserved"
       ],
@@ -42,8 +42,8 @@
     {
       "agent": "deep_peer",
       "worktree": "/Users/teodev/.codex/worktrees/atlas-deep-peer/theorems-visualizations",
-      "status": "timing-quiet-hold",
-      "current": "Fresh explicit quiet acknowledgement: all jobs closed; light reading only until root releases after single timing pair.",
+      "status": "curve-timing-quiet-hold",
+      "current": "Fresh explicit quiet acknowledgement: all jobs closed; light reading only until root releases after the one bounded timing pair.",
       "owns": [
         "Unique independent binding/pixel/resource/lifecycle evidence after immutable producer boundary"
       ],
@@ -52,8 +52,8 @@
     {
       "agent": "arch_source",
       "worktree": "/Users/teodev/.codex/worktrees/atlas-arch-source/theorems-visualizations",
-      "status": "timing-source-peer-timeout-blocker",
-      "current": "Exact source review found elapsed-only timeout gap; reviewing narrow immutable successor before timing.",
+      "status": "curve-timing-quiet-hold",
+      "current": "Fresh explicit quiet acknowledgement: all jobs closed; light reading only until root releases after the one bounded timing pair.",
       "owns": [
         "QINFO content and bounded correctness/metadata successors"
       ],
@@ -62,8 +62,8 @@
     {
       "agent": "imaging_source",
       "worktree": "/Users/teodev/.codex/worktrees/atlas-imaging-source/theorems-visualizations",
-      "status": "timing-quiet-hold",
-      "current": "Fresh explicit quiet acknowledgement: all jobs closed; light reading only until root releases after single timing pair.",
+      "status": "curve-timing-quiet-hold",
+      "current": "Fresh explicit quiet acknowledgement: all jobs closed; light reading only until root releases after the one bounded timing pair.",
       "owns": [
         "Unique CLIMATE peer evidence; REL producer boundary complete"
       ],
@@ -72,8 +72,8 @@
     {
       "agent": "thermo_prereqs",
       "worktree": "/Users/teodev/.codex/worktrees/atlas-thermo-prereqs/theorems-visualizations",
-      "status": "timing-quiet-hold",
-      "current": "Fresh explicit quiet acknowledgement: all jobs closed; light reading only until root releases after single timing pair.",
+      "status": "curve-timing-quiet-hold",
+      "current": "Fresh explicit quiet acknowledgement: all jobs closed; light reading only until root releases after the one bounded timing pair.",
       "owns": [
         "Unique REL peer evidence; CLIMATE producer boundary complete"
       ],
@@ -82,8 +82,8 @@
     {
       "agent": "ctrl_prereqs",
       "worktree": "/Users/teodev/.codex/worktrees/atlas-ctrl-prereqs/theorems-visualizations",
-      "status": "timing-quiet-hold",
-      "current": "Fresh explicit quiet acknowledgement: all jobs closed; light reading only until root releases after single timing pair.",
+      "status": "curve-timing-quiet-hold",
+      "current": "Fresh explicit quiet acknowledgement: all jobs closed; light reading only until root releases after the one bounded timing pair.",
       "owns": [
         "CM producer; GEOG independent peer complete"
       ],
@@ -3446,7 +3446,7 @@
     "nativePeerReport": "docs/verification/map-curve-edge-native-independent-imaging-peer.md"
   },
   "curveCurrentTiming": {
-    "status": "source-peer-blocked-stalled-RAF-timeout-gap-successor-authorised",
+    "status": "source-model-prepare-independently-accepted-one-pair-authorised",
     "planCommits": [
       "d849436efd072c512c3f2eb316cee3c0eadb1f74",
       "3376b17f6c4fe5297b04bb57ba9f9cc156181c34"
@@ -3455,21 +3455,35 @@
     "planReport": "docs/verification/map-curve-current-timing-plan.md",
     "samplesPerVariant": 24,
     "scope": "One instrumented matched current-light rejection screen. Production FPS and moving-map gates remain open.",
-    "nativeAuthorised": false,
+    "nativeAuthorised": true,
     "performanceAccepted": false,
     "source": "2b15365a0b747cb7b5f75b446ca7307741350144",
     "rootModel": "/tmp/atlas-root-curve-timing-integrated-model",
     "rootLog": "/tmp/atlas-continuation/curve-timing-integrated-model.log",
     "rootModelPass": true,
-    "sourceAccepted": false,
+    "sourceAccepted": true,
     "nativeExecuted": false,
     "blocker": "Elapsed-only timeout executes after RAF resolves. Stalled RAF and blocked page.evaluate lack finite deadline. Preserve this source/model boundary; narrow genuine deadline/cancellation/partial-evidence successor authorised before native.",
     "quietHolds": [
+      "logic_peer",
       "deep_peer",
+      "arch_source",
       "imaging_source",
       "thermo_prereqs",
       "ctrl_prereqs"
-    ]
+    ],
+    "sourceChain": [
+      "2b15365a0b747cb7b5f75b446ca7307741350144",
+      "3714fc1a627853f7a48e38b1e234d5ba695ec2c0",
+      "41b07a0b61bb74366fee9ef40fd3a989524a1613",
+      "7aebc06e187c0eb84409785e13a4c2a32266987e"
+    ],
+    "sourcePeer": "b30b11dd434bd4eed0f5aecd3e5cbaa0e41a29a5",
+    "rootClosingModel": "/tmp/atlas-root-curve-timing-closing-model",
+    "rootDeadlineModel": "/tmp/atlas-root-curve-timing-deadline-model",
+    "allSixQuiet": true,
+    "blockerResolved": true,
+    "output": "/tmp/atlas-root-curve-timing-state"
   },
   "s2ReadbackIsolation": {
     "status": "independently-reviewed-diagnostic-reference-unresolved",
