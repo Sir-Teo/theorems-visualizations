@@ -162,9 +162,8 @@ async function pageHome() {
   const pillars = H.home.pillars.map(id => homeById.get(id));
   const liveFields = G.fields.filter((F) => fieldCols(F).some((C) => C.count));
   const newChapters = [
-    ['deep', 6, 'Generalization and regularization'],
-    ['algo', 12, 'Randomized, online and streaming algorithms'],
-    ['game', 5, 'Repeated games and cooperation'],
+    ['causal', 5, 'Adjusting for confounding'],
+    ['cplx', 5, 'Randomized computation'],
   ].filter(([col, chapter]) => H.collections.some(C => C.id === col && C.chapters.some(Ch => Ch.n === chapter && Ch.count)));
   const el = h(`<div>
     <section class="wrap hero">

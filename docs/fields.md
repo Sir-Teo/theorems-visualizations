@@ -93,6 +93,8 @@ an eigen-direction, an orthonormal frame, an ellipse's axes) with live numbers.
 
 - Distinguish actual learning experiments from schematic published trends. State the training procedure, selection rule and held-out target; retain failed grokking or pruning runs. Interpolating training labels does not certify prediction risk, and a finite conditional risk identity does not verify an inaccessible general theorem. See the [generalization review](verification/wave5-deep-review.md).
 
+- Separate population balance and fixed-nuisance double robustness from fitted finite-sample behavior. Matching and discarded strata change the target; arm-constant stabilization cancels in binary Hájek means. Cross-fitting must actually exclude evaluation rows, and it does not itself guarantee coverage. Preserve sensitivity assumptions and use factored contrasts for tiny residuals. See the [confounding-adjustment review](verification/wave5-causal-review.md).
+
 ## Computer science
 
 - Match the authentication game to the composition theorem: strong new-pair unforgeability or unique valid tags is needed for the stated Encrypt-then-MAC proof, with independent keys and complete nonce/ciphertext coverage. One-time affine authentication needs pairwise independence rather than ordinary universality. Keep random-function birthday probabilities separate from deterministic hash traces; a zero-tail cycle supplies no distinct-preimage witness. A strengthened hash's reverse collision proof must compare the entire length field before inferring aligned chains. See the [integrity review](verification/wave5-crypto-review.md).
@@ -116,6 +118,8 @@ an eigen-direction, an orthonormal frame, an ellipse's axes) with live numbers.
 - For tiny saved quantum probabilities, check the actual scientific readout as well as the snapshot: a decimal scaling formatter can underflow before the probability does. Keep exact model values separate from native range serialization, and verify both through real Share links. See the [quantum-query review](verification/wave5-qinfo-review.md).
 
 - State the ideal randomness and hash-family hypotheses separately from a seeded trace. Preserve fixed-query scope, integer tail events, online cost models and initial conditions. Tiny positive probabilities must remain positive in the readout; an observed zero count is different from a zero probability. Distinct-count sketches must implement the named register/aggregation rule. Keep chapter pseudocode completely visible at narrow widths. See the [randomized-algorithms review](verification/wave5-algo-review.md).
+
+- Complexity-class guarantees quantify over each fixed input and the declared tape/time model. Exact odd-field sampling needs a sampling-cost qualification for bounded fair bits. Keep formula construction and algorithm traces independently seeded, preserve unresolved mass directly, and check actual plot indices against counts, coefficient exponents and tape numbers. See the [randomized-computation review](verification/wave5-cplx-review.md).
 
 ## Chemistry & materials
 
