@@ -3,9 +3,9 @@
 2026-10-20. The executable inventory in `cross-field-dependencies.json` checks
 MASTER_PLAN §7.3 against accepted written and planned prerequisite records. Its acceptance metadata explicitly excludes the frozen BIGHIST3.5candidate edge.
 
-Of 64 non-math collections, **11 have fewer than 25 published prerequisite edges to
-written ideas in a different field**. Their combined shortfall is 191 edges. Even
-including planned items and planned prerequisites, **9 collections remain below 25**.
+Of 64 non-math collections, **6 have fewer than 25 published prerequisite edges to
+written ideas in a different field**. Their combined shortfall is 55 edges. Even
+including planned items and planned prerequisites, **2 collections remain below 25**.
 The wave gate is open. Counts are not evidence that a prerequisite is justified.
 
 The inventory counts each directed item-to-prerequisite edge once. It separates
@@ -312,3 +312,7 @@ Independent [CRYPTO](crypto-crossfield-prerequisite-peer.md), [CAUSAL](causal-cr
 ## ECOL and ASTRO completion
 
 Independent [ECOL](ecol-independent-peer.md) and [ASTRO](astro-four-inputs-root-peer.md) peers accept22 and4 additional direct inputs, reaching25published each. Both also cross the whole-syllabus target. Bounded scope/domain/capped-label qualifications and equivalent wraps, full source preservation, independent math and complete narrow native fields pass. Current accepted gate191/11/9; source flags unchanged.
+
+## GAME, PHARM and LING combined acceptance
+
+Nineteen GAME inputs yield23/27/39; eighteen PHARM inputs yield25/26/42; twenty LING inputs yield25/26/39. Independent full-object/function/raw-row guards, target-proof review, mathematical witnesses, real controls and complete narrow both-theme personal pixel inspection pass. Required closing successors qualify interior first-order conditions, positive bioavailable fraction, ideal radiation outside L1, and the actual LING4.4 inner display. Root integrated guards/math and94GAME/PHARM plus51LING default tests pass. Two initial root command errors (missing PHARM math arguments and incorrect test glob) stopped before checks; corrected commands pass. These links close no source review. Frozen BIGHIST3.5 remains excluded.

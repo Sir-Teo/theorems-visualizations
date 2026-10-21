@@ -21,7 +21,7 @@
       "Full immutable checkpoints and unrelated gate analysis"
     ],
     "current": [
-      "Accepted prerequisite shortfall112;8/64 published collections and4 whole syllabi below target;40 further collections meet25 written inputs. Source queue5 unchanged.",
+      "Accepted prerequisite shortfall55;6/64 published collections and2 whole syllabi below target;42 further collections meet25 written inputs. Source queue5 unchanged.",
       "Latest immutable checkpoint10 on573ea1b passes2199 tests, all six UI groups, strict/static zero errors and warnings.",
       "Rejected chunk prototype remains unaccepted. Original-only control reproduces its cold/warm discrepancy; no renderer or timing acceptance.",
       "Private source/tiny fixed-quiescence successor passes independent review; full-map original-only attempt still stops on late normal400 Newsreader loading during transfer. Callback provenance captured; all raw/history retained, alternate/timing unrun.",
@@ -33,7 +33,7 @@
       "agent": "logic_peer",
       "worktree": "/Users/teodev/.codex/worktrees/atlas-logic-peer/theorems-visualizations",
       "status": "working",
-      "current": "LING genuine prerequisite producer; new oracle source/tiny peer accepted, no full-map rerun",
+      "current": "Read-only late Newsreader normal400 source census; no map change or rerun authorized",
       "owns": [
         "Unique isolated prototype/model/native/resource reports; production and shared runtime preserved"
       ],
@@ -43,7 +43,7 @@
       "agent": "deep_peer",
       "worktree": "/Users/teodev/.codex/worktrees/atlas-deep-peer/theorems-visualizations",
       "status": "working",
-      "current": "CPLX remaining genuine-input followup producer after PL14 root acceptance",
+      "current": "Independent CPLX3.8 finite-halting complement peer after accepted PHARM",
       "owns": [
         "Unique independent binding/pixel/resource/lifecycle evidence after immutable producer boundary"
       ],
@@ -53,7 +53,7 @@
       "agent": "arch_source",
       "worktree": "/Users/teodev/.codex/worktrees/atlas-arch-source/theorems-visualizations",
       "status": "working",
-      "current": "ARCH18 producer final layout/native gates",
+      "current": "Independent ART eighteen-input peer after accepted NEURO contrast",
       "owns": [
         "QINFO content and bounded correctness/metadata successors"
       ],
@@ -63,7 +63,7 @@
       "agent": "imaging_source",
       "worktree": "/Users/teodev/.codex/worktrees/atlas-imaging-source/theorems-visualizations",
       "status": "working",
-      "current": "ART18 genuine prerequisite producer; GAME interior-maximizer closing successor with ctrl",
+      "current": "Independent ARCH eighteen-input and banner peer after frozen ART",
       "owns": [
         "Unique CLIMATE peer evidence; REL producer boundary complete"
       ],
@@ -73,7 +73,7 @@
       "agent": "thermo_prereqs",
       "worktree": "/Users/teodev/.codex/worktrees/atlas-thermo-prereqs/theorems-visualizations",
       "status": "working",
-      "current": "PHARM18 producer final plotting/readout/text preservation/native closure",
+      "current": "Independent CPLX eight-input peer after accepted LING closing",
       "owns": [
         "Unique REL peer evidence; CLIMATE producer boundary complete"
       ],
@@ -83,7 +83,7 @@
       "agent": "ctrl_prereqs",
       "worktree": "/Users/teodev/.codex/worktrees/atlas-ctrl-prereqs/theorems-visualizations",
       "status": "working",
-      "current": "GAME independent peer, then authorized NEURO resting-contrast producer; ODE peer accepted",
+      "current": "CPLX3.8 final ready for independent peer; NEURO contrast accepted",
       "owns": [
         "CM producer; GEOG independent peer complete"
       ],
@@ -1463,11 +1463,16 @@
     },
     {
       "id": "neuro-4.6-resting-morphology-contrast",
-      "status": "open-authorized-bounded-producer",
+      "status": "accepted-closed",
       "owner": "ctrl_prereqs",
       "finding": "At before-injection frame, zero voltage uses default ramp origin panel, leaving branches nearly indistinguishable from stage background in both themes.",
       "evidence": "/tmp/atlas-ctrl-neuro-peer/control-pixels/4.6-{light,dark}-native.png",
-      "scope": "Authorized separate two ramp-origin literals to muted, no simulation/mesh/control/flag/dependency changes. GAME peer priority first; contrast producer not yet started."
+      "scope": "Exactly two ramp origins changed to muted. Full27files/36objects/functions/flags/deps exact otherwise;96numericframes,24native frames,4realcontrols and48personally inspected pictures pass. Integrated source/numeric checks pass.",
+      "commits": [
+        "487f6cd1b422da8e213fe00ef7c12fd5096cd784",
+        "3dbe289f00030cc303a0edb2ac60b3f0886b6f57"
+      ],
+      "report": "docs/verification/neuro-compartment-contrast-independent-peer.md"
     }
   ],
   "stateFollowups": [
@@ -2623,15 +2628,78 @@
       "followup": "Fourteen direct math inputs across12consumers yield23/23/27, still two published short. Full46objects/functions/helpers/flags/115rows/lists pass; finite-premise/Newman/progress qualifications and exact predecessor wrap. Root1076681 own independent assertions8groups,6 existing default tests, strict/static and56freshstate112fullfields personally inspected pass. Integrated preservation passes.",
       "sourceClosure": "None; flags unchanged.",
       "bridgeReview": "No affected bridges."
+    },
+    {
+      "collection": "game",
+      "commits": [
+        "3a08b79379bb98322e16a10adebc000a1d53aea6",
+        "0817cb65e461e128923705e30da78618ae906465",
+        "e0fac583aa76cff9bf014c5b3ab0fe5a804ea315",
+        "2f4154e960686381ccfe54ae174452d9047dab59",
+        "77bacbc698a567df59c14fe8c36a06b131390a40",
+        "aa3f25924fed40ad5222844dd8def08e2bcae12c",
+        "cff2ac7fc8887a35f5b26e01a6fd9812cbae07ff"
+      ],
+      "publishedBefore": 4,
+      "publishedAfter": 23,
+      "status": "accepted",
+      "producer": "imaging_source",
+      "peer": "ctrl_prereqs",
+      "report": "docs/verification/game-crossfield-prerequisite-independent-peer.md",
+      "followup": "19 direct inputs across15consumers;23/27/39 honestly two short. Exact qualifications/interior FOC, both-regret label and equivalent wraps accepted. Full45objects/functions/105rows; independent51605checks and106fullfield/10control/2bridge pixels pass. Integrated full guards/math/default checks pass.",
+      "sourceClosure": "None; flags unchanged."
+    },
+    {
+      "collection": "pharm",
+      "commits": [
+        "d02ad69fedb2db4abc9f1e411c6be20df5a5e010",
+        "45cf297ed2e9b04175910a09d03640451b073b6b",
+        "9bfaf153b77c2c8a8f9fa41aa42223ba781b52ad",
+        "793bbc5acca7f31b454f401560cabb650aec7561",
+        "387edec7f20e5ff549eac153a9f9d3539286d2f7",
+        "7d59d68013a496de1bbd970cab1dc0f335b974a8",
+        "1c71e2a3b5eb9ddaa5a86c79f31d25cb1f404a21",
+        "94f4affdd392500a75c42a75ff3df5013f001026",
+        "960cbddbc7334ee56cb4053c4389b701842dd070",
+        "50fbd47cd33dcd96d207d8c0ab6053514556b46b"
+      ],
+      "publishedBefore": 7,
+      "publishedAfter": 25,
+      "status": "accepted",
+      "producer": "thermo_prereqs",
+      "peer": "deep_peer",
+      "report": "docs/verification/pharm-independent-combined-peer.md",
+      "followup": "18 direct inputs across15consumers;25/26/42. Positive-F closing required; interval-domain/readout/plot and before-dose/time-label exceptions accepted. Full41objects/functions/84rows; independent9375checks,176personally inspected fresh pixels. PHARM3.12 remains open. Integrated full guards/math/default checks pass.",
+      "sourceClosure": "None; flags unchanged."
+    },
+    {
+      "collection": "ling",
+      "commits": [
+        "f0ac876e6c36942bb7be490bc0d81f1a64990ed7",
+        "90443c022c30b09d3a2253c00945630b25abfdcf",
+        "16d7fe32332a53095ad5ae5cd1f7e73c5db85268",
+        "b21a1e13f462cd10baceb0644394e7ae2a9c1acd",
+        "622dd04d66908d8f9a3827a5e51c0e1183abded2",
+        "d086b952ec561a5e02d6460905789d1c48bc83cb",
+        "4461e6ca26b1ba6d635786a2705943fc8a91ecf6"
+      ],
+      "publishedBefore": 5,
+      "publishedAfter": 25,
+      "status": "accepted",
+      "producer": "logic_peer",
+      "peer": "thermo_prereqs",
+      "report": "docs/verification/ling-independent-prerequisite-peer.md",
+      "followup": "20 direct inputs across17humanitiesconsumers;25/26/39. Ideal radiation separated from L1 tract proof; four equivalent statement splits including independently found4.4inner overflow. Full52objects/functions/136rows,1715ownchecks; complete final both-theme native fields personally inspected. Integrated full guards/math/default checks pass.",
+      "sourceClosure": "None; flags unchanged."
     }
   ],
   "currentPrerequisiteGate": {
-    "publishedShortfall": 112,
-    "publishedBelow25": 8,
+    "publishedShortfall": 55,
+    "publishedBelow25": 6,
     "collections": 64,
-    "wholeSyllabusBelow25": 4,
+    "wholeSyllabusBelow25": 2,
     "date": "2026-10-20",
-    "acceptedSnapshot": "Forty further collections meet written target; PL14 accepted to23 and CPLX13 to16, both honestly short. Frozen BIGHIST3.5 edge excluded."
+    "acceptedSnapshot": "Forty-two further collections meet written target. GAME19 yields23; PHARM18 and LING20 reach25. Frozen BIGHIST3.5 excluded."
   },
   "previousSessionWorkers": [
     {
