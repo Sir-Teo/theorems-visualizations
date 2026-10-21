@@ -1,0 +1,349 @@
+{
+  "candidate": "a0653d8b",
+  "baseline": "ee15d812",
+  "proposedInputs": 6,
+  "acceptedInputs": 0,
+  "excludedPending": true,
+  "consumers": [
+    "1.5",
+    "1.8",
+    "2.5",
+    "2.7"
+  ],
+  "preservation": {
+    "files": 40,
+    "objects": 32,
+    "functions": 32,
+    "rawRows": 88,
+    "fullItemRowLists": 32
+  },
+  "math": {
+    "checks": 6241,
+    "groups": 6
+  },
+  "defaultTests": 75,
+  "strictErrors": 0,
+  "strictWarnings": 0,
+  "staticItems": 32,
+  "staticErrors": 0,
+  "staticWarnings": 0,
+  "personalPictures": {
+    "initial": 60,
+    "closing": 18,
+    "finalDistinct": 60
+  },
+  "artifacts": [
+    {
+      "path": "/tmp/atlas-root-bighist-prereqs/native-v2/1.5-dark-caption.png",
+      "sha256": "763ca2be390b76c9c0e641b55bdf2aaeb6c8e49f74fbb4511fc7a4e680331253"
+    },
+    {
+      "path": "/tmp/atlas-root-bighist-prereqs/native-v2/1.5-dark-proof.png",
+      "sha256": "27525030b676eac14c14eda655f814e6ff8ff195713e1e6ad203444db2054c87"
+    },
+    {
+      "path": "/tmp/atlas-root-bighist-prereqs/native-v2/1.5-dark-statement-scope.png",
+      "sha256": "fe5f410d715d0bc38163d3e2514007ead3d24561a7e3acf19ec57516d9e3a1df"
+    },
+    {
+      "path": "/tmp/atlas-root-bighist-prereqs/native-v2/1.5-dark-viz.png",
+      "sha256": "a1a0f91bdd20753743875f7fddffeeb32711b954948cbbe2d669eca582558c0f"
+    },
+    {
+      "path": "/tmp/atlas-root-bighist-prereqs/native-v2/1.5-light-caption.png",
+      "sha256": "27315972bfcbebe03bc0fa1e9d796c6cfb8971b318803a338860b71c8a3a33d1"
+    },
+    {
+      "path": "/tmp/atlas-root-bighist-prereqs/native-v2/1.5-light-proof.png",
+      "sha256": "31c80c0701629af949bbcbf0dd18fec5e35683481274f89c6fff21d8f7f3efca"
+    },
+    {
+      "path": "/tmp/atlas-root-bighist-prereqs/native-v2/1.5-light-statement-scope.png",
+      "sha256": "d1868dfee6203655281e17e12499b2ad316c27e74e8e69c264d6c1e0b92c58ec"
+    },
+    {
+      "path": "/tmp/atlas-root-bighist-prereqs/native-v2/1.5-light-viz.png",
+      "sha256": "ea78cd40991c880e0eaa1be02add7a0864629863605c923ac481a75de9212bff"
+    },
+    {
+      "path": "/tmp/atlas-root-bighist-prereqs/native-v2/1.8-dark-caption.png",
+      "sha256": "a2b5133ac74cb6a4ec50c7ef69428e6d8911998763d010b8ae32f6b92117caba"
+    },
+    {
+      "path": "/tmp/atlas-root-bighist-prereqs/native-v2/1.8-dark-proof.png",
+      "sha256": "a9686bfd811ab3d667e8bd881147449dcbb708e15c36a90622011a3ca6cc2ac7"
+    },
+    {
+      "path": "/tmp/atlas-root-bighist-prereqs/native-v2/1.8-dark-random-End.png",
+      "sha256": "acbac3b184d534e9cfe2d39ea0c1137ec94e3943cbe5e49f3231a156d7a01b46"
+    },
+    {
+      "path": "/tmp/atlas-root-bighist-prereqs/native-v2/1.8-dark-random-Home.png",
+      "sha256": "afebc7533918470a7cf3ae8cb6355474a7c582867e70391d1f1c2521e7a7abf5"
+    },
+    {
+      "path": "/tmp/atlas-root-bighist-prereqs/native-v2/1.8-dark-statement-scope.png",
+      "sha256": "3ec75f272d668ab896d5bea798c5569182368563726cf200ef4a4eb38d4173af"
+    },
+    {
+      "path": "/tmp/atlas-root-bighist-prereqs/native-v2/1.8-dark-viz.png",
+      "sha256": "6ec0f4f6308fdf51a8aaca925705b8d763319ffed698d15a0f19330f67a5cb7c"
+    },
+    {
+      "path": "/tmp/atlas-root-bighist-prereqs/native-v2/1.8-light-caption.png",
+      "sha256": "a793c1ddcc402edcbe35d12f10f0ea0f6728c910eab16580d0155a3c1a7f6afb"
+    },
+    {
+      "path": "/tmp/atlas-root-bighist-prereqs/native-v2/1.8-light-proof.png",
+      "sha256": "8ba70ea3b8e8b76d22e2f332ec572bb827d477529d98bf377e45fdb90a4cd086"
+    },
+    {
+      "path": "/tmp/atlas-root-bighist-prereqs/native-v2/1.8-light-random-End.png",
+      "sha256": "baf1f61e86a99b3ecef8ca8908b6e146692a8c000009f2477476431b31ac9b71"
+    },
+    {
+      "path": "/tmp/atlas-root-bighist-prereqs/native-v2/1.8-light-random-Home.png",
+      "sha256": "7520161f8da06514e41e43d9e30bee9465a9d3a7434a08118abdb3c30de27e5b"
+    },
+    {
+      "path": "/tmp/atlas-root-bighist-prereqs/native-v2/1.8-light-statement-scope.png",
+      "sha256": "3a215e149cc95d5224ede71a9338ec4e682737b8f8442db646d5fc721e2d3ff9"
+    },
+    {
+      "path": "/tmp/atlas-root-bighist-prereqs/native-v2/1.8-light-viz.png",
+      "sha256": "52988602d70f612b88b10e56aa3848cb4215ff99008b9dfb1003cf6f0ef9cb4e"
+    },
+    {
+      "path": "/tmp/atlas-root-bighist-prereqs/native-v2/2.5-dark-caption.png",
+      "sha256": "7d260d1fa47b80b6dcbda44b059c34cf95d01082c4c29958ad9e89b61ee588e1"
+    },
+    {
+      "path": "/tmp/atlas-root-bighist-prereqs/native-v2/2.5-dark-proof.png",
+      "sha256": "0b6c8082b49bc9695ff848af53dd81e8b1961fa7eeca0fbc531b394fb402a41f"
+    },
+    {
+      "path": "/tmp/atlas-root-bighist-prereqs/native-v2/2.5-dark-statement-scope.png",
+      "sha256": "618b1cd6f81e4bb06759545b196ccd6d1dce2b9b7865e2fdbe540d1cf0a1549d"
+    },
+    {
+      "path": "/tmp/atlas-root-bighist-prereqs/native-v2/2.5-dark-viz.png",
+      "sha256": "f1cc97db7aa0765269d7ec6d25f751df1c174e4b4d98d2d03d088f94fba8ee86"
+    },
+    {
+      "path": "/tmp/atlas-root-bighist-prereqs/native-v2/2.5-light-caption.png",
+      "sha256": "bd7a4a9c555247964f2d9f4541a2b7362e962352d972b9a139af0e642541ab52"
+    },
+    {
+      "path": "/tmp/atlas-root-bighist-prereqs/native-v2/2.5-light-proof.png",
+      "sha256": "66b3350e103f4348c98bb4db6187459a146915980397dc60336496706f17a77d"
+    },
+    {
+      "path": "/tmp/atlas-root-bighist-prereqs/native-v2/2.5-light-statement-scope.png",
+      "sha256": "a562dda31eaff65f0887fe398960c86e47354d56d3d45f9d2686bf9b30112da3"
+    },
+    {
+      "path": "/tmp/atlas-root-bighist-prereqs/native-v2/2.5-light-viz.png",
+      "sha256": "39dfa3c9711811c076a1799a46f3de81c6a20f3c13d2f511447a087ac2f0f125"
+    },
+    {
+      "path": "/tmp/atlas-root-bighist-prereqs/native-v2/2.7-dark-caption.png",
+      "sha256": "ed72b1258f9c6ae812d102f8341df32d75e1cb8c222d9ad1fe25463c53903c47"
+    },
+    {
+      "path": "/tmp/atlas-root-bighist-prereqs/native-v2/2.7-dark-proof.png",
+      "sha256": "5684d08797496dee494dd12c5221bb2379cfb7e5dd7e0372bfc3e519f6976e06"
+    },
+    {
+      "path": "/tmp/atlas-root-bighist-prereqs/native-v2/2.7-dark-statement-scope.png",
+      "sha256": "f2ee3a3d802cda0d16527c4a8723d23e5615f6c70844eeaf8a73bc01c5259f61"
+    },
+    {
+      "path": "/tmp/atlas-root-bighist-prereqs/native-v2/2.7-dark-viz.png",
+      "sha256": "5f113c52fda8cb567a69186d79a937fab65abfe8303e5973bb55842a33a495ee"
+    },
+    {
+      "path": "/tmp/atlas-root-bighist-prereqs/native-v2/2.7-light-caption.png",
+      "sha256": "51095be7d163e379270befef7ddf08dce75e94ef8e0d0b306600e53e5d54b3e4"
+    },
+    {
+      "path": "/tmp/atlas-root-bighist-prereqs/native-v2/2.7-light-proof.png",
+      "sha256": "9fcbf02daecbfbb52139b352fddba805e884a23c7e267e411f8c94c61bc0ac30"
+    },
+    {
+      "path": "/tmp/atlas-root-bighist-prereqs/native-v2/2.7-light-statement-scope.png",
+      "sha256": "14bf5ac56f37c71fdc4b848c2d4f640b8e9e1f479b3b8ceed9c063911100fbd0"
+    },
+    {
+      "path": "/tmp/atlas-root-bighist-prereqs/native-v2/2.7-light-viz.png",
+      "sha256": "1507669cf4c9950a8c0047ce6e107fb2ccb10545f3bf4d99457af923eb2c699b"
+    },
+    {
+      "path": "/tmp/atlas-root-bighist-prereqs/narrow/1.5-dark-caption.png",
+      "sha256": "4f07b205f41cc34669db5d4f88e63fb7bff3c9d429e8895214a8bc1601b1c1c9"
+    },
+    {
+      "path": "/tmp/atlas-root-bighist-prereqs/narrow/1.5-dark-proof.png",
+      "sha256": "f652eb2eb6cf0080ec2f7814d8206e46c92a978b2eb11ac44f8a28eca31641dc"
+    },
+    {
+      "path": "/tmp/atlas-root-bighist-prereqs/narrow/1.5-dark-statement-scope.png",
+      "sha256": "020e3e3b4919f13ce4fb34e508a49a73ec898c164de32cd048e8571636ade8a4"
+    },
+    {
+      "path": "/tmp/atlas-root-bighist-prereqs/narrow/1.5-light-caption.png",
+      "sha256": "4e486434b67af6f70e9243adc21ca4b22e05c7d7373d53ab98b66b301f504442"
+    },
+    {
+      "path": "/tmp/atlas-root-bighist-prereqs/narrow/1.5-light-proof.png",
+      "sha256": "ae30f68d8df2a5219f354996f900400639c91c32c3d54faf3ea0b6dace976bd9"
+    },
+    {
+      "path": "/tmp/atlas-root-bighist-prereqs/narrow/1.5-light-statement-scope.png",
+      "sha256": "80e27bac003b0edbfcb8c3fafe9876ed3ec1b722fbeac1aa3571a1fde3f5e88c"
+    },
+    {
+      "path": "/tmp/atlas-root-bighist-prereqs/narrow/1.8-dark-caption.png",
+      "sha256": "035d1ae18aa0f4199e54d8cada77d6fff1934ec3ec614cf39695092f6405330f"
+    },
+    {
+      "path": "/tmp/atlas-root-bighist-prereqs/narrow/1.8-dark-proof.png",
+      "sha256": "0ccdd17f7dcc7995b87f2239d6a408ba8fb8ee766b073d36cc75bbd48692c420"
+    },
+    {
+      "path": "/tmp/atlas-root-bighist-prereqs/narrow/1.8-dark-statement-scope.png",
+      "sha256": "4bf05fd595612d34d0d939208efe8e5a2d8c3f2aabf01bdfea162a1197c46c01"
+    },
+    {
+      "path": "/tmp/atlas-root-bighist-prereqs/narrow/1.8-light-caption.png",
+      "sha256": "32a4abbed2b22edc5bdbf8841a7d9b39c4b7c34c00f5127e887937d727e1ea63"
+    },
+    {
+      "path": "/tmp/atlas-root-bighist-prereqs/narrow/1.8-light-proof.png",
+      "sha256": "0b1f1815b337ed0c9c0c544a2e093df02874dfa12b24854bea73757ab7cbbfdc"
+    },
+    {
+      "path": "/tmp/atlas-root-bighist-prereqs/narrow/1.8-light-statement-scope.png",
+      "sha256": "51e3e77ac9b5301c5959783663dad2947259279c11a691a8cfce067142414265"
+    },
+    {
+      "path": "/tmp/atlas-root-bighist-prereqs/narrow/2.5-dark-caption.png",
+      "sha256": "92e5051a8c2a3aba62226bb7945c88c6c4508fdc09bf3533d54dbbe69f30be76"
+    },
+    {
+      "path": "/tmp/atlas-root-bighist-prereqs/narrow/2.5-dark-proof.png",
+      "sha256": "13a8768e39f913f80794874fa9f004ee44ef6ca126413861999d35889b283aaf"
+    },
+    {
+      "path": "/tmp/atlas-root-bighist-prereqs/narrow/2.5-dark-statement-scope.png",
+      "sha256": "df4887e66d054202fa09b03d13617a8a0fb1576e4fa789c7f69a311216ed496d"
+    },
+    {
+      "path": "/tmp/atlas-root-bighist-prereqs/narrow/2.5-light-caption.png",
+      "sha256": "247cd5e7e5519b24d62de201dc186807e4180eeb0162bf39895f41394eb101de"
+    },
+    {
+      "path": "/tmp/atlas-root-bighist-prereqs/narrow/2.5-light-proof.png",
+      "sha256": "0158f295d41bb3ce611932fbd9d6fb1f25e37bc78dddc17e0da57d073fa86095"
+    },
+    {
+      "path": "/tmp/atlas-root-bighist-prereqs/narrow/2.5-light-statement-scope.png",
+      "sha256": "b3c26ce8afc36508d6590cb9a7b56d4556af2bbd58f7bdf9d3dee8a029caf3cd"
+    },
+    {
+      "path": "/tmp/atlas-root-bighist-prereqs/narrow/2.7-dark-caption.png",
+      "sha256": "d65a452d2d5b9d6b33e04aae5625d66159961f85aa2846e8b2e249c13d2bd400"
+    },
+    {
+      "path": "/tmp/atlas-root-bighist-prereqs/narrow/2.7-dark-proof.png",
+      "sha256": "f7296f217bd9f6005d4ac56d17d8269f8a91a270988a69031c0be744418e8edb"
+    },
+    {
+      "path": "/tmp/atlas-root-bighist-prereqs/narrow/2.7-dark-statement-scope.png",
+      "sha256": "c621bc9178a47ab9a5a9d511b1ab633564727e0314f219b1fb4a5cf49e855e16"
+    },
+    {
+      "path": "/tmp/atlas-root-bighist-prereqs/narrow/2.7-light-caption.png",
+      "sha256": "0363744489bb13060c3e2cbb42f25e6d5feb5e66884e7672bd4650481018c3bf"
+    },
+    {
+      "path": "/tmp/atlas-root-bighist-prereqs/narrow/2.7-light-proof.png",
+      "sha256": "787ddbd983f0724b312f6d2c312536f5792721ec88d5f88ca950f6a4b57f58e9"
+    },
+    {
+      "path": "/tmp/atlas-root-bighist-prereqs/narrow/2.7-light-statement-scope.png",
+      "sha256": "5fed68b330b522d5cad0ea223bd57b608b0045d2c7359b151bc02e0e09df88e6"
+    },
+    {
+      "path": "/tmp/atlas-root-bighist-prereqs/native-closing-v2/1.8-dark-caption.png",
+      "sha256": "7edce7ecffbc36ed4359f4a07cf55bf71a586dc635305429c2beed194a9f3d5e"
+    },
+    {
+      "path": "/tmp/atlas-root-bighist-prereqs/native-closing-v2/1.8-dark-proof.png",
+      "sha256": "ce247260edff8ba02c6c62c488f7bece3f0a24b786373ba410c554891d4036f5"
+    },
+    {
+      "path": "/tmp/atlas-root-bighist-prereqs/native-closing-v2/1.8-dark-random-End.png",
+      "sha256": "c5dc495e97877278bc127d3226ccf0e425e1523980a2ba84a97590e0a9b2e9c5"
+    },
+    {
+      "path": "/tmp/atlas-root-bighist-prereqs/native-closing-v2/1.8-dark-random-Home.png",
+      "sha256": "d387ad59ec8d77bad3d6461216ab25e0fa8b58bf85403e94163006f76f5c3fab"
+    },
+    {
+      "path": "/tmp/atlas-root-bighist-prereqs/native-closing-v2/1.8-dark-statement-scope.png",
+      "sha256": "3ec75f272d668ab896d5bea798c5569182368563726cf200ef4a4eb38d4173af"
+    },
+    {
+      "path": "/tmp/atlas-root-bighist-prereqs/native-closing-v2/1.8-dark-viz.png",
+      "sha256": "d843cc792692f986d5dfc05893b47ddc89a512f70d44add0bb1400b89ad763ac"
+    },
+    {
+      "path": "/tmp/atlas-root-bighist-prereqs/native-closing-v2/1.8-light-caption.png",
+      "sha256": "1f3aeffc8152d538abe082888f01b318015a261d827e4c1ae28f2219699d9d87"
+    },
+    {
+      "path": "/tmp/atlas-root-bighist-prereqs/native-closing-v2/1.8-light-proof.png",
+      "sha256": "6c085e74a1311189c674efac74f149ab18717e5a76171ab723911cf5b58cc947"
+    },
+    {
+      "path": "/tmp/atlas-root-bighist-prereqs/native-closing-v2/1.8-light-random-End.png",
+      "sha256": "511990b91157df05f84c7471dd7e717fc7cd99215fc43623c8f995ac468d1f20"
+    },
+    {
+      "path": "/tmp/atlas-root-bighist-prereqs/native-closing-v2/1.8-light-random-Home.png",
+      "sha256": "9f0e577a56e89e10c483ea1a0df896fd24a5ffea452bf83f3995580fedc590e5"
+    },
+    {
+      "path": "/tmp/atlas-root-bighist-prereqs/native-closing-v2/1.8-light-statement-scope.png",
+      "sha256": "3a215e149cc95d5224ede71a9338ec4e682737b8f8442db646d5fc721e2d3ff9"
+    },
+    {
+      "path": "/tmp/atlas-root-bighist-prereqs/native-closing-v2/1.8-light-viz.png",
+      "sha256": "fad9b46eb4ae591649a789467db7eb580b9b8cba9d75a820f62c6ee00ffa18c0"
+    },
+    {
+      "path": "/tmp/atlas-root-bighist-prereqs/narrow-closing/1.8-dark-caption.png",
+      "sha256": "820c70b5cfc3c5fa2c2645489534c5ed4863a339d56d370e91e73645ead3dbf5"
+    },
+    {
+      "path": "/tmp/atlas-root-bighist-prereqs/narrow-closing/1.8-dark-proof.png",
+      "sha256": "67f150b197f7413ece48b0d57cc5bd60eab56ed4999d243ee600714093646dfc"
+    },
+    {
+      "path": "/tmp/atlas-root-bighist-prereqs/narrow-closing/1.8-dark-statement-scope.png",
+      "sha256": "4bf05fd595612d34d0d939208efe8e5a2d8c3f2aabf01bdfea162a1197c46c01"
+    },
+    {
+      "path": "/tmp/atlas-root-bighist-prereqs/narrow-closing/1.8-light-caption.png",
+      "sha256": "47466acf52f1bb4d0ca0117824efea81b1d52ae7934eade1c11486fc8c0a7005"
+    },
+    {
+      "path": "/tmp/atlas-root-bighist-prereqs/narrow-closing/1.8-light-proof.png",
+      "sha256": "2a89b44542b3942e2ab0c774fa75edbc8815d70c1586a98408054fc0d05fe93e"
+    },
+    {
+      "path": "/tmp/atlas-root-bighist-prereqs/narrow-closing/1.8-light-statement-scope.png",
+      "sha256": "51e3e77ac9b5301c5959783663dad2947259279c11a691a8cfce067142414265"
+    }
+  ]
+}
