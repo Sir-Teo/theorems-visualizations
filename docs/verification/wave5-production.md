@@ -45,10 +45,30 @@ The earlier nine-chapter snapshot `0f879f70` passed 1,721 tests and 137 routes w
 
 The original authoring branch preceded 848 completed follow-up commits already published in `6cf3d576`. Those completed source, dependency and runtime corrections are retained. The fifteen chapter commits and the kinetics padding fix were cleanly transplanted onto that published baseline in the isolated managed worktree `/Users/teodev/.codex/worktrees/wave-five-shipping/theorems-visualizations`; original checkouts/drafts remain untouched. The earlier test counts above are historical evidence for the stated export, not a current-baseline regression claim.
 
-Current-baseline integrated strict/static, configured Node22 full suite and changed-page checks are pending. No old source review, deferred map timing or private renderer investigation is being reopened. Preserve the five current-main flags/access restrictions and three explicit uncertainties introduced in the new chapters.
+The exact current-baseline export `e6506283` at `/tmp/atlas-wave5-current-q_5q9vcg` passes **2,391/2,391 tests on Node22.23.3**, **211 routes with0errors**, strict build **6,861 written/6,713 planned/465chapters/85collections,0errors/warnings**, and static **6,798visualizations,0errors/warnings**. Home JSON is **112,873bytes gzip**. Logs: `/tmp/atlas-wave5-current-{tests,smoke,build,static}.log`. Production `assets/` bytes are identical across the older and current baselines; the prior native matrix remains applicable to the unchanged new-chapter source and renderer. No old source review, deferred map timing or private renderer investigation is being reopened. Preserve the five current-main flags/access restrictions and three explicit uncertainties introduced in the new chapters.
 
 ## Work continuing
 
 **854 new ideas remain in 65 Wave 5 collection chapters.** All fifteen accepted chapters have finished their author/reviewer checks. The current small pipeline assigns ALG8 to `author_ml`, TOP5 to `review_smallworld` and independent review of both to `wave5_reviewer`; at most three subagents work concurrently. Continue breadth-first from the remaining entries in the [frozen inventory](../wave-five.md), retaining its original chapter assignments. Follow MASTER_PLAN §7.2: source-led authoring, actual computations, both-theme native/visual checks, independent review, dependency reconciliation and collection-sized commits. Historical verification tasks are not prerequisites to repeat.
 
-After the full frozen wave passes its end-of-wave gates, prepare the next breadth-first wave under the master plan. The continuous production goal remains unfinished. This local checkpoint is accepted development work; collection PRs and CI publication remain to be shipped under MASTER_PLAN §7.2.
+After the full frozen wave passes its end-of-wave gates, prepare the next breadth-first wave under the master plan. The continuous production goal remains unfinished. Collection PRs are now open as drafts, isolated onto published main; per-PR CI is in progress. The one-line inherited CI YAML repair is tracked separately in [PR16](https://github.com/Sir-Teo/theorems-visualizations/pull/16), and included identically in each collection branch so checks can start. No PR is claimed merged. Local YAML parsing reproduces the old line24/column83 error and passes after replacing the invalid conditional with the declared `npm test` command.
+
+## Collection PRs
+
+| Collection | Pull request | Head |
+| --- | --- | --- |
+| ml | [#1](https://github.com/Sir-Teo/theorems-visualizations/pull/1) | `e742bfdf` |
+| vcalc | [#2](https://github.com/Sir-Teo/theorems-visualizations/pull/2) | `f0e66767` |
+| fluid | [#3](https://github.com/Sir-Teo/theorems-visualizations/pull/3) | `5da1ae78` |
+| ode | [#4](https://github.com/Sir-Teo/theorems-visualizations/pull/4) | `a6e3eef1` |
+| music | [#5](https://github.com/Sir-Teo/theorems-visualizations/pull/5) | `57235f23` |
+| pde | [#6](https://github.com/Sir-Teo/theorems-visualizations/pull/6) | `8fe4c1a4` |
+| stat | [#7](https://github.com/Sir-Teo/theorems-visualizations/pull/7) | `93defb71` |
+| astro | [#8](https://github.com/Sir-Teo/theorems-visualizations/pull/8) | `df98203e` |
+| rep | [#9](https://github.com/Sir-Teo/theorems-visualizations/pull/9) | `ee1ed328` |
+| macro | [#10](https://github.com/Sir-Teo/theorems-visualizations/pull/10) | `e29c44b8` |
+| epi | [#11](https://github.com/Sir-Teo/theorems-visualizations/pull/11) | `e1d7548c` |
+| num | [#12](https://github.com/Sir-Teo/theorems-visualizations/pull/12) | `0684d834` |
+| kin | [#13](https://github.com/Sir-Teo/theorems-visualizations/pull/13) | `b7984fa1` |
+| art | [#14](https://github.com/Sir-Teo/theorems-visualizations/pull/14) | `3a4e0e05` |
+| ecol | [#15](https://github.com/Sir-Teo/theorems-visualizations/pull/15) | `e335d64d` |
