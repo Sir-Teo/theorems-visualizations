@@ -22,9 +22,9 @@ Nonzero-DC integration includes both the principal-value distribution and the se
 
 The first18 focused mathematical groups pass independent midpoint-integral comparisons with exact formulas; three additional groups cover frozen metadata, stable tiny chirp excess and positive Poisson tail floors. Initial20-group run caught a stale source pagination in the syllabus; the sync was repaired before further validation. Scoped static initially passes18/0/0.
 
-The first mobile production default run caught the long combined shift/modulation display equation. Related combined formulas were split into shorter displays; the repaired mobile gate is running. Original failing logs remain `/tmp/atlas-wave5-sig-defaults.log` and `/tmp/atlas-wave5-sig-models.log`. Native tests use production components with only in-memory catalog injection, instrument complete chart stroke/marker/ring/glyph bounds, and check complete statement/idea/caption/scope/readout/control/formula geometry. The final native/model/static results and actual inspection receipts will be recorded after they pass; none are presumed here.
+The first mobile production default run caught the long combined shift/modulation display equation. Related combined formulas were split into shorter displays; the repaired mobile gate passes in the final results below. Original failing logs remain `/tmp/atlas-wave5-sig-defaults.log` and `/tmp/atlas-wave5-sig-models.log`. Native tests use production components with only in-memory catalog injection, instrument complete chart stroke/marker/ring/glyph bounds, and check complete statement/idea/caption/scope/readout/control/formula geometry. The final native/model/static results and actual inspection receipts are recorded below.
 
-Independent review is `docs/verification/wave5-sig-review.md`; acceptance and full production review remain pending.
+Independent review is `docs/verification/wave5-sig-review.md`; its final acceptance and complete production results are recorded below.
 
 
 ## Author production milestone and freeze

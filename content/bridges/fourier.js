@@ -10,6 +10,7 @@ export default {
     { id: 'xtal-5.5', note: String.raw`For a square-integrable lattice-periodic density, the reciprocal-lattice plane waves give a complete orthogonal expansion over a primitive cell. The convergence is in mean square; pointwise convergence needs additional hypotheses.` },
     { id: 'rca-9.1', note: String.raw`Non-periodic signals get a continuous spectrum: the Fourier transform replaces the sum over harmonics with an integral over all frequencies.` },
     { id: 'rca-9.13', note: String.raw`Plancherel extends the transform to every finite-energy signal and keeps energy exactly, making it a rotation of $L^2$.` },
+    { id: 'sig-5.9', note: String.raw`The convention determines the energy factor. With the engineering transform $X(\omega)=\int x(t)e^{-i\omega t}dt$, total energy is $\int|X(\omega)|^2d\omega/(2\pi)$. The unitary transform absorbs that normalization; an arbitrary finite-energy transform is defined by mean-square limits, even when the defining integral is not absolutely convergent.` },
     { id: 'xtal-5.6', note: String.raw`An infinite lattice of point masses requires distributions rather than an ordinary finite-energy transform. In the cycles-per-length convention, its transform is the reciprocal point lattice weighted by the inverse direct-cell volume. A finite crystal instead produces broadened peaks.` },
     { id: 'mech-4.12', note: String.raw`A driven oscillator responds to each harmonic of a periodic force separately; resonance picks out the harmonic closest to the natural frequency.` },
     { id: 'music-2.6', note: String.raw`A vibrating string supports only whole-number multiples of its fundamental: the harmonic series is a Fourier series that nature plays.` },
@@ -18,5 +19,6 @@ export default {
     { id: 'algo-4.11', note: String.raw`The fast Fourier transform computes $n$ frequency components in $O(n\log n)$ steps instead of $O(n^2)$, by halving the problem with roots of unity.` },
     { id: 'qinfo-5.1', note: String.raw`On the finite bit-string group, the Hadamard transform uses the characters $(-1)^{x\cdot y}$ with normalization $1/\sqrt{2^n}$. Their orthogonality makes the transform unitary and allows interference to reveal selected function properties. A measurement still returns one outcome; superposition does not reveal the entire truth table.` },
     { id: 'algo-4.15', note: String.raw`Multiplying two huge integers is a convolution of their digits, and convolution is multiplication of spectra: the FFT turns arithmetic into signal processing.` },
+    { id: 'sig-5.6', note: String.raw`For integrable continuous signals, ordinary convolution obeys the same product rule: $\mathcal F(x*h)=XH$. Absolute integrability justifies the exchange of integrals. Under the engineering convention there is no prefactor in this direction.` },
   ],
 };
