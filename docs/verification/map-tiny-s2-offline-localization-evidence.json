@@ -1,0 +1,345 @@
+{
+  "light": {
+    "metadataSHA256": "f148e8aa71915c10e5a82968e3d771be860578f08be072face07fa3cdf04be84",
+    "rawSHA256": {
+      "actual-final-canvas": "d23157dea4aa595a1fee223abeb54077633fbd005e24ad1ecaf545802a7f85dc",
+      "reference": "7fd820eb5e7a078e87ed90775193b9c079b1f6e5ee1fe5fa32107302df97cf45",
+      "fault-canvas-2": "d23157dea4aa595a1fee223abeb54077633fbd005e24ad1ecaf545802a7f85dc",
+      "fault-canvas-3": "d23157dea4aa595a1fee223abeb54077633fbd005e24ad1ecaf545802a7f85dc"
+    },
+    "raw": {
+      "bboxHalfOpen": [
+        66,
+        153,
+        178,
+        167
+      ],
+      "nonzeroChannels": 3297,
+      "nonzeroPixels": 994,
+      "mean": 0.055296223958333335,
+      "max": 255,
+      "channels": 4,
+      "bboxMethod": "union of all four channel supports (not alpha-only PIL RGBA getbbox)"
+    },
+    "rawAnyChannelBBoxHalfOpen": [
+      66,
+      153,
+      178,
+      167
+    ],
+    "rawRGBBBoxHalfOpen": [
+      66,
+      153,
+      178,
+      167
+    ],
+    "alphaDiff": {
+      "nonzeroChannels": 895,
+      "channels": 1,
+      "mean": 0.021171875,
+      "max": 51
+    },
+    "composited": {
+      "bboxHalfOpen": [
+        66,
+        153,
+        178,
+        167
+      ],
+      "nonzeroChannels": 2213,
+      "nonzeroPixels": 892,
+      "mean": 0.02970775462962963,
+      "max": 38,
+      "channels": 3
+    },
+    "regionsSupplementaryOnly": {
+      "node": {
+        "boxHalfOpen": [
+          54,
+          154,
+          66,
+          166
+        ],
+        "raw": {
+          "bboxHalfOpen": null,
+          "nonzeroChannels": 0,
+          "nonzeroPixels": 0,
+          "mean": 0.0,
+          "max": 0,
+          "channels": 4
+        },
+        "composited": {
+          "bboxHalfOpen": null,
+          "nonzeroChannels": 0,
+          "nonzeroPixels": 0,
+          "mean": 0.0,
+          "max": 0,
+          "channels": 3
+        }
+      },
+      "edge-visible": {
+        "boxHalfOpen": [
+          0,
+          158,
+          640,
+          163
+        ],
+        "raw": {
+          "bboxHalfOpen": [
+            66,
+            0,
+            178,
+            5
+          ],
+          "nonzeroChannels": 1656,
+          "nonzeroPixels": 463,
+          "mean": 1.6975,
+          "max": 255,
+          "channels": 4
+        },
+        "composited": {
+          "bboxHalfOpen": [
+            66,
+            0,
+            177,
+            5
+          ],
+          "nonzeroChannels": 1226,
+          "nonzeroPixels": 439,
+          "mean": 1.5679166666666666,
+          "max": 33,
+          "channels": 3
+        }
+      },
+      "label-supplementary": {
+        "boxHalfOpen": [
+          66,
+          148,
+          205,
+          173
+        ],
+        "raw": {
+          "bboxHalfOpen": [
+            0,
+            5,
+            112,
+            19
+          ],
+          "nonzeroChannels": 3297,
+          "nonzeroPixels": 994,
+          "mean": 3.6662589928057554,
+          "max": 255,
+          "channels": 4
+        },
+        "composited": {
+          "bboxHalfOpen": [
+            0,
+            5,
+            112,
+            19
+          ],
+          "nonzeroChannels": 2213,
+          "nonzeroPixels": 892,
+          "mean": 1.9696882494004797,
+          "max": 38,
+          "channels": 3
+        }
+      }
+    },
+    "actualEqualsEarlierFaultCanvas": {
+      "fault-canvas-2": true,
+      "fault-canvas-3": true
+    },
+    "savedOriginalPNGMatchesRecomputation": {
+      "actual-final-canvas": true,
+      "reference": true
+    }
+  },
+  "dark": {
+    "metadataSHA256": "26a2ff2ff65fe768325ea41a5300d72ea3744e6c19205d88dc6e71524a4f2458",
+    "rawSHA256": {
+      "actual-final-canvas": "4784d58ad97161c314199afde53c0a43db2de62a844ef74fc5452da39adc31f6",
+      "reference": "11feca9108878f01cf056af1776bbedef6edf662e79e309a4c3be8fe36fd9494",
+      "fault-canvas-2": "4784d58ad97161c314199afde53c0a43db2de62a844ef74fc5452da39adc31f6",
+      "fault-canvas-3": "4784d58ad97161c314199afde53c0a43db2de62a844ef74fc5452da39adc31f6"
+    },
+    "raw": {
+      "bboxHalfOpen": [
+        66,
+        153,
+        178,
+        167
+      ],
+      "nonzeroChannels": 3313,
+      "nonzeroPixels": 992,
+      "mean": 0.056396484375,
+      "max": 87,
+      "channels": 4,
+      "bboxMethod": "union of all four channel supports (not alpha-only PIL RGBA getbbox)"
+    },
+    "rawAnyChannelBBoxHalfOpen": [
+      66,
+      153,
+      178,
+      167
+    ],
+    "rawRGBBBoxHalfOpen": [
+      66,
+      153,
+      178,
+      167
+    ],
+    "alphaDiff": {
+      "nonzeroChannels": 939,
+      "channels": 1,
+      "mean": 0.08554253472222222,
+      "max": 87
+    },
+    "composited": {
+      "bboxHalfOpen": [
+        66,
+        153,
+        176,
+        167
+      ],
+      "nonzeroChannels": 2030,
+      "nonzeroPixels": 804,
+      "mean": 0.04253327546296296,
+      "max": 53,
+      "channels": 3
+    },
+    "regionsSupplementaryOnly": {
+      "node": {
+        "boxHalfOpen": [
+          54,
+          154,
+          66,
+          166
+        ],
+        "raw": {
+          "bboxHalfOpen": null,
+          "nonzeroChannels": 0,
+          "nonzeroPixels": 0,
+          "mean": 0.0,
+          "max": 0,
+          "channels": 4
+        },
+        "composited": {
+          "bboxHalfOpen": null,
+          "nonzeroChannels": 0,
+          "nonzeroPixels": 0,
+          "mean": 0.0,
+          "max": 0,
+          "channels": 3
+        }
+      },
+      "edge-visible": {
+        "boxHalfOpen": [
+          0,
+          158,
+          640,
+          163
+        ],
+        "raw": {
+          "bboxHalfOpen": [
+            66,
+            0,
+            178,
+            5
+          ],
+          "nonzeroChannels": 1714,
+          "nonzeroPixels": 465,
+          "mean": 2.15078125,
+          "max": 87,
+          "channels": 4
+        },
+        "composited": {
+          "bboxHalfOpen": [
+            66,
+            0,
+            176,
+            5
+          ],
+          "nonzeroChannels": 1238,
+          "nonzeroPixels": 438,
+          "mean": 2.275,
+          "max": 46,
+          "channels": 3
+        }
+      },
+      "label-supplementary": {
+        "boxHalfOpen": [
+          66,
+          148,
+          205,
+          173
+        ],
+        "raw": {
+          "bboxHalfOpen": [
+            0,
+            5,
+            112,
+            19
+          ],
+          "nonzeroChannels": 3313,
+          "nonzeroPixels": 992,
+          "mean": 3.7392086330935252,
+          "max": 87,
+          "channels": 4
+        },
+        "composited": {
+          "bboxHalfOpen": [
+            0,
+            5,
+            110,
+            19
+          ],
+          "nonzeroChannels": 2030,
+          "nonzeroPixels": 804,
+          "mean": 2.8200479616306953,
+          "max": 53,
+          "channels": 3
+        }
+      }
+    },
+    "actualEqualsEarlierFaultCanvas": {
+      "fault-canvas-2": true,
+      "fault-canvas-3": true
+    },
+    "savedOriginalPNGMatchesRecomputation": {
+      "actual-final-canvas": true,
+      "reference": true
+    }
+  },
+  "scope": {
+    "sourceBoundary": "1730a9cc7b6a4a3d54c8abae09676240f16a9351",
+    "originalNativeBoundary": "35fc7302a68d3e584499e9e71297d1a3ef5a3cc4",
+    "originalsModified": false,
+    "browserOrNativeRun": false,
+    "allDifferencesUnmasked": true,
+    "cropCoordinatesHalfOpen": [
+      48,
+      140,
+      205,
+      180
+    ],
+    "personallyInspected": "6 original full 640x360 actual/reference/diff images and 6 native-size supplementary actual/reference/amplified-diff crops",
+    "method": "bytewise absolute RGBA difference over all 640*360*4 channels; composite each original straight-RGBA image independently over declared theme RGB background with PIL alpha_composite, then bytewise full RGB difference; no exclusion mask; amplified RGB diff multiplier12 is supplemental only"
+  },
+  "derivedFilesSHA256": {
+    "dark-actual-native-crop.png": "34e13bb2f428f1fd3bfddcf5e6f51a73bcfaf105bb45adb5b37a306d9bbff7fc",
+    "dark-diff-amplified12-native-crop.png": "cba209f40aa9193b369982f25733b7209b33d8835f85185f59177df583c3a0cb",
+    "dark-diff-native-crop.png": "01247602ca2247adf1271ba3ef4110733daa92a1431ef18e676c4b2cf50580be",
+    "dark-full-composited-diff.png": "ff4bd911492fbf0dc15ddf0cd2e9b21644497ea467e1235ea48a79aded888ca9",
+    "dark-full-diff-amplified12.png": "e2cbbf4bdf0e4f8a3b6e1e6e7dccab027fdd968345ec9ca5f374b0a8f16730ab",
+    "dark-raw-rgba-diff.png": "f1de92e63d32a83b6b67d2e9d3dacd0e3def7e757b87d00f3a1190c4f4bb36d7",
+    "dark-reference-native-crop.png": "c12cd77da8bd2218c28dbc3ac700d8656baac6a3b7e696bc859f65c015dd25da",
+    "light-actual-native-crop.png": "151c0dcc6f1e3b4daf1c21ff3eb72b5a0dcb333dd42b4503ee1c984f1a01cd62",
+    "light-diff-amplified12-native-crop.png": "bf53fc1c2247e169fadb2b98d0c71e2317ff06887298023ae6cd2b38ad1d4e12",
+    "light-diff-native-crop.png": "b22a065fcdbbb85b73a4c088a90b1989e8c7e42ce7477c20df7be75a59f334d8",
+    "light-full-composited-diff.png": "d5fd20ee51efb5f6502033be0ef422e6e44784a80119a793245e734a5b718cbd",
+    "light-full-diff-amplified12.png": "b17d2e5b84377a43faa454faf157bfc0594225474401206436666e0537e1605f",
+    "light-raw-rgba-diff.png": "3be29cc2591d013a1448040e87f489f6e3fc59bf02dd1854f0707e9b78a550cb",
+    "light-reference-native-crop.png": "b5d80f2d38618a15dbb0901a3a21dd285f8c6e7639f193e7907d2adeb89f131c"
+  }
+}
