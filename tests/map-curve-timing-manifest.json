@@ -52,8 +52,8 @@
       "sha256": "710577e384118a90417aae3b598034181edd469dc52c30c159fd4fbdfa508d90"
     },
     "scripts/lib/map-curve-timing-watchdog.mjs": {
-      "bytes": 3178,
-      "sha256": "36de272e3ba68acb8fb1f00887f8e25cb96a9e13f81f2cb51de4b32fca8c15d6"
+      "bytes": 3311,
+      "sha256": "12b8797675b4da853bba5a7d4c7981ccafe2f396c6bedcd114937b3726f1fe7f"
     }
   },
   "browserFiles": [

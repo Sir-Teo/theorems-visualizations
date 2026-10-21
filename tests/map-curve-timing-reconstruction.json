@@ -3,7 +3,7 @@
   "baselinePath": "tests/map-curve-current-oracle.mjs",
   "baselineSHA256": "41874db761a1514e71a2335eac3354d406bbbc2b74d2a2f856610dccea632128",
   "candidatePath": "tests/map-curve-timing-oracle.mjs",
-  "candidateSHA256": "6a049e670ad3e60a7cf99f4c45d2d2f001d6ddc45a809f7ed61a780666a40b95",
+  "candidateSHA256": "95ed555844c04c6cdb41a6fa143832148ac4843fb0af7ea50ad7892088c8d1b7",
   "exceptions": [
     {
       "before": "import{curveCurrentFixture as currentAtlasFixture,manifestSHA256,sha}from'../scripts/lib/map-curve-current-fixture.mjs';",
@@ -103,7 +103,12 @@
     {
       "description": "Finite timeout and owned cleanup successor",
       "before": "finally{await browser?.close();await new Promise(r=>server.close(r));}",
-      "after": "finally{if(browser)await closeOwnedBrowser(browser,browserOwnership);try{await within(()=>new Promise(r=>server.close(r)),5000,'owned HTTP close');}catch(error){server.closeAllConnections();results.serverCloseFailure=error.message;await fsp.writeFile(path.join(out,'cleanup-failure.json'),JSON.stringify(results,null,2));}}"
+      "after": "finally{try{if(browser)results.browserCleanup=await closeOwnedBrowser(browser,browserOwnership);}catch(error){results.browserCleanupFailure={message:error.message,stack:error.stack};}try{await within(()=>new Promise(r=>server.close(r)),5000,'owned HTTP close');}catch(error){server.closeAllConnections();results.serverCloseFailure=error.message;}if(results.browserCleanupFailure||results.browserCleanup?.cleanupFailure||results.serverCloseFailure)await fsp.writeFile(path.join(out,'cleanup-failure.json'),JSON.stringify(results,null,2));}"
+    },
+    {
+      "description": "Bounded cleanup independent of PID capture",
+      "before": "results.salvage=await salvageFailure(activePage,activeVariant,e.message);",
+      "after": "results.salvage=await within(()=>salvageFailure(activePage,activeVariant,e.message),5000,'failure salvage');"
     }
   ]
 }
