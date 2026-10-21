@@ -1,6 +1,6 @@
 # S2 connected-control diagnostic — root result
 
-The one old S2/light diagnostic exits zero from immutable `63608647d8bf52a872f9e4c6493fb54b693d88b5` after source/PREPARE peer `dc8c9f67a7c8ab6f11b949916ed80ee7f0c8b390`. This is a completed measurement case, with independent saved-evidence review pending. It does not close the Canvas reference discrepancy or any repaired lifecycle gate.
+The one old S2/light diagnostic exits zero from immutable `63608647d8bf52a872f9e4c6493fb54b693d88b5` after source/PREPARE peer `dc8c9f67a7c8ab6f11b949916ed80ee7f0c8b390`. This is a completed measurement case, with [independent saved-evidence review](map-tiny-s2-connected-run-independent-imaging-peer.md) complete at `a446d806edf3b8c7de7acb162754ba839e823cdc`. It does not close the Canvas reference discrepancy or any repaired lifecycle gate.
 
 The first invocation stopped before browser/server launch: generated `/tmp/atlas-root-s2-connected-state/native-runner.mjs` could not resolve bare `playwright-core` from its external output directory. Its four preparation files and sibling log remain intact. Root corrected only dependency resolution by choosing a fresh output inside the same immutable source stage, which already has the dependency symlink; no renderer, reference, threshold or observer source changed. The successful command, using Node22.23.3, was:
 

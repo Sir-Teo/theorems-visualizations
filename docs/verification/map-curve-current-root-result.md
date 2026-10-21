@@ -1,0 +1,25 @@
+# Current-atlas light curve case — root result
+
+The one current-light curve case passes from immutable `148407f0511684acd86de70a01fecd6b63c4cdc1`. [Independent saved-evidence review](map-curve-current-run-independent-imaging-peer.md) passes at `85090e0a2c5c6d72bd7a1dfce1ce2e3c79df0b0a`. All four main frames use actual optimized submissions with zero original fallback. This is one state's correctness and logical-fit acceptance, not matrix, lifecycle, timing, production or 60 fps acceptance.
+
+The independently accepted 32-case tiny gate (`b2dcdf28`) completed first. All six workers then explicitly acknowledged a fresh quiet hold. Root ran, using Node 22.23.3:
+
+```sh
+MAP_CURVE_CURRENT_OUTPUT=/tmp/atlas-root-curve-current-state /tmp/atlas-ci-node22-20261020/node tests/map-curve-current-oracle.mjs --root-authorized-curve-current-light-state
+```
+
+The stage is `/tmp/atlas-root-curve-current-stage`; unique saved output and sibling log remain at the paths above. The runner exits zero, closes both browsers/server and stops at no gate. Root explicitly released all six holds afterward. No unchanged retry occurred. Integration source `795e60b1` and peer `25dd5acd` preserve all original gates outside their seven recorded literals and add positive per-main-ordinal submissions. Exact f8 runtime/math, tiny source/native peers and the pinned normal-writer premise remain applicable; no unrelated scene lifecycle transform is included.
+
+The frozen current checkpoint 12 input is `94a77908068d8c6a3be5fbe10808d0910195facf`: 13,574 nodes/23,955 edges, definitions/planned enabled. Complete 2,179-file base and both 2,191-path served inventories are pinned. This is light 3840×2160/DPR2, map 3840×2092, backing 7680×4184; A0–A3 use k = 0.8, tx = 1574.35, ty = −1071.0500000000002. Actual LADR single-shard hydration and font-role census run unchanged. Chrome reports 155.0.8059.85.
+
+All eight 128,532,480-byte raw arrays have SHA256 `7d92770cb067446ac7183c2df631f711483037c9cedc50c55b6befae2de2c822`. All seven cold/warm and corresponding-ordinal comparisons have zero changed RGBA channels/pixels and maximum zero. The complete unmasked direct-Canvas comparison is identical across variants: mean RGB difference 0.5683512110453846 on the 0–255 scale; RGB-channel fraction with absolute difference above 20 is 0.0020163411873273846. Both existing bounds pass. Independent review decodes every complete image and personally inspects all 27 whole pictures plus 19 native crops.
+
+Each A0–A3 has 125 optimized tile visits, 152 successfully submitted chunks and 1,741,699 indices, zero original binds/replays/stale aborts/drops. Three earlier unselected draws each submit 1,758,720 indices; five selected draws each submit 1,913,210 through 13 tiles/66 chunks. Those preceding draws have no saved main raw image and are not promoted to additional pixel cases. Full-case submission evidence is source-linked successful counters and a rolling 32-event log; raw full-case index arrays/unbounded low-level GL traces were not saved. The tiny gate has its own complete index-stream evidence.
+
+Original resource history is exactly equal across variants: 447 events from empty ownership, original retained 57,483,620 and peak 59,375,200 bytes. The curve context retains 579,016 bytes of metadata/bookkeeping and 262,144 fixed scratch bytes, optional total 841,160. Actual total retained/peak is 58,324,780/60,216,360, within 64,000,000, with no optional drops. The three models remain owned; mask area 7,999,488 pixels, primary samples zero and GPU input Canvas one pixel. These retained snapshots precede browser closure. Diagnostic four-array storage 514,129,920 bytes per context, primary framebuffer 128,532,480 bytes, original staging and unmeasured driver/compositor storage are outside the logical cap; no physical-memory ceiling follows.
+
+The 7,493-entry renderer traces are exactly equal, reset at 4904. All 12 draws have zero GL/read errors, and all post-capture renderer/callback tails are empty. Each context retains its own protected 33-event/four-network prefix, quiet 77→77 and actual font/shard provenance. Cross-context callback arrays/prefixes are **not** identical: 13 events differ, comprising two FontFace orderings and 11 stack-string line offsets from the extra accounting import. Exact differences are preserved; no normalization or whole-array equality is claimed. These differences do not relax the required within-context prefix/quiet gates.
+
+Root independently reopens 998 pieces/1,041,157,631 bytes, all exact offsets/lengths/SHA256, full coverage and owner sums/peaks, and compares all 447 original ledger projections. Audits `/tmp/atlas-continuation/curve-current-root-transport-ledger.json` and `curve-current-root-binding-ordinals.json`. `complete.json` SHA256 is `509fca9f764b80bc89c580abbe2837f674b34f71cc77d89b0fd7ddf58478c0b8`.
+
+Earlier failures, the earlier current packed-XY fallback case, unsupported style-ID mutation witnesses and unresolved S2 observations remain separate evidence. Production assets are unchanged. Wider native cases and performance require their own observed gates; Wave 5 remains prepared and unstarted.

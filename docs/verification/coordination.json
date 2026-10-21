@@ -24,7 +24,7 @@
       "Acceptedwrittenprerequisitegatecomplete:all64nonmathcollections\u226525writteninputs,0shortfall/unknowns,48furthercollections meettarget. Sourcequeue5unchanged.",
       "Latest immutable checkpoint14 (5eb8fb42) passes all 2,233 tests on existing CI major Node22.23.3, strict/static/queue/inventory checks pass. Prior Node26 checkpoint13 failure and independent diagnostics remain unresolved compatibility evidence; no assertion/model/runtime policy changed.",
       "Rejected chunk prototype remains unaccepted. Original-only control reproduces its cold/warm discrepancy; no renderer or timing acceptance.",
-      "Frozen light/dark optimized cases independently accepted. The current light case at d7d07ed8 independently passes fallback/protocol review at053f24f2: all twelve alternate draws bind original indices after initialization metadata drops. Current optimized binding, wider matrix, native lifecycle and 60 fps remain open.",
+      "Frozen light/dark optimized cases, one current packed-XY fallback case and the new current-light curve case are independently accepted at their exact boundaries. Current curve main frames use 125 tiles/152 chunks/1,741,699 indices with zero fallback and logical peak 60,216,360. Wider matrix, lifecycle, production and 60 fps remain open.",
       "Frozen BIGHIST3.5 service restriction persists; no retry or edge acceptance."
     ]
   },
@@ -32,8 +32,8 @@
     {
       "agent": "logic_peer",
       "worktree": "/Users/teodev/.codex/worktrees/atlas-logic-peer/theorems-visualizations",
-      "status": "curve-current-browser-heavy-hold",
-      "current": "Fresh explicit quiet acknowledgement received for root single current curve light case at148407f0. All browser/server/heavy/model/PREPARE jobs closed; light reading only until root release.",
+      "status": "bounded-performance-plan",
+      "current": "Read-only plan for a finite matched current-light performance check; no implementation or timing.",
       "owns": [
         "Unique isolated prototype/model/native/resource reports; production and shared runtime preserved"
       ],
@@ -42,8 +42,8 @@
     {
       "agent": "deep_peer",
       "worktree": "/Users/teodev/.codex/worktrees/atlas-deep-peer/theorems-visualizations",
-      "status": "curve-current-browser-heavy-hold",
-      "current": "Fresh explicit quiet acknowledgement received for root single current curve light case at148407f0. All browser/server/heavy/model/PREPARE jobs closed; light reading only until root release.",
+      "status": "available-peer",
+      "current": "All jobs closed; available for next bounded independent source review.",
       "owns": [
         "Unique independent binding/pixel/resource/lifecycle evidence after immutable producer boundary"
       ],
@@ -52,8 +52,8 @@
     {
       "agent": "arch_source",
       "worktree": "/Users/teodev/.codex/worktrees/atlas-arch-source/theorems-visualizations",
-      "status": "curve-current-browser-heavy-hold",
-      "current": "Fresh explicit quiet acknowledgement received for root single current curve light case at148407f0. All browser/server/heavy/model/PREPARE jobs closed; light reading only until root release.",
+      "status": "performance-plan-review",
+      "current": "Reviewing immutable performance plan for comparability/observer/cadence/early-stop limits; no timing.",
       "owns": [
         "QINFO content and bounded correctness/metadata successors"
       ],
@@ -62,8 +62,8 @@
     {
       "agent": "imaging_source",
       "worktree": "/Users/teodev/.codex/worktrees/atlas-imaging-source/theorems-visualizations",
-      "status": "curve-current-browser-heavy-hold",
-      "current": "Fresh explicit quiet acknowledgement received for root single current curve light case at148407f0. All browser/server/heavy/model/PREPARE jobs closed; light reading only until root release.",
+      "status": "current-curve-native-peer-complete",
+      "current": "Current curve independent saved-evidence audit complete; all jobs closed. No new browser or timing case.",
       "owns": [
         "Unique CLIMATE peer evidence; REL producer boundary complete"
       ],
@@ -72,8 +72,8 @@
     {
       "agent": "thermo_prereqs",
       "worktree": "/Users/teodev/.codex/worktrees/atlas-thermo-prereqs/theorems-visualizations",
-      "status": "curve-current-browser-heavy-hold",
-      "current": "Fresh explicit quiet acknowledgement received for root single current curve light case at148407f0. All browser/server/heavy/model/PREPARE jobs closed; light reading only until root release.",
+      "status": "saved-cost-inventory-complete",
+      "current": "Read-only current cost inventory complete: mask-shape ambiguity retained, aggregate memberships/range-check count established; no timing.",
       "owns": [
         "Unique REL peer evidence; CLIMATE producer boundary complete"
       ],
@@ -82,8 +82,8 @@
     {
       "agent": "ctrl_prereqs",
       "worktree": "/Users/teodev/.codex/worktrees/atlas-ctrl-prereqs/theorems-visualizations",
-      "status": "curve-current-browser-heavy-hold",
-      "current": "Fresh explicit quiet acknowledgement received for root single current curve light case at148407f0. All browser/server/heavy/model/PREPARE jobs closed; light reading only until root release.",
+      "status": "s2-readback-plan-complete",
+      "current": "Read-only single-factor S2 readback isolation plan complete; no implementation or native case.",
       "owns": [
         "CM producer; GEOG independent peer complete"
       ],
@@ -3388,17 +3388,18 @@
     "source": "4c49910a41606f3911d7332121cab7d15a640676",
     "sourcePeer": "dc8c9f67a7c8ab6f11b949916ed80ee7f0c8b390",
     "stageCommit": "63608647d8bf52a872f9e4c6493fb54b693d88b5",
-    "status": "one-measurement-case-exit-zero-saved-evidence-peer-pending",
+    "status": "independently-reviewed-one-measurement-case-reference-unresolved",
     "report": "docs/verification/map-tiny-s2-connected-root-result.md",
     "output": "/tmp/atlas-root-s2-connected-stage/native-evidence",
     "preservedPrelaunchFailure": "/tmp/atlas-root-s2-connected-state",
     "causeEstablished": false,
     "referenceChanged": false,
     "lifecycleAccepted": false,
-    "additionalNativeAuthorised": false
+    "additionalNativeAuthorised": false,
+    "nativePeer": "a446d806edf3b8c7de7acb162754ba839e823cdc"
   },
   "curveCurrentIntegration": {
-    "status": "source-model-prepare-accepted-tiny-native-accepted-six-holds-closed-ready-one-full-run",
+    "status": "independently-accepted-one-current-light-optimized-case",
     "producer": "795e60b1ff14b89ce162d9dc354b12c7b72a4ff2",
     "peer": "25dd5acdba9b98189c5acbfc7d3bb4e47f74c781",
     "report": "docs/verification/map-curve-current-independent-peer.md",
@@ -3407,10 +3408,22 @@
     "rootModel": "/tmp/atlas-root-curve-current-integrated-model/proposal.json",
     "rootLog": "/tmp/atlas-continuation/curve-current-integrated-model.log",
     "rootRuntime": "Node22.23.3",
-    "nativeRun": false,
+    "nativeRun": true,
     "prerequisite": "Separate reviewed edge-only tiny native correctness gate must pass before the one full current-light case. Source callbacks/lifecycle and production/performance remain outside this acceptance.",
-    "allSixQuiet": true,
-    "output": "/tmp/atlas-root-curve-current-state"
+    "allSixQuiet": false,
+    "output": "/tmp/atlas-root-curve-current-state",
+    "nativePeer": "85090e0a2c5c6d72bd7a1dfce1ce2e3c79df0b0a",
+    "nativeReport": "docs/verification/map-curve-current-root-result.md",
+    "logicalPeak": 60216360,
+    "retained": 58324780,
+    "optimizedTilesPerMain": 125,
+    "chunksPerMain": 152,
+    "indicesPerMain": 1741699,
+    "originalBindsPerMain": 0,
+    "holdsReleased": true,
+    "performanceAccepted": false,
+    "lifecycleAccepted": false,
+    "productionAccepted": false
   },
   "curveEdgeTiny": {
     "source": "83add753c6db71a142f7c58dd772390f5b809f58",
