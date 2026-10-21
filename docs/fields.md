@@ -40,6 +40,7 @@ an eigen-direction, an orthonormal frame, an ellipse's axes) with live numbers.
 
 ## Physics & astronomy, Earth & environment, engineering
 
+- Separate a map's linear scale from an empirical feature-count rule: for fixed ground extent, width changes by the denominator ratio, while Töpfer's target count uses its square root. Distinguish finite-time mass conservation from a cartogram's uniform-density area target, and state orientation/injectivity before using a signed Jacobian. See the [GEOG7 review](verification/wave5-geog-review.md).
 - **Deps** are derivational: the derivation starts from that law or uses that theorem. A law
   taken as a postulate (Newton's second law, Maxwell's equations) may have only mathematical
   deps, or none.
@@ -110,6 +111,8 @@ an eigen-direction, an orthonormal frame, an ellipse's axes) with live numbers.
 - Separate encounter coefficients, surface reaction speeds and first-order transfer rates. The diffusion coefficient in m³/s needs the factor 1000 Nₐ to become L mol⁻¹ s⁻¹. Declare electrochemical current signs and distinguish a one-way Tafel/film approximation from the signed net Butler–Volmer current. See the [kinetics review](verification/wave5-kin-review.md).
 
 ## Biology
+
+- Initialize a finite diploid sample on its actual count grid K/(2N), and compare it with a deterministic trajectory starting at that same frequency. A finite positive mutation matrix retains positive equilibrium frequencies; a sharp long-sequence error threshold does not make a finite displayed genotype vanish exactly. See the [mutation/migration review](verification/wave5-popgen-review.md).
 
 - **Populations of individuals**: the `agents` kit (individual-based models) beside the
   deterministic equation they converge to — Hardy–Weinberg proportions, logistic growth,
