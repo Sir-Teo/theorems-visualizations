@@ -1,0 +1,297 @@
+{
+  "producer": "f8eb0b366bb98ff906315469f9cc022089f73465",
+  "base": "90e2e8166a8553008490c67f68ec5fbc862c2045",
+  "nativeEvidence": false,
+  "existingSourceCount": 64,
+  "preservedSources": {
+    "assets/js/bridge-viz.js": "4413080f2614b8164cd697e436b33999eeeef77f09020aa0249250fdc5bbd84c",
+    "assets/js/graph.js": "9a8850528193c87e97deba14a387bebff3215e9e67569c125cac265e061f94fc",
+    "assets/js/map-scene-gl.js": "b94855c4988e6c7d951d97ca9f2fa773d25ae828872ff6dee79cd42decdda4dc",
+    "assets/js/map-scene-retained.js": "0659133f70f7ab8afd5e77cc3008ad636314a1a1d1e7d8fd2e1d3a87b536b4c0",
+    "assets/js/map-scene-edges.js": "7b3fcf731105674252465c1376942b2f2b549fa51f9a3c9a3ee581a10c242262",
+    "assets/js/map-scene-text.js": "fbd1cb00b5028d5e2897ff7e3b8384c37429285d51749be4d762b9be2253b8ed",
+    "assets/js/map-scene-decorations.js": "402fe1d8a452b3e91062539c8825bd1f6cb39fadb892ab05e3bb5d38ccd629aa",
+    "assets/js/share-state.js": "13c6a9ac1237d566fc5d79c89e0f4d3029aa8c2817d2c08247a02b1b053a59b1",
+    "assets/js/map-scene-worker.js": "d913af8f8baf5ea8a0a83d504332ceb4fdd17e58e48cc560c246e08ed8690009",
+    "assets/js/bridge-models.js": "2d9c9dd544caae318e7a645aef917a56b5ad2045dc427831346e99dd596a1351",
+    "assets/js/map-webgl-edges.js": "a94adc269a272c8bbc1bc0be9b83f60598408c46fce28af8f8d0e717a8fd7ed5",
+    "assets/js/map-webgl-scene.js": "2422e59c2780e19e0c7b5c11da56127bc23718925ddde3e4d71527e4e45c21b5",
+    "assets/js/map-scene-model.js": "a7d10c9ba64acd3f4be8307d07461e0d9fad04f567d0d40dbbebfa37f2a581af",
+    "assets/js/search.js": "da2ff6a2b7d99438e95de816b770ae3ac7e626ce693f5eb828863494ea8e7016",
+    "assets/js/map-scene-painter.js": "082ce9a34a86ad1d9e91d275174bc9d90cd47b2c22eeb4e1391318defbd9454d",
+    "assets/js/app.js": "c9058dfa4df306f90b71c5a90385f8567285471b5ba954b0d47812ceaa8cbc9d",
+    "assets/js/viz/core.js": "a6fa1753d9d9e8b9a05a7161fffc58dfd53b27002d9d393a3266aeb96515fe73",
+    "assets/js/viz/math.js": "439c335e1cc47907bc72bb76559216aa093be4710e0589f41c70192729eb223e",
+    "assets/js/viz/kits/graph.js": "0dff41290f733d94184137f411e2ccd522d684539e13e1e8554e66683cbb3020",
+    "assets/js/viz/kits/icons.js": "bab323bb65d4e87010e44d6d9cb91b2df6da2f6f3e2ed30f8eda3756939424c1",
+    "assets/js/viz/kits/agents.js": "b0e03e60fc66411c01be9e59e2d794e4d5962b8ab982988088b2266e0fbd7c2f",
+    "assets/js/viz/kits/mol.js": "3e8f5c32aa0854c10d45bfcdead9326e312e409500a307c77ad5feb12ee2ca92",
+    "assets/js/viz/kits/globe.js": "c6b1ba09b4fdd95c4c37c4ab571bf55a45ac2651f8e25a1a96016a75a0f5755e",
+    "assets/js/viz/kits/tree.js": "90484a11592d5e1085427cb8761fc26784be90de12f076799c3f1ef52c34d21e",
+    "assets/js/viz/kits/steps.js": "3c831784b6108b2e94037876f915b00dea3a019749f1d127f2c73436c72cbb57",
+    "assets/js/viz/kits/fields.js": "78c7d6b09f4d4e7b71551917477309df0fbd1ff724df5b8d08d7f452598f2717",
+    "assets/js/viz/kits/index.js": "968f6764318d017ce6eb71f78076fefaa06efec43eb93e1c8b35136410fe2cb6",
+    "assets/js/viz/kits/timeline.js": "ba10c23247693848df86685092804688510cdd901f1e48722ff9e568b63a715c",
+    "assets/js/viz/kits/circuit.js": "9dcbc0b85981e365ef85dd7ac5949e4ce5154f40349fd42c668fbc6bfada8f3a",
+    "assets/js/viz/kits/scene3.js": "6bb39606286b683ee1a4fc8be22cfba21b9659c5e5ac5a3a2958e1995425a646",
+    "assets/js/viz/kits/pplane.js": "cef635e0fe1f661206da1591fdcf41c02680489dc7790736aab5279720039341",
+    "assets/js/viz/kits/table.js": "6a61d593ae8511d116483ea33daa56028aba85fee9e763df5d84b8de8175d9e2",
+    "assets/js/viz/kits/quantum.js": "f1dc9a7340baec1e33f85ccde98509fd2a7e2d7f4aff40024310dfc0aa2a528d",
+    "assets/js/viz/kits/world-110m.js": "b6f20774009d2da1214d0ea0800a7386447a22d304341627c099b76affce305e",
+    "assets/js/viz/kits/curves.js": "186724e84338bef7e0b9f5222db8097f2ea2c0b33ef516b3277e739c9632ef57",
+    "scripts/lib/map-segment-mesh-enclosure.mjs": "703dec2779911573b11e67cfd34c98cd9dfb84dc4803e393af0d8fd1619614b1",
+    "scripts/lib/map-text-atlas-gutter-prototype.mjs": "f7898bd94a04d68af7be2085428e38f2a4b61fe807e2252ea193c00dda48e124",
+    "scripts/lib/map-paired-guarded-fixture.mjs": "dcae80e2fa4a777846a3bd952acf45879267db1ec9aca49965e5a4de6f896d0f",
+    "scripts/lib/map-paired-selected-shard-tiny.mjs": "cabca6e15d35367ce1086beddd2e1b62506a12e9541a00983727cb17b4a97fe9",
+    "scripts/lib/map-chunked-indices-fixture.mjs": "148274402c35aed9312fb52f22de0f25063b2de455b2c48a964663baffccd555",
+    "scripts/lib/map-paired-dark-case.mjs": "7204988f447629719fbd17066e4f97f3eb71ff73d6ad6d81d030863a681b0df3",
+    "scripts/lib/map-paired-quiescence.mjs": "12abb9a6cad6a953dea588d1235d1ce0ec867ceb2c1fe700b9467d545102b274",
+    "scripts/lib/map-retained-prototype.mjs": "6a5cee302631de049f20623e0faccc7369f32dfc561443a5b5ea368f4c6f1236",
+    "scripts/lib/map-paired-guarded-epoch.mjs": "bcffc405baf45b609b46cb9a85f8fb359b93d3a37e9f78182e23540ff21e9eb9",
+    "scripts/lib/map-paired-artifacts.mjs": "4cd9c89954e5ad3ea71acf8bf2f8cebb9ca59128ceb18ae741581ea3c9a5bcf7",
+    "scripts/lib/map-text-atlas-probe.mjs": "db353a1d411fa31f3e64e69647c11dd2c6fe724fc644a2e11e652ffcb1cc6c7b",
+    "scripts/lib/map-canvas-compositor-fixture.mjs": "650ee15f365cd147acc99b57ae6ee7a174205baff0b76ff53e3dab305dda1d3a",
+    "scripts/lib/map-complete-raster-dom-fixture.mjs": "7ed446cf7db995d5ddf89d4a0b853d3d801f4459a7b10fc84b1b7ce2842ee1cc",
+    "scripts/lib/map-complete-raster-dom-prototype.mjs": "66ca81f68d462d447cdcc6ff6a235be64be13b0be8d574270b6c50fc8655de74",
+    "scripts/lib/map-current-atlas-fixture.mjs": "6ece94324d18fcab675fd233137106797c235e67b753428060a056cf4e7e1e1f",
+    "scripts/lib/map-canvas-compositor-prototype.mjs": "2ef8f9e43899e3858a514daf3f433eb71fc194c25751e3600b78b99788ad54fd",
+    "scripts/lib/map-webgl-prototype.mjs": "b35941137cbd664ffc051399f154bb18449ed66e0127b8211d79bb8ad674d42a",
+    "scripts/lib/map-chunked-indices-runtime.mjs": "3c8b01c4df2d5497f27d7d65876adbfaebbbdcd659cf2c8cb29d25714896c187",
+    "scripts/lib/map-chunked-indices-prototype.mjs": "c6704721acd140e3dce10b82c93f321bf658fd517a6f0cce495bf0e8d1aeaecb",
+    "scripts/lib/map-paired-resource-observer.mjs": "db7993cfdb69c85badfc2aa26f728119aad8bfcdef0f96b6e3625bcd7322bfb6",
+    "scripts/lib/map-paired-selected-shard-fixture.mjs": "960642e4033e3663c581bc9938a456b5824fd3fe5eede5a7f9f680c2910330db",
+    "scripts/lib/map-scene-prototype.mjs": "76eb562cebb368c00cbcfcbbedf31591ce6a32b8adaf85adfa0c7aeea8bfe68f",
+    "scripts/lib/map-paired-atlas-observer.mjs": "7c50053bc9a2c10fe92cfddcb0cd0a6854f2dc4eeb9cf6e32ebdf2620f6e86b1",
+    "scripts/lib/map-paired-selected-shard.mjs": "77e7ad020a0821abbb520f1945825a9582cb5a9c934d528f299b9b8d3ec83152",
+    "scripts/lib/map-lifecycle-private-repair.mjs": "9ec0b170cfe7f4624e9bda4a71dbb6a5614be3d55bfad66343a0d92970ab9da6",
+    "scripts/lib/map-retained-fixture.mjs": "61fe93dd8a59cae834923994e8f4cf939077726892a91bd2ed258000d15273d5",
+    "scripts/lib/map-paired-font-census.mjs": "6a9fc04e4e6c9a5999a4b5b04d6d7fe656b9d124ecaa92091d7c1be11ed91fa1",
+    "scripts/lib/map-complete-raster-dom-runtime.mjs": "96864a8afe42fc63d034d6df76dd5979bd3066ddbf789fea5cc1c86bfeeff70d",
+    "scripts/lib/map-canvas-compositor-runtime.mjs": "059cfb397057e0211a4a62d2f0178d27ef20789bae7923ad3c18269af6fe9a25"
+  },
+  "newSourceHashes": {
+    "scripts/lib/map-curve-bounds-runtime.mjs": "00bdd96fd63de01b9921b489e1a8995340e88b6034ee2b75fa94fce901b14ee2",
+    "scripts/lib/map-curve-bounds-math.mjs": "1c646d5bb385e26cfaad198f0f04c2940d9a1990aa25ad27c25ddb7f8ea462ea"
+  },
+  "firstToolingFailure": {
+    "outputDirectory": "/tmp/atlas-new-curve-prototype-peer/independent",
+    "cause": "Attempted standalone producer ancestry archive; new module imports base-only map-chunked-indices-runtime.mjs absent there. No model ran. Corrected explicit base+two-source composition, preserving all base sources."
+  },
+  "rawArtifacts": {
+    "/tmp/atlas-new-curve-prototype-peer/producer-rerun/proposal.json": {
+      "sha256": "c138e04a4b778f945a32c20276e43b049b5debd795aabd4dca6b8431882e1501",
+      "bytes": 15288974
+    },
+    "/tmp/atlas-new-curve-prototype-peer/independent-composed/results.json": {
+      "sha256": "725ce6fe1fab18fd2b7207f38a1f44e2b0991da8aa7450fcf9e16bd967524558",
+      "bytes": 9431
+    }
+  },
+  "independentRunnerExit": 0,
+  "independentSafetyExpectationFailures": [
+    "same-count-style-IDs-rewrite-before-bind",
+    "same-count-style-IDs-rewrite-mid-prefix"
+  ],
+  "arithmeticComparisons": 6144,
+  "conditionalStorage": {
+    "frozenPaths": 23364,
+    "boundsAndMappingBytes": 560736,
+    "XYBytes": 9291784,
+    "savedBytes": 8731048,
+    "frozenOriginalEnvelope": 55426696,
+    "currentPaths": 23955,
+    "currentOptionalBytes": 841160,
+    "currentOriginalPeak": 59375200,
+    "conditionalCurrentEnvelope": 60216360
+  },
+  "independentChecks": 6164,
+  "ownCaseResults": [
+    {
+      "name": "unchanged-snapshot",
+      "pass": true,
+      "failure": null,
+      "actualLastIndex": 0,
+      "expectedLastIndex": null,
+      "composites": 1,
+      "cleanupBytes": 0,
+      "stats": {
+        "optimizedTiles": 1,
+        "originalBinds": 0,
+        "staleAborts": 0,
+        "liveReplays": 0
+      },
+      "arithmeticCases": null
+    },
+    {
+      "name": "range-snapshot-rewrite-before-bind",
+      "pass": true,
+      "failure": null,
+      "actualLastIndex": null,
+      "expectedLastIndex": null,
+      "composites": 1,
+      "cleanupBytes": 0,
+      "stats": {
+        "optimizedTiles": 0,
+        "originalBinds": 1,
+        "staleAborts": 0,
+        "liveReplays": 0
+      },
+      "arithmeticCases": null
+    },
+    {
+      "name": "range-snapshot-rewrite-mid-prefix",
+      "pass": true,
+      "failure": null,
+      "actualLastIndex": 0,
+      "expectedLastIndex": null,
+      "composites": 0,
+      "cleanupBytes": 0,
+      "stats": {
+        "optimizedTiles": 0,
+        "originalBinds": 0,
+        "staleAborts": 1,
+        "liveReplays": 0
+      },
+      "arithmeticCases": null
+    },
+    {
+      "name": "release-only-real-owner-mid-prefix",
+      "pass": true,
+      "failure": null,
+      "actualLastIndex": 0,
+      "expectedLastIndex": null,
+      "composites": 0,
+      "cleanupBytes": 0,
+      "stats": {
+        "optimizedTiles": 0,
+        "originalBinds": 0,
+        "staleAborts": 1,
+        "liveReplays": 0
+      },
+      "arithmeticCases": null
+    },
+    {
+      "name": "released-original-owner-before-bind",
+      "pass": true,
+      "failure": null,
+      "actualLastIndex": null,
+      "expectedLastIndex": null,
+      "composites": 0,
+      "cleanupBytes": 0,
+      "stats": {
+        "optimizedTiles": 0,
+        "originalBinds": 0,
+        "staleAborts": 1,
+        "liveReplays": 0
+      },
+      "arithmeticCases": null
+    },
+    {
+      "name": "metadata-denial-inherited-original-buffer",
+      "pass": true,
+      "failure": null,
+      "actualLastIndex": null,
+      "expectedLastIndex": null,
+      "composites": 1,
+      "cleanupBytes": 0,
+      "stats": {
+        "optimizedTiles": 0,
+        "originalBinds": 1,
+        "staleAborts": 0,
+        "liveReplays": 0
+      },
+      "arithmeticCases": null
+    },
+    {
+      "name": "live-gl-failure-full-replay",
+      "pass": true,
+      "failure": null,
+      "actualLastIndex": 0,
+      "expectedLastIndex": null,
+      "composites": 1,
+      "cleanupBytes": 0,
+      "stats": {
+        "optimizedTiles": 0,
+        "originalBinds": 1,
+        "staleAborts": 0,
+        "liveReplays": 1
+      },
+      "arithmeticCases": null
+    },
+    {
+      "name": "same-count-style-IDs-rewrite-before-bind",
+      "pass": false,
+      "failure": "Expected values to be strictly deep-equal:\n\n2 !== 0\n",
+      "actualLastIndex": 2,
+      "expectedLastIndex": 0,
+      "composites": 1,
+      "cleanupBytes": 0,
+      "stats": {
+        "optimizedTiles": 1,
+        "originalBinds": 0,
+        "staleAborts": 0,
+        "liveReplays": 0
+      },
+      "arithmeticCases": null
+    },
+    {
+      "name": "same-count-style-IDs-rewrite-mid-prefix",
+      "pass": false,
+      "failure": "Expected values to be strictly deep-equal:\n\n2 !== 0\n",
+      "actualLastIndex": 2,
+      "expectedLastIndex": 0,
+      "composites": 1,
+      "cleanupBytes": 0,
+      "stats": {
+        "optimizedTiles": 1,
+        "originalBinds": 0,
+        "staleAborts": 0,
+        "liveReplays": 0
+      },
+      "arithmeticCases": null
+    },
+    {
+      "name": "seeded-actual-computed-box-domination",
+      "pass": true,
+      "failure": null,
+      "actualLastIndex": null,
+      "expectedLastIndex": null,
+      "composites": null,
+      "cleanupBytes": null,
+      "stats": {
+        "optimizedTiles": null,
+        "originalBinds": null,
+        "staleAborts": null,
+        "liveReplays": null
+      },
+      "arithmeticCases": 6144
+    }
+  ],
+  "writerAudit": {
+    "commit": "583599479a0b0fd358c8702d79159bc0137bc8d2",
+    "evidenceSHA256": "e8fcde5b65e67835e1dc72e5996e651e90fdfd7f62622e594754ce072896cfb4",
+    "verifiedSourceCount": 19,
+    "verifiedAgainstBaseAndD7": {
+      "assets/js/app.js": "c9058dfa4df306f90b71c5a90385f8567285471b5ba954b0d47812ceaa8cbc9d",
+      "assets/js/graph.js": "9a8850528193c87e97deba14a387bebff3215e9e67569c125cac265e061f94fc",
+      "assets/js/map-webgl-scene.js": "2422e59c2780e19e0c7b5c11da56127bc23718925ddde3e4d71527e4e45c21b5",
+      "assets/js/map-scene-model.js": "a7d10c9ba64acd3f4be8307d07461e0d9fad04f567d0d40dbbebfa37f2a581af",
+      "assets/js/map-scene-worker.js": "d913af8f8baf5ea8a0a83d504332ceb4fdd17e58e48cc560c246e08ed8690009",
+      "assets/js/map-scene-edges.js": "7b3fcf731105674252465c1376942b2f2b549fa51f9a3c9a3ee581a10c242262",
+      "assets/js/map-scene-gl.js": "b94855c4988e6c7d951d97ca9f2fa773d25ae828872ff6dee79cd42decdda4dc",
+      "assets/js/map-webgl-edges.js": "a94adc269a272c8bbc1bc0be9b83f60598408c46fce28af8f8d0e717a8fd7ed5",
+      "assets/js/map-scene-painter.js": "082ce9a34a86ad1d9e91d275174bc9d90cd47b2c22eeb4e1391318defbd9454d",
+      "assets/js/map-scene-text.js": "fbd1cb00b5028d5e2897ff7e3b8384c37429285d51749be4d762b9be2253b8ed",
+      "scripts/lib/map-scene-prototype.mjs": "76eb562cebb368c00cbcfcbbedf31591ce6a32b8adaf85adfa0c7aeea8bfe68f",
+      "scripts/lib/map-chunked-indices-prototype.mjs": "c6704721acd140e3dce10b82c93f321bf658fd517a6f0cce495bf0e8d1aeaecb",
+      "scripts/lib/map-chunked-indices-runtime.mjs": "3c8b01c4df2d5497f27d7d65876adbfaebbbdcd659cf2c8cb29d25714896c187",
+      "scripts/lib/map-paired-selected-shard.mjs": "77e7ad020a0821abbb520f1945825a9582cb5a9c934d528f299b9b8d3ec83152",
+      "scripts/lib/map-paired-guarded-epoch.mjs": "bcffc405baf45b609b46cb9a85f8fb359b93d3a37e9f78182e23540ff21e9eb9",
+      "scripts/lib/map-paired-atlas-observer.mjs": "7c50053bc9a2c10fe92cfddcb0cd0a6854f2dc4eeb9cf6e32ebdf2620f6e86b1",
+      "scripts/lib/map-paired-quiescence.mjs": "12abb9a6cad6a953dea588d1235d1ce0ec867ceb2c1fe700b9467d545102b274",
+      "scripts/lib/map-paired-resource-observer.mjs": "db7993cfdb69c85badfc2aa26f728119aad8bfcdef0f96b6e3625bcd7322bfb6",
+      "assets/js/map-scene-decorations.js": "402fe1d8a452b3e91062539c8825bd1f6cb39fadb892ab05e3bb5d38ccd629aa"
+    },
+    "claim": "Exact closed-world no normal writer inside original creation-to-bind lifetime. No mutation resilience; both own adversarial failures preserved."
+  }
+}
