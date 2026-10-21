@@ -17510,9 +17510,9 @@
   "authoringDirection": "User confirmed prior work done; continuously author future waves without routine pauses.",
   "progress": {
     "total": 1031,
-    "written": 663,
-    "remaining": 368,
-    "writtenChapters": 51,
+    "written": 694,
+    "remaining": 337,
+    "writtenChapters": 53,
     "chapters": [
       {
         "collection": "ode",
@@ -18055,10 +18055,27 @@
         "collection": "toc",
         "chapter": 5,
         "total": 16,
-        "written": 0,
-        "remaining": 16,
-        "writtenItems": [],
-        "status": "planned"
+        "written": 16,
+        "remaining": 0,
+        "writtenItems": [
+          "toc-5.1",
+          "toc-5.2",
+          "toc-5.3",
+          "toc-5.4",
+          "toc-5.5",
+          "toc-5.6",
+          "toc-5.7",
+          "toc-5.8",
+          "toc-5.9",
+          "toc-5.10",
+          "toc-5.11",
+          "toc-5.12",
+          "toc-5.13",
+          "toc-5.14",
+          "toc-5.15",
+          "toc-5.16"
+        ],
+        "status": "written"
       },
       {
         "collection": "cplx",
@@ -18141,10 +18158,26 @@
         "collection": "dist",
         "chapter": 5,
         "total": 15,
-        "written": 0,
-        "remaining": 15,
-        "writtenItems": [],
-        "status": "planned"
+        "written": 15,
+        "remaining": 0,
+        "writtenItems": [
+          "dist-5.1",
+          "dist-5.2",
+          "dist-5.3",
+          "dist-5.4",
+          "dist-5.5",
+          "dist-5.6",
+          "dist-5.7",
+          "dist-5.8",
+          "dist-5.9",
+          "dist-5.10",
+          "dist-5.11",
+          "dist-5.12",
+          "dist-5.13",
+          "dist-5.14",
+          "dist-5.15"
+        ],
+        "status": "written"
       },
       {
         "collection": "pl",

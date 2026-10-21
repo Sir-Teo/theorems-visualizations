@@ -2,7 +2,7 @@
 
 **In progress**, started 2026-10-21. The user directed authoring to proceed after confirming the previous work was done. Each new chapter still receives source, mathematical, browser and visual checks.
 
-The frozen inventory contains 80 collections, 1031 new items and 2 preserved items. **663 new items are written in 51 complete chapters; 368 remain.** Written counts describe content availability, not independent review acceptance; chapter reports record validation.
+The frozen inventory contains 80 collections, 1031 new items and 2 preserved items. **694 new items are written in 53 complete chapters; 337 remain.** Written counts describe content availability, not independent review acceptance; chapter reports record validation.
 
 The [machine-readable plan](wave-five-plan.json) preserves the original chapter assignments and records current progress. Regenerate progress with `npm run wave5:plan`; completed collections stay in this wave. Syllabi remain authoritative for source and dependency corrections.
 
