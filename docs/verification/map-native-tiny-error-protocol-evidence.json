@@ -1,0 +1,147 @@
+{
+  "scope": "protocol-only source/CPU model; no native retry",
+  "firstNativeStop": "35fc7302a68d3e584499e9e71297d1a3ef5a3cc4",
+  "pass": {
+    "pass": true,
+    "preservedNativeRecords": 7,
+    "adverseCases": 17,
+    "browser": 0,
+    "nativeReruns": 0,
+    "scope": "error-identity/count protocol only; no fallback/reference change"
+  },
+  "outcomes": {
+    "firstBoundary": "35fc7302a68d3e584499e9e71297d1a3ef5a3cc4",
+    "results": [
+      {
+        "name": "old-dark-S1",
+        "expected": "pass",
+        "failure": null
+      },
+      {
+        "name": "old-dark-S2",
+        "expected": "pass",
+        "failure": null
+      },
+      {
+        "name": "old-dark-S3",
+        "expected": "pass",
+        "failure": null
+      },
+      {
+        "name": "old-light-S1",
+        "expected": "pass",
+        "failure": null
+      },
+      {
+        "name": "old-light-S2",
+        "expected": "pass",
+        "failure": null
+      },
+      {
+        "name": "old-light-S3",
+        "expected": "pass",
+        "failure": null
+      },
+      {
+        "name": "repair-light-S1",
+        "expected": "pass",
+        "failure": null
+      },
+      {
+        "name": "unrelated-pageerror",
+        "expected": "reject",
+        "failure": "exact declared pageerror identity, count and order\n+ actual - expected\n\n  [\n    'declared tiny native worker failure',\n+   'unrelated'\n  ]\n"
+      },
+      {
+        "name": "duplicate-pageerror",
+        "expected": "reject",
+        "failure": "exact declared pageerror identity, count and order\n+ actual - expected\n\n  [\n    'declared tiny native worker failure',\n+   'declared tiny native worker failure'\n  ]\n"
+      },
+      {
+        "name": "missing-pageerror",
+        "expected": "reject",
+        "failure": "exact declared pageerror identity, count and order\n+ actual - expected\n\n+ []\n- [\n-   'declared tiny native worker failure'\n- ]\n"
+      },
+      {
+        "name": "wrong-worker-message",
+        "expected": "reject",
+        "failure": "exact real Worker/window error identities, trust, phase, count and order\n+ actual - expected\n\n  [\n    {\n      isTrusted: true,\n+     message: 'Uncaught Error: declared tiny native worker failure changed',\n-     message: 'Uncaught Error: declared tiny native worker failure',\n      phase: null,\n      type: 'native-worker-error'\n    },\n    {\n      isTrusted: true,\n"
+      },
+      {
+        "name": "untrusted-worker",
+        "expected": "reject",
+        "failure": "exact real Worker/window error identities, trust, phase, count and order\n+ actual - expected\n\n  [\n    {\n+     isTrusted: false,\n-     isTrusted: true,\n      message: 'Uncaught Error: declared tiny native worker failure',\n      phase: null,\n      type: 'native-worker-error'\n    },\n    {\n"
+      },
+      {
+        "name": "duplicate-worker-event",
+        "expected": "reject",
+        "failure": "exact real Worker/window error identities, trust, phase, count and order\n+ actual - expected\n... Skipped lines\n\n  [\n    {\n      isTrusted: true,\n      message: 'Uncaught Error: declared tiny native worker failure',\n      phase: null,\n...\n    },\n+   {\n+     isTrusted: true,\n+     message: 'Uncaught Error: declared tiny native worker failure',\n+     phase: null,\n+     type: 'native-worker-error'\n+   }\n  ]\n"
+      },
+      {
+        "name": "missing-worker-event",
+        "expected": "reject",
+        "failure": "exact real Worker/window error identities, trust, phase, count and order\n+ actual - expected\n\n  [\n    {\n      isTrusted: true,\n      message: 'Uncaught Error: declared tiny native worker failure',\n-     phase: null,\n-     type: 'native-worker-error'\n-   },\n-   {\n-     isTrusted: true,\n-     message: 'Uncaught Error: declared tiny native worker failure',\n      phase: 'fault',\n      type: 'actual-worker-error-dispatch'\n    },\n    {\n      isTrusted: true,\n"
+      },
+      {
+        "name": "wrong-error-phase",
+        "expected": "reject",
+        "failure": "exact real Worker/window error identities, trust, phase, count and order\n+ actual - expected\n... Skipped lines\n\n  [\n    {\n      isTrusted: true,\n      message: 'Uncaught Error: declared tiny native worker failure',\n      phase: null,\n...\n      message: 'Uncaught Error: declared tiny native worker failure',\n+     phase: 'prepare',\n-     phase: 'fault',\n      type: 'actual-worker-error-dispatch'\n    },\n    {\n      isTrusted: true,\n      message: 'Uncaught Error: declared tiny native worker failure',\n"
+      },
+      {
+        "name": "missing-window-event",
+        "expected": "reject",
+        "failure": "exact real Worker/window error identities, trust, phase, count and order\n+ actual - expected\n... Skipped lines\n\n  [\n    {\n      isTrusted: true,\n      message: 'Uncaught Error: declared tiny native worker failure',\n      phase: null,\n...\n    },\n-   {\n-     isTrusted: true,\n-     message: 'Uncaught Error: declared tiny native worker failure',\n-     phase: 'fault',\n-     type: 'window-error'\n-   }\n  ]\n"
+      },
+      {
+        "name": "fixture-error",
+        "expected": "reject",
+        "failure": "no fixture failure\n+ actual - expected\n\n+ {\n+   message: 'unexpected'\n+ }\n- null\n"
+      },
+      {
+        "name": "stale-old-reference-on-repair",
+        "expected": "reject",
+        "failure": "exact declared pageerror identity, count and order\n+ actual - expected\n\n  [\n+   'map is not defined',\n    'declared tiny native worker failure'\n  ]\n"
+      },
+      {
+        "name": "old-errors-reordered",
+        "expected": "reject",
+        "failure": "exact declared pageerror identity, count and order\n+ actual - expected\n\n  [\n+   'declared tiny native worker failure',\n    'map is not defined',\n-   'declared tiny native worker failure'\n  ]\n"
+      },
+      {
+        "name": "unknown-variant",
+        "expected": "reject",
+        "failure": "known tiny source variant"
+      },
+      {
+        "name": "unknown-case",
+        "expected": "reject",
+        "failure": "known tiny fault case"
+      },
+      {
+        "name": "unexpected-S2-pageerror",
+        "expected": "reject",
+        "failure": "exact declared pageerror identity, count and order\n+ actual - expected\n\n+ [\n+   'declared tiny native worker failure'\n+ ]\n- []\n"
+      },
+      {
+        "name": "unexpected-S2-worker-event",
+        "expected": "reject",
+        "failure": "exact real Worker/window error identities, trust, phase, count and order\n+ actual - expected\n\n+ [\n+   {\n+     isTrusted: true,\n+     message: 'Uncaught Error: declared tiny native worker failure',\n+     phase: null,\n+     type: 'native-worker-error'\n+   }\n+ ]\n- []\n"
+      },
+      {
+        "name": "unexpected-S3-window-error",
+        "expected": "reject",
+        "failure": "exact real Worker/window error identities, trust, phase, count and order\n+ actual - expected\n\n+ [\n+   {\n+     isTrusted: true,\n+     message: 'Uncaught Error: unrelated',\n+     phase: 'fault',\n+     type: 'window-error'\n+   }\n+ ]\n- []\n"
+      }
+    ]
+  },
+  "files": {
+    "/tmp/atlas-ctrl-native-error-contract-model/outcomes.json": {
+      "bytes": 6514,
+      "sha256": "6a4962ee67eb2fd1ec8a519f264df26c90d6f9a34fe8fb3d944ce5554eda8e81"
+    },
+    "/tmp/atlas-ctrl-native-error-contract-model/pass.json": {
+      "bytes": 162,
+      "sha256": "372e8704c6408ae98955a169fa246ebb7ae7a40f7a9430730d51968173967a17"
+    }
+  }
+}
