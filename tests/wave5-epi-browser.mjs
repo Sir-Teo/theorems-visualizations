@@ -1,0 +1,13 @@
+import assert from 'node:assert/strict';import {chromium} from 'playwright-core';import {createServer} from '../scripts/serve.mjs';import {findBrowser} from '../scripts/browser.mjs';
+const server=createServer();await new Promise(r=>server.listen(0,r));const browser=await chromium.launch({executablePath:findBrowser(),headless:true});const page=await browser.newPage(),errors=[];page.on('pageerror',e=>errors.push(e.message));
+const clean=async()=>{const r=await page.locator('.viz-readout').innerText();assert.doesNotMatch(r,/NaN|Infinity|undefined/);assert.deepEqual(await page.evaluate(()=>window.__vizErrors||[]),[]);return r;};
+const ids=process.env.EPI_IDS?process.env.EPI_IDS.split(','):['5.1','5.2','5.3','5.4','5.5','5.6','5.7','5.8','5.10','5.11'];
+try{for(const theme of ['light','dark'])for(const width of [860,350]){await page.setViewportSize({width:width+36,height:1700});for(const id of ids){const file=Number(id.split('.')[1])<=5?'ch05.js':'ch05-b.js';await page.goto(`http://localhost:${server.address().port}/tools/harness.html?file=content/epi/${file}&id=epi-${id}&theme=${theme}&w=${width}&wait=100&still=1`);await page.waitForFunction(()=>window.__done,null,{timeout:60000});const d=await page.evaluate(()=>window.__done);for(const k of ['errors','texErrors','blank'])assert.deepEqual(d[k],[],`${id} ${k}`);await clean();
+const sliders=page.locator('.ctl-slider input');for(let i=0;i<await sliders.count();i++){if(!await sliders.nth(i).isVisible())continue;for(const k of ['Home','End']){await sliders.nth(i).press(k);await page.waitForTimeout(50);await clean();}}
+for(const seg of await page.locator('.seg').all()){if(!await seg.isVisible())continue;for(const button of await seg.locator('button').all()){if(!await button.isVisible())continue;await button.click();await page.waitForTimeout(60);await clean();}}
+for(const toggle of await page.locator('.ctl-toggle label').all()){if(await toggle.isVisible()){await toggle.click();await page.waitForTimeout(80);await clean();}}
+if(id==='5.1'){assert.match(await clean(),/Crude contrast also mixes risk-stratum distributions/);assert.match(await clean(),/latent event times/);}
+if(id==='5.7')assert.match(await clean(),/matching removes the information/);
+if(id==='5.6'){const frac=page.locator('.ctl-slider input').nth(1);await frac.press('Home');await page.waitForTimeout(100);await clean();}
+assert.ok(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+2),`${id} overflow ${width}`);await page.locator('#shot').screenshot({path:`/tmp/wave5-epi-${id}-${theme}-${width}.png`});console.log(`PASS ${id} ${theme} ${width}: modes/toggles, visible slider extrema, readout`);
+}}assert.deepEqual(errors,[]);}finally{await browser.close();server.close();}
