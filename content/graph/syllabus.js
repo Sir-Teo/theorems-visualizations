@@ -446,63 +446,401 @@ export default {
     },
     // =====================================================================================================
     {
-      n: 6,
-      title: 'Flows',
-      summary: String.raw`Flows are circulations with a source and a sink: Kirchhoff's law at every vertex forces zero net flow across every cut, and in networks the maximum value of a flow equals the minimum capacity of a cut, with integral optima for integral capacities. Replacing numbers by elements of an abelian group gives H-flows, whose number is a polynomial in the order of H; so the existence of a k-flow depends only on k, and small k are characterised by even degrees, bipartiteness and edge colourings. For plane graphs, flows of G and colourings of the dual G* correspond exactly, which makes Tutte's flow conjectures generalisations of colouring theorems; Seymour's 6-flow theorem is the best general result.`,
-      items: [
-        { num: '6.1.1a', kind: 'Definition', name: 'Circulations and Kirchhoff’s law', deps: ['graph-1.10.1a'], refs: ['Diestel §6.1'], see: ['circ-2.1'], verify: true,
-          pic: 'Assign values to oriented edges by dragging arrows; each vertex shows its net inflow, turning green when Kirchhoff’s law holds there.' },
-        { num: '6.1.1', kind: 'Proposition', name: 'A circulation sends zero net flow across every cut', deps: ['graph-6.1.1a', 'graph-1.9.1b'], refs: ['Diestel §6.1'],
-          pic: 'Select a vertex set X in a graph carrying a circulation; the net flow across the cut from X to its complement is summed live and is always zero.' },
-        { num: '6.1.2', kind: 'Corollary', name: 'Circulations vanish on bridges', deps: ['graph-6.1.1'], refs: ['Diestel §6.1'],
-          pic: 'Add a bridge to a graph with a circulation: whatever values you try, Kirchhoff’s law forces the flow on the bridge to be zero.' },
-        { num: '6.1.3', kind: 'Lemma', name: 'Circulations on G/e extend to G', deps: ['graph-6.1.1a', 'graph-1.10.1a'], refs: ['Diestel §6.1'],
-          pic: 'Contract an edge, draw a circulation on the smaller multigraph, then uncontract: the value on e is solved for so that Kirchhoff’s law holds at both ends.' },
-        { num: '6.2.1a', kind: 'Definition', name: 'Networks, flows and cuts', deps: ['graph-6.1.1a'], refs: ['Diestel §6.2'], see: ['algo-11.1'], verify: true,
-          pic: 'Draw a network with source s, sink t and capacities; drag flow values along edges within capacity, with flow conservation checked at inner vertices.' },
-        { num: '6.2.1', kind: 'Proposition', name: 'Net flow across any cut equals the flow value', deps: ['graph-6.2.1a', 'graph-6.1.1'], refs: ['Diestel §6.2'], see: ['algo-11.3'],
-          pic: 'Move vertices between the s-side and t-side of a cut; the net flow across it stays equal to the value leaving s.' },
-        { num: '6.2.2', kind: 'Theorem', name: 'Max-flow min-cut theorem (Ford–Fulkerson)', deps: ['graph-6.2.1'], refs: ['Diestel §6.2'], see: ['algo-11.6', 'graph-3.3.1'],
-          pic: 'Run augmenting paths in the residual network step by step; when no s–t path remains, the vertices reachable from s define a cut whose capacity equals the flow value.' },
-        { num: '6.2.3', kind: 'Corollary', name: 'Integral capacities admit an integral maximum flow', deps: ['graph-6.2.2'], refs: ['Diestel §6.2'], see: ['algo-11.7'],
-          pic: 'With integer capacities, every augmentation adds an integer, so the maximum flow found has integer values on all edges, as the edge labels show.' },
-        { num: '6.3.1a', kind: 'Definition', name: 'H-flows for an abelian group H', deps: ['graph-6.1.1a'], refs: ['Diestel §6.3'], verify: true,
-          pic: 'Choose a group such as ℤ₄ or ℤ₂ × ℤ₂ and label oriented edges with non-zero elements; vertices show their net sums, green when they vanish in H.' },
-        { num: '6.3.1', kind: 'Theorem', name: 'Tutte’s flow polynomial', deps: ['graph-6.3.1a', 'graph-6.1.3', 'graph-6.1.1'], refs: ['Diestel §6.3'], see: ['comb-9.9'],
-          pic: 'Count nowhere-zero H-flows for groups of orders 2 to 8 by brute force; the counts fall on a polynomial in |H| − 1 computed by deletion–contraction.' },
-        { num: '6.3.2', kind: 'Corollary', name: 'The number of H-flows depends only on the order of H', deps: ['graph-6.3.1'], refs: ['Diestel §6.3'],
-          pic: 'Compare ℤ₄ and ℤ₂ × ℤ₂ on the same graph: the numbers of nowhere-zero flows are equal, though the flows themselves differ.' },
-        { num: '6.3.2a', kind: 'Definition', name: 'k-flows and the flow number φ(G)', deps: ['graph-6.3.1a'], refs: ['Diestel §6.3'], verify: true,
-          pic: 'Label edges with integers 1 − k, …, k − 1 avoiding 0; the app finds the least k admitting a k-flow, φ(G), for the graph you draw.' },
-        { num: '6.3.3', kind: 'Theorem', name: 'Tutte: a k-flow exists iff a ℤₖ-flow exists', deps: ['graph-6.3.2a', 'graph-6.3.1a'], refs: ['Diestel §6.3'],
-          pic: 'Start from a ℤₖ-flow and lift its values to integers, then repair the vertices with non-zero excess along paths until a genuine k-flow appears.' },
-        { num: '6.4.1', kind: 'Proposition', name: 'A graph has a 2-flow iff all its degrees are even', deps: ['graph-6.3.3', 'graph-1.9.1'], refs: ['Diestel §6.4'],
-          pic: 'Try to label all edges ±1 with zero net flow at each vertex; this succeeds by orienting an Euler tour exactly when all degrees are even.' },
-        { num: '6.4.2', kind: 'Proposition', name: 'A cubic graph has a 3-flow iff it is bipartite', deps: ['graph-6.3.3', 'graph-1.6.1', 'graph-6.4.1'], refs: ['Diestel §6.4'],
-          pic: 'For cubic graphs, a ℤ₃-flow orients every edge from one class to the other; the app finds one for bipartite cubic graphs and an odd cycle obstruction otherwise.' },
-        { num: '6.4.3', kind: 'Proposition', name: 'φ(Kⁿ) = 3 for even n ≥ 4', deps: ['graph-6.3.3', 'graph-6.4.1', 'graph-6.4.2'], refs: ['Diestel §6.4'],
-          pic: 'Pick an even n: the app constructs a 3-flow on Kⁿ inductively from K^(n−2), while Kⁿ has odd degrees and so no 2-flow.' },
-        { num: '6.4.4', kind: 'Proposition', name: 'Every 4-edge-connected graph has a 4-flow', deps: ['graph-2.4.2', 'graph-6.3.3'], refs: ['Diestel §6.4'],
-          pic: 'Find two edge-disjoint spanning trees, send ℤ₂ flows around fundamental cycles of each, and add them in ℤ₂ × ℤ₂ to get a nowhere-zero flow.' },
-        { num: '6.4.5', kind: 'Proposition', name: '4-flows, even subgraphs and 3-edge-colourings', deps: ['graph-6.3.2', 'graph-6.3.3', 'graph-6.4.1', 'graph-5.1.1b'], refs: ['Diestel §6.4'],
-          pic: 'Colour the edges of a cubic graph with three colours and read off a ℤ₂ × ℤ₂-flow by assigning each colour a non-zero group element, and back.' },
-        { num: '6.4.6', kind: 'Corollary', name: 'Cubic 3-edge-colourable graphs are bridgeless', deps: ['graph-6.4.5', 'graph-6.1.2'], refs: ['Diestel §6.4'],
-          pic: 'Add a bridge to a cubic graph and try to 3-edge-colour it; the app always fails and explains via the zero flow on bridges.' },
-        { num: '6.5.1', kind: 'Lemma', name: 'Consistent orientation of dual edges', deps: ['graph-4.6.1', 'graph-6.1.1a'], refs: ['Diestel §6.5'], see: ['graph-6.5.3'],
-          pic: 'Orient an edge of a plane graph: its dual edge is oriented to cross it from left to right, and these orientations are drawn for all edges at once.' },
-        { num: '6.5.2', kind: 'Lemma', name: 'Colour differences give circulations on the dual', deps: ['graph-6.5.1', 'graph-4.6.1', 'graph-1.9.3', 'graph-6.1.1'], refs: ['Diestel §6.5'],
-          pic: 'Colour the faces of a plane graph with integers; colour differences across edges define values on dual edges, and the net flow at every dual vertex is zero.' },
-        { num: '6.5.3', kind: 'Theorem', name: 'Tutte’s flow–colouring duality χ(G) = φ(G*)', deps: ['graph-6.5.2', 'graph-6.3.3', 'graph-5.1.1a'], refs: ['Diestel §6.5'],
-          pic: 'Colour a plane graph with k colours and watch the dual graph light up with a nowhere-zero k-flow derived from colour differences, and conversely.' },
-        { num: '6.6.1a', kind: 'Hypothesis', name: 'Tutte’s 5-flow conjecture', deps: ['graph-6.3.2a'], refs: ['Diestel §6.6'], verify: true,
-          pic: 'Search for nowhere-zero 5-flows on bridgeless graphs you draw, including snarks; one is always found, while the Petersen graph refuses a 4-flow.' },
-        { num: '6.6.1b', kind: 'Hypothesis', name: 'Tutte’s 4-flow conjecture', deps: ['graph-6.3.2a', 'graph-1.7.1a'], refs: ['Diestel §6.6'], verify: true,
-          pic: 'For bridgeless graphs without a Petersen minor, the app searches for a 4-flow and finds one; snarks such as the Petersen graph itself are shown to need 5.' },
-        { num: '6.6.1c', kind: 'Hypothesis', name: 'Tutte’s 3-flow conjecture', deps: ['graph-6.3.2a', 'graph-1.4.1b'], refs: ['Diestel §6.6'], verify: true,
-          pic: 'For 4-edge-connected graphs you draw, the app finds a nowhere-zero 3-flow, the dual analogue of Grötzsch’s theorem for planar graphs.' },
-        { num: '6.6.1', kind: 'Theorem', name: 'Seymour’s 6-flow theorem', deps: ['graph-3.3.6', 'graph-6.1.3', 'graph-6.3.2', 'graph-6.3.3'], refs: ['Diestel §6.6'], see: ['graph-6.6.1a'],
-          pic: 'For any bridgeless multigraph, the app builds a ℤ₂ × ℤ₃-flow: a ℤ₂-flow covering a cycle structure and a ℤ₃-flow on the rest, combined into a nowhere-zero 6-flow.' },
-      ],
+      "n": 6,
+      "title": "Flows",
+      "summary": "Signed edge values connect local conservation to global cuts. Integral network flows lead to group-valued nowhere-zero flows, their counting polynomial and small-flow constructions. Plane duality exchanges vertex colours with flows; Tutte’s open conjectures and Seymour’s six-flow theorem mark the boundary between finite certificates and general existence proofs.",
+      "items": [
+        {
+          "num": "6.1.1a",
+          "kind": "Definition",
+          "name": "Circulations and Kirchhoff’s law",
+          "deps": [
+            "graph-1.10.1a"
+          ],
+          "refs": [
+            "Diestel, Graph Theory, 6th ed. (2025), p.156, conditions F1–F2; official Chapter 6 preview"
+          ],
+          "verify": true,
+          "pic": "Change the two cycle coefficients, loop value and value group. Compare the edge values with the separately computed vertex balances."
+        },
+        {
+          "num": "6.1.1",
+          "kind": "Proposition",
+          "name": "A circulation has zero net flow across every cut",
+          "deps": [
+            "graph-6.1.1a",
+            "graph-1.9.1b"
+          ],
+          "refs": [
+            "Diestel, Graph Theory, 6th ed. (2025), p.157, Proposition 6.1.1; official Chapter 6 preview"
+          ],
+          "pic": "Choose a cut by its binary vertex mask and change the circulation. Gold edges cross the cut; the second panel adds their outward signed contributions."
+        },
+        {
+          "num": "6.1.2",
+          "kind": "Corollary",
+          "name": "Circulations vanish on bridges",
+          "deps": [
+            "graph-6.1.1"
+          ],
+          "refs": [
+            "Diestel, Graph Theory, 6th ed. (2025), p.157, Corollary 6.1.2; official Chapter 6 preview"
+          ],
+          "pic": "Change the independent circulations on the two triangles. Introduce a deliberate bridge value and watch exactly where conservation fails."
+        },
+        {
+          "num": "6.1.3",
+          "kind": "Lemma",
+          "name": "Circulations on G/e extend to G",
+          "deps": [
+            "graph-6.1.1a",
+            "graph-1.10.1a"
+          ],
+          "refs": [
+            "Diestel, Graph Theory, 6th ed. (2025), p.157, Lemma 6.1.3 and following warning; official Chapter 6 preview"
+          ],
+          "pic": "Select an edge to contract and choose a circulation on the contracted multigraph. Compare its copied values with the forced value on the restored edge."
+        },
+        {
+          "num": "6.2.1a",
+          "kind": "Definition",
+          "name": "Networks, flows and cuts",
+          "deps": [
+            "graph-6.1.1a"
+          ],
+          "see": [
+            "algo-11.1"
+          ],
+          "refs": [
+            "Diestel, Graph Theory, 6th ed. (2025), pp.158–159, network and flow definitions; official Chapter 6 preview"
+          ],
+          "verify": true,
+          "pic": "Set the two orientation capacities and a trial signed flow. The readout tests the full two-sided interval, including negative stored values."
+        },
+        {
+          "num": "6.2.1",
+          "kind": "Proposition",
+          "name": "Net flow across a cut equals the flow value",
+          "deps": [
+            "graph-6.2.1a",
+            "graph-6.1.1"
+          ],
+          "see": [
+            "algo-11.3"
+          ],
+          "refs": [
+            "Diestel, Graph Theory, 6th ed. (2025), p.159, Proposition 6.2.1; official Chapter 6 preview"
+          ],
+          "pic": "Change the two source capacities and choose which interior vertices lie on the source side. Compare constant signed flow with the varying cut capacity."
+        },
+        {
+          "num": "6.2.2",
+          "kind": "Theorem",
+          "name": "Max-flow min-cut theorem (Ford–Fulkerson)",
+          "deps": [
+            "graph-6.2.1"
+          ],
+          "see": [
+            "algo-11.6",
+            "graph-3.3.1"
+          ],
+          "refs": [
+            "Diestel, Graph Theory, 6th ed. (2025), pp.159–160, Theorem 6.2.2 and proof; official Chapter 6 preview"
+          ],
+          "pic": "Step through actual breadth-first residual augmentations as capacities change. At the final step, gold vertices give the reachable side of an optimal cut."
+        },
+        {
+          "num": "6.2.3",
+          "kind": "Corollary",
+          "name": "Integral capacities admit an integral maximum flow",
+          "deps": [
+            "graph-6.2.2"
+          ],
+          "see": [
+            "algo-11.7"
+          ],
+          "refs": [
+            "Diestel, Graph Theory, 6th ed. (2025), p.160, Corollary 6.2.3; official Chapter 6 preview"
+          ],
+          "pic": "Scale all capacities by an integer and inspect each stored edge value. The cut certificate and integer optimum are recomputed from the network."
+        },
+        {
+          "num": "6.3.1a",
+          "kind": "Definition",
+          "name": "H-flows for an abelian group H",
+          "deps": [
+            "graph-6.1.1a"
+          ],
+          "refs": [
+            "Diestel, Graph Theory, 6th ed. (2025), p.161, H-flow definition; official Chapter 6 preview"
+          ],
+          "verify": true,
+          "pic": "Change the modulus and chord coefficients on two overlapping cycles. Check whether a conserving assignment is also nowhere zero."
+        },
+        {
+          "num": "6.3.1",
+          "kind": "Theorem",
+          "name": "Tutte’s flow polynomial",
+          "deps": [
+            "graph-6.3.1a",
+            "graph-6.1.3",
+            "graph-6.1.1"
+          ],
+          "see": [
+            "comb-9.9"
+          ],
+          "refs": [
+            "Diestel, Graph Theory, 6th ed. (2025), pp.161–162, Theorem 6.3.1; official Chapter 6 preview"
+          ],
+          "pic": "Choose a graph, order and edge. Compare exact integer counts for G, its contraction and its deletion, using the correct loop rule."
+        },
+        {
+          "num": "6.3.2",
+          "kind": "Corollary",
+          "name": "H-flow counts depend only on the group order",
+          "deps": [
+            "graph-6.3.1"
+          ],
+          "refs": [
+            "Diestel, Graph Theory, 6th ed. (2025), p.162, Corollary 6.3.2; count equality from Theorem 6.3.1; official Chapter 6 preview"
+          ],
+          "pic": "Compare independent enumeration over Z4 and the Klein four-group. Change the graph and inspect one certificate in either group."
+        },
+        {
+          "num": "6.3.2a",
+          "kind": "Definition",
+          "name": "k-flows and the flow number",
+          "deps": [
+            "graph-6.3.1a",
+            "graph-6.1.2"
+          ],
+          "see": [
+            "graph-6.3.3",
+            "graph-6.6.1"
+          ],
+          "refs": [
+            "Diestel, Graph Theory, 6th ed. (2025), pp.162–163, k-flow and flow-number definitions; p.165, edgeless1-flow; official Chapter 6 preview"
+          ],
+          "verify": true,
+          "pic": "Choose k and a small graph, then switch between modular and integer certificates. Exhaustive absence is distinguished from a displayed witness."
+        },
+        {
+          "num": "6.3.3",
+          "kind": "Theorem",
+          "name": "A k-flow exists iff a Zk-flow exists",
+          "deps": [
+            "graph-6.3.2a",
+            "graph-6.3.1a",
+            "graph-6.1.1"
+          ],
+          "refs": [
+            "Diestel, Graph Theory, 6th ed. (2025), pp.163–164, Theorem 6.3.3 and constructive proof; official Chapter 6 preview"
+          ],
+          "pic": "Step through the actual positive-path repair. Observe the fixed residues, bounded nonzero signed values and decreasing integer-divergence norm."
+        },
+        {
+          "num": "6.4.1",
+          "kind": "Proposition",
+          "name": "A graph has a 2-flow iff all degrees are even",
+          "deps": [
+            "graph-6.3.3",
+            "graph-1.9.1"
+          ],
+          "refs": [
+            "Diestel, Graph Theory, 6th ed. (2025), p.165, Proposition 6.4.1; official Chapter 6 preview"
+          ],
+          "pic": "Inspect degree labels and conservation modulo 2 on even examples and an odd-degree obstruction."
+        },
+        {
+          "num": "6.4.2",
+          "kind": "Proposition",
+          "name": "A cubic graph has a 3-flow iff it is bipartite",
+          "deps": [
+            "graph-6.3.3",
+            "graph-1.6.1",
+            "graph-6.1.1a"
+          ],
+          "refs": [
+            "Diestel, Graph Theory, 6th ed. (2025), p.165, Proposition 6.4.2; official Chapter 6 preview"
+          ],
+          "pic": "Compare bipartite cubic examples with K4 and Petersen, then switch a successful modular certificate to an integer lift."
+        },
+        {
+          "num": "6.4.3",
+          "kind": "Proposition",
+          "name": "Complete graphs of even order greater than 4 have flow 3",
+          "deps": [
+            "graph-6.4.1",
+            "graph-6.4.2",
+            "graph-6.3.3"
+          ],
+          "see": [
+            "graph-6.4.5"
+          ],
+          "refs": [
+            "Diestel, Graph Theory, 6th ed. (2025), pp.165–166, Proposition 6.4.3 and K4 exception; official Chapter 6 preview"
+          ],
+          "pic": "Change the complete-graph order and inspect an edge of the explicit construction. K4 is shown as an exception with a separate4-flow certificate."
+        },
+        {
+          "num": "6.4.4",
+          "kind": "Proposition",
+          "name": "Every4-edge-connected graph has a 4-flow",
+          "deps": [
+            "graph-2.4.2",
+            "graph-6.3.3",
+            "graph-6.1.1a"
+          ],
+          "refs": [
+            "Diestel, Graph Theory, 6th ed. (2025), pp.166–167, Proposition 6.4.4; official Chapter 6 preview"
+          ],
+          "pic": "Inspect the two computed disjoint trees and the two circulation layers. Compare their final sum with an exhaustive minimum-cut check."
+        },
+        {
+          "num": "6.4.5",
+          "kind": "Proposition",
+          "name": "4-flows, even subgraphs and3-edge-colourings",
+          "deps": [
+            "graph-6.3.2",
+            "graph-6.3.3",
+            "graph-6.4.1",
+            "graph-5.1.1b"
+          ],
+          "refs": [
+            "Diestel, Graph Theory, 6th ed. (2025), p.167, Proposition 6.4.5; official Chapter 6 preview"
+          ],
+          "pic": "Switch between the two even supports and their combined Klein labels. Contrast cubic colourable examples with Petersen."
+        },
+        {
+          "num": "6.4.6",
+          "kind": "Corollary",
+          "name": "Cubic3-edge-colourable graphs are bridgeless",
+          "deps": [
+            "graph-6.4.5",
+            "graph-6.1.2"
+          ],
+          "refs": [
+            "Diestel, Graph Theory, 6th ed. (2025), p.167, Corollary 6.4.6; official Chapter 6 preview"
+          ],
+          "pic": "Compare colourable cubic graphs, Petersen and a separate barbell bridge example. Check the exact bridge indicators against any available Klein-flow certificate."
+        },
+        {
+          "num": "6.5.1",
+          "kind": "Lemma",
+          "name": "Consistent orientation of dual edges",
+          "deps": [
+            "graph-4.6.1",
+            "graph-4.1.1",
+            "graph-6.1.1a"
+          ],
+          "see": [
+            "graph-6.5.3"
+          ],
+          "refs": [
+            "Diestel, Graph Theory, 6th ed. (2025), pp.167–168, Lemma 6.5.1 and clockwise construction; official Chapter 6 preview"
+          ],
+          "pic": "Choose a crossing edge and reverse its orientation together with its dual. Face 0 is the bounded face of the displayed cycle; face1 is the unbounded face."
+        },
+        {
+          "num": "6.5.2",
+          "kind": "Lemma",
+          "name": "Primal cycle sums correspond to dual conservation",
+          "deps": [
+            "graph-6.5.1",
+            "graph-4.6.1",
+            "graph-1.9.3",
+            "graph-6.1.1"
+          ],
+          "refs": [
+            "Diestel, Graph Theory, 6th ed. (2025), p.169, Lemma 6.5.2; official Chapter 6 preview"
+          ],
+          "pic": "Construct edge differences from primal vertex potentials, then add a deliberate tension defect. Compare the primal cycle sum with the two dual divergences."
+        },
+        {
+          "num": "6.5.3",
+          "kind": "Theorem",
+          "name": "Tutte’s flow–colouring duality",
+          "deps": [
+            "graph-6.5.2",
+            "graph-6.3.3",
+            "graph-5.1.1a",
+            "graph-1.5.5"
+          ],
+          "refs": [
+            "Diestel, Graph Theory, 6th ed. (2025), p.170, Theorem 6.5.3; official Chapter 6 preview"
+          ],
+          "pic": "On an embedded cycle, change the palette and last vertex colour. Inspect zero dual edges from monochromatic primal edges and recover colours by modular path integration."
+        },
+        {
+          "num": "6.6.1a",
+          "kind": "Hypothesis",
+          "name": "Tutte’s5-flow conjecture",
+          "deps": [
+            "graph-6.3.2a",
+            "graph-6.3.3",
+            "graph-6.1.2"
+          ],
+          "see": [
+            "graph-6.6.1"
+          ],
+          "refs": [
+            "Diestel, Graph Theory, 6th ed. (2025), p.171, Five-Flow Conjecture; official Chapter 6 preview",
+            "Houdrouge–Miraftab–Morin, arXiv:2602.21526v1 (25Feb2026), §1, Conjecture 1 and preceding open-status paragraph"
+          ],
+          "verify": true,
+          "pic": "Inspect a 5-flow on Petersen and simpler examples. Include a graph with a bridge to see why it is outside the conjecture’s hypothesis."
+        },
+        {
+          "num": "6.6.1b",
+          "kind": "Hypothesis",
+          "name": "Tutte’s4-flow conjecture",
+          "deps": [
+            "graph-6.3.2a",
+            "graph-1.7.1a",
+            "graph-6.4.5"
+          ],
+          "refs": [
+            "Diestel, Graph Theory, 6th ed. (2025), pp.171–172, Four-Flow Conjecture; official Chapter 6 preview",
+            "Inoue et al., arXiv:2608.22870v1 (24Aug2026), §1, Conjectures1–2 and Theorems1.3–1.4: general conjecture open; cubic case reported completed"
+          ],
+          "verify": true,
+          "pic": "Compare planar K4 and cube, which exclude Petersen as a minor, with Petersen itself, which is excluded from the hypothesis."
+        },
+        {
+          "num": "6.6.1c",
+          "kind": "Hypothesis",
+          "name": "Tutte’s3-flow conjecture",
+          "deps": [
+            "graph-6.3.2a",
+            "graph-1.4.1b",
+            "graph-6.3.3"
+          ],
+          "refs": [
+            "Diestel, Graph Theory, 6th ed. (2025), p.172, Three-Flow Conjecture; official Chapter 6 preview",
+            "Li–Li, arXiv:2609.08377v1 (8Sep2026), §1, Conjecture 1.1 and partial results"
+          ],
+          "verify": true,
+          "pic": "Check all cut sizes and the3-flow test on selected graphs. Some examples fail the conjecture’s cut hypothesis even when a 3-flow exists."
+        },
+        {
+          "num": "6.6.1",
+          "kind": "Theorem",
+          "name": "Seymour’s6-flow theorem",
+          "deps": [
+            "graph-3.3.6",
+            "graph-6.1.3",
+            "graph-6.3.2",
+            "graph-6.3.3"
+          ],
+          "see": [
+            "graph-6.6.1a"
+          ],
+          "refs": [
+            "Diestel, Graph Theory, 6th ed. (2025), pp.172–174, Theorem 6.6.1 and strengthened inductive proof; p.176, DeVos–Nurse proof attribution; official Chapter 6 preview"
+          ],
+          "pic": "Choose a bridgeless example and designated vertex. Inspect both group components, their nonzero pairs and an actual integer6-flow lift."
+        }
+      ]
     },
     // =====================================================================================================
     {
