@@ -1,0 +1,14 @@
+{
+  "baseline": "e3575de1ddd88a410b399cf7074ff6b2c358ba0c",
+  "file": "content/cplx/ch01-b.js",
+  "replacements": [
+    [
+      "const adjOf = (G) => { const m = new Map(G.nodes.map((n) => [n.id, []])); for (const e of G.edges) if (m.has(e.from) && m.has(e.to)) { m.get(e.from).push(e.to); m.get(e.to).push(e.from); } return m; };",
+      "const adjOf = (G) => { const m = new Map(G.nodes.map((n) => [String(n.id), []])); for (const e of G.edges) { const a = String(e.from), b = String(e.to); if (m.has(a) && m.has(b)) { m.get(a).push(b); m.get(b).push(a); } } return m; };"
+    ],
+    [
+      "const nb = (k) => (k[0] === 'A' ? A : B).get(+k.slice(1)).map((i) => k[0] + i);",
+      "const nb = (k) => (k[0] === 'A' ? A : B).get(k.slice(1)).map((i) => k[0] + i);"
+    ]
+  ]
+}

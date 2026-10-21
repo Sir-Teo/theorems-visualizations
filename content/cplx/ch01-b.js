@@ -98,7 +98,7 @@ The partition theorem (alg-1.25) makes the refinement invariant precise. Equal c
         const GA = v.graph(SA, opt(a0)), GB = v.graph(SB, opt(b0));
         const COL = ['blue', 'orange', 'green', 'red', 'purple', 'teal', 'pink', 'gold', 'accent', 'muted'];
         function load() { const [a, b] = PRE[pre.value](); GA.set({ layout: 'none', ...a }); GB.set({ layout: 'none', ...b }); S.reset(); }
-        const adjOf = (G) => { const m = new Map(G.nodes.map((n) => [n.id, []])); for (const e of G.edges) if (m.has(e.from) && m.has(e.to)) { m.get(e.from).push(e.to); m.get(e.to).push(e.from); } return m; };
+        const adjOf = (G) => { const m = new Map(G.nodes.map((n) => [String(n.id), []])); for (const e of G.edges) { const a = String(e.from), b = String(e.to); if (m.has(a) && m.has(b)) { m.get(a).push(b); m.get(b).push(a); } } return m; };
         const iso = () => {
           const A = adjOf(GA), B = adjOf(GB), ia = [...A.keys()], ib = [...B.keys()];
           if (ia.length !== ib.length || GA.edges.length !== GB.edges.length || ia.length > 10) return ia.length === ib.length ? null : false;
@@ -108,7 +108,7 @@ The partition theorem (alg-1.25) makes the refinement invariant precise. Equal c
         };
         const frames = () => {
           const A = adjOf(GA), B = adjOf(GB), keys = [...[...A.keys()].map((i) => 'A' + i), ...[...B.keys()].map((i) => 'B' + i)];
-          const nb = (k) => (k[0] === 'A' ? A : B).get(+k.slice(1)).map((i) => k[0] + i);
+          const nb = (k) => (k[0] === 'A' ? A : B).get(k.slice(1)).map((i) => k[0] + i);
           let col = new Map(keys.map((k) => [k, 0])), out = [];
           const hist = (c, tag) => { const h = []; for (const [k, x] of c) if (k[0] === tag) h[x] = (h[x] || 0) + 1; return h; };
           const snap = (c, round, note, extra = {}) => { const K = c.size ? Math.max(0, ...c.values()) + 1 : 0, hA = hist(c, 'A'), hB = hist(c, 'B'); const h = (x) => Array.from({ length: K }, (_, i) => x[i] || 0); const hAa = h(hA), hBa = h(hB); return { col: new Map(c), round, K, hA: hAa, hB: hBa, differ: hAa.some((x, i) => x !== hBa[i]), note, ...extra }; };

@@ -1,0 +1,40 @@
+{
+  "baseline": "e3575de1ddd88a410b399cf7074ff6b2c358ba0c",
+  "preservation": {
+    "pass": true,
+    "completeModules": 16,
+    "objects": 53,
+    "functions": 53,
+    "changedFunctions": 1,
+    "allowedLiterals": 3,
+    "syllabusByteIdentical": true,
+    "sourceFlagsAndDependenciesUnchanged": true,
+    "allSharedRuntimeBytesUnchanged": true
+  },
+  "math": {
+    "pass": true,
+    "checks": 489244,
+    "numericAndOpaqueRenamedGraphs": 1100,
+    "independentSimpleGraphPairs": 4096,
+    "canonicalEndpointAliases": true,
+    "duplicateLoopOrphanAdjacencyPreserved": true,
+    "actualSourceFramesCompared": true,
+    "oldWrongPresetWitness": true
+  },
+  "native": {
+    "states": 32,
+    "pictures": 64,
+    "errors": [],
+    "path": "/tmp/atlas-cplx-empty-count/after-id",
+    "personallyInspectedFullCanvasesAndReadouts": 32
+  },
+  "strict": {
+    "errors": 0,
+    "warnings": 0
+  },
+  "static": {
+    "items": 53,
+    "errors": 0,
+    "warnings": 0
+  }
+}
