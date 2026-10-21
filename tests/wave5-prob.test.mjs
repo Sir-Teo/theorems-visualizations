@@ -130,3 +130,11 @@ test('joint-coupling mixture preserves IID marginal finite-word laws while retai
 test('Poisson arrival areas equal an independent exponential-sum oracle and side transformation',()=>{
  for(const seed of[1,17,99]){const d=M.poissonArrivalScale(2000,seed),rng=M.random(seed);let sum=0;for(let k=1;k<=2000;k++){sum+=-Math.log1p(-rng());near(d.area[k-1],sum,1e-8);near(d.times[k-1]**2,d.area[k-1],1e-8);near(d.ratios[k-1],d.times[k-1]/Math.sqrt(k));if(k>1)assert.ok(d.times[k-1]>d.times[k-2]);}}
 });
+
+test('positive tiny phases survive modulo and the half-open interval includes its left endpoint',()=>{
+ for(const start of[Number.MIN_VALUE,1e-200,1e-20,.317]){
+  assert.equal(M.mod(start,1),start);const d=M.rotationOrbit(Math.SQRT2-1,start,20);assert.equal(d.orbit[0],start);
+  assert.equal(d.orbit.slice(0,1).filter(x=>x>=start&&x<.5).length,1);
+ }
+ assert.equal(Object.is(M.mod(-0,1),-0),false);assert.equal(M.mod(-.25,1),.75);assert.equal(M.mod(2,1),0);
+});

@@ -28,7 +28,7 @@ Two deliberate verify flags remain for the unnumbered source definitions inserte
 -416 finite-return states agree with independent gcd component sizes and exact sum-of-return-gap identities.
 -Six rational starting phases, including bin boundaries and a subnormal, repeat the cached five-phase orbit exactly through1500 observations.
 
-The chapter's15 substantive mathematical tests also pass separately (`/tmp/wave5-prob-review-math.log`), including exhaustive short maximal-lemma observables, return masks, subsequences and strict increasing chains. Final production and visual evidence follows below.
+The chapter's initial15 substantive mathematical tests also pass separately (`/tmp/wave5-prob-review-math.log`), including exhaustive short maximal-lemma observables, return masks, subsequences and strict increasing chains. Final production and visual evidence follows below.
 
 
 ## Preliminary visual inspection
@@ -43,3 +43,10 @@ Independently ran6.2.6,6.3.2,6.3.3,6.4.4,6.5.4 through actual1200/320 production
 Inspected final actual320 rich statement/scope captures for the every-start interval theorem, Kac and joint LCS, alongside all34 narrow visualization defaults and alternative modes. Final equivalent formula layouts fit their actual production text columns, and the narrower scope statements retain their hypotheses. The author's68-case all-item matrix and final targeted captures are supplementary evidence. No remaining source, model, state or presentation finding.
 
 The two documented source-numbering verify flags remain intentionally attached to the inserted unnumbered definitions; no mathematical claim is unexamined. All source bytes are frozen. No reviewer content edits. The runner injects chapter catalog/shard responses in memory; root's source-aligned generated build/export remains the integration gate.
+
+
+## Final positive-tiny-phase correction
+
+A late raw-state check found avoidable cancellation in `((x % n) + n) % n`: a positive saved phase1e−200 became zero. With interval left endpoint equal to that phase, the first visit was wrongly excluded. The author now returns a nonnegative remainder directly, adds the period only for negative remainders, and normalizes negative zero. This chapter-local helper change is covered by a sixteenth mathematical regression; final16/16 tests and all996 independent oracle cases pass.
+
+A bounded `/tmp` utility independently repeated6.2.6 actual1200/320 in both themes, including physical handle/control edits and three tiny phase=left-endpoint values: Number.MIN_VALUE,1e−200,1e−20. Every raw URL preserves exact phase/interval state, counts the independently expected11visits out of20, and survives an actual Create state link replay unchanged. Final run:4groups,92 physical actions,40 URL/rejection checks (`/tmp/wave5-prob-review-tiny.log`). Browser closed. This resolves the late finding and restores final acceptance on the corrected frozen helper bytes.

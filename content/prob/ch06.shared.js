@@ -1,5 +1,6 @@
 // Finite models for Durrett5e Chapter6. Seeded traces illustrate, never prove, limits.
-export const mod = (x, n) => ((x % n) + n) % n;
+// Avoid adding the period to an already nonnegative remainder: that erases tiny phases.
+export const mod = (x, n) => { const r = x % n; return r < 0 ? r + n : r === 0 ? 0 : r; };
 export function random(seed) {
   let state = seed >>> 0;
   const word = () => (state = (Math.imul(1664525, state) + 1013904223) >>> 0);
