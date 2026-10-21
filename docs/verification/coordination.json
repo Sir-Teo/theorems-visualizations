@@ -21,10 +21,10 @@
       "Full immutable checkpoints and unrelated gate analysis"
     ],
     "current": [
-      "Accepted prerequisite shortfall2;GAMEsolepublishedcollectionbelow25;allwhole syllabi meet25;47furthercollectionsmeetwrittentarget. Sourcequeue5unchanged.",
+      "Acceptedwrittenprerequisitegatecomplete:all64nonmathcollections\u226525writteninputs,0shortfall/unknowns,48furthercollections meettarget. Sourcequeue5unchanged.",
       "Latest immutable checkpoint11 onee15d812 passes2230tests, all6UIgroups, strict/static0/0.",
       "Rejected chunk prototype remains unaccepted. Original-only control reproduces its cold/warm discrepancy; no renderer or timing acceptance.",
-      "Private actual font census passes source/model/tiny independent peer. Full-map rerun deferred: frozen selected item lacks statement, implying actual async shard callback after synchronous history. Explicit finite readiness proposal pending; no alternate/timing acceptance.",
+      "Privateone-shard readiness source/tiny pending closingpeer: imagingfound6protectedstate/prefixguardgaps in0fed; authorizedminimalguard-onlysuccessor. No fullmap/alternate/timingrununtilindependentclosingreview.",
       "Frozen BIGHIST3.5 service restriction persists; no retry or edge acceptance."
     ]
   },
@@ -2840,15 +2840,32 @@
       "report": "docs/verification/bighist-four-consumer-independent-peer.md",
       "followup": "Sixgenuineinputs across1.5/1.8/2.5/2.7only,25/31/54. Full40files32objects/functions88rows/full32lists;10381independentchecks6groups,70personallyinspectedfreshfields/actualcontrols. Fivefinite-samplingqualifierfields/literals incltwopeerfindings. Existing1.3/1.5rowbackfillsnocredit. Integratedindependentguard/mathpass. Frozen3.5onlybyte-preserved: never retried/reviewed/rendered/accepted; its edge remainssoleexcludedcandidate.",
       "sourceClosure": "None;frozen3.5 remains unaccepted; allflagsunchanged."
+    },
+    {
+      "collection": "game",
+      "commits": [
+        "e75dba2cf5a3e60e88187aa118d1eeffc55a103e",
+        "b1f936aad0aa905c74ac6f1293b825ea66a66972",
+        "1ef163fefee0fb2dc816b7a25f57ca252b6c4dea",
+        "c2ee53627830e56773bda68af24ca820166e8153"
+      ],
+      "publishedBefore": 23,
+      "publishedAfter": 25,
+      "status": "accepted",
+      "producer": "ctrl_prereqs",
+      "peer": "arch_source",
+      "report": "docs/verification/game-two-input-independent-peer.md",
+      "followup": "Twoactualinputs compactsubsequence limit andstronginductiononfiniteheight yield25/29/41. Separateaction-specificperfection definition corrects uniformfamily restriction; threeexactruntime labelstrings disclosefiniteepsilon=.001,strictdistance<.004diagnostic ratherthanlimitingclassification. Full30files45objects/functions105rows/full45lists;9019independentmath,149878producer,62existing,44personallyinspectedfreshfields/realcontrols. Numericdrawing/statusbitwiseequal12frames27statuses. Rootfullsource/objectguards/math/default62pass.",
+      "sourceClosure": "None;flagsunchanged."
     }
   ],
   "currentPrerequisiteGate": {
-    "publishedShortfall": 2,
-    "publishedBelow25": 1,
+    "publishedShortfall": 0,
+    "publishedBelow25": 0,
     "collections": 64,
     "wholeSyllabusBelow25": 0,
     "date": "2026-10-20",
-    "acceptedSnapshot": "Forty-seven further collections meet written target; PL25andunrestrictedBIGHIST25accepted. OnlyGAMEtwoinputsshort,pendingpeer. FrozenBIGHIST3.5edge remainsexcluded."
+    "acceptedSnapshot": "COMPLETE acceptedwrittenprerequisitecountgate:all64nonmathcollections\u226525writteninputs,0unknowns,0shortfall. All48previouslyshortcollections nowmeetwritten target. FrozenBIGHIST3.5source/edge unaccepted andsoleexcludededge."
   },
   "previousSessionWorkers": [
     {

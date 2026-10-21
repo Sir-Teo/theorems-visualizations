@@ -125,6 +125,8 @@ an eigen-direction, an orthonormal frame, an ellipse's axes) with live numbers.
 
 ## Economics & finance, social sciences
 
+- Distinguish a limiting equilibrium definition from a finite numerical diagnostic. Full trembling-hand perfection allows action-specific positive lower bounds tending to zero; one uniform family need not reach every perfect equilibrium, and proximity to its sample at a fixed epsilon proves neither limiting membership nor nonmembership. State the actual threshold and equality case in both caption and readout. See the [GAME peer](verification/game-two-input-independent-peer.md).
+
 - **Deps**: a model depends on the concepts it is built from (elasticity on demand; the welfare
   theorems on Pareto efficiency and competitive equilibrium) and on the mathematics its analysis
   uses (the implicit function theorem for comparative statics, separating hyperplanes for the

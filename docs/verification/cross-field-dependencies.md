@@ -3,10 +3,11 @@
 2026-10-20. The executable inventory in `cross-field-dependencies.json` checks
 MASTER_PLAN §7.3 against accepted written and planned prerequisite records. Its acceptance metadata explicitly excludes the frozen BIGHIST3.5candidate edge.
 
-Of 64 non-math collections, **1 has fewer than 25 published prerequisite edges to
-written ideas in a different field**. Their combined shortfall is 2 edges. Even
-including planned items and planned prerequisites, **every whole syllabus meets 25**.
-The wave gate is open. Counts are not evidence that a prerequisite is justified.
+All **64 non-math collections meet the target of 25 published prerequisite edges to
+written ideas in a different field**. Accepted published shortfall and unknown IDs are
+both zero; every whole syllabus also meets25. This prerequisite count gate is complete.
+Source verification, runtime review and map-performance gates remain separate. Counts alone
+are not evidence that a prerequisite is justified.
 
 The inventory counts each directed item-to-prerequisite edge once. It separates
 written-to-written, written-to-known and whole-syllabus counts; related links and
@@ -330,3 +331,7 @@ ARCH18 reaches25/27/42. CPLX eight direct inputs compose with separately accepte
 ## PL and unrestricted BIGHIST final inputs
 
 PL twoactualinputs reach25/25/29; full46objects/functions/115rows/full46lists and independent fresh fields/controls pass. Inherited compact-canvas clipping remains separately open. Six independently reviewed unrestricted BIGHISTinputs across1.5/1.8/2.5/2.7reach25/31/54. Full40files/32objects/functions/88rows/full32lists,10381ownmathchecks and70personallyreadfreshpictures pass. Frozen3.5wasnotretried/reviewed/rendered/accepted, and itsedge remainssoleexclusion. Acceptedshortfall2:GAMEonly. No sourceclosure.
+
+## Written prerequisite gate complete
+
+Final GAME2 actualinputs reach25/29/41 after independent proof-use,full45object/function/105row/30file preservation,9019mathchecks,62existing tests andfreshrealcontrol/fullfield personalpixel review. Separateaction-specificperfection andfiniteuniform-proximity scope corrections are required finalsuccessors. Rootintegratedfullsource/object/math/default62checks pass. All64collections nowhave≥25acceptedwritten inputs, no unknowns,0shortfall; all48initiallyshortcollections nowmeetthetarget. The frozenBIGHIST3.5edge remainssoleexplicit exclusion. No sourceflag isclearedby thisgate. [Completion record](prerequisite-gate-complete.md).

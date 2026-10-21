@@ -4,7 +4,7 @@
   "counting": "Unique directed prerequisite edges from a non-math collection to a different field; separate written and planned availability. Related links and same-field cross-collection links do not count.",
   "limitation": "Counts alone do not establish that any prerequisite is pedagogically or factually justified. Correct links require source/proof review; do not add arbitrary links to meet a quota.",
   "collections": 64,
-  "publishedBelowTarget": 1,
+  "publishedBelowTarget": 0,
   "wholeSyllabusBelowTarget": 0,
   "entries": [
     {
@@ -16170,10 +16170,10 @@
       "collection": "game",
       "field": "econ",
       "target": 25,
-      "writtenToWritten": 23,
-      "writtenToKnown": 27,
-      "wholeSyllabus": 39,
-      "publishedShortfall": 2,
+      "writtenToWritten": 25,
+      "writtenToKnown": 29,
+      "wholeSyllabus": 41,
+      "publishedShortfall": 0,
       "unknown": [],
       "edges": [
         {
@@ -16235,6 +16235,13 @@
         {
           "item": "game-2.9",
           "prerequisite": "prob-4.1.1a",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "game-2.10",
+          "prerequisite": "pma-3.6",
           "prerequisiteField": "math",
           "itemWritten": true,
           "prerequisiteWritten": true
@@ -16361,6 +16368,13 @@
         {
           "item": "game-4.1",
           "prerequisite": "comb-1.1",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "game-4.5",
+          "prerequisite": "alg-2.5",
           "prerequisiteField": "math",
           "itemWritten": true,
           "prerequisiteWritten": true
@@ -20693,7 +20707,8 @@
       "3aa8196b89808d38b4285fc509f07ed21f749e46",
       "006ab24910012de6cfb789d8f8d46739dc5b0b42",
       "d909f3040db8d5b849e309a7621d98a34576dc36",
-      "1b8d84001f8d8ee583728f76a7db684a1bc44f6e"
+      "1b8d84001f8d8ee583728f76a7db684a1bc44f6e",
+      "e75dba2cf5a3e60e88187aa118d1eeffc55a103e"
     ],
     "excludedUnacceptedEdges": [
       {
