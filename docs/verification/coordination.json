@@ -22,7 +22,7 @@
     ],
     "current": [
       "Acceptedwrittenprerequisitegatecomplete:all64nonmathcollections\u226525writteninputs,0shortfall/unknowns,48furthercollections meettarget. Sourcequeue5unchanged.",
-      "Latest immutable checkpoint12 on 94a77908: 2,230 tests, all six UI groups, strict/static zero errors and warnings, accepted prerequisite shortfall0.",
+      "Latest fully passing immutable checkpoint12 remains 94a77908 (2,230 tests). New checkpoint13 d4bceece completes 2,232/2,233: one unchanged MATHBIO4.14 convergence assertion fails; isolated diagnostic passes but does not waive it. Strict/static/queue/prerequisite checks pass; independent diagnosis underway.",
       "Rejected chunk prototype remains unaccepted. Original-only control reproduces its cold/warm discrepancy; no renderer or timing acceptance.",
       "Single isolated light3840/DPR2 paired case on immutable f778d8eb passes all runner gates. All eight raw arrays exact, 7,493-event traces match, no late events/callbacks, original priority histories exact. Root rechecked all 998 checked pieces (1,041,265,381 bytes). Independent saved-evidence/pixel peer pending. All holds released. Dark mirror source-only preparation underway; no matrix/lifecycle/performance acceptance.",
       "Frozen BIGHIST3.5 service restriction persists; no retry or edge acceptance."
@@ -3166,5 +3166,20 @@
       "report": "docs/verification/map-selected-shard-independent-imaging-peer.md",
       "scope": "One explicit actual frozen LADR shard load before font census. Exact365metadata/9summary additions, protected catalog/node/model/owner/layout/closure identities and full callback/network prefixes. Independent review found9falseaccepts inold0fed guard; all retained. Separatec66closing passes20independentcases (normal+19adverse),32producer cases+7existingmodels andfreshone-fetch available-statement tiny withpersonalPNGinspection. Rootintegrated32+7models andprepare-onlypass. Sameepoch/atlas/binding/resource/fonthelpers/gates, no retries/select/draw/warmup or logreplacement. Explicitmissing\u2192available DOM readiness differs oldemptyhistory. Fullmap/lifecycle/timing UNRUN; diagnostic full-map storage unmeasured."
     }
-  ]
+  ],
+  "latestFailedCheckpoint": {
+    "commit": "d4bceeceeb2dee2d197c974133327f8d4993bb67",
+    "report": "docs/verification/checkpoint-d4bceece.md",
+    "tests": 2233,
+    "pass": 2232,
+    "fail": 1,
+    "durationSeconds": 121.110398166,
+    "failure": "MATHBIO4.14 Euler\u2013Lotka h=.2 to .1 error monotonicity in unchanged test; isolated diagnostic passes, full failure retained and not waived.",
+    "strictErrors": 0,
+    "strictWarnings": 0,
+    "staticErrors": 0,
+    "staticWarnings": 0,
+    "prerequisiteShortfall": 0,
+    "sourceQueue": 5
+  }
 }
