@@ -1,0 +1,209 @@
+{
+  "scope": "Read-only implementation write-site/lifecycle audit; no runtime/source edits, tests, browser, model execution or BIGHIST content inspection",
+  "sourceCommit": "d7d07ed84da592a04c8c038ffc405d5b5607bfc0",
+  "sources": {
+    "assets/js/app.js": {
+      "sha256": "c9058dfa4df306f90b71c5a90385f8567285471b5ba954b0d47812ceaa8cbc9d",
+      "bytes": 84566,
+      "lines": 1015,
+      "identicalToB6ca416f": true
+    },
+    "assets/js/graph.js": {
+      "sha256": "9a8850528193c87e97deba14a387bebff3215e9e67569c125cac265e061f94fc",
+      "bytes": 79477,
+      "lines": 1060,
+      "identicalToB6ca416f": true
+    },
+    "assets/js/map-webgl-scene.js": {
+      "sha256": "2422e59c2780e19e0c7b5c11da56127bc23718925ddde3e4d71527e4e45c21b5",
+      "bytes": 18540,
+      "lines": 143,
+      "identicalToB6ca416f": true
+    },
+    "assets/js/map-scene-model.js": {
+      "sha256": "a7d10c9ba64acd3f4be8307d07461e0d9fad04f567d0d40dbbebfa37f2a581af",
+      "bytes": 5225,
+      "lines": 71,
+      "identicalToB6ca416f": true
+    },
+    "assets/js/map-scene-worker.js": {
+      "sha256": "d913af8f8baf5ea8a0a83d504332ceb4fdd17e58e48cc560c246e08ed8690009",
+      "bytes": 571,
+      "lines": 9,
+      "identicalToB6ca416f": true
+    },
+    "assets/js/map-scene-edges.js": {
+      "sha256": "7b3fcf731105674252465c1376942b2f2b549fa51f9a3c9a3ee581a10c242262",
+      "bytes": 11810,
+      "lines": 106,
+      "identicalToB6ca416f": true
+    },
+    "assets/js/map-scene-gl.js": {
+      "sha256": "b94855c4988e6c7d951d97ca9f2fa773d25ae828872ff6dee79cd42decdda4dc",
+      "bytes": 2648,
+      "lines": 42,
+      "identicalToB6ca416f": true
+    },
+    "assets/js/map-webgl-edges.js": {
+      "sha256": "a94adc269a272c8bbc1bc0be9b83f60598408c46fce28af8f8d0e717a8fd7ed5",
+      "bytes": 13814,
+      "lines": 182,
+      "identicalToB6ca416f": true
+    },
+    "assets/js/map-scene-painter.js": {
+      "sha256": "082ce9a34a86ad1d9e91d275174bc9d90cd47b2c22eeb4e1391318defbd9454d",
+      "bytes": 8832,
+      "lines": 123,
+      "identicalToB6ca416f": true
+    },
+    "assets/js/map-scene-text.js": {
+      "sha256": "fbd1cb00b5028d5e2897ff7e3b8384c37429285d51749be4d762b9be2253b8ed",
+      "bytes": 4963,
+      "lines": 40,
+      "identicalToB6ca416f": true
+    },
+    "scripts/lib/map-scene-prototype.mjs": {
+      "sha256": "76eb562cebb368c00cbcfcbbedf31591ce6a32b8adaf85adfa0c7aeea8bfe68f",
+      "bytes": 1231,
+      "lines": 12,
+      "identicalToB6ca416f": true
+    },
+    "scripts/lib/map-chunked-indices-prototype.mjs": {
+      "sha256": "c6704721acd140e3dce10b82c93f321bf658fd517a6f0cce495bf0e8d1aeaecb",
+      "bytes": 1475,
+      "lines": 8,
+      "identicalToB6ca416f": true
+    },
+    "scripts/lib/map-chunked-indices-runtime.mjs": {
+      "sha256": "3c8b01c4df2d5497f27d7d65876adbfaebbbdcd659cf2c8cb29d25714896c187",
+      "bytes": 9591,
+      "lines": 31,
+      "identicalToB6ca416f": true
+    },
+    "scripts/lib/map-paired-selected-shard.mjs": {
+      "sha256": "77e7ad020a0821abbb520f1945825a9582cb5a9c934d528f299b9b8d3ec83152",
+      "bytes": 10972,
+      "lines": 44,
+      "identicalToB6ca416f": true
+    },
+    "scripts/lib/map-paired-guarded-epoch.mjs": {
+      "sha256": "bcffc405baf45b609b46cb9a85f8fb359b93d3a37e9f78182e23540ff21e9eb9",
+      "bytes": 6431,
+      "lines": 19,
+      "identicalToB6ca416f": true
+    },
+    "scripts/lib/map-paired-atlas-observer.mjs": {
+      "sha256": "7c50053bc9a2c10fe92cfddcb0cd0a6854f2dc4eeb9cf6e32ebdf2620f6e86b1",
+      "bytes": 10925,
+      "lines": 50,
+      "identicalToB6ca416f": true
+    },
+    "scripts/lib/map-paired-quiescence.mjs": {
+      "sha256": "12abb9a6cad6a953dea588d1235d1ce0ec867ceb2c1fe700b9467d545102b274",
+      "bytes": 8037,
+      "lines": 52,
+      "identicalToB6ca416f": true
+    },
+    "scripts/lib/map-paired-resource-observer.mjs": {
+      "sha256": "db7993cfdb69c85badfc2aa26f728119aad8bfcdef0f96b6e3625bcd7322bfb6",
+      "bytes": 4598,
+      "lines": 17,
+      "identicalToB6ca416f": true
+    },
+    "assets/js/map-scene-decorations.js": {
+      "sha256": "402fe1d8a452b3e91062539c8825bd1f6cb39fadb892ab05e3bb5d38ccd629aa",
+      "bytes": 4890,
+      "lines": 68,
+      "identicalToB6ca416f": true
+    }
+  },
+  "findings": {
+    "normalPostUploadPathCoordinateWritesFound": false,
+    "normalPostUploadRangeRecordWritesFound": false,
+    "normalModelPointJoinTextureContentReuploadsFound": false,
+    "geometryObjectsFrozenOrContentVersioned": false,
+    "sceneGenerationVersionsLifecycleNotContents": true,
+    "controlKeyVersionsSelectedControlsNotGeometryContents": true,
+    "workerInputPathsStructuredCloned": true,
+    "pendingPathsRetainsMainThreadReference": true,
+    "uploadDropsModelCPUPayloadFields": [
+      "points",
+      "joins",
+      "instances"
+    ],
+    "rangesAreOrdinaryMutableObjects": true,
+    "samePathIdsAcrossDifferentKindsOrFidelityModelsNotSufficient": true,
+    "groupIdsAndMembershipOrderNotFingerprintGuarded": true
+  },
+  "auditBoundary": "Read-only writer/lifetime audit supports the explicit closed-world no-writer premise; it does not accept the curve candidate or claim mutation resilience. Deep reported adversarial before-bind and mid-prefix ID mutations remain outside-domain counterexamples; no models were run here.",
+  "curveCandidateReadOnly": {
+    "commit": "f8eb0b366bb98ff906315469f9cc022089f73465",
+    "sourceBaseline": "90e2e8166a8553008490c67f68ec5fbc862c2045",
+    "modules": {
+      "scripts/lib/map-curve-bounds-runtime.mjs": {
+        "sha256": "00bdd96fd63de01b9921b489e1a8995340e88b6034ee2b75fa94fce901b14ee2",
+        "bytes": 8054,
+        "lines": 85
+      },
+      "scripts/lib/map-curve-bounds-math.mjs": {
+        "sha256": "1c646d5bb385e26cfaad198f0f04c2940d9a1990aa25ad27c25ddb7f8ea462ea",
+        "bytes": 5696,
+        "lines": 74
+      }
+    }
+  },
+  "baselineSourceMatchesD7": {
+    "assets/js/app.js": true,
+    "assets/js/graph.js": true,
+    "assets/js/map-webgl-scene.js": true,
+    "assets/js/map-scene-model.js": true,
+    "assets/js/map-scene-worker.js": true,
+    "assets/js/map-scene-edges.js": true,
+    "assets/js/map-scene-gl.js": true,
+    "assets/js/map-webgl-edges.js": true,
+    "assets/js/map-scene-painter.js": true,
+    "assets/js/map-scene-text.js": true,
+    "scripts/lib/map-scene-prototype.mjs": true,
+    "scripts/lib/map-chunked-indices-prototype.mjs": true,
+    "scripts/lib/map-chunked-indices-runtime.mjs": true,
+    "scripts/lib/map-paired-selected-shard.mjs": true,
+    "scripts/lib/map-paired-guarded-epoch.mjs": true,
+    "scripts/lib/map-paired-atlas-observer.mjs": true,
+    "scripts/lib/map-paired-quiescence.mjs": true,
+    "scripts/lib/map-paired-resource-observer.mjs": true,
+    "assets/js/map-scene-decorations.js": true
+  },
+  "orderedIdWriterSites": {
+    "file": "assets/js/map-webgl-scene.js",
+    "allocateAndReplace": 98,
+    "pushInMapEdgeOrder": 100,
+    "controlKeyEqualityReturn": 94,
+    "releaseGroupsBeforeListRebuild": 95,
+    "groupIndexUpload": {
+      "file": "assets/js/map-scene-edges.js",
+      "line": 75
+    }
+  },
+  "synchronousCallgraph": [
+    "WebGLMapScene.draw\u2192controls (lists rebuilt here if key changed, before union)\u2192group (build/upload original indices)\u2192SceneEdges.union",
+    "SceneEdges.union\u2192ensureMask\u2192SceneBudget.reserve/release\u2192resource cleanup callbacks; then synchronous tile loops\u2192this.bind",
+    "CurveBoundsEdges.bind\u2192descriptor/supported/ensureScratch\u2192visitCurveMembership\u2192local accept(box)/emit\u2192local flush\u2192gl.bufferSubData\u2192Original.prototype.bind",
+    "Original SceneEdges.bind\u2192GL bindings/uniforms/drawArraysInstanced; no explicit callback/yield/dispatch/controls call",
+    "Actual synchronous cleanup writes: released flags, GL resource deletions, owner maps/sets, optional metadata/scratch invalidation. No path-coordinate or ordered-ID writer found."
+  ],
+  "closedWorldPremise": {
+    "supported": true,
+    "conditions": [
+      "Exact original sources and f8 modules listed by hash; factory composed with the exact original SceneEdges class",
+      "Normal native GL methods plus the audited atlas/resource observers; no added GL callback wrapper or arbitrary user cleanup callback",
+      "JavaScript synchronous union/bind stack with no explicit event-loop yield/reentry route",
+      "No external/injected writes to exposed arrays/fields; source changes require a renewed writer audit"
+    ],
+    "notGuaranteed": [
+      "Same-count ID list mutation detection or stream order/content fingerprint",
+      "Path-coordinate mutation detection from generation/control identity alone",
+      "Arbitrary GPU texture rewrites or replaced GL method reentrancy",
+      "Candidate numerical conservatism, native resource fit, browser fidelity, or integration acceptance"
+    ]
+  }
+}
