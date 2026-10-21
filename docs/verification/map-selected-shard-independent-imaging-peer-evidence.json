@@ -1,0 +1,305 @@
+{
+  "acceptedRevision": "72ea3b7311cf6b978c018ec6cf381ef165513c4c",
+  "guardSource": "c66fb02c933c20fbf7e9658e6b9f948e9b0965db",
+  "scope": "private source/model/tiny only; no fullmap/alternate/timing/resource acceptance",
+  "initialDisposition": "rejected9falseaccepts",
+  "oldAcceptedFaults": [
+    "map-field-geometry",
+    "map-row-label",
+    "closure-set-content",
+    "callback-prefix-content",
+    "callback-array-replacement",
+    "callback-log-replacement",
+    "network-prefix-content",
+    "network-array-replacement",
+    "callback-recorder-replacement"
+  ],
+  "finalAcceptedFaults": [],
+  "finalCases": [
+    {
+      "fault": "none",
+      "calls": 1,
+      "accepted": true,
+      "failure": null
+    },
+    {
+      "fault": "http-503",
+      "calls": 1,
+      "accepted": false,
+      "failure": "selected shard exact one-request network postcondition"
+    },
+    {
+      "fault": "network-reject",
+      "calls": 1,
+      "accepted": false,
+      "failure": "selected shard exact one-request network postcondition"
+    },
+    {
+      "fault": "bad-json",
+      "calls": 1,
+      "accepted": false,
+      "failure": "selected shard exact hydration postcondition"
+    },
+    {
+      "fault": "stale-cache",
+      "calls": 0,
+      "accepted": false,
+      "failure": "selected shard exact one-request network postcondition"
+    },
+    {
+      "fault": "map-field-geometry",
+      "calls": 1,
+      "accepted": false,
+      "failure": "selected shard invariant layout fields record.x0 identity"
+    },
+    {
+      "fault": "map-row-label",
+      "calls": 1,
+      "accepted": false,
+      "failure": "selected shard invariant layout rows record.label identity"
+    },
+    {
+      "fault": "closure-set-content",
+      "calls": 1,
+      "accepted": false,
+      "failure": "selected shard invariant closure ladr-2.30 anc set"
+    },
+    {
+      "fault": "callback-prefix-content",
+      "calls": 1,
+      "accepted": false,
+      "failure": "selected shard invariant callback prefix content"
+    },
+    {
+      "fault": "callback-array-replacement",
+      "calls": 1,
+      "accepted": false,
+      "failure": "selected shard callback/network recorder identity changed"
+    },
+    {
+      "fault": "callback-log-replacement",
+      "calls": 1,
+      "accepted": false,
+      "failure": "selected shard callback/network recorder identity changed"
+    },
+    {
+      "fault": "network-prefix-content",
+      "calls": 1,
+      "accepted": false,
+      "failure": "selected shard invariant network prefix content"
+    },
+    {
+      "fault": "network-array-replacement",
+      "calls": 1,
+      "accepted": false,
+      "failure": "selected shard callback/network recorder identity changed"
+    },
+    {
+      "fault": "callback-recorder-replacement",
+      "calls": 1,
+      "accepted": false,
+      "failure": "selected shard callback/network recorder identity changed"
+    },
+    {
+      "fault": "renderer-events-replacement",
+      "calls": 1,
+      "accepted": false,
+      "failure": "selected shard invariant renderer trace identity"
+    },
+    {
+      "fault": "model-range-content",
+      "calls": 1,
+      "accepted": false,
+      "failure": "selected shard invariant model bundles:0.5.ranges"
+    },
+    {
+      "fault": "budget-cleanup-replacement",
+      "calls": 1,
+      "accepted": false,
+      "failure": "selected shard invariant owner entry keys"
+    },
+    {
+      "fault": "selected-name",
+      "calls": 1,
+      "accepted": false,
+      "failure": "selected shard invariant ladr-2.30.name identity"
+    },
+    {
+      "fault": "selected-dependency",
+      "calls": 1,
+      "accepted": false,
+      "failure": "selected shard invariant ladr-2.30.deps"
+    },
+    {
+      "fault": "unapproved-metadata",
+      "calls": 1,
+      "accepted": false,
+      "failure": "selected shard invariant ladr-2.30 keys"
+    }
+  ],
+  "source": {
+    "revision": "72ea3b7311cf6b978c018ec6cf381ef165513c4c",
+    "base": "0db6e39da7b5a8dcbcb74d2c2363a2e790947553",
+    "changed": [
+      "docs/verification/art-plan-label-independent-logic-peer-evidence.json",
+      "docs/verification/art-plan-label-independent-logic-peer.md",
+      "docs/verification/map-selected-shard-guard-closing-evidence.json",
+      "docs/verification/map-selected-shard-guard-closing-followup.md",
+      "docs/verification/map-selected-shard-readiness-evidence.json",
+      "docs/verification/map-selected-shard-readiness-followup.md",
+      "scripts/lib/map-paired-guarded-fixture.mjs",
+      "scripts/lib/map-paired-selected-shard-fixture.mjs",
+      "scripts/lib/map-paired-selected-shard-tiny.mjs",
+      "scripts/lib/map-paired-selected-shard.mjs",
+      "tests/map-paired-guarded-oracle.mjs",
+      "tests/map-paired-selected-shard-model.mjs",
+      "tests/map-paired-selected-shard-tiny.mjs",
+      "tests/verification-art-label-independent-logic-peer-text253.mjs",
+      "tests/verification-art-label-independent-logic-peer.mjs"
+    ],
+    "excludedUnrelatedPeerAncestry": [
+      "docs/verification/art-plan-label-independent-logic-peer-evidence.json",
+      "docs/verification/art-plan-label-independent-logic-peer.md",
+      "tests/verification-art-label-independent-logic-peer-text253.mjs",
+      "tests/verification-art-label-independent-logic-peer.mjs"
+    ],
+    "protectedSourceHashes": {
+      "assets/js/app.js": "c9058dfa4df306f90b71c5a90385f8567285471b5ba954b0d47812ceaa8cbc9d",
+      "assets/js/graph.js": "9a8850528193c87e97deba14a387bebff3215e9e67569c125cac265e061f94fc",
+      "assets/js/map-scene-gl.js": "b94855c4988e6c7d951d97ca9f2fa773d25ae828872ff6dee79cd42decdda4dc",
+      "assets/js/map-scene-model.js": "a7d10c9ba64acd3f4be8307d07461e0d9fad04f567d0d40dbbebfa37f2a581af",
+      "assets/js/map-scene-text.js": "fbd1cb00b5028d5e2897ff7e3b8384c37429285d51749be4d762b9be2253b8ed",
+      "assets/js/map-scene-painter.js": "082ce9a34a86ad1d9e91d275174bc9d90cd47b2c22eeb4e1391318defbd9454d",
+      "assets/js/map-webgl-scene.js": "2422e59c2780e19e0c7b5c11da56127bc23718925ddde3e4d71527e4e45c21b5",
+      "assets/js/map-scene-edges.js": "7b3fcf731105674252465c1376942b2f2b549fa51f9a3c9a3ee581a10c242262",
+      "scripts/lib/map-paired-atlas-observer.mjs": "7c50053bc9a2c10fe92cfddcb0cd0a6854f2dc4eeb9cf6e32ebdf2620f6e86b1",
+      "scripts/lib/map-paired-guarded-epoch.mjs": "bcffc405baf45b609b46cb9a85f8fb359b93d3a37e9f78182e23540ff21e9eb9",
+      "scripts/lib/map-paired-quiescence.mjs": "12abb9a6cad6a953dea588d1235d1ce0ec867ceb2c1fe700b9467d545102b274",
+      "scripts/lib/map-paired-font-census.mjs": "6a9fc04e4e6c9a5999a4b5b04d6d7fe656b9d124ecaa92091d7c1be11ed91fa1",
+      "scripts/lib/map-paired-resource-observer.mjs": "db7993cfdb69c85badfc2aa26f728119aad8bfcdef0f96b6e3625bcd7322bfb6",
+      "scripts/lib/map-chunked-indices-runtime.mjs": "3c8b01c4df2d5497f27d7d65876adbfaebbbdcd659cf2c8cb29d25714896c187",
+      "scripts/lib/map-segment-mesh-enclosure.mjs": "703dec2779911573b11e67cfd34c98cd9dfb84dc4803e393af0d8fd1619614b1"
+    },
+    "appSHA256": "c9058dfa4df306f90b71c5a90385f8567285471b5ba954b0d47812ceaa8cbc9d",
+    "shardSHA256": "4e516b7f74c31d76b1b6c52d6b24ee9f8e4692d924bd1527f53834feaec461ab",
+    "detailBytes": 116559,
+    "metadataSHA256": "55200351eca693897e2cc51612710ee6f9a301534b4196004e3d533d6942a86f",
+    "metadataKeys": {
+      "credit": 28,
+      "links": 50,
+      "st": 365,
+      "refs": 2
+    },
+    "records": 365,
+    "chapters": 9,
+    "bodyHashes": {
+      "fetchJSON": "4b5918bdade76d1eaab09e44f93ae03169f9e993d6929ac44f641615dc7039f5",
+      "applyShard": "c36283777bc49f345044af14e4e745d16018d7caf338b9450112ea155fbda320",
+      "loadShard": "9689d28d98ac42906990383513c2220648fe3e91cf83f701b0dad7ef70e8ccc7"
+    },
+    "onlyNewRunnerOperation": "one prepareSelectedShard before unchanged prepareFixedQuiescence",
+    "noBrowser": true,
+    "pass": true
+  },
+  "tiny": {
+    "browser": "155.0.8059.85",
+    "bodyHashes": {
+      "fetchJSON": "4b5918bdade76d1eaab09e44f93ae03169f9e993d6929ac44f641615dc7039f5",
+      "applyShard": "c36283777bc49f345044af14e4e745d16018d7caf338b9450112ea155fbda320",
+      "loadShard": "9689d28d98ac42906990383513c2220648fe3e91cf83f701b0dad7ef70e8ccc7"
+    },
+    "metadataSHA256": "55200351eca693897e2cc51612710ee6f9a301534b4196004e3d533d6942a86f",
+    "attempts": 1,
+    "diagnosticStorage": {
+      "serializedUTF16Units": 78409,
+      "referenceSlots": 13636,
+      "checkClosures": 1768
+    },
+    "statementAvailableBeforeCensus": true,
+    "post": [],
+    "forbiddenLoaderCalls": 0,
+    "needCallbacks": 0,
+    "shardResponse": [
+      {
+        "kind": "shard-response-bytes",
+        "url": "http://127.0.0.1:55382/data/col/ladr.json",
+        "status": 200,
+        "bytes": 116559,
+        "sha256": "4e516b7f74c31d76b1b6c52d6b24ee9f8e4692d924bd1527f53834feaec461ab"
+      }
+    ],
+    "errors": [],
+    "personallyInspected": "entire final selected-ready.png",
+    "browserServerClosed": true
+  },
+  "artifacts": {
+    "/tmp/atlas-new-imaging-source/selected-shard-peer/independent-model/outcomes.json": {
+      "bytes": 78920,
+      "sha256": "01b70233f5a5fc4510df73f46015eafcb8759db2478d758053b5414e55a32e6d"
+    },
+    "/tmp/atlas-new-imaging-source/selected-shard-peer/independent-model-expanded/outcomes.json": {
+      "bytes": 97105,
+      "sha256": "61ad19223a36f6f64d0ff3489d2a446c31cfc10df649bafe0b5900654bfe34fe"
+    },
+    "/tmp/atlas-new-imaging-source/selected-shard-peer/independent-model-complete/outcomes.json": {
+      "bytes": 120826,
+      "sha256": "d03ca1e39eab0fdf16c5aa0f440e3afbbb3746e4c01c44a1574b0fc118eaf2cd"
+    },
+    "/tmp/atlas-new-imaging-source/selected-shard-peer/independent-model-complete.log": {
+      "bytes": 1312,
+      "sha256": "743be537a0eaaefb386043a7847e62b10744d0f931fdaf3eb647f19e46f48804"
+    },
+    "/tmp/atlas-new-imaging-source/selected-shard-peer/closing-independent-model/outcomes.json": {
+      "bytes": 148965,
+      "sha256": "2e5ef403f62c38ebff242a08cb95a0555292e4d28306164014781c5c966cd7f7"
+    },
+    "/tmp/atlas-new-imaging-source/selected-shard-peer/final-independent-prefix-model/outcomes.json": {
+      "bytes": 148289,
+      "sha256": "250a6d0a1423e87de064f55f3879d3496b07296337681821434ef0425667c6de"
+    },
+    "/tmp/atlas-new-imaging-source/selected-shard-peer/final-independent-prefix-model.log": {
+      "bytes": 66,
+      "sha256": "5760fd345a0186cc22f9ec963a7093f4f7d0bc5ed46d85117fe9a1df4dab7508"
+    },
+    "/tmp/atlas-new-imaging-source/selected-shard-peer/final-independent-source/source-spec.json": {
+      "bytes": 3828,
+      "sha256": "382e20e9ba29ac650ece0cbc45ed1d8f5166b4615713362d704797bc45384b09"
+    },
+    "/tmp/atlas-new-imaging-source/selected-shard-peer/closing-producer-model/outcomes.json": {
+      "bytes": 266129,
+      "sha256": "c620d5a481b7dd7a6aa542893f633ba418104d4c12a495a942ef5eb6b182397f"
+    },
+    "/tmp/atlas-new-imaging-source/selected-shard-peer/closing-producer-model.log": {
+      "bytes": 73,
+      "sha256": "bf7b40071865df5516f27aeb9a6c2c854556969a4705e60a0b88b78c7d7fd925"
+    },
+    "/tmp/atlas-new-imaging-source/selected-shard-peer/closing-existing-model.log": {
+      "bytes": 927,
+      "sha256": "5babba1313b2025d5aec94553191f750027a1c1d92bdd3ac5bb5d5dbaeec59ad"
+    },
+    "/tmp/atlas-new-imaging-source/selected-shard-peer/closing-prepare-only/prepared.json": {
+      "bytes": 134645,
+      "sha256": "7e3b9f912cf0623262262535764fc82c892f58049b195d7a4385944417e9b61a"
+    },
+    "/tmp/atlas-new-imaging-source/selected-shard-peer/final-tiny/outcome.json": {
+      "bytes": 105958,
+      "sha256": "662332a260ae1b413d64c1ce4512118c54dab22879465d6c64cf85f07eee04d5"
+    },
+    "/tmp/atlas-new-imaging-source/selected-shard-peer/final-tiny/pass.json": {
+      "bytes": 23,
+      "sha256": "8898e3bb4b3b8b082bba8a6a7968fee8efffa63d5748cb2899be15aa1b66f467"
+    },
+    "/tmp/atlas-new-imaging-source/selected-shard-peer/final-tiny/selected-ready.png": {
+      "bytes": 34488,
+      "sha256": "022d06b62b3157d1b619afa07db7f2543d06179a51376e4297cabf82944f7cdb"
+    },
+    "/tmp/atlas-new-imaging-source/selected-shard-peer/closing-independent-source.log": {
+      "bytes": 693,
+      "sha256": "0659ecff610bee0dea2f48f46c49a0c9a4293c5c7e154ad386b620089c26ef60"
+    },
+    "/tmp/atlas-new-imaging-source/selected-shard-peer/closing-independent-source-v2.log": {
+      "bytes": 119,
+      "sha256": "369304ba06d92e232c6a6977d1cc6ccee7e50da444484406baf600433c3d4156"
+    }
+  }
+}
