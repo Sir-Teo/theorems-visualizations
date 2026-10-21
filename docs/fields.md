@@ -34,6 +34,8 @@ you can edit by dragging the images of basis vectors; use the n×n routines in `
 SVD, QR, …) rather than hand-rolled ones, and show the invariant the theorem talks about (a span,
 an eigen-direction, an orthonormal frame, an ellipse's axes) with live numbers.
 
+- Match approximation claims to boundary hypotheses. Complete cubic interpolation with exact endpoint slopes has the fourth-derivative bound; general natural interpolation can have an endpoint layer of order h² even for x². Show incompatible endpoints as a counterexample rather than silently applying the clamped bound. See the [spline review](verification/wave5-num-review.md).
+
 ## Physics & astronomy, Earth & environment, engineering
 
 - **Deps** are derivational: the derivation starts from that law or uses that theorem. A law
@@ -67,6 +69,7 @@ an eigen-direction, an orthonormal frame, an ellipse's axes) with live numbers.
   generalization gap against the bound.
 - State the censoring/intensity assumptions behind event-count and observed-time identities. Informative censoring can invalidate a baseline constant-hazard interpretation; it is not covered by “whatever the censoring.” See the [independent EPI counterexample](verification/epi-prerequisites-independent-peer.md).
 - Atomless multivariate laws can still have atoms in a coordinate marginal (a continuous distribution on a vertical line is an example). Quantile witnesses for sampling bounds must be fixed independently of the sample, include boundary atoms and use the measure actually restricted to the target set. See the [ML peer](verification/ml-crossfield-prerequisite-peer.md).
+- Distinguish the sampling law from the conditional resampling law of one observed sample. Retain bootstrap atoms and boundary failures; normalization, studentization and dependence assumptions belong to the actual procedure being computed. See the [bootstrap review](verification/wave5-stat-review.md).
 
 ## Computer science
 
@@ -96,6 +99,7 @@ an eigen-direction, an orthonormal frame, an ellipse's axes) with live numbers.
   changes rates but not the equilibrium.
 - Spectra and orbitals: use `v.M.schrodinger1D` for 1D models, `v.M.wavelengthRGB` for colours;
   3D shapes through `v.scene3`.
+- Separate encounter coefficients, surface reaction speeds and first-order transfer rates. The diffusion coefficient in m³/s needs the factor 1000 Nₐ to become L mol⁻¹ s⁻¹. Declare electrochemical current signs and distinguish a one-way Tafel/film approximation from the signed net Butler–Volmer current. See the [kinetics review](verification/wave5-kin-review.md).
 
 ## Biology
 
@@ -122,6 +126,7 @@ an eigen-direction, an orthonormal frame, an ellipse's axes) with live numbers.
   with dose–response curves on log axes and real parameter values cited in `refs`.
 - **Honesty about data**: historical numbers (Snow, Graunt, Doll & Hill) quoted from their source
   and cited; modelled data labelled as models.
+- A case-control estimand depends on the control-sampling scheme. A finite sampled ratio need not equal its population target; incidence-density sampling does not require a rare-disease approximation. Preserve the original cohort strata and denominators instead of inventing a joint risk score from marginal tables. See the [study-design review](verification/wave5-epi-review.md).
 
 ## Economics & finance, social sciences
 
@@ -144,6 +149,7 @@ an eigen-direction, an orthonormal frame, an ellipse's axes) with live numbers.
   wealth, population identities and finite-sample statistics answer different questions; a
   residual or fitted parameter alone does not identify a causal effect. See the
   [event-study and fund audit](verification/fin-events-funds-followup.md).
+- Separate an accounting identity from a causal closure: MV=PY alone does not fix velocity or output. Label money-finance and reserve-multiplier assumptions; a loan/deposit accounting entry does not remove subsequent funding and settlement constraints. See the [monetary-model review](verification/wave5-macro-review.md).
 - Match demographic numerators and exposure denominators by age, period and marital status.
   Distinguish an adjusted reference schedule from an observed population or a biological bound,
   and distinguish hypothetical marital allocations from measured data. Survival weighting in
@@ -167,6 +173,7 @@ an eigen-direction, an orthonormal frame, an ellipse's axes) with live numbers.
   spectra computed by FFT).
 - Visual-art items use real optics and colour science (perspective projection computed, colour
   converted through actual colour spaces).
+- State the observer, reference white and luminance convention for colour coordinates and source tables. Separate physical renotation targets from adapted, clipped screen previews. A gamut needs a specified colour space or printer profile; there is no universal CMYK boundary. Retain secondary numerical-table provenance even when the original qualitative experiment is verified. See the [colour-space review](verification/wave5-art-review.md).
 - **Break it**: inharmonic partials, a different temperament, a vanishing point moved off the
   horizon.
 
