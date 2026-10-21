@@ -175,46 +175,229 @@ export default {
     },
     // ───────────────────────────────────────────────────────────── 5
     {
-      n: 5,
-      title: 'Syntax: the structure of sentences',
-      summary: String.raw`Sentences are not strings but trees of constituents, as substitution and movement tests reveal. Phrase-structure rules generate these trees, recursion lets a finite grammar produce unboundedly many sentences, and limits of memory explain why some grammatical sentences are unusable. Natural languages sit just above the context-free level of the Chomsky hierarchy, and their constraints on movement and word order are among the deepest puzzles of the field.`,
-      items: [
-        { num: '5.1', kind: 'Concept', name: 'Constituents and syntactic categories', deps: [], refs: ['Fromkin et al. ch. 3'],
-          pic: 'Bracket a sentence by dragging over words: proposed constituents are labelled NP, VP, PP, and crossing brackets are rejected.' },
-        { num: '5.2', kind: 'Method', name: 'Constituency tests', deps: ['ling-5.1'], refs: ['Fromkin et al. ch. 3', 'Jurafsky & Martin ch. 19'],
-          pic: 'Select a word string and apply substitution, clefting, movement and coordination: the sentence is rewritten for each test and you judge whether it remains grammatical.' },
-        { num: '5.3', kind: 'Concept', name: 'Phrase-structure rules and syntax trees', deps: ['ling-5.1', 'toc-5.1'], refs: ['Fromkin et al. ch. 3', 'Jurafsky & Martin ch. 19'],
-          pic: 'Edit a small grammar and type a sentence: the tree is drawn if the grammar derives it, and the derivation steps can be replayed.' },
-        { num: '5.4', kind: 'Phenomenon', name: 'Structural ambiguity', deps: ['ling-5.3'], refs: ['Fromkin et al. ch. 3'],
-          pic: '“I saw the man with the telescope”: the parser returns both trees side by side, and a picture of each reading is shown.' },
-        { num: '5.5', kind: 'Concept', name: 'Recursion and the infinitude of sentences', deps: ['ling-5.3'], refs: ['Fromkin et al. ch. 3'],
-          pic: 'Keep embedding: “the cat that the dog chased that the rat bit…” or “I think that you said that…”; the tree grows and the count of sentences up to length n explodes.' },
-        { num: '5.6', kind: 'Phenomenon', name: 'Centre embedding and the limits of memory', deps: ['ling-5.5', 'toc-6.1'], refs: ['Fromkin et al. ch. 10'],
-          pic: 'Parse centre-embedded sentences with a pushdown stack shown live: right-branching versions need one stack cell, centre-embedded ones need more, and comprehension collapses at depth three.' },
-        { num: '5.7', kind: 'Phenomenon', name: 'Garden-path sentences', deps: ['ling-5.4'], refs: ['Fromkin et al. ch. 10'],
-          pic: '“The horse raced past the barn fell”: a left-to-right parser commits to the main-verb reading, fails at “fell”, and backtracks; reading-time data are overlaid.' },
-        { num: '5.8', kind: 'Concept', name: 'The Chomsky hierarchy and natural language', deps: ['toc-7.12', 'ling-5.3'], refs: ['Jurafsky & Martin ch. 19'],
-          pic: 'Place language patterns — a*b*, aⁿbⁿ, nested and crossed dependencies — on the hierarchy, with the weakest machine that recognises each.' },
-        { num: '5.9', kind: 'Theorem', name: 'Swiss German is not context-free (Shieber)', deps: ['ling-5.8', 'toc-6.6'], refs: ['Jurafsky & Martin ch. 19'],
-          pic: 'Swiss German verb clusters: link each noun to its verb and the links cross; intersecting with a regular language yields a non-context-free pattern.' },
-        { num: '5.10', kind: 'Concept', name: 'X-bar theory: heads, complements, specifiers', deps: ['ling-5.3'], refs: ['Fromkin et al. ch. 3'],
-          pic: 'Build NP, VP, PP and AP with one shared template: head, complement and specifier slots light up, and switching head direction reorders the tree for Japanese.' },
-        { num: '5.11', kind: 'Concept', name: 'Dependency grammar', deps: ['ling-5.1'], refs: ['Jurafsky & Martin ch. 20'],
-          pic: 'Convert a constituency tree into head–dependent arcs and back: arcs are labelled with relations, and non-projective crossings are highlighted.' },
-        { num: '5.12', kind: 'Concept', name: 'Movement and wh-questions', deps: ['ling-5.10'], refs: ['Fromkin et al. ch. 3'],
-          pic: 'Form a question from a statement: the wh-word moves to the front, leaving a gap in the tree, and an arrow links filler and gap.' },
-        { num: '5.13', kind: 'Concept', name: 'Island constraints (Ross)', deps: ['ling-5.12'], refs: ['Fromkin et al. ch. 3'],
-          pic: 'Try to question different positions in a sentence: extraction from complex noun phrases, coordinate structures and subjects is blocked, and the island boundary is drawn.' },
-        { num: '5.14', kind: 'Concept', name: 'Word-order typology and Greenberg’s universals', deps: ['ling-5.1'], refs: ['Fromkin et al. ch. 3'],
-          pic: 'A world map of SOV, SVO, VSO and other orders, with a cross-tab showing implicational universals, e.g. verb-object languages tend to have prepositions.' },
-        { num: '5.15', kind: 'Algorithm', name: 'CKY parsing', deps: ['ling-5.3', 'toc-5.9'], refs: ['Jurafsky & Martin ch. 19'],
-          pic: 'Fill the CKY chart cell by cell for a sentence and a grammar in Chomsky normal form; ambiguous sentences end with several analyses in the top cell.' },
-        { num: '5.16', kind: 'Paper', name: 'Syntactic Structures',
-          paper: { authors: 'Noam Chomsky', year: 1957, title: 'Syntactic Structures',
-                   venue: '’s-Gravenhage: Mouton, 1957', doi: '10.1515/9783112316009' },
-          introduces: ['ling-5.3', 'ling-5.12'], deps: ['ling-5.1', 'ling-5.2', 'stoch-1.12'], refs: [],
-          pic: 'Chomsky’s three models side by side: a finite-state (Markov) generator, a phrase-structure grammar and a transformational rule; the reader sees why “Colorless green ideas sleep furiously” is grammatical yet improbable, why nested either–or and if–then dependencies defeat any finite-state machine, and applies the passive and question transformations to a phrase-structure tree.' },
-      ],
+      "n": 5,
+      "title": "Syntax: the structure of sentences",
+      "summary": "A sentence can have more than one hierarchical analysis. Constituency diagnostics motivate structures; explicit grammars make their predictions testable. Recursion, parser behavior, filler-gap relations and word-order samples ask different questions. Formal-language arguments constrain idealized grammars without turning a finite demonstration into a theory of every natural language.",
+      "items": [
+        {
+          "num": "5.1",
+          "kind": "Concept",
+          "name": "Constituents and syntactic categories",
+          "deps": [],
+          "refs": [
+            "Richards, MIT24.900 Spring2022 Lecture12, slide47; Jurafsky–Martin, SLP3,19Aug2026, ch19 §§19.1–19.2"
+          ],
+          "pic": "Type a sentence in the declared toy grammar, select an actual parse and choose a half-open word span. Compare the span with the node yields of that tree; switching a PP attachment can change the answer. Add proposed start:end brackets and test their actual interval crossings. Word indices link the interval picture to the complete sentence in the readout."
+        },
+        {
+          "num": "5.2",
+          "kind": "Method",
+          "name": "Constituency tests",
+          "deps": [
+            "ling-5.1"
+          ],
+          "refs": [
+            "Anderson et al., Essentials of Linguistics2, §6.4, replacement-test passage actually read; Jurafsky–Martin ch19, historical notes on substitution; Richards MIT24.900 Lecture12, constituency and fronting examples"
+          ],
+          "pic": "Select a span of the typed sentence and actually perform substitution, fronting, clefting, answer extraction or coordination. Edit the replacement phrase, inspect the resulting string and judge it in a suitable context. Empty or reversed spans are rejected as invalid operations."
+        },
+        {
+          "num": "5.3",
+          "kind": "Concept",
+          "name": "Phrase-structure rules and syntax trees",
+          "deps": [
+            "ling-5.1",
+            "toc-5.1"
+          ],
+          "refs": [
+            "Jurafsky–Martin ch19 §§19.2–19.4; Richards MIT24.900 Lecture12, slides6–11 and47"
+          ],
+          "pic": "Edit the grammar and sentence, compute a real parse and replay its leftmost sentential forms. The final parse tree stays visible while the player changes the derivation. Try a missing lexical rule, a recursive rule, an empty production or a sentence outside the grammar."
+        },
+        {
+          "num": "5.4",
+          "kind": "Phenomenon",
+          "name": "Structural ambiguity",
+          "deps": [
+            "ling-5.3"
+          ],
+          "refs": [
+            "Hayes, Introductory Linguistics2021, pp85–88; Richards MIT24.900 Lecture12, slides12–23; Jurafsky–Martin ch19 §19.5"
+          ],
+          "pic": "Type a sentence, enumerate its exact parse count and select an actual tree. The linked head-index plot changes with the real attachment. Try a single-parse sentence or one the grammar cannot derive."
+        },
+        {
+          "num": "5.5",
+          "kind": "Concept",
+          "name": "Recursion and the infinitude of sentences",
+          "deps": [
+            "ling-5.3"
+          ],
+          "refs": [
+            "Richards MIT24.900 Lecture12, slides8–11; explicit grammar and counting argument supplied here"
+          ],
+          "pic": "Increase the recursive PP depth, inspect the actual parse and compare its length with the complete bounded word-count formula. The finite controls illustrate the construction used in the unbounded proof."
+        },
+        {
+          "num": "5.6",
+          "kind": "Phenomenon",
+          "name": "Centre embedding and the limits of memory",
+          "deps": [
+            "ling-5.5",
+            "toc-5.14"
+          ],
+          "refs": [
+            "Richards MIT24.900 Lecture12, competence/performance distinction; declared predictive grammars and complete parser calculations supplied here"
+          ],
+          "pic": "Compare centre and right relative-clause examples at the same depth and token count. Step through the actual predictions and matches; choose an illustrative stack budget and compare it with the measured peak. Both complete grammars and the current stack remain visible in the readout."
+        },
+        {
+          "num": "5.7",
+          "kind": "Phenomenon",
+          "name": "Garden-path sentences",
+          "deps": [
+            "ling-5.4"
+          ],
+          "refs": [
+            "Wiegand, Cornell cognitive-science syntax slides, Garden Paths passage; explicit bounded search model supplied here"
+          ],
+          "pic": "Type the prefix or complete sentence, switch between real backtracking and first-choice search, and step through the actual consumed-prefix trace. Drops in consumed position mark restored alternatives. Lower the action bound to obtain an honestly inconclusive run."
+        },
+        {
+          "num": "5.8",
+          "kind": "Concept",
+          "name": "The Chomsky hierarchy and natural language",
+          "deps": [
+            "ling-5.3",
+            "toc-5.7",
+            "toc-5.6"
+          ],
+          "see": [
+            "ling-5.9"
+          ],
+          "refs": [
+            "Shieber1985, pp333–343, string-language and competence qualifications; Jurafsky–Martin ch19 §19.4; family arguments supplied here"
+          ],
+          "pic": "Type an actual symbol word and compare membership in three precisely stated families. The matcher checks block order as well as counts. Its finite answer illustrates the separate unbounded classification arguments."
+        },
+        {
+          "num": "5.9",
+          "kind": "Theorem",
+          "name": "Swiss German is not context-free (Shieber)",
+          "deps": [
+            "ling-5.8",
+            "toc-5.6",
+            "toc-5.9"
+          ],
+          "refs": [
+            "Shieber1985, Linguistics and Philosophy8:333–343, §§3–4 and note4; explicit product construction and capacity-aware pumping proof supplied here"
+          ],
+          "pic": "Choose all four block sizes independently. The model constructs the actual abstract word, lexical chunks and same-case ordered pairings; unmatched extras and crossing counts remain visible. Compare matched blocks with a case mismatch or an empty block. The diagram is a schematic for the explicitly conditional proof."
+        },
+        {
+          "num": "5.10",
+          "kind": "Concept",
+          "name": "X-bar theory: heads, complements, specifiers",
+          "deps": [
+            "ling-5.3"
+          ],
+          "refs": [
+            "Richards MIT24.900 Lecture12, slides6–7; Lecture14, slides21–27; Essentials of Linguistics2 §6.14, hypothesis passage actually read"
+          ],
+          "pic": "Build NP, VP, PP or AP from actual category nodes. Toggle the head/complement order and specifier, then add adjunct layers. Follow the resulting tree and its exact placeholder frontier."
+        },
+        {
+          "num": "5.11",
+          "kind": "Concept",
+          "name": "Dependency grammar",
+          "deps": [
+            "ling-5.1"
+          ],
+          "refs": [
+            "Jurafsky–Martin, SLP3,19Aug2026, ch20 §§20.1–20.2, pp1–5; lossy-map counterexample supplied here"
+          ],
+          "pic": "Convert an actual parse with declared toy head rules or edit the full head list. Try a cycle, multiple roots and a genuinely nonprojective rooted tree. The readout gives the exact directed head assignments and interval test."
+        },
+        {
+          "num": "5.12",
+          "kind": "Concept",
+          "name": "Movement and wh-questions",
+          "deps": [
+            "ling-5.10"
+          ],
+          "refs": [
+            "Richards MIT24.900 Lecture14, slides33–37; Lecture16, movement and constraints passages"
+          ],
+          "pic": "Choose a simple or embedded complement clause. The actual selected subtree is copied into a filler position and replaced at its original tree path by a gap. Compare source tokens, the abstraction and the separately specified question form."
+        },
+        {
+          "num": "5.13",
+          "kind": "Concept",
+          "name": "Island constraints (Ross)",
+          "deps": [
+            "ling-5.12"
+          ],
+          "refs": [
+            "Richards MIT24.900 Lecture16, slides51–58; Hayes2021, pp243–248, complex NP constraint and derivations; Ross1967 MIT thesis catalog metadata only (original body not read)"
+          ],
+          "pic": "Switch the extraction domain among a complement, complex NP, coordinate conjunct and subject. The model actually follows the argument path, leaves a gap and lists every annotated boundary it crosses. Compare the resulting candidate questions without treating the boundary flag as a speaker experiment."
+        },
+        {
+          "num": "5.14",
+          "kind": "Concept",
+          "name": "Word-order typology and Greenberg’s universals",
+          "deps": [
+            "ling-5.1"
+          ],
+          "refs": [
+            "Dryer, WALS Online chapters81 and95, current value tables and feature GeoJSON records; retrieved21 Oct 2026"
+          ],
+          "pic": "Filter actual WALS language coordinates by macroarea and dominant order, inspect a named record and compare the separately computed95A table. Both exceptional cells remain visible. Longitude normalization changes only display coordinates, not the source records."
+        },
+        {
+          "num": "5.15",
+          "kind": "Algorithm",
+          "name": "CKY parsing",
+          "deps": [
+            "ling-5.3",
+            "toc-5.10"
+          ],
+          "refs": [
+            "Jurafsky–Martin ch19 §19.6, pp11–15; exact counted-forest induction supplied here"
+          ],
+          "pic": "Edit an already binary grammar and sentence. Fill every actual chart cell step by step, inspect exact category counts and select a real parse by its packed rank. Invalid grammar forms are refused explicitly rather than silently converted."
+        },
+        {
+          "num": "5.16",
+          "kind": "Paper",
+          "name": "Syntactic Structures",
+          "paper": {
+            "authors": "Noam Chomsky",
+            "year": 1957,
+            "title": "Syntactic Structures",
+            "venue": "’s-Gravenhage: Mouton, 1957",
+            "doi": "10.1515/9783112316009"
+          },
+          "introduces": [
+            "ling-5.3",
+            "ling-5.12"
+          ],
+          "deps": [
+            "ling-5.3",
+            "stoch-1.12"
+          ],
+          "see": [
+            "ling-5.1",
+            "ling-5.2",
+            "ling-5.12"
+          ],
+          "refs": [
+            "Richards MIT24.900 Spring2022, syntax/competence lectures; STOCH1.12 actual fitted Markov construction; original 1957 metadata, body inaccessible"
+          ],
+          "verify": true,
+          "pic": "Edit both the test sentence and the training clauses. Compute the actual phrase parse and every fitted conditional-probability factor, including zero-count and unseen-context cases. Compare grammatical structure in this declared grammar with probability in this declared training sample."
+        }
+      ]
     },
     // ───────────────────────────────────────────────────────────── 6
     {
