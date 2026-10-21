@@ -22,7 +22,7 @@
     ],
     "current": [
       "Accepted prerequisite shortfall55;6/64 published collections and1 whole syllabi below target;42 further collections meet25 written inputs. Source queue5 unchanged.",
-      "Latest immutable checkpoint10 on573ea1b passes2199 tests, all six UI groups, strict/static zero errors and warnings.",
+      "Latest immutable checkpoint11 onee15d812 passes2230tests, all6UIgroups, strict/static0/0.",
       "Rejected chunk prototype remains unaccepted. Original-only control reproduces its cold/warm discrepancy; no renderer or timing acceptance.",
       "Private source/tiny fixed-quiescence successor passes independent review; full-map original-only attempt still stops on late normal400 Newsreader loading during transfer. Callback provenance captured; all raw/history retained, alternate/timing unrun.",
       "Frozen BIGHIST3.5 service restriction persists; no retry or edge acceptance."
@@ -1367,15 +1367,15 @@
   },
   "currentPendingSourceReviews": 5,
   "latestCheckpoint": {
-    "testedContentCommit": "573ea1b7f2b45a4da7ed0d786ad1454e89651bae",
-    "acceptedContentCommit": "573ea1b",
-    "report": "docs/verification/checkpoint-573ea1b.md",
-    "defaultTests": 2199,
+    "testedContentCommit": "ee15d812c4ccf430d9a826f910210e89fa9bc2bc",
+    "acceptedContentCommit": "ee15d812",
+    "report": "docs/verification/checkpoint-ee15d812.md",
+    "defaultTests": 2230,
     "uiTests": 6,
     "testFailures": 0,
     "testCancelled": 0,
     "testSkipped": 0,
-    "testDurationSeconds": 103.619883625,
+    "testDurationSeconds": 114.216040917,
     "testConcurrency": 2,
     "strictBuildErrors": 0,
     "strictBuildWarnings": 0,
@@ -1386,13 +1386,13 @@
     "plannedItems": 6890,
     "chapters": 450,
     "collections": 85,
-    "homeGzipBytes": 113152,
+    "homeGzipBytes": 113180,
     "pendingSourceReviews": 5,
     "acceptedTeamEntriesAtSnapshot": 146,
-    "publishedCrossFieldShortfall": 155,
-    "publishedCollectionsBelowTarget": 10,
+    "publishedCrossFieldShortfall": 55,
+    "publishedCollectionsBelowTarget": 6,
     "nonMathCollections": 64,
-    "wholeSyllabusBelowTarget": 7,
+    "wholeSyllabusBelowTarget": 1,
     "wave5Status": "prepared-unstarted",
     "wave5Chapters": 80,
     "wave5NewItems": 1031,
@@ -1400,16 +1400,16 @@
     "map60fps": "open; no benchmark amid competing browser jobs",
     "flagshipProofCuration": "2/100 alongside-wave work",
     "evidence": [
-      "/tmp/atlas-continuation/checkpoint10-build.log",
-      "/tmp/atlas-continuation/checkpoint10-tests.log",
-      "/tmp/atlas-continuation/checkpoint10-static.log",
-      "/tmp/atlas-continuation/checkpoint10-queue.log",
-      "/tmp/atlas-continuation/checkpoint10-crossfield-accepted.log"
+      "/tmp/atlas-continuation/checkpoint11-build.log",
+      "/tmp/atlas-continuation/checkpoint11-tests.log",
+      "/tmp/atlas-continuation/checkpoint11-static.log",
+      "/tmp/atlas-continuation/checkpoint11-queue.log",
+      "/tmp/atlas-continuation/checkpoint11-crossfield-accepted.log"
     ],
     "limitations": [
-      "Includes accepted REL/ASTRO final inputs and ECOL/CPLX/SYSBIO after7b90a07, paired source/tiny peer and preserved original-only stopping experiment. Excludes pending NEURO/CM/GAME/PHARM/PL and later ODE phrase correction/oracle successors.",
-      "Frozen BIGHIST3.5 candidate/edge remains unaccepted; default tests do not replace source peer.",
-      "First paired attempt stopped on extra original transfer draw before alternate opened. Numeric direct-Canvas pass does not accept matched history, alternate binding, lifecycle, production or timing."
+      "Includes accepted CM/NEURO/PL/GAME/PHARM/LING and ODE correction, contrast, both original-only stopped histories and read-only normal400diagnosis. Excludes pending ART/ARCH/CPLX and unrestricted BIGHISTproducer.",
+      "Frozen BIGHIST3.5 candidate/edge remains unaccepted; default tests do not replace restricted source peer.",
+      "Both original-only attempts stop before alternate. Main raw equality does not accept post-history callbacks, alternate binding, lifecycle, production or timing."
     ]
   },
   "openStateFindings": [
