@@ -1505,6 +1505,14 @@
       "owner": "ctrl_prereqs",
       "finding": "Actual320PL2.3canvas286x200clipscapture-saferowy218;PL2.11panels286x141/127clip lowery176/y146. Prerequisitepeers explicitly donotcertifythese.",
       "scope": "Separate local layout literals only; preservecapture/substitution/deBruijn models/controls/readout; freshrealcasesboth themes/personalpixels/independentpeer."
+    },
+    {
+      "id": "cplx-1.9-empty-restore-node-id",
+      "status": "open-authorized-bounded-producer",
+      "owner": "thermo_prereqs",
+      "finding": "Actual offered Alt-delete toempty then addfirstvertex creates 'n0'; local unary+ suffix lookup requestsNaN adjacency and throws Cannot read properties of undefined (reading map), leavingstale readout.",
+      "evidence": "/tmp/atlas-cplx-empty-count/before/light-both-empty-viz.png and before-complete/native-progress.json; separateaddfailure preserved by producer",
+      "scope": "Separate successor aftercount-only boundary: normalize localadjOf keys/endpoints to actualkitStringidentity andremove unary+ lookup. Preservepartition/refinement/isomorphism/geometry/controls/sharedkit/flags/deps; actualempty\u2192addvertex/edge/both themes andindependentdeep peerrequired."
     }
   ],
   "stateFollowups": [
