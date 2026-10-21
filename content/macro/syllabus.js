@@ -184,7 +184,7 @@ export default {
           pic: 'A barter economy needs a double coincidence of wants; add a commonly accepted good and the number of trades needed to reach everyone’s desired goods collapses, counted in the simulation.' },
         { num: '5.2', kind: 'Method', name: 'Fractional-reserve banking and the money multiplier', deps: ['macro-5.1', 'pma-3.26'], refs: ['Mankiw ch. 4', 'CORE Macro U6'],
           pic: 'A deposit is lent, redeposited and lent again; the geometric series of deposits sums to 1/reserve-ratio, with a toggle for the endogenous-money view in which loans create deposits.' },
-        { num: '5.3', kind: 'Theorem', name: 'The quantity theory of money', deps: ['macro-5.1', 'macro-1.6'], refs: ['Mankiw ch. 5'],
+        { num: '5.3', kind: 'Model', name: 'The quantity theory of money', deps: ['macro-5.1', 'macro-1.6'], refs: ['Mankiw ch. 5'],
           pic: 'Money growth against inflation across countries over decades: points cluster around the 45° line, while year-to-year data in low-inflation countries scatter widely.' },
         { num: '5.4', kind: 'Theorem', name: 'The Fisher equation', deps: ['fin-1.1', 'macro-5.3'], refs: ['Mankiw ch. 5'],
           pic: 'Nominal rate, inflation and real rate as three linked sliders: i = r + π (exactly (1 + i) = (1 + r)(1 + π)), with historical U.S. series and ex-ante versus ex-post real rates.' },
