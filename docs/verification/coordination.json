@@ -32,8 +32,8 @@
     {
       "agent": "logic_peer",
       "worktree": "/Users/teodev/.codex/worktrees/atlas-logic-peer/theorems-visualizations",
-      "status": "available-source-review",
-      "current": "Current full case closed; hold released. No further native/full case authorised.",
+      "status": "curve-integration-source-proposal",
+      "current": "Drafting new private current curve fixture/observer/runner with exact accounting, closed pins and positive submitted-index gates; no native execution.",
       "owns": [
         "Unique isolated prototype/model/native/resource reports; production and shared runtime preserved"
       ],
@@ -42,8 +42,8 @@
     {
       "agent": "deep_peer",
       "worktree": "/Users/teodev/.codex/worktrees/atlas-deep-peer/theorems-visualizations",
-      "status": "awaiting-curve-producer",
-      "current": "Hold released; independent 24-byte/path curve-bounds source/model review follows immutable thermo proposal. Node26 diagnosis stopped.",
+      "status": "curve-model-peer-complete",
+      "current": "Curve peer complete with two outside-premise style-ID mutation failures preserved. Available for immutable tiny source/PREPARE peer; no browser.",
       "owns": [
         "Unique independent binding/pixel/resource/lifecycle evidence after immutable producer boundary"
       ],
@@ -52,8 +52,8 @@
     {
       "agent": "arch_source",
       "worktree": "/Users/teodev/.codex/worktrees/atlas-arch-source/theorems-visualizations",
-      "status": "available-source-review",
-      "current": "Hold released; source/report work available without coordinated full-map execution.",
+      "status": "awaiting-curve-integration-producer",
+      "current": "Pinned writer audit complete; assigned independent source/model/PREPARE peer of logic combined current fixture/observer/runner when immutable.",
       "owns": [
         "QINFO content and bounded correctness/metadata successors"
       ],
@@ -72,8 +72,8 @@
     {
       "agent": "thermo_prereqs",
       "worktree": "/Users/teodev/.codex/worktrees/atlas-thermo-prereqs/theorems-visualizations",
-      "status": "curve-source-model",
-      "current": "Hold released; executing bounded new-files-only 24-byte/path curve-bounds source/model checks before immutable independent peer. No browser.",
+      "status": "curve-tiny-source-proposal",
+      "current": "Curve source/model boundary accepted conditionally; drafting separate edge-only native source/PREPARE harness, no browser execution.",
       "owns": [
         "Unique REL peer evidence; CLIMATE producer boundary complete"
       ],
@@ -82,8 +82,8 @@
     {
       "agent": "ctrl_prereqs",
       "worktree": "/Users/teodev/.codex/worktrees/atlas-ctrl-prereqs/theorems-visualizations",
-      "status": "awaiting-tiny-independent-peer",
-      "current": "Hold released; native tiny remains stopped pending independent first-stop/protocol review. S2 reference difference cause unproved.",
+      "status": "s2-diagnostic-source-peer-pending",
+      "current": "Offline S2 localization independently checked by root; connected-control source/PREPARE proposal4c49910a ready for imaging peer. No native retry.",
       "owns": [
         "CM producer; GEOG independent peer complete"
       ],
@@ -3326,5 +3326,25 @@
     "performanceAccepted": false,
     "peer": "053f24f27b5a7322327e6183a091e7eeec98d92b",
     "peerReport": "docs/verification/map-current-light-run-independent-imaging-peer.md"
+  },
+  "curveBoundsPrototype": {
+    "status": "accepted-private-source-model-only-under-pinned-normal-writer-premise",
+    "producer": "f8eb0b366bb98ff906315469f9cc022089f73465",
+    "peers": [
+      "3d066200b130903cf6f4625d158d5b3676dd4df9",
+      "055a336c80796b0f980912d5d5b93db7d1ec38d7"
+    ],
+    "writerAudit": "583599479a0b0fd358c8702d79159bc0137bc8d2",
+    "report": "docs/verification/map-curve-prototype-independent-peer.md",
+    "rootModel": "/tmp/atlas-root-curve-proposal-model/proposal.json",
+    "rootRuntime": "Node22.23.3",
+    "rootChecks": 6433,
+    "faultContracts": 22,
+    "metadataBytesPerPath": 24,
+    "currentConditionalPeakEnvelope": 60216360,
+    "nativeAccepted": false,
+    "currentFitMeasured": false,
+    "performanceAccepted": false,
+    "limits": "Two deliberate same-count style-ID mutation probes fail and remain preserved; no mutation-resilience claim. Actual pinned normal sources have no writer inside synchronous union/bind. Private storage corruption or broader source composition is outside this acceptance."
   }
 }
