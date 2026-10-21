@@ -1,0 +1,13 @@
+// Bounded recording GL only: no rasterization or browser evidence.
+export class RecordingGL{
+ constructor(){this.calls=[];this.serial=0;this.error=0;this.lost=false;this.deleted=[];for(const[k,i]of ['ARRAY_BUFFER','DYNAMIC_DRAW','STATIC_DRAW','FRAMEBUFFER','SCISSOR_TEST','COLOR_BUFFER_BIT','MAX','ONE','FRAMEBUFFER_COMPLETE','MAX_TEXTURE_SIZE','MAX_RENDERBUFFER_SIZE','VERTEX_SHADER','FRAGMENT_SHADER','COMPILE_STATUS','LINK_STATUS','TEXTURE0','TEXTURE1','TEXTURE2','TEXTURE_2D','TEXTURE_MIN_FILTER','TEXTURE_MAG_FILTER','NEAREST','TEXTURE_WRAP_S','TEXTURE_WRAP_T','CLAMP_TO_EDGE','RGBA32F','RGBA','FLOAT','RG16F','RG','R8','RED','UNSIGNED_BYTE','COLOR_ATTACHMENT0','UNSIGNED_INT','TRIANGLE_STRIP','FUNC_ADD','ONE_MINUS_SRC_ALPHA'].entries())this[i]=k+1;this.NO_ERROR=0;
+ for(const name of ['bindVertexArray','useProgram','bindBuffer','enableVertexAttribArray','vertexAttribIPointer','vertexAttribDivisor','activeTexture','bindTexture','uniform1i','uniform1f','uniform2f','uniform2i','uniform3f','uniform4f','uniform4fv','texParameteri','texImage2D','bindFramebuffer','viewport','enable','disable','scissor','clearColor','clear','blendEquation','blendFunc','framebufferTexture2D','shaderSource','compileShader','attachShader','linkProgram'])this[name]=(...args)=>{this.calls.push({name,args});};
+ for(const name of ['createBuffer','createTexture','createFramebuffer','createVertexArray','createShader','createProgram'])this[name]=()=>{const o={kind:name,id:++this.serial};this.calls.push({name,id:o.id});return o};
+ for(const name of ['deleteBuffer','deleteTexture','deleteFramebuffer','deleteVertexArray','deleteShader','deleteProgram'])this[name]=o=>{if(o)this.deleted.push({name,id:o.id});this.calls.push({name,id:o?.id??null})};
+ }
+ getShaderParameter(){return true}getProgramParameter(){return true}getUniformLocation(_,key){return key}getParameter(){return 4096}checkFramebufferStatus(){return this.FRAMEBUFFER_COMPLETE}isContextLost(){return this.lost}getError(){const e=this.error;this.error=0;return e}
+ bufferData(target,data,usage){this.calls.push({name:'bufferData',target,bytes:typeof data==='number'?data:data.byteLength,usage});if(this.failScratch&&usage===this.DYNAMIC_DRAW){this.failScratch=false;this.error=123}}
+ bufferSubData(target,offset,data,start,length){this.calls.push({name:'bufferSubData',target,offset,indices:[...data.subarray(start,start+length)]});if(this.onSubData){const f=this.onSubData;this.onSubData=null;f()}}
+ drawArraysInstanced(_,a,b,count){this.calls.push({name:'drawArraysInstanced',count});if(this.failChunk){this.failChunk=false;this.error=123}}
+ drawArrays(){this.calls.push({name:'drawArrays'})}
+}

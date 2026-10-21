@@ -1,0 +1,1882 @@
+{
+  "baseline": "b6ca416f8b95b8e93bd12b9973ab0999f6519942",
+  "nativeEvidence": false,
+  "implementationChanged": false,
+  "sourceHashes": {
+    "scripts/lib/map-chunked-indices-runtime.mjs": "3c8b01c4df2d5497f27d7d65876adbfaebbbdcd659cf2c8cb29d25714896c187",
+    "scripts/lib/map-chunked-indices-prototype.mjs": "c6704721acd140e3dce10b82c93f321bf658fd517a6f0cce495bf0e8d1aeaecb",
+    "assets/js/map-scene-edges.js": "7b3fcf731105674252465c1376942b2f2b549fa51f9a3c9a3ee581a10c242262",
+    "assets/js/map-scene-gl.js": "b94855c4988e6c7d951d97ca9f2fa773d25ae828872ff6dee79cd42decdda4dc",
+    "scripts/lib/map-segment-mesh-enclosure.mjs": "703dec2779911573b11e67cfd34c98cd9dfb84dc4803e393af0d8fd1619614b1"
+  },
+  "chunkCases": [
+    {
+      "name": "normal-two-chunk-live-snapshot",
+      "pass": true,
+      "error": null,
+      "assertionFailure": null,
+      "stats": {
+        "originalBinds": 0,
+        "optimizedTiles": 1,
+        "chunks": 2,
+        "indices": 32769,
+        "emptyTiles": 0,
+        "liveReplays": 0,
+        "staleAborts": 0,
+        "streamComparisons": 1,
+        "metadataCopies": 1,
+        "metadataDrops": 0,
+        "reserveChecks": 3,
+        "priorityDrops": 0,
+        "peak": 426044,
+        "events": [
+          {
+            "kind": "drop",
+            "reason": "metadata replacement",
+            "bytes": 16424
+          },
+          {
+            "kind": "metadata",
+            "bytes": 4112,
+            "scale": 4
+          },
+          {
+            "kind": "tile",
+            "key": "gray",
+            "original": 32769,
+            "retained": 32769,
+            "chunks": 2
+          }
+        ]
+      },
+      "resources": {
+        "metadataCPU": 16,
+        "scratchCPU": 131072,
+        "scratchGPU": 131072,
+        "bookkeeping": 4096,
+        "capacity": 32768,
+        "modelScale": 4
+      },
+      "budget": {
+        "bytes": 426044,
+        "peak": 426044,
+        "limit": 1000000,
+        "entries": [
+          {
+            "kind": "model",
+            "bytes": 16424,
+            "evictable": false
+          },
+          {
+            "kind": "metadata",
+            "bytes": 4112,
+            "evictable": false
+          },
+          {
+            "kind": "group",
+            "bytes": 131076,
+            "evictable": false
+          },
+          {
+            "kind": "mask",
+            "bytes": 12288,
+            "evictable": false
+          },
+          {
+            "kind": "scratch",
+            "bytes": 262144,
+            "evictable": false
+          }
+        ]
+      },
+      "groupBufferTruthy": true,
+      "frameCleared": true,
+      "cleanupZero": true,
+      "cleanupDuplicateDeletes": 0,
+      "budgetMethodsRestored": true
+    },
+    {
+      "name": "metadata-ownership-denied",
+      "pass": true,
+      "error": null,
+      "assertionFailure": null,
+      "stats": {
+        "originalBinds": 1,
+        "optimizedTiles": 0,
+        "chunks": 0,
+        "indices": 0,
+        "emptyTiles": 0,
+        "liveReplays": 0,
+        "staleAborts": 0,
+        "streamComparisons": 1,
+        "metadataCopies": 0,
+        "metadataDrops": 0,
+        "reserveChecks": 3,
+        "priorityDrops": 0,
+        "peak": 159788,
+        "events": [
+          {
+            "kind": "drop",
+            "reason": "metadata replacement",
+            "bytes": 16424
+          },
+          {
+            "kind": "metadata unavailable",
+            "bytes": 4112
+          }
+        ]
+      },
+      "resources": {
+        "metadataCPU": 0,
+        "scratchCPU": 0,
+        "scratchGPU": 0,
+        "bookkeeping": 0,
+        "capacity": 0,
+        "modelScale": null
+      },
+      "budget": {
+        "bytes": 159788,
+        "peak": 159788,
+        "limit": 1000000,
+        "entries": [
+          {
+            "kind": "model",
+            "bytes": 16424,
+            "evictable": false
+          },
+          {
+            "kind": "group",
+            "bytes": 131076,
+            "evictable": false
+          },
+          {
+            "kind": "mask",
+            "bytes": 12288,
+            "evictable": false
+          }
+        ]
+      },
+      "groupBufferTruthy": true,
+      "frameCleared": true,
+      "cleanupZero": true,
+      "cleanupDuplicateDeletes": 0,
+      "budgetMethodsRestored": true
+    },
+    {
+      "name": "scratch-ownership-denied",
+      "pass": true,
+      "error": null,
+      "assertionFailure": null,
+      "stats": {
+        "originalBinds": 1,
+        "optimizedTiles": 0,
+        "chunks": 0,
+        "indices": 0,
+        "emptyTiles": 0,
+        "liveReplays": 0,
+        "staleAborts": 0,
+        "streamComparisons": 1,
+        "metadataCopies": 1,
+        "metadataDrops": 0,
+        "reserveChecks": 3,
+        "priorityDrops": 0,
+        "peak": 163900,
+        "events": [
+          {
+            "kind": "drop",
+            "reason": "metadata replacement",
+            "bytes": 16424
+          },
+          {
+            "kind": "metadata",
+            "bytes": 4112,
+            "scale": 4
+          }
+        ]
+      },
+      "resources": {
+        "metadataCPU": 16,
+        "scratchCPU": 0,
+        "scratchGPU": 0,
+        "bookkeeping": 4096,
+        "capacity": 0,
+        "modelScale": 4
+      },
+      "budget": {
+        "bytes": 163900,
+        "peak": 163900,
+        "limit": 1000000,
+        "entries": [
+          {
+            "kind": "model",
+            "bytes": 16424,
+            "evictable": false
+          },
+          {
+            "kind": "metadata",
+            "bytes": 4112,
+            "evictable": false
+          },
+          {
+            "kind": "group",
+            "bytes": 131076,
+            "evictable": false
+          },
+          {
+            "kind": "mask",
+            "bytes": 12288,
+            "evictable": false
+          }
+        ]
+      },
+      "groupBufferTruthy": true,
+      "frameCleared": true,
+      "cleanupZero": true,
+      "cleanupDuplicateDeletes": 0,
+      "budgetMethodsRestored": true
+    },
+    {
+      "name": "missing-metadata-explicit-drop",
+      "pass": true,
+      "error": null,
+      "assertionFailure": null,
+      "stats": {
+        "originalBinds": 1,
+        "optimizedTiles": 0,
+        "chunks": 0,
+        "indices": 0,
+        "emptyTiles": 0,
+        "liveReplays": 0,
+        "staleAborts": 0,
+        "streamComparisons": 1,
+        "metadataCopies": 1,
+        "metadataDrops": 1,
+        "reserveChecks": 3,
+        "priorityDrops": 0,
+        "peak": 159788,
+        "events": [
+          {
+            "kind": "drop",
+            "reason": "metadata replacement",
+            "bytes": 16424
+          },
+          {
+            "kind": "metadata",
+            "bytes": 4112,
+            "scale": 4
+          },
+          {
+            "kind": "drop",
+            "reason": "model probe missing",
+            "bytes": 147500
+          }
+        ]
+      },
+      "resources": {
+        "metadataCPU": 0,
+        "scratchCPU": 0,
+        "scratchGPU": 0,
+        "bookkeeping": 0,
+        "capacity": 0,
+        "modelScale": null
+      },
+      "budget": {
+        "bytes": 159788,
+        "peak": 159788,
+        "limit": 1000000,
+        "entries": [
+          {
+            "kind": "model",
+            "bytes": 16424,
+            "evictable": false
+          },
+          {
+            "kind": "group",
+            "bytes": 131076,
+            "evictable": false
+          },
+          {
+            "kind": "mask",
+            "bytes": 12288,
+            "evictable": false
+          }
+        ]
+      },
+      "groupBufferTruthy": true,
+      "frameCleared": true,
+      "cleanupZero": true,
+      "cleanupDuplicateDeletes": 0,
+      "budgetMethodsRestored": true
+    },
+    {
+      "name": "corrupt-metadata-marker",
+      "pass": true,
+      "error": null,
+      "assertionFailure": null,
+      "stats": {
+        "originalBinds": 1,
+        "optimizedTiles": 0,
+        "chunks": 0,
+        "indices": 0,
+        "emptyTiles": 0,
+        "liveReplays": 0,
+        "staleAborts": 0,
+        "streamComparisons": 1,
+        "metadataCopies": 1,
+        "metadataDrops": 0,
+        "reserveChecks": 3,
+        "priorityDrops": 0,
+        "peak": 163900,
+        "events": [
+          {
+            "kind": "drop",
+            "reason": "metadata replacement",
+            "bytes": 16424
+          },
+          {
+            "kind": "metadata",
+            "bytes": 4112,
+            "scale": 4
+          }
+        ]
+      },
+      "resources": {
+        "metadataCPU": 16,
+        "scratchCPU": 0,
+        "scratchGPU": 0,
+        "bookkeeping": 4096,
+        "capacity": 0,
+        "modelScale": 4
+      },
+      "budget": {
+        "bytes": 163900,
+        "peak": 163900,
+        "limit": 1000000,
+        "entries": [
+          {
+            "kind": "model",
+            "bytes": 16424,
+            "evictable": false
+          },
+          {
+            "kind": "metadata",
+            "bytes": 4112,
+            "evictable": false
+          },
+          {
+            "kind": "group",
+            "bytes": 131076,
+            "evictable": false
+          },
+          {
+            "kind": "mask",
+            "bytes": 12288,
+            "evictable": false
+          }
+        ]
+      },
+      "groupBufferTruthy": true,
+      "frameCleared": true,
+      "cleanupZero": true,
+      "cleanupDuplicateDeletes": 0,
+      "budgetMethodsRestored": true
+    },
+    {
+      "name": "unsupported-uploaded-join",
+      "pass": true,
+      "error": null,
+      "assertionFailure": null,
+      "stats": {
+        "originalBinds": 1,
+        "optimizedTiles": 0,
+        "chunks": 0,
+        "indices": 0,
+        "emptyTiles": 0,
+        "liveReplays": 0,
+        "staleAborts": 0,
+        "streamComparisons": 1,
+        "metadataCopies": 0,
+        "metadataDrops": 1,
+        "reserveChecks": 3,
+        "priorityDrops": 0,
+        "peak": 159788,
+        "events": [
+          {
+            "kind": "drop",
+            "reason": "metadata replacement",
+            "bytes": 16424
+          },
+          {
+            "kind": "drop",
+            "reason": "unsupported uploaded join",
+            "bytes": 16424
+          }
+        ]
+      },
+      "resources": {
+        "metadataCPU": 0,
+        "scratchCPU": 0,
+        "scratchGPU": 0,
+        "bookkeeping": 0,
+        "capacity": 0,
+        "modelScale": null
+      },
+      "budget": {
+        "bytes": 159788,
+        "peak": 159788,
+        "limit": 1000000,
+        "entries": [
+          {
+            "kind": "model",
+            "bytes": 16424,
+            "evictable": false
+          },
+          {
+            "kind": "group",
+            "bytes": 131076,
+            "evictable": false
+          },
+          {
+            "kind": "mask",
+            "bytes": 12288,
+            "evictable": false
+          }
+        ]
+      },
+      "groupBufferTruthy": true,
+      "frameCleared": true,
+      "cleanupZero": true,
+      "cleanupDuplicateDeletes": 0,
+      "budgetMethodsRestored": true
+    },
+    {
+      "name": "nonoptional-fidelity-scale",
+      "pass": true,
+      "error": null,
+      "assertionFailure": null,
+      "stats": {
+        "originalBinds": 1,
+        "optimizedTiles": 0,
+        "chunks": 0,
+        "indices": 0,
+        "emptyTiles": 0,
+        "liveReplays": 0,
+        "staleAborts": 0,
+        "streamComparisons": 1,
+        "metadataCopies": 0,
+        "metadataDrops": 0,
+        "reserveChecks": 3,
+        "priorityDrops": 0,
+        "peak": 159788,
+        "events": []
+      },
+      "resources": {
+        "metadataCPU": 0,
+        "scratchCPU": 0,
+        "scratchGPU": 0,
+        "bookkeeping": 0,
+        "capacity": 0,
+        "modelScale": null
+      },
+      "budget": {
+        "bytes": 159788,
+        "peak": 159788,
+        "limit": 1000000,
+        "entries": [
+          {
+            "kind": "model",
+            "bytes": 16424,
+            "evictable": false
+          },
+          {
+            "kind": "group",
+            "bytes": 131076,
+            "evictable": false
+          },
+          {
+            "kind": "mask",
+            "bytes": 12288,
+            "evictable": false
+          }
+        ]
+      },
+      "groupBufferTruthy": true,
+      "frameCleared": true,
+      "cleanupZero": true,
+      "cleanupDuplicateDeletes": 0,
+      "budgetMethodsRestored": true
+    },
+    {
+      "name": "forced-original-path",
+      "pass": true,
+      "error": null,
+      "assertionFailure": null,
+      "stats": {
+        "originalBinds": 1,
+        "optimizedTiles": 0,
+        "chunks": 0,
+        "indices": 0,
+        "emptyTiles": 0,
+        "liveReplays": 0,
+        "staleAborts": 0,
+        "streamComparisons": 1,
+        "metadataCopies": 1,
+        "metadataDrops": 0,
+        "reserveChecks": 3,
+        "priorityDrops": 0,
+        "peak": 163900,
+        "events": [
+          {
+            "kind": "drop",
+            "reason": "metadata replacement",
+            "bytes": 16424
+          },
+          {
+            "kind": "metadata",
+            "bytes": 4112,
+            "scale": 4
+          }
+        ]
+      },
+      "resources": {
+        "metadataCPU": 16,
+        "scratchCPU": 0,
+        "scratchGPU": 0,
+        "bookkeeping": 4096,
+        "capacity": 0,
+        "modelScale": 4
+      },
+      "budget": {
+        "bytes": 163900,
+        "peak": 163900,
+        "limit": 1000000,
+        "entries": [
+          {
+            "kind": "model",
+            "bytes": 16424,
+            "evictable": false
+          },
+          {
+            "kind": "metadata",
+            "bytes": 4112,
+            "evictable": false
+          },
+          {
+            "kind": "group",
+            "bytes": 131076,
+            "evictable": false
+          },
+          {
+            "kind": "mask",
+            "bytes": 12288,
+            "evictable": false
+          }
+        ]
+      },
+      "groupBufferTruthy": true,
+      "frameCleared": true,
+      "cleanupZero": true,
+      "cleanupDuplicateDeletes": 0,
+      "budgetMethodsRestored": true
+    },
+    {
+      "name": "scratch-allocation-error",
+      "pass": true,
+      "error": null,
+      "assertionFailure": null,
+      "stats": {
+        "originalBinds": 1,
+        "optimizedTiles": 0,
+        "chunks": 0,
+        "indices": 0,
+        "emptyTiles": 0,
+        "liveReplays": 0,
+        "staleAborts": 0,
+        "streamComparisons": 1,
+        "metadataCopies": 1,
+        "metadataDrops": 1,
+        "reserveChecks": 3,
+        "priorityDrops": 0,
+        "peak": 426044,
+        "events": [
+          {
+            "kind": "drop",
+            "reason": "metadata replacement",
+            "bytes": 16424
+          },
+          {
+            "kind": "metadata",
+            "bytes": 4112,
+            "scale": 4
+          },
+          {
+            "kind": "drop",
+            "reason": "scratch allocation failed",
+            "bytes": 159788
+          }
+        ]
+      },
+      "resources": {
+        "metadataCPU": 0,
+        "scratchCPU": 0,
+        "scratchGPU": 0,
+        "bookkeeping": 0,
+        "capacity": 0,
+        "modelScale": null
+      },
+      "budget": {
+        "bytes": 159788,
+        "peak": 426044,
+        "limit": 1000000,
+        "entries": [
+          {
+            "kind": "model",
+            "bytes": 16424,
+            "evictable": false
+          },
+          {
+            "kind": "group",
+            "bytes": 131076,
+            "evictable": false
+          },
+          {
+            "kind": "mask",
+            "bytes": 12288,
+            "evictable": false
+          }
+        ]
+      },
+      "groupBufferTruthy": true,
+      "frameCleared": true,
+      "cleanupZero": true,
+      "cleanupDuplicateDeletes": 0,
+      "budgetMethodsRestored": true
+    },
+    {
+      "name": "after-first-chunk-live",
+      "pass": true,
+      "error": null,
+      "assertionFailure": null,
+      "stats": {
+        "originalBinds": 1,
+        "optimizedTiles": 0,
+        "chunks": 1,
+        "indices": 32768,
+        "emptyTiles": 0,
+        "liveReplays": 1,
+        "staleAborts": 0,
+        "streamComparisons": 1,
+        "metadataCopies": 1,
+        "metadataDrops": 0,
+        "reserveChecks": 3,
+        "priorityDrops": 0,
+        "peak": 426044,
+        "events": [
+          {
+            "kind": "drop",
+            "reason": "metadata replacement",
+            "bytes": 16424
+          },
+          {
+            "kind": "metadata",
+            "bytes": 4112,
+            "scale": 4
+          }
+        ]
+      },
+      "resources": {
+        "metadataCPU": 16,
+        "scratchCPU": 131072,
+        "scratchGPU": 131072,
+        "bookkeeping": 4096,
+        "capacity": 32768,
+        "modelScale": 4
+      },
+      "budget": {
+        "bytes": 426044,
+        "peak": 426044,
+        "limit": 1000000,
+        "entries": [
+          {
+            "kind": "model",
+            "bytes": 16424,
+            "evictable": false
+          },
+          {
+            "kind": "metadata",
+            "bytes": 4112,
+            "evictable": false
+          },
+          {
+            "kind": "group",
+            "bytes": 131076,
+            "evictable": false
+          },
+          {
+            "kind": "mask",
+            "bytes": 12288,
+            "evictable": false
+          },
+          {
+            "kind": "scratch",
+            "bytes": 262144,
+            "evictable": false
+          }
+        ]
+      },
+      "groupBufferTruthy": true,
+      "frameCleared": true,
+      "cleanupZero": true,
+      "cleanupDuplicateDeletes": 0,
+      "budgetMethodsRestored": true
+    },
+    {
+      "name": "after-first-chunk-stale",
+      "pass": true,
+      "error": {
+        "name": "Error",
+        "message": "chunk snapshot expired: injected stale"
+      },
+      "assertionFailure": null,
+      "stats": {
+        "originalBinds": 0,
+        "optimizedTiles": 0,
+        "chunks": 1,
+        "indices": 32768,
+        "emptyTiles": 0,
+        "liveReplays": 0,
+        "staleAborts": 1,
+        "streamComparisons": 1,
+        "metadataCopies": 1,
+        "metadataDrops": 0,
+        "reserveChecks": 3,
+        "priorityDrops": 0,
+        "peak": 426044,
+        "events": [
+          {
+            "kind": "drop",
+            "reason": "metadata replacement",
+            "bytes": 16424
+          },
+          {
+            "kind": "metadata",
+            "bytes": 4112,
+            "scale": 4
+          }
+        ]
+      },
+      "resources": {
+        "metadataCPU": 16,
+        "scratchCPU": 131072,
+        "scratchGPU": 131072,
+        "bookkeeping": 4096,
+        "capacity": 32768,
+        "modelScale": 4
+      },
+      "budget": {
+        "bytes": 426044,
+        "peak": 426044,
+        "limit": 1000000,
+        "entries": [
+          {
+            "kind": "model",
+            "bytes": 16424,
+            "evictable": false
+          },
+          {
+            "kind": "metadata",
+            "bytes": 4112,
+            "evictable": false
+          },
+          {
+            "kind": "group",
+            "bytes": 131076,
+            "evictable": false
+          },
+          {
+            "kind": "mask",
+            "bytes": 12288,
+            "evictable": false
+          },
+          {
+            "kind": "scratch",
+            "bytes": 262144,
+            "evictable": false
+          }
+        ]
+      },
+      "groupBufferTruthy": true,
+      "frameCleared": true,
+      "cleanupZero": true,
+      "cleanupDuplicateDeletes": 0,
+      "budgetMethodsRestored": true
+    },
+    {
+      "name": "after-first-chunk-released",
+      "pass": true,
+      "error": {
+        "name": "Error",
+        "message": "chunk snapshot expired: injected released"
+      },
+      "assertionFailure": null,
+      "stats": {
+        "originalBinds": 0,
+        "optimizedTiles": 0,
+        "chunks": 1,
+        "indices": 32768,
+        "emptyTiles": 0,
+        "liveReplays": 0,
+        "staleAborts": 1,
+        "streamComparisons": 1,
+        "metadataCopies": 1,
+        "metadataDrops": 0,
+        "reserveChecks": 3,
+        "priorityDrops": 0,
+        "peak": 426044,
+        "events": [
+          {
+            "kind": "drop",
+            "reason": "metadata replacement",
+            "bytes": 16424
+          },
+          {
+            "kind": "metadata",
+            "bytes": 4112,
+            "scale": 4
+          }
+        ]
+      },
+      "resources": {
+        "metadataCPU": 16,
+        "scratchCPU": 131072,
+        "scratchGPU": 131072,
+        "bookkeeping": 4096,
+        "capacity": 32768,
+        "modelScale": 4
+      },
+      "budget": {
+        "bytes": 294968,
+        "peak": 426044,
+        "limit": 1000000,
+        "entries": [
+          {
+            "kind": "model",
+            "bytes": 16424,
+            "evictable": false
+          },
+          {
+            "kind": "metadata",
+            "bytes": 4112,
+            "evictable": false
+          },
+          {
+            "kind": "mask",
+            "bytes": 12288,
+            "evictable": false
+          },
+          {
+            "kind": "scratch",
+            "bytes": 262144,
+            "evictable": false
+          }
+        ]
+      },
+      "groupBufferTruthy": false,
+      "frameCleared": true,
+      "cleanupZero": true,
+      "cleanupDuplicateDeletes": 0,
+      "budgetMethodsRestored": true
+    },
+    {
+      "name": "releaseGroup-alone-must-invalidate",
+      "pass": false,
+      "error": null,
+      "assertionFailure": {
+        "name": "AssertionError",
+        "message": "The input did not match the regular expression /chunk snapshot expired/. Input:\n\n''\n"
+      },
+      "stats": {
+        "originalBinds": 1,
+        "optimizedTiles": 0,
+        "chunks": 0,
+        "indices": 0,
+        "emptyTiles": 0,
+        "liveReplays": 1,
+        "staleAborts": 0,
+        "streamComparisons": 1,
+        "metadataCopies": 1,
+        "metadataDrops": 0,
+        "reserveChecks": 3,
+        "priorityDrops": 0,
+        "peak": 426044,
+        "events": [
+          {
+            "kind": "drop",
+            "reason": "metadata replacement",
+            "bytes": 16424
+          },
+          {
+            "kind": "metadata",
+            "bytes": 4112,
+            "scale": 4
+          }
+        ]
+      },
+      "resources": {
+        "metadataCPU": 16,
+        "scratchCPU": 131072,
+        "scratchGPU": 131072,
+        "bookkeeping": 4096,
+        "capacity": 32768,
+        "modelScale": 4
+      },
+      "budget": {
+        "bytes": 294968,
+        "peak": 426044,
+        "limit": 1000000,
+        "entries": [
+          {
+            "kind": "model",
+            "bytes": 16424,
+            "evictable": false
+          },
+          {
+            "kind": "metadata",
+            "bytes": 4112,
+            "evictable": false
+          },
+          {
+            "kind": "mask",
+            "bytes": 12288,
+            "evictable": false
+          },
+          {
+            "kind": "scratch",
+            "bytes": 262144,
+            "evictable": false
+          }
+        ]
+      },
+      "groupBufferTruthy": true,
+      "frameCleared": true,
+      "cleanupZero": true,
+      "cleanupDuplicateDeletes": 0,
+      "budgetMethodsRestored": true
+    },
+    {
+      "name": "chunk-gl-error-live-replay",
+      "pass": true,
+      "error": null,
+      "assertionFailure": null,
+      "stats": {
+        "originalBinds": 1,
+        "optimizedTiles": 0,
+        "chunks": 0,
+        "indices": 0,
+        "emptyTiles": 0,
+        "liveReplays": 1,
+        "staleAborts": 0,
+        "streamComparisons": 1,
+        "metadataCopies": 1,
+        "metadataDrops": 0,
+        "reserveChecks": 3,
+        "priorityDrops": 0,
+        "peak": 426044,
+        "events": [
+          {
+            "kind": "drop",
+            "reason": "metadata replacement",
+            "bytes": 16424
+          },
+          {
+            "kind": "metadata",
+            "bytes": 4112,
+            "scale": 4
+          }
+        ]
+      },
+      "resources": {
+        "metadataCPU": 16,
+        "scratchCPU": 131072,
+        "scratchGPU": 131072,
+        "bookkeeping": 4096,
+        "capacity": 32768,
+        "modelScale": 4
+      },
+      "budget": {
+        "bytes": 426044,
+        "peak": 426044,
+        "limit": 1000000,
+        "entries": [
+          {
+            "kind": "model",
+            "bytes": 16424,
+            "evictable": false
+          },
+          {
+            "kind": "metadata",
+            "bytes": 4112,
+            "evictable": false
+          },
+          {
+            "kind": "group",
+            "bytes": 131076,
+            "evictable": false
+          },
+          {
+            "kind": "mask",
+            "bytes": 12288,
+            "evictable": false
+          },
+          {
+            "kind": "scratch",
+            "bytes": 262144,
+            "evictable": false
+          }
+        ]
+      },
+      "groupBufferTruthy": true,
+      "frameCleared": true,
+      "cleanupZero": true,
+      "cleanupDuplicateDeletes": 0,
+      "budgetMethodsRestored": true
+    },
+    {
+      "name": "invalidation-generation",
+      "pass": true,
+      "error": {
+        "name": "Error",
+        "message": "chunk snapshot expired: expired snapshot"
+      },
+      "assertionFailure": null,
+      "stats": {
+        "originalBinds": 0,
+        "optimizedTiles": 0,
+        "chunks": 1,
+        "indices": 32768,
+        "emptyTiles": 0,
+        "liveReplays": 0,
+        "staleAborts": 1,
+        "streamComparisons": 1,
+        "metadataCopies": 1,
+        "metadataDrops": 0,
+        "reserveChecks": 3,
+        "priorityDrops": 0,
+        "peak": 426044,
+        "events": [
+          {
+            "kind": "drop",
+            "reason": "metadata replacement",
+            "bytes": 16424
+          },
+          {
+            "kind": "metadata",
+            "bytes": 4112,
+            "scale": 4
+          }
+        ]
+      },
+      "resources": {
+        "metadataCPU": 16,
+        "scratchCPU": 131072,
+        "scratchGPU": 131072,
+        "bookkeeping": 4096,
+        "capacity": 32768,
+        "modelScale": 4
+      },
+      "budget": {
+        "bytes": 426044,
+        "peak": 426044,
+        "limit": 1000000,
+        "entries": [
+          {
+            "kind": "model",
+            "bytes": 16424,
+            "evictable": false
+          },
+          {
+            "kind": "metadata",
+            "bytes": 4112,
+            "evictable": false
+          },
+          {
+            "kind": "group",
+            "bytes": 131076,
+            "evictable": false
+          },
+          {
+            "kind": "mask",
+            "bytes": 12288,
+            "evictable": false
+          },
+          {
+            "kind": "scratch",
+            "bytes": 262144,
+            "evictable": false
+          }
+        ]
+      },
+      "groupBufferTruthy": true,
+      "frameCleared": true,
+      "cleanupZero": true,
+      "cleanupDuplicateDeletes": 0,
+      "budgetMethodsRestored": true
+    },
+    {
+      "name": "invalidation-control",
+      "pass": true,
+      "error": {
+        "name": "Error",
+        "message": "chunk snapshot expired: expired snapshot"
+      },
+      "assertionFailure": null,
+      "stats": {
+        "originalBinds": 0,
+        "optimizedTiles": 0,
+        "chunks": 1,
+        "indices": 32768,
+        "emptyTiles": 0,
+        "liveReplays": 0,
+        "staleAborts": 1,
+        "streamComparisons": 1,
+        "metadataCopies": 1,
+        "metadataDrops": 0,
+        "reserveChecks": 3,
+        "priorityDrops": 0,
+        "peak": 426044,
+        "events": [
+          {
+            "kind": "drop",
+            "reason": "metadata replacement",
+            "bytes": 16424
+          },
+          {
+            "kind": "metadata",
+            "bytes": 4112,
+            "scale": 4
+          }
+        ]
+      },
+      "resources": {
+        "metadataCPU": 16,
+        "scratchCPU": 131072,
+        "scratchGPU": 131072,
+        "bookkeeping": 4096,
+        "capacity": 32768,
+        "modelScale": 4
+      },
+      "budget": {
+        "bytes": 426044,
+        "peak": 426044,
+        "limit": 1000000,
+        "entries": [
+          {
+            "kind": "model",
+            "bytes": 16424,
+            "evictable": false
+          },
+          {
+            "kind": "metadata",
+            "bytes": 4112,
+            "evictable": false
+          },
+          {
+            "kind": "group",
+            "bytes": 131076,
+            "evictable": false
+          },
+          {
+            "kind": "mask",
+            "bytes": 12288,
+            "evictable": false
+          },
+          {
+            "kind": "scratch",
+            "bytes": 262144,
+            "evictable": false
+          }
+        ]
+      },
+      "groupBufferTruthy": true,
+      "frameCleared": true,
+      "cleanupZero": true,
+      "cleanupDuplicateDeletes": 0,
+      "budgetMethodsRestored": true
+    },
+    {
+      "name": "invalidation-registry",
+      "pass": true,
+      "error": {
+        "name": "Error",
+        "message": "chunk snapshot expired: expired snapshot"
+      },
+      "assertionFailure": null,
+      "stats": {
+        "originalBinds": 0,
+        "optimizedTiles": 0,
+        "chunks": 1,
+        "indices": 32768,
+        "emptyTiles": 0,
+        "liveReplays": 0,
+        "staleAborts": 1,
+        "streamComparisons": 1,
+        "metadataCopies": 1,
+        "metadataDrops": 0,
+        "reserveChecks": 3,
+        "priorityDrops": 0,
+        "peak": 426044,
+        "events": [
+          {
+            "kind": "drop",
+            "reason": "metadata replacement",
+            "bytes": 16424
+          },
+          {
+            "kind": "metadata",
+            "bytes": 4112,
+            "scale": 4
+          }
+        ]
+      },
+      "resources": {
+        "metadataCPU": 16,
+        "scratchCPU": 131072,
+        "scratchGPU": 131072,
+        "bookkeeping": 4096,
+        "capacity": 32768,
+        "modelScale": 4
+      },
+      "budget": {
+        "bytes": 426044,
+        "peak": 426044,
+        "limit": 1000000,
+        "entries": [
+          {
+            "kind": "model",
+            "bytes": 16424,
+            "evictable": false
+          },
+          {
+            "kind": "metadata",
+            "bytes": 4112,
+            "evictable": false
+          },
+          {
+            "kind": "group",
+            "bytes": 131076,
+            "evictable": false
+          },
+          {
+            "kind": "mask",
+            "bytes": 12288,
+            "evictable": false
+          },
+          {
+            "kind": "scratch",
+            "bytes": 262144,
+            "evictable": false
+          }
+        ]
+      },
+      "groupBufferTruthy": true,
+      "frameCleared": true,
+      "cleanupZero": true,
+      "cleanupDuplicateDeletes": 0,
+      "budgetMethodsRestored": true
+    },
+    {
+      "name": "invalidation-coverage",
+      "pass": true,
+      "error": {
+        "name": "Error",
+        "message": "chunk snapshot expired: expired snapshot"
+      },
+      "assertionFailure": null,
+      "stats": {
+        "originalBinds": 0,
+        "optimizedTiles": 0,
+        "chunks": 1,
+        "indices": 32768,
+        "emptyTiles": 0,
+        "liveReplays": 0,
+        "staleAborts": 1,
+        "streamComparisons": 1,
+        "metadataCopies": 1,
+        "metadataDrops": 0,
+        "reserveChecks": 3,
+        "priorityDrops": 0,
+        "peak": 426044,
+        "events": [
+          {
+            "kind": "drop",
+            "reason": "metadata replacement",
+            "bytes": 16424
+          },
+          {
+            "kind": "metadata",
+            "bytes": 4112,
+            "scale": 4
+          }
+        ]
+      },
+      "resources": {
+        "metadataCPU": 16,
+        "scratchCPU": 131072,
+        "scratchGPU": 131072,
+        "bookkeeping": 4096,
+        "capacity": 32768,
+        "modelScale": 4
+      },
+      "budget": {
+        "bytes": 426044,
+        "peak": 426044,
+        "limit": 1000000,
+        "entries": [
+          {
+            "kind": "model",
+            "bytes": 16424,
+            "evictable": false
+          },
+          {
+            "kind": "metadata",
+            "bytes": 4112,
+            "evictable": false
+          },
+          {
+            "kind": "group",
+            "bytes": 131076,
+            "evictable": false
+          },
+          {
+            "kind": "mask",
+            "bytes": 12288,
+            "evictable": false
+          },
+          {
+            "kind": "scratch",
+            "bytes": 262144,
+            "evictable": false
+          }
+        ]
+      },
+      "groupBufferTruthy": true,
+      "frameCleared": true,
+      "cleanupZero": true,
+      "cleanupDuplicateDeletes": 0,
+      "budgetMethodsRestored": true
+    },
+    {
+      "name": "invalidation-model-release",
+      "pass": true,
+      "error": {
+        "name": "Error",
+        "message": "chunk snapshot expired: Cannot read properties of null (reading 'buffer')"
+      },
+      "assertionFailure": null,
+      "stats": {
+        "originalBinds": 0,
+        "optimizedTiles": 0,
+        "chunks": 0,
+        "indices": 0,
+        "emptyTiles": 0,
+        "liveReplays": 0,
+        "staleAborts": 1,
+        "streamComparisons": 1,
+        "metadataCopies": 1,
+        "metadataDrops": 1,
+        "reserveChecks": 3,
+        "priorityDrops": 0,
+        "peak": 426044,
+        "events": [
+          {
+            "kind": "drop",
+            "reason": "metadata replacement",
+            "bytes": 16424
+          },
+          {
+            "kind": "metadata",
+            "bytes": 4112,
+            "scale": 4
+          },
+          {
+            "kind": "drop",
+            "reason": "model released",
+            "bytes": 159788
+          }
+        ]
+      },
+      "resources": {
+        "metadataCPU": 0,
+        "scratchCPU": 0,
+        "scratchGPU": 0,
+        "bookkeeping": 0,
+        "capacity": 0,
+        "modelScale": null
+      },
+      "budget": {
+        "bytes": 143364,
+        "peak": 426044,
+        "limit": 1000000,
+        "entries": [
+          {
+            "kind": "group",
+            "bytes": 131076,
+            "evictable": false
+          },
+          {
+            "kind": "mask",
+            "bytes": 12288,
+            "evictable": false
+          }
+        ]
+      },
+      "groupBufferTruthy": true,
+      "frameCleared": true,
+      "cleanupZero": true,
+      "cleanupDuplicateDeletes": 0,
+      "budgetMethodsRestored": true
+    },
+    {
+      "name": "invalidation-context-loss",
+      "pass": true,
+      "error": {
+        "name": "Error",
+        "message": "chunk snapshot expired: chunk GL failure"
+      },
+      "assertionFailure": null,
+      "stats": {
+        "originalBinds": 0,
+        "optimizedTiles": 0,
+        "chunks": 0,
+        "indices": 0,
+        "emptyTiles": 0,
+        "liveReplays": 0,
+        "staleAborts": 1,
+        "streamComparisons": 1,
+        "metadataCopies": 1,
+        "metadataDrops": 0,
+        "reserveChecks": 3,
+        "priorityDrops": 0,
+        "peak": 426044,
+        "events": [
+          {
+            "kind": "drop",
+            "reason": "metadata replacement",
+            "bytes": 16424
+          },
+          {
+            "kind": "metadata",
+            "bytes": 4112,
+            "scale": 4
+          }
+        ]
+      },
+      "resources": {
+        "metadataCPU": 16,
+        "scratchCPU": 131072,
+        "scratchGPU": 131072,
+        "bookkeeping": 4096,
+        "capacity": 32768,
+        "modelScale": 4
+      },
+      "budget": {
+        "bytes": 426044,
+        "peak": 426044,
+        "limit": 1000000,
+        "entries": [
+          {
+            "kind": "model",
+            "bytes": 16424,
+            "evictable": false
+          },
+          {
+            "kind": "metadata",
+            "bytes": 4112,
+            "evictable": false
+          },
+          {
+            "kind": "group",
+            "bytes": 131076,
+            "evictable": false
+          },
+          {
+            "kind": "mask",
+            "bytes": 12288,
+            "evictable": false
+          },
+          {
+            "kind": "scratch",
+            "bytes": 262144,
+            "evictable": false
+          }
+        ]
+      },
+      "groupBufferTruthy": true,
+      "frameCleared": true,
+      "cleanupZero": true,
+      "cleanupDuplicateDeletes": 0,
+      "budgetMethodsRestored": true
+    },
+    {
+      "name": "original-pressure-drops-optional-first",
+      "pass": true,
+      "error": null,
+      "assertionFailure": null,
+      "stats": {
+        "originalBinds": 1,
+        "optimizedTiles": 0,
+        "chunks": 0,
+        "indices": 0,
+        "emptyTiles": 0,
+        "liveReplays": 0,
+        "staleAborts": 0,
+        "streamComparisons": 1,
+        "metadataCopies": 1,
+        "metadataDrops": 1,
+        "reserveChecks": 4,
+        "priorityDrops": 1,
+        "peak": 999872,
+        "events": [
+          {
+            "kind": "drop",
+            "reason": "metadata replacement",
+            "bytes": 16424
+          },
+          {
+            "kind": "metadata",
+            "bytes": 4112,
+            "scale": 4
+          },
+          {
+            "kind": "drop",
+            "reason": "original reserve priority",
+            "bytes": 16428
+          }
+        ]
+      },
+      "resources": {
+        "metadataCPU": 0,
+        "scratchCPU": 0,
+        "scratchGPU": 0,
+        "bookkeeping": 0,
+        "capacity": 0,
+        "modelScale": null
+      },
+      "budget": {
+        "bytes": 999872,
+        "peak": 999872,
+        "limit": 1000000,
+        "entries": [
+          {
+            "kind": "model",
+            "bytes": 16424,
+            "evictable": true
+          },
+          {
+            "kind": "group",
+            "bytes": 4,
+            "evictable": false
+          },
+          {
+            "kind": "other",
+            "bytes": 971156,
+            "evictable": false
+          },
+          {
+            "kind": "mask",
+            "bytes": 12288,
+            "evictable": false
+          }
+        ]
+      },
+      "groupBufferTruthy": true,
+      "frameCleared": true,
+      "cleanupZero": true,
+      "cleanupDuplicateDeletes": 0,
+      "budgetMethodsRestored": true
+    },
+    {
+      "name": "original-impossible-reserve-retains-existing-owners",
+      "pass": true,
+      "error": null,
+      "assertionFailure": null,
+      "stats": {
+        "originalBinds": 1,
+        "optimizedTiles": 0,
+        "chunks": 0,
+        "indices": 0,
+        "emptyTiles": 0,
+        "liveReplays": 0,
+        "staleAborts": 0,
+        "streamComparisons": 1,
+        "metadataCopies": 1,
+        "metadataDrops": 1,
+        "reserveChecks": 4,
+        "priorityDrops": 1,
+        "peak": 282684,
+        "events": [
+          {
+            "kind": "drop",
+            "reason": "metadata replacement",
+            "bytes": 16424
+          },
+          {
+            "kind": "metadata",
+            "bytes": 4112,
+            "scale": 4
+          },
+          {
+            "kind": "drop",
+            "reason": "original reserve priority",
+            "bytes": 16428
+          }
+        ]
+      },
+      "resources": {
+        "metadataCPU": 0,
+        "scratchCPU": 0,
+        "scratchGPU": 0,
+        "bookkeeping": 0,
+        "capacity": 0,
+        "modelScale": null
+      },
+      "budget": {
+        "bytes": 28716,
+        "peak": 282684,
+        "limit": 1000000,
+        "entries": [
+          {
+            "kind": "model",
+            "bytes": 16424,
+            "evictable": false
+          },
+          {
+            "kind": "group",
+            "bytes": 4,
+            "evictable": false
+          },
+          {
+            "kind": "mask",
+            "bytes": 12288,
+            "evictable": false
+          }
+        ]
+      },
+      "groupBufferTruthy": true,
+      "frameCleared": true,
+      "cleanupZero": true,
+      "cleanupDuplicateDeletes": 0,
+      "budgetMethodsRestored": true
+    }
+  ],
+  "sceneCases": [
+    {
+      "name": "worker-error-requests-redraw-without-free-variable",
+      "initial": {
+        "generation": 1,
+        "dead": false,
+        "status": "initializing",
+        "failed": [],
+        "pending": 3,
+        "drawCalls": 0,
+        "active": false,
+        "opacity": "",
+        "canvasRemoved": false
+      },
+      "error": {
+        "name": "ReferenceError",
+        "message": "map is not defined"
+      },
+      "observed": {
+        "generation": 1,
+        "dead": false,
+        "status": "geometry worker failed",
+        "failed": [],
+        "pending": 3,
+        "drawCalls": 0,
+        "active": false,
+        "display": "none",
+        "opacity": "",
+        "canvasRemoved": false
+      },
+      "workerRequests": [
+        {
+          "request": 1,
+          "scale": 0.5
+        },
+        {
+          "request": 2,
+          "scale": 4
+        },
+        {
+          "request": 3,
+          "scale": 0.5
+        }
+      ],
+      "assertionFailure": {
+        "name": "AssertionError",
+        "message": "Expected values to be strictly equal:\n+ actual - expected\n\n+ {\n+   message: 'map is not defined',\n+   name: 'ReferenceError'\n+ }\n- undefined\n"
+      },
+      "cleaned": {
+        "generation": 2,
+        "dead": true,
+        "status": "destroyed",
+        "failed": [],
+        "pending": 0,
+        "drawCalls": 0,
+        "active": false,
+        "display": "none",
+        "opacity": "",
+        "canvasRemoved": true
+      }
+    },
+    {
+      "name": "lazy-rejection-after-disposed-generation",
+      "initial": {
+        "generation": 1,
+        "dead": false,
+        "status": "initializing",
+        "failed": [],
+        "pending": 3,
+        "drawCalls": 0,
+        "active": false,
+        "opacity": "",
+        "canvasRemoved": false
+      },
+      "drawReturn": false,
+      "pendingBeforeDispose": 4,
+      "immediate": {
+        "generation": 2,
+        "dead": false,
+        "status": "replacement ready",
+        "failed": [],
+        "pending": 0,
+        "drawCalls": 0,
+        "active": true,
+        "display": "block",
+        "opacity": "",
+        "canvasRemoved": false
+      },
+      "afterMicrotasks": {
+        "generation": 2,
+        "dead": false,
+        "status": "Scene generation disposed",
+        "failed": [
+          "edges:8"
+        ],
+        "pending": 0,
+        "drawCalls": 0,
+        "active": false,
+        "display": "none",
+        "opacity": "",
+        "canvasRemoved": false
+      },
+      "assertionFailure": {
+        "name": "AssertionError",
+        "message": "old lazy rejection must not change disposed/replacement generation or destroyed scene\n+ actual - expected\n\n  {\n+   active: false,\n-   active: true,\n    canvasRemoved: false,\n    dead: false,\n+   display: 'none',\n-   display: 'block',\n    drawCalls: 0,\n+   failed: [\n+     'edges:8'\n+   ],\n-   failed: [],\n    generation: 2,\n    opacity: '',\n    pending: 0,\n+   status: 'Scene generation disposed'\n-   status: 'replacement ready'\n  }\n"
+      },
+      "cleaned": {
+        "generation": 3,
+        "dead": true,
+        "status": "destroyed",
+        "failed": [],
+        "pending": 0,
+        "drawCalls": 0,
+        "active": false,
+        "display": "none",
+        "opacity": "",
+        "canvasRemoved": true
+      }
+    },
+    {
+      "name": "lazy-rejection-after-destroyed",
+      "initial": {
+        "generation": 1,
+        "dead": false,
+        "status": "initializing",
+        "failed": [],
+        "pending": 3,
+        "drawCalls": 0,
+        "active": false,
+        "opacity": "",
+        "canvasRemoved": false
+      },
+      "drawReturn": false,
+      "pendingBeforeDispose": 4,
+      "immediate": {
+        "generation": 2,
+        "dead": true,
+        "status": "destroyed",
+        "failed": [],
+        "pending": 0,
+        "drawCalls": 0,
+        "active": false,
+        "display": "none",
+        "opacity": "",
+        "canvasRemoved": true
+      },
+      "afterMicrotasks": {
+        "generation": 2,
+        "dead": true,
+        "status": "Scene generation disposed",
+        "failed": [
+          "edges:8"
+        ],
+        "pending": 0,
+        "drawCalls": 0,
+        "active": false,
+        "display": "none",
+        "opacity": "",
+        "canvasRemoved": true
+      },
+      "assertionFailure": {
+        "name": "AssertionError",
+        "message": "old lazy rejection must not change disposed/replacement generation or destroyed scene\n+ actual - expected\n\n  {\n    active: false,\n    canvasRemoved: true,\n    dead: true,\n    display: 'none',\n    drawCalls: 0,\n+   failed: [\n+     'edges:8'\n+   ],\n-   failed: [],\n    generation: 2,\n    opacity: '',\n    pending: 0,\n+   status: 'Scene generation disposed'\n-   status: 'destroyed'\n  }\n"
+      },
+      "cleaned": {
+        "generation": 2,
+        "dead": true,
+        "status": "Scene generation disposed",
+        "failed": [
+          "edges:8"
+        ],
+        "pending": 0,
+        "drawCalls": 0,
+        "active": false,
+        "display": "none",
+        "opacity": "",
+        "canvasRemoved": true
+      }
+    }
+  ],
+  "fullEvidence": {
+    "/tmp/atlas-map-optional-lifetime/run-1/results.json": {
+      "bytes": 5645449,
+      "sha256": "f5e19d9fca78baee773d43b58d761d468aeee6d45c1e63a743c543ca5f6f7aa0"
+    },
+    "/tmp/atlas-map-optional-lifetime/run-2/results.json": {
+      "bytes": 5948920,
+      "sha256": "2de5a96c9159703c17b20290c39f9405dee1df8ac81c4042cbbf49682df1aa84"
+    },
+    "/tmp/atlas-map-optional-lifetime/run-3/results.json": {
+      "bytes": 5949733,
+      "sha256": "6bfa62b01ab34ad506c532eb18e48ea5d8ecd61133af056128e6495200947f7d"
+    },
+    "/tmp/atlas-map-optional-lifetime/final-chunk/results.json": {
+      "bytes": 5949733,
+      "sha256": "6bfa62b01ab34ad506c532eb18e48ea5d8ecd61133af056128e6495200947f7d"
+    },
+    "/tmp/atlas-map-optional-lifetime/scene-run-1/results.json": {
+      "bytes": 5357,
+      "sha256": "bd896691328ca81f274c9b989e5776856b9549c1d1b58001bcc49820c7994c9f"
+    },
+    "/tmp/atlas-map-optional-lifetime/final-chunk.log": {
+      "bytes": 569,
+      "sha256": "b1bdf26bff1fd86fadc1157df0e8f9377e3adcd13ae827fc0661240a1e02b6ef"
+    },
+    "/tmp/atlas-map-optional-lifetime/scene-run-1.log": {
+      "bytes": 576,
+      "sha256": "312dd8a607f1a374927601a6467207e4944d16c546022cd43e6f5079165fa650"
+    }
+  }
+}
