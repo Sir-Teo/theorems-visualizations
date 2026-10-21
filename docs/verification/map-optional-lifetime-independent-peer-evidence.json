@@ -1,0 +1,766 @@
+{
+  "candidate": "6833fd9f404af5ac1ce4c4396814c708aaaccb1c",
+  "baseline": "b6ca416f8b95b8e93bd12b9973ab0999f6519942",
+  "protected": [
+    {
+      "path": "scripts/lib/map-chunked-indices-runtime.mjs",
+      "reviewRootSHA256": "3c8b01c4df2d5497f27d7d65876adbfaebbbdcd659cf2c8cb29d25714896c187",
+      "baselineSHA256": "3c8b01c4df2d5497f27d7d65876adbfaebbbdcd659cf2c8cb29d25714896c187"
+    },
+    {
+      "path": "scripts/lib/map-chunked-indices-prototype.mjs",
+      "reviewRootSHA256": "c6704721acd140e3dce10b82c93f321bf658fd517a6f0cce495bf0e8d1aeaecb",
+      "baselineSHA256": "c6704721acd140e3dce10b82c93f321bf658fd517a6f0cce495bf0e8d1aeaecb"
+    },
+    {
+      "path": "scripts/lib/map-segment-mesh-enclosure.mjs",
+      "reviewRootSHA256": "703dec2779911573b11e67cfd34c98cd9dfb84dc4803e393af0d8fd1619614b1",
+      "baselineSHA256": "703dec2779911573b11e67cfd34c98cd9dfb84dc4803e393af0d8fd1619614b1"
+    },
+    {
+      "path": "assets/js/map-scene-edges.js",
+      "reviewRootSHA256": "7b3fcf731105674252465c1376942b2f2b549fa51f9a3c9a3ee581a10c242262",
+      "baselineSHA256": "7b3fcf731105674252465c1376942b2f2b549fa51f9a3c9a3ee581a10c242262"
+    },
+    {
+      "path": "assets/js/map-scene-gl.js",
+      "reviewRootSHA256": "b94855c4988e6c7d951d97ca9f2fa773d25ae828872ff6dee79cd42decdda4dc",
+      "baselineSHA256": "b94855c4988e6c7d951d97ca9f2fa773d25ae828872ff6dee79cd42decdda4dc"
+    },
+    {
+      "path": "assets/js/map-webgl-scene.js",
+      "reviewRootSHA256": "2422e59c2780e19e0c7b5c11da56127bc23718925ddde3e4d71527e4e45c21b5",
+      "baselineSHA256": "2422e59c2780e19e0c7b5c11da56127bc23718925ddde3e4d71527e4e45c21b5"
+    }
+  ],
+  "result": {
+    "peerReproduction": true,
+    "producerAssertionsStillFail": true,
+    "chunkCases": 22,
+    "expectedChunkFailures": 1,
+    "sceneCases": 3,
+    "expectedSceneFailures": 3,
+    "cleanup": "all recording-GL resources/actual budget owners/worker/canvas listeners checked",
+    "browser": 0,
+    "nativeAcceptance": false
+  },
+  "chunk": [
+    {
+      "name": "normal-two-chunk-live-snapshot",
+      "pass": true,
+      "error": null,
+      "assertionFailure": null,
+      "cleanupZero": true,
+      "budgetMethodsRestored": true,
+      "created": 15,
+      "deleted": 15,
+      "live": [],
+      "invalidBindings": []
+    },
+    {
+      "name": "metadata-ownership-denied",
+      "pass": true,
+      "error": null,
+      "assertionFailure": null,
+      "cleanupZero": true,
+      "budgetMethodsRestored": true,
+      "created": 14,
+      "deleted": 14,
+      "live": [],
+      "invalidBindings": []
+    },
+    {
+      "name": "scratch-ownership-denied",
+      "pass": true,
+      "error": null,
+      "assertionFailure": null,
+      "cleanupZero": true,
+      "budgetMethodsRestored": true,
+      "created": 14,
+      "deleted": 14,
+      "live": [],
+      "invalidBindings": []
+    },
+    {
+      "name": "missing-metadata-explicit-drop",
+      "pass": true,
+      "error": null,
+      "assertionFailure": null,
+      "cleanupZero": true,
+      "budgetMethodsRestored": true,
+      "created": 14,
+      "deleted": 14,
+      "live": [],
+      "invalidBindings": []
+    },
+    {
+      "name": "corrupt-metadata-marker",
+      "pass": true,
+      "error": null,
+      "assertionFailure": null,
+      "cleanupZero": true,
+      "budgetMethodsRestored": true,
+      "created": 14,
+      "deleted": 14,
+      "live": [],
+      "invalidBindings": []
+    },
+    {
+      "name": "unsupported-uploaded-join",
+      "pass": true,
+      "error": null,
+      "assertionFailure": null,
+      "cleanupZero": true,
+      "budgetMethodsRestored": true,
+      "created": 14,
+      "deleted": 14,
+      "live": [],
+      "invalidBindings": []
+    },
+    {
+      "name": "nonoptional-fidelity-scale",
+      "pass": true,
+      "error": null,
+      "assertionFailure": null,
+      "cleanupZero": true,
+      "budgetMethodsRestored": true,
+      "created": 14,
+      "deleted": 14,
+      "live": [],
+      "invalidBindings": []
+    },
+    {
+      "name": "forced-original-path",
+      "pass": true,
+      "error": null,
+      "assertionFailure": null,
+      "cleanupZero": true,
+      "budgetMethodsRestored": true,
+      "created": 14,
+      "deleted": 14,
+      "live": [],
+      "invalidBindings": []
+    },
+    {
+      "name": "scratch-allocation-error",
+      "pass": true,
+      "error": null,
+      "assertionFailure": null,
+      "cleanupZero": true,
+      "budgetMethodsRestored": true,
+      "created": 15,
+      "deleted": 15,
+      "live": [],
+      "invalidBindings": []
+    },
+    {
+      "name": "after-first-chunk-live",
+      "pass": true,
+      "error": null,
+      "assertionFailure": null,
+      "cleanupZero": true,
+      "budgetMethodsRestored": true,
+      "created": 15,
+      "deleted": 15,
+      "live": [],
+      "invalidBindings": []
+    },
+    {
+      "name": "after-first-chunk-stale",
+      "pass": true,
+      "error": {
+        "name": "Error",
+        "message": "chunk snapshot expired: injected stale"
+      },
+      "assertionFailure": null,
+      "cleanupZero": true,
+      "budgetMethodsRestored": true,
+      "created": 15,
+      "deleted": 15,
+      "live": [],
+      "invalidBindings": []
+    },
+    {
+      "name": "after-first-chunk-released",
+      "pass": true,
+      "error": {
+        "name": "Error",
+        "message": "chunk snapshot expired: injected released"
+      },
+      "assertionFailure": null,
+      "cleanupZero": true,
+      "budgetMethodsRestored": true,
+      "created": 15,
+      "deleted": 15,
+      "live": [],
+      "invalidBindings": []
+    },
+    {
+      "name": "releaseGroup-alone-must-invalidate",
+      "pass": null,
+      "error": null,
+      "assertionFailure": {
+        "name": "AssertionError",
+        "message": "The input did not match the regular expression /chunk snapshot expired/. Input:\n\n''\n"
+      },
+      "cleanupZero": true,
+      "budgetMethodsRestored": true,
+      "created": 15,
+      "deleted": 15,
+      "live": [],
+      "invalidBindings": [
+        {
+          "name": "bindBuffer",
+          "id": 12
+        }
+      ]
+    },
+    {
+      "name": "chunk-gl-error-live-replay",
+      "pass": true,
+      "error": null,
+      "assertionFailure": null,
+      "cleanupZero": true,
+      "budgetMethodsRestored": true,
+      "created": 15,
+      "deleted": 15,
+      "live": [],
+      "invalidBindings": []
+    },
+    {
+      "name": "invalidation-generation",
+      "pass": true,
+      "error": {
+        "name": "Error",
+        "message": "chunk snapshot expired: expired snapshot"
+      },
+      "assertionFailure": null,
+      "cleanupZero": true,
+      "budgetMethodsRestored": true,
+      "created": 15,
+      "deleted": 15,
+      "live": [],
+      "invalidBindings": []
+    },
+    {
+      "name": "invalidation-control",
+      "pass": true,
+      "error": {
+        "name": "Error",
+        "message": "chunk snapshot expired: expired snapshot"
+      },
+      "assertionFailure": null,
+      "cleanupZero": true,
+      "budgetMethodsRestored": true,
+      "created": 15,
+      "deleted": 15,
+      "live": [],
+      "invalidBindings": []
+    },
+    {
+      "name": "invalidation-registry",
+      "pass": true,
+      "error": {
+        "name": "Error",
+        "message": "chunk snapshot expired: expired snapshot"
+      },
+      "assertionFailure": null,
+      "cleanupZero": true,
+      "budgetMethodsRestored": true,
+      "created": 15,
+      "deleted": 15,
+      "live": [],
+      "invalidBindings": []
+    },
+    {
+      "name": "invalidation-coverage",
+      "pass": true,
+      "error": {
+        "name": "Error",
+        "message": "chunk snapshot expired: expired snapshot"
+      },
+      "assertionFailure": null,
+      "cleanupZero": true,
+      "budgetMethodsRestored": true,
+      "created": 15,
+      "deleted": 15,
+      "live": [],
+      "invalidBindings": []
+    },
+    {
+      "name": "invalidation-model-release",
+      "pass": true,
+      "error": {
+        "name": "Error",
+        "message": "chunk snapshot expired: Cannot read properties of null (reading 'buffer')"
+      },
+      "assertionFailure": null,
+      "cleanupZero": true,
+      "budgetMethodsRestored": true,
+      "created": 15,
+      "deleted": 15,
+      "live": [],
+      "invalidBindings": []
+    },
+    {
+      "name": "invalidation-context-loss",
+      "pass": true,
+      "error": {
+        "name": "Error",
+        "message": "chunk snapshot expired: chunk GL failure"
+      },
+      "assertionFailure": null,
+      "cleanupZero": true,
+      "budgetMethodsRestored": true,
+      "created": 15,
+      "deleted": 15,
+      "live": [],
+      "invalidBindings": []
+    },
+    {
+      "name": "original-pressure-drops-optional-first",
+      "pass": true,
+      "error": null,
+      "assertionFailure": null,
+      "cleanupZero": true,
+      "budgetMethodsRestored": true,
+      "created": 15,
+      "deleted": 15,
+      "live": [],
+      "invalidBindings": []
+    },
+    {
+      "name": "original-impossible-reserve-retains-existing-owners",
+      "pass": true,
+      "error": null,
+      "assertionFailure": null,
+      "cleanupZero": true,
+      "budgetMethodsRestored": true,
+      "created": 15,
+      "deleted": 15,
+      "live": [],
+      "invalidBindings": []
+    }
+  ],
+  "scene": [
+    {
+      "name": "worker-error-requests-redraw-without-free-variable",
+      "initial": {
+        "generation": 1,
+        "dead": false,
+        "status": "initializing",
+        "failed": [],
+        "pending": 3,
+        "drawCalls": 0,
+        "active": false,
+        "opacity": "",
+        "canvasRemoved": false,
+        "budgetBytes": 16640,
+        "liveGL": [
+          [
+            1,
+            "VertexArray"
+          ],
+          [
+            2,
+            "VertexArray"
+          ],
+          [
+            5,
+            "Program"
+          ],
+          [
+            8,
+            "Program"
+          ],
+          [
+            9,
+            "Texture"
+          ],
+          [
+            10,
+            "Texture"
+          ]
+        ],
+        "workerTerminated": false,
+        "mapListeners": 2,
+        "sceneListeners": 2
+      },
+      "error": {
+        "name": "ReferenceError",
+        "message": "map is not defined"
+      },
+      "observed": {
+        "generation": 1,
+        "dead": false,
+        "status": "geometry worker failed",
+        "failed": [],
+        "pending": 3,
+        "drawCalls": 0,
+        "active": false,
+        "display": "none",
+        "opacity": "",
+        "canvasRemoved": false,
+        "budgetBytes": 16640,
+        "liveGL": [
+          [
+            1,
+            "VertexArray"
+          ],
+          [
+            2,
+            "VertexArray"
+          ],
+          [
+            5,
+            "Program"
+          ],
+          [
+            8,
+            "Program"
+          ],
+          [
+            9,
+            "Texture"
+          ],
+          [
+            10,
+            "Texture"
+          ]
+        ],
+        "workerTerminated": false,
+        "mapListeners": 2,
+        "sceneListeners": 2
+      },
+      "workerRequests": [
+        {
+          "request": 1,
+          "scale": 0.5
+        },
+        {
+          "request": 2,
+          "scale": 4
+        },
+        {
+          "request": 3,
+          "scale": 0.5
+        }
+      ],
+      "assertionFailure": {
+        "name": "AssertionError",
+        "message": "Expected values to be strictly equal:\n+ actual - expected\n\n+ {\n+   message: 'map is not defined',\n+   name: 'ReferenceError'\n+ }\n- undefined\n"
+      },
+      "cleaned": {
+        "generation": 2,
+        "dead": true,
+        "status": "destroyed",
+        "failed": [],
+        "pending": 0,
+        "drawCalls": 0,
+        "active": false,
+        "display": "none",
+        "opacity": "",
+        "canvasRemoved": true,
+        "budgetBytes": 0,
+        "liveGL": [],
+        "workerTerminated": true,
+        "mapListeners": 0,
+        "sceneListeners": 0
+      }
+    },
+    {
+      "name": "lazy-rejection-after-disposed-generation",
+      "initial": {
+        "generation": 1,
+        "dead": false,
+        "status": "initializing",
+        "failed": [],
+        "pending": 3,
+        "drawCalls": 0,
+        "active": false,
+        "opacity": "",
+        "canvasRemoved": false,
+        "budgetBytes": 16640,
+        "liveGL": [
+          [
+            1,
+            "VertexArray"
+          ],
+          [
+            2,
+            "VertexArray"
+          ],
+          [
+            5,
+            "Program"
+          ],
+          [
+            8,
+            "Program"
+          ],
+          [
+            9,
+            "Texture"
+          ],
+          [
+            10,
+            "Texture"
+          ]
+        ],
+        "workerTerminated": false,
+        "mapListeners": 2,
+        "sceneListeners": 2
+      },
+      "drawReturn": false,
+      "pendingBeforeDispose": 4,
+      "immediate": {
+        "generation": 2,
+        "dead": false,
+        "status": "replacement ready",
+        "failed": [],
+        "pending": 0,
+        "drawCalls": 0,
+        "active": true,
+        "display": "block",
+        "opacity": "",
+        "canvasRemoved": false,
+        "budgetBytes": 0,
+        "liveGL": [],
+        "workerTerminated": true,
+        "mapListeners": 2,
+        "sceneListeners": 2
+      },
+      "afterMicrotasks": {
+        "generation": 2,
+        "dead": false,
+        "status": "Scene generation disposed",
+        "failed": [
+          "edges:8"
+        ],
+        "pending": 0,
+        "drawCalls": 0,
+        "active": false,
+        "display": "none",
+        "opacity": "",
+        "canvasRemoved": false,
+        "budgetBytes": 0,
+        "liveGL": [],
+        "workerTerminated": true,
+        "mapListeners": 2,
+        "sceneListeners": 2
+      },
+      "assertionFailure": {
+        "name": "AssertionError",
+        "message": "old lazy rejection must not change disposed/replacement generation or destroyed scene\n+ actual - expected\n\n  {\n+   active: false,\n-   active: true,\n    budgetBytes: 0,\n    canvasRemoved: false,\n    dead: false,\n+   display: 'none',\n-   display: 'block',\n    drawCalls: 0,\n+   failed: [\n+     'edges:8'\n+   ],\n-   failed: [],\n    generation: 2,\n    liveGL: [],\n    mapListeners: 2,\n    opacity: '',\n    pending: 0,\n    sceneListeners: 2,\n+   status: 'Scene generation disposed',\n-   status: 'replacement ready',\n    workerTerminated: true\n  }\n"
+      },
+      "cleaned": {
+        "generation": 3,
+        "dead": true,
+        "status": "destroyed",
+        "failed": [],
+        "pending": 0,
+        "drawCalls": 0,
+        "active": false,
+        "display": "none",
+        "opacity": "",
+        "canvasRemoved": true,
+        "budgetBytes": 0,
+        "liveGL": [],
+        "workerTerminated": true,
+        "mapListeners": 0,
+        "sceneListeners": 0
+      }
+    },
+    {
+      "name": "lazy-rejection-after-destroyed",
+      "initial": {
+        "generation": 1,
+        "dead": false,
+        "status": "initializing",
+        "failed": [],
+        "pending": 3,
+        "drawCalls": 0,
+        "active": false,
+        "opacity": "",
+        "canvasRemoved": false,
+        "budgetBytes": 16640,
+        "liveGL": [
+          [
+            1,
+            "VertexArray"
+          ],
+          [
+            2,
+            "VertexArray"
+          ],
+          [
+            5,
+            "Program"
+          ],
+          [
+            8,
+            "Program"
+          ],
+          [
+            9,
+            "Texture"
+          ],
+          [
+            10,
+            "Texture"
+          ]
+        ],
+        "workerTerminated": false,
+        "mapListeners": 2,
+        "sceneListeners": 2
+      },
+      "drawReturn": false,
+      "pendingBeforeDispose": 4,
+      "immediate": {
+        "generation": 2,
+        "dead": true,
+        "status": "destroyed",
+        "failed": [],
+        "pending": 0,
+        "drawCalls": 0,
+        "active": false,
+        "display": "none",
+        "opacity": "",
+        "canvasRemoved": true,
+        "budgetBytes": 0,
+        "liveGL": [],
+        "workerTerminated": true,
+        "mapListeners": 0,
+        "sceneListeners": 0
+      },
+      "afterMicrotasks": {
+        "generation": 2,
+        "dead": true,
+        "status": "Scene generation disposed",
+        "failed": [
+          "edges:8"
+        ],
+        "pending": 0,
+        "drawCalls": 0,
+        "active": false,
+        "display": "none",
+        "opacity": "",
+        "canvasRemoved": true,
+        "budgetBytes": 0,
+        "liveGL": [],
+        "workerTerminated": true,
+        "mapListeners": 0,
+        "sceneListeners": 0
+      },
+      "assertionFailure": {
+        "name": "AssertionError",
+        "message": "old lazy rejection must not change disposed/replacement generation or destroyed scene\n+ actual - expected\n\n  {\n    active: false,\n    budgetBytes: 0,\n    canvasRemoved: true,\n    dead: true,\n    display: 'none',\n    drawCalls: 0,\n+   failed: [\n+     'edges:8'\n+   ],\n-   failed: [],\n    generation: 2,\n    liveGL: [],\n    mapListeners: 0,\n    opacity: '',\n    pending: 0,\n    sceneListeners: 0,\n+   status: 'Scene generation disposed',\n-   status: 'destroyed',\n    workerTerminated: true\n  }\n"
+      },
+      "cleaned": {
+        "generation": 2,
+        "dead": true,
+        "status": "Scene generation disposed",
+        "failed": [
+          "edges:8"
+        ],
+        "pending": 0,
+        "drawCalls": 0,
+        "active": false,
+        "display": "none",
+        "opacity": "",
+        "canvasRemoved": true,
+        "budgetBytes": 0,
+        "liveGL": [],
+        "workerTerminated": true,
+        "mapListeners": 0,
+        "sceneListeners": 0
+      }
+    }
+  ],
+  "rawFiles": {
+    "/tmp/atlas-ctrl-optional-peer/chunk/results.json": {
+      "bytes": 5949733,
+      "sha256": "6bfa62b01ab34ad506c532eb18e48ea5d8ecd61133af056128e6495200947f7d"
+    },
+    "/tmp/atlas-ctrl-optional-peer/chunk.log": {
+      "bytes": 532,
+      "sha256": "03bcfde540dac6daef6472282bff5304edac65cfad467771cb0ec85deb7d12ff"
+    },
+    "/tmp/atlas-ctrl-optional-peer/scene/actual-scene-import-fixture.mjs": {
+      "bytes": 18850,
+      "sha256": "2c8d4df95a6ddd5cad0119972e33a0e17247dbc417209cee18d80c2b5af3d1fa"
+    },
+    "/tmp/atlas-ctrl-optional-peer/scene/painter-fixture.mjs": {
+      "bytes": 81,
+      "sha256": "82ef36d34ca87d4f75bc5cfc6bea82dc6d49341d81a286f2c792e03750e77012"
+    },
+    "/tmp/atlas-ctrl-optional-peer/scene/results.json": {
+      "bytes": 5357,
+      "sha256": "bd896691328ca81f274c9b989e5776856b9549c1d1b58001bcc49820c7994c9f"
+    },
+    "/tmp/atlas-ctrl-optional-peer/scene.log": {
+      "bytes": 539,
+      "sha256": "c47e7604e7063faa5821ef46063c28b1c28688835e4b828c4f4ebed0f0884c4b"
+    },
+    "/tmp/atlas-ctrl-optional-peer/stronger-final/chunk/results.json": {
+      "bytes": 6012024,
+      "sha256": "5163ebf40720ec4c4ffbe2ac922efc88fbdf7906523e53354b430b5fc4dab73e"
+    },
+    "/tmp/atlas-ctrl-optional-peer/stronger-final/chunk-model.mjs": {
+      "bytes": 10622,
+      "sha256": "399dba2d5578b59123f053e84df152c89b186deb6caf62a0309c52da2bf4de21"
+    },
+    "/tmp/atlas-ctrl-optional-peer/stronger-final/chunk.stderr": {
+      "bytes": 409,
+      "sha256": "2808c7952e98ae50834992118f6ae1bd75d3181347f2fa01d8d3502451c41e64"
+    },
+    "/tmp/atlas-ctrl-optional-peer/stronger-final/chunk.stdout": {
+      "bytes": 108,
+      "sha256": "cdaa6e3db61c7744f691b2627dacaece76476253fe3a0d80868b9d7340119b0b"
+    },
+    "/tmp/atlas-ctrl-optional-peer/stronger-final/evidence.json": {
+      "bytes": 7418172,
+      "sha256": "8a9e5086d25f03986f4c2bafd6b0464c0ebb606abd7d0d0f4f4631bd68ea11fb"
+    },
+    "/tmp/atlas-ctrl-optional-peer/stronger-final/pass.json": {
+      "bytes": 272,
+      "sha256": "b8948bb1db0d9e6a76392bd4759bf99c75e8d26ec178232dc60be2499c65240c"
+    },
+    "/tmp/atlas-ctrl-optional-peer/stronger-final/peer-recording-gl.mjs": {
+      "bytes": 3398,
+      "sha256": "3560ece69c832ac6029d8b7c3961377a8591ccc42e4bfd543b3fa66a199ebca0"
+    },
+    "/tmp/atlas-ctrl-optional-peer/stronger-final/scene/actual-scene-import-fixture.mjs": {
+      "bytes": 18865,
+      "sha256": "a52a7054449ab57eefa0efa08a2a91f9559ff7d2f61a9694091f3e6dcf372240"
+    },
+    "/tmp/atlas-ctrl-optional-peer/stronger-final/scene/painter-fixture.mjs": {
+      "bytes": 81,
+      "sha256": "82ef36d34ca87d4f75bc5cfc6bea82dc6d49341d81a286f2c792e03750e77012"
+    },
+    "/tmp/atlas-ctrl-optional-peer/stronger-final/scene/results.json": {
+      "bytes": 8679,
+      "sha256": "409c7b30ffd896ad87954a517e7a5d83f75482ef0b5b5b7f73d30c0ebe6d444c"
+    },
+    "/tmp/atlas-ctrl-optional-peer/stronger-final/scene-model.mjs": {
+      "bytes": 4876,
+      "sha256": "9ef24c50adac84e223fb9e961fe74380b9f1a50763d94c75ab9206b2142b73d5"
+    },
+    "/tmp/atlas-ctrl-optional-peer/stronger-final/scene.stderr": {
+      "bytes": 413,
+      "sha256": "bdecde01306e81a913b5644f9a7b1491a3e09802cf5f721d6bfe1146638f308a"
+    },
+    "/tmp/atlas-ctrl-optional-peer/stronger-final/scene.stdout": {
+      "bytes": 107,
+      "sha256": "579a9f09c67177c4bd0df25b54f91ba9d64ed4bc888e3aedbf197ac048d85b50"
+    },
+    "/tmp/atlas-ctrl-optional-peer/stronger-final.log": {
+      "bytes": 123,
+      "sha256": "9265188cb860aada9cd1adc56932be4811e9e1e8b81555d3f0bb7a1621bee165"
+    },
+    "/tmp/atlas-ctrl-optional-peer/stronger.log": {
+      "bytes": 372,
+      "sha256": "ee1a9249e15e9441ab901c1916954f2986320824c756cc0326b4decd8da73e5d"
+    }
+  }
+}
