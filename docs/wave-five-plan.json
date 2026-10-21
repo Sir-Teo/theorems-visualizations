@@ -17510,9 +17510,9 @@
   "authoringDirection": "User confirmed prior work done; continuously author future waves without routine pauses.",
   "progress": {
     "total": 1031,
-    "written": 414,
-    "remaining": 617,
-    "writtenChapters": 36,
+    "written": 459,
+    "remaining": 572,
+    "writtenChapters": 39,
     "chapters": [
       {
         "collection": "ode",
@@ -17953,10 +17953,28 @@
         "collection": "info",
         "chapter": 5,
         "total": 17,
-        "written": 0,
-        "remaining": 17,
-        "writtenItems": [],
-        "status": "planned"
+        "written": 17,
+        "remaining": 0,
+        "writtenItems": [
+          "info-5.1",
+          "info-5.2",
+          "info-5.3",
+          "info-5.4",
+          "info-5.5",
+          "info-5.6",
+          "info-5.7",
+          "info-5.8",
+          "info-5.9",
+          "info-5.10",
+          "info-5.11",
+          "info-5.12",
+          "info-5.13",
+          "info-5.14",
+          "info-5.15",
+          "info-5.16",
+          "info-5.17"
+        ],
+        "status": "written"
       },
       {
         "collection": "crypto",
@@ -18147,10 +18165,28 @@
         "collection": "pchem",
         "chapter": 5,
         "total": 17,
-        "written": 0,
-        "remaining": 17,
-        "writtenItems": [],
-        "status": "planned"
+        "written": 17,
+        "remaining": 0,
+        "writtenItems": [
+          "pchem-5.1",
+          "pchem-5.2",
+          "pchem-5.3",
+          "pchem-5.4",
+          "pchem-5.5",
+          "pchem-5.6",
+          "pchem-5.7",
+          "pchem-5.8",
+          "pchem-5.9",
+          "pchem-5.10",
+          "pchem-5.11",
+          "pchem-5.12",
+          "pchem-5.13",
+          "pchem-5.14",
+          "pchem-5.15",
+          "pchem-5.16",
+          "pchem-5.17"
+        ],
+        "status": "written"
       },
       {
         "collection": "kin",
@@ -18348,10 +18384,22 @@
         "collection": "neuro",
         "chapter": 5,
         "total": 11,
-        "written": 0,
-        "remaining": 11,
-        "writtenItems": [],
-        "status": "planned"
+        "written": 11,
+        "remaining": 0,
+        "writtenItems": [
+          "neuro-5.1",
+          "neuro-5.2",
+          "neuro-5.3",
+          "neuro-5.4",
+          "neuro-5.5",
+          "neuro-5.6",
+          "neuro-5.7",
+          "neuro-5.8",
+          "neuro-5.9",
+          "neuro-5.10",
+          "neuro-5.11"
+        ],
+        "status": "written"
       },
       {
         "collection": "bioinf",
