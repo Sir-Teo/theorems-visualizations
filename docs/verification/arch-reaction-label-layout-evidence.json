@@ -1,0 +1,51 @@
+{
+  "candidate": "pending commit",
+  "acceptedARCH": "4d49b7392c1fb8ccce001501a5341caf4919b2a4",
+  "privateAlignmentBase": "5fe1765d52600b23011a9ced61c2bd9be085394c",
+  "independentPeer": "required",
+  "sourceException": "one right reaction label call only",
+  "beforeEvidence": {
+    "path": "/tmp/atlas-new-imaging-source/annotation-layout/arch/before/evidence.json",
+    "sha256": "0f6d2bc7d41302480e767a1be786ff3ed7246cf6ad0fc5350e42ff6d07dbb657"
+  },
+  "afterEvidence": {
+    "path": "/tmp/atlas-new-imaging-source/annotation-layout/arch/after/evidence.json",
+    "sha256": "0543c58551e47150cfe11923d8178c59c266b5673b881135d5529f79438e29e1"
+  },
+  "finalPictures": {
+    "dark-all-fixed-End.png": "7554d8d85fb83fe6428622c94315e6f8accf01c8f12cfcfa2cbc2071481ba752",
+    "dark-all-fixed-Home.png": "5ef74d3b37db56b12930509f80dcd9e739eb24368cc09113e4943bc57f10e4ce",
+    "dark-caption.png": "811a8bf352501457debc3a49000778be29ff57fbc6ee2a83220824e73190a976",
+    "dark-default.png": "08654876101f262749f918d17d3f6948d4b96af88c46c333bd01004edc1a7f7e",
+    "dark-load-max.png": "39362fbc5a7664c4472be27a9c3689918be5a7396e5de88728c0e5d434526b33",
+    "dark-load-min.png": "f50c53f71d901df4c2d9a0b74c568c7745c9db5fa7210c33243437e010dcf769",
+    "dark-mechanism.png": "c6a012661947305dd12167ac8c1d849e6a734b34cc44569edbaea309a97dbff4",
+    "dark-proof.png": "ea1062f978235fbdcdf88a345eda21c02bc168db2ed4654d3e72819ea3133a39",
+    "dark-right-pin-End.png": "c03a7fe48011c7af96480fe277d1ff58730979c6322ec55a501ccd18ff404899",
+    "dark-right-pin-Home.png": "54c1aa519a2fbea7f8fe575cf8556915b068e15f8f036da89ad22fb2bed6b3a7",
+    "dark-right-pin.png": "0300cc0074441f9b16f2c6700b39939acb9e3791344a7cd3b6e8fa825f79044d",
+    "dark-statement.png": "13de646e03ca733e92a18f2281dd542918cdceb1dc2bd74f572b13f939bd1ca7",
+    "light-all-fixed-End.png": "75dc7c4d2c53eb474e111da679e87a74035a863fe31661272b219b89b471a3ee",
+    "light-all-fixed-Home.png": "cea0884fea667b074f42fec29150c3d89b3fd502a4d132034f480dff538816f3",
+    "light-caption.png": "e3ba89726763aebd3cd3ea762393733e50a0539b26bfcab4fcff7f77cfbd9973",
+    "light-default.png": "3a1fb1399e69ebb3c94365018757ff8b70695c4b96e66d4dbb12f85f3a296c53",
+    "light-load-max.png": "e0a0f809792ea01629d294ffd4b0c1accb69262f20682405ddfa9fe60946a527",
+    "light-load-min.png": "bc0cc2d4e96512feee21533147820f0d514198c5c0f1486138e00eaa9b88c373",
+    "light-mechanism.png": "3242f64f34e5622fd9a20efdc91046c3069f81b84bb6258b2a0f25ce4610eee8",
+    "light-proof.png": "6ff8437b1c4cc8a702dae9327dbd0a5036495db0f24cfdca00f8fc3b71e7a7ee",
+    "light-right-pin-End.png": "c8395b04afa048dbe569de7e2bf003891e39770b3e0e377499d1570469c69dcb",
+    "light-right-pin-Home.png": "9ad8db2e49ff4fb68292360d98b142746313942f7bf9532ae6491d19d9045fa0",
+    "light-right-pin.png": "7018771f3a2c96ec7937287dbcaf2631177c5a3576fc5729e3821a3e2d54f143",
+    "light-statement.png": "66f5066dc9af9c10874d0b4b72705251198e7ab8803a756c987b4c5c4a7c41d1"
+  },
+  "personallyInspectedFinal": 24,
+  "logs": {
+    "before-build.log": "ce7b22bba63418d70b0b021740eea62e534c901523ae1f5b5f92f9797f1980a0",
+    "after-build.log": "ce7b22bba63418d70b0b021740eea62e534c901523ae1f5b5f92f9797f1980a0",
+    "static.log": "65891f2053925008e44ef69050e049d9bbb083f34606d5b01b532fd25d9fb11e",
+    "guard.log": "71a3eb6a064d60a6882196a6068a117267470b6ae158bfb53951ea03b5dcc0ab",
+    "existing.log": "ed2e93b815b57aa49a3cf0fa25cf9980547a4e9c3438130920754616619cc8cf",
+    "before-native.log": "a63f44bdb72238b6188eeffdea739ebc1940182bed3ce4db4b3c38c9d6facc83",
+    "after-native.log": "492e3c7c854fc5faf31b368a6f03fe4fac6a79123e4278ee987438fa085fbbbd"
+  }
+}

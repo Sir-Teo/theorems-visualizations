@@ -294,7 +294,7 @@ The reaction classification uses rank-nullity (ladr 3.21) for the linear map $A:
             a.info.forEach((inf, j) => { (comps[inf.k] ||= {})[inf.comp] = a.R[j]; });
             for (const k in comps) {
               const x = XS[k], c = comps[k], rx = c.x || 0, ry = c.y || 0, sc = 1 / 12, L = Math.hypot(rx, ry);
-              if (L > 0.05) { const y0 = -0.95, sc2 = 1 / 16; s.arrow(x - rx * sc2, y0 - ry * sc2, x, y0, { color: 'green', width: 2.4, head: 8 }); s.text(`${L.toFixed(1)} kN`, x - rx * sc2, y0 - ry * sc2, { dx: 8, dy: ry >= 0 ? 8 : -8, align: 'left', size: 10.5, weight: 650, color: 'green' }); }
+              if (L > 0.05) { const y0 = -0.95, sc2 = 1 / 16; s.arrow(x - rx * sc2, y0 - ry * sc2, x, y0, { color: 'green', width: 2.4, head: 8 }); s.text(`${L.toFixed(1)} kN`, +k === 2 ? x : x - rx * sc2, y0 - ry * sc2, { dx: +k === 2 ? -8 : 8, dy: ry >= 0 ? 8 : -8, align: +k === 2 ? 'right' : 'left', size: 10.5, weight: 650, color: 'green' }); }
               if (c.m != null && Math.abs(c.m) > 0.05) { momentArrow(v, s, x, 0, c.m, 'green', 22); s.text(`${Math.abs(c.m).toFixed(1)} kN·m`, x, 0.95, { align: 'center', size: 10.5, weight: 650, color: 'green' }); }
             }
             if (elastic && a.r > 3) { // elastic deflected shape (exaggerated)

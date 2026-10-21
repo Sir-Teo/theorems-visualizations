@@ -1,0 +1,10 @@
+{
+  "baseline": "5fe1765d52600b23011a9ced61c2bd9be085394c",
+  "acceptedContent": "4d49b7392c1fb8ccce001501a5341caf4919b2a4",
+  "file": "content/arch/ch01.js",
+  "item": "1.3",
+  "field": "viz",
+  "before": "s.text(`${L.toFixed(1)} kN`, x - rx * sc2, y0 - ry * sc2, { dx: 8, dy: ry >= 0 ? 8 : -8, align: 'left', size: 10.5, weight: 650, color: 'green' });",
+  "after": "s.text(`${L.toFixed(1)} kN`, +k === 2 ? x : x - rx * sc2, y0 - ry * sc2, { dx: +k === 2 ? -8 : 8, dy: ry >= 0 ? 8 : -8, align: +k === 2 ? 'right' : 'left', size: 10.5, weight: 650, color: 'green' });",
+  "scope": "Rightmost reaction magnitude label horizontal anchor/dx/alignment only; arrows, reactions, all other text and runtime remain identical."
+}
