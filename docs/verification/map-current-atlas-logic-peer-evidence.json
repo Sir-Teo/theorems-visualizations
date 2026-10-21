@@ -1,0 +1,219 @@
+{
+  "candidate": "20ff60a1b9150310c80354c17d8fdb69c96f525a",
+  "supportBaseline": "b6ca416f8b95b8e93bd12b9973ab0999f6519942",
+  "overlayPaths": [
+    "docs/verification/map-current-atlas-prepare-evidence.json",
+    "docs/verification/map-current-atlas-prepare-followup.md",
+    "scripts/lib/map-current-atlas-fixture.mjs",
+    "tests/map-current-atlas-checkpoint12-manifest.json",
+    "tests/map-current-atlas-model.mjs",
+    "tests/map-current-atlas-prepare.mjs",
+    "tests/map-current-atlas-source.mjs",
+    "tests/map-current-atlas-tiny.mjs"
+  ],
+  "unchangedArchiveFiles": 4732,
+  "scope": "independent SOURCE/TINY/MODEL/PREPARE only; no browser/full-map/timing/native rendering acceptance",
+  "producerChecks": {
+    "source": "PASS: eight pin/path faults",
+    "tiny": "PASS: four exact loader/needSt modes",
+    "model": "PASS: eight real catalog cases; synthetic scene owners",
+    "prepare": "PASS: complete manifests only"
+  },
+  "independent": {
+    "sourceOnly": true,
+    "browserExecuted": false,
+    "catalog": {
+      "nodes": 13574,
+      "edges": 23955,
+      "pdeps": 540,
+      "anc": 10,
+      "desc": 3442,
+      "edgeSHA256": "4cef46000f0ee8e1599ab50ce9aa949b0db37ba606322844ce67c1873a129b85"
+    },
+    "resolved": 4376,
+    "supportImports": [
+      [
+        "scripts/lib/map-chunked-indices-runtime.mjs",
+        "scripts/lib/map-segment-mesh-enclosure.mjs"
+      ],
+      [
+        "scripts/lib/map-paired-atlas-observer.mjs",
+        "scripts/lib/map-paired-resource-observer.mjs"
+      ],
+      [
+        "scripts/lib/map-paired-guarded-epoch.mjs",
+        "scripts/lib/map-paired-atlas-observer.mjs"
+      ],
+      [
+        "scripts/lib/map-paired-guarded-epoch.mjs",
+        "scripts/lib/map-paired-resource-observer.mjs"
+      ],
+      [
+        "scripts/lib/map-paired-quiescence.mjs",
+        "scripts/lib/map-paired-font-census.mjs"
+      ],
+      [
+        "scripts/lib/map-paired-selected-shard.mjs",
+        "scripts/lib/map-paired-atlas-observer.mjs"
+      ],
+      [
+        "scripts/lib/map-paired-selected-shard.mjs",
+        "scripts/lib/map-paired-quiescence.mjs"
+      ],
+      [
+        "scripts/lib/map-paired-selected-shard.mjs",
+        "scripts/lib/map-paired-resource-observer.mjs"
+      ]
+    ],
+    "guardFaults": [
+      "field-value",
+      "row-value",
+      "field-identity",
+      "row-array-identity",
+      "ancestor-content",
+      "ancestor-order",
+      "callback-row-identity",
+      "network-row-identity",
+      "range-content"
+    ],
+    "cli": [
+      {
+        "script": "source",
+        "status": 1,
+        "stdout": "",
+        "stderr": "file:///private/tmp/atlas-logic-current-atlas-peer/candidate/tests/map-current-atlas-source.mjs:4\nif(process.argv.length!==2)throw Error('SOURCE-only: no execution flags accepted');const out=process.env.MAP_CURRENT_SOURCE_OUTPUT;if(!out)throw Error('unique MAP_CURRENT_SOURCE_OUTPUT required');await fs.mkdir(out,{recursive:true});assert.deepEqual(await fs.readdir(out),[]);\n                                 ^\n\nError: SOURCE-only: no execution flags accepted\n    at file:///private/tmp/atlas-logic-current-atlas-peer/candidate/tests/map-current-atlas-source.mjs:4:34\n    at ModuleJob.run (node:internal/modules/esm/module_job:569:25)\n    at async node:internal/modules/esm/loader:650:26\n    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5)\n\nNode.js v26.8.2\n"
+      },
+      {
+        "script": "tiny",
+        "status": 1,
+        "stdout": "",
+        "stderr": "file:///private/tmp/atlas-logic-current-atlas-peer/candidate/tests/map-current-atlas-tiny.mjs:4\nif(process.argv.length!==2)throw Error('TINY-only: no execution flags accepted');const out=process.env.MAP_CURRENT_TINY_OUTPUT;if(!out)throw Error('unique MAP_CURRENT_TINY_OUTPUT required');await fs.mkdir(out,{recursive:true});assert.deepEqual(await fs.readdir(out),[]);\n                                 ^\n\nError: TINY-only: no execution flags accepted\n    at file:///private/tmp/atlas-logic-current-atlas-peer/candidate/tests/map-current-atlas-tiny.mjs:4:34\n    at ModuleJob.run (node:internal/modules/esm/module_job:569:25)\n    at async node:internal/modules/esm/loader:650:26\n    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5)\n\nNode.js v26.8.2\n"
+      },
+      {
+        "script": "model",
+        "status": 1,
+        "stdout": "",
+        "stderr": "file:///private/tmp/atlas-logic-current-atlas-peer/candidate/tests/map-current-atlas-model.mjs:5\nif(process.argv.length!==2)throw Error('MODEL-only: no execution flags accepted');const out=process.env.MAP_CURRENT_MODEL_OUTPUT;if(!out)throw Error('unique MAP_CURRENT_MODEL_OUTPUT required');await fs.mkdir(out,{recursive:true});assert.deepEqual(await fs.readdir(out),[]);\n                                 ^\n\nError: MODEL-only: no execution flags accepted\n    at file:///private/tmp/atlas-logic-current-atlas-peer/candidate/tests/map-current-atlas-model.mjs:5:34\n    at ModuleJob.run (node:internal/modules/esm/module_job:569:25)\n    at async node:internal/modules/esm/loader:650:26\n    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5)\n\nNode.js v26.8.2\n"
+      },
+      {
+        "script": "prepare",
+        "status": 1,
+        "stdout": "",
+        "stderr": "file:///private/tmp/atlas-logic-current-atlas-peer/candidate/tests/map-current-atlas-prepare.mjs:3\nif(process.argv.length!==2)throw Error('PREPARE-only: no execution flags accepted');\n                                 ^\n\nError: PREPARE-only: no execution flags accepted\n    at file:///private/tmp/atlas-logic-current-atlas-peer/candidate/tests/map-current-atlas-prepare.mjs:3:34\n    at ModuleJob.run (node:internal/modules/esm/module_job:569:25)\n    at async node:internal/modules/esm/loader:650:26\n    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5)\n\nNode.js v26.8.2\n"
+      }
+    ]
+  },
+  "independentGuardOutcomes": [
+    {
+      "fault": "none",
+      "failure": null,
+      "completed": true,
+      "rendererEvents": 0
+    },
+    {
+      "fault": "field-value",
+      "failure": "selected shard invariant layout fields record.x0 identity",
+      "completed": false,
+      "rendererEvents": 0
+    },
+    {
+      "fault": "row-value",
+      "failure": "selected shard invariant layout rows record.label identity",
+      "completed": false,
+      "rendererEvents": 0
+    },
+    {
+      "fault": "field-identity",
+      "failure": "selected shard invariant layout fields sequence",
+      "completed": false,
+      "rendererEvents": 0
+    },
+    {
+      "fault": "row-array-identity",
+      "failure": "selected shard invariant map layout.rows identity",
+      "completed": false,
+      "rendererEvents": 0
+    },
+    {
+      "fault": "ancestor-content",
+      "failure": "selected shard invariant closure ladr-2.30 anc set",
+      "completed": false,
+      "rendererEvents": 0
+    },
+    {
+      "fault": "ancestor-order",
+      "failure": "selected shard invariant closure ladr-2.30 anc set",
+      "completed": false,
+      "rendererEvents": 0
+    },
+    {
+      "fault": "callback-row-identity",
+      "failure": "selected shard invariant callback prefix row identities",
+      "completed": false,
+      "rendererEvents": 0
+    },
+    {
+      "fault": "network-row-identity",
+      "failure": "selected shard invariant network prefix row identities",
+      "completed": false,
+      "rendererEvents": 0
+    },
+    {
+      "fault": "range-content",
+      "failure": "selected shard invariant model bundles:0.5.ranges",
+      "completed": false,
+      "rendererEvents": 0
+    }
+  ],
+  "archiveIntegrity": "only eight candidate paths differ; all baseline files unchanged",
+  "blockedNetworkServerAttempts": 0,
+  "raw": {
+    "source/source.json": {
+      "bytes": 1416,
+      "sha256": "8b0436aca60ec5dd4d9edf2bc7bfab1295b008d73035e44095837c6b6872094f"
+    },
+    "tiny/tiny.json": {
+      "bytes": 1396,
+      "sha256": "863824a76577e426165fff0677d9523afb8590825553e45f9b97a9e358b500a5"
+    },
+    "model/model.json": {
+      "bytes": 37798,
+      "sha256": "5a9db6aed711285b5d0c87a30c4d7dd372f4b9965e7791c4064851845297198f"
+    },
+    "model/pass.json": {
+      "bytes": 73,
+      "sha256": "9ad4e8c54fb6c4b9c6308a73c92f409f8b851c48df9704fcaa6973eb92b4ba1e"
+    },
+    "prepare/prepared.json": {
+      "bytes": 1110578,
+      "sha256": "d137978274df269ce287e190209b84e727071094dd7f940f38ef2840e4adf5ae"
+    },
+    "independent-final/independent-model.mjs": {
+      "bytes": 9209,
+      "sha256": "6ea766d4cee496d196396116441460fe790135ea9ac7c9f47d2b24d46da1f6f6"
+    },
+    "independent-final/model-process.json": {
+      "bytes": 118,
+      "sha256": "15109aba846fadda8950df6597ebb2dbe4e9fcb8cbb1ef1c8ace9d1ec1a06faf"
+    },
+    "independent-final/independent.json": {
+      "bytes": 4827,
+      "sha256": "0c73f128faac20ad6ef762eb587588b209e7a8ac4eb06a8a13b6e8941b99ff4c"
+    },
+    "independent-final/model/model.json": {
+      "bytes": 46690,
+      "sha256": "a348be6514ed6053441d02b89d9b7c49e21d02f4008936618ff2f8a4c0bf584f"
+    },
+    "independent-final/model/pass.json": {
+      "bytes": 74,
+      "sha256": "af53df9ff54b5f7f8b128e097c381f0d369173e18682b464e6848ef3c7b41b23"
+    }
+  },
+  "attempts": [
+    {
+      "stage": "own independent import-closure recognizer",
+      "outcome": "SETUP FAILURE before model execution: support import not pinned scripts/lib/map-webgl-scene.js",
+      "explanation": "Initial broad regex matched a generated-source string in map-scene-prototype instead of an actual top-level import. Recognizer restricted to actual import declaration lines after source inspection; candidate/support/data/gates unchanged."
+    }
+  ]
+}
