@@ -46,7 +46,7 @@ export default {
           pic: 'Place events from the Big Bang to last year on a timeline and toggle between linear and log-of-years-ago axes: on the linear one, all of human history collapses into a pixel.' },
         { num: '1.2', kind: 'Concept', name: 'The cosmic calendar', deps: ['bighist-1.1'], refs: ['Christian'],
           pic: 'Compress 13.8 billion years into one year: drag through the months to see the Sun form in September, dinosaurs on 25 December and writing in the last fourteen seconds.' },
-        { num: '1.3', kind: 'Method', name: 'Radiometric dating', deps: ['pma-8.6'], refs: ['Christian App. 1'],
+        { num: '1.3', kind: 'Method', name: 'Radiometric dating', deps: ['pma-8.6', 'geol-2.1'], refs: ['Christian App. 1'],
           pic: 'Watch parent atoms decay into daughters: the ratio gives the age through t = ln(1 + D/P)/λ, and an isochron of several minerals recovers the age without knowing initial daughters.' },
         { num: '1.4', alias: 'geol-2.6', name: 'Radiocarbon dating and calibration' },
         { num: '1.5', kind: 'Method', name: 'Tree rings, varves and ice cores', deps: ['geol-1.4', 'ladr-6.14'], refs: ['Christian App. 1'],
