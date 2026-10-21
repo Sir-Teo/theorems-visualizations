@@ -1,0 +1,1812 @@
+{
+  "roots": {
+    "frozen": "68aa4e24889ec290d8f90206c4441485389f7e26",
+    "checkpoint12": "94a77908068d8c6a3be5fbe10808d0910195facf",
+    "accepted": "b6ca416f8b95b8e93bd12b9973ab0999f6519942"
+  },
+  "data": {
+    "data/index.json": {
+      "frozen": {
+        "bytes": 2284685,
+        "sha256": "c62d6beda2c317280aa99d107873d880a4b5c4fb6748113b8e9b45c5772cb1fd"
+      },
+      "checkpoint12": {
+        "bytes": 2311429,
+        "sha256": "0b32cdf702f2b2d9fab0d55d9f50975742beeebc14e5a29cfa56c69cd236dd3a"
+      },
+      "same": false
+    },
+    "data/planned.json": {
+      "frozen": {
+        "bytes": 572377,
+        "sha256": "9627cdd57f3131e3876efeeaf5ebe3d1f5d06f6450c1a104a6d1e028c1f8ebbd"
+      },
+      "checkpoint12": {
+        "bytes": 572377,
+        "sha256": "9627cdd57f3131e3876efeeaf5ebe3d1f5d06f6450c1a104a6d1e028c1f8ebbd"
+      },
+      "same": true
+    },
+    "data/atlas.css": {
+      "frozen": {
+        "bytes": 11584,
+        "sha256": "792d9bdaa2e9978863ff78a42a5d5d87e084b9f8d810941de07def487ddff29f"
+      },
+      "checkpoint12": {
+        "bytes": 11584,
+        "sha256": "792d9bdaa2e9978863ff78a42a5d5d87e084b9f8d810941de07def487ddff29f"
+      },
+      "same": true
+    },
+    "data/home.json": {
+      "frozen": {
+        "bytes": 464147,
+        "sha256": "59320e87023b4ab08de38209b838e276c7cd2efd464b12d4ae43cd05f593e668"
+      },
+      "checkpoint12": {
+        "bytes": 464444,
+        "sha256": "00033ce06cacd3893314b1d1d2935b8edee3d67cb05eb3c1188dcfc904268dbb"
+      },
+      "same": false
+    }
+  },
+  "catalog": {
+    "counts": {
+      "frozen": {
+        "written": 6684,
+        "planned": 6890,
+        "nodes": 13574,
+        "edges": 23364,
+        "writtenEdges": 11845,
+        "writtenToPlannedEdges": 540,
+        "plannedEdges": 10979,
+        "fields": 13,
+        "collections": 85,
+        "mapRows": 88,
+        "mapFields": 13,
+        "chapterEdges": 1818,
+        "collectionEdges": 429,
+        "fieldEdges": 81,
+        "bridges": 15
+      },
+      "checkpoint12": {
+        "written": 6684,
+        "planned": 6890,
+        "nodes": 13574,
+        "edges": 23955,
+        "writtenEdges": 12436,
+        "writtenToPlannedEdges": 540,
+        "plannedEdges": 10979,
+        "fields": 13,
+        "collections": 85,
+        "mapRows": 88,
+        "mapFields": 13,
+        "chapterEdges": 2224,
+        "collectionEdges": 535,
+        "fieldEdges": 82,
+        "bridges": 15
+      }
+    },
+    "items": {
+      "added": [],
+      "removed": [],
+      "changedRecords": 2365,
+      "changedFields": {
+        "anc": {
+          "count": 1304,
+          "sortedIDsSHA256": "03d452fae10102728e61a3f027ffa9320a5d40dfb295d521e7aece341d8e318e"
+        },
+        "deps": {
+          "count": 510,
+          "sortedIDsSHA256": "077bb7992d0a0ae8ed3cf6be62ef79c2cf58915bc7ee6e3a2ed1b629c0bf2811"
+        },
+        "depth": {
+          "count": 630,
+          "sortedIDsSHA256": "80fbc43fc25c7ac88a40f028a988af0c446a7c5ca015032f89ae95c613c15fe8"
+        },
+        "desc": {
+          "count": 1038,
+          "sortedIDsSHA256": "e91f631ae180413a632d20602e02c6f858697e19fce9bc9d737a5d3cc746d947"
+        }
+      }
+    },
+    "collections": {
+      "added": [],
+      "removed": [],
+      "changedRecords": 0,
+      "changedFields": {}
+    },
+    "sameTopFields": {
+      "generated": false,
+      "fields": true,
+      "collections": true,
+      "items": false,
+      "plannedCount": true,
+      "map": true,
+      "bridges": true,
+      "chapterEdges": false,
+      "collectionEdges": false,
+      "fieldEdges": false,
+      "paperCount": true
+    },
+    "edges": {
+      "removed": [
+        [
+          "stoch-2.4",
+          "popgen-2.4"
+        ]
+      ],
+      "frozenOrderedSHA256": "b74500c3374db3863ffc7824c139bd7b8d2168a774e6c928d54c437f75f96ad5",
+      "checkpoint12OrderedSHA256": "4cef46000f0ee8e1599ab50ce9aa949b0db37ba606322844ce67c1873a129b85",
+      "addedCount": 592,
+      "removedCount": 1,
+      "sortedAddedSHA256": "01a79184b06b9e7e9befe699e672892c5a5edab79eae1594ad95ceed6ba824c1"
+    },
+    "map": {
+      "same": true,
+      "sha256": "66411c2b2749e50a210e3f55d096d5ffa89ea83c55b9bbd32f9209f8670fb86a",
+      "nodeCoordinatesSame": true
+    },
+    "chapterEdges": {
+      "addedPairs": 407,
+      "removedPairs": 1,
+      "weightChangedPairs": 26,
+      "sumBefore": 4243,
+      "sumAfter": 4834
+    },
+    "collectionEdges": {
+      "addedPairs": 107,
+      "removedPairs": 1,
+      "weightChangedPairs": 41,
+      "sumBefore": 1621,
+      "sumAfter": 2212
+    },
+    "fieldEdges": {
+      "addedPairs": 1,
+      "removedPairs": 0,
+      "weightChangedPairs": 26,
+      "sumBefore": 2285,
+      "sumAfter": 2876
+    },
+    "frozenTop80SHA256": "cbf0bd81c560b236ca9c67f6247a28c7dedba3eb482a7ae816261495357fbd36",
+    "checkpoint12Top80SHA256": "ec65c432e403c7cfd28321fe3743561b6424f3491d65509f0b391ceb98e82fa3",
+    "radiiChanged": 494,
+    "top80ChangedPositions": 29,
+    "top80Added": [
+      "pma-7.1"
+    ],
+    "top80Removed": [
+      "pma-9.4"
+    ]
+  },
+  "served": {
+    "data/index.json": {
+      "frozenSHA256": "c62d6beda2c317280aa99d107873d880a4b5c4fb6748113b8e9b45c5772cb1fd",
+      "checkpoint12SHA256": "0b32cdf702f2b2d9fab0d55d9f50975742beeebc14e5a29cfa56c69cd236dd3a",
+      "rootSHA256": null,
+      "frozenBytes": 2284685,
+      "checkpoint12Bytes": 2311429,
+      "rootBytes": null,
+      "frozenManifestMatches": true
+    },
+    "data/planned.json": {
+      "frozenSHA256": "9627cdd57f3131e3876efeeaf5ebe3d1f5d06f6450c1a104a6d1e028c1f8ebbd",
+      "checkpoint12SHA256": "9627cdd57f3131e3876efeeaf5ebe3d1f5d06f6450c1a104a6d1e028c1f8ebbd",
+      "rootSHA256": null,
+      "frozenBytes": 572377,
+      "checkpoint12Bytes": 572377,
+      "rootBytes": null,
+      "frozenManifestMatches": true
+    },
+    "data/atlas.css": {
+      "frozenSHA256": "792d9bdaa2e9978863ff78a42a5d5d87e084b9f8d810941de07def487ddff29f",
+      "checkpoint12SHA256": "792d9bdaa2e9978863ff78a42a5d5d87e084b9f8d810941de07def487ddff29f",
+      "rootSHA256": null,
+      "frozenBytes": 11584,
+      "checkpoint12Bytes": 11584,
+      "rootBytes": null,
+      "frozenManifestMatches": true
+    },
+    "assets/js/app.js": {
+      "frozenSHA256": "c9058dfa4df306f90b71c5a90385f8567285471b5ba954b0d47812ceaa8cbc9d",
+      "checkpoint12SHA256": "c9058dfa4df306f90b71c5a90385f8567285471b5ba954b0d47812ceaa8cbc9d",
+      "rootSHA256": "c9058dfa4df306f90b71c5a90385f8567285471b5ba954b0d47812ceaa8cbc9d",
+      "frozenBytes": 84566,
+      "checkpoint12Bytes": 84566,
+      "rootBytes": 84566,
+      "frozenManifestMatches": true
+    },
+    "data/col/ladr.json": {
+      "frozenSHA256": "4e516b7f74c31d76b1b6c52d6b24ee9f8e4692d924bd1527f53834feaec461ab",
+      "checkpoint12SHA256": "4e516b7f74c31d76b1b6c52d6b24ee9f8e4692d924bd1527f53834feaec461ab",
+      "rootSHA256": null,
+      "frozenBytes": 116559,
+      "checkpoint12Bytes": 116559,
+      "rootBytes": null,
+      "frozenManifestMatches": true
+    },
+    "assets/js/graph.js": {
+      "frozenSHA256": "9a8850528193c87e97deba14a387bebff3215e9e67569c125cac265e061f94fc",
+      "checkpoint12SHA256": "9a8850528193c87e97deba14a387bebff3215e9e67569c125cac265e061f94fc",
+      "rootSHA256": "9a8850528193c87e97deba14a387bebff3215e9e67569c125cac265e061f94fc",
+      "frozenBytes": 79477,
+      "checkpoint12Bytes": 79477,
+      "rootBytes": 79477,
+      "frozenManifestMatches": true
+    },
+    "assets/js/map-scene-edges.js": {
+      "frozenSHA256": "7b3fcf731105674252465c1376942b2f2b549fa51f9a3c9a3ee581a10c242262",
+      "checkpoint12SHA256": "7b3fcf731105674252465c1376942b2f2b549fa51f9a3c9a3ee581a10c242262",
+      "rootSHA256": "7b3fcf731105674252465c1376942b2f2b549fa51f9a3c9a3ee581a10c242262",
+      "frozenBytes": 11810,
+      "checkpoint12Bytes": 11810,
+      "rootBytes": 11810,
+      "frozenManifestMatches": true
+    },
+    "assets/js/map-webgl-scene.js": {
+      "frozenSHA256": "2422e59c2780e19e0c7b5c11da56127bc23718925ddde3e4d71527e4e45c21b5",
+      "checkpoint12SHA256": "2422e59c2780e19e0c7b5c11da56127bc23718925ddde3e4d71527e4e45c21b5",
+      "rootSHA256": "2422e59c2780e19e0c7b5c11da56127bc23718925ddde3e4d71527e4e45c21b5",
+      "frozenBytes": 18540,
+      "checkpoint12Bytes": 18540,
+      "rootBytes": 18540,
+      "frozenManifestMatches": true
+    },
+    "assets/js/map-scene-text.js": {
+      "frozenSHA256": "fbd1cb00b5028d5e2897ff7e3b8384c37429285d51749be4d762b9be2253b8ed",
+      "checkpoint12SHA256": "fbd1cb00b5028d5e2897ff7e3b8384c37429285d51749be4d762b9be2253b8ed",
+      "rootSHA256": "fbd1cb00b5028d5e2897ff7e3b8384c37429285d51749be4d762b9be2253b8ed",
+      "frozenBytes": 4963,
+      "checkpoint12Bytes": 4963,
+      "rootBytes": 4963,
+      "frozenManifestMatches": true
+    },
+    "assets/js/map-scene-painter.js": {
+      "frozenSHA256": "082ce9a34a86ad1d9e91d275174bc9d90cd47b2c22eeb4e1391318defbd9454d",
+      "checkpoint12SHA256": "082ce9a34a86ad1d9e91d275174bc9d90cd47b2c22eeb4e1391318defbd9454d",
+      "rootSHA256": "082ce9a34a86ad1d9e91d275174bc9d90cd47b2c22eeb4e1391318defbd9454d",
+      "frozenBytes": 8832,
+      "checkpoint12Bytes": 8832,
+      "rootBytes": 8832,
+      "frozenManifestMatches": true
+    },
+    "assets/js/map-scene-gl.js": {
+      "frozenSHA256": "b94855c4988e6c7d951d97ca9f2fa773d25ae828872ff6dee79cd42decdda4dc",
+      "checkpoint12SHA256": "b94855c4988e6c7d951d97ca9f2fa773d25ae828872ff6dee79cd42decdda4dc",
+      "rootSHA256": "b94855c4988e6c7d951d97ca9f2fa773d25ae828872ff6dee79cd42decdda4dc",
+      "frozenBytes": 2648,
+      "checkpoint12Bytes": 2648,
+      "rootBytes": 2648,
+      "frozenManifestMatches": true
+    },
+    "assets/js/map-scene-model.js": {
+      "frozenSHA256": "a7d10c9ba64acd3f4be8307d07461e0d9fad04f567d0d40dbbebfa37f2a581af",
+      "checkpoint12SHA256": "a7d10c9ba64acd3f4be8307d07461e0d9fad04f567d0d40dbbebfa37f2a581af",
+      "rootSHA256": "a7d10c9ba64acd3f4be8307d07461e0d9fad04f567d0d40dbbebfa37f2a581af",
+      "frozenBytes": 5225,
+      "checkpoint12Bytes": 5225,
+      "rootBytes": 5225,
+      "frozenManifestMatches": true
+    },
+    "assets/js/map-scene-worker.js": {
+      "frozenSHA256": "d913af8f8baf5ea8a0a83d504332ceb4fdd17e58e48cc560c246e08ed8690009",
+      "checkpoint12SHA256": "d913af8f8baf5ea8a0a83d504332ceb4fdd17e58e48cc560c246e08ed8690009",
+      "rootSHA256": "d913af8f8baf5ea8a0a83d504332ceb4fdd17e58e48cc560c246e08ed8690009",
+      "frozenBytes": 571,
+      "checkpoint12Bytes": 571,
+      "rootBytes": 571,
+      "frozenManifestMatches": true
+    },
+    "assets/js/map-scene-decorations.js": {
+      "frozenSHA256": "402fe1d8a452b3e91062539c8825bd1f6cb39fadb892ab05e3bb5d38ccd629aa",
+      "checkpoint12SHA256": "402fe1d8a452b3e91062539c8825bd1f6cb39fadb892ab05e3bb5d38ccd629aa",
+      "rootSHA256": "402fe1d8a452b3e91062539c8825bd1f6cb39fadb892ab05e3bb5d38ccd629aa",
+      "frozenBytes": 4890,
+      "checkpoint12Bytes": 4890,
+      "rootBytes": 4890,
+      "frozenManifestMatches": true
+    },
+    "index.html": {
+      "frozenSHA256": "1a0b532c169a635609ab0f8990604e082063b353701071832b356e0684906ecb",
+      "checkpoint12SHA256": "1a0b532c169a635609ab0f8990604e082063b353701071832b356e0684906ecb",
+      "rootSHA256": "1a0b532c169a635609ab0f8990604e082063b353701071832b356e0684906ecb",
+      "frozenBytes": 3739,
+      "checkpoint12Bytes": 3739,
+      "rootBytes": 3739,
+      "frozenManifestMatches": true
+    },
+    "assets/css/style.css": {
+      "frozenSHA256": "4a012b180e1b2a872cdb3ed010f7562cd2a5779ba7153384a0422b2f07783dd8",
+      "checkpoint12SHA256": "4a012b180e1b2a872cdb3ed010f7562cd2a5779ba7153384a0422b2f07783dd8",
+      "rootSHA256": "4a012b180e1b2a872cdb3ed010f7562cd2a5779ba7153384a0422b2f07783dd8",
+      "frozenBytes": 58915,
+      "checkpoint12Bytes": 58915,
+      "rootBytes": 58915,
+      "frozenManifestMatches": true
+    },
+    "assets/vendor/google-fonts/fonts.css": {
+      "frozenSHA256": "d7e4a43c00598ee3d0b5bee8b8effd558f49bf1e67fbd94bdcb792579f140ebb",
+      "checkpoint12SHA256": "d7e4a43c00598ee3d0b5bee8b8effd558f49bf1e67fbd94bdcb792579f140ebb",
+      "rootSHA256": "d7e4a43c00598ee3d0b5bee8b8effd558f49bf1e67fbd94bdcb792579f140ebb",
+      "frozenBytes": 17719,
+      "checkpoint12Bytes": 17719,
+      "rootBytes": 17719,
+      "frozenManifestMatches": true
+    },
+    "assets/vendor/katex-0.16.11/katex.min.css": {
+      "frozenSHA256": "717bc9ae7853b61f0f76455dddf0ecd4f527a783f42de2ac24684899c1c46258",
+      "checkpoint12SHA256": "717bc9ae7853b61f0f76455dddf0ecd4f527a783f42de2ac24684899c1c46258",
+      "rootSHA256": "717bc9ae7853b61f0f76455dddf0ecd4f527a783f42de2ac24684899c1c46258",
+      "frozenBytes": 23335,
+      "checkpoint12Bytes": 23335,
+      "rootBytes": 23335,
+      "frozenManifestMatches": true
+    },
+    "assets/vendor/katex-0.16.11/katex.min.js": {
+      "frozenSHA256": "e6bfe5deebd4c7ccd272055bab63bd3ab2c73b907b6e6a22d352740a81381fd4",
+      "checkpoint12SHA256": "e6bfe5deebd4c7ccd272055bab63bd3ab2c73b907b6e6a22d352740a81381fd4",
+      "rootSHA256": "e6bfe5deebd4c7ccd272055bab63bd3ab2c73b907b6e6a22d352740a81381fd4",
+      "frozenBytes": 275414,
+      "checkpoint12Bytes": 275414,
+      "rootBytes": 275414,
+      "frozenManifestMatches": true
+    },
+    "assets/vendor/katex-0.16.11/fonts/KaTeX_AMS-Regular.ttf": {
+      "frozenSHA256": "68534840bcfdd2bffb6f0e8deb48684dd01e7f04ea2813267577afb906de1d13",
+      "checkpoint12SHA256": "68534840bcfdd2bffb6f0e8deb48684dd01e7f04ea2813267577afb906de1d13",
+      "rootSHA256": "68534840bcfdd2bffb6f0e8deb48684dd01e7f04ea2813267577afb906de1d13",
+      "frozenBytes": 63632,
+      "checkpoint12Bytes": 63632,
+      "rootBytes": 63632,
+      "frozenManifestMatches": true
+    },
+    "assets/vendor/katex-0.16.11/fonts/KaTeX_AMS-Regular.woff": {
+      "frozenSHA256": "30da91e84c893f875e252689faebdc590b2871145e8adc7f9a9d4dbd8ce0b251",
+      "checkpoint12SHA256": "30da91e84c893f875e252689faebdc590b2871145e8adc7f9a9d4dbd8ce0b251",
+      "rootSHA256": "30da91e84c893f875e252689faebdc590b2871145e8adc7f9a9d4dbd8ce0b251",
+      "frozenBytes": 33516,
+      "checkpoint12Bytes": 33516,
+      "rootBytes": 33516,
+      "frozenManifestMatches": true
+    },
+    "assets/vendor/katex-0.16.11/fonts/KaTeX_AMS-Regular.woff2": {
+      "frozenSHA256": "0cdd387c9590a1a9f9794560022dbb59654a7d86f187aa0c81495ad42d3a7308",
+      "checkpoint12SHA256": "0cdd387c9590a1a9f9794560022dbb59654a7d86f187aa0c81495ad42d3a7308",
+      "rootSHA256": "0cdd387c9590a1a9f9794560022dbb59654a7d86f187aa0c81495ad42d3a7308",
+      "frozenBytes": 28076,
+      "checkpoint12Bytes": 28076,
+      "rootBytes": 28076,
+      "frozenManifestMatches": true
+    },
+    "assets/vendor/katex-0.16.11/fonts/KaTeX_Caligraphic-Bold.ttf": {
+      "frozenSHA256": "07d8e303ce4fc12b4bb54f1004170dd190a1f3db45d400fe68060df3e0897268",
+      "checkpoint12SHA256": "07d8e303ce4fc12b4bb54f1004170dd190a1f3db45d400fe68060df3e0897268",
+      "rootSHA256": "07d8e303ce4fc12b4bb54f1004170dd190a1f3db45d400fe68060df3e0897268",
+      "frozenBytes": 12368,
+      "checkpoint12Bytes": 12368,
+      "rootBytes": 12368,
+      "frozenManifestMatches": true
+    },
+    "assets/vendor/katex-0.16.11/fonts/KaTeX_Caligraphic-Bold.woff": {
+      "frozenSHA256": "1ae6bd7475590e97e7f145a89e09ccde322f7a6bc0b91607b1c8b8ee28290fed",
+      "checkpoint12SHA256": "1ae6bd7475590e97e7f145a89e09ccde322f7a6bc0b91607b1c8b8ee28290fed",
+      "rootSHA256": "1ae6bd7475590e97e7f145a89e09ccde322f7a6bc0b91607b1c8b8ee28290fed",
+      "frozenBytes": 7716,
+      "checkpoint12Bytes": 7716,
+      "rootBytes": 7716,
+      "frozenManifestMatches": true
+    },
+    "assets/vendor/katex-0.16.11/fonts/KaTeX_Caligraphic-Bold.woff2": {
+      "frozenSHA256": "de7701e42cf1f4cf0b766c03fb27977207eee2f4fd5d76fa82188406da43ea4c",
+      "checkpoint12SHA256": "de7701e42cf1f4cf0b766c03fb27977207eee2f4fd5d76fa82188406da43ea4c",
+      "rootSHA256": "de7701e42cf1f4cf0b766c03fb27977207eee2f4fd5d76fa82188406da43ea4c",
+      "frozenBytes": 6912,
+      "checkpoint12Bytes": 6912,
+      "rootBytes": 6912,
+      "frozenManifestMatches": true
+    },
+    "assets/vendor/katex-0.16.11/fonts/KaTeX_Caligraphic-Regular.ttf": {
+      "frozenSHA256": "ed0b74372feefcbb9c0666b2e210da37b7e49fa7fbbf3eeb11db5f693dacfbb7",
+      "checkpoint12SHA256": "ed0b74372feefcbb9c0666b2e210da37b7e49fa7fbbf3eeb11db5f693dacfbb7",
+      "rootSHA256": "ed0b74372feefcbb9c0666b2e210da37b7e49fa7fbbf3eeb11db5f693dacfbb7",
+      "frozenBytes": 12344,
+      "checkpoint12Bytes": 12344,
+      "rootBytes": 12344,
+      "frozenManifestMatches": true
+    },
+    "assets/vendor/katex-0.16.11/fonts/KaTeX_Caligraphic-Regular.woff": {
+      "frozenSHA256": "3398dd02302557a793f2863f88e02d96ce10df2abffa07c8e9fa90775116e65c",
+      "checkpoint12SHA256": "3398dd02302557a793f2863f88e02d96ce10df2abffa07c8e9fa90775116e65c",
+      "rootSHA256": "3398dd02302557a793f2863f88e02d96ce10df2abffa07c8e9fa90775116e65c",
+      "frozenBytes": 7656,
+      "checkpoint12Bytes": 7656,
+      "rootBytes": 7656,
+      "frozenManifestMatches": true
+    },
+    "assets/vendor/katex-0.16.11/fonts/KaTeX_Caligraphic-Regular.woff2": {
+      "frozenSHA256": "5d53e70ad607c2352162dec9e0923fb54ecdafaccbf604cd8dcf7d00facb989b",
+      "checkpoint12SHA256": "5d53e70ad607c2352162dec9e0923fb54ecdafaccbf604cd8dcf7d00facb989b",
+      "rootSHA256": "5d53e70ad607c2352162dec9e0923fb54ecdafaccbf604cd8dcf7d00facb989b",
+      "frozenBytes": 6908,
+      "checkpoint12Bytes": 6908,
+      "rootBytes": 6908,
+      "frozenManifestMatches": true
+    },
+    "assets/vendor/katex-0.16.11/fonts/KaTeX_Fraktur-Bold.ttf": {
+      "frozenSHA256": "9163df9c7122432e6495b4229fa9071cf9ae86a758ae5efc4924ec2e1a6dbce1",
+      "checkpoint12SHA256": "9163df9c7122432e6495b4229fa9071cf9ae86a758ae5efc4924ec2e1a6dbce1",
+      "rootSHA256": "9163df9c7122432e6495b4229fa9071cf9ae86a758ae5efc4924ec2e1a6dbce1",
+      "frozenBytes": 19584,
+      "checkpoint12Bytes": 19584,
+      "rootBytes": 19584,
+      "frozenManifestMatches": true
+    },
+    "assets/vendor/katex-0.16.11/fonts/KaTeX_Fraktur-Bold.woff": {
+      "frozenSHA256": "9be7ceb88004ab8ad124082246fbfcca4091e36385d4ec6ed1df67375dad50fb",
+      "checkpoint12SHA256": "9be7ceb88004ab8ad124082246fbfcca4091e36385d4ec6ed1df67375dad50fb",
+      "rootSHA256": "9be7ceb88004ab8ad124082246fbfcca4091e36385d4ec6ed1df67375dad50fb",
+      "frozenBytes": 13296,
+      "checkpoint12Bytes": 13296,
+      "rootBytes": 13296,
+      "frozenManifestMatches": true
+    },
+    "assets/vendor/katex-0.16.11/fonts/KaTeX_Fraktur-Bold.woff2": {
+      "frozenSHA256": "74444efd593c005e3f4573b44524704c0af0a937fe911cca9e94068d0d140d3f",
+      "checkpoint12SHA256": "74444efd593c005e3f4573b44524704c0af0a937fe911cca9e94068d0d140d3f",
+      "rootSHA256": "74444efd593c005e3f4573b44524704c0af0a937fe911cca9e94068d0d140d3f",
+      "frozenBytes": 11348,
+      "checkpoint12Bytes": 11348,
+      "rootBytes": 11348,
+      "frozenManifestMatches": true
+    },
+    "assets/vendor/katex-0.16.11/fonts/KaTeX_Fraktur-Regular.ttf": {
+      "frozenSHA256": "1e6f9579e90e2cac37f8f60a597c436e075c114385652b7cbeb0dec0421291b3",
+      "checkpoint12SHA256": "1e6f9579e90e2cac37f8f60a597c436e075c114385652b7cbeb0dec0421291b3",
+      "rootSHA256": "1e6f9579e90e2cac37f8f60a597c436e075c114385652b7cbeb0dec0421291b3",
+      "frozenBytes": 19572,
+      "checkpoint12Bytes": 19572,
+      "rootBytes": 19572,
+      "frozenManifestMatches": true
+    },
+    "assets/vendor/katex-0.16.11/fonts/KaTeX_Fraktur-Regular.woff": {
+      "frozenSHA256": "5e28753be717dac97f559f49bc10be9cf3c124ddcabda6659d11cb68febc6463",
+      "checkpoint12SHA256": "5e28753be717dac97f559f49bc10be9cf3c124ddcabda6659d11cb68febc6463",
+      "rootSHA256": "5e28753be717dac97f559f49bc10be9cf3c124ddcabda6659d11cb68febc6463",
+      "frozenBytes": 13208,
+      "checkpoint12Bytes": 13208,
+      "rootBytes": 13208,
+      "frozenManifestMatches": true
+    },
+    "assets/vendor/katex-0.16.11/fonts/KaTeX_Fraktur-Regular.woff2": {
+      "frozenSHA256": "51814d270d06ff0255dba0799994fa4d8c84d11f09951d47595f4abb1f3602dc",
+      "checkpoint12SHA256": "51814d270d06ff0255dba0799994fa4d8c84d11f09951d47595f4abb1f3602dc",
+      "rootSHA256": "51814d270d06ff0255dba0799994fa4d8c84d11f09951d47595f4abb1f3602dc",
+      "frozenBytes": 11316,
+      "checkpoint12Bytes": 11316,
+      "rootBytes": 11316,
+      "frozenManifestMatches": true
+    },
+    "assets/vendor/katex-0.16.11/fonts/KaTeX_Main-Bold.ttf": {
+      "frozenSHA256": "138ac28d1663b3037e9c5f52371fa5c63d8324f4a38d22cd573e6ea3a3fd0cf8",
+      "checkpoint12SHA256": "138ac28d1663b3037e9c5f52371fa5c63d8324f4a38d22cd573e6ea3a3fd0cf8",
+      "rootSHA256": "138ac28d1663b3037e9c5f52371fa5c63d8324f4a38d22cd573e6ea3a3fd0cf8",
+      "frozenBytes": 51336,
+      "checkpoint12Bytes": 51336,
+      "rootBytes": 51336,
+      "frozenManifestMatches": true
+    },
+    "assets/vendor/katex-0.16.11/fonts/KaTeX_Main-Bold.woff": {
+      "frozenSHA256": "c76c5d696297d51b9cb1639c7da4334f0e7dec81b42b11213b5e25ef671bb822",
+      "checkpoint12SHA256": "c76c5d696297d51b9cb1639c7da4334f0e7dec81b42b11213b5e25ef671bb822",
+      "rootSHA256": "c76c5d696297d51b9cb1639c7da4334f0e7dec81b42b11213b5e25ef671bb822",
+      "frozenBytes": 29912,
+      "checkpoint12Bytes": 29912,
+      "rootBytes": 29912,
+      "frozenManifestMatches": true
+    },
+    "assets/vendor/katex-0.16.11/fonts/KaTeX_Main-Bold.woff2": {
+      "frozenSHA256": "0f60d1b897938ec918c8ce073092411baf9438f6739465693ff18b0f9d20b021",
+      "checkpoint12SHA256": "0f60d1b897938ec918c8ce073092411baf9438f6739465693ff18b0f9d20b021",
+      "rootSHA256": "0f60d1b897938ec918c8ce073092411baf9438f6739465693ff18b0f9d20b021",
+      "frozenBytes": 25324,
+      "checkpoint12Bytes": 25324,
+      "rootBytes": 25324,
+      "frozenManifestMatches": true
+    },
+    "assets/vendor/katex-0.16.11/fonts/KaTeX_Main-BoldItalic.ttf": {
+      "frozenSHA256": "70ee1f64a20f2048c21940ef46d0144fd215baa953ca69afd1e31e98544f708f",
+      "checkpoint12SHA256": "70ee1f64a20f2048c21940ef46d0144fd215baa953ca69afd1e31e98544f708f",
+      "rootSHA256": "70ee1f64a20f2048c21940ef46d0144fd215baa953ca69afd1e31e98544f708f",
+      "frozenBytes": 32968,
+      "checkpoint12Bytes": 32968,
+      "rootBytes": 32968,
+      "frozenManifestMatches": true
+    },
+    "assets/vendor/katex-0.16.11/fonts/KaTeX_Main-BoldItalic.woff": {
+      "frozenSHA256": "a6f7ec0d846ac7ad975adb8959c37ed49b94acbc4ae436db9ce9e20287e4a64c",
+      "checkpoint12SHA256": "a6f7ec0d846ac7ad975adb8959c37ed49b94acbc4ae436db9ce9e20287e4a64c",
+      "rootSHA256": "a6f7ec0d846ac7ad975adb8959c37ed49b94acbc4ae436db9ce9e20287e4a64c",
+      "frozenBytes": 19412,
+      "checkpoint12Bytes": 19412,
+      "rootBytes": 19412,
+      "frozenManifestMatches": true
+    },
+    "assets/vendor/katex-0.16.11/fonts/KaTeX_Main-BoldItalic.woff2": {
+      "frozenSHA256": "99cd42a3c072d918f2f44984a807cf7aa16e13545fd0875fc07c6c65f99e715b",
+      "checkpoint12SHA256": "99cd42a3c072d918f2f44984a807cf7aa16e13545fd0875fc07c6c65f99e715b",
+      "rootSHA256": "99cd42a3c072d918f2f44984a807cf7aa16e13545fd0875fc07c6c65f99e715b",
+      "frozenBytes": 16780,
+      "checkpoint12Bytes": 16780,
+      "rootBytes": 16780,
+      "frozenManifestMatches": true
+    },
+    "assets/vendor/katex-0.16.11/fonts/KaTeX_Main-Italic.ttf": {
+      "frozenSHA256": "0d85ae7cc30f23790a7f1a58c4a112fdca8aae769b6ba11429af1d98b1b6cb3a",
+      "checkpoint12SHA256": "0d85ae7cc30f23790a7f1a58c4a112fdca8aae769b6ba11429af1d98b1b6cb3a",
+      "rootSHA256": "0d85ae7cc30f23790a7f1a58c4a112fdca8aae769b6ba11429af1d98b1b6cb3a",
+      "frozenBytes": 33580,
+      "checkpoint12Bytes": 33580,
+      "rootBytes": 33580,
+      "frozenManifestMatches": true
+    },
+    "assets/vendor/katex-0.16.11/fonts/KaTeX_Main-Italic.woff": {
+      "frozenSHA256": "f1d6ef86f3b11a528bd5185199bd2443ecb2b0dead96d88674b5a2c12be24bdf",
+      "checkpoint12SHA256": "f1d6ef86f3b11a528bd5185199bd2443ecb2b0dead96d88674b5a2c12be24bdf",
+      "rootSHA256": "f1d6ef86f3b11a528bd5185199bd2443ecb2b0dead96d88674b5a2c12be24bdf",
+      "frozenBytes": 19676,
+      "checkpoint12Bytes": 19676,
+      "rootBytes": 19676,
+      "frozenManifestMatches": true
+    },
+    "assets/vendor/katex-0.16.11/fonts/KaTeX_Main-Italic.woff2": {
+      "frozenSHA256": "97479ca6cce906abc961ecac96faa5f9ca2e61b8e7670d475826bcdee9a7c267",
+      "checkpoint12SHA256": "97479ca6cce906abc961ecac96faa5f9ca2e61b8e7670d475826bcdee9a7c267",
+      "rootSHA256": "97479ca6cce906abc961ecac96faa5f9ca2e61b8e7670d475826bcdee9a7c267",
+      "frozenBytes": 16988,
+      "checkpoint12Bytes": 16988,
+      "rootBytes": 16988,
+      "frozenManifestMatches": true
+    },
+    "assets/vendor/katex-0.16.11/fonts/KaTeX_Main-Regular.ttf": {
+      "frozenSHA256": "d0332f52868370fd83ae7fa46470f90c8f2eab2fcf12bc4f88080b340c95a830",
+      "checkpoint12SHA256": "d0332f52868370fd83ae7fa46470f90c8f2eab2fcf12bc4f88080b340c95a830",
+      "rootSHA256": "d0332f52868370fd83ae7fa46470f90c8f2eab2fcf12bc4f88080b340c95a830",
+      "frozenBytes": 53580,
+      "checkpoint12Bytes": 53580,
+      "rootBytes": 53580,
+      "frozenManifestMatches": true
+    },
+    "assets/vendor/katex-0.16.11/fonts/KaTeX_Main-Regular.woff": {
+      "frozenSHA256": "c6368d87e8a1a3a5d337623d83d8dc4b868f242a9ad476237d6f8d1e0f168cdc",
+      "checkpoint12SHA256": "c6368d87e8a1a3a5d337623d83d8dc4b868f242a9ad476237d6f8d1e0f168cdc",
+      "rootSHA256": "c6368d87e8a1a3a5d337623d83d8dc4b868f242a9ad476237d6f8d1e0f168cdc",
+      "frozenBytes": 30772,
+      "checkpoint12Bytes": 30772,
+      "rootBytes": 30772,
+      "frozenManifestMatches": true
+    },
+    "assets/vendor/katex-0.16.11/fonts/KaTeX_Main-Regular.woff2": {
+      "frozenSHA256": "c2342cd8b869e01752a9321dc17213fc40d4d04c79688c1d43f2cf316abd7866",
+      "checkpoint12SHA256": "c2342cd8b869e01752a9321dc17213fc40d4d04c79688c1d43f2cf316abd7866",
+      "rootSHA256": "c2342cd8b869e01752a9321dc17213fc40d4d04c79688c1d43f2cf316abd7866",
+      "frozenBytes": 26272,
+      "checkpoint12Bytes": 26272,
+      "rootBytes": 26272,
+      "frozenManifestMatches": true
+    },
+    "assets/vendor/katex-0.16.11/fonts/KaTeX_Math-BoldItalic.ttf": {
+      "frozenSHA256": "f9377ab0271cda59af24bcffbd46a4d0c8a3572ffafdbb38de2ad5ea7b0d5ee5",
+      "checkpoint12SHA256": "f9377ab0271cda59af24bcffbd46a4d0c8a3572ffafdbb38de2ad5ea7b0d5ee5",
+      "rootSHA256": "f9377ab0271cda59af24bcffbd46a4d0c8a3572ffafdbb38de2ad5ea7b0d5ee5",
+      "frozenBytes": 31196,
+      "checkpoint12Bytes": 31196,
+      "rootBytes": 31196,
+      "frozenManifestMatches": true
+    },
+    "assets/vendor/katex-0.16.11/fonts/KaTeX_Math-BoldItalic.woff": {
+      "frozenSHA256": "850c0af5c2238497febaf5e461d880bf458c341f42f4f330f1b1ab5698b1998e",
+      "checkpoint12SHA256": "850c0af5c2238497febaf5e461d880bf458c341f42f4f330f1b1ab5698b1998e",
+      "rootSHA256": "850c0af5c2238497febaf5e461d880bf458c341f42f4f330f1b1ab5698b1998e",
+      "frozenBytes": 18668,
+      "checkpoint12Bytes": 18668,
+      "rootBytes": 18668,
+      "frozenManifestMatches": true
+    },
+    "assets/vendor/katex-0.16.11/fonts/KaTeX_Math-BoldItalic.woff2": {
+      "frozenSHA256": "dc47344dbb6cb5b655c8460d561f4df5f501b90c804ad3c6cec65fe322351ab1",
+      "checkpoint12SHA256": "dc47344dbb6cb5b655c8460d561f4df5f501b90c804ad3c6cec65fe322351ab1",
+      "rootSHA256": "dc47344dbb6cb5b655c8460d561f4df5f501b90c804ad3c6cec65fe322351ab1",
+      "frozenBytes": 16400,
+      "checkpoint12Bytes": 16400,
+      "rootBytes": 16400,
+      "frozenManifestMatches": true
+    },
+    "assets/vendor/katex-0.16.11/fonts/KaTeX_Math-Italic.ttf": {
+      "frozenSHA256": "08ce98e51b04d58945a301e639e02b6998af29fdfd61a7b8afdd07bbfc479d4a",
+      "checkpoint12SHA256": "08ce98e51b04d58945a301e639e02b6998af29fdfd61a7b8afdd07bbfc479d4a",
+      "rootSHA256": "08ce98e51b04d58945a301e639e02b6998af29fdfd61a7b8afdd07bbfc479d4a",
+      "frozenBytes": 31308,
+      "checkpoint12Bytes": 31308,
+      "rootBytes": 31308,
+      "frozenManifestMatches": true
+    },
+    "assets/vendor/katex-0.16.11/fonts/KaTeX_Math-Italic.woff": {
+      "frozenSHA256": "8a8d244581371912b8f3f5a23e2437cb2a59cd9bcaebb0346e722c05737a2571",
+      "checkpoint12SHA256": "8a8d244581371912b8f3f5a23e2437cb2a59cd9bcaebb0346e722c05737a2571",
+      "rootSHA256": "8a8d244581371912b8f3f5a23e2437cb2a59cd9bcaebb0346e722c05737a2571",
+      "frozenBytes": 18748,
+      "checkpoint12Bytes": 18748,
+      "rootBytes": 18748,
+      "frozenManifestMatches": true
+    },
+    "assets/vendor/katex-0.16.11/fonts/KaTeX_Math-Italic.woff2": {
+      "frozenSHA256": "7af58c5ec8f132a2ddde9027c6d7814decce4d3b822a11192a42a20e2e973264",
+      "checkpoint12SHA256": "7af58c5ec8f132a2ddde9027c6d7814decce4d3b822a11192a42a20e2e973264",
+      "rootSHA256": "7af58c5ec8f132a2ddde9027c6d7814decce4d3b822a11192a42a20e2e973264",
+      "frozenBytes": 16440,
+      "checkpoint12Bytes": 16440,
+      "rootBytes": 16440,
+      "frozenManifestMatches": true
+    },
+    "assets/vendor/katex-0.16.11/fonts/KaTeX_SansSerif-Bold.ttf": {
+      "frozenSHA256": "1ece03f79f95277d57dc7f6b435a74e1379b0d46104a8530286b60ff49369ea0",
+      "checkpoint12SHA256": "1ece03f79f95277d57dc7f6b435a74e1379b0d46104a8530286b60ff49369ea0",
+      "rootSHA256": "1ece03f79f95277d57dc7f6b435a74e1379b0d46104a8530286b60ff49369ea0",
+      "frozenBytes": 24504,
+      "checkpoint12Bytes": 24504,
+      "rootBytes": 24504,
+      "frozenManifestMatches": true
+    },
+    "assets/vendor/katex-0.16.11/fonts/KaTeX_SansSerif-Bold.woff": {
+      "frozenSHA256": "ece03cfd83e22c212cdef66feb8442d25a083beb988db3f1883f3f9738d750ba",
+      "checkpoint12SHA256": "ece03cfd83e22c212cdef66feb8442d25a083beb988db3f1883f3f9738d750ba",
+      "rootSHA256": "ece03cfd83e22c212cdef66feb8442d25a083beb988db3f1883f3f9738d750ba",
+      "frozenBytes": 14408,
+      "checkpoint12Bytes": 14408,
+      "rootBytes": 14408,
+      "frozenManifestMatches": true
+    },
+    "assets/vendor/katex-0.16.11/fonts/KaTeX_SansSerif-Bold.woff2": {
+      "frozenSHA256": "e99ae51144bf1232efcc1bfe5add36262c6866b0faab24fa75740e1b98577a62",
+      "checkpoint12SHA256": "e99ae51144bf1232efcc1bfe5add36262c6866b0faab24fa75740e1b98577a62",
+      "rootSHA256": "e99ae51144bf1232efcc1bfe5add36262c6866b0faab24fa75740e1b98577a62",
+      "frozenBytes": 12216,
+      "checkpoint12Bytes": 12216,
+      "rootBytes": 12216,
+      "frozenManifestMatches": true
+    },
+    "assets/vendor/katex-0.16.11/fonts/KaTeX_SansSerif-Italic.ttf": {
+      "frozenSHA256": "3931dd81faed86ba021bb2bbdc36f5bed9a38d6b4f4077aca59b265aa1b02083",
+      "checkpoint12SHA256": "3931dd81faed86ba021bb2bbdc36f5bed9a38d6b4f4077aca59b265aa1b02083",
+      "rootSHA256": "3931dd81faed86ba021bb2bbdc36f5bed9a38d6b4f4077aca59b265aa1b02083",
+      "frozenBytes": 22364,
+      "checkpoint12Bytes": 22364,
+      "rootBytes": 22364,
+      "frozenManifestMatches": true
+    },
+    "assets/vendor/katex-0.16.11/fonts/KaTeX_SansSerif-Italic.woff": {
+      "frozenSHA256": "91ee67500cc0129aa0ace3ac5c61ff1692102f0f31d02b69347fba35dcb75bf2",
+      "checkpoint12SHA256": "91ee67500cc0129aa0ace3ac5c61ff1692102f0f31d02b69347fba35dcb75bf2",
+      "rootSHA256": "91ee67500cc0129aa0ace3ac5c61ff1692102f0f31d02b69347fba35dcb75bf2",
+      "frozenBytes": 14112,
+      "checkpoint12Bytes": 14112,
+      "rootBytes": 14112,
+      "frozenManifestMatches": true
+    },
+    "assets/vendor/katex-0.16.11/fonts/KaTeX_SansSerif-Italic.woff2": {
+      "frozenSHA256": "00b26ac825e2095056396e0553b8ac26d3f8ad158c3826e28b4c45b385c4714a",
+      "checkpoint12SHA256": "00b26ac825e2095056396e0553b8ac26d3f8ad158c3826e28b4c45b385c4714a",
+      "rootSHA256": "00b26ac825e2095056396e0553b8ac26d3f8ad158c3826e28b4c45b385c4714a",
+      "frozenBytes": 12028,
+      "checkpoint12Bytes": 12028,
+      "rootBytes": 12028,
+      "frozenManifestMatches": true
+    },
+    "assets/vendor/katex-0.16.11/fonts/KaTeX_SansSerif-Regular.ttf": {
+      "frozenSHA256": "f36ea897e19f4a2e571d1e900e4e3710e438deb05a842486045ba0a3e616a4ad",
+      "checkpoint12SHA256": "f36ea897e19f4a2e571d1e900e4e3710e438deb05a842486045ba0a3e616a4ad",
+      "rootSHA256": "f36ea897e19f4a2e571d1e900e4e3710e438deb05a842486045ba0a3e616a4ad",
+      "frozenBytes": 19436,
+      "checkpoint12Bytes": 19436,
+      "rootBytes": 19436,
+      "frozenManifestMatches": true
+    },
+    "assets/vendor/katex-0.16.11/fonts/KaTeX_SansSerif-Regular.woff": {
+      "frozenSHA256": "11e4dc8a6471ff6d6ee561d53d10fde8f7489e798257ff449c5d37c197435605",
+      "checkpoint12SHA256": "11e4dc8a6471ff6d6ee561d53d10fde8f7489e798257ff449c5d37c197435605",
+      "rootSHA256": "11e4dc8a6471ff6d6ee561d53d10fde8f7489e798257ff449c5d37c197435605",
+      "frozenBytes": 12316,
+      "checkpoint12Bytes": 12316,
+      "rootBytes": 12316,
+      "frozenManifestMatches": true
+    },
+    "assets/vendor/katex-0.16.11/fonts/KaTeX_SansSerif-Regular.woff2": {
+      "frozenSHA256": "68e8c73ef42afd3ccec58bf0fba302cce448938e7fc020a5e31f8a952eee1342",
+      "checkpoint12SHA256": "68e8c73ef42afd3ccec58bf0fba302cce448938e7fc020a5e31f8a952eee1342",
+      "rootSHA256": "68e8c73ef42afd3ccec58bf0fba302cce448938e7fc020a5e31f8a952eee1342",
+      "frozenBytes": 10344,
+      "checkpoint12Bytes": 10344,
+      "rootBytes": 10344,
+      "frozenManifestMatches": true
+    },
+    "assets/vendor/katex-0.16.11/fonts/KaTeX_Script-Regular.ttf": {
+      "frozenSHA256": "1c67f068fea8bb09bf099c088b1cf64bd27516a6e07f4684344873564bb66a67",
+      "checkpoint12SHA256": "1c67f068fea8bb09bf099c088b1cf64bd27516a6e07f4684344873564bb66a67",
+      "rootSHA256": "1c67f068fea8bb09bf099c088b1cf64bd27516a6e07f4684344873564bb66a67",
+      "frozenBytes": 16648,
+      "checkpoint12Bytes": 16648,
+      "rootBytes": 16648,
+      "frozenManifestMatches": true
+    },
+    "assets/vendor/katex-0.16.11/fonts/KaTeX_Script-Regular.woff": {
+      "frozenSHA256": "d96cdf2b3bdd4d64a8fd5f74a4c467f123a8a73931cd435889f08ffaf9bf947a",
+      "checkpoint12SHA256": "d96cdf2b3bdd4d64a8fd5f74a4c467f123a8a73931cd435889f08ffaf9bf947a",
+      "rootSHA256": "d96cdf2b3bdd4d64a8fd5f74a4c467f123a8a73931cd435889f08ffaf9bf947a",
+      "frozenBytes": 10588,
+      "checkpoint12Bytes": 10588,
+      "rootBytes": 10588,
+      "frozenManifestMatches": true
+    },
+    "assets/vendor/katex-0.16.11/fonts/KaTeX_Script-Regular.woff2": {
+      "frozenSHA256": "036d4e95149b69ff9bcc0cd55771efeb25ffa3947293e69acd78d5ac328c684b",
+      "checkpoint12SHA256": "036d4e95149b69ff9bcc0cd55771efeb25ffa3947293e69acd78d5ac328c684b",
+      "rootSHA256": "036d4e95149b69ff9bcc0cd55771efeb25ffa3947293e69acd78d5ac328c684b",
+      "frozenBytes": 9644,
+      "checkpoint12Bytes": 9644,
+      "rootBytes": 9644,
+      "frozenManifestMatches": true
+    },
+    "assets/vendor/katex-0.16.11/fonts/KaTeX_Size1-Regular.ttf": {
+      "frozenSHA256": "95b6d2f1a50173bfedb8c63e1d1c99b10427d0a4df4201cb44513b226951a22b",
+      "checkpoint12SHA256": "95b6d2f1a50173bfedb8c63e1d1c99b10427d0a4df4201cb44513b226951a22b",
+      "rootSHA256": "95b6d2f1a50173bfedb8c63e1d1c99b10427d0a4df4201cb44513b226951a22b",
+      "frozenBytes": 12228,
+      "checkpoint12Bytes": 12228,
+      "rootBytes": 12228,
+      "frozenManifestMatches": true
+    },
+    "assets/vendor/katex-0.16.11/fonts/KaTeX_Size1-Regular.woff": {
+      "frozenSHA256": "c943cc986384f59e86bea5fd7dc50a9c4dfe567a7c05eb40d6790720dead97c9",
+      "checkpoint12SHA256": "c943cc986384f59e86bea5fd7dc50a9c4dfe567a7c05eb40d6790720dead97c9",
+      "rootSHA256": "c943cc986384f59e86bea5fd7dc50a9c4dfe567a7c05eb40d6790720dead97c9",
+      "frozenBytes": 6496,
+      "checkpoint12Bytes": 6496,
+      "rootBytes": 6496,
+      "frozenManifestMatches": true
+    },
+    "assets/vendor/katex-0.16.11/fonts/KaTeX_Size1-Regular.woff2": {
+      "frozenSHA256": "6b47c40166b6dbe21a5dfca7718413f2147fd2399be1ba605d8ad39cedf25dfe",
+      "checkpoint12SHA256": "6b47c40166b6dbe21a5dfca7718413f2147fd2399be1ba605d8ad39cedf25dfe",
+      "rootSHA256": "6b47c40166b6dbe21a5dfca7718413f2147fd2399be1ba605d8ad39cedf25dfe",
+      "frozenBytes": 5468,
+      "checkpoint12Bytes": 5468,
+      "rootBytes": 5468,
+      "frozenManifestMatches": true
+    },
+    "assets/vendor/katex-0.16.11/fonts/KaTeX_Size2-Regular.ttf": {
+      "frozenSHA256": "a6b2099fb555c60e3a0db3a08842ebf1d732c6eb4e4bf44913613bed4fc4e39b",
+      "checkpoint12SHA256": "a6b2099fb555c60e3a0db3a08842ebf1d732c6eb4e4bf44913613bed4fc4e39b",
+      "rootSHA256": "a6b2099fb555c60e3a0db3a08842ebf1d732c6eb4e4bf44913613bed4fc4e39b",
+      "frozenBytes": 11508,
+      "checkpoint12Bytes": 11508,
+      "rootBytes": 11508,
+      "frozenManifestMatches": true
+    },
+    "assets/vendor/katex-0.16.11/fonts/KaTeX_Size2-Regular.woff": {
+      "frozenSHA256": "2014c523c3210bcc166648c4d4cc57f05b747df07a24277bf71c51e67dc79e3d",
+      "checkpoint12SHA256": "2014c523c3210bcc166648c4d4cc57f05b747df07a24277bf71c51e67dc79e3d",
+      "rootSHA256": "2014c523c3210bcc166648c4d4cc57f05b747df07a24277bf71c51e67dc79e3d",
+      "frozenBytes": 6188,
+      "checkpoint12Bytes": 6188,
+      "rootBytes": 6188,
+      "frozenManifestMatches": true
+    },
+    "assets/vendor/katex-0.16.11/fonts/KaTeX_Size2-Regular.woff2": {
+      "frozenSHA256": "d04c54219f9eaec6d4d4fd42dfb28785975a4794d6b2fc71e566b9cd6db842dd",
+      "checkpoint12SHA256": "d04c54219f9eaec6d4d4fd42dfb28785975a4794d6b2fc71e566b9cd6db842dd",
+      "rootSHA256": "d04c54219f9eaec6d4d4fd42dfb28785975a4794d6b2fc71e566b9cd6db842dd",
+      "frozenBytes": 5208,
+      "checkpoint12Bytes": 5208,
+      "rootBytes": 5208,
+      "frozenManifestMatches": true
+    },
+    "assets/vendor/katex-0.16.11/fonts/KaTeX_Size3-Regular.ttf": {
+      "frozenSHA256": "500e04d54f0d51666332c9d2089aa803be22aa878eca539e59fa53c6e522b082",
+      "checkpoint12SHA256": "500e04d54f0d51666332c9d2089aa803be22aa878eca539e59fa53c6e522b082",
+      "rootSHA256": "500e04d54f0d51666332c9d2089aa803be22aa878eca539e59fa53c6e522b082",
+      "frozenBytes": 7588,
+      "checkpoint12Bytes": 7588,
+      "rootBytes": 7588,
+      "frozenManifestMatches": true
+    },
+    "assets/vendor/katex-0.16.11/fonts/KaTeX_Size3-Regular.woff": {
+      "frozenSHA256": "6ab6b62e9b62dae2c00dd90f791bd10950be0ecc3490d7d6045f51c2e8fe0949",
+      "checkpoint12SHA256": "6ab6b62e9b62dae2c00dd90f791bd10950be0ecc3490d7d6045f51c2e8fe0949",
+      "rootSHA256": "6ab6b62e9b62dae2c00dd90f791bd10950be0ecc3490d7d6045f51c2e8fe0949",
+      "frozenBytes": 4420,
+      "checkpoint12Bytes": 4420,
+      "rootBytes": 4420,
+      "frozenManifestMatches": true
+    },
+    "assets/vendor/katex-0.16.11/fonts/KaTeX_Size3-Regular.woff2": {
+      "frozenSHA256": "73d591271b1604960cb10bb90fee021670af7297017e0e98480b332d11f51995",
+      "checkpoint12SHA256": "73d591271b1604960cb10bb90fee021670af7297017e0e98480b332d11f51995",
+      "rootSHA256": "73d591271b1604960cb10bb90fee021670af7297017e0e98480b332d11f51995",
+      "frozenBytes": 3624,
+      "checkpoint12Bytes": 3624,
+      "rootBytes": 3624,
+      "frozenManifestMatches": true
+    },
+    "assets/vendor/katex-0.16.11/fonts/KaTeX_Size4-Regular.ttf": {
+      "frozenSHA256": "c647367d1dd4e162468717d020e1fc0f1dc5c26ebfdffbe55261713bf88c5877",
+      "checkpoint12SHA256": "c647367d1dd4e162468717d020e1fc0f1dc5c26ebfdffbe55261713bf88c5877",
+      "rootSHA256": "c647367d1dd4e162468717d020e1fc0f1dc5c26ebfdffbe55261713bf88c5877",
+      "frozenBytes": 10364,
+      "checkpoint12Bytes": 10364,
+      "rootBytes": 10364,
+      "frozenManifestMatches": true
+    },
+    "assets/vendor/katex-0.16.11/fonts/KaTeX_Size4-Regular.woff": {
+      "frozenSHA256": "99f9c6750b489c9462bf04900bd3f939df9b829339daaaaa99ef5495cdddea58",
+      "checkpoint12SHA256": "99f9c6750b489c9462bf04900bd3f939df9b829339daaaaa99ef5495cdddea58",
+      "rootSHA256": "99f9c6750b489c9462bf04900bd3f939df9b829339daaaaa99ef5495cdddea58",
+      "frozenBytes": 5980,
+      "checkpoint12Bytes": 5980,
+      "rootBytes": 5980,
+      "frozenManifestMatches": true
+    },
+    "assets/vendor/katex-0.16.11/fonts/KaTeX_Size4-Regular.woff2": {
+      "frozenSHA256": "a4af7d414440a1c1790825cfb700cf9cf43b0f2c4b04f0ebc523011ad9853ec0",
+      "checkpoint12SHA256": "a4af7d414440a1c1790825cfb700cf9cf43b0f2c4b04f0ebc523011ad9853ec0",
+      "rootSHA256": "a4af7d414440a1c1790825cfb700cf9cf43b0f2c4b04f0ebc523011ad9853ec0",
+      "frozenBytes": 4928,
+      "checkpoint12Bytes": 4928,
+      "rootBytes": 4928,
+      "frozenManifestMatches": true
+    },
+    "assets/vendor/katex-0.16.11/fonts/KaTeX_Typewriter-Regular.ttf": {
+      "frozenSHA256": "f01f3e87d9c6a61c0c081ceb577abd864eb00a612f7ac1620dd6915fad2ef5aa",
+      "checkpoint12SHA256": "f01f3e87d9c6a61c0c081ceb577abd864eb00a612f7ac1620dd6915fad2ef5aa",
+      "rootSHA256": "f01f3e87d9c6a61c0c081ceb577abd864eb00a612f7ac1620dd6915fad2ef5aa",
+      "frozenBytes": 27556,
+      "checkpoint12Bytes": 27556,
+      "rootBytes": 27556,
+      "frozenManifestMatches": true
+    },
+    "assets/vendor/katex-0.16.11/fonts/KaTeX_Typewriter-Regular.woff": {
+      "frozenSHA256": "e14fed02b1aba7ce9f5afd5844b5d0321b22351febc720e0de8b8723527609f7",
+      "checkpoint12SHA256": "e14fed02b1aba7ce9f5afd5844b5d0321b22351febc720e0de8b8723527609f7",
+      "rootSHA256": "e14fed02b1aba7ce9f5afd5844b5d0321b22351febc720e0de8b8723527609f7",
+      "frozenBytes": 16028,
+      "checkpoint12Bytes": 16028,
+      "rootBytes": 16028,
+      "frozenManifestMatches": true
+    },
+    "assets/vendor/katex-0.16.11/fonts/KaTeX_Typewriter-Regular.woff2": {
+      "frozenSHA256": "71d517d67827787cfabdf186914cc3358eda539e37931941f2b2fd4a21f68c0b",
+      "checkpoint12SHA256": "71d517d67827787cfabdf186914cc3358eda539e37931941f2b2fd4a21f68c0b",
+      "rootSHA256": "71d517d67827787cfabdf186914cc3358eda539e37931941f2b2fd4a21f68c0b",
+      "frozenBytes": 13568,
+      "checkpoint12Bytes": 13568,
+      "rootBytes": 13568,
+      "frozenManifestMatches": true
+    },
+    "assets/vendor/google-fonts/fonts/inter-UcC73FwrK3iLTeHuS_nVMrMxCp50SjIa2JL7W0Q5n-wU.woff2": {
+      "frozenSHA256": "fccca918fea40089dacadc7045861314d1a6bc91f1f323cc1eeb22ebcdb321b5",
+      "checkpoint12SHA256": "fccca918fea40089dacadc7045861314d1a6bc91f1f323cc1eeb22ebcdb321b5",
+      "rootSHA256": "fccca918fea40089dacadc7045861314d1a6bc91f1f323cc1eeb22ebcdb321b5",
+      "frozenBytes": 25844,
+      "checkpoint12Bytes": 25844,
+      "rootBytes": 25844,
+      "frozenManifestMatches": true
+    },
+    "assets/vendor/google-fonts/fonts/inter-UcC73FwrK3iLTeHuS_nVMrMxCp50SjIa0ZL7W0Q5n-wU.woff2": {
+      "frozenSHA256": "aebf2ab4a4ce6810d73c1ac7be7cafb4e5ec4cee2d6db5fb3e09691747ec4bd6",
+      "checkpoint12SHA256": "aebf2ab4a4ce6810d73c1ac7be7cafb4e5ec4cee2d6db5fb3e09691747ec4bd6",
+      "rootSHA256": "aebf2ab4a4ce6810d73c1ac7be7cafb4e5ec4cee2d6db5fb3e09691747ec4bd6",
+      "frozenBytes": 18744,
+      "checkpoint12Bytes": 18744,
+      "rootBytes": 18744,
+      "frozenManifestMatches": true
+    },
+    "assets/vendor/google-fonts/fonts/inter-UcC73FwrK3iLTeHuS_nVMrMxCp50SjIa2ZL7W0Q5n-wU.woff2": {
+      "frozenSHA256": "a2e2c783ca6f9c20486e81e72a279203e86730bbf8f01ff6a5ee9dbd09e1c271",
+      "checkpoint12SHA256": "a2e2c783ca6f9c20486e81e72a279203e86730bbf8f01ff6a5ee9dbd09e1c271",
+      "rootSHA256": "a2e2c783ca6f9c20486e81e72a279203e86730bbf8f01ff6a5ee9dbd09e1c271",
+      "frozenBytes": 11272,
+      "checkpoint12Bytes": 11272,
+      "rootBytes": 11272,
+      "frozenManifestMatches": true
+    },
+    "assets/vendor/google-fonts/fonts/inter-UcC73FwrK3iLTeHuS_nVMrMxCp50SjIa1pL7W0Q5n-wU.woff2": {
+      "frozenSHA256": "46dd4cdca58c26ae87cc6927657bf83b2e8abfc39ffd0ab176e301a8d28d22bf",
+      "checkpoint12SHA256": "46dd4cdca58c26ae87cc6927657bf83b2e8abfc39ffd0ab176e301a8d28d22bf",
+      "rootSHA256": "46dd4cdca58c26ae87cc6927657bf83b2e8abfc39ffd0ab176e301a8d28d22bf",
+      "frozenBytes": 19044,
+      "checkpoint12Bytes": 19044,
+      "rootBytes": 19044,
+      "frozenManifestMatches": true
+    },
+    "assets/vendor/google-fonts/fonts/inter-UcC73FwrK3iLTeHuS_nVMrMxCp50SjIa2pL7W0Q5n-wU.woff2": {
+      "frozenSHA256": "8db00ff46c67b22cda8bed865acf7077651cac8d2841d5b40980556b48961931",
+      "checkpoint12SHA256": "8db00ff46c67b22cda8bed865acf7077651cac8d2841d5b40980556b48961931",
+      "rootSHA256": "8db00ff46c67b22cda8bed865acf7077651cac8d2841d5b40980556b48961931",
+      "frozenBytes": 10280,
+      "checkpoint12Bytes": 10280,
+      "rootBytes": 10280,
+      "frozenManifestMatches": true
+    },
+    "assets/vendor/google-fonts/fonts/inter-UcC73FwrK3iLTeHuS_nVMrMxCp50SjIa25L7W0Q5n-wU.woff2": {
+      "frozenSHA256": "a28eb6d3ccb534ae0c94ca999371df024aab60b08c3c8a5720ee9e32fa0faaa2",
+      "checkpoint12SHA256": "a28eb6d3ccb534ae0c94ca999371df024aab60b08c3c8a5720ee9e32fa0faaa2",
+      "rootSHA256": "a28eb6d3ccb534ae0c94ca999371df024aab60b08c3c8a5720ee9e32fa0faaa2",
+      "frozenBytes": 85272,
+      "checkpoint12Bytes": 85272,
+      "rootBytes": 85272,
+      "frozenManifestMatches": true
+    },
+    "assets/vendor/google-fonts/fonts/inter-UcC73FwrK3iLTeHuS_nVMrMxCp50SjIa1ZL7W0Q5nw.woff2": {
+      "frozenSHA256": "c940764593d0fe5d596be327ca7558855e018039fb78509aa21921fd3644c3e4",
+      "checkpoint12SHA256": "c940764593d0fe5d596be327ca7558855e018039fb78509aa21921fd3644c3e4",
+      "rootSHA256": "c940764593d0fe5d596be327ca7558855e018039fb78509aa21921fd3644c3e4",
+      "frozenBytes": 48432,
+      "checkpoint12Bytes": 48432,
+      "rootBytes": 48432,
+      "frozenManifestMatches": true
+    },
+    "assets/vendor/google-fonts/fonts/jetbrainsmono-tDbv2o-flEEny0FZhsfKu5WU4zr3E_BX0PnT8RD8yKwBNntkaToggR7BYRbKPx3cwgknk-6nFg.woff2": {
+      "frozenSHA256": "9343de2ca5d9549f792e7962375af8efb0f320c7643bfd36c884b5a30e5c396f",
+      "checkpoint12SHA256": "9343de2ca5d9549f792e7962375af8efb0f320c7643bfd36c884b5a30e5c396f",
+      "rootSHA256": "9343de2ca5d9549f792e7962375af8efb0f320c7643bfd36c884b5a30e5c396f",
+      "frozenBytes": 1664,
+      "checkpoint12Bytes": 1664,
+      "rootBytes": 1664,
+      "frozenManifestMatches": true
+    },
+    "assets/vendor/google-fonts/fonts/jetbrainsmono-tDbv2o-flEEny0FZhsfKu5WU4zr3E_BX0PnT8RD8yKwBNntkaToggR7BYRbKPxTcwgknk-6nFg.woff2": {
+      "frozenSHA256": "4995a9a43ac659ec32fcd8b463755cd6a07b31a6e6b3894a6a153b661cf490e2",
+      "checkpoint12SHA256": "4995a9a43ac659ec32fcd8b463755cd6a07b31a6e6b3894a6a153b661cf490e2",
+      "rootSHA256": "4995a9a43ac659ec32fcd8b463755cd6a07b31a6e6b3894a6a153b661cf490e2",
+      "frozenBytes": 8892,
+      "checkpoint12Bytes": 8892,
+      "rootBytes": 8892,
+      "frozenManifestMatches": true
+    },
+    "assets/vendor/google-fonts/fonts/jetbrainsmono-tDbv2o-flEEny0FZhsfKu5WU4zr3E_BX0PnT8RD8yKwBNntkaToggR7BYRbKPxPcwgknk-6nFg.woff2": {
+      "frozenSHA256": "49c3da6c9a2b279b0f1f860f5cfb1f5dc38d88a5c7be9c9b1837bbc4e3db6111",
+      "checkpoint12SHA256": "49c3da6c9a2b279b0f1f860f5cfb1f5dc38d88a5c7be9c9b1837bbc4e3db6111",
+      "rootSHA256": "49c3da6c9a2b279b0f1f860f5cfb1f5dc38d88a5c7be9c9b1837bbc4e3db6111",
+      "frozenBytes": 6800,
+      "checkpoint12Bytes": 6800,
+      "rootBytes": 6800,
+      "frozenManifestMatches": true
+    },
+    "assets/vendor/google-fonts/fonts/jetbrainsmono-tDbv2o-flEEny0FZhsfKu5WU4zr3E_BX0PnT8RD8yKwBNntkaToggR7BYRbKPx_cwgknk-6nFg.woff2": {
+      "frozenSHA256": "d44eb1936043a56038eb02dd70b243f379bef65783f94ec12f277550720411f1",
+      "checkpoint12SHA256": "d44eb1936043a56038eb02dd70b243f379bef65783f94ec12f277550720411f1",
+      "rootSHA256": "d44eb1936043a56038eb02dd70b243f379bef65783f94ec12f277550720411f1",
+      "frozenBytes": 5872,
+      "checkpoint12Bytes": 5872,
+      "rootBytes": 5872,
+      "frozenManifestMatches": true
+    },
+    "assets/vendor/google-fonts/fonts/jetbrainsmono-tDbv2o-flEEny0FZhsfKu5WU4zr3E_BX0PnT8RD8yKwBNntkaToggR7BYRbKPx7cwgknk-6nFg.woff2": {
+      "frozenSHA256": "9c38cb2d0d2d93c1ee6e21fa78db76f13ea7e15e15cc64214c7ca89b6aaa35c4",
+      "checkpoint12SHA256": "9c38cb2d0d2d93c1ee6e21fa78db76f13ea7e15e15cc64214c7ca89b6aaa35c4",
+      "rootSHA256": "9c38cb2d0d2d93c1ee6e21fa78db76f13ea7e15e15cc64214c7ca89b6aaa35c4",
+      "frozenBytes": 11596,
+      "checkpoint12Bytes": 11596,
+      "rootBytes": 11596,
+      "frozenManifestMatches": true
+    },
+    "assets/vendor/google-fonts/fonts/jetbrainsmono-tDbv2o-flEEny0FZhsfKu5WU4zr3E_BX0PnT8RD8yKwBNntkaToggR7BYRbKPxDcwgknk-4.woff2": {
+      "frozenSHA256": "2c32b9b3ee358c119e210f6f5195f9bd34894d78a785ff2e95d60e718e400af4",
+      "checkpoint12SHA256": "2c32b9b3ee358c119e210f6f5195f9bd34894d78a785ff2e95d60e718e400af4",
+      "rootSHA256": "2c32b9b3ee358c119e210f6f5195f9bd34894d78a785ff2e95d60e718e400af4",
+      "frozenBytes": 31340,
+      "checkpoint12Bytes": 31340,
+      "rootBytes": 31340,
+      "frozenManifestMatches": true
+    },
+    "assets/vendor/google-fonts/fonts/newsreader-cY9CfjOCX1hbuyalUrK439vCgYhCBJWxZCPp.woff2": {
+      "frozenSHA256": "d5a170a88bdb4e21bcc743e8cf1a64835c8351f8e1d32dadd9cac77f2e718fbb",
+      "checkpoint12SHA256": "d5a170a88bdb4e21bcc743e8cf1a64835c8351f8e1d32dadd9cac77f2e718fbb",
+      "rootSHA256": "d5a170a88bdb4e21bcc743e8cf1a64835c8351f8e1d32dadd9cac77f2e718fbb",
+      "frozenBytes": 28036,
+      "checkpoint12Bytes": 28036,
+      "rootBytes": 28036,
+      "frozenManifestMatches": true
+    },
+    "assets/vendor/google-fonts/fonts/newsreader-cY9CfjOCX1hbuyalUrK439vCgIhCBJWxZCPp.woff2": {
+      "frozenSHA256": "750e9629f56ae71980f1dde315f5bdb6c81b49b13a8fec3246a4392853aa7ccd",
+      "checkpoint12SHA256": "750e9629f56ae71980f1dde315f5bdb6c81b49b13a8fec3246a4392853aa7ccd",
+      "rootSHA256": "750e9629f56ae71980f1dde315f5bdb6c81b49b13a8fec3246a4392853aa7ccd",
+      "frozenBytes": 95412,
+      "checkpoint12Bytes": 95412,
+      "rootBytes": 95412,
+      "frozenManifestMatches": true
+    },
+    "assets/vendor/google-fonts/fonts/newsreader-cY9CfjOCX1hbuyalUrK439vCjohCBJWxZA.woff2": {
+      "frozenSHA256": "a99fb127682b9af538780d21420037452197b0d37dfd273eb108f8a3665d5501",
+      "checkpoint12SHA256": "a99fb127682b9af538780d21420037452197b0d37dfd273eb108f8a3665d5501",
+      "rootSHA256": "a99fb127682b9af538780d21420037452197b0d37dfd273eb108f8a3665d5501",
+      "frozenBytes": 147060,
+      "checkpoint12Bytes": 147060,
+      "rootBytes": 147060,
+      "frozenManifestMatches": true
+    },
+    "assets/vendor/google-fonts/fonts/newsreader-cY9AfjOCX1hbuyalUrK439HyjIJFJpeBZQ.woff2": {
+      "frozenSHA256": "68ef9a14f1462e2218ecd03c39d26236402ff6a9e78da39ba5591a430a229824",
+      "checkpoint12SHA256": "68ef9a14f1462e2218ecd03c39d26236402ff6a9e78da39ba5591a430a229824",
+      "rootSHA256": "68ef9a14f1462e2218ecd03c39d26236402ff6a9e78da39ba5591a430a229824",
+      "frozenBytes": 27204,
+      "checkpoint12Bytes": 27204,
+      "rootBytes": 27204,
+      "frozenManifestMatches": true
+    },
+    "assets/vendor/google-fonts/fonts/newsreader-cY9AfjOCX1hbuyalUrK439DyjIJFJpeBZQ.woff2": {
+      "frozenSHA256": "cbca001188852d514d8654be7ddc97868f039bdf986b926ec5c985c117853cfd",
+      "checkpoint12SHA256": "cbca001188852d514d8654be7ddc97868f039bdf986b926ec5c985c117853cfd",
+      "rootSHA256": "cbca001188852d514d8654be7ddc97868f039bdf986b926ec5c985c117853cfd",
+      "frozenBytes": 86628,
+      "checkpoint12Bytes": 86628,
+      "rootBytes": 86628,
+      "frozenManifestMatches": true
+    },
+    "assets/vendor/google-fonts/fonts/newsreader-cY9AfjOCX1hbuyalUrK4397yjIJFJpc.woff2": {
+      "frozenSHA256": "01817351be3edfc1714fe6d60ddea6a22a169a5ebd033b50c7f9495e5d9c386a",
+      "checkpoint12SHA256": "01817351be3edfc1714fe6d60ddea6a22a169a5ebd033b50c7f9495e5d9c386a",
+      "rootSHA256": "01817351be3edfc1714fe6d60ddea6a22a169a5ebd033b50c7f9495e5d9c386a",
+      "frozenBytes": 131848,
+      "checkpoint12Bytes": 131848,
+      "rootBytes": 131848,
+      "frozenManifestMatches": true
+    }
+  },
+  "shards": {
+    "arch.json": {
+      "beforeSHA256": "eafaa04ee7a295592cd2a3c145931a00924c3d4bc81252abe0c51115e7420c8d",
+      "afterSHA256": "4edb7520243dadc65e3c0f95ae5ef7aa4b16c4ed8bb1161d85b43fb7d5434226",
+      "beforeBytes": 65696,
+      "afterBytes": 66371,
+      "records": {
+        "added": [],
+        "removed": [],
+        "changedRecords": 6,
+        "changedFields": {
+          "scope": {
+            "count": 3,
+            "sortedIDsSHA256": "7196b597b5c436298f826bfe295b3a9b1a06050fc1ddd20eba934a6b1412cff6"
+          },
+          "st": {
+            "count": 4,
+            "sortedIDsSHA256": "3e505126d3cc76b02f8cd5b9467a796aa401b8b9ae1dc7245cef0ff38351aa69"
+          }
+        }
+      },
+      "summarySame": true
+    },
+    "art.json": {
+      "beforeSHA256": "91d68bb3384624eed280ffc063c61c16479b5b3b9a9be0eda1f9e6b938719f18",
+      "afterSHA256": "e2450f5b51ef5efc41dd736acd274afdb5ca544a1c913b6060b108cb73343226",
+      "beforeBytes": 97395,
+      "afterBytes": 98836,
+      "records": {
+        "added": [],
+        "removed": [],
+        "changedRecords": 9,
+        "changedFields": {
+          "scope": {
+            "count": 2,
+            "sortedIDsSHA256": "8de6490ef703984b8b548d10b8f79f2c22feb72c195d63f4c73ee431fdeafa92"
+          },
+          "st": {
+            "count": 8,
+            "sortedIDsSHA256": "83ff61c5b47f0b5ca1725495fbca169df449f1c9621e7f81a8fc4c6b342867b4"
+          }
+        }
+      },
+      "summarySame": true
+    },
+    "astro.json": {
+      "beforeSHA256": "094764fb34f3e00e0684ecf70d2f71137a4f3ca694f510d8b660e614f94fb976",
+      "afterSHA256": "6e925bd378f2a553cae9c59acaeda7e460382126f7edce5c94bee9a18720b6d6",
+      "beforeBytes": 85140,
+      "afterBytes": 85932,
+      "records": {
+        "added": [],
+        "removed": [],
+        "changedRecords": 14,
+        "changedFields": {
+          "st": {
+            "count": 14,
+            "sortedIDsSHA256": "fc1a5b2007684c5167c374129b60da1be1237d7decd186e59265c39eabb462aa"
+          }
+        }
+      },
+      "summarySame": true
+    },
+    "bighist.json": {
+      "beforeSHA256": "c96ddf8ae4ac6fb706d2c9c9b95dbf5b7b6fd56007d74aaf9b79aeb042d0aa6d",
+      "afterSHA256": "c195ebe618ae59f172715b5d8e7df4cfaed5f9e59dcf674fcf35ebf689695211",
+      "beforeBytes": 78546,
+      "afterBytes": 78603,
+      "records": {
+        "added": [],
+        "removed": [],
+        "changedRecords": 1,
+        "changedFields": {
+          "st": {
+            "count": 1,
+            "sortedIDsSHA256": "94a514d86a035e23828a4b5621be933be9c3827ba3e38a633bac0c1dfb4465a8"
+          }
+        }
+      },
+      "summarySame": true
+    },
+    "causal.json": {
+      "beforeSHA256": "be53a026dc8fca8d38a0ea9f1f462c66345f5387f597d706ce75b7376bcc831b",
+      "afterSHA256": "28fad4d8df4162779e1f4376758cfc563147c53fcc4869b14a6340b9f3be7f44",
+      "beforeBytes": 69011,
+      "afterBytes": 70242,
+      "records": {
+        "added": [],
+        "removed": [],
+        "changedRecords": 12,
+        "changedFields": {
+          "st": {
+            "count": 12,
+            "sortedIDsSHA256": "9d8151f06a3d878e53a9ab9d25f651c2eb809f7a85e11c14599d38b7dfef78e0"
+          }
+        }
+      },
+      "summarySame": true
+    },
+    "cg.json": {
+      "beforeSHA256": "a15d9f00a1a10cbb16d0c7c5b93e06b9443590e7e32436e48268e25964d518ef",
+      "afterSHA256": "1fb441782281fab82f7d6ab536c843ce7ca23b5b6afc1410be39e3ad1615e093",
+      "beforeBytes": 52247,
+      "afterBytes": 52467,
+      "records": {
+        "added": [],
+        "removed": [],
+        "changedRecords": 3,
+        "changedFields": {
+          "st": {
+            "count": 3,
+            "sortedIDsSHA256": "bc800afe643f63c38a9ce3389fd34770fa0653a4aa2a63f5858efa3f1a5c6c06"
+          }
+        }
+      },
+      "summarySame": true
+    },
+    "circ.json": {
+      "beforeSHA256": "d2474308930eae075b339c4290b5a0e14f43f7577a0160567c7fe1d23dfd49a7",
+      "afterSHA256": "e071c4030b89701e7c0a181d178fcfb3fbb8868ba2e8e7a4760c86605c40b9d4",
+      "beforeBytes": 78319,
+      "afterBytes": 78902,
+      "records": {
+        "added": [],
+        "removed": [],
+        "changedRecords": 3,
+        "changedFields": {
+          "st": {
+            "count": 3,
+            "sortedIDsSHA256": "bf335b97325b796a1f7de876ee7c305f83fc5f4bc85b14dbdd095ab1690f837b"
+          }
+        }
+      },
+      "summarySame": true
+    },
+    "climate.json": {
+      "beforeSHA256": "cfb69d03fff780ae56e3db503008a6f3180e12ae30033ebf53efb71a7f0edc68",
+      "afterSHA256": "b61b0d011e6b9368793bc236298b65802d0732727776d6fbbeabeca127fd8c56",
+      "beforeBytes": 93324,
+      "afterBytes": 93642,
+      "records": {
+        "added": [],
+        "removed": [],
+        "changedRecords": 8,
+        "changedFields": {
+          "links": {
+            "count": 2,
+            "sortedIDsSHA256": "ceec25dbd3092ac3340ec22ae7acf66f0db9b6683d33d52831078b67cb28332f"
+          },
+          "scope": {
+            "count": 2,
+            "sortedIDsSHA256": "ceec25dbd3092ac3340ec22ae7acf66f0db9b6683d33d52831078b67cb28332f"
+          },
+          "st": {
+            "count": 6,
+            "sortedIDsSHA256": "dca691a4377f11890c8fb9efc58c5da18429a3ab78aef8935393f451340a9afd"
+          }
+        }
+      },
+      "summarySame": true
+    },
+    "cm.json": {
+      "beforeSHA256": "c84204fb02f8563f51cdc02dbce5c3ce0b1be907f76e8e8cdf5361d5e5ff912b",
+      "afterSHA256": "1f09f53a76fa02d6a1fa4dcd9896071b0a43d469b23fa0fa199e18e0b71129c3",
+      "beforeBytes": 79476,
+      "afterBytes": 80191,
+      "records": {
+        "added": [],
+        "removed": [],
+        "changedRecords": 12,
+        "changedFields": {
+          "st": {
+            "count": 12,
+            "sortedIDsSHA256": "5b5f9bba5634427e637c2ec8a2aa7252943800cec790eb6039de1aa04a87e64c"
+          }
+        }
+      },
+      "summarySame": true
+    },
+    "cplx.json": {
+      "beforeSHA256": "d2ad4bd747ab1d272928d148aa4636ab7d784f527468588b62529aa17e17c974",
+      "afterSHA256": "4527b1abb6203cd7134ea10caf3a2cffb1859e86fe12f2796e16fc5f3465cad5",
+      "beforeBytes": 71396,
+      "afterBytes": 71905,
+      "records": {
+        "added": [],
+        "removed": [],
+        "changedRecords": 5,
+        "changedFields": {
+          "st": {
+            "count": 5,
+            "sortedIDsSHA256": "dae4d34088e3e105f6f815e900fb680615fb2fa9cd16f8fa51c9eb538a3f25ae"
+          }
+        }
+      },
+      "summarySame": true
+    },
+    "crypto.json": {
+      "beforeSHA256": "e29a23634d2842663d893353c2910dfe41b4f270f8f06219eeaa8978a7ae2811",
+      "afterSHA256": "db87c521960fc16e61f3080f3d658f04cedc71b8a95c3b5729618a223b03a48b",
+      "beforeBytes": 84618,
+      "afterBytes": 85130,
+      "records": {
+        "added": [],
+        "removed": [],
+        "changedRecords": 9,
+        "changedFields": {
+          "st": {
+            "count": 9,
+            "sortedIDsSHA256": "b4ce21cf3ee039b439068bc8e6dca552309fc996c9c17f6eb25e4de8806ed74e"
+          }
+        }
+      },
+      "summarySame": true
+    },
+    "dist.json": {
+      "beforeSHA256": "6f998f9efc6fc66a3fd1d6ff8d3361be71adb86b55d5a76d79f5ac0b0c1dc9a8",
+      "afterSHA256": "b034920e2cf35bdd9db5d3915ae8dfd93be2cf5901e0feaaba1d88b13e165346",
+      "beforeBytes": 64261,
+      "afterBytes": 64949,
+      "records": {
+        "added": [],
+        "removed": [],
+        "changedRecords": 5,
+        "changedFields": {
+          "scope": {
+            "count": 2,
+            "sortedIDsSHA256": "97506fafb999ca9a116093bc16701ef4f9ec0f67e29bf77794829362a8649904"
+          },
+          "st": {
+            "count": 3,
+            "sortedIDsSHA256": "91db99c2d5b94a20b6fd48650d8d6149f973f3d2ec369cfe22b88785977c07c0"
+          }
+        }
+      },
+      "summarySame": true
+    },
+    "ecol.json": {
+      "beforeSHA256": "76bbe47a3e175e8e3116f24241d71b94c43d5d4b56fcf4f3da14d2517a25456b",
+      "afterSHA256": "845928d40f324a8a6a90b794310eb6e83873340e652c4dd571ba4914ed056dfe",
+      "beforeBytes": 79181,
+      "afterBytes": 80672,
+      "records": {
+        "added": [],
+        "removed": [],
+        "changedRecords": 11,
+        "changedFields": {
+          "scope": {
+            "count": 5,
+            "sortedIDsSHA256": "df04e778121da16d16077e0bb325860ee8f8f2304c9158f417384685b3133d47"
+          },
+          "st": {
+            "count": 9,
+            "sortedIDsSHA256": "cec5e820045843f51806ff271a4f73fb4480bb8ca31d68b59695357fe237a1ec"
+          }
+        }
+      },
+      "summarySame": true
+    },
+    "game.json": {
+      "beforeSHA256": "117a877766d8f384e861e71e89715bb889427039d6dd80ec993c46178fe36d65",
+      "afterSHA256": "be57fd25ef135b04f781d66b0bedd239ab568bbc653c256262315afad3875033",
+      "beforeBytes": 78630,
+      "afterBytes": 79296,
+      "records": {
+        "added": [],
+        "removed": [],
+        "changedRecords": 8,
+        "changedFields": {
+          "st": {
+            "count": 8,
+            "sortedIDsSHA256": "af73129c9745e4f0afbea907cebc1e754c2e5a0347d0010d033ea9be14dd3798"
+          }
+        }
+      },
+      "summarySame": true
+    },
+    "geog.json": {
+      "beforeSHA256": "a9e305927bb8b5076b39a09fc3740d5413041523fe540fc23393769296a39a08",
+      "afterSHA256": "78114c504c612ec50ede36afe25720d62845beb3e1721c4cd31de0067c165d17",
+      "beforeBytes": 65263,
+      "afterBytes": 65679,
+      "records": {
+        "added": [],
+        "removed": [],
+        "changedRecords": 8,
+        "changedFields": {
+          "st": {
+            "count": 8,
+            "sortedIDsSHA256": "2d3a2bd08fa4cdf2135b09f24057a2df8caf6ff95d43faed80086984ce9db51d"
+          }
+        }
+      },
+      "summarySame": true
+    },
+    "ling.json": {
+      "beforeSHA256": "135dd67b9f4529570e1423a47f258ee9861bffed5724705e499df1fffee9b63a",
+      "afterSHA256": "7962e2a98cf5b9da85dc8b6a7494dbc32d498276e99a1626958be91a80d550fb",
+      "beforeBytes": 87515,
+      "afterBytes": 87577,
+      "records": {
+        "added": [],
+        "removed": [],
+        "changedRecords": 4,
+        "changedFields": {
+          "st": {
+            "count": 4,
+            "sortedIDsSHA256": "bd07e3647bd9ee2f58b0c666425a64939b6de027fbc4892f2be512cc57a5d5c8"
+          }
+        }
+      },
+      "summarySame": true
+    },
+    "mat.json": {
+      "beforeSHA256": "f66092b52a052f9ee1d717ff8c58b7ea1cf206986fa85905019ca517a50930e1",
+      "afterSHA256": "39c939afb06f9e48225e0ab3c67083ed7b8bfe33a4d3e7f2a487adcac558d1ec",
+      "beforeBytes": 73203,
+      "afterBytes": 74505,
+      "records": {
+        "added": [],
+        "removed": [],
+        "changedRecords": 10,
+        "changedFields": {
+          "scope": {
+            "count": 2,
+            "sortedIDsSHA256": "e56fad9fba88beb7602e086cdf884fa4ed7a7df908dbb405aed8719be22cb78a"
+          },
+          "st": {
+            "count": 9,
+            "sortedIDsSHA256": "b48aecd96768659ad2351fceec4a5a6996c13ea7807918c7c073f1180d5d491c"
+          }
+        }
+      },
+      "summarySame": true
+    },
+    "ml.json": {
+      "beforeSHA256": "bb74c6d9f8e1c93e55d18f4941d6f5e5c71567bda3935c6f2f997f7a5c424acd",
+      "afterSHA256": "81a38e72a3af7a6e58c1524612e8dd3a95518a83d4b6da5a9a1b5544b03855c0",
+      "beforeBytes": 116123,
+      "afterBytes": 116696,
+      "records": {
+        "added": [],
+        "removed": [],
+        "changedRecords": 8,
+        "changedFields": {
+          "st": {
+            "count": 8,
+            "sortedIDsSHA256": "9d16483d4afa0135b2cedfa83fb35a69a58567b6a76d2bcf16879c25262cb4d2"
+          }
+        }
+      },
+      "summarySame": true
+    },
+    "neuro.json": {
+      "beforeSHA256": "1413bd0380e15525175d224ecb9233c28ece747fe0e557bb72a568ff726af9c4",
+      "afterSHA256": "1e65cd939fe8811ad0c1abfd880228f1c23b528e94d384a146dbc17bce081f8f",
+      "beforeBytes": 69183,
+      "afterBytes": 70241,
+      "records": {
+        "added": [],
+        "removed": [],
+        "changedRecords": 11,
+        "changedFields": {
+          "scope": {
+            "count": 1,
+            "sortedIDsSHA256": "a122e411fdea3383ea0a20a4b9f03a599b62a77c5abebc0185a87733197c8048"
+          },
+          "st": {
+            "count": 11,
+            "sortedIDsSHA256": "1359eff83747cfebf0b62ee3dec252ed7a816906dbca434aecaffd53de0fa407"
+          }
+        }
+      },
+      "summarySame": true
+    },
+    "ode.json": {
+      "beforeSHA256": "7fc9b8da801a1b01f0600a0c715c3f4adc1ce85238718b11d3df38af4ca1d286",
+      "afterSHA256": "61ef2fca173fe3b258679adb3ae534ad4f9abd0daa0dbdfb6642a61248e14927",
+      "beforeBytes": 86210,
+      "afterBytes": 86249,
+      "records": {
+        "added": [],
+        "removed": [],
+        "changedRecords": 1,
+        "changedFields": {
+          "st": {
+            "count": 1,
+            "sortedIDsSHA256": "58b123fe91c1eb7bd70f7641fb39d52992f54d6903df98ed190faebffaba61a9"
+          }
+        }
+      },
+      "summarySame": true
+    },
+    "pharm.json": {
+      "beforeSHA256": "347b5a867f408f33ee8436e9a2dd41586c6fe6e9a6359b6f5f6486c53ac1b00a",
+      "afterSHA256": "53e095cb5424966e8dfdb164ee7a30a8702a76c67701c7e6606f04714228d347",
+      "beforeBytes": 57709,
+      "afterBytes": 58770,
+      "records": {
+        "added": [],
+        "removed": [],
+        "changedRecords": 5,
+        "changedFields": {
+          "scope": {
+            "count": 3,
+            "sortedIDsSHA256": "597518a6a0be6502eb81fb3a51ff38cd003b585c57f4aef40d28ba92edc400b9"
+          },
+          "st": {
+            "count": 4,
+            "sortedIDsSHA256": "96737973bf41d344f342791f0e1702273191f1fb06cd09ef081c164af3138de2"
+          }
+        }
+      },
+      "summarySame": true
+    },
+    "pl.json": {
+      "beforeSHA256": "1b0f1b2bb70c23a12059bd373977faf3f8427c3a0fb87a70ea501e38dba92b7e",
+      "afterSHA256": "3d5773fb95540a4d6c0a24a422247dd4461022fa0d61b6ccefeb6fcbfdfefae5",
+      "beforeBytes": 56442,
+      "afterBytes": 56525,
+      "records": {
+        "added": [],
+        "removed": [],
+        "changedRecords": 2,
+        "changedFields": {
+          "st": {
+            "count": 2,
+            "sortedIDsSHA256": "cf3aa3b5a5bc1504e4265c34f4b12f6202c42cfd5984e36f0869292caa2dd41e"
+          }
+        }
+      },
+      "summarySame": true
+    },
+    "popgen.json": {
+      "beforeSHA256": "1a140b96c0725a0b7c2a481f4c5f17fc8c7c9251e70773ca715017d3a8d10fdd",
+      "afterSHA256": "decdc8fb64586d925ecdd7c783e9094ef844f6e8e33b46d80deb1866f8abb416",
+      "beforeBytes": 99647,
+      "afterBytes": 99944,
+      "records": {
+        "added": [],
+        "removed": [],
+        "changedRecords": 7,
+        "changedFields": {
+          "st": {
+            "count": 7,
+            "sortedIDsSHA256": "c5341452b83377479296cce2bd402174a014807701ec2dde355c5628f0809ebd"
+          }
+        }
+      },
+      "summarySame": true
+    },
+    "qinfo.json": {
+      "beforeSHA256": "c5db72fc9eb61a21de16bd5336260ef45cd934a22714e7aa1160a69cc604b38e",
+      "afterSHA256": "13d3215b7679f2c0c712738d98221f1dc75d739470ab647b22786e85326bb114",
+      "beforeBytes": 59891,
+      "afterBytes": 60396,
+      "records": {
+        "added": [],
+        "removed": [],
+        "changedRecords": 10,
+        "changedFields": {
+          "scope": {
+            "count": 1,
+            "sortedIDsSHA256": "1d1f96ec2bcf803f072662a563c1e319ef06ecb87e7b8805dbadef28e47863d5"
+          },
+          "st": {
+            "count": 10,
+            "sortedIDsSHA256": "8c82240855f19b8161b2e7e19b253d7b5f3b3564701d26406733aa864d56b431"
+          }
+        }
+      },
+      "summarySame": true
+    },
+    "rel.json": {
+      "beforeSHA256": "edd143ae33bfd7fc58363622fd068f741620459d51b566b2bee823876b2daa30",
+      "afterSHA256": "a0d0b325b455184aad6a8e05c86e6a3ce1cb7d114a240011b02f37d3c530a506",
+      "beforeBytes": 83687,
+      "afterBytes": 83853,
+      "records": {
+        "added": [],
+        "removed": [],
+        "changedRecords": 5,
+        "changedFields": {
+          "st": {
+            "count": 5,
+            "sortedIDsSHA256": "1d2c053af5696e6b7201488a803ee6fbdc46055c0a02b94482173c70263146b4"
+          }
+        }
+      },
+      "summarySame": true
+    },
+    "solid.json": {
+      "beforeSHA256": "938512d4f4a087eda3db139101a28e56de43bf43952f15d598a0445d50d20d85",
+      "afterSHA256": "724bf86655813f8be54ee9f517195403f9bc7feb3346607e3e2f2756c4043865",
+      "beforeBytes": 75802,
+      "afterBytes": 76245,
+      "records": {
+        "added": [],
+        "removed": [],
+        "changedRecords": 10,
+        "changedFields": {
+          "st": {
+            "count": 10,
+            "sortedIDsSHA256": "92942879b1a0dcb308fd5ad10abd56fae1572e21751692c2c83d897adc83272a"
+          }
+        }
+      },
+      "summarySame": true
+    },
+    "sysbio.json": {
+      "beforeSHA256": "8c283f705de25a2d972d8cf81a6b9db2d50d40a3f59e0d39685412e4d1c38e05",
+      "afterSHA256": "178962829ac676a621759dccb8e88824b46a7240bbee8c0ccc07af5ee8a7743e",
+      "beforeBytes": 65452,
+      "afterBytes": 65983,
+      "records": {
+        "added": [],
+        "removed": [],
+        "changedRecords": 9,
+        "changedFields": {
+          "st": {
+            "count": 9,
+            "sortedIDsSHA256": "8cfe7bcfa1eb34db001176690195a7d9b1e6b9243f3d026ac88f6f8a9fe24dc9"
+          }
+        }
+      },
+      "summarySame": true
+    },
+    "toc.json": {
+      "beforeSHA256": "38ed9097ed555ce9c4ac64fd271abf30a5f86d16bbd93ec1638ede4bc826be37",
+      "afterSHA256": "ef5132927dd7b9f9da4f258d1334b2cfb13db8784a6bcb8a0829dcb20e300658",
+      "beforeBytes": 88627,
+      "afterBytes": 88700,
+      "records": {
+        "added": [],
+        "removed": [],
+        "changedRecords": 3,
+        "changedFields": {
+          "st": {
+            "count": 3,
+            "sortedIDsSHA256": "6608967ca035bcb46e26ab0f4a33ea4b5385d9c1ee93d5a905e05ee89699364a"
+          }
+        }
+      },
+      "summarySame": true
+    },
+    "xtal.json": {
+      "beforeSHA256": "ed79abe159e76bc0a3db33616995eafc2c481cb8d16c86133b96725627a2cb14",
+      "afterSHA256": "46734fa25e20057f4fb08a773d24006921e3702b6fcbc4ffa31234fa9a1b050b",
+      "beforeBytes": 49421,
+      "afterBytes": 49885,
+      "records": {
+        "added": [],
+        "removed": [],
+        "changedRecords": 7,
+        "changedFields": {
+          "st": {
+            "count": 7,
+            "sortedIDsSHA256": "340df3d4ed7ab739a20fad00dd673c14ed3a2abb274191d2bdbc90dca8cb192c"
+          }
+        }
+      },
+      "summarySame": true
+    }
+  },
+  "ladr": {
+    "counts": {
+      "frozen": 365,
+      "checkpoint12": 365
+    },
+    "indexItemsSame": false,
+    "specMetadataSHA256": "55200351eca693897e2cc51612710ee6f9a301534b4196004e3d533d6942a86f",
+    "records": 365,
+    "chapters": 9,
+    "selectedIndexChanges": {
+      "added": [],
+      "removed": [],
+      "changedRecords": 1,
+      "changedFields": {
+        "desc": {
+          "count": 1,
+          "ids": [
+            "ladr-2.30"
+          ]
+        }
+      }
+    },
+    "frozenFullClosure": {
+      "ancestors": 10,
+      "descendants": 2892,
+      "sortedAncestorsSHA256": "8177d5b64900ebb496c999e415169cf9508aeec207cef2495252a70cb28b64c5",
+      "sortedDescendantsSHA256": "f801852bd653511b8223376097978b352fce8d6d3925ca1565171081ff6aa583"
+    },
+    "checkpoint12FullClosure": {
+      "ancestors": 10,
+      "descendants": 3442,
+      "sortedAncestorsSHA256": "8177d5b64900ebb496c999e415169cf9508aeec207cef2495252a70cb28b64c5",
+      "sortedDescendantsSHA256": "efdbcc2017574190445a6d514c8c255075c9806d6c84f98956600a8d3f7ea8b0"
+    },
+    "descFieldChangedRecords": 258,
+    "selectedWrittenDesc": [
+      960,
+      1163
+    ]
+  },
+  "productionSourceComparison": {
+    "assets": {
+      "files": 126,
+      "differentFromFrozen": []
+    },
+    "scripts/build.mjs": {
+      "files": 1,
+      "differentFromFrozen": []
+    }
+  },
+  "privateSources": {
+    "scripts/lib/map-paired-atlas-observer.mjs": {
+      "manifestSHA256": "7c50053bc9a2c10fe92cfddcb0cd0a6854f2dc4eeb9cf6e32ebdf2620f6e86b1",
+      "rootSHA256": "7c50053bc9a2c10fe92cfddcb0cd0a6854f2dc4eeb9cf6e32ebdf2620f6e86b1",
+      "same": true
+    },
+    "scripts/lib/map-paired-guarded-epoch.mjs": {
+      "manifestSHA256": "bcffc405baf45b609b46cb9a85f8fb359b93d3a37e9f78182e23540ff21e9eb9",
+      "rootSHA256": "bcffc405baf45b609b46cb9a85f8fb359b93d3a37e9f78182e23540ff21e9eb9",
+      "same": true
+    },
+    "scripts/lib/map-chunked-indices-runtime.mjs": {
+      "manifestSHA256": "3c8b01c4df2d5497f27d7d65876adbfaebbbdcd659cf2c8cb29d25714896c187",
+      "rootSHA256": "3c8b01c4df2d5497f27d7d65876adbfaebbbdcd659cf2c8cb29d25714896c187",
+      "same": true
+    },
+    "scripts/lib/map-segment-mesh-enclosure.mjs": {
+      "manifestSHA256": "703dec2779911573b11e67cfd34c98cd9dfb84dc4803e393af0d8fd1619614b1",
+      "rootSHA256": "703dec2779911573b11e67cfd34c98cd9dfb84dc4803e393af0d8fd1619614b1",
+      "same": true
+    },
+    "scripts/lib/map-paired-quiescence.mjs": {
+      "manifestSHA256": "12abb9a6cad6a953dea588d1235d1ce0ec867ceb2c1fe700b9467d545102b274",
+      "rootSHA256": "12abb9a6cad6a953dea588d1235d1ce0ec867ceb2c1fe700b9467d545102b274",
+      "same": true
+    },
+    "scripts/lib/map-paired-font-census.mjs": {
+      "manifestSHA256": "6a9fc04e4e6c9a5999a4b5b04d6d7fe656b9d124ecaa92091d7c1be11ed91fa1",
+      "rootSHA256": "6a9fc04e4e6c9a5999a4b5b04d6d7fe656b9d124ecaa92091d7c1be11ed91fa1",
+      "same": true
+    },
+    "scripts/lib/map-paired-selected-shard.mjs": {
+      "manifestSHA256": "77e7ad020a0821abbb520f1945825a9582cb5a9c934d528f299b9b8d3ec83152",
+      "rootSHA256": "77e7ad020a0821abbb520f1945825a9582cb5a9c934d528f299b9b8d3ec83152",
+      "same": true
+    },
+    "scripts/lib/map-paired-resource-observer.mjs": {
+      "manifestSHA256": "db7993cfdb69c85badfc2aa26f728119aad8bfcdef0f96b6e3625bcd7322bfb6",
+      "rootSHA256": "db7993cfdb69c85badfc2aa26f728119aad8bfcdef0f96b6e3625bcd7322bfb6",
+      "same": true
+    }
+  },
+  "fontManifest": {
+    "faces": 68,
+    "fontFiles": 79,
+    "fontSourcesJSONSHA256": "fe147824268f713eafd267081c7350cd6720f6b21ee5d8ae188be4f10b73c34f",
+    "allAssetHashesUnchanged": true
+  },
+  "homeChangedTopFields": [
+    "items",
+    "generated",
+    "home",
+    "fieldEdges"
+  ],
+  "servedManifest": {
+    "entriesPerVariant": {
+      "original": 107,
+      "chunk": 107
+    },
+    "originalJSONSHA256": "26790e98ee78aef5f66a55f7a192ac0bf1a319dca8804eadc57ffed15f95b3f2",
+    "chunkJSONSHA256": "8110bb832e0eed255891352abfeded9c83927d7a751b7dadd44847ce7b2fe85a",
+    "hashesJSONSHA256": "ff2c57189893cfd0dfd9034a02b64296365572d6a241c73e92ba08b804d66428"
+  },
+  "fallbackSources": {
+    "scripts/lib.mjs": {
+      "rootSHA256": "dc28f548757844a5df41cd1182bcacdf156f93fd8da24b3491c43fad94add251",
+      "frozenSHA256": "dc28f548757844a5df41cd1182bcacdf156f93fd8da24b3491c43fad94add251",
+      "checkpoint12SHA256": "dc28f548757844a5df41cd1182bcacdf156f93fd8da24b3491c43fad94add251"
+    },
+    "scripts/build.mjs": {
+      "rootSHA256": "96ae599afd970e8e642e31c577f59bde9a99c0ce7fda7f1b4d6237d9409f5f88",
+      "frozenSHA256": "96ae599afd970e8e642e31c577f59bde9a99c0ce7fda7f1b4d6237d9409f5f88",
+      "checkpoint12SHA256": "96ae599afd970e8e642e31c577f59bde9a99c0ce7fda7f1b4d6237d9409f5f88"
+    },
+    "index.html": {
+      "rootSHA256": "1a0b532c169a635609ab0f8990604e082063b353701071832b356e0684906ecb",
+      "frozenSHA256": "1a0b532c169a635609ab0f8990604e082063b353701071832b356e0684906ecb",
+      "checkpoint12SHA256": "1a0b532c169a635609ab0f8990604e082063b353701071832b356e0684906ecb"
+    },
+    "assets/js/viz/core.js": {
+      "rootSHA256": "a6fa1753d9d9e8b9a05a7161fffc58dfd53b27002d9d393a3266aeb96515fe73",
+      "frozenSHA256": "a6fa1753d9d9e8b9a05a7161fffc58dfd53b27002d9d393a3266aeb96515fe73",
+      "checkpoint12SHA256": "a6fa1753d9d9e8b9a05a7161fffc58dfd53b27002d9d393a3266aeb96515fe73"
+    },
+    "assets/js/search.js": {
+      "rootSHA256": "da2ff6a2b7d99438e95de816b770ae3ac7e626ce693f5eb828863494ea8e7016",
+      "frozenSHA256": "da2ff6a2b7d99438e95de816b770ae3ac7e626ce693f5eb828863494ea8e7016",
+      "checkpoint12SHA256": "da2ff6a2b7d99438e95de816b770ae3ac7e626ce693f5eb828863494ea8e7016"
+    },
+    "assets/js/share-state.js": {
+      "rootSHA256": "13c6a9ac1237d566fc5d79c89e0f4d3029aa8c2817d2c08247a02b1b053a59b1",
+      "frozenSHA256": "13c6a9ac1237d566fc5d79c89e0f4d3029aa8c2817d2c08247a02b1b053a59b1",
+      "checkpoint12SHA256": "13c6a9ac1237d566fc5d79c89e0f4d3029aa8c2817d2c08247a02b1b053a59b1"
+    },
+    "scripts/serve.mjs": {
+      "rootSHA256": "1a7abf69377187dce55e2909824452d1bc2b53667f4b3056823a3bc31a1a04da",
+      "frozenSHA256": "1a7abf69377187dce55e2909824452d1bc2b53667f4b3056823a3bc31a1a04da",
+      "checkpoint12SHA256": "1a7abf69377187dce55e2909824452d1bc2b53667f4b3056823a3bc31a1a04da"
+    }
+  },
+  "shardTotals": {
+    "beforeFiles": 85,
+    "afterFiles": 85,
+    "changedFiles": 29,
+    "changedRecordFields": {
+      "st": 195,
+      "scope": 21,
+      "links": 2
+    },
+    "summaryChanges": 0,
+    "addedRecords": 0,
+    "removedRecords": 0
+  },
+  "reproduction": {
+    "mode": "read-only Python json/hashlib and git show/diff; no import of content modules, build, runner, browser, full-map or timing",
+    "generatedDataBasis": "checkpoint12 data at exact94a77908068d8c6a3be5fbe10808d0910195facf; root b6ca416f source diff is visualization-only in three content files, plus private map harness changes/docs/tests",
+    "rawDirectory": "/tmp/atlas-new-arch-source/current-atlas-readiness",
+    "frozenPreparedSHA256": "7e3b9f912cf0623262262535764fc82c892f58049b195d7a4385944417e9b61a"
+  },
+  "fontLabelInput": {
+    "characters": 296,
+    "uniqueCharacterStringUTF8SHA256": "def1d487c07394d6c4b5a5f6e5601ec7093860b9cf41c27cb77e2f080e92d2d2",
+    "orderedWordsJSONStringSHA256": "7e4a15a924ffe451f24d12ab77e5df5b81f73557b6864363143bb1e72de45e6d",
+    "same": true
+  },
+  "rawInventorySHA256": "ab871a5036cbd31be93ce95a7480e2437d571578ab4555ef71c0a06bed437920",
+  "methodNotes": [
+    "Hashes of JSON-derived values use JSON.stringify-equivalent compact UTF-8, ensure_ascii=False, insertion order; IDs sorted as recorded by the read-only Python audit.",
+    "Ordered model edges are dependency\u2192consumer pairs in catalog item order followed by planned order, with deps then pdeps, keeping only existing endpoints, matching MapView.",
+    "No current-root generated data was built. Checkpoint12 is a pinned artifact; source-only PL/CPLX viz diffs after checkpoint12 do not change build serialization fields. A later build timestamp changes raw index/home hashes.",
+    "All source-content strings including BIGHIST are opaque byte/JSON values here; no3.5 semantic review or renderer run."
+  ]
+}
