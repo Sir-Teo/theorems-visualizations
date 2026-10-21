@@ -24,7 +24,7 @@
       "Acceptedwrittenprerequisitegatecomplete:all64nonmathcollections\u226525writteninputs,0shortfall/unknowns,48furthercollections meettarget. Sourcequeue5unchanged.",
       "Latest immutable checkpoint12 on 94a77908: 2,230 tests, all six UI groups, strict/static zero errors and warnings, accepted prerequisite shortfall0.",
       "Rejected chunk prototype remains unaccepted. Original-only control reproduces its cold/warm discrepancy; no renderer or timing acceptance.",
-      "Privateone-shard readiness source/tiny pending closingpeer: imagingfound6protectedstate/prefixguardgaps in0fed; authorizedminimalguard-onlysuccessor. No fullmap/alternate/timingrununtilindependentclosingreview.",
+      "One-shard readiness plus guard closing independently accepted for source/model/tiny only. Nine old false accepts retained and fixed. Root integrated32+7models/prepare-only pass. Awaiting final lane quiet acknowledgement before one isolated exact paired-map case; no timing/matrix acceptance.",
       "Frozen BIGHIST3.5 service restriction persists; no retry or edge acceptance."
     ]
   },
@@ -3104,6 +3104,21 @@
       "status": "accepted-source-model-tiny-only",
       "report": "docs/verification/map-font-census-independent-peer.md",
       "scope": "FiniteactualDOM+Canvasfontrole/character/subset/sourcehashcensus;68facesources;235independentassertions/7models/fourfreshnative tinycontexts,persistedbeforeassertions/all4picturesread. Baseline2latefontcallbacks vsfixed0 each. Samefixeddrain/quiet/reset/history/gates/resources; no hiddenmapwarmup, no silentprefetch orcallbackwaiver. Frozenindexselectedladr2.30stmissing; fullrunpredictablymaystoponnewlyobservedactualneedStcallback, so rootrequires explicitreadinessproposal first. No fullmap/timingrun."
+    },
+    {
+      "status": "accepted-source-model-tiny-only",
+      "commits": [
+        "06aa063a5579d2fd72765d1f5f99b243dc63b486",
+        "7dd8bf29a1bea43e5825340c70cd351790487bd3",
+        "f6393b622b2ebd4c8268af1bb289f3fa5c46fb80",
+        "228a2f3be85577eac9b291d22276a64ccac09bd0",
+        "0feddf935221a81f75b22dbfd7b46d77da72e5bf",
+        "c66fb02c933c20fbf7e9658e6b9f948e9b0965db",
+        "72ea3b7311cf6b978c018ec6cf381ef165513c4c",
+        "47266da3da6892c85fd208e701ea6b4407f38e87"
+      ],
+      "report": "docs/verification/map-selected-shard-independent-imaging-peer.md",
+      "scope": "One explicit actual frozen LADR shard load before font census. Exact365metadata/9summary additions, protected catalog/node/model/owner/layout/closure identities and full callback/network prefixes. Independent review found9falseaccepts inold0fed guard; all retained. Separatec66closing passes20independentcases (normal+19adverse),32producer cases+7existingmodels andfreshone-fetch available-statement tiny withpersonalPNGinspection. Rootintegrated32+7models andprepare-onlypass. Sameepoch/atlas/binding/resource/fonthelpers/gates, no retries/select/draw/warmup or logreplacement. Explicitmissing\u2192available DOM readiness differs oldemptyhistory. Fullmap/lifecycle/timing UNRUN; diagnostic full-map storage unmeasured."
     }
   ]
 }
