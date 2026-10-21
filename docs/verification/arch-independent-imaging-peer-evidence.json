@@ -1,0 +1,530 @@
+{
+  "candidate": "4d49b7392c1fb8ccce001501a5341caf4919b2a4",
+  "baseline": "29023e541edf8f6e57080325c1a6c9644769a11b",
+  "disposition": "accepted bounded independent peer",
+  "sourceHashes": {
+    "content/arch/ch01.js": "a269d8e410082bee094f7538350656a90d5b60bd2a262cd66f10a56d47665e19",
+    "content/arch/ch01.shared.js": "e4bf9218a9b0207e937c709b4a426b6c0db6b30b8cc5f340ef11b3d6783519cd",
+    "content/arch/ch02.js": "8721e09e2598526860ade2c4a7dd1582145670df58d983936414710d3612488f",
+    "content/arch/ch03-b.js": "d5def409428abf14b0f4bbdf2344ceb6244b60b291f6e81ce62f2dc6c701139d",
+    "content/arch/ch03.js": "50549637f9bb989e1c98572d3b8220bfbfbb3ea95539a9d2f14ca02baa732cd7",
+    "content/arch/ch03.shared.js": "0fb565351a83efd2488db647b6e40126f17ac702a0543b0dc4669f5864c25706",
+    "content/arch/ch04-b.js": "18dd0f44daec59179a295eb0a506edc6c45750b194ac961c20993db6b3e9c074",
+    "content/arch/ch04.js": "6703aa53512b6cc891a6db43fc985519b294ff299fd44467b721d688ee8107a7",
+    "content/arch/ch04.shared.js": "fff45fd2226544b2208ca2f6af9aabcf0e38af305ca787714ba4dad044397d59",
+    "content/arch/collection.js": "7a33ec6a9d970442c16bd54e71cb79c04ebd89fb272f6d4f082bfb26a8386e1f",
+    "content/arch/source-audit-buttress-pier.js": "0a2b0a1bbb321c4cf4d8b69f5bebdad94626ced46e064b2c432ae7ea6f7e017f",
+    "content/arch/source-audit-buttresses.js": "46cd35f3f125375465d9e85976e97ca0697dbb60322101c6e117a2118e7c598b",
+    "content/arch/source-audit-circular-arch.js": "4b8f4ac8b74c736e1d42682630153b254ea154b7ef861b9eaf9d8d56a3162abb",
+    "content/arch/source-audit-florence-item.js": "1b082be347ef45708d08eb28979e40c1d4a441cf82607493b5cb5390571afd18",
+    "content/arch/source-audit-florence.js": "ecb8024b6f880c011c235e072e9ced100390e1ebf4677c882edcba98becead09",
+    "content/arch/source-audit-heyman-item.js": "06b4d7510a55e3fa372872585a83fffee402abbadb77c42806c90346e0bffbad",
+    "content/arch/source-audit-heyman.js": "0ff85d18c7334626ccec8295349ee6e0799a6ffbb111bac3e1572d707e9a33e2",
+    "content/arch/source-audit-pantheon-item.js": "c6e95ee6d913117bda7dfd4ae0643f7f8c257637cd4a20cc6007b30992de793b",
+    "content/arch/source-audit-pantheon.js": "fd46cb5cd9f2a8de444cd2d743c930502eb13607e4d1410e21d2ebc4efb1ec27",
+    "content/arch/source-audit-pendentives-item.js": "5f30ee6cc09614ffe1868f7acc3786217419b78b6e2cbd678a095a540a504e46",
+    "content/arch/source-audit-pendentives.js": "b8bf93b8b3898b6e3b2dac4f12a3ae1e26cda9a3b5557037fbc31b6e65b44573",
+    "content/arch/source-audit-poleni-item.js": "748dec16cec47d8b79755ffc552d898daae88105db511d038e526f850fa19c48",
+    "content/arch/source-audit-poleni.js": "4a0a8ae02a79905f4c29c1a2c31cd4142e937303bd865420f570b7b908c00959",
+    "content/arch/syllabus.js": "7d233f510090d7f097e6fbd2bff246f6200c661788bb2a8fb3fefc8d3967d0e0",
+    "content/arch/vault-audit.js": "cc477ea8cbc81e801cc6b25dbd83f6892e294eed0e0b334abfd3efd2a4e6a202"
+  },
+  "preservation": {
+    "objects": 40,
+    "functions": 40,
+    "rawRows": 94,
+    "fullLists": [
+      {
+        "num": "1.1",
+        "deps": []
+      },
+      {
+        "num": "1.2",
+        "deps": [
+          "mech-1.7",
+          "mech-2.8"
+        ]
+      },
+      {
+        "num": "1.3",
+        "deps": [
+          "arch-1.2",
+          "ladr-3.21"
+        ]
+      },
+      {
+        "num": "1.4",
+        "deps": [
+          "arch-1.2",
+          "vcalc-1.1"
+        ]
+      },
+      {
+        "num": "1.5",
+        "deps": [
+          "arch-1.4"
+        ]
+      },
+      {
+        "num": "1.6",
+        "deps": [
+          "arch-1.2",
+          "solid-1.1",
+          "vcalc-4.9"
+        ]
+      },
+      {
+        "num": "1.7",
+        "deps": [
+          "arch-1.6",
+          "solid-1.3"
+        ]
+      },
+      {
+        "num": "1.8",
+        "deps": [
+          "arch-1.2",
+          "arch-1.1",
+          "arch-1.3"
+        ]
+      },
+      {
+        "num": "2.1",
+        "deps": [
+          "arch-1.5",
+          "ladr-3.65"
+        ]
+      },
+      {
+        "num": "2.2",
+        "deps": [
+          "arch-2.1",
+          "solid-9.9"
+        ]
+      },
+      {
+        "num": "2.3",
+        "deps": [
+          "arch-2.2",
+          "mech-5.11",
+          "pma-5.15"
+        ]
+      },
+      {
+        "num": "2.4",
+        "deps": [
+          "arch-2.2"
+        ]
+      },
+      {
+        "num": "2.5",
+        "deps": [
+          "arch-2.4"
+        ]
+      },
+      {
+        "num": "2.6",
+        "deps": [
+          "arch-2.5",
+          "ode-3.13"
+        ]
+      },
+      {
+        "num": "2.7",
+        "deps": [
+          "arch-2.4"
+        ]
+      },
+      {
+        "num": "3.8",
+        "deps": [
+          "arch-3.6"
+        ]
+      },
+      {
+        "num": "3.9",
+        "deps": [
+          "arch-3.2",
+          "pma-5.11"
+        ]
+      },
+      {
+        "num": "3.10",
+        "deps": [
+          "arch-3.9"
+        ]
+      },
+      {
+        "num": "3.11",
+        "deps": [
+          "arch-3.2"
+        ]
+      },
+      {
+        "num": "3.12",
+        "deps": [
+          "arch-3.9"
+        ]
+      },
+      {
+        "num": "3.13",
+        "deps": [
+          "arch-2.1"
+        ]
+      },
+      {
+        "num": "3.14",
+        "deps": [
+          "arch-3.2",
+          "solid-4.10"
+        ]
+      },
+      {
+        "num": "3.1",
+        "deps": [
+          "arch-2.1",
+          "solid-9.10"
+        ]
+      },
+      {
+        "num": "3.2",
+        "deps": [
+          "arch-3.1",
+          "arch-1.5",
+          "vcalc-4.9"
+        ]
+      },
+      {
+        "num": "3.3",
+        "deps": [
+          "arch-1.6",
+          "mech-2.3"
+        ]
+      },
+      {
+        "num": "3.4",
+        "deps": [
+          "arch-3.3"
+        ]
+      },
+      {
+        "num": "3.5",
+        "deps": [
+          "arch-3.2",
+          "arch-3.4",
+          "solid-4.10"
+        ]
+      },
+      {
+        "num": "3.6",
+        "deps": [
+          "arch-3.5"
+        ]
+      },
+      {
+        "num": "3.7",
+        "deps": [
+          "arch-3.5",
+          "pma-5.11"
+        ]
+      },
+      {
+        "num": "4.6",
+        "deps": [
+          "arch-4.5",
+          "arch-3.1",
+          "pma-5.15"
+        ]
+      },
+      {
+        "num": "4.7",
+        "deps": [
+          "arch-4.4",
+          "vcalc-4.7"
+        ]
+      },
+      {
+        "num": "4.8",
+        "deps": [
+          "arch-4.4",
+          "pma-6.21"
+        ]
+      },
+      {
+        "num": "4.9",
+        "deps": [
+          "arch-4.3",
+          "pma-10.46"
+        ]
+      },
+      {
+        "num": "4.10",
+        "deps": [
+          "arch-4.3"
+        ]
+      },
+      {
+        "num": "4.11",
+        "deps": [
+          "arch-4.3",
+          "arch-1.5",
+          "ladr-3.65"
+        ]
+      },
+      {
+        "num": "4.1",
+        "deps": [
+          "arch-3.2",
+          "arch-1.5",
+          "pma-6.27"
+        ]
+      },
+      {
+        "num": "4.2",
+        "deps": [
+          "arch-4.1",
+          "arch-3.4",
+          "vcalc-4.9"
+        ]
+      },
+      {
+        "num": "4.3",
+        "deps": [
+          "arch-3.2",
+          "pma-10.46"
+        ]
+      },
+      {
+        "num": "4.4",
+        "deps": [
+          "arch-4.3"
+        ]
+      },
+      {
+        "num": "4.5",
+        "deps": [
+          "arch-4.4",
+          "arch-3.5"
+        ]
+      }
+    ],
+    "edges": 18,
+    "consumers": 18,
+    "uniqueTargets": 12,
+    "qualifications": 4,
+    "wrapFields": 5,
+    "runtimeExceptions": [
+      "1.3 banner literal only"
+    ],
+    "allOtherSourceBytesFlagsHelpers": "exact",
+    "pass": true
+  },
+  "math": {
+    "groups": [
+      "1.3 affine reaction rank/nullity",
+      "1.6 and3.2 section integrals, contact limits",
+      "2.1 and4.11 anchor connectivity and graph energy",
+      "2.3 fixed-span sag coefficient and bounded remainder",
+      "2.6 characteristic modes and repeated root",
+      "3.3 and4.2 resultants preserve all cut moments",
+      "3.5 unilateral normal-cone and convexity qualifications",
+      "3.7 complete interval derivative and canonical inequality",
+      "3.9 finite-height vs asymptotic toe condition",
+      "4.1 arc speed, web allocation and area",
+      "4.3 spherical cross product and independent loads",
+      "4.6 finite polygon equilibrium vs continuum",
+      "4.7 radial-volume jacobian including finite thickness",
+      "4.8 actual circular-family FTC and tensile split",
+      "4.9 spherical side cuts, pendentive and plan areas"
+    ],
+    "checks": 14227,
+    "producerRuntimeImports": false,
+    "pass": true
+  },
+  "native": {
+    "evidencePath": "/tmp/atlas-new-imaging-source/arch-peer/native-v2/evidence.json",
+    "evidenceSHA256": "0dfff02e74f54ced426fa1498455ab65e5c27f82bddf27348ceb1418ca937f1c",
+    "routes": 36,
+    "fields": 108,
+    "controls": 36,
+    "bannerStates": 16,
+    "personallyInspectedPictures": 160,
+    "browserClosed": true,
+    "errors": [],
+    "pictures": {
+      "1.3-dark-caption.png": "811a8bf352501457debc3a49000778be29ff57fbc6ee2a83220824e73190a976",
+      "1.3-dark-controls.png": "746724917318f62d471e980f19e7cc0e2f40ba669bd5b6da98f8142e7fcdfd5e",
+      "1.3-dark-proof.png": "ea1062f978235fbdcdf88a345eda21c02bc168db2ed4654d3e72819ea3133a39",
+      "1.3-dark-statement.png": "13de646e03ca733e92a18f2281dd542918cdceb1dc2bd74f572b13f939bd1ca7",
+      "1.3-light-caption.png": "e3ba89726763aebd3cd3ea762393733e50a0539b26bfcab4fcff7f77cfbd9973",
+      "1.3-light-controls.png": "bf24047ccb18b047f7385d14b2585bd66fdc8f7c872f6cbd0ce59156202249f1",
+      "1.3-light-proof.png": "6ff8437b1c4cc8a702dae9327dbd0a5036495db0f24cfdca00f8fc3b71e7a7ee",
+      "1.3-light-statement.png": "66f5066dc9af9c10874d0b4b72705251198e7ab8803a756c987b4c5c4a7c41d1",
+      "1.6-dark-caption.png": "4c4d32a2aeb4418705a3906a65b5f0cfabf4711b1125b07926cff0640bcee075",
+      "1.6-dark-controls.png": "214d38e5d1a35909d76740ed921fe687d135de486eb25ce8ac2ad59eb769f9a4",
+      "1.6-dark-proof.png": "b2f4ad07f86c316d2aae4cfd41d3f89d98c615e22a62035306948b333d42d68f",
+      "1.6-dark-statement.png": "27cee33fb13d94036d1260ab6b2d35ad6c27d60619b044bfab507509a5061fa1",
+      "1.6-light-caption.png": "4530dde42dbfddeb4337be232f7f2492297e5f82b519e2cbf25bd2de21cfb711",
+      "1.6-light-controls.png": "e5fdca9791069e8a1b186c04d9349b76a5db874a14929d2f88e8164c2edf0251",
+      "1.6-light-proof.png": "50ef103e6ed6a93041ae55a0680b7dfd9bc686fb883ff6cbff2c226d38cf96b7",
+      "1.6-light-statement.png": "5d431b93933603acdd8144614a120174e6f8c72cd72900e0be6e0b531e79a78e",
+      "2.1-dark-caption.png": "db460d04c07bd7ca32fd66ce143cb7f709656d9a6adc0f66de094dfef4a50087",
+      "2.1-dark-controls.png": "8fb994010a4d9958d9e916c36467c1d51efafc539333ec7077aaa17ecda768d7",
+      "2.1-dark-proof.png": "9b080cc9cf83d39b7c40c64ca6664852cc150f10a3276e66c706d5004b7d482a",
+      "2.1-dark-statement.png": "d8a5dad84afa9d93dbebccf7f37d0ddc77120ab9a1db9aafbdc443a00fe4c9ef",
+      "2.1-light-caption.png": "96e96170eb1d4d77a259b80b720b98e8b3b202951475995983e5f7a5bd50e848",
+      "2.1-light-controls.png": "d42724b8c4fb110f8040e158762774f217b6338301fa5e491e3985969cf1d819",
+      "2.1-light-proof.png": "9264e38897eb207272b533b9bc6f160465a8d7206c80e84f0d24f85525ac9885",
+      "2.1-light-statement.png": "8ee6eb47794d703cb73b750d3434271aa2a2e43af3c9e44300693d84f7b9ca5c",
+      "2.3-dark-caption.png": "ed7ec65cd2bf905d5dc5797d5767c50fefc943fddfa8d0d6623f9e44bbcebc88",
+      "2.3-dark-controls.png": "46ea63081f7503254a5e8ff384ef442761aa19a180df21108187c71c62d34978",
+      "2.3-dark-proof.png": "26ba6dcfca80103eb1206aa5a9014cb7f301818f371c3a2cba53554027d54101",
+      "2.3-dark-statement.png": "4b7b74ca421160d5d4c9530b0d58540d292063df0fff1c715f86d548ad67e7a5",
+      "2.3-light-caption.png": "271c46a4658e5450d60df9a283c99211301723cec27e75a1498be01df51802a1",
+      "2.3-light-controls.png": "3301d58740c2d91300d0db977f06fa8605be7f9d1e0fc662b06c74e060b6a342",
+      "2.3-light-proof.png": "f3a90aa4a219e2be371fb4ae745d5ae05b6b0495993973167ec0cd6dee020e89",
+      "2.3-light-statement.png": "253dea095b978cb88959d3797135fbd17a5ccd8549c8322bf55791a2be1c9ba5",
+      "2.6-dark-caption.png": "0cd2dabacaaf0cbc01213ebe7dd5627153f5386f0136d2f7f7b03e6723b4ab17",
+      "2.6-dark-controls.png": "27a539ad0d208635a453c8704ffea8aeba5dad3351dec5aaf54ce37f3a76b6eb",
+      "2.6-dark-proof.png": "5a2802005d9cbdcef988eb9de396bb8f86e1b5a9f869d125fb6d01e989c9b045",
+      "2.6-dark-statement.png": "84c154d1469655efd56ddee514648d8d5f219bde0e38a7ad9905c6e2a77a9a9d",
+      "2.6-light-caption.png": "d0aef95cfa59b84b8c4cbce1b35d651f39fcda8153708064478b94bcd3782342",
+      "2.6-light-controls.png": "da09ff4c3952021f9eae81c548133e1c2573feea4864e23d007d29f967252e86",
+      "2.6-light-proof.png": "0e7846836f1f0e757b2b53b0dfb1f4b2065bb44ac556f66f412acaa884dd7db3",
+      "2.6-light-statement.png": "b1fbe5c60f34563ecaef3d388d4ba73bbf3c93ec7e9d830c06656211e5fad1b9",
+      "3.2-dark-caption.png": "47b44b06e5dac140755d381955c9585cc674ec636c50daeb55f81b165dbb19cf",
+      "3.2-dark-controls.png": "e88eb811445f20cf053affea42da28f0f5fdbe365c9afc94d2f60193fe8f4d21",
+      "3.2-dark-proof.png": "c353a1ce05c1b17c764e52f439aec933b59aaf9d48227d101f633ca3f327dcd7",
+      "3.2-dark-statement.png": "57a16fd95aa602709812911ec5e0bc9b18bfecf299d499eabd234f0546fe8288",
+      "3.2-light-caption.png": "eec216c07e8f1226e77987108efda971967c025ba853b2216786bc2016a27ed3",
+      "3.2-light-controls.png": "84de0caf1585b14307e273b3725d9175c089043ec2e6094752a79609af1b5fe0",
+      "3.2-light-proof.png": "8ee6cebf0a02fcabe8e43de0498187c15c65a271060d921dd805b7fcaec87849",
+      "3.2-light-statement.png": "655c649b13783cdc777df98517bf095b74a3ca3b4b8577dd4d43d77cac088b31",
+      "3.3-dark-caption.png": "5770689153edcc5ab30972e8f733c33b96637cd33efc7a3e314c996871eb0bf0",
+      "3.3-dark-controls.png": "8af6b93aae4b41d517ab5136fb80601706cf583b4030d794e84420aa82fc1e55",
+      "3.3-dark-proof.png": "6f0976bb6382e5260bedd77725ba60ce7f19bdf9c469a6d23235901915de48eb",
+      "3.3-dark-statement.png": "7a60c6201b38df97d7ad11c876f1a6d05b2e4bd5317e76528057f4697fa2070d",
+      "3.3-light-caption.png": "9dd44a1c13983e05c2b8bd69919c7ec9f30f92053b69333716282834b23b425d",
+      "3.3-light-controls.png": "8196d1b67bca8201b98e30e82961c22b04b2be38f68d3683710a5bd3601f1e31",
+      "3.3-light-proof.png": "d70818295281d5e1a3a266ae8ac400e0b70cd97d982207af4112f2d90ed89b46",
+      "3.3-light-statement.png": "34b9100eea02b5a45f1fbaebbe2f9c38b9545c1d526848f931f986210953ac61",
+      "3.5-dark-caption.png": "9e909e5dc87977dd3db5d51bdd10518e3b8b325dfe6f6a2b64105004551d4920",
+      "3.5-dark-controls.png": "43d7b6c74b1985a3f31255b824f7f61b7af09af6c2c207c77a3d2457143e0cfb",
+      "3.5-dark-proof.png": "c4bb988d9a85d6ed00456a68563798e4dda3b7078686f8395d4cb054d7c7bbbc",
+      "3.5-dark-statement.png": "b0b6292178b142de574bef981e6ca4e6980f7223e53c6ecfb341753adc4bf9aa",
+      "3.5-light-caption.png": "6cdd6f0a39ac0460ba5e9648607d499a1f2033f91e0fdda4805d9d35da0e0b88",
+      "3.5-light-controls.png": "1630c9a8e85f230f9c2529004f958fe6d6e8554d79928d49714d6454b794184f",
+      "3.5-light-proof.png": "8cdaf4c297aaee9d99a2cbe7193b6bc155f81ad85384dfe2b90a2628129c7850",
+      "3.5-light-statement.png": "b0399ce079afafdcc44e248803fe8f42552c33424dcc854a567b71aea6c79a53",
+      "3.7-dark-caption.png": "d2f18c3cc14ff973cddcb9cd2dc48482dc9d53e097b55445c4cf4c6220e594dd",
+      "3.7-dark-controls.png": "a9332468e9da6e69bd94e06cd1b4e4be61a56291c6cbf5b471aa5c9733008500",
+      "3.7-dark-proof.png": "99698b2d610dba488facbad75d9566309df5bb7a50902d33d54d05a36d2c4ba4",
+      "3.7-dark-statement.png": "1c1854454221b37a13a0042f1d31887a7c1391b29f42f126fb137086cee31904",
+      "3.7-light-caption.png": "0439a5a1831d7a22be265b24a4b23d360ddc9b9195e19cf6d6191f1c570cc5b0",
+      "3.7-light-controls.png": "b0222286daa0c10996025ffa801364a78f553153ad3077cf431bdc0e95811263",
+      "3.7-light-proof.png": "023ce15713c2187460d9f1869d92266ecda822d21ac3f074561edb78c844d3d1",
+      "3.7-light-statement.png": "a7b8e63518bef268b71f8ffa9a10df5836a0155235107c011b9e32b65b5ce628",
+      "3.9-dark-caption.png": "f0a91210ccf5708deec2b72a7dbded9a4d915019dc6c9c4324ce760f0aab19aa",
+      "3.9-dark-controls.png": "a9e0ca4f92e0aaa1ee433ef898357e1995d7654a38ebf59d01ab67963bbc24a3",
+      "3.9-dark-proof.png": "9af3ac055e7410add3ef7f40933689437f0cd2e73c89a0c3114334f81581aca7",
+      "3.9-dark-statement.png": "cd406b081141aa8ba6ca02d9f4fbec297feccb82416303bed5697c2b008b9508",
+      "3.9-light-caption.png": "ce96af07b693bdb8a8fff4e9f79ab979cb1a6cc441ff304d3a1b958ccabb0a2c",
+      "3.9-light-controls.png": "3478535b28e9e48c5ff133b311bb67bbc97e74eed97956145dac8c0215d4f4bf",
+      "3.9-light-proof.png": "d7f19ef5011046dca3cfd0eee626b6dad6113880462b1f7dda02afaaff1360e3",
+      "3.9-light-statement.png": "05924ffb3ed61c6ba354d7a8d1a343a66d4b525d91de10dd18d16ff80fed5fd2",
+      "4.1-dark-caption.png": "ea0e9e54160505672751295d1047680bfaa8721e1fe30695623e31ee2897eef5",
+      "4.1-dark-controls.png": "977d0b423d5f74c24eda5615daf811810beaafa40ef1a5ad8638d9cf01f151c0",
+      "4.1-dark-proof.png": "46076abaee8b89651d4406f51f1fe1b7455c0dbb5e808529c0b31021c91a8bf9",
+      "4.1-dark-statement.png": "912e09e0c3e8f69498aca49a0322c73872cf700ecd9e02522c84ebd9a63cb6e6",
+      "4.1-light-caption.png": "7a8806b2311cde4d3bce91df615ecd32ca243d21713a00249335af08e8ebb9aa",
+      "4.1-light-controls.png": "16f6a6c93b63db8f5f917ba5e21acf8b7ba7f0a86f9f7632dc5011ed8193d8cb",
+      "4.1-light-proof.png": "32b78e20dbe81111fb0fd52b3e2432f282cad9c8cd12b66c53c05586f4bacb72",
+      "4.1-light-statement.png": "53593ca63264547be8180a0842f2067e043c8c77237445a9d5d790fa8b4e3c42",
+      "4.11-dark-caption.png": "4baadd8d40b2fa41881626097d74e5e026a6b892ec08bb0813c0ae9e7778f069",
+      "4.11-dark-controls.png": "948913834ce6751c0f076ef518c9a385af41ef610552d8cd5f68c9d7ca987100",
+      "4.11-dark-proof.png": "e19ddfb4e2b790c8f1ac736d169de27c4b891a74e4807acedf64ebee8806351a",
+      "4.11-dark-statement.png": "1c8240e2e7ab12fb4c1ae06b85c7b8adfb540c1d670e0388d8a33634a23a53d7",
+      "4.11-light-caption.png": "ceebe968a2c6af8ce04bb3abfd8ca8621fddb194c33682e742e3ec49d22e7f63",
+      "4.11-light-controls.png": "c2b238916cea85c62186197f27ce0591eeb60821f3254be7d3ae9174a400f8e7",
+      "4.11-light-proof.png": "d5800eeeb4a327b12e1af22ee84cd13445aa1efd336aeb15575e74c083169b38",
+      "4.11-light-statement.png": "01149283799eff5637a448dcba44b6db8e5521c573d90e9eb7bf1f8699c18acb",
+      "4.2-dark-caption.png": "cde246a7092f56b6b833136a1ebb35f4dee86adbc64f6358475c20c3a6ced8f0",
+      "4.2-dark-controls.png": "a6c8ec1900964eee55ddb2cb209dffea2583073f9b024e94135072532dcbe939",
+      "4.2-dark-proof.png": "667465b463a47f348aaec5d3d10df6b9736a78212767ff43a5938da49616725b",
+      "4.2-dark-statement.png": "10c77187203a65b9f68b47a7c622cda4a54af35b8141c413a11b14ae83e3e9dd",
+      "4.2-light-caption.png": "e79c9c64f1e36749591af141e9d43766bd8480d9497e5be8b427059a38802b0b",
+      "4.2-light-controls.png": "f7e5a8e99e79301543e6484208987af96d1e0d661b208a29f88718f9c1aa07ac",
+      "4.2-light-proof.png": "d4ca8d5e76079c194026432e3bda9530665f054d4294f8c14a10d7e04e9d3145",
+      "4.2-light-statement.png": "d71bbec494486aacf8d608daf7b53842a9496fab57711372bf5cd015c76bcd49",
+      "4.3-dark-caption.png": "f13bf8ef885d3d6e2a334c4c9f0feb70651ae7f06c59a34f42c3fa497d1a8cdf",
+      "4.3-dark-controls.png": "d6f78ee4a4f1a2f44f0cf1585661eaf9f45824dafa508e1fd8981b28dd24ff33",
+      "4.3-dark-proof.png": "365ca96ee93fd7abbfa7c0548d6c138d3ac12817dbc13a25eeb5b429b80a3daa",
+      "4.3-dark-statement.png": "b14a07c8afb6af3ebf2fd7c1544d7c4b5bd0dc250573f4b600c4544a212ddf58",
+      "4.3-light-caption.png": "7215184112fb9a16308719b6a2d4824ded201012356ff1a008137a6fb6a248e0",
+      "4.3-light-controls.png": "3bd7589cf672bd383a3ff7548eb20c4ecb26c9efabfe38f1e10ca9182fcfb0f1",
+      "4.3-light-proof.png": "241479483cb92287c2233a443bcd0f93b6c3078f1a1e062735b022b1578da86c",
+      "4.3-light-statement.png": "80310103dc57f7767f66407b17ff8eaf3008459673eb4af747453b5953fd7e7a",
+      "4.6-dark-caption.png": "c5f74d4ef35908ffaa9861ed3bdd98af865b1674df0f83e5269c02fbbe7b7575",
+      "4.6-dark-controls.png": "640d24c0b4ecb4c50845387abfae0300b69629b64cf7339672dcc64df0d1a9b9",
+      "4.6-dark-proof.png": "b990bf8a6e5a5c313cc891903e5cb36699e0bf24bd643da80ec3cad9bf43680c",
+      "4.6-dark-statement.png": "ae74364235d90807bb3bec580951cca12174bde6aad41ebc22d8af064bac01ae",
+      "4.6-light-caption.png": "9e18baabbadfb7fbed2a31d3e1727c16bcdf5b10ba0d19f80411d8f6e1fb1d0d",
+      "4.6-light-controls.png": "d045dc754cb33baae82c611ae95e68d37ce5750154773003ff004f5099aa5fc4",
+      "4.6-light-proof.png": "c9b092d729c4b35ae05b83d918802e27628fa0ce833911bc30681e3f95446e67",
+      "4.6-light-statement.png": "95054437f07924f6c519d4e25ec749f5946a22b7dbeab57c230e9539abe07bc5",
+      "4.7-dark-caption.png": "77ee92611791dc3d81502695824dedd204b764083bad0a3291e2ad5b4144407f",
+      "4.7-dark-controls.png": "144886511c59466b2751378c12c99e2bee1341e97e601e1619b0a92cb3ac46fd",
+      "4.7-dark-proof.png": "546912d26425be6d2bc943f41d2d1c641b09ac7b73b98b2db3c969eea53d0915",
+      "4.7-dark-statement.png": "a4dd7bdbde058dc824b7d93d5cf82cc8ce5a73d56df9ad2bc161cd315ea5f755",
+      "4.7-light-caption.png": "73b868ca1900c63121a9071fdb1a7d14851475e418fa5fa2473480af02bcc03d",
+      "4.7-light-controls.png": "64e67dc21b79c3cfa9b92d8e7e5509ec1a91d8941e3213c8691c8761cee15ce0",
+      "4.7-light-proof.png": "cb2261bbc04c60ffefdeddb72b6b87d350d39ed007bd6ca02a5d410c3ea46971",
+      "4.7-light-statement.png": "164f4b30aa4e0c693c5bad02c54f011bfe200550c10eac7c25f891fcc726e98d",
+      "4.8-dark-caption.png": "81dc249906fdbba253879aad1ac836b3c289782ad40faaf40df83fd19d68ddbf",
+      "4.8-dark-controls.png": "0ce657c9cf96dc9b42d11bce56984756fd3e8b4f101fa95c7d42f741058cff6e",
+      "4.8-dark-proof.png": "629a14effaa1244e631878bdeaf2c1dd40d5fc2c8bb55e86476c94eb7196f767",
+      "4.8-dark-statement.png": "7549b2d21ac523b2ee87163b584cdf0ab3f3ce63c15641389ca0e8d630385d85",
+      "4.8-light-caption.png": "bfb2c98b11dc19fd9cb5c1ee0706d532d991090fd2301a06c63b0755ae0db086",
+      "4.8-light-controls.png": "ef058b3840b79a8a0da750134daf535f750e27fcc82cfe8ed9efde06ac314886",
+      "4.8-light-proof.png": "c1f7b01402b350c3ed251b149972bc847ae75db2d084c0a9ef8d3f8f97963f5d",
+      "4.8-light-statement.png": "d95479298796b49605ecd1d7b1218d98b1f0ac014507db0690f7c4f2704ae987",
+      "4.9-dark-caption.png": "fee4ce2a34bdf6a21dffef59618ad1dfa84c237f54131f269ef4f1d2336197bf",
+      "4.9-dark-controls.png": "1cad8e87f41b39badc9a4de00d5d7e06749c636673c435093ad31c64bfac46d9",
+      "4.9-dark-proof.png": "542e445dccec1a83118a14c71ba9c6ed2ad588e8e3a0fa071083e4d40aa7c2ee",
+      "4.9-dark-statement.png": "246be389195c7ff05ee14db7a47601ddf7cf9a0325750e5581d715ccc516a833",
+      "4.9-light-caption.png": "70ce3986beb74694ec558e61377b48c1039b7f64af98dcdf63594cd8a515cede",
+      "4.9-light-controls.png": "f279b26f950b0aedc9ccec123785e65bd236b71ea792b8a6f061b9152af9bca8",
+      "4.9-light-proof.png": "37cfb66360eeb7372e7eb793823db3ec3cbd029f808a0a6e3e551389cf629446",
+      "4.9-light-statement.png": "8571978e3b373ab30b1b842efa02c30f2951583a7ca96ba656a2e3956984bbb1",
+      "banner-main320-dark-default.png": "746724917318f62d471e980f19e7cc0e2f40ba669bd5b6da98f8142e7fcdfd5e",
+      "banner-main320-dark-indeterminate.png": "b08799ce52e0248bec545afd3a658167cb42e9aca6725be106a55034f4673fc7",
+      "banner-main320-dark-mechanism.png": "8c00773a14330928f2808f95b7c4ef742249a9709f3acecf9cf3151415d19b9c",
+      "banner-main320-dark-restored.png": "b873bae5c0053731d538e238eb98c8b0acd5fefd5578a62b92f76e134ab0739f",
+      "banner-main320-light-default.png": "bf24047ccb18b047f7385d14b2585bd66fdc8f7c872f6cbd0ce59156202249f1",
+      "banner-main320-light-indeterminate.png": "16710ced843a492b436fb50b2fe8c74fea1ea70575354a04c8199f73ee3ccc88",
+      "banner-main320-light-mechanism.png": "d52bc6966f0845b820f2ed432ad67587a36edd6dd7c12579aebe20462f6c7c70",
+      "banner-main320-light-restored.png": "27d364b74aaea6a3f6e931fa660cd83659f7f051daf0e327a6c93bea190ce55f",
+      "banner-mount253-dark-default.png": "3bbf1b394e9fb1a37c718b5cdf679166fc549f32a2283a910c9ec126f187ee45",
+      "banner-mount253-dark-indeterminate.png": "7d268b1d56811537f8d8cd8905f6da1a143e53a88172557094a45f54f72dd1d7",
+      "banner-mount253-dark-mechanism.png": "05e8767576e85358d93ca8083e57979a6bb01fd4224f8743e30a46253e40c63e",
+      "banner-mount253-dark-restored.png": "275d137abcb546bbc7c4f9985fe564e36de57814a8c8e4171ec6873dc7e2225b",
+      "banner-mount253-light-default.png": "8e7729dabb145acc338ef95bca30ad178207138831b2bad31e4cb2d18d7a5090",
+      "banner-mount253-light-indeterminate.png": "72af08749da8f297542a54babcbbbf429439476e4b963f5c5ba0615743fe940b",
+      "banner-mount253-light-mechanism.png": "1cb3e7f18f97e46f50c95e47e72db0eeab6da3b84215f86a74c978a7c7d7f979",
+      "banner-mount253-light-restored.png": "1556e0a64eec8b07e106a66973025f417a4e46c2cf7d9315ddee03122da05999"
+    }
+  },
+  "logs": {
+    "build.log": "6b8f2775d6b9f4ac70e9a7b7d54039116701f0cfe7d116a6d9a6864b3b1857de",
+    "static.log": "65891f2053925008e44ef69050e049d9bbb083f34606d5b01b532fd25d9fb11e",
+    "existing.log": "17ae0d287fbec24e99d6dc5ad665e634e1ec58b39d5bac9673ce2e15cf025de8",
+    "native-v2.log": "0a097a8002794c93aef645351209875e0aca6e341be7779a80bfd5cb3fbdb2bf"
+  },
+  "limits": [
+    "No source closure",
+    "No timing",
+    "No exhaustive saved-state replay",
+    "Initial short-viewport screenshots excluded from full-picture acceptance",
+    "3.8 suspected contradiction withdrawn: opposite crack and pivot faces"
+  ]
+}
