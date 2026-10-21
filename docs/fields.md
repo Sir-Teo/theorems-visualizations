@@ -24,6 +24,7 @@ tools to reach for. Read the section for your field before writing a chapter.
   matter.
 
 - **Prerequisites are used inputs, not analogies.** Read the target proof and identify its step in the consumer, including hypotheses. Put a useful comparison in related links when it does not supply the argument. Synchronize complete raw dependency lists in the item and syllabus. Count field differences from actual collection metadata through the inventory helper; a topic name or folder prefix does not establish its field. For example, PROB belongs to mathematics while STAT belongs to statistics in this atlas.
+- An alternate dependency path does not by itself decide whether a direct input is redundant. Compare the actual quantities, hypotheses and conclusion consumed: a stationary travel-time argument does not supply a nearest-colour-locus derivative, and a centre-of-mass vector reduction does not supply its scalar lever arm. Conversely, do not add another citation for a conclusion already supplied by an upstream input. Planned paths do not make unwritten prerequisites available. See the [ART peer](verification/art-prerequisites-independent-peer.md).
 
 ## Mathematics (book-anchored and curated)
 
@@ -69,6 +70,8 @@ an eigen-direction, an orthonormal frame, an ellipse's axes) with live numbers.
 
 ## Computer science
 
+- State whether acceptance is a least fixed point and whether every computation branch halts. Swapping existential/universal states and terminal outcomes complements a finite halting tree by induction; a rejecting self-loop and its dual can both reject under least-fixed-point semantics. Finite branching plus all-branch halting gives a finite tree, but gives no uniform polynomial resource bound. See the [CPLX alternation peer](verification/cplx-alternation-independent-peer.md).
+
 - **Algorithms run on input the reader can edit**: drag graph nodes and edit weights
   (`v.graph(stage, …)` with `editable`), shuffle or type an array, draw points. Use the
   step-through player `v.steps(…)` with pseudocode for anything with more than a handful of steps,
@@ -106,6 +109,8 @@ an eigen-direction, an orthonormal frame, an ellipse's axes) with live numbers.
   genealogies backwards in time (coalescent).
 
 ## Medicine & health
+
+- Transform uncertainty sets through the model's actual domain. For half-life $\ln 2/k$, intersect a fitted rate interval with $k>0$ first: the image can be bounded, unbounded, or empty. A nonpositive fitted rate supplies no positive-decay point estimate, and a plotting cap is not an interval endpoint. Distinguish central-compartment simulations from clinical recovery. See the [PHARM peer](verification/pharm-independent-combined-peer.md).
 
 - **A simulated population the reader controls**: cohorts on lifelines (Lexis-style), with
   prevalence, risk and rates measured live and compared with the formulas; icon arrays of 100 or
@@ -164,6 +169,8 @@ an eigen-direction, an orthonormal frame, an ellipse's axes) with live numbers.
   horizon.
 
 ## Humanities
+
+- For sampled historical lists, distinguish a local typical-spacing heuristic, expected bin counts and a finite fitted regression slope. Equal numbers per logarithmic interval do not force collinearity or a slope of one. Keep that qualification consistent in statement, proof, caption and both readout modes. See the [four-consumer BIGHIST peer](verification/bighist-four-consumer-independent-peer.md).
 
 - **Deps** in the history of technology are *enabling* dependencies: what an invention needed to
   exist (the printing press needs movable type, ink, paper and the screw press), plus the
