@@ -26,5 +26,12 @@
     "field": "caption",
     "before": "Then switch to random events with sampling density \u221d t\u207b\u1d4f: with k = 1 (equal numbers per decade) pure noise gives the same straight line of slope \u2248 1, and with k = 0 (uniform in time) the line goes flat. The lower panel counts events per decade, which is what sets the slope.",
     "after": "Then switch to random events with sampling density \u221d t\u207b\u1d4f. For k = 1, equal log intervals have equal expected counts; the local typical-gap heuristic suggests a slope near 1. For k = 0 the density is uniform in linear time, suggesting locally constant gaps. The finite fitted slope can differ in either case. The lower panel shows the realized counts per decade; those counts alone do not determine the fitted slope."
+  },
+  {
+    "file": "content/bighist/ch01.js",
+    "num": "1.8",
+    "field": "viz",
+    "before": " \u00b7 the same slope as random events sampled evenly per decade (switch to see)",
+    "after": " \u00b7 compare with random events sampled uniformly in log time (switch to see)"
   }
 ]

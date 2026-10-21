@@ -760,7 +760,7 @@ The random-event generator can be derived on its finite positive interval $[A,B]
         });
         v.readout(() => {
           const E = events(), P = pairs(E), fit = v.M.linreg(P.map((p) => Math.log10(p.t)), P.map((p) => Math.log10(p.dt)));
-          const tail = data.value === 'rand' ? ` · local density exponent $k$: **${v.fix(kS.value, 2)}**` : ' · the same slope as random events sampled evenly per decade (switch to see)';
+          const tail = data.value === 'rand' ? ` · local density exponent $k$: **${v.fix(kS.value, 2)}**` : ' · compare with random events sampled uniformly in log time (switch to see)';
           return `Fitted log–log slope **${v.fix(fit.slope, 2)} ± ${v.fix(fit.seSlope, 2)}**, R² = ${v.fix(fit.r2, 3)} (${P.length} intervals)${tail}.`;
         });
         vis();
