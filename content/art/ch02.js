@@ -59,7 +59,7 @@ Require every intended ray from $E$ to have a finite forward intersection with t
           plan.text('canvas', CW + 1, 0.12, { align: 'right', baseline: 'bottom', size: 11, color: 'orange' });
           const half = [[-SK, 0], [SK, 0]].map(([a]) => [SK * 0 + a * r[0], a * r[1]]);
           plan.line(half[0][0], half[0][1], half[1][0], half[1][1], { color: 'gold', width: 2.4, dash: [6, 4] });
-          plan.text('intended skull', half[1][0] + 0.15, half[1][1] + 0.35, { align: 'left', size: 11, color: 'gold' });
+          plan.text('intended skull', 0, 1.25, { align: 'center', size: 11, color: 'gold' });
           let xs = painted.flatMap((s) => s.q.map((p) => p[0]));
           const xmin = Math.min(...xs), xmax = Math.max(...xs);
           plan.line(xmin, 0, xmax, 0, { color: 'accent', width: 5, alpha: 0.9 });

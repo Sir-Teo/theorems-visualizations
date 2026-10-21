@@ -1,0 +1,10 @@
+{
+  "baseline": "416e536d6c37b1b7aa9c5631ff980b1e1e0981c9",
+  "acceptedARTContent": "cd5957b2e62f3eaea73aa0fd48866c441bd35b5d",
+  "file": "content/art/ch02.js",
+  "item": "2.1",
+  "field": "viz",
+  "before": "plan.text('intended skull', half[1][0] + 0.15, half[1][1] + 0.35, { align: 'left', size: 11, color: 'gold' });",
+  "after": "plan.text('intended skull', 0, 1.25, { align: 'center', size: 11, color: 'gold' });",
+  "scope": "Only intended-skull label position/alignment in plan canvas; actual projection, intended plane, canvas/viewer geometry, all other canvases, controls/readout/helpers/flags/deps exact."
+}
