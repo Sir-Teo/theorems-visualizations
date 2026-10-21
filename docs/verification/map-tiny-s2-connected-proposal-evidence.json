@@ -1,0 +1,104 @@
+{
+  "identity": "tiny-old-S2-connected-control-light-v1",
+  "source": true,
+  "prepare": [
+    {
+      "name": "default-blocked",
+      "identity": "tiny-old-S2-connected-control-light-v1",
+      "mode": "PREPARE_ONLY_NATIVE_BLOCKED",
+      "output": "/var/folders/29/bzg0zx0d7jjbyf60_3cjch440000gn/T/atlas-tiny-s2-connected-prepare-SFKtKY",
+      "browserStarted": false,
+      "serverStarted": false,
+      "protectedSourcePaths": 71,
+      "manifestSHA256": "ccabd7531aacbd68ea31239e2f43b40ba2195b3c2d4e9ee25c985b9f3b07296a"
+    },
+    {
+      "name": "explicit-prepare",
+      "identity": "tiny-old-S2-connected-control-light-v1",
+      "mode": "PREPARE_ONLY_NATIVE_BLOCKED",
+      "output": "/var/folders/29/bzg0zx0d7jjbyf60_3cjch440000gn/T/atlas-tiny-s2-connected-prepare-faCKew",
+      "browserStarted": false,
+      "serverStarted": false,
+      "protectedSourcePaths": 71,
+      "manifestSHA256": "09b34b7a8d9bedfe972ad282d7db75d89036aea2cc57a1b6d4d86ec1e9feb193"
+    },
+    {
+      "name": "explicit-output",
+      "identity": "tiny-old-S2-connected-control-light-v1",
+      "mode": "PREPARE_ONLY_NATIVE_BLOCKED",
+      "output": "/tmp/atlas-ctrl-s2-connected-proposal-model-closing/explicit-output",
+      "browserStarted": false,
+      "serverStarted": false,
+      "protectedSourcePaths": 71,
+      "manifestSHA256": "dc1065549f447eb587e6e30aa4d564ab21d4c58785fb4ce3b0a5ea7501183d17"
+    }
+  ],
+  "adverse": [
+    {
+      "name": "modified-runner",
+      "rejected": true
+    },
+    {
+      "name": "modified-fixture",
+      "rejected": true
+    },
+    {
+      "name": "unknown-flag",
+      "rejected": true,
+      "exitCode": 1
+    },
+    {
+      "name": "old-full-flag",
+      "rejected": true,
+      "exitCode": 1
+    },
+    {
+      "name": "near-root-flag",
+      "rejected": true,
+      "exitCode": 1
+    },
+    {
+      "name": "contradictory-flags",
+      "rejected": true,
+      "exitCode": 1
+    },
+    {
+      "name": "duplicate-prepare",
+      "rejected": true,
+      "exitCode": 1
+    },
+    {
+      "name": "duplicate-root",
+      "rejected": true,
+      "exitCode": 1
+    },
+    {
+      "name": "missing-output",
+      "rejected": true,
+      "exitCode": 1
+    },
+    {
+      "name": "duplicate-output",
+      "rejected": true,
+      "exitCode": 1
+    },
+    {
+      "name": "existing-empty",
+      "rejected": true,
+      "exitCode": 1
+    },
+    {
+      "name": "existing-raw",
+      "rejected": true,
+      "exitCode": 1
+    },
+    {
+      "name": "existing-file",
+      "rejected": true,
+      "exitCode": 1
+    }
+  ],
+  "nativeExecuted": false,
+  "browserStarted": false,
+  "serverStarted": false
+}
