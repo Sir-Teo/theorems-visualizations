@@ -177,70 +177,198 @@ export default {
     },
     // ───────────────────────────────────────────────────────────── 5
     {
-      n: 5,
-      title: 'Randomized computation',
-      summary: String.raw`Allowing an algorithm to flip coins and err with small probability gives the classes BPP, RP and ZPP. Repetition drives the error down exponentially, polynomial identities can be tested by evaluating at random points, and randomness gives fast algorithms for primality, matchings and verification. Yet randomness seems weaker than it looks: BPP has polynomial-size circuits and sits low in the polynomial hierarchy, and primality turned out to be deterministic after all.`,
-      items: [
-        { num: '5.1', kind: 'Definition', name: 'Probabilistic Turing machines and BPP', deps: ['toc-12.5'], refs: ['Arora–Barak ch. 7'],
-          pic: 'Run a randomized algorithm many times on one input; the fraction of accepting runs is plotted and must stay above 2/3 on yes-inputs and below 1/3 on no-inputs.' },
-        { num: '5.2', kind: 'Definition', name: 'RP, coRP and ZPP', deps: ['cplx-5.1'], refs: ['Arora–Barak ch. 7'],
-          pic: 'Three panels show one-sided error (never wrong on no-inputs), the opposite side, and zero error with a random running time whose histogram is drawn.' },
-        { num: '5.3', kind: 'Theorem', name: 'ZPP = RP ∩ coRP', deps: ['cplx-5.2'], refs: ['Arora–Barak ch. 7'],
-          pic: 'Alternate an RP and a coRP algorithm until one gives a certain answer; the number of rounds needed is geometrically distributed, as the simulated histogram shows.' },
-        { num: '5.4', kind: 'Theorem', name: 'Error reduction by repetition', deps: ['cplx-5.1'], refs: ['Arora–Barak ch. 7'],
-          pic: 'Take the majority of k independent runs; the error probability is plotted on a log scale against k and falls in a straight line, matching the Chernoff bound.' },
-        { num: '5.5', kind: 'Theorem', name: 'Schwartz–Zippel lemma', deps: [], refs: ['Arora–Barak ch. 7'],
-          pic: 'A nonzero polynomial of degree d over a grid Sⁿ is evaluated everywhere; its zeros are coloured, and their fraction never exceeds d/|S|, whatever polynomial the reader types.' },
-        { num: '5.6', kind: 'Algorithm', name: 'Polynomial identity testing', deps: ['cplx-5.5', 'cplx-5.2'], refs: ['Arora–Barak ch. 7'],
-          pic: 'Two arithmetic circuits are compared at random points; when they differ, a witness point is found within a few trials, while expanding them symbolically would explode.' },
-        { num: '5.7', kind: 'Algorithm', name: 'Perfect matchings via random Tutte matrices', deps: ['cplx-5.6', 'ladr-9.50'], refs: ['Arora–Barak ch. 7'],
-          pic: 'Fill the Tutte matrix of a graph with random numbers and compute its determinant; it is nonzero with high probability exactly when a perfect matching exists, tested on graphs the reader draws.' },
-        { num: '5.8', kind: 'Algorithm', name: 'Freivalds’ check of matrix products', deps: ['cplx-5.2'], refs: ['Arora–Barak ch. 7'],
-          pic: 'Claimed product C = AB is tested by multiplying both sides by a random 0/1 vector; plant an error in C and it is caught at least half the time, at quadratic rather than cubic cost.' },
-        { num: '5.10', kind: 'Theorem', name: 'PRIMES is in P (Agrawal–Kayal–Saxena)', deps: ['nt-3.12', 'cplx-3.2'], refs: ['Arora–Barak ch. 7'],
-          pic: 'The identity (X + a)ⁿ ≡ Xⁿ + a modulo (X^r − 1, n) is checked for small a; composites fail some check while primes pass all, and the running time is plotted against bit length.' },
-        { num: '5.11', kind: 'Algorithm', name: 'Random-walk algorithm for 2SAT', deps: ['cplx-5.2', 'toc-13.13'], refs: ['Arora–Barak ch. 7'],
-          pic: 'Start from a random assignment and flip a random variable of a violated clause; the Hamming distance to a fixed solution performs a random walk that hits zero in about n² steps.' },
-        { num: '5.12', kind: 'Theorem', name: 'Adleman: BPP ⊆ P/poly', deps: ['cplx-5.4', 'cplx-4.4'], refs: ['Arora–Barak ch. 7'],
-          pic: 'After amplification, a grid of inputs against random strings has bad cells so sparse that some column is good for every input; the reader shades bad cells and finds that column.' },
-        { num: '5.13', kind: 'Theorem', name: 'Sipser–Gács–Lautemann: BPP ⊆ Σ₂ ∩ Π₂', deps: ['cplx-5.4', 'cplx-3.4'], refs: ['Arora–Barak ch. 7'],
-          pic: 'A large set of accepting random strings can be covered by a few XOR-shifts of itself, a small one cannot; the reader tries shifts and sees the cube covered or not.' },
-        { num: '5.14', kind: 'Paper', name: 'PRIMES is in P',
-          paper: { authors: 'Manindra Agrawal, Neeraj Kayal and Nitin Saxena', year: 2004, title: 'PRIMES is in P',
-                   venue: 'Annals of Mathematics 160 (2): 781–793', doi: '10.4007/annals.2004.160.781' },
-          introduces: ['cplx-5.10'], deps: ['nt-2.5', 'cplx-3.2', 'cplx-5.6'], refs: [],
-          pic: 'Enter n and run the AKS test: find a small r with large multiplicative order of n, then check (X + a)ⁿ ≡ Xⁿ + a modulo (X^r − 1, n) for each a, and watch a Carmichael number that fools Fermat’s test fail one of these congruences.' },
-      ],
-    },
-    // ───────────────────────────────────────────────────────────── 6
-    {
-      n: 6,
-      title: 'Interactive proofs',
-      summary: String.raw`An interactive proof lets a powerful prover convince a randomized, polynomial-time verifier through conversation. Graph non-isomorphism, not known to be in NP, has a simple interactive proof; public coins turn out to be as good as private ones. Arithmetization — reading a Boolean formula as a polynomial — and the sum-check protocol show that interaction captures all of PSPACE, and with two non-communicating provers, all of nondeterministic exponential time.`,
-      items: [
-        { num: '6.1', kind: 'Definition', name: 'Interactive proof systems and IP', deps: ['toc-12.10', 'cplx-5.1'], refs: ['Arora–Barak ch. 8'],
-          pic: 'A message diagram between prover and verifier steps through rounds; the reader plays a cheating prover and watches the verifier’s acceptance rate stay below the soundness bound.' },
-        { num: '6.2', kind: 'Algorithm', name: 'Interactive proof for graph non-isomorphism', deps: ['cplx-6.1'], refs: ['Arora–Barak ch. 8'],
-          pic: 'The verifier secretly permutes one of two graphs and asks which it was; for isomorphic graphs the reader, as prover, can only guess, and the success rate settles at one half.' },
-        { num: '6.3', kind: 'Definition', name: 'Arthur–Merlin games: AM and MA', deps: ['cplx-6.1'], refs: ['Arora–Barak ch. 8'],
-          pic: 'Arthur’s coins are shown face up to Merlin; message diagrams for MA (Merlin first) and AM (Arthur first) are compared on the same problem.' },
-        { num: '6.4', kind: 'Theorem', name: 'Goldwasser–Sipser: public coins suffice', deps: ['cplx-6.3', 'cplx-6.2'], refs: ['Arora–Barak ch. 8'],
-          pic: 'Set lower-bound protocol: a random hash function maps a large set onto a target and a small set rarely hits it; the reader resizes the set and watches the hit rate separate.' },
-        { num: '6.5', kind: 'Theorem', name: 'Graph isomorphism is not NP-complete unless PH collapses', deps: ['cplx-6.4', 'cplx-3.6'], refs: ['Arora–Barak ch. 8'],
-          pic: 'Graph non-isomorphism in AM would put coNP in AM if GI were NP-complete, and the chain of inclusions animates the polynomial hierarchy collapsing to level two.' },
-        { num: '6.6', kind: 'Method', name: 'Arithmetization', deps: ['toc-1.9'], refs: ['Arora–Barak ch. 8'],
-          pic: 'Type a Boolean formula: AND becomes multiplication, NOT x becomes 1 − x, and the resulting polynomial agrees with the formula on every 0/1 input in the table.' },
-        { num: '6.7', kind: 'Algorithm', name: 'Sum-check protocol', deps: ['cplx-6.6', 'cplx-5.5'], refs: ['Arora–Barak ch. 8'],
-          pic: 'The prover sends a univariate polynomial each round and the verifier checks it at a random point; a lying prover is caught with high probability, tallied over repeated runs.' },
-        { num: '6.8', kind: 'Theorem', name: 'coNP ⊆ IP (Lund–Fortnow–Karloff–Nisan)', deps: ['cplx-6.7', 'cplx-3.1'], refs: ['Arora–Barak ch. 8'],
-          pic: 'Counting satisfying assignments of a formula becomes a sum of its arithmetization over the cube; the sum-check rounds certify the count zero for an unsatisfiable formula.' },
-        { num: '6.9', kind: 'Theorem', name: 'IP = PSPACE (Shamir)', deps: ['cplx-6.8', 'toc-14.7'], refs: ['Arora–Barak ch. 8'],
-          pic: 'Quantifiers become products and sums, and degree-reduction steps keep polynomials small; the degree of each round’s polynomial is plotted with and without linearization.' },
-        { num: '6.10', kind: 'Theorem', name: 'MIP = NEXP (Babai–Fortnow–Lund)', deps: ['cplx-6.9'], refs: ['Arora–Barak ch. 8'],
-          pic: 'Two provers are questioned in separate rooms; cross-checking their answers catches inconsistent strategies, as a match-rate meter shows for strategies the reader designs.' },
-        { num: '6.11', kind: 'Method', name: 'Program checking (Blum–Kannan)', deps: ['cplx-6.1'], refs: ['Arora–Barak ch. 8'],
-          pic: 'A buggy sorting or gcd routine is wrapped in a checker that tests its outputs on random self-related inputs; planted bugs are detected at the predicted rate.' },
-      ],
+      "n": 5,
+      "title": "Randomized computation",
+      "summary": "Randomness changes the guarantee on each fixed input, rather than choosing an easy input distribution. Exact finite experiments show one-sided certificates, independent amplification, algebraic fingerprints and random walks. Nonuniform advice and two quantifiers bound BPP, while the AKS algorithm makes primality testing deterministic.",
+      "items": [
+        {
+          "num": "5.1",
+          "kind": "Definition",
+          "name": "Probabilistic Turing machines and BPP",
+          "deps": [],
+          "see": [
+            "toc-12.5"
+          ],
+          "refs": [
+            "Arora–Barak, author web draft (2007), §7.1, printed7.2–7.3 / PDF132–133"
+          ],
+          "pic": "Inspect every random tape for eight inputs whose true label is their last bit. Compare exact per-input success with seeded samples. The broken mode deliberately leaves one input at success 1/2, even if average accuracy looks high."
+        },
+        {
+          "num": "5.2",
+          "kind": "Definition",
+          "name": "RP, coRP and ZPP",
+          "deps": [
+            "cplx-5.1"
+          ],
+          "refs": [
+            "Arora–Barak author draft, §7.3, printed7.6–7.7 / PDF136–137"
+          ],
+          "pic": "Choose the true input side and inspect the two one-sided output laws. Compare 512 actual seeded completion runtimes with the ideal geometric law, including the selected first runtime and any draws beyond the plotted window."
+        },
+        {
+          "num": "5.3",
+          "kind": "Theorem",
+          "name": "ZPP = RP ∩ coRP",
+          "deps": [
+            "cplx-5.2",
+            "algo-12.17"
+          ],
+          "refs": [
+            "Arora–Barak author draft, Theorem7.8 and §7.4.2; full two-way construction supplied here"
+          ],
+          "pic": "Compare fresh rounds with deliberately reused randomness. Exact finite tails and a selected seeded trace show why trustworthy answers alone do not imply finite expected completion without the progress assumption."
+        },
+        {
+          "num": "5.4",
+          "kind": "Theorem",
+          "name": "Error reduction by repetition",
+          "deps": [
+            "cplx-5.1",
+            "algo-12.18"
+          ],
+          "refs": [
+            "Arora–Barak author draft, §7.4.1; explicit moment bound and constants derived here"
+          ],
+          "pic": "Compare an exactly computed odd-majority error with its rigorous bounds. Reusing one bit deliberately breaks independence and keeps error at 1−p. The plotted experiment concerns one fixed input."
+        },
+        {
+          "num": "5.5",
+          "kind": "Theorem",
+          "name": "Schwartz–Zippel lemma",
+          "deps": [],
+          "refs": [
+            "CMU15-859E (2015), Lecture11, Theorem11.1 and complete induction, pp1–2; Arora–Barak AppendixA, LemmaA.25"
+          ],
+          "pic": "Count every zero on a finite grid over a prime field. Vary coefficients and roots, then choose the zero polynomial or Xᵖ−X. The latter is formally nonzero but vanishes at every field element, where the bound is only the trivial one."
+        },
+        {
+          "num": "5.6",
+          "kind": "Algorithm",
+          "name": "Polynomial identity testing",
+          "deps": [
+            "cplx-5.5",
+            "cplx-5.2"
+          ],
+          "refs": [
+            "Arora–Barak author draft, §7.2.2, including the intermediate-bit-length warning; CMU15-859E Lecture11 pp1–2"
+          ],
+          "pic": "Run two product circuits on actual finite-field inputs. Equal rearrangements always agree; changing a factor can produce a concrete mismatch witness. Gate operations are counted directly, alongside the number of monomials in the unreduced formal product."
+        },
+        {
+          "num": "5.7",
+          "kind": "Algorithm",
+          "name": "Perfect matchings via random Tutte matrices",
+          "deps": [
+            "cplx-5.6"
+          ],
+          "see": [
+            "ladr-9.50"
+          ],
+          "refs": [
+            "CMU15-859E (2015), Lecture11, Definition11.2/Theorem11.3, pp2–3; full cycle-cancellation proof supplied here"
+          ],
+          "pic": "Edit a small graph and compare a directly enumerated perfect matching with actual random Tutte determinants. A singular sampled matrix is an inconclusive test even when the graph has a matching. Zero edge samples remain allowed."
+        },
+        {
+          "num": "5.8",
+          "kind": "Algorithm",
+          "name": "Freivalds’ check of matrix products",
+          "deps": [
+            "cplx-5.2"
+          ],
+          "refs": [
+            "Price, UT Austin CS388R (2021), Lecture11 §2, pp1–3; the proof here conditions on all other coordinates directly"
+          ],
+          "pic": "Generate integer matrices, plant one or two opposing errors in the claimed product, and inspect every binary-vector test. Select an actual witness and compare the residual with the exact error matrix."
+        },
+        {
+          "num": "5.10",
+          "kind": "Theorem",
+          "name": "PRIMES is in P (Agrawal–Kayal–Saxena)",
+          "deps": [
+            "nt-2.5"
+          ],
+          "see": [
+            "nt-3.12",
+            "cplx-3.2",
+            "cplx-5.14"
+          ],
+          "refs": [
+            "Agrawal–Kayal–Saxena, author manuscript, Lemma2.1, Algorithm4 and Theorem4.1, pp2–6"
+          ],
+          "pic": "Inspect every coefficient of the full binomial residual. Compare primes and composites, and break the unit hypothesis with a=0. The displayed n-coefficient count exposes why this direct test is too large for a polynomial-in-bit-length algorithm."
+        },
+        {
+          "num": "5.11",
+          "kind": "Algorithm",
+          "name": "Random-walk algorithm for 2SAT",
+          "deps": [
+            "cplx-5.2",
+            "algo-12.17"
+          ],
+          "see": [
+            "toc-13.13"
+          ],
+          "refs": [
+            "Lovett, UCSD CSE200 (2013), Lecture15 §1.1, p1; full drift/timeout bound supplied here"
+          ],
+          "pic": "Step through an actual assignment walk and compare it with the exact absorbing Markov chain on every assignment of a small formula. An unsatisfiable example has no success certificate and visibly disables the satisfiable-input bound."
+        },
+        {
+          "num": "5.12",
+          "kind": "Theorem",
+          "name": "Adleman: BPP ⊆ P/poly",
+          "deps": [
+            "cplx-5.4",
+            "cplx-4.4"
+          ],
+          "refs": [
+            "Arora–Barak author draft, §7.6, Theorem7.17, printed7.12–7.13 / PDF142–143"
+          ],
+          "pic": "Inspect an entire finite input-by-tape table. Count bad rows for each column and find one common good tape. Deliberately exceed the strict union-bound budget to construct a table with no good column."
+        },
+        {
+          "num": "5.13",
+          "kind": "Theorem",
+          "name": "Sipser–Gács–Lautemann: BPP ⊆ Σ₂ ∩ Π₂",
+          "deps": [
+            "cplx-5.4",
+            "cplx-3.4"
+          ],
+          "refs": [
+            "Arora–Barak author draft, §7.7, Theorem7.18, printed7.13–7.14; complement probability and rounding corrected explicitly"
+          ],
+          "pic": "Inspect a finite XOR cube, select a dense or sparse acceptance set and combine actual shifts. Exhaustive search finds a best family for this small cube; the general proof only asserts existence. Read both size conditions before inferring the dense/sparse conclusion."
+        },
+        {
+          "num": "5.14",
+          "kind": "Paper",
+          "name": "PRIMES is in P",
+          "paper": {
+            "authors": "Manindra Agrawal, Neeraj Kayal and Nitin Saxena",
+            "year": 2004,
+            "title": "PRIMES is in P",
+            "venue": "Annals of Mathematics 160 (2): 781–793",
+            "doi": "10.4007/annals.2004.160.781"
+          },
+          "introduces": [
+            "cplx-5.10"
+          ],
+          "deps": [
+            "cplx-5.10",
+            "nt-2.5"
+          ],
+          "see": [
+            "cplx-3.2",
+            "cplx-5.6"
+          ],
+          "refs": [
+            "Agrawal, Kayal & Saxena, PRIMES is in P, IIT Kanpur author manuscript, Algorithm4/Lemmas4.3–4.9/Theorem5.1, actual pp3–6"
+          ],
+          "pic": "Run the complete bounded algorithm, inspect its stopping reason and step through its actual checks. Carmichael 561 is rejected by a gcd check before any polynomial loop. Prime inputs that reach the loop show every tested congruence."
+        }
+      ]
     },
     // ───────────────────────────────────────────────────────────── 7
     {
