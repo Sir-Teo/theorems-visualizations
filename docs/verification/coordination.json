@@ -24,7 +24,7 @@
       "Acceptedwrittenprerequisitegatecomplete:all64nonmathcollections\u226525writteninputs,0shortfall/unknowns,48furthercollections meettarget. Sourcequeue5unchanged.",
       "Latest immutable checkpoint14 (5eb8fb42) passes all 2,233 tests on existing CI major Node22.23.3, strict/static/queue/inventory checks pass. Prior Node26 checkpoint13 failure and independent diagnostics remain unresolved compatibility evidence; no assertion/model/runtime policy changed.",
       "Rejected chunk prototype remains unaccepted. Original-only control reproduces its cold/warm discrepancy; no renderer or timing acceptance.",
-      "Frozen light/dark paired cases independently accepted. Current23955-edge fixture and full-oracle source/model/PREPARE boundaries independently accepted, root integrationchecks pass. New single current-light case staged at d7d07ed8; awaiting final fresh quiet acknowledgement before execution. No current pixels, wider matrix, native lifecycle or60fps acceptance.",
+      "Frozen light/dark paired cases independently accepted. Current light case at d7d07ed8 exits zero, but all twelve alternate draws use original fallback after optional metadata drops; independent saved-evidence review pending. No current optimized binding, wider matrix, native lifecycle or 60 fps acceptance.",
       "Frozen BIGHIST3.5 service restriction persists; no retry or edge acceptance."
     ]
   },
@@ -32,8 +32,8 @@
     {
       "agent": "logic_peer",
       "worktree": "/Users/teodev/.codex/worktrees/atlas-logic-peer/theorems-visualizations",
-      "status": "browser-heavy-hold",
-      "current": "Third explicit hold acknowledged for root single current-light case; all browser/server/heavy/model jobs closed. Light source/report reading only until root release.",
+      "status": "available-source-review",
+      "current": "Current full case closed; hold released. No further native/full case authorised.",
       "owns": [
         "Unique isolated prototype/model/native/resource reports; production and shared runtime preserved"
       ],
@@ -42,8 +42,8 @@
     {
       "agent": "deep_peer",
       "worktree": "/Users/teodev/.codex/worktrees/atlas-deep-peer/theorems-visualizations",
-      "status": "browser-heavy-hold",
-      "current": "Third explicit hold acknowledged for root single current-light case; all browser/server/heavy/model jobs closed. Light source/report reading only until root release.",
+      "status": "awaiting-curve-producer",
+      "current": "Hold released; independent 24-byte/path curve-bounds source/model review follows immutable thermo proposal. Node26 diagnosis stopped.",
       "owns": [
         "Unique independent binding/pixel/resource/lifecycle evidence after immutable producer boundary"
       ],
@@ -52,8 +52,8 @@
     {
       "agent": "arch_source",
       "worktree": "/Users/teodev/.codex/worktrees/atlas-arch-source/theorems-visualizations",
-      "status": "browser-heavy-hold",
-      "current": "Third explicit hold acknowledged for root single current-light case; all browser/server/heavy/model jobs closed. Light source/report reading only until root release.",
+      "status": "available-source-review",
+      "current": "Hold released; source/report work available without coordinated full-map execution.",
       "owns": [
         "QINFO content and bounded correctness/metadata successors"
       ],
@@ -62,8 +62,8 @@
     {
       "agent": "imaging_source",
       "worktree": "/Users/teodev/.codex/worktrees/atlas-imaging-source/theorems-visualizations",
-      "status": "closing-offline-audit-before-hold",
-      "current": "Fresh quiet acknowledgement requested after any active offline-heavy task closes; no tiny browser execution authorized.",
+      "status": "current-offline-peer",
+      "current": "Hold released; auditing saved current-light raw/pixel/trace/resource/binding evidence, then tiny first-stop and protocol proposal offline. No browser retry.",
       "owns": [
         "Unique CLIMATE peer evidence; REL producer boundary complete"
       ],
@@ -72,8 +72,8 @@
     {
       "agent": "thermo_prereqs",
       "worktree": "/Users/teodev/.codex/worktrees/atlas-thermo-prereqs/theorems-visualizations",
-      "status": "browser-heavy-hold",
-      "current": "Third explicit hold acknowledged for root single current-light case; all browser/server/heavy/model jobs closed. Light source/report reading only until root release.",
+      "status": "curve-source-model",
+      "current": "Hold released; executing bounded new-files-only 24-byte/path curve-bounds source/model checks before immutable independent peer. No browser.",
       "owns": [
         "Unique REL peer evidence; CLIMATE producer boundary complete"
       ],
@@ -82,8 +82,8 @@
     {
       "agent": "ctrl_prereqs",
       "worktree": "/Users/teodev/.codex/worktrees/atlas-ctrl-prereqs/theorems-visualizations",
-      "status": "browser-heavy-hold",
-      "current": "Third explicit hold acknowledged for root single current-light case; all browser/server/heavy/model jobs closed. Light source/report reading only until root release.",
+      "status": "awaiting-tiny-independent-peer",
+      "current": "Hold released; native tiny remains stopped pending independent first-stop/protocol review. S2 reference difference cause unproved.",
       "owns": [
         "CM producer; GEOG independent peer complete"
       ],
@@ -3314,5 +3314,15 @@
     "status": "accepted-read-only-feasibility-and-domination-proof-only",
     "report": "docs/verification/map-curve-box-domination-independent-peer.md",
     "scope": "Actual Float32 inclusive extrema plus same-associated or proved inflated positive magnitude sum can dominate old computed segment boxes. Unguarded grouped sum has a retained one-ULP counterexample. Original16-byte/path design is arithmetic only; later private source-model prototype explicitly counts extra8-byte/path mapping snapshot (24 total), no existing runtime/observer/fixture edits or performance claim."
+  },
+  "currentLightRootResult": {
+    "commit": "d7d07ed84da592a04c8c038ffc405d5b5607bfc0",
+    "status": "runner-pass-all-fallback-independent-peer-pending",
+    "report": "docs/verification/map-current-light-state-root.md",
+    "output": "/tmp/atlas-root-current-light-state",
+    "optimizedDraws": 0,
+    "draws": 12,
+    "productionAccepted": false,
+    "performanceAccepted": false
   }
 }
