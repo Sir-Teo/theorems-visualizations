@@ -40,6 +40,7 @@ an eigen-direction, an orthonormal frame, an ellipse's axes) with live numbers.
 
 ## Physics & astronomy, Earth & environment, engineering
 
+- A zero boundary residual does not establish attraction: inspect the tendency from the interior. For a tabulated fold, inspect both adjacent slopes, retain near-zero nodes with a scale-aware tolerance and distinguish one-sided attraction from a two-sided attractor. Check the exact thresholds through real saved states. See the [climate review](verification/wave5-climate-review.md).
 - Separate a map's linear scale from an empirical feature-count rule: for fixed ground extent, width changes by the denominator ratio, while Töpfer's target count uses its square root. Distinguish finite-time mass conservation from a cartogram's uniform-density area target, and state orientation/injectivity before using a signed Jacobian. See the [GEOG7 review](verification/wave5-geog-review.md).
 - **Deps** are derivational: the derivation starts from that law or uses that theorem. A law
   taken as a postulate (Newton's second law, Maxwell's equations) may have only mathematical

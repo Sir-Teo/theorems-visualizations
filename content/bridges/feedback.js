@@ -2,7 +2,7 @@
 export default {
   slug: 'feedback',
   title: 'Feedback: regulation from machines to genes',
-  blurb: String.raw`A controller measures what happened and uses the error to change what happens next. The same loop explains disturbance rejection in engineering, homeostasis in physiology and self-repression in a gene; its gain, sign and delay decide whether it corrects, oscillates or remembers.`,
+  blurb: String.raw`A controller measures what happened and uses the error to change what happens next. The same loop explains disturbance rejection in engineering, homeostasis in physiology and self-repression in a gene; its gain, sign and delay decide whether it corrects, oscillates or remembers. Positive loops can preserve history in both a gene circuit and an icy climate.`,
   steps: [
     { id: 'ctrl-1.4', note: String.raw`Closing a negative-feedback loop changes its transfer function to $PC/(1+PCH)$. The denominator records repeated circulation around the loop and determines the closed-loop poles.` },
     { id: 'ctrl-1.8', note: String.raw`For a stable unity-feedback loop, a disturbance is filtered by the sensitivity $S=1/(1+PC)$. Large loop gain can reject slow disturbances, while other frequencies can pass through or even be amplified.` },
@@ -15,5 +15,6 @@ export default {
     { id: 'ctrl-4.9', note: String.raw`The instantaneous model hides a limit: delayed correction can arrive after the error has reversed. In the specified integral-control loop, increasing gain past a delay-dependent threshold replaces settling with growing oscillations.` },
     { id: 'sysbio-5.2', note: String.raw`A three-gene repressilator has six mRNA/protein stages even without an explicit delay term. Its symmetric model has an exact local gain threshold controlled by the relative decay rates. Crossing that linear threshold destabilizes the equilibrium; a stable nonlinear oscillation requires additional information beyond the eigenvalue crossing.` },
     { id: 'sysbio-4.4', note: String.raw`Change the architecture to a bistable gene circuit and feedback can preserve a choice instead of erasing an error. Two switching thresholds create hysteresis, so the same current input can support different states depending on history.` },
+    { id: 'climate-5.3', note: String.raw`Ice reflectivity gives a climate model a related memory. In the stated slow ice-line closure, a cooling protocol can enter Snowball while the reversed sunlight protocol remains in its cold basin. These calculated quasistatic paths depend on the forcing steps and model assumptions; they are not a forecast of Earth's transition thresholds.` },
   ],
 };
