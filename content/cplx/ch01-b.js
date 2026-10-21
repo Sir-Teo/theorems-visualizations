@@ -87,7 +87,7 @@ The partition theorem (alg-1.25) makes the refinement invariant precise. Equal c
             { nodes: [...Array.from({ length: 4 }, (_, i) => ({ id: i, x: 0.4 + i * 1.1, y: 3 })), ...tri(7.6, 3, 4)], edges: [[0, 1], [1, 2], [2, 3], [4, 5], [5, 6], [6, 4]] }],
           c6: () => [mk(circ(6, 5, 3, 2.3), cyc(6)), { nodes: [...tri(2.7, 3, 0), ...tri(7.3, 3, 3)], edges: [[0, 1], [1, 2], [2, 0], [3, 4], [4, 5], [5, 3]] }],
           cube: () => [mk(cubePos(5, 3), cubeE), mk(circ(8, 5, 3, 2.4), [...cyc(8), [0, 4], [1, 5], [2, 6], [3, 7]])],
-          iso: () => [mk(circ(7, 5, 3, 2.3), [...cyc(7), [0, 3]]), mk(circ(7, 5, 3, 2.3, 0.4), [[0, 2], [2, 4], [4, 6], [6, 1], [1, 3], [3, 5], [5, 0], [0, 4]])],
+          iso: () => [mk(circ(7, 5, 3, 2.3), [...cyc(7), [0, 3]]), mk(circ(7, 5, 3, 2.3, 0.4), [[0, 2], [2, 4], [4, 6], [6, 1], [1, 3], [3, 5], [5, 0], [0, 6]])],
         };
         const pre = v.select('pair', [{ value: 'p7', label: '$P_7$ vs $P_4\\cup C_3$' }, { value: 'c6', label: '$C_6$ vs $2C_3$' }, { value: 'cube', label: 'cube vs Wagner' }, { value: 'iso', label: 'isomorphic pair' }], 'p7', { onChange: () => load() });
         const SA = v.stage({ x: [0, 10], y: [0, 6], axes: false, height: 250, minWidth: 260, title: 'graph $G$' });

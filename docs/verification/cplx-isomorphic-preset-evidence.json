@@ -1,0 +1,49 @@
+{
+  "identityPredecessor": "2c7f0acbd0ca746e84a158b3670ca9ddf0403fef",
+  "preset": {
+    "pass": true,
+    "files": 16,
+    "onlyOnePresetEdgeLiteral": true,
+    "bijection": [
+      0,
+      2,
+      4,
+      6,
+      1,
+      3,
+      5
+    ],
+    "adjacencyChecks": 49,
+    "checks": 55,
+    "oldTriangles": [
+      0,
+      1
+    ],
+    "oldActualHistogramFailure": true,
+    "finalHistogramEqualityEveryFrame": true,
+    "regularNonisomorphicCounterexamplePreserved": true
+  },
+  "combinedPreservation": {
+    "pass": true,
+    "completeModules": 16,
+    "objects": 53,
+    "functions": 53,
+    "changedFunctions": 1,
+    "allowedLiterals": 4,
+    "syllabusByteIdentical": true,
+    "sourceFlagsAndDependenciesUnchanged": true,
+    "allSharedRuntimeBytesUnchanged": true
+  },
+  "native": {
+    "path": "/tmp/atlas-cplx-empty-count/after-preset",
+    "states": 14,
+    "pictures": 28,
+    "errors": [],
+    "allFullCanvasesAndReadoutsPersonallyInspected": true
+  },
+  "strictErrors": 0,
+  "strictWarnings": 0,
+  "staticErrors": 0,
+  "staticWarnings": 0,
+  "independentPeerPending": true
+}
