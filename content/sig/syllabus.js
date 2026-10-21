@@ -155,49 +155,253 @@ export default {
     },
     // ───────────────────────────────────────────────────────────── 5
     {
-      n: 5,
-      title: 'The continuous-time Fourier transform',
-      summary: String.raw`Letting the period of a periodic signal grow without bound turns the line spectrum into a continuous one: the Fourier transform. Its properties — shifts become phase ramps, convolution becomes multiplication, energy is preserved — are the everyday tools of the subject. With distributions, impulses and sinusoids get transforms too, and the theory delivers deep limits: a signal cannot be concentrated in both time and frequency, and a band-limited signal cannot be time-limited.`,
-      items: [
-        { num: '5.1', kind: 'Definition', name: 'Fourier transform as the limit of Fourier series', deps: ['sig-4.1', 'rca-9.1'], refs: ['Oppenheim–Willsky §4.1', 'Lathi ch. 7'],
-          pic: 'Stretch the period of a pulse train: the harmonics crowd closer together while their envelope keeps its shape, converging to the continuous transform of a single pulse.' },
-        { num: '5.2', kind: 'Theorem', name: 'Fourier inversion', deps: ['sig-5.1', 'rca-9.11'], refs: ['Oppenheim–Willsky §4.1'],
-          pic: 'Integrate the inverse transform over a band [−W, W] and increase W: the reconstruction converges to the original signal, with the error shown shrinking.' },
-        { num: '5.3', kind: 'Proposition', name: 'Linearity, time shift and frequency shift', deps: ['sig-5.1', 'rca-9.2'], refs: ['Oppenheim–Willsky §4.3'],
-          pic: 'Drag a pulse in time: its magnitude spectrum is frozen while its phase tilts linearly; multiply it by a carrier and the whole spectrum slides along the frequency axis.' },
-        { num: '5.4', kind: 'Proposition', name: 'Time scaling: compress in time, spread in frequency', deps: ['sig-5.3'], refs: ['Oppenheim–Willsky §4.3'],
-          pic: 'Squeeze a pulse with a slider: the transform stretches and flattens by the reciprocal factor, the product of the two widths staying fixed.' },
-        { num: '5.5', kind: 'Theorem', name: 'Duality', deps: ['sig-5.2'], refs: ['Oppenheim–Willsky §4.3'],
-          pic: 'A rectangle transforms to a sinc and a sinc transforms back to a rectangle; a toggle swaps the time and frequency panels for a gallery of pairs.' },
-        { num: '5.6', kind: 'Theorem', name: 'Convolution theorem', deps: ['sig-5.3', 'sig-3.2', 'fa-7.2'], refs: ['Oppenheim–Willsky §4.4'],
-          pic: 'Convolve two signals by the sliding-kernel method and by multiplying their spectra and inverting: the two outputs agree, with timings for each method shown.' },
-        { num: '5.7', kind: 'Theorem', name: 'Multiplication (modulation) property', deps: ['sig-5.6', 'sig-5.5'], refs: ['Oppenheim–Willsky §4.5'],
-          pic: 'Multiply a signal by a window or a cosine: the spectrum becomes the convolution of the two spectra, shown as the original spectrum smeared or copied to ±ω_c.' },
-        { num: '5.8', kind: 'Theorem', name: 'Differentiation and integration properties', deps: ['sig-5.3'], refs: ['Oppenheim–Willsky §4.3'],
-          pic: 'Differentiate a pulse and its spectrum gets multiplied by jω, boosting high frequencies; integrate it and low frequencies are boosted, with a delta appearing at DC when the area is nonzero.' },
-        { num: '5.9', kind: 'Theorem', name: 'Parseval–Plancherel: energy is preserved', deps: ['sig-5.2', 'rca-9.13'], refs: ['Oppenheim–Willsky §4.3'],
-          pic: 'Shade |x(t)|² and |X(ω)|²/2π for a drawn signal: the two areas match to four digits however the signal is redrawn.' },
-        { num: '5.10', kind: 'Proposition', name: 'The Gaussian is its own Fourier transform', deps: ['sig-5.4', 'fa-7.6'], refs: ['Oppenheim–Willsky §4.2'],
-          pic: 'Vary the width of a Gaussian: its transform is a Gaussian of reciprocal width, and at one special width the two plots are identical.' },
-        { num: '5.11', kind: 'Proposition', name: 'Rectangular pulse and sinc', deps: ['sig-5.1'], refs: ['Oppenheim–Willsky §4.2', 'Lathi ch. 7'],
-          pic: 'Widen a rectangular pulse: its sinc spectrum narrows, the zero crossings at multiples of 2π/T marked and moving inward.' },
-        { num: '5.12', kind: 'Theorem', name: 'Riemann–Lebesgue lemma', deps: ['sig-5.1', 'rca-9.6'], refs: ['Oppenheim–Willsky §4.1'],
-          pic: 'For integrable signals with sharper and sharper corners, the spectra still decay to zero at high frequency — just more slowly — as log-scale envelopes show.' },
-        { num: '5.13', kind: 'Definition', name: 'Transforms of impulses and sinusoids via distributions', deps: ['sig-5.2', 'sig-1.8', 'fa-7.15'], refs: ['Oppenheim–Willsky §4.2'],
-          pic: 'Lengthen a windowed cosine: its spectrum concentrates into two ever-narrower spikes of fixed area at ±ω₀, the transform of the eternal cosine.' },
-        { num: '5.14', kind: 'Theorem', name: 'Impulse train ↔ impulse train (Poisson summation)', deps: ['sig-5.13', 'sig-4.1'], refs: ['Oppenheim–Willsky §4.2'],
-          pic: 'Change the spacing T of an impulse comb: its transform is a comb with spacing 2π/T, and summing a Gaussian’s samples checks the Poisson summation formula numerically.' },
-        { num: '5.15', kind: 'Theorem', name: 'Uncertainty principle for signals (Gabor limit)', deps: ['sig-5.4', 'sig-5.9', 'sig-5.10'], refs: ['Lathi ch. 7'],
-          pic: 'Draw any pulse: its RMS duration and RMS bandwidth are computed and their product is plotted against the lower bound ½, which only Gaussians reach.' },
-        { num: '5.16', kind: 'Theorem', name: 'Band-limited signals cannot be time-limited', deps: ['sig-5.5', 'fa-7.22'], refs: ['Oppenheim–Willsky §4.3'],
-          pic: 'Truncate a band-limited signal to a finite window: its spectrum immediately grows tails outside the band, and no window can avoid them.' },
-        { num: '5.17', kind: 'Definition', name: 'Magnitude, phase and group delay', deps: ['sig-5.3'], refs: ['Oppenheim–Willsky §6.1', 'Oppenheim–Willsky §6.2'],
-          pic: 'Scramble the phase of a signal’s spectrum while keeping the magnitude: speech becomes unintelligible, while keeping phase and flattening magnitude keeps it recognisable.' },
-        { num: '5.18', kind: 'Concept', name: 'Energy spectral density and autocorrelation', deps: ['sig-5.9', 'sig-3.14'], refs: ['Lathi ch. 7'],
-          pic: 'Compute the autocorrelation of a pulse by sliding it over itself; its transform matches |X(ω)|², the energy spectral density, overlaid.' },
-      ],
+      "n": 5,
+      "title": "The continuous-time Fourier transform",
+      "summary": "A continuous spectrum replaces the harmonics of a periodic signal. The transform convention fixes every factor of2π; function-space assumptions decide when inversion, products and energy identities are legitimate. Exact pulse and Gaussian models make those rules visible, while distributions, concentration limits and phase distinguish several meanings of a spectrum.",
+      "items": [
+        {
+          "num": "5.1",
+          "kind": "Definition",
+          "name": "Fourier transform as the limit of Fourier series",
+          "deps": [
+            "sig-4.1",
+            "rca-9.1"
+          ],
+          "refs": [
+            "MIT RES.6-007 (Oppenheim,2011), Lecture8 pp.1–6, pulse repetition and transform pair"
+          ],
+          "pic": "Increase the repetition period. The right panel draws $Tc_k$, so its stems remain on the single-pulse sinc envelope while their spacing shrinks. The left compares the pulse with a finite Fourier-series reconstruction over the central period; the finite sum retains oscillations near jumps."
+        },
+        {
+          "num": "5.2",
+          "kind": "Theorem",
+          "name": "Fourier inversion",
+          "deps": [
+            "sig-5.1",
+            "rca-9.11"
+          ],
+          "refs": [
+            "MIT RES.6-007 (Oppenheim,2011), Lecture8 transform/inverse pair; RCA9.11 with converted convention"
+          ],
+          "pic": "Widen the inverse-integration band. The reconstructed Cauchy pulse approaches the exact signal, while the frequency panel shows the included spectral interval. The probe reports the actual pointwise error and an analytic bound valid at every time."
+        },
+        {
+          "num": "5.3",
+          "kind": "Proposition",
+          "name": "Linearity, time shift and frequency shift",
+          "deps": [
+            "sig-5.1",
+            "rca-9.2"
+          ],
+          "refs": [
+            "MIT RES.6-007 (Oppenheim,2011), Lecture9 pp.1–4 and transparency9.8"
+          ],
+          "pic": "Delay and modulate a Gaussian, and add a second unshifted Gaussian with a signed weight. Real and imaginary parts move together in both panels. At zero weights the entire signal and spectrum can vanish; no phase is assigned there."
+        },
+        {
+          "num": "5.4",
+          "kind": "Proposition",
+          "name": "Time scaling: compress in time, spread in frequency",
+          "deps": [
+            "sig-5.3"
+          ],
+          "refs": [
+            "MIT RES.6-007 (Oppenheim,2011), Lecture9 narrative pp.1–2; direct signed change of variable"
+          ],
+          "pic": "Choose the sign and magnitude of the time scale. A compressed pulse has a wider spectrum with a smaller peak. The original signal and its transform are faint comparisons; the shifted complex pulse makes a negative scale visibly different."
+        },
+        {
+          "num": "5.5",
+          "kind": "Theorem",
+          "name": "Duality",
+          "deps": [
+            "sig-5.2"
+          ],
+          "refs": [
+            "MIT RES.6-007 (Oppenheim,2011), Lecture9 duality transparency9.6; converted inversion proof"
+          ],
+          "pic": "Swap the roles of signal and transform. The Gaussian pair and the bilateral-exponential/Cauchy-shaped pair show the exact factor2π on the second application. The readout compares the predicted dual with the reflected original at your probe."
+        },
+        {
+          "num": "5.6",
+          "kind": "Theorem",
+          "name": "Convolution theorem",
+          "deps": [
+            "sig-5.3",
+            "sig-3.2",
+            "fa-7.2"
+          ],
+          "refs": [
+            "MIT RES.6-007 (Oppenheim,2011), Lecture9 convolution transparency9.9; direct absolute-integral proof"
+          ],
+          "pic": "Change the two pulse widths and their relative delay. The first panel gives the actual overlap-area output; the second shows the complex spectral product. At the probe, an interval-intersection calculation gives the convolution directly."
+        },
+        {
+          "num": "5.7",
+          "kind": "Theorem",
+          "name": "Multiplication (modulation) property",
+          "deps": [
+            "sig-5.6",
+            "sig-5.5"
+          ],
+          "refs": [
+            "MIT RES.6-007 (Oppenheim,2011), Lecture9 modulation discussion; direct inverse-integral proof"
+          ],
+          "pic": "Multiply two offset Gaussians, or switch to a cosine carrier. A narrow window broadens the product spectrum; a cosine makes two shifted copies. The product mode computes its center and height by completing the square."
+        },
+        {
+          "num": "5.8",
+          "kind": "Theorem",
+          "name": "Differentiation and integration properties",
+          "deps": [
+            "sig-5.3",
+            "sig-1.10",
+            "fa-7.15"
+          ],
+          "refs": [
+            "MIT RES.6-007 (Oppenheim,2011), Lecture9 integration/differentiation transparency9.8; distributional proof"
+          ],
+          "pic": "Choose differentiation, the primitive of a zero-mean Gaussian derivative, or the primitive of a positive Gaussian. The positive-area case displays the principal-value density away from zero and reports the separate delta mass; the gap is not filled with a fabricated value."
+        },
+        {
+          "num": "5.9",
+          "kind": "Theorem",
+          "name": "Parseval–Plancherel: energy is preserved",
+          "deps": [
+            "sig-5.2",
+            "rca-9.13"
+          ],
+          "refs": [
+            "MIT RES.6-007 (Oppenheim,2011), Lecture9 Parseval transparency9.7; Oppenheim–Verghese MIT6.011(2010) §2.3.2 pp.32–34"
+          ],
+          "pic": "Compare a Gaussian with a Cauchy pulse. The panels compare the time and frequency energy densities, while separate window controls expose omitted tails. The readout distinguishes the exact total energy from the two finite-window integrals."
+        },
+        {
+          "num": "5.10",
+          "kind": "Proposition",
+          "name": "The Gaussian is its own Fourier transform",
+          "deps": [
+            "sig-5.4",
+            "fa-7.6"
+          ],
+          "refs": [
+            "FA7.6 normalized Gaussian proof; direct differential-equation and scaling derivation"
+          ],
+          "pic": "Vary the Gaussian width, then choose engineering or unitary amplitude. Reciprocal widths remain, but only the unitary curves coincide at width1. The readout gives both center heights and their conversion factor."
+        },
+        {
+          "num": "5.11",
+          "kind": "Proposition",
+          "name": "Rectangular pulse and sinc",
+          "deps": [
+            "sig-5.1"
+          ],
+          "refs": [
+            "MIT RES.6-007 (Oppenheim,2011), Lecture8 rectangular-pulse pair; Stroock, Topics in Fourier Analysis(2024), Eq.7.11 pp.18–19"
+          ],
+          "pic": "Widen the pulse and watch its sinc zeros move inward. The selected frequency reports the signed transform, including the removable value at zero. Marked gold points identify the first three positive and negative zeros."
+        },
+        {
+          "num": "5.12",
+          "kind": "Theorem",
+          "name": "Riemann–Lebesgue lemma",
+          "deps": [
+            "sig-5.1",
+            "rca-9.6",
+            "sig-5.10"
+          ],
+          "refs": [
+            "MIT RES.6-007 (Oppenheim,2011), Lecture8 existence discussion; RCA9.6 translation proof"
+          ],
+          "pic": "Compare a rectangle, triangle and Gaussian at an adjustable frequency range. The rectangle and triangle have explicit algebraic envelopes; the Gaussian's curve itself decays faster. The selected value is a signed transform, not a sampled estimate of a general asymptotic rate."
+        },
+        {
+          "num": "5.13",
+          "kind": "Definition",
+          "name": "Transforms of impulses and sinusoids via distributions",
+          "deps": [
+            "sig-5.2",
+            "sig-1.8",
+            "fa-7.15"
+          ],
+          "refs": [
+            "MIT RES.6-007 (Oppenheim,2011), Lecture8 distributional pairs; FA7.15 tempered Fourier transform with converted convention"
+          ],
+          "pic": "Choose a narrowing unit-area impulse approximation or a lengthening Gaussian-windowed cosine. For the cosine, the two spectral lobes keep massπ each while their widths shrink. At zero carrier they merge into one mass2π; the separate decomposition still sums correctly."
+        },
+        {
+          "num": "5.14",
+          "kind": "Theorem",
+          "name": "Impulse train ↔ impulse train (Poisson summation)",
+          "deps": [
+            "sig-5.13",
+            "sig-4.1",
+            "rca-4.24"
+          ],
+          "refs": [
+            "Stroock, Topics in Fourier Analysis(2024), Theorem7.2 p.17, sign/period conversion"
+          ],
+          "pic": "Change the comb period and compare the two finite Gaussian sums in the bottom panel. Comb stems encode exact impulse masses. The probe reports both truncated sums and analytic bounds for each omitted Gaussian tail."
+        },
+        {
+          "num": "5.15",
+          "kind": "Theorem",
+          "name": "Uncertainty principle for signals (Gabor limit)",
+          "deps": [
+            "sig-5.4",
+            "sig-5.9",
+            "sig-5.10",
+            "rca-4.2"
+          ],
+          "refs": [
+            "Wigderson–Wigderson, The uncertainty principle: variations on a theme(2020), §4.3 Theorem4.9/remark p.30; own sharp proof with angular frequency"
+          ],
+          "pic": "Stretch and chirp a Gaussian. The time energy width stays at s while chirp broadens the frequency energy width. The two analytic density curves and readout expose the exact product, with equality only at zero chirp."
+        },
+        {
+          "num": "5.16",
+          "kind": "Theorem",
+          "name": "Band-limited signals cannot be time-limited",
+          "deps": [
+            "sig-5.5",
+            "sig-5.9",
+            "rca-4.2",
+            "rca-10.18a"
+          ],
+          "refs": [
+            "RCA10.18a identity theorem; own entire-extension argument for compact-band L2 functions"
+          ],
+          "pic": "A box spectrum gives $x(t)=\\sin(Bt)/(\\pi t)$. Select a time cutoff: the gold point is a provably nonzero value beyond it. The second panel compares the exact box with the approximate transform of the time-truncated signal."
+        },
+        {
+          "num": "5.17",
+          "kind": "Definition",
+          "name": "Magnitude, phase and group delay",
+          "deps": [
+            "sig-5.3"
+          ],
+          "refs": [
+            "Oppenheim–Verghese, MIT6.011(2010), §§3.1–3.2 pp.47–53, Eqs.3.12–3.14 and3.19a; own exact Gaussian inverse"
+          ],
+          "pic": "Change phase curvature while preserving magnitude: the Gaussian packet broadens even though the spectral magnitude is unchanged. The two-path mode exposes cancellation zeros and reports an unresolved phase near a numerical null."
+        },
+        {
+          "num": "5.18",
+          "kind": "Concept",
+          "name": "Energy spectral density and autocorrelation",
+          "deps": [
+            "sig-5.9",
+            "sig-3.14",
+            "sig-5.6",
+            "rca-4.2"
+          ],
+          "refs": [
+            "Oppenheim–Verghese, MIT6.011(2010), §2.3.2 pp.32–34; own complex finite-energy correlation proof"
+          ],
+          "pic": "Slide a complex Gaussian against its conjugate copy. The first panel displays the real and imaginary correlation, and the second its nonnegative energy spectrum. Changing carrier frequency rotates correlation while translating its spectrum."
+        }
+      ]
     },
-    // ───────────────────────────────────────────────────────────── 6
     {
       n: 6,
       title: 'Frequency response and filtering',
