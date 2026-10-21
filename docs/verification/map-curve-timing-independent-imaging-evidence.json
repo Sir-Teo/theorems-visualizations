@@ -1,0 +1,1475 @@
+{
+  "independentAuditPass": true,
+  "nativePerformancePass": false,
+  "revision": "51f12b83ad940b2af5476ba58827d7e72d6aaeff",
+  "noCompleteJSON": true,
+  "failureMessage": "candidate below unrounded60; observed cadence regression; observed CPU p95 regression",
+  "scope": "one failed instrumented timing screen; no rerun",
+  "source": {
+    "pass": true,
+    "revision": "51f12b83ad940b2af5476ba58827d7e72d6aaeff",
+    "fixtureManifestSHA256": "ecc71914802334aad97ae202e446c69be3529638e24310545eace93c57a35e60",
+    "baseFileCount": 2179,
+    "servedFileCounts": {
+      "original": 2193,
+      "chunk": 2193
+    },
+    "exactTransformedSources": true,
+    "sourceFiles": {
+      "tests/map-curve-timing-oracle.mjs": {
+        "bytes": 19165,
+        "sha256": "95ed555844c04c6cdb41a6fa143832148ac4843fb0af7ea50ad7892088c8d1b7"
+      },
+      "scripts/lib/map-curve-timing-fixture.mjs": {
+        "bytes": 1896,
+        "sha256": "209913d0f9ca1f8305f8e3970cb1dbe5b2e11a0c7e546e13854d08b9a1d5a0de"
+      },
+      "scripts/lib/map-curve-timing-protocol.mjs": {
+        "bytes": 7465,
+        "sha256": "0005b4cbdd76223dd15808150caf0017f0d513f2560588e0078ffdacc7128425"
+      },
+      "scripts/lib/map-curve-timing-browser.mjs": {
+        "bytes": 8313,
+        "sha256": "f52a268145aea9637df8b90906643b100442d58dd9744d955aa836c6c0669336"
+      },
+      "scripts/lib/map-curve-timing-watchdog.mjs": {
+        "bytes": 3311,
+        "sha256": "12b8797675b4da853bba5a7d4c7981ccafe2f396c6bedcd114937b3726f1fe7f"
+      }
+    },
+    "sourceOnlyNoBrowser": true
+  },
+  "transportGroups": [
+    {
+      "variant": "original",
+      "label": "A0.rgba",
+      "pieces": 123,
+      "bytes": 128532480,
+      "sha256": "7d92770cb067446ac7183c2df631f711483037c9cedc50c55b6befae2de2c822"
+    },
+    {
+      "variant": "original",
+      "label": "A1.rgba",
+      "pieces": 123,
+      "bytes": 128532480,
+      "sha256": "7d92770cb067446ac7183c2df631f711483037c9cedc50c55b6befae2de2c822"
+    },
+    {
+      "variant": "original",
+      "label": "A2.rgba",
+      "pieces": 123,
+      "bytes": 128532480,
+      "sha256": "7d92770cb067446ac7183c2df631f711483037c9cedc50c55b6befae2de2c822"
+    },
+    {
+      "variant": "original",
+      "label": "A3.rgba",
+      "pieces": 123,
+      "bytes": 128532480,
+      "sha256": "7d92770cb067446ac7183c2df631f711483037c9cedc50c55b6befae2de2c822"
+    },
+    {
+      "variant": "original",
+      "label": "metadata.json",
+      "pieces": 13,
+      "bytes": 13151542,
+      "sha256": "e7667e57da42ba23903373d7530f0db4888e8743389b507050f767e3d448452a"
+    },
+    {
+      "variant": "chunk",
+      "label": "A0.rgba",
+      "pieces": 123,
+      "bytes": 128532480,
+      "sha256": "7d92770cb067446ac7183c2df631f711483037c9cedc50c55b6befae2de2c822"
+    },
+    {
+      "variant": "chunk",
+      "label": "A1.rgba",
+      "pieces": 123,
+      "bytes": 128532480,
+      "sha256": "7d92770cb067446ac7183c2df631f711483037c9cedc50c55b6befae2de2c822"
+    },
+    {
+      "variant": "chunk",
+      "label": "A2.rgba",
+      "pieces": 123,
+      "bytes": 128532480,
+      "sha256": "7d92770cb067446ac7183c2df631f711483037c9cedc50c55b6befae2de2c822"
+    },
+    {
+      "variant": "chunk",
+      "label": "A3.rgba",
+      "pieces": 123,
+      "bytes": 128532480,
+      "sha256": "7d92770cb067446ac7183c2df631f711483037c9cedc50c55b6befae2de2c822"
+    },
+    {
+      "variant": "chunk",
+      "label": "metadata.json",
+      "pieces": 13,
+      "bytes": 13299815,
+      "sha256": "d09664b5b3289cd4aee2ef25076d5dc669d5c2f1c166f1acf46f441c5a147868"
+    }
+  ],
+  "transportPieces": 1010,
+  "transportBytes": 1054711197,
+  "all8RawSHA256": "7d92770cb067446ac7183c2df631f711483037c9cedc50c55b6befae2de2c822",
+  "rawPNGChecks": [
+    {
+      "file": "A0-actual.png",
+      "sha256": "3c241a1ae447049e2d7abdc9f1ec3fb63a2c58eaf0731234025fe9e4e36731a5",
+      "decodedMatchesWholeRGBA": true
+    },
+    {
+      "file": "A0-reference.png",
+      "sha256": "105c6bedd1c31c2b880423362e6a25efa5dbdf764f4b52841bf7a9416ad19e37",
+      "decodedMatchesWholeRGBA": true
+    },
+    {
+      "file": "A0-diff.png",
+      "sha256": "c4bad1f7def204217e522fbe6c88acef7b57111e1b784fb400d80bd2e0991dcc",
+      "decodedMatchesWholeRGBA": true
+    },
+    {
+      "file": "A1-actual.png",
+      "sha256": "69bccfa349e9d2f30024f9529cbcae496354c767c2c6cd3ca0453b4ad4c46694",
+      "decodedMatchesWholeRGBA": true
+    },
+    {
+      "file": "A1-reference.png",
+      "sha256": "5dc1864b6c8873a349e02713eb8330a76db5196b7d2d3c35dae5976cecb2026c",
+      "decodedMatchesWholeRGBA": true
+    },
+    {
+      "file": "A1-diff.png",
+      "sha256": "c4bad1f7def204217e522fbe6c88acef7b57111e1b784fb400d80bd2e0991dcc",
+      "decodedMatchesWholeRGBA": true
+    },
+    {
+      "file": "A2-actual.png",
+      "sha256": "60ea79cbdc3871574b7127208a97f75c6614c3bab6a584542209c3f0da525464",
+      "decodedMatchesWholeRGBA": true
+    },
+    {
+      "file": "A2-reference.png",
+      "sha256": "aa0ffe8304b43073cba8de869d113a72076eeb11633e20a2ae1aa03d28c7ca3b",
+      "decodedMatchesWholeRGBA": true
+    },
+    {
+      "file": "A2-diff.png",
+      "sha256": "c4bad1f7def204217e522fbe6c88acef7b57111e1b784fb400d80bd2e0991dcc",
+      "decodedMatchesWholeRGBA": true
+    },
+    {
+      "file": "A3-actual.png",
+      "sha256": "00e37a585d9d60f14b5a6850b9d994a91cc6d862cd7a5548d913714062092666",
+      "decodedMatchesWholeRGBA": true
+    },
+    {
+      "file": "A3-reference.png",
+      "sha256": "2f91066f501071de544095c215cb16a6f4fc490f78184587fa2aaece2ce2b5d5",
+      "decodedMatchesWholeRGBA": true
+    },
+    {
+      "file": "A3-diff.png",
+      "sha256": "c4bad1f7def204217e522fbe6c88acef7b57111e1b784fb400d80bd2e0991dcc",
+      "decodedMatchesWholeRGBA": true
+    },
+    {
+      "file": "original/history-A1-actual.png",
+      "sha256": "0095ce63697c5815d936d5ffde5f872a0fa4d7691d83aba8fd6c0b12f3015be4",
+      "decodedMatchesWholeRGBA": true
+    },
+    {
+      "file": "original/history-A1-reference.png",
+      "sha256": "72959a3b7c2853a86aa3e59a39d30b8c2d171704c2ac61c46cac1099e88485d5",
+      "decodedMatchesWholeRGBA": true
+    },
+    {
+      "file": "original/history-A1-diff.png",
+      "sha256": "c4bad1f7def204217e522fbe6c88acef7b57111e1b784fb400d80bd2e0991dcc",
+      "decodedMatchesWholeRGBA": true
+    },
+    {
+      "file": "original/history-A2-actual.png",
+      "sha256": "5cf2ffac061d9395246a06e3676a3a3c1883c3d9a5ae0ce7805b2b7ec7684082",
+      "decodedMatchesWholeRGBA": true
+    },
+    {
+      "file": "original/history-A2-reference.png",
+      "sha256": "43d4b16f30a6d5cc5e6a93ea7684ba90c14b59dfa8749eb99ecd94f721331d8d",
+      "decodedMatchesWholeRGBA": true
+    },
+    {
+      "file": "original/history-A2-diff.png",
+      "sha256": "c4bad1f7def204217e522fbe6c88acef7b57111e1b784fb400d80bd2e0991dcc",
+      "decodedMatchesWholeRGBA": true
+    },
+    {
+      "file": "original/history-A3-actual.png",
+      "sha256": "4b97800033be5bdc5982429275138a0249e0166ee0511548e1330b48903568f9",
+      "decodedMatchesWholeRGBA": true
+    },
+    {
+      "file": "original/history-A3-reference.png",
+      "sha256": "cc817abc1847a21c7d8671fcdb55a6752f9d8efe0efc0ea3909da48b3af76eba",
+      "decodedMatchesWholeRGBA": true
+    },
+    {
+      "file": "original/history-A3-diff.png",
+      "sha256": "c4bad1f7def204217e522fbe6c88acef7b57111e1b784fb400d80bd2e0991dcc",
+      "decodedMatchesWholeRGBA": true
+    }
+  ],
+  "variants": {
+    "original": {
+      "elapsedMS": 2189.5,
+      "summary": {
+        "cadenceFPS": 10.961406713861612,
+        "intervals": {
+          "raw": [
+            1.8000001907348633,
+            18.299999952316284,
+            14.899999856948853,
+            76.5,
+            118.20000004768372,
+            111.90000009536743,
+            111.70000004768372,
+            107.29999995231628,
+            108.89999985694885,
+            107.5,
+            107.20000004768372,
+            2.799999952316284,
+            105.40000009536743,
+            109.40000009536743,
+            111.09999990463257,
+            108.40000009536743,
+            110.5,
+            108.89999985694885,
+            108.10000014305115,
+            108,
+            106.39999985694885,
+            107.40000009536743,
+            108.5,
+            110.39999985694885
+          ],
+          "sorted": [
+            1.8000001907348633,
+            2.799999952316284,
+            14.899999856948853,
+            18.299999952316284,
+            76.5,
+            105.40000009536743,
+            106.39999985694885,
+            107.20000004768372,
+            107.29999995231628,
+            107.40000009536743,
+            107.5,
+            108,
+            108.10000014305115,
+            108.40000009536743,
+            108.5,
+            108.89999985694885,
+            108.89999985694885,
+            109.40000009536743,
+            110.39999985694885,
+            110.5,
+            111.09999990463257,
+            111.70000004768372,
+            111.90000009536743,
+            118.20000004768372
+          ],
+          "mean": 91.22916666666667,
+          "p95": 111.90000009536743,
+          "p95Convention": "nearest rank ceil(.95*24)=23; zero-based index22",
+          "max": 118.20000004768372
+        },
+        "cpu": {
+          "raw": [
+            1.5,
+            1.7000000476837158,
+            1.5999999046325684,
+            1.7999999523162842,
+            1.9000000953674316,
+            2.1999998092651367,
+            2.200000047683716,
+            2.5,
+            2,
+            2.5,
+            2.700000047683716,
+            2.3999998569488525,
+            2.799999952316284,
+            2.8999998569488525,
+            3.5,
+            3.700000047683716,
+            3.200000047683716,
+            3.3999998569488525,
+            4,
+            5,
+            4.299999952316284,
+            1.7000000476837158,
+            1.6999998092651367,
+            2
+          ],
+          "sorted": [
+            1.5,
+            1.5999999046325684,
+            1.6999998092651367,
+            1.7000000476837158,
+            1.7000000476837158,
+            1.7999999523162842,
+            1.9000000953674316,
+            2,
+            2,
+            2.1999998092651367,
+            2.200000047683716,
+            2.3999998569488525,
+            2.5,
+            2.5,
+            2.700000047683716,
+            2.799999952316284,
+            2.8999998569488525,
+            3.200000047683716,
+            3.3999998569488525,
+            3.5,
+            3.700000047683716,
+            4,
+            4.299999952316284,
+            5
+          ],
+          "mean": 2.6333333055178323,
+          "p95": 4.299999952316284,
+          "p95Convention": "nearest rank ceil(.95*24)=23; zero-based index22",
+          "max": 5
+        },
+        "deltas": [
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        "drains": [
+          96.80000019073486,
+          204
+        ]
+      },
+      "deadline": {
+        "limitMS": 30000,
+        "canceledFrames": [],
+        "lateCallbacks": [],
+        "aborted": false,
+        "absoluteAt": 36615.59999990463
+      },
+      "drawRestored": true,
+      "rafRestored": true,
+      "tailEvents": 4128,
+      "tailCallbacks": 72,
+      "postTailHistory": 0,
+      "postTailCallbacks": 0,
+      "resourceLedgerEvents": 447,
+      "logicalPeak": 59375200,
+      "originalPeak": 59375200,
+      "optionalBytes": 0,
+      "device": {
+        "visibility": "visible",
+        "renderer": "ANGLE (Apple, ANGLE Metal Renderer: Apple M1, Unspecified Version)",
+        "vendor": "Google Inc. (Apple)",
+        "version": "WebGL 2.0 (OpenGL ES 3.0 Chromium)"
+      },
+      "hostBefore": {
+        "date": "2026-10-21T03:34:18.915Z",
+        "cpu": "Apple M1",
+        "logicalCPUs": 8,
+        "freeMemory": 229785600,
+        "top": "Processes: 754 total, 4 running, 750 sleeping, 5693 threads \n2026/10/20 23:34:18\nLoad Avg: 1.62, 1.55, 1.62 \nCPU usage: 15.29% user, 18.31% sys, 66.38% idle \nSharedLibs: 370M resident, 72M data, 68M linkedit.\nMemRegions: 800516 total, 3135M resident, 97M private, 2009M shared.\nPhysMem: 15G used (3443M wired, 5919M compressor), 221M unused.\nVM: 399T vsize, 57G framework vsize, 204155391(0) swapins, 220675748(0) swapouts.\nNetworks: packets: 492929480/2371G in, 523775978/2440G out.\nDisks: 339095079/9662G read, 161252057/6110G written.\n\n\n",
+        "power": "Now drawing from 'AC Power'\n -InternalBattery-0 (id=27918435)\t100%; charged; 0:00 remaining present: true\n"
+      },
+      "hostAfter": {
+        "date": "2026-10-21T03:34:22.412Z",
+        "cpu": "Apple M1",
+        "logicalCPUs": 8,
+        "freeMemory": 105365504,
+        "top": "Processes: 754 total, 2 running, 2 stuck, 750 sleeping, 5691 threads \n2026/10/20 23:34:22\nLoad Avg: 1.62, 1.55, 1.62 \nCPU usage: 10.66% user, 16.31% sys, 73.2% idle \nSharedLibs: 372M resident, 73M data, 69M linkedit.\nMemRegions: 800659 total, 3294M resident, 106M private, 2255M shared.\nPhysMem: 15G used (3712M wired, 5824M compressor), 99M unused.\nVM: 399T vsize, 57G framework vsize, 204155395(0) swapins, 220675748(0) swapouts.\nNetworks: packets: 492929610/2371G in, 523776510/2440G out.\nDisks: 339097080/9662G read, 161252361/6110G written.\n\n\n",
+        "power": "Now drawing from 'AC Power'\n -InternalBattery-0 (id=27918435)\t100%; charged; 0:00 remaining present: true\n"
+      }
+    },
+    "chunk": {
+      "elapsedMS": 3160.5999999046326,
+      "summary": {
+        "cadenceFPS": 7.593494906259625,
+        "intervals": {
+          "raw": [
+            127.29999995231628,
+            133.40000009536743,
+            168,
+            140.59999990463257,
+            132.09999990463257,
+            128.80000019073486,
+            130.29999995231628,
+            129.39999985694885,
+            129.60000014305115,
+            129.89999985694885,
+            128.60000014305115,
+            130.89999985694885,
+            128.30000019073486,
+            133.39999985694885,
+            127.40000009536743,
+            132.5,
+            126.29999995231628,
+            130.5,
+            128.90000009536743,
+            130.09999990463257,
+            129,
+            129.5,
+            129.09999990463257,
+            126.70000004768372
+          ],
+          "sorted": [
+            126.29999995231628,
+            126.70000004768372,
+            127.29999995231628,
+            127.40000009536743,
+            128.30000019073486,
+            128.60000014305115,
+            128.80000019073486,
+            128.90000009536743,
+            129,
+            129.09999990463257,
+            129.39999985694885,
+            129.5,
+            129.60000014305115,
+            129.89999985694885,
+            130.09999990463257,
+            130.29999995231628,
+            130.5,
+            130.89999985694885,
+            132.09999990463257,
+            132.5,
+            133.39999985694885,
+            133.40000009536743,
+            140.59999990463257,
+            168
+          ],
+          "mean": 131.69166666269302,
+          "p95": 140.59999990463257,
+          "p95Convention": "nearest rank ceil(.95*24)=23; zero-based index22",
+          "max": 168
+        },
+        "cpu": {
+          "raw": [
+            123,
+            132.80000019073486,
+            167.29999995231628,
+            140,
+            131.59999990463257,
+            128.30000019073486,
+            130,
+            128.90000009536743,
+            129.09999990463257,
+            129.5,
+            128.10000014305115,
+            130.5,
+            127.90000009536743,
+            132.90000009536743,
+            127,
+            131.89999985694885,
+            125.90000009536743,
+            130.20000004768372,
+            128.40000009536743,
+            129.60000014305115,
+            128.59999990463257,
+            129.09999990463257,
+            128.69999980926514,
+            126.20000004768372
+          ],
+          "sorted": [
+            123,
+            125.90000009536743,
+            126.20000004768372,
+            127,
+            127.90000009536743,
+            128.10000014305115,
+            128.30000019073486,
+            128.40000009536743,
+            128.59999990463257,
+            128.69999980926514,
+            128.90000009536743,
+            129.09999990463257,
+            129.09999990463257,
+            129.5,
+            129.60000014305115,
+            130,
+            130.20000004768372,
+            130.5,
+            131.59999990463257,
+            131.89999985694885,
+            132.80000019073486,
+            132.90000009536743,
+            140,
+            167.29999995231628
+          ],
+          "mean": 131.06250001986822,
+          "p95": 140,
+          "p95Convention": "nearest rank ceil(.95*24)=23; zero-based index22",
+          "max": 167.29999995231628
+        },
+        "deltas": [
+          {
+            "optimizedTiles": 125,
+            "chunks": 152,
+            "indices": 1741699,
+            "originalBinds": 0,
+            "liveReplays": 0,
+            "staleAborts": 0,
+            "metadataDrops": 0,
+            "priorityDrops": 0
+          },
+          {
+            "optimizedTiles": 125,
+            "chunks": 152,
+            "indices": 1741699,
+            "originalBinds": 0,
+            "liveReplays": 0,
+            "staleAborts": 0,
+            "metadataDrops": 0,
+            "priorityDrops": 0
+          },
+          {
+            "optimizedTiles": 125,
+            "chunks": 152,
+            "indices": 1741699,
+            "originalBinds": 0,
+            "liveReplays": 0,
+            "staleAborts": 0,
+            "metadataDrops": 0,
+            "priorityDrops": 0
+          },
+          {
+            "optimizedTiles": 125,
+            "chunks": 152,
+            "indices": 1741699,
+            "originalBinds": 0,
+            "liveReplays": 0,
+            "staleAborts": 0,
+            "metadataDrops": 0,
+            "priorityDrops": 0
+          },
+          {
+            "optimizedTiles": 125,
+            "chunks": 152,
+            "indices": 1741699,
+            "originalBinds": 0,
+            "liveReplays": 0,
+            "staleAborts": 0,
+            "metadataDrops": 0,
+            "priorityDrops": 0
+          },
+          {
+            "optimizedTiles": 125,
+            "chunks": 152,
+            "indices": 1741699,
+            "originalBinds": 0,
+            "liveReplays": 0,
+            "staleAborts": 0,
+            "metadataDrops": 0,
+            "priorityDrops": 0
+          },
+          {
+            "optimizedTiles": 125,
+            "chunks": 152,
+            "indices": 1741699,
+            "originalBinds": 0,
+            "liveReplays": 0,
+            "staleAborts": 0,
+            "metadataDrops": 0,
+            "priorityDrops": 0
+          },
+          {
+            "optimizedTiles": 125,
+            "chunks": 152,
+            "indices": 1741699,
+            "originalBinds": 0,
+            "liveReplays": 0,
+            "staleAborts": 0,
+            "metadataDrops": 0,
+            "priorityDrops": 0
+          },
+          {
+            "optimizedTiles": 125,
+            "chunks": 152,
+            "indices": 1741699,
+            "originalBinds": 0,
+            "liveReplays": 0,
+            "staleAborts": 0,
+            "metadataDrops": 0,
+            "priorityDrops": 0
+          },
+          {
+            "optimizedTiles": 125,
+            "chunks": 152,
+            "indices": 1741699,
+            "originalBinds": 0,
+            "liveReplays": 0,
+            "staleAborts": 0,
+            "metadataDrops": 0,
+            "priorityDrops": 0
+          },
+          {
+            "optimizedTiles": 125,
+            "chunks": 152,
+            "indices": 1741699,
+            "originalBinds": 0,
+            "liveReplays": 0,
+            "staleAborts": 0,
+            "metadataDrops": 0,
+            "priorityDrops": 0
+          },
+          {
+            "optimizedTiles": 125,
+            "chunks": 152,
+            "indices": 1741699,
+            "originalBinds": 0,
+            "liveReplays": 0,
+            "staleAborts": 0,
+            "metadataDrops": 0,
+            "priorityDrops": 0
+          },
+          {
+            "optimizedTiles": 125,
+            "chunks": 152,
+            "indices": 1741699,
+            "originalBinds": 0,
+            "liveReplays": 0,
+            "staleAborts": 0,
+            "metadataDrops": 0,
+            "priorityDrops": 0
+          },
+          {
+            "optimizedTiles": 125,
+            "chunks": 152,
+            "indices": 1741699,
+            "originalBinds": 0,
+            "liveReplays": 0,
+            "staleAborts": 0,
+            "metadataDrops": 0,
+            "priorityDrops": 0
+          },
+          {
+            "optimizedTiles": 125,
+            "chunks": 152,
+            "indices": 1741699,
+            "originalBinds": 0,
+            "liveReplays": 0,
+            "staleAborts": 0,
+            "metadataDrops": 0,
+            "priorityDrops": 0
+          },
+          {
+            "optimizedTiles": 125,
+            "chunks": 152,
+            "indices": 1741699,
+            "originalBinds": 0,
+            "liveReplays": 0,
+            "staleAborts": 0,
+            "metadataDrops": 0,
+            "priorityDrops": 0
+          },
+          {
+            "optimizedTiles": 125,
+            "chunks": 152,
+            "indices": 1741699,
+            "originalBinds": 0,
+            "liveReplays": 0,
+            "staleAborts": 0,
+            "metadataDrops": 0,
+            "priorityDrops": 0
+          },
+          {
+            "optimizedTiles": 125,
+            "chunks": 152,
+            "indices": 1741699,
+            "originalBinds": 0,
+            "liveReplays": 0,
+            "staleAborts": 0,
+            "metadataDrops": 0,
+            "priorityDrops": 0
+          },
+          {
+            "optimizedTiles": 125,
+            "chunks": 152,
+            "indices": 1741699,
+            "originalBinds": 0,
+            "liveReplays": 0,
+            "staleAborts": 0,
+            "metadataDrops": 0,
+            "priorityDrops": 0
+          },
+          {
+            "optimizedTiles": 125,
+            "chunks": 152,
+            "indices": 1741699,
+            "originalBinds": 0,
+            "liveReplays": 0,
+            "staleAborts": 0,
+            "metadataDrops": 0,
+            "priorityDrops": 0
+          },
+          {
+            "optimizedTiles": 125,
+            "chunks": 152,
+            "indices": 1741699,
+            "originalBinds": 0,
+            "liveReplays": 0,
+            "staleAborts": 0,
+            "metadataDrops": 0,
+            "priorityDrops": 0
+          },
+          {
+            "optimizedTiles": 125,
+            "chunks": 152,
+            "indices": 1741699,
+            "originalBinds": 0,
+            "liveReplays": 0,
+            "staleAborts": 0,
+            "metadataDrops": 0,
+            "priorityDrops": 0
+          },
+          {
+            "optimizedTiles": 125,
+            "chunks": 152,
+            "indices": 1741699,
+            "originalBinds": 0,
+            "liveReplays": 0,
+            "staleAborts": 0,
+            "metadataDrops": 0,
+            "priorityDrops": 0
+          },
+          {
+            "optimizedTiles": 125,
+            "chunks": 152,
+            "indices": 1741699,
+            "originalBinds": 0,
+            "liveReplays": 0,
+            "staleAborts": 0,
+            "metadataDrops": 0,
+            "priorityDrops": 0
+          }
+        ],
+        "drains": [
+          0.10000014305114746,
+          3.1000001430511475
+        ]
+      },
+      "deadline": {
+        "limitMS": 30000,
+        "canceledFrames": [],
+        "lateCallbacks": [],
+        "aborted": false,
+        "absoluteAt": 38342
+      },
+      "drawRestored": true,
+      "rafRestored": true,
+      "tailEvents": 4128,
+      "tailCallbacks": 72,
+      "postTailHistory": 0,
+      "postTailCallbacks": 0,
+      "resourceLedgerEvents": 449,
+      "logicalPeak": 60216360,
+      "originalPeak": 59375200,
+      "optionalBytes": 841160,
+      "device": {
+        "visibility": "visible",
+        "renderer": "ANGLE (Apple, ANGLE Metal Renderer: Apple M1, Unspecified Version)",
+        "vendor": "Google Inc. (Apple)",
+        "version": "WebGL 2.0 (OpenGL ES 3.0 Chromium)"
+      },
+      "hostBefore": {
+        "date": "2026-10-21T03:35:41.856Z",
+        "cpu": "Apple M1",
+        "logicalCPUs": 8,
+        "freeMemory": 178683904,
+        "top": "Processes: 690 total, 3 running, 687 sleeping, 5520 threads \n2026/10/20 23:35:41\nLoad Avg: 2.26, 1.77, 1.69 \nCPU usage: 13.56% user, 16.17% sys, 70.26% idle \nSharedLibs: 388M resident, 91M data, 79M linkedit.\nMemRegions: 782882 total, 4257M resident, 108M private, 1447M shared.\nPhysMem: 15G used (3404M wired, 5157M compressor), 170M unused.\nVM: 369T vsize, 57G framework vsize, 204157099(0) swapins, 220675748(0) swapouts.\nNetworks: packets: 493005645/2371G in, 523851267/2440G out.\nDisks: 339138212/9664G read, 161260174/6111G written.\n\n\n",
+        "power": "Now drawing from 'AC Power'\n -InternalBattery-0 (id=27918435)\t100%; charged; 0:00 remaining present: true\n"
+      },
+      "hostAfter": {
+        "date": "2026-10-21T03:35:45.980Z",
+        "cpu": "Apple M1",
+        "logicalCPUs": 8,
+        "freeMemory": 79265792,
+        "top": "Processes: 689 total, 5 running, 684 sleeping, 5471 threads \n2026/10/20 23:35:45\nLoad Avg: 2.24, 1.78, 1.70 \nCPU usage: 15.88% user, 14.31% sys, 69.80% idle \nSharedLibs: 387M resident, 91M data, 79M linkedit.\nMemRegions: 782816 total, 4374M resident, 109M private, 1535M shared.\nPhysMem: 15G used (3678M wired, 5157M compressor), 74M unused.\nVM: 368T vsize, 57G framework vsize, 204157099(0) swapins, 220675748(0) swapouts.\nNetworks: packets: 493005800/2371G in, 523851804/2440G out.\nDisks: 339138962/9664G read, 161260598/6111G written.\n\n\n",
+        "power": "Now drawing from 'AC Power'\n -InternalBattery-0 (id=27918435)\t100%; charged; 0:00 remaining present: true\n"
+      }
+    }
+  },
+  "correctnessDrawUsage": [
+    {
+      "label": "pre-unselected-0",
+      "optimizedTiles": 125,
+      "chunks": 152,
+      "indices": 1758720,
+      "originalBinds": 0,
+      "liveReplays": 0,
+      "staleAborts": 0,
+      "metadataDrops": 0,
+      "priorityDrops": 0
+    },
+    {
+      "label": "pre-unselected-1",
+      "optimizedTiles": 125,
+      "chunks": 152,
+      "indices": 1758720,
+      "originalBinds": 0,
+      "liveReplays": 0,
+      "staleAborts": 0,
+      "metadataDrops": 0,
+      "priorityDrops": 0
+    },
+    {
+      "label": "pre-unselected-third",
+      "optimizedTiles": 125,
+      "chunks": 152,
+      "indices": 1758720,
+      "originalBinds": 0,
+      "liveReplays": 0,
+      "staleAborts": 0,
+      "metadataDrops": 0,
+      "priorityDrops": 0
+    },
+    {
+      "label": "pre-selected-0",
+      "optimizedTiles": 13,
+      "chunks": 66,
+      "indices": 1913210,
+      "originalBinds": 0,
+      "liveReplays": 0,
+      "staleAborts": 0,
+      "metadataDrops": 0,
+      "priorityDrops": 0
+    },
+    {
+      "label": "pre-selected-1",
+      "optimizedTiles": 13,
+      "chunks": 66,
+      "indices": 1913210,
+      "originalBinds": 0,
+      "liveReplays": 0,
+      "staleAborts": 0,
+      "metadataDrops": 0,
+      "priorityDrops": 0
+    },
+    {
+      "label": "pre-selected-third",
+      "optimizedTiles": 13,
+      "chunks": 66,
+      "indices": 1913210,
+      "originalBinds": 0,
+      "liveReplays": 0,
+      "staleAborts": 0,
+      "metadataDrops": 0,
+      "priorityDrops": 0
+    },
+    {
+      "label": "pre-selected-explicit-transfer-0",
+      "optimizedTiles": 13,
+      "chunks": 66,
+      "indices": 1913210,
+      "originalBinds": 0,
+      "liveReplays": 0,
+      "staleAborts": 0,
+      "metadataDrops": 0,
+      "priorityDrops": 0
+    },
+    {
+      "label": "pre-selected-explicit-transfer-1",
+      "optimizedTiles": 13,
+      "chunks": 66,
+      "indices": 1913210,
+      "originalBinds": 0,
+      "liveReplays": 0,
+      "staleAborts": 0,
+      "metadataDrops": 0,
+      "priorityDrops": 0
+    },
+    {
+      "label": "A0",
+      "optimizedTiles": 125,
+      "chunks": 152,
+      "indices": 1741699,
+      "originalBinds": 0,
+      "liveReplays": 0,
+      "staleAborts": 0,
+      "metadataDrops": 0,
+      "priorityDrops": 0
+    },
+    {
+      "label": "A1",
+      "optimizedTiles": 125,
+      "chunks": 152,
+      "indices": 1741699,
+      "originalBinds": 0,
+      "liveReplays": 0,
+      "staleAborts": 0,
+      "metadataDrops": 0,
+      "priorityDrops": 0
+    },
+    {
+      "label": "A2",
+      "optimizedTiles": 125,
+      "chunks": 152,
+      "indices": 1741699,
+      "originalBinds": 0,
+      "liveReplays": 0,
+      "staleAborts": 0,
+      "metadataDrops": 0,
+      "priorityDrops": 0
+    },
+    {
+      "label": "A3",
+      "optimizedTiles": 125,
+      "chunks": 152,
+      "indices": 1741699,
+      "originalBinds": 0,
+      "liveReplays": 0,
+      "staleAborts": 0,
+      "metadataDrops": 0,
+      "priorityDrops": 0
+    }
+  ],
+  "direct": {
+    "original": {
+      "meanRGB0to255": 0.5683512110453846,
+      "RGBChannelFractionOver20": 0.0020163411873273846,
+      "pixelFractionOver20": 0.002692268911328872,
+      "mask": "none",
+      "files": {
+        "complete-gpu.png": "4c23415208a0d16029c889cf89a5c64b5060ae09cc32a90bc429b58cb003ba30",
+        "complete-direct-Canvas.png": "a169d8869fb690dfd9bca569dcd0aa7ea889944f90313b92301dfcd1cd61c3ae",
+        "complete-direct-diff.png": "0f008060bcd3611a25dd9aafee789635e8b3bf96d6cdefd4c1595e80894f93c3"
+      }
+    },
+    "chunk": {
+      "meanRGB0to255": 0.5683512110453846,
+      "RGBChannelFractionOver20": 0.0020163411873273846,
+      "pixelFractionOver20": 0.002692268911328872,
+      "mask": "none",
+      "files": {
+        "complete-gpu.png": "4c23415208a0d16029c889cf89a5c64b5060ae09cc32a90bc429b58cb003ba30",
+        "complete-direct-Canvas.png": "a169d8869fb690dfd9bca569dcd0aa7ea889944f90313b92301dfcd1cd61c3ae",
+        "complete-direct-diff.png": "0f008060bcd3611a25dd9aafee789635e8b3bf96d6cdefd4c1595e80894f93c3"
+      }
+    }
+  },
+  "artifactInventory": [
+    {
+      "path": "A0-actual.png",
+      "bytes": 17663787,
+      "sha256": "3c241a1ae447049e2d7abdc9f1ec3fb63a2c58eaf0731234025fe9e4e36731a5"
+    },
+    {
+      "path": "A0-comparison.json",
+      "bytes": 378,
+      "sha256": "6969329df9cf7595cb88cc819de412a61f0dfa0eb166d0c64abf3c61c99a2749"
+    },
+    {
+      "path": "A0-diff.png",
+      "bytes": 135978,
+      "sha256": "c4bad1f7def204217e522fbe6c88acef7b57111e1b784fb400d80bd2e0991dcc"
+    },
+    {
+      "path": "A0-diff.rgba",
+      "bytes": 128532480,
+      "sha256": "893fae1e0d5db4a4d89b422b16c78caf9db371af41cf181a511fc6d40be17a4b"
+    },
+    {
+      "path": "A0-reference.png",
+      "bytes": 17663835,
+      "sha256": "105c6bedd1c31c2b880423362e6a25efa5dbdf764f4b52841bf7a9416ad19e37"
+    },
+    {
+      "path": "A1-actual.png",
+      "bytes": 17663787,
+      "sha256": "69bccfa349e9d2f30024f9529cbcae496354c767c2c6cd3ca0453b4ad4c46694"
+    },
+    {
+      "path": "A1-comparison.json",
+      "bytes": 378,
+      "sha256": "6969329df9cf7595cb88cc819de412a61f0dfa0eb166d0c64abf3c61c99a2749"
+    },
+    {
+      "path": "A1-diff.png",
+      "bytes": 135978,
+      "sha256": "c4bad1f7def204217e522fbe6c88acef7b57111e1b784fb400d80bd2e0991dcc"
+    },
+    {
+      "path": "A1-diff.rgba",
+      "bytes": 128532480,
+      "sha256": "893fae1e0d5db4a4d89b422b16c78caf9db371af41cf181a511fc6d40be17a4b"
+    },
+    {
+      "path": "A1-reference.png",
+      "bytes": 17663763,
+      "sha256": "5dc1864b6c8873a349e02713eb8330a76db5196b7d2d3c35dae5976cecb2026c"
+    },
+    {
+      "path": "A2-actual.png",
+      "bytes": 17663679,
+      "sha256": "60ea79cbdc3871574b7127208a97f75c6614c3bab6a584542209c3f0da525464"
+    },
+    {
+      "path": "A2-comparison.json",
+      "bytes": 378,
+      "sha256": "6969329df9cf7595cb88cc819de412a61f0dfa0eb166d0c64abf3c61c99a2749"
+    },
+    {
+      "path": "A2-diff.png",
+      "bytes": 135978,
+      "sha256": "c4bad1f7def204217e522fbe6c88acef7b57111e1b784fb400d80bd2e0991dcc"
+    },
+    {
+      "path": "A2-diff.rgba",
+      "bytes": 128532480,
+      "sha256": "893fae1e0d5db4a4d89b422b16c78caf9db371af41cf181a511fc6d40be17a4b"
+    },
+    {
+      "path": "A2-reference.png",
+      "bytes": 17663763,
+      "sha256": "aa0ffe8304b43073cba8de869d113a72076eeb11633e20a2ae1aa03d28c7ca3b"
+    },
+    {
+      "path": "A3-actual.png",
+      "bytes": 17663835,
+      "sha256": "00e37a585d9d60f14b5a6850b9d994a91cc6d862cd7a5548d913714062092666"
+    },
+    {
+      "path": "A3-comparison.json",
+      "bytes": 378,
+      "sha256": "6969329df9cf7595cb88cc819de412a61f0dfa0eb166d0c64abf3c61c99a2749"
+    },
+    {
+      "path": "A3-diff.png",
+      "bytes": 135978,
+      "sha256": "c4bad1f7def204217e522fbe6c88acef7b57111e1b784fb400d80bd2e0991dcc"
+    },
+    {
+      "path": "A3-diff.rgba",
+      "bytes": 128532480,
+      "sha256": "893fae1e0d5db4a4d89b422b16c78caf9db371af41cf181a511fc6d40be17a4b"
+    },
+    {
+      "path": "A3-reference.png",
+      "bytes": 17663571,
+      "sha256": "2f91066f501071de544095c215cb16a6f4fc490f78184587fa2aaece2ce2b5d5"
+    },
+    {
+      "path": "chunk/A0.rgba",
+      "bytes": 128532480,
+      "sha256": "7d92770cb067446ac7183c2df631f711483037c9cedc50c55b6befae2de2c822"
+    },
+    {
+      "path": "chunk/A1.rgba",
+      "bytes": 128532480,
+      "sha256": "7d92770cb067446ac7183c2df631f711483037c9cedc50c55b6befae2de2c822"
+    },
+    {
+      "path": "chunk/A2.rgba",
+      "bytes": 128532480,
+      "sha256": "7d92770cb067446ac7183c2df631f711483037c9cedc50c55b6befae2de2c822"
+    },
+    {
+      "path": "chunk/A3.rgba",
+      "bytes": 128532480,
+      "sha256": "7d92770cb067446ac7183c2df631f711483037c9cedc50c55b6befae2de2c822"
+    },
+    {
+      "path": "chunk/complete-direct-Canvas.png",
+      "bytes": 11664192,
+      "sha256": "a169d8869fb690dfd9bca569dcd0aa7ea889944f90313b92301dfcd1cd61c3ae"
+    },
+    {
+      "path": "chunk/complete-direct-diff.png",
+      "bytes": 11372552,
+      "sha256": "0f008060bcd3611a25dd9aafee789635e8b3bf96d6cdefd4c1595e80894f93c3"
+    },
+    {
+      "path": "chunk/complete-gpu.png",
+      "bytes": 17544250,
+      "sha256": "4c23415208a0d16029c889cf89a5c64b5060ae09cc32a90bc429b58cb003ba30"
+    },
+    {
+      "path": "chunk/direct-difference.json",
+      "bytes": 168,
+      "sha256": "6e5c431d54bbd10b2a27d11b91c2283d1d4181a3d801b409173da54b5d820cf8"
+    },
+    {
+      "path": "chunk/metadata.json",
+      "bytes": 13299815,
+      "sha256": "d09664b5b3289cd4aee2ef25076d5dc669d5c2f1c166f1acf46f441c5a147868"
+    },
+    {
+      "path": "chunk/post-capture-callbacks.json",
+      "bytes": 2,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    {
+      "path": "chunk/post-capture-events.json",
+      "bytes": 2,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    {
+      "path": "complete-pending-assertions.json",
+      "bytes": 56098014,
+      "sha256": "6d4ab79e79c24a23db265f7e66e6a546288f37304d456ee05a92e8dddbfcd6fa"
+    },
+    {
+      "path": "curve-pending-submission-gates.json",
+      "bytes": 56096287,
+      "sha256": "b2c934ab4f14d9070524088eae453c7d0ac98a88322443a99fdaf1c634a196dc"
+    },
+    {
+      "path": "failure.json",
+      "bytes": 56111441,
+      "sha256": "6c2bacabd4c5a61c85b2a5882f1e664fdb9f29845a32348487f1eac90658ade6"
+    },
+    {
+      "path": "original/A0.rgba",
+      "bytes": 128532480,
+      "sha256": "7d92770cb067446ac7183c2df631f711483037c9cedc50c55b6befae2de2c822"
+    },
+    {
+      "path": "original/A1.rgba",
+      "bytes": 128532480,
+      "sha256": "7d92770cb067446ac7183c2df631f711483037c9cedc50c55b6befae2de2c822"
+    },
+    {
+      "path": "original/A2.rgba",
+      "bytes": 128532480,
+      "sha256": "7d92770cb067446ac7183c2df631f711483037c9cedc50c55b6befae2de2c822"
+    },
+    {
+      "path": "original/A3.rgba",
+      "bytes": 128532480,
+      "sha256": "7d92770cb067446ac7183c2df631f711483037c9cedc50c55b6befae2de2c822"
+    },
+    {
+      "path": "original/complete-direct-Canvas.png",
+      "bytes": 11664192,
+      "sha256": "a169d8869fb690dfd9bca569dcd0aa7ea889944f90313b92301dfcd1cd61c3ae"
+    },
+    {
+      "path": "original/complete-direct-diff.png",
+      "bytes": 11372552,
+      "sha256": "0f008060bcd3611a25dd9aafee789635e8b3bf96d6cdefd4c1595e80894f93c3"
+    },
+    {
+      "path": "original/complete-gpu.png",
+      "bytes": 17544250,
+      "sha256": "4c23415208a0d16029c889cf89a5c64b5060ae09cc32a90bc429b58cb003ba30"
+    },
+    {
+      "path": "original/direct-difference.json",
+      "bytes": 168,
+      "sha256": "6e5c431d54bbd10b2a27d11b91c2283d1d4181a3d801b409173da54b5d820cf8"
+    },
+    {
+      "path": "original/history-A1-actual.png",
+      "bytes": 17663799,
+      "sha256": "0095ce63697c5815d936d5ffde5f872a0fa4d7691d83aba8fd6c0b12f3015be4"
+    },
+    {
+      "path": "original/history-A1-comparison.json",
+      "bytes": 378,
+      "sha256": "6969329df9cf7595cb88cc819de412a61f0dfa0eb166d0c64abf3c61c99a2749"
+    },
+    {
+      "path": "original/history-A1-diff.png",
+      "bytes": 135978,
+      "sha256": "c4bad1f7def204217e522fbe6c88acef7b57111e1b784fb400d80bd2e0991dcc"
+    },
+    {
+      "path": "original/history-A1-diff.rgba",
+      "bytes": 128532480,
+      "sha256": "893fae1e0d5db4a4d89b422b16c78caf9db371af41cf181a511fc6d40be17a4b"
+    },
+    {
+      "path": "original/history-A1-reference.png",
+      "bytes": 17663799,
+      "sha256": "72959a3b7c2853a86aa3e59a39d30b8c2d171704c2ac61c46cac1099e88485d5"
+    },
+    {
+      "path": "original/history-A2-actual.png",
+      "bytes": 17663799,
+      "sha256": "5cf2ffac061d9395246a06e3676a3a3c1883c3d9a5ae0ce7805b2b7ec7684082"
+    },
+    {
+      "path": "original/history-A2-comparison.json",
+      "bytes": 378,
+      "sha256": "6969329df9cf7595cb88cc819de412a61f0dfa0eb166d0c64abf3c61c99a2749"
+    },
+    {
+      "path": "original/history-A2-diff.png",
+      "bytes": 135978,
+      "sha256": "c4bad1f7def204217e522fbe6c88acef7b57111e1b784fb400d80bd2e0991dcc"
+    },
+    {
+      "path": "original/history-A2-diff.rgba",
+      "bytes": 128532480,
+      "sha256": "893fae1e0d5db4a4d89b422b16c78caf9db371af41cf181a511fc6d40be17a4b"
+    },
+    {
+      "path": "original/history-A2-reference.png",
+      "bytes": 17663799,
+      "sha256": "43d4b16f30a6d5cc5e6a93ea7684ba90c14b59dfa8749eb99ecd94f721331d8d"
+    },
+    {
+      "path": "original/history-A3-actual.png",
+      "bytes": 17663811,
+      "sha256": "4b97800033be5bdc5982429275138a0249e0166ee0511548e1330b48903568f9"
+    },
+    {
+      "path": "original/history-A3-comparison.json",
+      "bytes": 378,
+      "sha256": "6969329df9cf7595cb88cc819de412a61f0dfa0eb166d0c64abf3c61c99a2749"
+    },
+    {
+      "path": "original/history-A3-diff.png",
+      "bytes": 135978,
+      "sha256": "c4bad1f7def204217e522fbe6c88acef7b57111e1b784fb400d80bd2e0991dcc"
+    },
+    {
+      "path": "original/history-A3-diff.rgba",
+      "bytes": 128532480,
+      "sha256": "893fae1e0d5db4a4d89b422b16c78caf9db371af41cf181a511fc6d40be17a4b"
+    },
+    {
+      "path": "original/history-A3-reference.png",
+      "bytes": 17663811,
+      "sha256": "cc817abc1847a21c7d8671fcdb55a6752f9d8efe0efc0ea3909da48b3af76eba"
+    },
+    {
+      "path": "original/metadata.json",
+      "bytes": 13151542,
+      "sha256": "e7667e57da42ba23903373d7530f0db4888e8743389b507050f767e3d448452a"
+    },
+    {
+      "path": "original/post-capture-callbacks.json",
+      "bytes": 2,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    {
+      "path": "original/post-capture-events.json",
+      "bytes": 2,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    {
+      "path": "pending.json",
+      "bytes": 56032033,
+      "sha256": "542ac34099c38e62875b0cbb7d82cfd9cc92d160d55b17177544a2a4abc74620"
+    },
+    {
+      "path": "performance-pending-assertions.json",
+      "bytes": 56111107,
+      "sha256": "07c21f8255772d27e83b917833abdc28758ef648ff3055ae24d37dea087dac26"
+    },
+    {
+      "path": "prepared.json",
+      "bytes": 1018230,
+      "sha256": "dc11d1b43518dc70bae283da6d4786377e83049af922f1816365647ab5000a35"
+    },
+    {
+      "path": "timing-window-entry.json",
+      "bytes": 28354110,
+      "sha256": "28aee2dec1e9b46111fda59a3877ad0cdaf6ee53fc2dc096dfffdc05587ae9a9"
+    }
+  ],
+  "noBrowserRerun": true,
+  "failureEqualsPersistedPerformancePendingPlusAssertion": true,
+  "log": {
+    "path": "/tmp/atlas-root-curve-timing-state.log",
+    "sha256": "7a813f1274287c535a2acfd3b3c1551788f396bbb411bca213624dc6e37580ac",
+    "finalAssertionOnly": "candidate below unrounded60; observed cadence regression; observed CPU p95 regression",
+    "nodeVersion": "22.23.3",
+    "exitCodeReportedByRoot": 1
+  },
+  "callbackPrefixDifferences": [
+    {
+      "index": 1,
+      "kind": "font-event",
+      "differentFields": [
+        "faces"
+      ]
+    },
+    {
+      "index": 4,
+      "kind": "scene-prewarm-start",
+      "differentFields": [
+        "stack"
+      ]
+    },
+    {
+      "index": 13,
+      "kind": "map-draw-request",
+      "differentFields": [
+        "stack"
+      ]
+    },
+    {
+      "index": 18,
+      "kind": "scene-worker-message",
+      "differentFields": [
+        "stack"
+      ]
+    },
+    {
+      "index": 19,
+      "kind": "map-draw-request",
+      "differentFields": [
+        "stack"
+      ]
+    },
+    {
+      "index": 22,
+      "kind": "scene-worker-message",
+      "differentFields": [
+        "stack"
+      ]
+    },
+    {
+      "index": 23,
+      "kind": "map-draw-request",
+      "differentFields": [
+        "stack"
+      ]
+    },
+    {
+      "index": 26,
+      "kind": "scene-worker-message",
+      "differentFields": [
+        "stack"
+      ]
+    },
+    {
+      "index": 27,
+      "kind": "map-draw-request",
+      "differentFields": [
+        "stack"
+      ]
+    },
+    {
+      "index": 28,
+      "kind": "scene-prewarm-ready",
+      "differentFields": [
+        "stack"
+      ]
+    },
+    {
+      "index": 29,
+      "kind": "map-draw-request",
+      "differentFields": [
+        "stack"
+      ]
+    },
+    {
+      "index": 70,
+      "kind": "map-draw-request",
+      "differentFields": [
+        "stack"
+      ]
+    }
+  ],
+  "methods": [
+    {
+      "path": "/tmp/atlas-new-imaging-source/curve-timing-peer/source.mjs",
+      "sha256": "9c92424da49eb3f8ebae1678262f2c8f64b5a84800fdb1a907d6f5c59e36ee1c"
+    },
+    {
+      "path": "/tmp/atlas-new-imaging-source/curve-timing-peer/audit.py",
+      "sha256": "bae93017310065c85b8f394d6cb78bfc6bd63d8db2a1cf71cceb3ac4cce87b14"
+    },
+    {
+      "path": "/tmp/atlas-new-imaging-source/curve-timing-peer/images.py",
+      "sha256": "acb5d69b21b6671d35b88555b5e97176af680919a5e48a267e1b33118b7d355d"
+    }
+  ],
+  "personallyInspectedViews": [
+    {
+      "path": "/tmp/atlas-new-imaging-source/curve-timing-peer/views/chunk-complete-direct-diff-titles.png",
+      "sha256": "ed383ca3a74732dea9feb37d6d5768cbf9b8241fcb1553de67509fdb20ca369b"
+    },
+    {
+      "path": "/tmp/atlas-new-imaging-source/curve-timing-peer/views/chunk-complete-gpu-dense.png",
+      "sha256": "c0c1a311fc44fa818c6047e8190386467dda323c6d2dd5b32111c1f6b0f7408f"
+    },
+    {
+      "path": "/tmp/atlas-new-imaging-source/curve-timing-peer/views/chunk-complete-gpu-titles.png",
+      "sha256": "a2065807a254af17c0262131a20ad5175982853f3e9dce7723609609c212532f"
+    },
+    {
+      "path": "/tmp/atlas-new-imaging-source/curve-timing-peer/views/original-complete-direct-diff-titles.png",
+      "sha256": "ed383ca3a74732dea9feb37d6d5768cbf9b8241fcb1553de67509fdb20ca369b"
+    },
+    {
+      "path": "/tmp/atlas-new-imaging-source/curve-timing-peer/views/original-complete-gpu-dense.png",
+      "sha256": "c0c1a311fc44fa818c6047e8190386467dda323c6d2dd5b32111c1f6b0f7408f"
+    },
+    {
+      "path": "/tmp/atlas-new-imaging-source/curve-timing-peer/views/original-complete-gpu-titles.png",
+      "sha256": "a2065807a254af17c0262131a20ad5175982853f3e9dce7723609609c212532f"
+    },
+    {
+      "path": "/tmp/atlas-new-imaging-source/curve-timing-peer/views/overview-0.jpg",
+      "sha256": "1d49fe81fa426a3cb2c8b5464c738e8f61cfcbf71b02e281371880af8e8135e5"
+    },
+    {
+      "path": "/tmp/atlas-new-imaging-source/curve-timing-peer/views/overview-1.jpg",
+      "sha256": "4f75ef489ad94c8680ed91cacda36ac19ff3de014902470da0bd295851aab161"
+    },
+    {
+      "path": "/tmp/atlas-new-imaging-source/curve-timing-peer/views/overview-2.jpg",
+      "sha256": "0916fc319f256efb968010649db63815d83001fb37c6f723dfd0d08bcbdc0002"
+    },
+    {
+      "path": "/tmp/atlas-new-imaging-source/curve-timing-peer/views/overview-3.jpg",
+      "sha256": "32fe918c90628d2b924d9a52b70c960ad403917ec03f4bab5d720fbdfe6939f0"
+    },
+    {
+      "path": "/tmp/atlas-new-imaging-source/curve-timing-peer/views/overview-4.jpg",
+      "sha256": "13df1935551346852482c1bb65f67053c8b8c6147cb342548556987b76c30173"
+    },
+    {
+      "path": "/tmp/atlas-new-imaging-source/curve-timing-peer/views/raw-A0-native.png",
+      "sha256": "3afe6548f1b414da07407dda6157f9748ff585af7951ea04df9acf5f7fdb2703"
+    }
+  ],
+  "personalInspection": "All27 new whole native PNGs in5 complete overview sheets, plus7 native1280x1000 crops personally read. Audit views only; no regenerated native evidence.",
+  "limits": {
+    "all24SamplesIncluded": true,
+    "noTrimmingNormalizationOrRetry": true,
+    "cadenceIsNotGPUOrDisplayFPS": true,
+    "drawWallDurationIncludesObserversAndSynchronousGLWaits": true,
+    "orderMemoryGCSchedulingNotIsolated": true,
+    "rangeVisitsDoNotEstablishCause": true,
+    "notLifecycleMatrixOrProductionAcceptance": true,
+    "noOptimizationOrWave5": true,
+    "noBrowserServerNativeModelsRerun": true
+  }
+}
