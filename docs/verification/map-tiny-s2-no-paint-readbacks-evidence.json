@@ -1,0 +1,169 @@
+{
+  "identity": "tiny-old-S2-no-paint-readbacks-light-v1",
+  "source": true,
+  "prepare": [
+    {
+      "name": "default-blocked",
+      "identity": "tiny-old-S2-no-paint-readbacks-light-v1",
+      "mode": "PREPARE_ONLY_NATIVE_BLOCKED",
+      "output": "/var/folders/29/bzg0zx0d7jjbyf60_3cjch440000gn/T/atlas-tiny-s2-no-readbacks-prepare-iWLSa7",
+      "browserStarted": false,
+      "serverStarted": false,
+      "protectedSourcePaths": 72,
+      "manifestSHA256": "ee0d44a91e4eeeea011514363415b1ffb41ac8baa9e5266fba06e2669b41ab9e"
+    },
+    {
+      "name": "explicit-prepare",
+      "identity": "tiny-old-S2-no-paint-readbacks-light-v1",
+      "mode": "PREPARE_ONLY_NATIVE_BLOCKED",
+      "output": "/var/folders/29/bzg0zx0d7jjbyf60_3cjch440000gn/T/atlas-tiny-s2-no-readbacks-prepare-CKAK2C",
+      "browserStarted": false,
+      "serverStarted": false,
+      "protectedSourcePaths": 72,
+      "manifestSHA256": "9e08f4e6f99bd49926ef799d28cee1c07469d690a47b4684e094fe88444696a2"
+    },
+    {
+      "name": "explicit-output",
+      "identity": "tiny-old-S2-no-paint-readbacks-light-v1",
+      "mode": "PREPARE_ONLY_NATIVE_BLOCKED",
+      "output": "/tmp/atlas-ctrl-s2-no-readback-proposal-model-closing/explicit-output",
+      "browserStarted": false,
+      "serverStarted": false,
+      "protectedSourcePaths": 72,
+      "manifestSHA256": "c9cc88a4ebee71dc9827346cef127acccf71ad8c9923cbbdc4a68b24da3e86aa"
+    }
+  ],
+  "adverse": [
+    {
+      "name": "missing-original",
+      "rejected": true,
+      "kind": "inventory-contract model; not native evidence"
+    },
+    {
+      "name": "missing-connected",
+      "rejected": true,
+      "kind": "inventory-contract model; not native evidence"
+    },
+    {
+      "name": "extra-buffer",
+      "rejected": true,
+      "kind": "inventory-contract model; not native evidence"
+    },
+    {
+      "name": "reordered-buffer",
+      "rejected": true,
+      "kind": "inventory-contract model; not native evidence"
+    },
+    {
+      "name": "duplicate-buffer",
+      "rejected": true,
+      "kind": "inventory-contract model; not native evidence"
+    },
+    {
+      "name": "reintroduced-before-read",
+      "rejected": true,
+      "kind": "inventory-contract model; not native evidence"
+    },
+    {
+      "name": "reintroduced-after-read",
+      "rejected": true,
+      "kind": "inventory-contract model; not native evidence"
+    },
+    {
+      "name": "extra-diagnostic-read",
+      "rejected": true,
+      "kind": "inventory-contract model; not native evidence"
+    },
+    {
+      "name": "old-read-ordinal",
+      "rejected": true,
+      "kind": "inventory-contract model; not native evidence"
+    },
+    {
+      "name": "missing-painter-observation",
+      "rejected": true,
+      "kind": "inventory-contract model; not native evidence"
+    },
+    {
+      "name": "extra-painter-observation",
+      "rejected": true,
+      "kind": "inventory-contract model; not native evidence"
+    },
+    {
+      "name": "changed-painter-ordinal",
+      "rejected": true,
+      "kind": "inventory-contract model; not native evidence"
+    },
+    {
+      "name": "modified-runner",
+      "rejected": true
+    },
+    {
+      "name": "modified-fixture",
+      "rejected": true
+    },
+    {
+      "name": "unknown-flag",
+      "rejected": true,
+      "exitCode": 1
+    },
+    {
+      "name": "old-full-flag",
+      "rejected": true,
+      "exitCode": 1
+    },
+    {
+      "name": "prior-diagnostic-flag",
+      "rejected": true,
+      "exitCode": 1
+    },
+    {
+      "name": "near-root-flag",
+      "rejected": true,
+      "exitCode": 1
+    },
+    {
+      "name": "contradictory-flags",
+      "rejected": true,
+      "exitCode": 1
+    },
+    {
+      "name": "duplicate-prepare",
+      "rejected": true,
+      "exitCode": 1
+    },
+    {
+      "name": "duplicate-root",
+      "rejected": true,
+      "exitCode": 1
+    },
+    {
+      "name": "missing-output",
+      "rejected": true,
+      "exitCode": 1
+    },
+    {
+      "name": "duplicate-output",
+      "rejected": true,
+      "exitCode": 1
+    },
+    {
+      "name": "existing-empty",
+      "rejected": true,
+      "exitCode": 1
+    },
+    {
+      "name": "existing-raw",
+      "rejected": true,
+      "exitCode": 1
+    },
+    {
+      "name": "existing-file",
+      "rejected": true,
+      "exitCode": 1
+    }
+  ],
+  "nativeExecuted": false,
+  "browserStarted": false,
+  "serverStarted": false
+}
