@@ -1,0 +1,1053 @@
+{
+  "scope": "unused private transform/source/model only; no browser/native acceptance",
+  "candidate": "e643c359b86ec04b8ba0e5717f8bee167d7f70bd",
+  "negativeBoundary": "6833fd9f404af5ac1ce4c4396814c708aaaccb1c",
+  "acceptedSourceBaseline": "b6ca416f8b95b8e93bd12b9973ab0999f6519942",
+  "paired": {
+    "complete": true,
+    "pass": true,
+    "baseHashes": {
+      "assets/js/map-webgl-scene.js": "2422e59c2780e19e0c7b5c11da56127bc23718925ddde3e4d71527e4e45c21b5",
+      "scripts/lib/map-chunked-indices-runtime.mjs": "3c8b01c4df2d5497f27d7d65876adbfaebbbdcd659cf2c8cb29d25714896c187"
+    },
+    "preservedOtherFiles": 59,
+    "records": [
+      {
+        "variant": "old",
+        "probe": "chunk",
+        "status": 1,
+        "signal": null,
+        "rawSHA256": "6bfa62b01ab34ad506c532eb18e48ea5d8ecd61133af056128e6495200947f7d",
+        "failures": 1,
+        "cases": 22
+      },
+      {
+        "variant": "old",
+        "probe": "scene",
+        "status": 1,
+        "signal": null,
+        "rawSHA256": "bd896691328ca81f274c9b989e5776856b9549c1d1b58001bcc49820c7994c9f",
+        "failures": 3,
+        "cases": 3
+      },
+      {
+        "variant": "old",
+        "probe": "callbacks",
+        "status": 1,
+        "signal": null,
+        "rawSHA256": "80243f72bff213e5bfec836455a9fd9d5f25be8ebcbc558b324b016f4291aff9",
+        "failures": 5,
+        "cases": 6
+      },
+      {
+        "variant": "private-repair",
+        "probe": "chunk",
+        "status": 0,
+        "signal": null,
+        "rawSHA256": "c88e6bdb4267d6cb1779b659c56a7070ce8ef7bdd9e417496a70aac6b00b04f3",
+        "failures": 0,
+        "cases": 22
+      },
+      {
+        "variant": "private-repair",
+        "probe": "scene",
+        "status": 0,
+        "signal": null,
+        "rawSHA256": "5b186e58f16e7dfdf9beea2cb9e58cdc2b7ccbc35029b6484dccf8dfd3951502",
+        "failures": 0,
+        "cases": 3
+      },
+      {
+        "variant": "private-repair",
+        "probe": "callbacks",
+        "status": 0,
+        "signal": null,
+        "rawSHA256": "9e5dbc34608a7c9ef6d55ddb658aa3f34983b6facb3a9abba0f59bcddd945884",
+        "failures": 0,
+        "cases": 6
+      }
+    ]
+  },
+  "ownAdverse": {
+    "complete": true,
+    "transformCases": 8,
+    "native": false,
+    "rows": [
+      {
+        "variant": "old",
+        "name": "worker-dead-same-generation",
+        "observed": {
+          "before": {
+            "generation": 1,
+            "dead": true,
+            "status": "initializing",
+            "active": false,
+            "failed": [],
+            "pending": [
+              1,
+              2,
+              3
+            ],
+            "size": [
+              128,
+              96
+            ],
+            "draws": 0,
+            "ownReceiver": true,
+            "globalDraws": 0
+          },
+          "after": {
+            "generation": 1,
+            "dead": true,
+            "status": "geometry worker failed",
+            "active": false,
+            "failed": [],
+            "pending": [
+              1,
+              2,
+              3
+            ],
+            "display": "none",
+            "size": [
+              1,
+              1
+            ],
+            "draws": 0,
+            "ownReceiver": true,
+            "globalDraws": 0
+          },
+          "thrown": null
+        },
+        "assertionFailure": "Expected values to be strictly deep-equal:\n+ actual - expected\n... Skipped lines\n\n  {\n    active: false,\n    dead: true,\n+   display: 'none',\n-   display: undefined,\n    draws: 0,\n    failed: [],\n    generation: 1,\n    globalDraws: 0,\n    ownReceiver: true,\n...\n    size: [\n+     1,\n+     1\n-     128,\n-     96\n    ],\n+   status: 'geometry worker failed'\n-   status: 'initializing'\n  }\n",
+        "cleanup": {
+          "budget": 0,
+          "pending": 0,
+          "worker": null,
+          "removed": true
+        }
+      },
+      {
+        "variant": "old",
+        "name": "worker-stale-alive",
+        "observed": {
+          "before": {
+            "generation": 2,
+            "dead": false,
+            "status": "initializing",
+            "active": false,
+            "failed": [],
+            "pending": [
+              1,
+              2,
+              3
+            ],
+            "size": [
+              128,
+              96
+            ],
+            "draws": 0,
+            "ownReceiver": true,
+            "globalDraws": 0
+          },
+          "after": {
+            "generation": 2,
+            "dead": false,
+            "status": "geometry worker failed",
+            "active": false,
+            "failed": [],
+            "pending": [
+              1,
+              2,
+              3
+            ],
+            "display": "none",
+            "size": [
+              1,
+              1
+            ],
+            "draws": 0,
+            "ownReceiver": true,
+            "globalDraws": 1
+          },
+          "thrown": "wrong global map owner"
+        },
+        "assertionFailure": "Expected values to be strictly equal:\n+ actual - expected\n\n+ 'wrong global map owner'\n- null\n",
+        "cleanup": {
+          "budget": 0,
+          "pending": 0,
+          "worker": null,
+          "removed": true
+        }
+      },
+      {
+        "variant": "old",
+        "name": "worker-two-reinitializations",
+        "observed": {
+          "before": {
+            "generation": 5,
+            "dead": false,
+            "status": "initializing",
+            "active": false,
+            "failed": [],
+            "pending": [
+              7,
+              8,
+              9
+            ],
+            "size": [
+              128,
+              96
+            ],
+            "draws": 0,
+            "ownReceiver": true,
+            "globalDraws": 0
+          },
+          "after": {
+            "generation": 5,
+            "dead": false,
+            "status": "geometry worker failed",
+            "active": false,
+            "failed": [],
+            "pending": [
+              7,
+              8,
+              9
+            ],
+            "display": "none",
+            "size": [
+              1,
+              1
+            ],
+            "draws": 0,
+            "ownReceiver": true,
+            "globalDraws": 1
+          },
+          "thrown": "wrong global map owner"
+        },
+        "assertionFailure": "Expected values to be strictly equal:\n+ actual - expected\n\n+ 'wrong global map owner'\n- null\n",
+        "cleanup": {
+          "budget": 0,
+          "pending": 0,
+          "worker": null,
+          "removed": true
+        }
+      },
+      {
+        "variant": "old",
+        "name": "current-worker-own-map-with-poisoned-global",
+        "observed": {
+          "thrown": "wrong global map owner",
+          "after": {
+            "generation": 1,
+            "dead": false,
+            "status": "geometry worker failed",
+            "active": false,
+            "failed": [],
+            "pending": [
+              1,
+              2,
+              3
+            ],
+            "display": "none",
+            "size": [
+              1,
+              1
+            ],
+            "draws": 0,
+            "ownReceiver": true,
+            "globalDraws": 1
+          }
+        },
+        "assertionFailure": "Expected values to be strictly equal:\n+ actual - expected\n\n+ 'wrong global map owner'\n- null\n",
+        "cleanup": {
+          "budget": 0,
+          "pending": 0,
+          "worker": null,
+          "removed": true
+        }
+      },
+      {
+        "variant": "old",
+        "name": "lazy-dead-same-generation",
+        "observed": {
+          "before": {
+            "generation": 1,
+            "dead": true,
+            "status": "preparing geometry",
+            "active": false,
+            "failed": [],
+            "pending": [
+              1,
+              2,
+              3
+            ],
+            "display": "none",
+            "size": [
+              1,
+              1
+            ],
+            "draws": 0,
+            "ownReceiver": true,
+            "globalDraws": 0
+          },
+          "after": {
+            "generation": 1,
+            "dead": true,
+            "status": "independent lazy failure",
+            "active": false,
+            "failed": [
+              "edges:8"
+            ],
+            "pending": [
+              1,
+              2,
+              3
+            ],
+            "display": "none",
+            "size": [
+              1,
+              1
+            ],
+            "draws": 0,
+            "ownReceiver": true,
+            "globalDraws": 0
+          }
+        },
+        "assertionFailure": "Expected values to be strictly deep-equal:\n+ actual - expected\n... Skipped lines\n\n  {\n    active: false,\n    dead: true,\n    display: 'none',\n    draws: 0,\n+   failed: [\n+     'edges:8'\n+   ],\n-   failed: [],\n    generation: 1,\n    globalDraws: 0,\n    ownReceiver: true,\n    pending: [\n      1,\n...\n    ],\n+   status: 'independent lazy failure'\n-   status: 'preparing geometry'\n  }\n",
+        "cleanup": {
+          "budget": 0,
+          "pending": 0,
+          "worker": null,
+          "removed": true
+        }
+      },
+      {
+        "variant": "old",
+        "name": "lazy-stale-alive",
+        "observed": {
+          "before": {
+            "generation": 2,
+            "dead": false,
+            "status": "preparing geometry",
+            "active": false,
+            "failed": [],
+            "pending": [
+              1,
+              2,
+              3
+            ],
+            "display": "none",
+            "size": [
+              1,
+              1
+            ],
+            "draws": 0,
+            "ownReceiver": true,
+            "globalDraws": 0
+          },
+          "after": {
+            "generation": 2,
+            "dead": false,
+            "status": "independent lazy failure",
+            "active": false,
+            "failed": [
+              "edges:8"
+            ],
+            "pending": [
+              1,
+              2,
+              3
+            ],
+            "display": "none",
+            "size": [
+              1,
+              1
+            ],
+            "draws": 0,
+            "ownReceiver": true,
+            "globalDraws": 0
+          }
+        },
+        "assertionFailure": "Expected values to be strictly deep-equal:\n+ actual - expected\n... Skipped lines\n\n  {\n    active: false,\n    dead: false,\n    display: 'none',\n    draws: 0,\n+   failed: [\n+     'edges:8'\n+   ],\n-   failed: [],\n    generation: 2,\n    globalDraws: 0,\n    ownReceiver: true,\n    pending: [\n      1,\n...\n    ],\n+   status: 'independent lazy failure'\n-   status: 'preparing geometry'\n  }\n",
+        "cleanup": {
+          "budget": 0,
+          "pending": 0,
+          "worker": null,
+          "removed": true
+        }
+      },
+      {
+        "variant": "old",
+        "name": "lazy-current",
+        "observed": {
+          "before": {
+            "generation": 1,
+            "dead": false,
+            "status": "preparing geometry",
+            "active": false,
+            "failed": [],
+            "pending": [
+              1,
+              2,
+              3
+            ],
+            "display": "none",
+            "size": [
+              1,
+              1
+            ],
+            "draws": 0,
+            "ownReceiver": true,
+            "globalDraws": 0
+          },
+          "after": {
+            "generation": 1,
+            "dead": false,
+            "status": "independent lazy failure",
+            "active": false,
+            "failed": [
+              "edges:8"
+            ],
+            "pending": [
+              1,
+              2,
+              3
+            ],
+            "display": "none",
+            "size": [
+              1,
+              1
+            ],
+            "draws": 0,
+            "ownReceiver": true,
+            "globalDraws": 0
+          }
+        },
+        "pass": true,
+        "cleanup": {
+          "budget": 0,
+          "pending": 0,
+          "worker": null,
+          "removed": true
+        }
+      },
+      {
+        "variant": "old",
+        "name": "budget-owned",
+        "observed": {
+          "budgetOwned": true,
+          "registered": true,
+          "bufferTruthy": true,
+          "live": true
+        },
+        "pass": true,
+        "cleanup": {
+          "budget": 0
+        }
+      },
+      {
+        "variant": "old",
+        "name": "budget-release-group",
+        "observed": {
+          "budgetOwned": false,
+          "registered": true,
+          "bufferTruthy": true,
+          "live": true
+        },
+        "assertionFailure": "Expected values to be strictly equal:\n\ntrue !== false\n",
+        "cleanup": {
+          "budget": 0
+        }
+      },
+      {
+        "variant": "old",
+        "name": "budget-registry-removed",
+        "observed": {
+          "budgetOwned": true,
+          "registered": false,
+          "bufferTruthy": true,
+          "live": false
+        },
+        "pass": true,
+        "cleanup": {
+          "budget": 0
+        }
+      },
+      {
+        "variant": "old",
+        "name": "budget-fresh-valid-group",
+        "observed": {
+          "budgetOwned": true,
+          "registered": true,
+          "bufferTruthy": true,
+          "live": true
+        },
+        "pass": true,
+        "cleanup": {
+          "budget": 0
+        }
+      },
+      {
+        "variant": "old",
+        "name": "budget-budget-cleared",
+        "observed": {
+          "budgetOwned": false,
+          "registered": true,
+          "bufferTruthy": true,
+          "live": false
+        },
+        "pass": true,
+        "cleanup": {
+          "budget": 0
+        }
+      },
+      {
+        "variant": "repair",
+        "name": "worker-dead-same-generation",
+        "observed": {
+          "before": {
+            "generation": 1,
+            "dead": true,
+            "status": "initializing",
+            "active": false,
+            "failed": [],
+            "pending": [
+              1,
+              2,
+              3
+            ],
+            "size": [
+              128,
+              96
+            ],
+            "draws": 0,
+            "ownReceiver": true,
+            "globalDraws": 0
+          },
+          "after": {
+            "generation": 1,
+            "dead": true,
+            "status": "initializing",
+            "active": false,
+            "failed": [],
+            "pending": [
+              1,
+              2,
+              3
+            ],
+            "size": [
+              128,
+              96
+            ],
+            "draws": 0,
+            "ownReceiver": true,
+            "globalDraws": 0
+          },
+          "thrown": null
+        },
+        "pass": true,
+        "cleanup": {
+          "budget": 0,
+          "pending": 0,
+          "worker": null,
+          "removed": true
+        }
+      },
+      {
+        "variant": "repair",
+        "name": "worker-stale-alive",
+        "observed": {
+          "before": {
+            "generation": 2,
+            "dead": false,
+            "status": "initializing",
+            "active": false,
+            "failed": [],
+            "pending": [
+              1,
+              2,
+              3
+            ],
+            "size": [
+              128,
+              96
+            ],
+            "draws": 0,
+            "ownReceiver": true,
+            "globalDraws": 0
+          },
+          "after": {
+            "generation": 2,
+            "dead": false,
+            "status": "initializing",
+            "active": false,
+            "failed": [],
+            "pending": [
+              1,
+              2,
+              3
+            ],
+            "size": [
+              128,
+              96
+            ],
+            "draws": 0,
+            "ownReceiver": true,
+            "globalDraws": 0
+          },
+          "thrown": null
+        },
+        "pass": true,
+        "cleanup": {
+          "budget": 0,
+          "pending": 0,
+          "worker": null,
+          "removed": true
+        }
+      },
+      {
+        "variant": "repair",
+        "name": "worker-two-reinitializations",
+        "observed": {
+          "before": {
+            "generation": 5,
+            "dead": false,
+            "status": "initializing",
+            "active": false,
+            "failed": [],
+            "pending": [
+              7,
+              8,
+              9
+            ],
+            "size": [
+              128,
+              96
+            ],
+            "draws": 0,
+            "ownReceiver": true,
+            "globalDraws": 0
+          },
+          "after": {
+            "generation": 5,
+            "dead": false,
+            "status": "initializing",
+            "active": false,
+            "failed": [],
+            "pending": [
+              7,
+              8,
+              9
+            ],
+            "size": [
+              128,
+              96
+            ],
+            "draws": 0,
+            "ownReceiver": true,
+            "globalDraws": 0
+          },
+          "thrown": null
+        },
+        "pass": true,
+        "cleanup": {
+          "budget": 0,
+          "pending": 0,
+          "worker": null,
+          "removed": true
+        }
+      },
+      {
+        "variant": "repair",
+        "name": "current-worker-own-map-with-poisoned-global",
+        "observed": {
+          "thrown": null,
+          "after": {
+            "generation": 1,
+            "dead": false,
+            "status": "geometry worker failed",
+            "active": false,
+            "failed": [],
+            "pending": [
+              1,
+              2,
+              3
+            ],
+            "display": "none",
+            "size": [
+              1,
+              1
+            ],
+            "draws": 1,
+            "ownReceiver": true,
+            "globalDraws": 0
+          }
+        },
+        "pass": true,
+        "cleanup": {
+          "budget": 0,
+          "pending": 0,
+          "worker": null,
+          "removed": true
+        }
+      },
+      {
+        "variant": "repair",
+        "name": "lazy-dead-same-generation",
+        "observed": {
+          "before": {
+            "generation": 1,
+            "dead": true,
+            "status": "preparing geometry",
+            "active": false,
+            "failed": [],
+            "pending": [
+              1,
+              2,
+              3
+            ],
+            "display": "none",
+            "size": [
+              1,
+              1
+            ],
+            "draws": 0,
+            "ownReceiver": true,
+            "globalDraws": 0
+          },
+          "after": {
+            "generation": 1,
+            "dead": true,
+            "status": "preparing geometry",
+            "active": false,
+            "failed": [],
+            "pending": [
+              1,
+              2,
+              3
+            ],
+            "display": "none",
+            "size": [
+              1,
+              1
+            ],
+            "draws": 0,
+            "ownReceiver": true,
+            "globalDraws": 0
+          }
+        },
+        "pass": true,
+        "cleanup": {
+          "budget": 0,
+          "pending": 0,
+          "worker": null,
+          "removed": true
+        }
+      },
+      {
+        "variant": "repair",
+        "name": "lazy-stale-alive",
+        "observed": {
+          "before": {
+            "generation": 2,
+            "dead": false,
+            "status": "preparing geometry",
+            "active": false,
+            "failed": [],
+            "pending": [
+              1,
+              2,
+              3
+            ],
+            "display": "none",
+            "size": [
+              1,
+              1
+            ],
+            "draws": 0,
+            "ownReceiver": true,
+            "globalDraws": 0
+          },
+          "after": {
+            "generation": 2,
+            "dead": false,
+            "status": "preparing geometry",
+            "active": false,
+            "failed": [],
+            "pending": [
+              1,
+              2,
+              3
+            ],
+            "display": "none",
+            "size": [
+              1,
+              1
+            ],
+            "draws": 0,
+            "ownReceiver": true,
+            "globalDraws": 0
+          }
+        },
+        "pass": true,
+        "cleanup": {
+          "budget": 0,
+          "pending": 0,
+          "worker": null,
+          "removed": true
+        }
+      },
+      {
+        "variant": "repair",
+        "name": "lazy-current",
+        "observed": {
+          "before": {
+            "generation": 1,
+            "dead": false,
+            "status": "preparing geometry",
+            "active": false,
+            "failed": [],
+            "pending": [
+              1,
+              2,
+              3
+            ],
+            "display": "none",
+            "size": [
+              1,
+              1
+            ],
+            "draws": 0,
+            "ownReceiver": true,
+            "globalDraws": 0
+          },
+          "after": {
+            "generation": 1,
+            "dead": false,
+            "status": "independent lazy failure",
+            "active": false,
+            "failed": [
+              "edges:8"
+            ],
+            "pending": [
+              1,
+              2,
+              3
+            ],
+            "display": "none",
+            "size": [
+              1,
+              1
+            ],
+            "draws": 0,
+            "ownReceiver": true,
+            "globalDraws": 0
+          }
+        },
+        "pass": true,
+        "cleanup": {
+          "budget": 0,
+          "pending": 0,
+          "worker": null,
+          "removed": true
+        }
+      },
+      {
+        "variant": "repair",
+        "name": "budget-owned",
+        "observed": {
+          "budgetOwned": true,
+          "registered": true,
+          "bufferTruthy": true,
+          "live": true
+        },
+        "pass": true,
+        "cleanup": {
+          "budget": 0
+        }
+      },
+      {
+        "variant": "repair",
+        "name": "budget-release-group",
+        "observed": {
+          "budgetOwned": false,
+          "registered": true,
+          "bufferTruthy": true,
+          "live": false
+        },
+        "pass": true,
+        "cleanup": {
+          "budget": 0
+        }
+      },
+      {
+        "variant": "repair",
+        "name": "budget-registry-removed",
+        "observed": {
+          "budgetOwned": true,
+          "registered": false,
+          "bufferTruthy": true,
+          "live": false
+        },
+        "pass": true,
+        "cleanup": {
+          "budget": 0
+        }
+      },
+      {
+        "variant": "repair",
+        "name": "budget-fresh-valid-group",
+        "observed": {
+          "budgetOwned": true,
+          "registered": true,
+          "bufferTruthy": true,
+          "live": true
+        },
+        "pass": true,
+        "cleanup": {
+          "budget": 0
+        }
+      },
+      {
+        "variant": "repair",
+        "name": "budget-budget-cleared",
+        "observed": {
+          "budgetOwned": false,
+          "registered": true,
+          "bufferTruthy": true,
+          "live": false
+        },
+        "pass": true,
+        "cleanup": {
+          "budget": 0
+        }
+      }
+    ]
+  },
+  "ownPass": {
+    "pass": true,
+    "transformCases": 8,
+    "adverseCasesPerSource": 12,
+    "originalAdverseFailures": 7,
+    "repairedAdverseFailures": 0,
+    "native": false
+  },
+  "rawFiles": {
+    "/tmp/atlas-ctrl-repair-peer/adverse/observations.json": {
+      "bytes": 19211,
+      "sha256": "5452c94c05d568864a55ed06036743a5123541d58d2777addcacb3c6eb032179"
+    },
+    "/tmp/atlas-ctrl-repair-peer/adverse/old-painter.mjs": {
+      "bytes": 75,
+      "sha256": "7500a3b42d134b9a05a9a05aa39973b538809474a236e0f7f777cc941732c349"
+    },
+    "/tmp/atlas-ctrl-repair-peer/adverse/old-scene.mjs": {
+      "bytes": 18846,
+      "sha256": "e565ea1d31ceb5876145a7a805e65aaa63ed86b0bb3ae2c1fa36c356aee14e09"
+    },
+    "/tmp/atlas-ctrl-repair-peer/adverse/pass.json": {
+      "bytes": 130,
+      "sha256": "4ba80ed78712826f68219702edc25860b179436b82805de6f8e0e037277cc2ef"
+    },
+    "/tmp/atlas-ctrl-repair-peer/adverse/repair-painter.mjs": {
+      "bytes": 75,
+      "sha256": "7500a3b42d134b9a05a9a05aa39973b538809474a236e0f7f777cc941732c349"
+    },
+    "/tmp/atlas-ctrl-repair-peer/adverse/repair-scene.mjs": {
+      "bytes": 19013,
+      "sha256": "5d8e8404d2862a39d9f2b3eab76acfa5b551f2c95435b9ac70367fe95f2bd3b7"
+    },
+    "/tmp/atlas-ctrl-repair-peer/adverse.log": {
+      "bytes": 84,
+      "sha256": "a95cbd6e6d9d982fde098c8d3f7921534eaaceb41294001de21b8f6abe646b91"
+    },
+    "/tmp/atlas-ctrl-repair-peer/paired/comparison.json": {
+      "bytes": 14660860,
+      "sha256": "7bc131b935b96129880e1a9678d1096f3b097044dc189a0c6b5b97eeffb65f40"
+    },
+    "/tmp/atlas-ctrl-repair-peer/paired/old-callbacks/actual-scene-import-fixture.mjs": {
+      "bytes": 18863,
+      "sha256": "32e7186fc4f8bf93ecbd6d058d7bfc8677344ab8bdcd6f99944423f481c818f0"
+    },
+    "/tmp/atlas-ctrl-repair-peer/paired/old-callbacks/painter-fixture.mjs": {
+      "bytes": 81,
+      "sha256": "82ef36d34ca87d4f75bc5cfc6bea82dc6d49341d81a286f2c792e03750e77012"
+    },
+    "/tmp/atlas-ctrl-repair-peer/paired/old-callbacks/results.json": {
+      "bytes": 8820,
+      "sha256": "80243f72bff213e5bfec836455a9fd9d5f25be8ebcbc558b324b016f4291aff9"
+    },
+    "/tmp/atlas-ctrl-repair-peer/paired/old-callbacks.log": {
+      "bytes": 560,
+      "sha256": "0ed98be74511a096cf2cbf7545ac334884561803f5d6c08cbe266777a8445bf8"
+    },
+    "/tmp/atlas-ctrl-repair-peer/paired/old-chunk/results.json": {
+      "bytes": 5949733,
+      "sha256": "6bfa62b01ab34ad506c532eb18e48ea5d8ecd61133af056128e6495200947f7d"
+    },
+    "/tmp/atlas-ctrl-repair-peer/paired/old-chunk.log": {
+      "bytes": 539,
+      "sha256": "7acd586021bb927239a20eb2f44885140931c66b58ab3f3095542958468ddaa9"
+    },
+    "/tmp/atlas-ctrl-repair-peer/paired/old-scene/actual-scene-import-fixture.mjs": {
+      "bytes": 18859,
+      "sha256": "5e22c90a3e41261149ff2d4e7156c0b34facd5fa3b664dc8fc3a90393facf284"
+    },
+    "/tmp/atlas-ctrl-repair-peer/paired/old-scene/painter-fixture.mjs": {
+      "bytes": 81,
+      "sha256": "82ef36d34ca87d4f75bc5cfc6bea82dc6d49341d81a286f2c792e03750e77012"
+    },
+    "/tmp/atlas-ctrl-repair-peer/paired/old-scene/results.json": {
+      "bytes": 5357,
+      "sha256": "bd896691328ca81f274c9b989e5776856b9549c1d1b58001bcc49820c7994c9f"
+    },
+    "/tmp/atlas-ctrl-repair-peer/paired/old-scene.log": {
+      "bytes": 546,
+      "sha256": "1934a205751fe12220b6e3020e8486a5858df09f06d8da5bace741595b478324"
+    },
+    "/tmp/atlas-ctrl-repair-peer/paired/private-repair-callbacks/actual-scene-import-fixture.mjs": {
+      "bytes": 19118,
+      "sha256": "ad137ab3a34be1650e81759a98e433e382355c205fc4cdb1a27edf87b3da3e3d"
+    },
+    "/tmp/atlas-ctrl-repair-peer/paired/private-repair-callbacks/painter-fixture.mjs": {
+      "bytes": 81,
+      "sha256": "82ef36d34ca87d4f75bc5cfc6bea82dc6d49341d81a286f2c792e03750e77012"
+    },
+    "/tmp/atlas-ctrl-repair-peer/paired/private-repair-callbacks/results.json": {
+      "bytes": 6927,
+      "sha256": "9e5dbc34608a7c9ef6d55ddb658aa3f34983b6facb3a9abba0f59bcddd945884"
+    },
+    "/tmp/atlas-ctrl-repair-peer/paired/private-repair-callbacks.log": {
+      "bytes": 116,
+      "sha256": "a9a1ff9660c4a3bbb2af246af4d00b6eb407ee28b0e0e7d6ea9942887627fdcf"
+    },
+    "/tmp/atlas-ctrl-repair-peer/paired/private-repair-chunk/results.json": {
+      "bytes": 5932948,
+      "sha256": "c88e6bdb4267d6cb1779b659c56a7070ce8ef7bdd9e417496a70aac6b00b04f3"
+    },
+    "/tmp/atlas-ctrl-repair-peer/paired/private-repair-chunk.log": {
+      "bytes": 113,
+      "sha256": "c6696fe8dfc5e8577e97d044330a3bb987a34c44273d3a2392253cd1d58b50fd"
+    },
+    "/tmp/atlas-ctrl-repair-peer/paired/private-repair-scene/actual-scene-import-fixture.mjs": {
+      "bytes": 19114,
+      "sha256": "1689eec3251d4fb3427d8478f29123229e89e2f3d019d417afd3acfc4b8e2ced"
+    },
+    "/tmp/atlas-ctrl-repair-peer/paired/private-repair-scene/painter-fixture.mjs": {
+      "bytes": 81,
+      "sha256": "82ef36d34ca87d4f75bc5cfc6bea82dc6d49341d81a286f2c792e03750e77012"
+    },
+    "/tmp/atlas-ctrl-repair-peer/paired/private-repair-scene/results.json": {
+      "bytes": 3905,
+      "sha256": "5b186e58f16e7dfdf9beea2cb9e58cdc2b7ccbc35029b6484dccf8dfd3951502"
+    },
+    "/tmp/atlas-ctrl-repair-peer/paired/private-repair-scene.log": {
+      "bytes": 112,
+      "sha256": "b97db2c52af27eef208fabd4e99d1de4deacd93436d43742df15b61a48827def"
+    },
+    "/tmp/atlas-ctrl-repair-peer/paired.log": {
+      "bytes": 127,
+      "sha256": "4597f288f5a453fc95112d0e5c5d026fc5f7e8e4bc3023bbfb311e770e06648f"
+    }
+  }
+}
