@@ -1,0 +1,40 @@
+{
+  "baseline": "ee15d812c4ccf430d9a826f910210e89fa9bc2bc",
+  "mapping": [
+    {
+      "num": "2.10",
+      "file": "ch02-b.js",
+      "target": "pma-3.6",
+      "paragraph": "The existence proof needs a sequence argument beyond Nash existence. If player i has m_i actions, choose a sequence of positive trembles tending to zero, each smaller than $1/\\max_i m_i$. Write every feasible mixture as $\\sigma_i(a)=\\varepsilon+(1-m_i\\varepsilon)q_i(a)$ with q_i in the ordinary simplex. Payoffs remain affine in each q_i separately, so evaluating them at pure q-profiles defines a finite game to which game-2.3 applies. The resulting perturbed equilibria lie in the compact product of the original probability simplices. PMA 3.6 therefore supplies a convergent subsequence, whose trembles still tend to zero. For any pure deviation, its feasible approximation puts epsilon on the other actions and the remaining probability on that action. The perturbed best-response inequality holds against this approximation; continuity of finite expected payoffs lets the inequality pass to the subsequence limit. Thus that limit is Nash. Compactness provides the limiting profile, not uniqueness, convergence of every chosen equilibrium sequence or a numerical cutoff certificate.",
+      "beforeIdea": "A weakly dominated action is a best reply only if the opponent plays *exactly* a strategy against which it ties. Once the opponent trembles onto the action where the dominated one does worse, a player strictly loses by using it, so in the perturbed game he must put the minimum $\\varepsilon$ on it, and the equilibrium moves away. Existence follows by applying Nash's theorem (game-2.3) to the perturbed games, which are finite-dimensional games on compact convex sets, and passing to a convergent subsequence by compactness.",
+      "beforeDeps": [
+        "game-2.3"
+      ],
+      "fullDeps": [
+        "game-2.3",
+        "pma-3.6"
+      ],
+      "depsBeforeSource": "['game-2.3']",
+      "depsAfterSource": "['game-2.3', 'pma-3.6']"
+    },
+    {
+      "num": "4.5",
+      "file": "ch04.js",
+      "target": "alg-2.5",
+      "paragraph": "The induction is strong induction on the finite tree height (ALG 2.5), with the terminal game at height zero as the base case. At height h+1, every child subgame has some height at most h, possibly different from its siblings, so the induction hypothesis supplies its complete pure SPE, including choices off the eventual root path. Select one such profile in every child and maximize the root mover's payoff over the finitely many resulting continuations. A deviator cannot improve inside any selected child by the child equilibrium property, and the root mover cannot improve by selecting another child because of that maximization. The same induction also proves the converse: restricting any pure SPE to each child supplies one of the recursively admitted profiles, while its root action must be a maximizer. Thus the recursion retains exactly all pure SPE when ties are kept. This uses the height of a finite game tree, not an assertion about infinite-horizon games.",
+      "beforeIdea": "Induct on height. A terminal root has the unique empty profile. Otherwise select a pure SPE in every child subgame by induction. Players other than the root mover cannot choose a different child, and cannot improve inside it. The mover chooses the largest of her finitely many continuation payoffs; even if she also changes later choices, the selected child-subgame equilibrium prevents an improvement there. Thus the assembled profile is Nash in the whole game and in every proper subgame. Conversely, restricting any pure SPE to child subgames gives their pure SPE, and its root action must maximize those prescribed continuation payoffs; induction therefore reconstructs it by backward induction. If each player's payoffs distinguish all terminal histories, induction makes every such maximizing action unique. Infinite action sets can defeat attainment even in one stage: a single player choosing $a\\in(0,1)$ with payoff $a$ has no optimal pure strategy. Chance moves and their expected-payoff extension are outside the deterministic model illustrated here.",
+      "beforeDeps": [
+        "game-4.2",
+        "game-4.4"
+      ],
+      "fullDeps": [
+        "game-4.2",
+        "game-4.4",
+        "alg-2.5"
+      ],
+      "depsBeforeSource": "['game-4.2', 'game-4.4']",
+      "depsAfterSource": "['game-4.2', 'game-4.4', 'alg-2.5']"
+    }
+  ],
+  "rowRepairs": {}
+}
