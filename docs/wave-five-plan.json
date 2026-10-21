@@ -17510,9 +17510,9 @@
   "authoringDirection": "User confirmed prior work done; continuously author future waves without routine pauses.",
   "progress": {
     "total": 1031,
-    "written": 370,
-    "remaining": 661,
-    "writtenChapters": 33,
+    "written": 414,
+    "remaining": 617,
+    "writtenChapters": 36,
     "chapters": [
       {
         "collection": "ode",
@@ -18016,10 +18016,32 @@
         "collection": "thermo",
         "chapter": 7,
         "total": 21,
-        "written": 0,
-        "remaining": 21,
-        "writtenItems": [],
-        "status": "planned"
+        "written": 21,
+        "remaining": 0,
+        "writtenItems": [
+          "thermo-7.1",
+          "thermo-7.2",
+          "thermo-7.3",
+          "thermo-7.4",
+          "thermo-7.5",
+          "thermo-7.6",
+          "thermo-7.7",
+          "thermo-7.8",
+          "thermo-7.9",
+          "thermo-7.10",
+          "thermo-7.11",
+          "thermo-7.12",
+          "thermo-7.13",
+          "thermo-7.14",
+          "thermo-7.15",
+          "thermo-7.16",
+          "thermo-7.17",
+          "thermo-7.18",
+          "thermo-7.19",
+          "thermo-7.20",
+          "thermo-7.21"
+        ],
+        "status": "written"
       },
       {
         "collection": "qm",
@@ -18225,10 +18247,21 @@
         "collection": "climate",
         "chapter": 5,
         "total": 10,
-        "written": 0,
-        "remaining": 10,
-        "writtenItems": [],
-        "status": "planned"
+        "written": 10,
+        "remaining": 0,
+        "writtenItems": [
+          "climate-5.1",
+          "climate-5.2",
+          "climate-5.3",
+          "climate-5.4",
+          "climate-5.5",
+          "climate-5.6",
+          "climate-5.7",
+          "climate-5.8",
+          "climate-5.9",
+          "climate-5.10"
+        ],
+        "status": "written"
       },
       {
         "collection": "geog",
@@ -18270,10 +18303,24 @@
         "collection": "mathbio",
         "chapter": 5,
         "total": 13,
-        "written": 0,
-        "remaining": 13,
-        "writtenItems": [],
-        "status": "planned"
+        "written": 13,
+        "remaining": 0,
+        "writtenItems": [
+          "mathbio-5.2",
+          "mathbio-5.3",
+          "mathbio-5.4",
+          "mathbio-5.5",
+          "mathbio-5.6",
+          "mathbio-5.7",
+          "mathbio-5.8",
+          "mathbio-5.9",
+          "mathbio-5.10",
+          "mathbio-5.11",
+          "mathbio-5.12",
+          "mathbio-5.13",
+          "mathbio-5.14"
+        ],
+        "status": "written"
       },
       {
         "collection": "ecol",
