@@ -29,3 +29,10 @@ Exact source `999410ac` passes the integrated2,484-test suite, including the exi
 The Fourier walk adds XTAL5.5's normalized-cell mean-square expansion and XTAL5.6's distributional comb, keeping the cycles-per-length inverse-cell-volume factor explicit. The spectral walk adds CM5.3's quadratic spin-wave modes and distinguishes the chain dispersion example from three-dimensional thermal mode counting. Independent reviewer `wave5_reviewer` accepted all three notes without changes.
 
 Exact source `15c7af90` passes the integrated 2,504-test suite. Four actual 320px light/dark bridge cases and six native links pass with complete added-note/card bounds and zero page errors. Log: `/tmp/atlas-wave5-twenty-four-bridges.log`. Inventory: 15 bridges/149 steps/146 unique written ideas. Shared bridge pictures, models and controls are unchanged.
+
+
+## Conservation, kinematic regularization and density inversion
+
+Accepted REL5.9 extends stationary action's conservation discussion with local stress-energy balance, explicitly conditional on equations of motion for a closed total system. ROBOT5.4 extends inverse problems with the singular gain σ/(σ²+λ²) and its local/no-global-convergence scope. GEOL5.7 distinguishes potential and differentiated gravity kernels, compensation and arbitrary3D density nonuniqueness. Independent reviewer wave5_reviewer accepted all three exact paragraphs against frozen sources without changes. Existing bridge structural/model checks pass **33/33**, `/tmp/atlas-wave5-rel-geol-robot-bridges-tests.log`.
+
+Source `284717ae` passes four actual320px light/dark bridge cases and six native links to the new accepted items, with complete added-note bounds and zero page errors. Log `/tmp/atlas-wave5-twenty-seven-bridges.log`. Inventory: **15 bridges,152 steps,149 unique written ideas**, no import errors, unresolved or planned steps. Shared pictures/models/controls and runtime are unchanged. The geophysics and robotics review findings also supply concise sign/cancellation and near-singular residual lessons in `docs/fields.md`. Delivery remains local only.

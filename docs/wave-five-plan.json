@@ -17510,9 +17510,9 @@
   "authoringDirection": "User confirmed prior work done; continuously author future waves without routine pauses.",
   "progress": {
     "total": 1031,
-    "written": 293,
-    "remaining": 738,
-    "writtenChapters": 24,
+    "written": 316,
+    "remaining": 715,
+    "writtenChapters": 27,
     "chapters": [
       {
         "collection": "ode",
@@ -18043,10 +18043,21 @@
         "collection": "rel",
         "chapter": 5,
         "total": 10,
-        "written": 0,
-        "remaining": 10,
-        "writtenItems": [],
-        "status": "planned"
+        "written": 10,
+        "remaining": 0,
+        "writtenItems": [
+          "rel-5.1",
+          "rel-5.2",
+          "rel-5.3",
+          "rel-5.4",
+          "rel-5.5",
+          "rel-5.6",
+          "rel-5.7",
+          "rel-5.8",
+          "rel-5.9",
+          "rel-5.10"
+        ],
+        "status": "written"
       },
       {
         "collection": "astro",
@@ -18153,10 +18164,18 @@
         "collection": "geol",
         "chapter": 5,
         "total": 7,
-        "written": 0,
-        "remaining": 7,
-        "writtenItems": [],
-        "status": "planned"
+        "written": 7,
+        "remaining": 0,
+        "writtenItems": [
+          "geol-5.1",
+          "geol-5.2",
+          "geol-5.3",
+          "geol-5.4",
+          "geol-5.5",
+          "geol-5.6",
+          "geol-5.7"
+        ],
+        "status": "written"
       },
       {
         "collection": "geo",
@@ -18348,10 +18367,17 @@
         "collection": "robot",
         "chapter": 5,
         "total": 6,
-        "written": 0,
-        "remaining": 6,
-        "writtenItems": [],
-        "status": "planned"
+        "written": 6,
+        "remaining": 0,
+        "writtenItems": [
+          "robot-5.1",
+          "robot-5.2",
+          "robot-5.3",
+          "robot-5.4",
+          "robot-5.5",
+          "robot-5.6"
+        ],
+        "status": "written"
       },
       {
         "collection": "aero",
