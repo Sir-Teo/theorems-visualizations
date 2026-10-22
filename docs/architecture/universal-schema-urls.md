@@ -79,7 +79,7 @@ The current builder emits local previews only and rejects `publication: "publish
 | Prototype index | `labs/atlas/` | Implemented, static HTML, noindex |
 | Prototype | `labs/atlas/x-history-0001/` | Implemented, refresh-safe static directory |
 | Future public exploration | `explore/x-history-0001/` | Reserved proposal; no fabricated live URL |
-| Future public legacy page | `ideas/pma-4.19/` | Proposed prerendered companion; old hash remains functional |
+| Static legacy reading page | `ideas/pma-4.19/` | Implemented in the [local candidate](static-reading.md); old hash remains functional; no deployment |
 | Future domain/source views | `domains/D20/`, `sources/<receipt-id>/` | Proposed, not generated |
 
 All paths must work under both `/` and a static-host project base such as `/theorems-visualizations/`. Generated prototypes use relative asset and collection links; tests load them under an emulated project prefix. No rewrite server is required.

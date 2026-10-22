@@ -1,0 +1,19 @@
+{
+  "schemaVersion": 1,
+  "mode": "static-reading-local-candidate",
+  "files": [
+    "assets/css/reading.css",
+    "assets/js/reading.js",
+    "docs/architecture/static-reading.md",
+    "docs/integration/static-reading.json",
+    "docs/integration/static-reading.md",
+    "docs/verification/universal-static-ideas-ai-code.md",
+    "docs/verification/universal-static-ideas.md",
+    "scripts/build-static-ideas.mjs",
+    "scripts/check-static-integration.mjs",
+    "scripts/static-ideas.mjs",
+    "static-pages/accepted.json",
+    "tests/static-ideas-ui.test.mjs",
+    "tests/static-ideas.test.mjs"
+  ]
+}
