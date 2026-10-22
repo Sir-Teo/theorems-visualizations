@@ -127,6 +127,8 @@ an eigen-direction, an orthonormal frame, an ellipse's axes) with live numbers.
 
 - Complexity-class guarantees quantify over each fixed input and the declared tape/time model. Exact odd-field sampling needs a sampling-cost qualification for bounded fair bits. Keep formula construction and algorithm traces independently seeded, preserve unresolved mass directly, and check actual plot indices against counts, coefficient exponents and tape numbers. See the [randomized-computation review](verification/wave5-cplx-review.md).
 
+- Distinguish exact geometric predicates from rounded constructions and unresolved algorithm events. A visible Voronoi window is not the full diagram; cocircular duals may collapse to points. State expected randomized costs separately from measured trace work. During replay, validate saved handles against separately saved valid point data before mutation, preserve valid formatted text, and include error state in cache keys so invalid-to-empty transitions redraw. See the [Voronoi/Delaunay review](verification/wave5-cg-review.md).
+
 ## Chemistry & materials
 
 - **Molecular and quantitative**: particles in a box (`v.mol` kit) whose measured pressure,
@@ -209,6 +211,8 @@ an eigen-direction, an orthonormal frame, an ellipse's axes) with live numbers.
 
 - Declare the normalization of discounted payoffs, monitoring and complete off-path strategies. Check credible punishment and all-state one-deviation incentives; tit-for-tat is not automatically subgame-perfect. Exact rational boundary tests should not be replaced by rounded strict inequalities. Label authored tournaments and spatial rules separately from inaccessible historical bodies, and show the requested tiny quantity alongside its rounded physical effect. See the [repeated-games review](verification/wave5-game-review.md).
 
+- Keep experimental summaries separate from preference models and invented trajectories. Reconstruct the actual payoff rule, including nonlinear punishment costs, capped recipient penalties and possible negative net money. Retain complete maximizing sets at exact rational ties. For field counts, distinguish events per centre from events per enrolled child-week, preserve source adjustments, and describe control-adjusted changes without turning them into a universal motivational mechanism. Legends and captions must identify only the series actually drawn. See the [behavioral-games review](verification/wave5-behav-review.md).
+
 ## Arts, music & design
 
 - **Make it audible** when it is about sound: `v.sound()` (once the runtime agent lands it) plays
@@ -220,6 +224,7 @@ an eigen-direction, an orthonormal frame, an ellipse's axes) with live numbers.
 - Visual-art items use real optics and colour science (perspective projection computed, colour
   converted through actual colour spaces).
 - State the observer, reference white and luminance convention for colour coordinates and source tables. Separate physical renotation targets from adapted, clipped screen previews. A gamut needs a specified colour space or printer profile; there is no universal CMYK boundary. Retain secondary numerical-table provenance even when the original qualitative experiment is verified. See the [colour-space review](verification/wave5-art-review.md).
+- Matching cone responses defines an affine fibre; differences lie in the kernel, while physical power bounds can reduce a nonzero null space to a single admissible mixture. Keep a chosen opponent recoding distinct from subjective unique hues, and an information scale distinct from a measured discrimination threshold. State when a dot pattern or spectral matching exercise is authored rather than a clinical test or instrument reproduction. Verify actual canvas colours as well as geometry; the drawing API takes RGB arrays in 0–255 units. See the [colour-vision review](verification/wave5-psych-review.md).
 - **Break it**: inharmonic partials, a different temperament, a vanishing point moved off the
   horizon.
 

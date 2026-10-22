@@ -58,3 +58,7 @@ Final focused tests: **12/12 pass**, no skips or cancellations (`/tmp/wave5-beha
 The four item 6.6 metadata/default replacements pass separately at both widths/themes (`/tmp/wave5-behav-peer-caption-final.log`), with no physical actions, URL tests or new distinct settings. These refresh the final caption rather than inflating the 36-setting matrix.
 
 The nine-file author manifest `/tmp/wave5-behav-author-freeze.sha256` passed before and after native review and the bounded final caption replacement. The exact accepted manifest is copied to `/tmp/wave5-behav-peer-reviewed.sha256`. Browser and server are closed. No whole-suite, build, Git, shared-runtime or generated-data work was performed by the reviewer.
+
+## Integration note review
+
+Independently checked the subsequent BEHAV6.7 fixed-points bridge step and social-science field lesson against the accepted chapter. The field lesson preserves actual payoff rules, exact ties, exposure units, source adjustments and mode-specific keys. The bridge’s IVT/uniqueness and bisection scope agree with the proof and make no learning-iteration or empirical claim. Requested the precise word “nonincreasing” for the composed response map: at zero precision it is constant, while its difference from the identity remains strictly decreasing. This is a bridge wording check, not a change to the nine-file accepted chapter manifest.
