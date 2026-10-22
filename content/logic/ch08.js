@@ -1,0 +1,72 @@
+import { SOURCE as S } from './ch08.shared.js';
+import * as U from './ch08.ui.shared.js';
+export default {
+ collection:'logic', chapter:8, title:'Axiomatic set theory',
+ summary:String.raw`Set formation needs explicit licenses. The Zermelo–Fraenkel axioms support ordered pairs, natural numbers and the usual number systems while excluding a universal set. Exact finite examples illustrate these constructions; the accompanying arguments explain assertions no finite picture can establish. The final lesson returns to Zermelo’s actual 1908 axioms.`,
+ items:[
+ {num:'8.1',kind:'Postulate',name:'Extensionality, pairing, union and power set',
+ statement:String.raw`In the pure first-order language of set theory, every object is a set. **Extensionality** says sets with the same members are equal. **Pairing** gives $\{a,b\}$ for any sets $a,b$. **Union** gives a set $\bigcup A$ whose members are exactly the members of members of $A$. **Power Set** gives $\mathcal P(A)$, containing exactly the subsets of $A$. These are existence axioms, except that extensionality supplies uniqueness; extensionality alone does not make every description into a set.`,
+ idea:String.raw`To prove equality, check membership in both directions. Pairing permits $a=b$, giving a singleton. Union flattens one membership level, whereas Power Set collects every possible choice of members, including the empty choice. For a finite set of $k$ distinct members, there are $2^k$ subsets; that counting argument explains the finite display, not the full axiom for infinite sets.`,
+ caption:String.raw`Select a construction and small input sets. Labels $h_n$ name the hereditarily finite set with code $n$; they are not von Neumann numerals. Compare membership, then inspect the exact output.`,
+ scope:'Pure sets only. All displayed operations are computed exactly on hereditarily finite sets; the finite selection of inputs is not a universe satisfying all set-theory axioms. Repeated or reordered entries do not change a set.',
+ deps:['logic-1.6'],refs:['Open Logic Project, Set Theory: An Open Introduction, F21 remix, §§2.1, 9.1–9.6, printed pp.14–15,119–125'],links:{source:S.olp},tags:['set theory','axioms'],viz:U.operations},
+ {num:'8.2',kind:'Postulate',name:'Separation and replacement schemas',
+ statement:String.raw`For each first-order formula $\varphi(x,\vec p)$, **Separation** forms a subset of any already existing set $A$:
+ $$B=\{x\in A:\varphi(x,\vec p)\}.$$
+For each formula $\psi(x,y,\vec p)$ assigning exactly one set $y$ to every $x\in A$, **Replacement** forms its image:
+ $$B=\{y:\exists x\in A\;\psi(x,y,\vec p)\}.$$
+Parameters $\vec p$ are allowed. The newly bound output variable $B$ must not occur free in the defining formula. These are schemas, one axiom for each formula, not quantification over arbitrary predicates inside the language.`,
+ idea:String.raw`Separation filters members of an existing domain. Replacement collects outputs after totality and uniqueness have been proved; the outputs need not belong to the original domain, or to a proposed finite pool. A relation that assigns two different outputs to one input does not satisfy this version of Replacement’s premise. On the empty domain that premise is vacuous and the image is empty. The displayed formulas have direct finite evaluations; a general truth-deciding oracle is not supplied.`,
+ caption:String.raw`Filter a finite set by a chosen predicate, or map each member to its singleton or union. Try the two-output relation and locate the failed uniqueness premise.`,
+ scope:'These finite computations illustrate selected formulas only. Failure of a Replacement premise does not prove that a relation’s range is not a set; other axioms or arguments may establish it. Output codes may exceed the input selector range.',
+ deps:['logic-8.1','logic-3.4'],refs:['Open Logic Project, Set Theory: An Open Introduction, §§9.2,10.7, printed pp.120–122,143–144'],links:{source:S.olp},tags:['set theory','schemas'],viz:U.schemas},
+ {num:'8.3',kind:'Theorem',name:'There is no set of all sets',
+ statement:String.raw`Separation implies that for every set $A$, the set
+ $$R_A=\{x\in A:x\notin x\}$$
+exists and satisfies $R_A\notin A$. Thus no set contains every set. This argument does not require Foundation.`,
+ idea:String.raw`If $R_A\in R_A$, its defining condition gives $R_A\notin R_A$, a contradiction. Hence $R_A\notin R_A$. If also $R_A\in A$, the defining condition would now give $R_A\in R_A$, again a contradiction. Equivalently, under the hypothesis $R_A\in A$, its self-membership truth value would have to equal its own negation. In the pure hereditarily finite examples every member is non-self-membered, so $R_A=A$; that special equality is not used in the general proof.`,
+ caption:String.raw`Change the finite example and inspect the two possible self-membership values under the proposed hypothesis. The truth constraints show why the hypothesis cannot hold.`,
+ scope:'The truth table checks the two Boolean possibilities in a symbolic proof; it does not construct an inconsistent set. The general conclusion is stronger than a bounded search for an omitted member.',
+ deps:['logic-8.2','logic-1.6'],refs:['Open Logic Project, Set Theory: An Open Introduction, Theorem 9.1, printed pp.120–121; Zermelo 1908, Theorem 10, pp.264–265'],links:{source:S.olp,original:S.zermelo},tags:['set theory','paradox'],viz:U.russell},
+ {num:'8.4',kind:'Definition',name:'Ordered pairs, relations and functions as sets',
+ statement:String.raw`The Kuratowski ordered pair is
+ $$\langle a,b\rangle=\{\{a\},\{a,b\}\}.$$
+It satisfies $\langle a,b\rangle=\langle c,d\rangle$ exactly when $a=c$ and $b=d$. A relation from $A$ to $B$ is a subset of $A\times B$. It is a function $A\to B$ precisely when each $x\in A$ appears with exactly one output $y\in B$. A function’s graph determines its domain and range; the specified codomain may be larger than its range.`,
+ idea:String.raw`The intersection of the members of the pair is $\{a\}$, recovering the first coordinate even when $a=b$. Their union is $\{a,b\}$; if this is a singleton then $b=a$, otherwise its other member recovers $b$. Each pair lies in $\mathcal P(\mathcal P(A\cup B))$, so Separation constructs the Cartesian product inside that bounding set. A functional relation must have both uniqueness and totality; two inputs sharing one output are allowed.`,
+ caption:String.raw`Change the two coordinates and compare the nested membership levels. Switch the relation between a function, a missing input and conflicting outputs.`,
+ scope:'The chosen pair representation is a construction, not a claim that an ordered pair has a unique possible set-theoretic definition. Large codes are abbreviated only in the display; the exact sets are retained.',
+ deps:['logic-8.1','logic-8.2'],refs:['Open Logic Project, Set Theory: An Open Introduction, §§2.5,3.1,4.3,9.6, printed pp.22–23,27–28,44–45,125'],links:{source:S.olp},tags:['set theory','functions'],viz:U.pairs},
+ {num:'8.5',kind:'Postulate',name:'Infinity and the von Neumann natural numbers',
+ statement:String.raw`Call $I$ inductive when $\varnothing\in I$ and $x\in I$ implies $S(x)\in I$, where
+ $$S(x)=x\cup\{x\}.$$
+**Infinity** asserts that an inductive set exists. Separating within one such $I$ gives its smallest inductive subset $\omega$: the elements lying in every inductive subset of $I$. With $0=\varnothing$ and $n+1=S(n)$, each finite ordinal $n$ is the set of its predecessors. Thus $0,1,2,3$ are $\varnothing$, $\{0\}$, $\{0,1\}$, $\{0,1,2\}$.`,
+ idea:String.raw`The specified intersection is nonempty because every candidate contains zero, and it is closed under successor because each candidate is. Minimality yields induction: any inductive subset of $\omega$ equals $\omega$. The usual induction establishes that these numbers are transitive, ordered by membership, and have an injective successor with zero outside its range. We use the least inductive set for these conclusions, not an unproved injectivity claim on every possible inductive set. Every finite prefix omits a next successor; arbitrarily many successful finite steps do not prove Infinity.`,
+ caption:String.raw`Grow a finite prefix and select a number. The membership matrix shows its predecessors and the next successor missing from the prefix.`,
+ scope:'The matrix represents finite ordinals by their exact membership rule j∈k iff j<k. It does not try to allocate the entire infinite set ω or enormous Ackermann codes for later ordinals.',
+ deps:['logic-8.1','logic-8.2'],refs:['Open Logic Project, Set Theory: An Open Introduction, §§9.7–9.8, printed pp.126–129'],links:{source:S.olp},tags:['set theory','infinity'],viz:U.infinity},
+ {num:'8.6',kind:'Definition',name:'Transitive sets',
+ statement:String.raw`A set $A$ is **transitive** if every member is a subset of $A$:
+ $$x\in y\in A\ \Longrightarrow\ x\in A.$$
+Equivalently, $\bigcup A\subseteq A$. In ZF there is a least transitive set containing $A$ as a subset, denoted $\operatorname{TC}(A)$. One construction begins with $A_0=A$ and repeats
+ $$A_{n+1}=A_n\cup\bigcup A_n,$$
+then takes $\bigcup_{n\in\omega}A_n$.`,
+ idea:String.raw`Every added member is forced into any transitive superset of $A$. Conversely, a member of a member of the union appears in some stage and is included at the next stage. These two observations prove leastness and transitivity. Replacement and Infinity supply the sequence of stages for an arbitrary set; a hereditarily finite input reaches a fixed point after finitely many steps. Having only finitely many immediate members does not by itself make a set hereditarily finite.`,
+ caption:String.raw`Choose a hereditarily finite set, inspect its membership arrows and add the members forced by transitivity. Compare each stage with the final closure.`,
+ scope:'TC(A) here contains A as a subset. For a transitive set containing A as a member, apply this construction to {A}. Transitivity of a set is distinct from transitivity of a relation on an arbitrary carrier.',
+ deps:['logic-8.1','logic-8.2','logic-8.5'],refs:['Open Logic Project, Set Theory: An Open Introduction, Definition 10.13 and §11.4, printed pp.138,155–156'],links:{source:S.olp},tags:['set theory','transitivity'],viz:U.transitive},
+ {num:'8.7',kind:'Postulate',name:'Axiom of foundation',
+ statement:String.raw`**Foundation**, often called Regularity, says that every nonempty set $A$ has a member $a$ disjoint from $A$:
+ $$a\in A,\qquad a\cap A=\varnothing.$$
+Thus $a$ has no member belonging to $A$. In particular there are no membership cycles, including self-membership. More generally, every nonempty set of objects has an $\in$-minimal member; this is the axiom, not a conclusion inferred from checking finitely many diagrams.`,
+ idea:String.raw`A finite membership cycle would supply a nonempty finite set whose every member has another member in that set, violating Foundation. For a finite directed relation the converse is also true: if a nonempty subset has no minimal element, follow predecessor edges; repetition forces a cycle. This equivalence is specific to finite graphs. With the other ZF axioms, well-founded recursion assigns ordinal ranks and yields the cumulative hierarchy; ruling out a few drawn cycles alone is not that theorem.`,
+ caption:String.raw`Edit membership arrows among four labelled vertices. Inspect all 15 nonempty subsets and a witness when no minimal vertex exists. The separate extensionality check catches labels with identical members.`,
+ scope:'An arrow y→x means y∈x. These are arbitrary finite relation proposals, not automatically extensional sets or models of ZF. The finite checker cannot decide well-foundedness of an arbitrary infinite relation. No simulated infinite chain is declared rejected by finite search.',
+ deps:['logic-8.1'],refs:['Open Logic Project, Set Theory: An Open Introduction, §§11.4–11.5, printed pp.155–158; the text distinguishes its rank-coverage “Regularity” formulation from Foundation'],links:{source:S.olp},tags:['set theory','foundation'],viz:U.foundation},
+ {num:'8.8',kind:'Definition',name:'Classes versus sets',
+ statement:String.raw`In ZF, a definable **class** is notation for a formula $\varphi(x,\vec p)$, not an additional kind of quantified object. It is a set when some set $A$ has exactly the objects satisfying that formula as its members; otherwise it is a **proper class**. The classes of all sets, all ordinals and all singletons are proper. The collection $\mathcal P(\omega)$ and the hereditarily finite sets $V_\omega$ are sets, although infinite.`,
+ idea:String.raw`The universal class is proper by 8.3; a set of all singletons would have that universal class as its union. An ordinal is a transitive set strictly well-ordered by membership. For comparison, every proper initial segment of an ordinal is the set of predecessors of its least omitted member, so is itself a member. The intersection of two ordinals is an initial segment of each; if proper in both, it would belong to itself, contradicting the strict order. Hence ordinals are comparable. A transitive set of ordinals is an ordinal: membership is a strict total order, and any nonempty subcollection has a least member by comparing its elements with one chosen ordinal and using that ordinal’s well-order. Thus a hypothetical set of all ordinals would itself be an ordinal and belong to itself, contradicting its strict order. Power Set gives $\mathcal P(\omega)$. For $V_\omega$, iterate $V_0=\varnothing$, $V_{n+1}=\mathcal P(V_n)$, collect the stages by Replacement and take their union. These proofs classify the named examples; there is no general class-classification algorithm here.`,
+ caption:String.raw`Compare five named collections and their proofs. Increase the finite sample of hereditarily finite objects; observe that a finite sample cannot decide whether the full collection is a set.`,
+ scope:'The ordinal example includes the initial-segment comparison argument from the cited theory. “Definable” allows set parameters; we do not quantify over arbitrary classes or assume a separate class theory. An infinite set is not a proper class.',
+ deps:['logic-8.3','logic-8.5','logic-8.6'],see:['logic-9.1'],refs:['Open Logic Project, Set Theory: An Open Introduction, §§9.2,10.5–10.7, Theorem 10.20, printed pp.120–121,138–144; finite-stage construction derived here'],links:{source:S.olp},tags:['set theory','classes'],viz:U.classes}
+ ]
+};
