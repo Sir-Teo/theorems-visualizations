@@ -1,6 +1,6 @@
 # Master plan: from *Rudin, visualized* to an atlas of human knowledge
 
-> **Status:** in progress (Wave 5 authoring under way) · **Scope:** the whole project ·
+> **Status:** Wave 5 complete; Wave 6 expansion in progress · **Scope:** the whole project ·
 > AUTHORING.md stays the rulebook for writing items and gets field-specific extensions (§7).
 >
 > **Revision 2.** The scope widened from STEM theorems to *the breadth of human knowledge*:
@@ -50,14 +50,13 @@ writing any of them (Phase 2). Finally, fill that skeleton in four breadth-first
 
 ### Immediate next steps
 
-**Current priority — content waves (user direction, 2026-10-20).** Start Wave 5 and continue later breadth-first waves autonomously. Map performance is removed from the wave gates and deferred to a separate renderer workstream. The experimental timing harness is retired; its failed evidence is preserved and remains failed. Do not resume renderer benchmarks, matrix expansion or private lifecycle experiments as prerequisites to content authoring, and do not adopt experimental renderer code.
+**Current priority — Wave 6 expansion (user direction, 2026-10-22).** Wave 5 is complete: all 1,031 new ideas in its 80 frozen chapters are accepted. Continue the existing Wave 6 inventory, then successive breadth-first waves after their content gates pass. Map performance remains a separate deferred workstream.
 
-- Wave 5 selects the next chapter in each of 80 unfinished collections: 1,031 new items, preserving two already written items. [Inventory](docs/wave-five.md), [compact execution handoff](docs/wave-continuation.md).
-- Latest local production checkpoint `fdcb3fd5` passes all3,413 tests on Node22.23.3, strict build/static checks with zero errors/warnings, and123,724-byte gzip home JSON. It contains all80 independently accepted Wave5 chapters. The final generated-source gate covers24 newly accepted items/48 mobile item/theme cases, each with a physical edit and actual Share replay; all32routes and three home New links pass. All64non-math collections meet the published cross-field count target with the restricted old edge excluded. Use focused checks during authoring and one full-suite checkpoint per meaningful accepted batch. All review/integration browsers/servers are closed. Local commits only.
-- The accepted prerequisite count gate is complete: all 64 non-math collections have at least 25 written cross-field inputs, with zero shortfall/unknowns. Preserve proof-use quality and update touched bridges. [Accepted inventory](docs/verification/prerequisite-gate-complete.md).
-- Five earlier source flags remain, with 146 independently accepted source entries. Preserve flags and source-access limits; do not treat unavailable originals as accepted. The frozen BIGHIST3.5 review and `bighist-3.5 → pma-8.6` edge remain unaccepted and must not be retried or routed around. These tracked uncertainties do not authorize unsupported new chapter claims.
-- Current authoring progress and serial integration evidence are in the [production record](docs/verification/wave5-production.md); preserve the original Wave 5 chapter assignments when refreshing counts.
-- Author, independently review, test native interactions/pixels, reconcile and commit each chapter. Apply the remaining §7.3 content gates before advancing a completed wave. Begin with independent chapters whose external prerequisites are already written. Keep global integration serial and chapter ownership disjoint.
+- Wave 6 freezes 80 chapters and 1,057 new items, preserving FLUID 6.14 and FIN 7.10. The accepted baseline has 36 new ideas in ML 6, VCALC 6 and PDE 6; 1,021 remain. See the [inventory](docs/wave-6.md), [production record](docs/verification/wave6-production.md) and [execution handoff](docs/wave-continuation.md).
+- The latest accepted source checkpoint, `facab15e`, passes 3,457 tests, strict build/static checks, and the recorded production interaction and route checks. These are historical baseline results, not claims that subsequent drafts passed. ODE 6 and ALG 9 drafts in the shipping worktree are not accepted content and must be preserved.
+- This continuation works from `f0a324f9` on `codex/wave-six-expansion`, isolated from the older checkout and ongoing visual redesign. Author new chapters with distinct, meaningful scenes, real computations and readable mobile interactions. Keep source acceptance and visual redesign acceptance separate.
+- Preserve all original-source flags and access stops. The restricted BIGHIST 3.5 review and its PMA 8.6 edge remain unaccepted. Do not repeat old source queues or renderer benchmarks as a prerequisite to new content.
+- Research, author, verify, independently review and reconcile each chapter. Record availability separately from independent acceptance. Commit reviewable work locally; no push, PR or publication. Refresh frozen progress without advancing completed collections into Wave 7.
 
 [Deferred map work and preserved failure](docs/verification/map-performance-deferred.md), [checkpoint](docs/verification/checkpoint-5eb8fb42-node22.md), [coordination ledger](docs/verification/coordination.json).
 
