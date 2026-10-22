@@ -146,38 +146,185 @@ export default {
     },
     // ───────────────────────────────────────────────────────────── 5
     {
-      n: 5,
-      title: 'Data, recursion and effects',
-      summary: String.raw`Real languages add structured data — tuples, records, sums and lists — and general recursion, which gives up termination but keeps safety. Effects need more care: references require store typings to keep preservation true, exceptions and continuations alter control flow, and the continuation-passing transform makes control explicit. Monads package effects inside types, so the type of a computation tells which effects it may perform.`,
-      items: [
-        { num: '5.1', kind: 'Definition', name: 'Let, products and records', deps: ['pl-4.7'], refs: ['Pierce §11.5', 'Pierce §11.8'],
-          pic: 'Build and project records in typed programs; the typing derivation shows the record type assembled field by field and a missing field rejected.' },
-        { num: '5.2', kind: 'Definition', name: 'Sums, variants and pattern matching', deps: ['pl-5.1'], refs: ['Pierce §11.9', 'Pierce §11.10'],
-          pic: 'A variant type for shapes is matched by cases; the checker warns about a missing case and the evaluator shows which branch each value takes.' },
-        { num: '5.3', kind: 'Definition', name: 'General recursion with fix', deps: ['pl-4.11', 'pl-2.9'], refs: ['Pierce §11.11'],
-          pic: 'Typed recursive functions run with an unfolding counter; adding fix lets the reader write a well-typed program that loops, and the normalization badge disappears.' },
-        { num: '5.4', kind: 'Definition', name: 'Lists', deps: ['pl-5.2'], refs: ['Pierce §11.12'],
-          pic: 'Typed map and fold run on a list the reader edits; the cons-cell diagram is drawn alongside the typing of each operation.' },
-        { num: '5.5', kind: 'Definition', name: 'References and the store', deps: ['pl-4.7'], refs: ['Pierce §13.1', 'Pierce §13.3'],
-          pic: 'Allocate, read and update reference cells; the store is drawn as a heap of labelled cells with arrows from variables, and aliasing is visible when two names share a cell.' },
-        { num: '5.6', kind: 'Theorem', name: 'Safety with references via store typings', deps: ['pl-5.5', 'pl-4.10'], refs: ['Pierce §13.4', 'Pierce §13.5'],
-          pic: 'Without a store typing, a cyclic store makes the type of a location undefinable; with one, preservation is checked live as the program allocates and updates.' },
-        { num: '5.7', kind: 'Phenomenon', name: 'Landin’s knot: recursion through the store', deps: ['pl-5.5', 'pl-4.11'], refs: ['Pierce §13.2'],
-          pic: 'A function stored in a reference calls whatever the reference holds, then the reference is updated to point to that function; a factorial runs with no fix, breaking normalization.' },
-        { num: '5.8', kind: 'Definition', name: 'Exceptions', deps: ['pl-4.7'], refs: ['Pierce §14.1', 'Pierce §14.3'],
-          pic: 'Raise an exception deep inside nested calls; the evaluation context is unwound frame by frame until a handler catches it, animated on a call stack.' },
-        { num: '5.9', kind: 'Definition', name: 'First-class continuations (call/cc)', deps: ['pl-4.7'], refs: ['Pierce §14.2'],
-          pic: 'Capture the rest of the computation as a value and invoke it later; the call stack is snapshotted and restored, making early exit and generators visible.' },
-        { num: '5.10', kind: 'Method', name: 'Continuation-passing style transform', deps: ['pl-5.9'], refs: ['Pierce §14.2'],
-          pic: 'A direct-style program is transformed so every call passes its continuation explicitly; the transformed program runs with a constant-size stack.' },
-        { num: '5.11', kind: 'Concept', name: 'Monads for effects', deps: ['pl-5.5', 'pl-5.8'], refs: ['Pierce §13.1'],
-          pic: 'The same program is written with state, exceptions and logging threaded explicitly and then with a monad; the types record which effects are possible, and the two runs agree.' },
-        { num: '5.12', kind: 'Paper', name: 'Recursive Functions of Symbolic Expressions',
-          paper: { authors: 'John McCarthy', year: 1960, title: 'Recursive Functions of Symbolic Expressions and Their Computation by Machine, Part I',
-                   venue: 'Communications of the ACM 3 (4): 184–195', doi: '10.1145/367177.367199' },
-          introduces: [], deps: ['pl-2.1', 'toc-8.4', 'pl-5.4'], refs: [],
-          pic: 'Type S-expressions and watch McCarthy’s eval and apply walk them: atom, car, cdr, cons and cond are evaluated by a short interpreter written in the language itself, and a free-storage counter shows abandoned cells being reclaimed.' },
-      ],
+      "n": 5,
+      "title": "Data, recursion and effects",
+      "summary": "Structured values extend the typed functional core. Recursion removes normalization while references require a typing for the heap. Exceptions and first-class continuations change control; CPS and monads make those choices explicit. The experiments execute declared languages and distinguish rejection, a value, a witnessed cycle and an inconclusive finite prefix.",
+      "items": [
+        {
+          "num": "5.1",
+          "kind": "Definition",
+          "name": "Let, products and records",
+          "deps": [
+            "pl-4.7",
+            "pl-4.9"
+          ],
+          "refs": [
+            "Software Foundations, MoreStlc: Let Bindings, Pairs, Records"
+          ],
+          "pic": "Edit an S-expression program or select a pair, a record or an error. The field summaries come from the actual type derivation; the player follows the evaluation and the wrapped panel shows the complete selected configuration."
+        },
+        {
+          "num": "5.2",
+          "kind": "Definition",
+          "name": "Sums, variants and pattern matching",
+          "deps": [
+            "pl-5.1"
+          ],
+          "refs": [
+            "Software Foundations, MoreStlc: Sums"
+          ],
+          "pic": "Switch the tag or edit payloads and branches. Gold marks the branch actually used; both branches are checked. The mismatch and incomplete examples demonstrate different failures."
+        },
+        {
+          "num": "5.3",
+          "kind": "Definition",
+          "name": "General recursion with fix",
+          "deps": [
+            "pl-4.9",
+            "pl-4.10"
+          ],
+          "refs": [
+            "Software Foundations, MoreStlc: General Recursion"
+          ],
+          "pic": "Run factorial, an exact cycle or a growing inconclusive prefix. Edit the function and budget, then inspect actual redex-context depths and unfolding rules. A repeated whole term/store configuration is distinguished from budget exhaustion.",
+          "see": [
+            "pl-2.9",
+            "pl-4.11"
+          ]
+        },
+        {
+          "num": "5.4",
+          "kind": "Definition",
+          "name": "Lists",
+          "deps": [
+            "pl-5.2",
+            "pl-5.3"
+          ],
+          "refs": [
+            "Software Foundations, MoreStlc: Lists; chapter-local derived map/right-fold rules"
+          ],
+          "pic": "Edit the actual cons list and mapping or folding function. The resulting spine is computed from your list; right fold shows its scalar result. The player exposes every map/fold and beta reduction."
+        },
+        {
+          "num": "5.5",
+          "kind": "Definition",
+          "name": "References and the store",
+          "deps": [
+            "pl-4.7",
+            "pl-5.1"
+          ],
+          "refs": [
+            "Software Foundations, References: Syntax, Operational Semantics"
+          ],
+          "pic": "Compare an alias with two independently allocated cells, then edit allocations, reads and writes. The heap panel and arrows use actual locations in the selected term. A Bool written to a Nat reference is rejected before running."
+        },
+        {
+          "num": "5.6",
+          "kind": "Theorem",
+          "name": "Safety with references via store typings",
+          "deps": [
+            "pl-5.5",
+            "pl-4.9",
+            "pl-4.10"
+          ],
+          "refs": [
+            "Software Foundations, References: Store Typings, Preservation Finally, Progress"
+          ],
+          "pic": "Step through allocation and assignment to inspect the actual Σ and store. Deliberately corrupt a final cell to break store agreement; this toggle is an invalid external modification, not a reduction of the typed language."
+        },
+        {
+          "num": "5.7",
+          "kind": "Phenomenon",
+          "name": "Landin’s knot: recursion through the store",
+          "deps": [
+            "pl-5.5",
+            "pl-5.6"
+          ],
+          "refs": [
+            "Software Foundations, References: References and Side Effects; self-contained typed knot shown here"
+          ],
+          "pic": "Step through allocating, tying and calling the knot. The gold return edge is drawn only when the actual stored function contains its own location. Compare the untied constant function and the looping knot, or edit the factorial input.",
+          "see": [
+            "pl-4.11"
+          ]
+        },
+        {
+          "num": "5.8",
+          "kind": "Definition",
+          "name": "Exceptions",
+          "deps": [
+            "pl-4.7",
+            "pl-5.1"
+          ],
+          "refs": [
+            "Pfenning, CMU15-3122004 lecture10 pp1–2; chapter-local Nat-payload extension"
+          ],
+          "pic": "Edit nested handlers and raise sites. The panel reports the actual discarded context count and selected nearest handler; the player shows configurations before and after the abortive step. Compare an uncaught payload and a rejected handler type."
+        },
+        {
+          "num": "5.9",
+          "kind": "Definition",
+          "name": "First-class continuations (call/cc)",
+          "deps": [
+            "pl-4.7",
+            "pl-5.5"
+          ],
+          "refs": [
+            "Pfenning, CMU15-3122004 lecture10 pp3–6, especially fixed-answer qualification p4"
+          ],
+          "pic": "Compare ordinary return with capturing then invoking a continuation, including storage of an escaping function that invokes it. The live result demonstrates which pending addition was discarded; the panel reports saved and replaced context counts."
+        },
+        {
+          "num": "5.10",
+          "kind": "Method",
+          "name": "Continuation-passing style transform",
+          "deps": [
+            "pl-5.9",
+            "pl-4.9"
+          ],
+          "refs": [
+            "Pfenning, CMU15-417/8172025 lecture20 §§1–2; chapter-local total primitive extension"
+          ],
+          "pic": "Edit a pure program, inspect the actual generated CPS term page by page, and compare two executed traces. The depth curves show explicit evaluator frames; the readout also counts generated closures, which hold pending work."
+        },
+        {
+          "num": "5.11",
+          "kind": "Concept",
+          "name": "Monads for effects",
+          "deps": [
+            "pl-5.5",
+            "pl-5.8"
+          ],
+          "refs": [
+            "CornellCS61152017 Monads notes: Monad interface, OptionMonad, MonadLaws and StateMonad; writer equations proved here"
+          ],
+          "pic": "Edit the operation sequence and switch the actual unit/bind implementation. Compare explicit threading with its monadic execution and inspect law checks. Division by zero propagates in exception mode and is an explicit invalid operation in the other two modes."
+        },
+        {
+          "num": "5.12",
+          "kind": "Paper",
+          "name": "Recursive Functions of Symbolic Expressions",
+          "paper": {
+            "authors": "John McCarthy",
+            "year": 1960,
+            "title": "Recursive Functions of Symbolic Expressions and Their Computation by Machine, Part I",
+            "venue": "Communications of the ACM 3 (4): 184–195",
+            "doi": "10.1145/367177.367199"
+          },
+          "introduces": [],
+          "deps": [
+            "pl-2.1",
+            "pl-5.4"
+          ],
+          "refs": [
+            "McCarthy1960 author-hosted transcription §3a–f, universal apply/eval and explanatory points1–6"
+          ],
+          "pic": "Edit an S-expression and follow genuine eval calls, association-list bindings and a computed result. The recursive first-atom example uses LABEL; the apply example invokes a LAMBDA on quoted argument data. This experiment scopes out garbage collection.",
+          "see": [
+            "toc-8.4"
+          ]
+        }
+      ]
     },
     // ───────────────────────────────────────────────────────────── 6
     {
