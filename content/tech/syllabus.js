@@ -189,38 +189,248 @@ export default {
     },
     // ───────────────────────────────────────────────────────────── 6
     {
-      n: 6,
-      title: 'Lenses, printing and gunpowder',
-      summary: String.raw`Ground glass lenses gave old eyes their sight back and, combined in tubes, revealed moons of Jupiter and microbes. Movable type, oil-based ink, paper and the screw press combined into Gutenberg’s printing system, which made books cheap enough to change how knowledge spread. Gunpowder reshaped warfare, and the barometer and air pump revealed the atmospheric pressure the steam engine would exploit.`,
-      items: [
-        { num: '6.1', kind: 'Invention', name: 'Spectacles', deps: ['tech-3.5', 'art-2.5', 'waves-5.6'], refs: ['Mokyr ch. 3'], tags: ['medieval', 'c. 1286'],
-          pic: 'Model a presbyopic eye focusing on a page: the near point recedes with age, and a convex lens of the right power brings the image back onto the retina.' },
-        { num: '6.2', kind: 'Invention', name: 'Woodblock printing', deps: ['tech-3.7'], refs: ['Usher, “The invention of printing”'], tags: ['ancient', 'c. 700 CE'],
-          pic: 'Carve a mirror-image block and print: compare carving time per page with copying by hand as the print run grows.' },
-        { num: '6.3', kind: 'Invention', name: 'Movable type in East Asia', deps: ['tech-6.2'], refs: ['Usher, “The invention of printing”'], tags: ['medieval', 'c. 1040'],
-          pic: 'Typeset a page from a case of reusable characters: the number of distinct sorts needed for Chinese versus an alphabet is shown as a growth curve.' },
-        { num: '6.4', kind: 'Invention', name: 'Gutenberg’s printing press', deps: ['tech-6.3', 'tech-2.4', 'tech-3.7', 'ling-7.4'], refs: ['Usher, “The invention of printing”', 'Mokyr ch. 3'], tags: ['early-modern', 'c. 1450'],
-          pic: 'Step through the system: cast type in a hand mould, compose, ink with oil-based ink, and press with a screw; pages per hour and cost per book are tracked.' },
-        { num: '6.5', kind: 'Event', name: 'The printing revolution', deps: ['tech-6.4'], refs: ['Mokyr ch. 4'], tags: ['early-modern'],
-          pic: 'Book output in Europe on a log scale before and after 1450 with book prices falling: drag the start date to see the curve bend at Gutenberg.' },
-        { num: '6.6', kind: 'Invention', name: 'The telescope', deps: ['tech-6.1'], refs: ['Mokyr ch. 4'], tags: ['early-modern', '1608'],
-          pic: 'Combine a weak convex objective and a strong eyepiece: magnification is the ratio of focal lengths, and the moons of Jupiter appear as you raise it.' },
-        { num: '6.7', kind: 'Invention', name: 'The microscope', deps: ['tech-6.1'], refs: ['Mokyr ch. 4'], tags: ['early-modern', 'c. 1620'],
-          pic: 'Compare a compound microscope of the 1600s with van Leeuwenhoek’s tiny single lens: magnification and aberrations are computed, and his lens wins on resolution.' },
-        { num: '6.8', kind: 'Invention', name: 'The reflecting telescope and the achromat', deps: ['tech-6.6', 'art-3.1'], refs: ['Mokyr ch. 4'], tags: ['early-modern', '1668'],
-          pic: 'White starlight through a single lens splits into coloured foci; switch to a mirror (Newton) or a crown–flint doublet (Dollond) and the foci merge.' },
-        { num: '6.9', kind: 'Invention', name: 'Gunpowder', deps: ['tech-1.3'], refs: ['Mokyr ch. 3'], tags: ['medieval', 'c. 850'],
-          pic: 'Vary the proportions of saltpetre, charcoal and sulphur: burn rate and gas volume peak near the classic 75:15:10 mix.' },
-        { num: '6.10', kind: 'Invention', name: 'Cannon and firearms', deps: ['tech-6.9', 'tech-3.3'], refs: ['Mokyr ch. 3'], tags: ['medieval', 'c. 1300'],
-          pic: 'Fire a ball from barrels of different length: gas pressure acting along the bore sets muzzle velocity, and the trajectory is integrated with drag.' },
-        { num: '6.11', kind: 'Invention', name: 'The barometer and the air pump', deps: ['tech-3.5'], refs: ['Mokyr ch. 4'], tags: ['early-modern', '1643'],
-          pic: 'Invert a mercury tube: the column stops at about 76 cm whatever its length; pump air from Magdeburg hemispheres and the force needed to separate them grows with area.' },
-        { num: '6.12', kind: 'Paper', name: 'The Printing Press as an Agent of Change',
-          paper: { authors: 'Elizabeth L. Eisenstein', year: 1979, title: 'The Printing Press as an Agent of Change: Communications and Cultural Transformations in Early-Modern Europe',
-                   venue: 'Cambridge: Cambridge University Press, 1979 (2 vols.)', doi: '10.1017/CBO9781107049963' },
-          introduces: ['tech-6.5'], deps: ['tech-6.4'], refs: [],
-          pic: 'Eisenstein’s effects of print made measurable: the reader follows a text through generations of hand copying, where errors accumulate and copies drift apart, and through printed editions, where identical copies spread, errata are corrected in later editions and scattered sources can be collated side by side, with the count of surviving editions per decade after 1450 climbing alongside.' },
-      ],
+      "n": 6,
+      "title": "Lenses, printing and gunpowder",
+      "summary": "Glass, reusable surfaces and controlled pressure opened new ways to see and reproduce. Source-specific historical witnesses accompany actual optical, inventory and flow calculations. The numerical examples are chosen teaching mechanisms; they are not historical productivity estimates, reconstructed weapons or evidence that one invention alone caused a social transformation.",
+      "items": [
+        {
+          "num": "6.1",
+          "kind": "Invention",
+          "name": "Spectacles",
+          "deps": [
+            "tech-3.5",
+            "art-2.5",
+            "waves-5.6",
+            "waves-5.11"
+          ],
+          "refs": [
+            "College of Optometrists, BOA Museum, History of spectacles, actual owner body",
+            "Written WAVES5.11 reduced eye; correction and residual derived here"
+          ],
+          "tags": [
+            "spectacles",
+            "geometrical optics"
+          ],
+          "pic": "Change the object distance, chosen near point and correction. Actual paraxial rays meet or miss the fixed retina; the second plot shows computed blur versus power. A target-power mode uses the formula directly rather than approximating it by a slider position."
+        },
+        {
+          "num": "6.2",
+          "kind": "Invention",
+          "name": "Woodblock printing",
+          "deps": [
+            "tech-3.7"
+          ],
+          "refs": [
+            "V&A, What is print?, Relief printing processes and Woodcut printing; actual body",
+            "Own reflection and declared labor identity"
+          ],
+          "tags": [
+            "woodblock",
+            "relief printing"
+          ],
+          "pic": "Edit a dense binary grid, switch whether the block is mirror-carved, and compare block with its actual reflected impression. Change the run length to recompute declared labor totals and the break-even point. The two panels show orientation and cost separately."
+        },
+        {
+          "num": "6.3",
+          "kind": "Invention",
+          "name": "Movable type in East Asia",
+          "deps": [
+            "tech-6.2"
+          ],
+          "refs": [
+            "BnF, Jikji typographic edition1377, actual owner record",
+            "Own finite multiset stock calculation"
+          ],
+          "tags": [
+            "movable type",
+            "inventory"
+          ],
+          "pic": "Edit up to three short forms separated by a vertical bar. The grid counts each character on every form, while stock bars show the maximum multiplicity needed before redistribution. Repeated characters visibly require more than one piece."
+        },
+        {
+          "num": "6.4",
+          "kind": "Invention",
+          "name": "Gutenberg’s printing press",
+          "deps": [
+            "tech-6.3",
+            "tech-2.4",
+            "tech-3.7"
+          ],
+          "see": [
+            "ling-7.4"
+          ],
+          "refs": [
+            "Harry Ransom Center, Gutenberg Bible, actual owner history",
+            "Own max-plus resource schedule; screw mechanism from written TECH2.4"
+          ],
+          "tags": [
+            "printing press",
+            "workflow"
+          ],
+          "pic": "Change form count, copies, composition time and press rate. A real two-resource schedule draws every composition and press interval; the selected form's readiness, waiting and finish are computed. Enough physical type to overlap composition and pressing is explicitly assumed."
+        },
+        {
+          "num": "6.5",
+          "kind": "Event",
+          "name": "The printing revolution",
+          "deps": [
+            "tech-6.4"
+          ],
+          "refs": [
+            "HRC Gutenberg Bible dating1454–1456; V&A What is print?, named object captions",
+            "Own finite interval-count operation; no historical output/price observations inferred"
+          ],
+          "tags": [
+            "printing revolution",
+            "historical evidence"
+          ],
+          "pic": "Move the catalog cutoff and filter by process. Six source-specific witness intervals remain visible, while the live counts distinguish inclusion by latest versus earliest nominal catalog date. Selecting a row reveals its owner link and place. No counterfactual invention date bends a manufactured output or price curve."
+        },
+        {
+          "num": "6.6",
+          "kind": "Invention",
+          "name": "The telescope",
+          "deps": [
+            "tech-6.1",
+            "waves-5.9",
+            "waves-5.12"
+          ],
+          "refs": [
+            "Museo Galileo, instruments, actual telescope owner section",
+            "Written WAVES5.9/5.12; matrix product derived here"
+          ],
+          "tags": [
+            "telescope",
+            "ray transfer"
+          ],
+          "pic": "Choose signed eyepiece design, focal lengths and a separation offset. Actual paraxial rays cross both lenses and exit with computed slopes. The second panel compares input heights with output slopes, so loss of parallelism is visible rather than replaced by an arbitrary moon-visibility animation."
+        },
+        {
+          "num": "6.7",
+          "kind": "Invention",
+          "name": "The microscope",
+          "deps": [
+            "tech-6.1",
+            "waves-5.10",
+            "waves-5.12"
+          ],
+          "refs": [
+            "MIT OCW2.71 Lecture20 transcript p8, actual circular-pupil/NA passage",
+            "NIST DLMF10.9.2, actual integer-order Bessel angular integral",
+            "Museo Galileo, microscope section; written WAVES5.12 magnification"
+          ],
+          "tags": [
+            "microscope",
+            "diffraction"
+          ],
+          "pic": "Change the two chosen optical designs and their independent numerical apertures. Magnification bars and the selected instrument's actual two-point intensity profile recompute. Either design can have the smaller modeled diffraction scale; no preset guarantees that a seventeenth-century single lens wins."
+        },
+        {
+          "num": "6.8",
+          "kind": "Invention",
+          "name": "The reflecting telescope and the achromat",
+          "deps": [
+            "tech-6.6",
+            "art-3.1",
+            "waves-5.15"
+          ],
+          "refs": [
+            "SCHOTT N-BK7 datasheet2023 and N-F2 datasheet2014, actual dispersion-coefficient tables",
+            "Science Museum, Looking at the mirror, actual curator body; written WAVES5.15"
+          ],
+          "tags": [
+            "reflecting telescope",
+            "achromat"
+          ],
+          "pic": "Compare a single crown lens, a two-line crown–flint doublet, an ideal mirror and an unsolvable identical-glass pair. The first panel locates all three computed foci; the second enlarges their focal displacement in millimetres so residual color remains visible."
+        },
+        {
+          "num": "6.9",
+          "kind": "Invention",
+          "name": "Gunpowder",
+          "deps": [
+            "tech-1.3",
+            "thermo-1.4",
+            "thermo-1.9"
+          ],
+          "refs": [
+            "Royal Armouries, Hundred Years War, Artillery/Development, actual curator body",
+            "Written ideal-gas and quasistatic-work inputs; nonreacting analogy derived here"
+          ],
+          "tags": [
+            "gunpowder",
+            "historical scope"
+          ],
+          "pic": "A generic sealed ideal-gas chamber changes volume at fixed amount and temperature. Its computed pressure–volume curve and signed expansion work illustrate pressure without pretending to simulate a burning mixture. Source-specific historical context remains in the readout."
+        },
+        {
+          "num": "6.10",
+          "kind": "Invention",
+          "name": "Cannon and firearms",
+          "deps": [
+            "tech-6.9",
+            "tech-3.3",
+            "mech-2.2",
+            "mech-3.6"
+          ],
+          "refs": [
+            "Royal Armouries, Hundred Years War, actual artillery historical section",
+            "Written momentum and energy conservation; authored two-cart derivation"
+          ],
+          "tags": [
+            "artillery history",
+            "momentum"
+          ],
+          "pic": "Change two cart masses and a spring energy no larger than1joule, then select elapsed free-motion time. Actual cart positions, signed momenta and the kinetic-energy split recompute. Increasing one mass reduces its speed while the opposite momenta remain matched."
+        },
+        {
+          "num": "6.11",
+          "kind": "Invention",
+          "name": "The barometer and the air pump",
+          "deps": [
+            "tech-3.5",
+            "fluid-2.2",
+            "thermo-1.4"
+          ],
+          "refs": [
+            "Museo Galileo, Torricellian experiment, actual letter-summary owner body",
+            "Written hydrostatics/ideal gas; recurrence and hemisphere pressure integral derived here"
+          ],
+          "tags": [
+            "barometer",
+            "vacuum pump"
+          ],
+          "pic": "Vary ambient pressure and tube length to expose the full-tube branch. A separate pump model advances integer strokes; its pressure-deficit curve and hemisphere separation force are computed. Tiny deficits remain visible in the readout even when rounded absolute pressure is unchanged."
+        },
+        {
+          "num": "6.12",
+          "kind": "Paper",
+          "name": "The Printing Press as an Agent of Change",
+          "paper": {
+            "authors": "Elizabeth L. Eisenstein",
+            "year": 1979,
+            "title": "The Printing Press as an Agent of Change: Communications and Cultural Transformations in Early-Modern Europe",
+            "venue": "Cambridge: Cambridge University Press, 1979 (2 vols.)",
+            "doi": "10.1017/CBO9781107049963"
+          },
+          "introduces": [
+            "tech-6.5"
+          ],
+          "deps": [
+            "tech-6.4"
+          ],
+          "refs": [
+            "Eisenstein, official Cambridge public frontmatter: copyright PDFp4 and preface printedix–xvii/PDF9–17; main chapters unread",
+            "Own finite seeded text-lineage experiment"
+          ],
+          "tags": [
+            "printing",
+            "historical interpretation"
+          ],
+          "verify": true,
+          "pic": "Change the deterministic seed, mutation and oracle-correction probabilities. The selected generation's actual symbol grids and all-generation error/divergence curves recompute. Set correction0 to preserve a wrong shared master, or mutation0 to stop hand-copy drift. No scheduled improvement curve or surviving-editions count is invented."
+        }
+      ]
     },
     // ───────────────────────────────────────────────────────────── 7
     {
