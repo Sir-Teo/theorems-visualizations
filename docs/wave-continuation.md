@@ -2,7 +2,7 @@
 
 ## Continuation — 2026-10-22
 
-The user confirmed Wave 5 is complete and asked to update the documentation and continue Wave 6. The original chat checkout was stale; resume from f0a324f9 in the isolated wave-six-expansion worktree. The frozen accepted baseline is 36/1,057 new Wave 6 ideas in three chapters. Preserve the 34 unaccepted ODE6/ALG9 draft ideas in the shipping worktree; REP6 now adds 12 author-verified induced-representation ideas, pending separate peer acceptance. Its 3,470-test integration checkpoint and full native/pixel checks pass; see docs/verification/wave6-rep.md. Continue with TOP6 (17 ideas). This continuation does not claim the separate visual redesign is complete.
+The user confirmed Wave 5 is complete and asked to update the documentation and continue Wave 6. The original chat checkout was stale; resume from f0a324f9 in the isolated wave-six-expansion worktree. The frozen accepted baseline is 36/1,057 new Wave 6 ideas in three chapters. Preserve the 34 unaccepted ODE6/ALG9 draft ideas in the shipping worktree; REP6 now adds 12 author-verified induced-representation ideas, pending separate peer acceptance. Its 3,470-test integration checkpoint and full native/pixel checks pass; see docs/verification/wave6-rep.md. TOP6 now adds 17 author-verified ideas; 13 focused groups, strict build/static, 68 native cases/568 actions/136 replays, four extra boundary cases and 22 routes pass. All 64 mode and 34 narrow default screenshots were reviewed; see docs/verification/wave6-top.md. The expansion branch contains 65 frozen new ideas, of which 29 await separate peer acceptance. Continue with DG6 (17 ideas). This continuation does not claim the separate visual redesign is complete.
 
 ## Authorization and workspace
 
@@ -66,6 +66,8 @@ Future planner scripts/plan-content-wave.mjs --wave N [--start], N>=6, was added
 Refresh Wave6 progress ONLY in the accepted export after all batch gates, preserve plan.chapters deeply, copy only intended progress docs. Do not replan completed collections into Wave7. Root explicitly marks a whole wave complete only after every independent acceptance/content gate. The next wave starts autonomously under the user's existing direction. Do not mark the continuous goal complete at a wave boundary.
 
 ## Source boundaries
+
+TOP6 new stop: official Koski https://atkoski.fi/topology.pdf returned HTTP403 after a limited web introductory/contents response. No subsequent body reading or alternate-host/cache recovery; do not reopen that original. TOP6 uses actual Gardner/Terilla/Shulman/Freire bodies instead. Historical TOP5 reading receipts remain unchanged.
 
 Preserve every accepted-chapter uncertainty/access stop; source flags are not a reason to invent verification. Five old flags remain: mathbio3.14, pharm3.12, imaging3.18, circ4.17, bighist3.5.
 
