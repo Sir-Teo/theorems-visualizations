@@ -14,7 +14,7 @@ const ctx = { domainIds: coverage.domains.map(x => x.id), collectionIds: runtime
 test('records validate and generated pages are reproducible', async () => {
   const built = await buildExplorations({ checkOnly: true });
   for (const r of currentRecords) assert.deepEqual(validateExploration(r, { ...ctx, artifactDigest: built.records.find(x => x.id === r.id).artifactDigest }), []);
-  assert.equal(built.pages, 3);
+  assert.equal(built.pages, currentRecords.length + 1);
 });
 test('claim classification and supporting evidence are separate requirements', () => {
   const fixtures = [
@@ -72,8 +72,8 @@ test('author cannot self-approve as an independent reviewer', () => {
   assert.match(validateExploration(r,ctx).join('\n'),/independent reviewer/);
 });
 test('a third unaccepted exploration exceeds the work-in-progress limit', () => {
-  assert.equal(checkCapacity(records),true);
-  assert.equal(checkCapacity([...records,{...h,id:'x-other-0001'}]),false);
+  assert.equal(checkCapacity([h,l]),true);
+  assert.equal(checkCapacity([h,l,{...h,id:'x-other-0001'}]),false);
 });
 test('semantic relations do not become prerequisites', () => {
   const r=structuredClone(h);r.relations=[{type:'prerequisite',targetId:'pma-4.19',rationale:'invalid field'}];

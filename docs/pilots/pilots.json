@@ -130,7 +130,10 @@
       ],
       "sourceIds": [
         "legge-analects",
-        "web-matthew"
+        "web-matthew",
+        "eno-analects",
+        "sep-confucius",
+        "web-rights"
       ],
       "relatedCollectionIds": [
         "phil",
@@ -145,8 +148,8 @@
         "Confucian textual tradition",
         "Christian textual tradition"
       ],
-      "status": "researched-with-gates",
-      "authored": false,
+      "status": "reviewed-local",
+      "authored": true,
       "accepted": false,
       "reviewers": [
         {
@@ -171,12 +174,17 @@
         }
       ],
       "openGates": [
-        "Verify edition-number crosswalk",
-        "Review contextual reconstruction",
-        "Keep unverified Chinese and Greek claims out"
+        "Professional tradition-sensitive review and formative reader observation before a broader educational release",
+        "Non-US Legge distribution review before widening the selected-text release scope",
+        "No Chinese or Greek original-language claim without source verification"
       ],
-      "rightsStatus": "scoped-plan-not-asset-clearance",
-      "nextAction": "Verify edition-number crosswalk"
+      "rightsStatus": "prototype-text-scoped",
+      "nextAction": "Local source/data/code AI reviews complete at 0.1.0. Retain professional and unobserved human checks for the wider release; continue the remaining pilot methods.",
+      "localReviewStatus": "accepted",
+      "reviewedRevision": "0.1.0",
+      "prototypePath": "labs/atlas/x-philosophy-0001/index.html",
+      "contentPath": "explorations/philosophy.json",
+      "sourceResolutionPath": "docs/pilots/research/philosophy-source-review.md"
     },
     {
       "id": "P04",
@@ -255,8 +263,8 @@
       "contexts": [
         "Prairie du Sac, Wisconsin; single-site research samples"
       ],
-      "status": "researched-with-gates",
-      "authored": false,
+      "status": "reviewed-local",
+      "authored": true,
       "accepted": false,
       "reviewers": [
         {
@@ -276,12 +284,17 @@
         }
       ],
       "openGates": [
-        "Approve retained measurements and units",
-        "Exclude unresolved density and flagged conductivity analysis",
-        "Freeze attribution and permitted data subset"
+        "Soil-scientist review of unit interpretation and sampling before broader publication",
+        "Unobserved screen-reader and learner checks remain open",
+        "No density/conductivity analysis or measured-to-storage conversion without new evidence"
       ],
-      "rightsStatus": "scoped-plan-not-asset-clearance",
-      "nextAction": "Approve retained measurements and units"
+      "rightsStatus": "prototype-data-attributed",
+      "nextAction": "Local source/data/code AI reviews complete at 0.1.0. Retain professional and unobserved human checks for the wider release; continue the remaining pilot methods.",
+      "localReviewStatus": "accepted",
+      "reviewedRevision": "0.1.0",
+      "prototypePath": "labs/atlas/x-agriculture-0001/index.html",
+      "contentPath": "explorations/agriculture.json",
+      "sourceResolutionPath": "docs/pilots/research/soil-source-review.md"
     },
     {
       "id": "P06",

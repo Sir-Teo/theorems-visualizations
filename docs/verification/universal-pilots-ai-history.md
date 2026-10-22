@@ -105,3 +105,61 @@ Final candidate checked:
 - Artifact digest: `ffef0964100bbcdd7496cc798bea195a912d93375c4e2b892e4a656736e8dce4`.
 
 **Final bounded AI conclusions for revision 0.1.2: content passed; provenance passed; rights passed.** These conclusions carry the same specific corpus, institutional text-checking, prototype-only reuse scope and limitations explained above. The revision/review-policy/display delta introduces no defect in those checked dimensions. H-R1 remains resolved. Fresh scoped receipts may identify `atlas-ai-history-review` as an independent AI reviewer and bind these exact hashes. Screen-reader and learner sessions remain explicitly unperformed, without passing receipts or efficacy claims. This review does not authorize public distribution or assert legal/professional clearance.
+
+
+# Independent AI recheck: history under expanded method code
+
+Date: 2026-10-22.
+Reviewer: `atlas-ai-history-review`, separate AI source/content/provenance reviewer. Bounded text-only US local prototype reuse assessment; no historian/lawyer credential, legal clearance or public-release authorization claimed.
+
+Candidate: `x-history-0001`, revision `0.1.2`, `accepted` / `local-preview` lifecycle labels. Those labels describe the repository state, not a broader certification by this review.
+
+## Scope and exact hashes
+
+I read the diff since `e3b85eb1` for the shared contract, renderer, browser UI, state helpers and builder, and read the new method module dispatch relevant to history. I inspected `/tmp/atlas-next-review-pages/x-history-0001.html` as HTML text. I did not launch a browser, retrieve sources, edit repository files, contact other chats or spawn reviewers.
+
+I independently recomputed canonical SHA-256 using Node's crypto, a separately written canonical JSON serializer, actual current bytes for all nine builder-listed code files, and related labels from the current registry. I did not rely on the reported temporary JSON hashes alone. Computed values agree with `/tmp/atlas-next-pair-digests.json`:
+
+- Content digest: `f1ad96959e069d4f3896063e82bd8468eb3241749096e856a514631e721b72af`.
+- Artifact digest: `9d0101eb73f6bb3f964aeeaae46c642129928658640872fe82e514e30c143b75`.
+
+I also rendered this candidate in memory using the current renderer and real collection labels; its output exactly equals the supplied review HTML. The supplied HTML is therefore current for the inspected artifact. This verification is not a claim that the normal build passed: old acceptance receipts are stale against the new artifact until fresh reviews are appended.
+
+## Findings and decisions
+
+**No required repair found for the bounded history review.** Entire parsed `explorations/history.json` equals its `e3b85eb1` version, including selected passages, sources and asset/reuse decisions, contextual limitations, task/answer guides, chronology and review limitations. The prior independent institutional body checks and source-scope repair remain the evidence basis; no fresh remote verification is claimed.
+
+The common heading changes (all pilot explorations, explore the evidence, exploration limits) accommodate the additional pilots without changing history's claims. History still dispatches through its existing source-comparison renderer before the new method path. All three quotations and their source/reuse detail sections remain present; conditionality, nonacceptance inference, rhetoric/causation boundaries and the newspaper provenance transfer prompt remain intact. Related collection names and routes remain the same.
+
+The shared state normalization's new-method helper returns an empty object for history; the existing history state branch is preserved. The new UI apply helper performs no method-specific operations for history. The shared select listener still includes history's existing controls. These observations support compatibility within this review's scope; a separate engineering reviewer owns comprehensive runtime verification.
+
+The rendered page preserves the visible disclosure that screen-reader and learner sessions have not been performed, the local-preview label, and the separation between review scope and public release. It does not imply human observation or learning efficacy.
+
+| Dimension | Final scoped AI conclusion |
+| --- | --- |
+| content | passed — unchanged institutional selections, authored claims and task guides still render without an unsupported historical assertion introduced by this delta |
+| provenance | passed — named English witness, source links/locators, date precision and disclosed dependency/missing-chain boundaries remain intact |
+| rights | passed — same documented short-attributed-text US local prototype scope and exclusions remain intact; this is not legal or public-distribution clearance |
+
+Fresh scoped receipts can bind these exact hashes and identify this AI reviewer and report. Historic receipts should remain appended and unaltered. Actual screen-reader and learner observations remain unperformed; the user's removal of those acceptance requirements does not fabricate their completion. No conclusion extends to newly authored P03/P05 content, foreign jurisdictions, complete translation reuse, scans or additional media.
+
+## Final shared validator correction recheck, 2026-10-22
+
+The follow-up change validates measured-data omittedColumns and retained row projection in method-models.mjs. I inspected those checks: they are confined to the measured-data branch, with no new source-comparison behavior. History content remains unchanged. I independently recomputed hashes again and verified the refreshed review HTML equals the current history renderer output.
+
+- Content digest: `f1ad96959e069d4f3896063e82bd8468eb3241749096e856a514631e721b72af`.
+- Artifact digest: `bea7f7e523e89e0c36dec0c0bcf66c681dc1ccde92c05cd48079b8e1ad193eef`.
+
+The scoped AI content, provenance and prototype-rights conclusions remain **passed** for these final hashes, with all prior limitations retained. No source retrieval, browser session or repository edit was performed for this recheck. These passes supply no professional/legal/public-release clearance and no human session evidence.
+
+
+## Readable chart final recheck
+
+Date: 2026-10-22. Reviewer: atlas-ai-history-review (same bounded independent AI role). The shared method view/style change places the soil plot at readable minimum width in a named focusable scroll region; argument UI text now includes complete selected premise/action text. I inspected the relevant code delta. Those method-specific paths do not change history sources, quotations, tasks, provenance or reuse decisions. History's content digest remains identical, and its freshly rendered HTML exactly matches the refreshed supplied review HTML.
+
+Independently recomputed final hashes:
+
+- Content: `f1ad96959e069d4f3896063e82bd8468eb3241749096e856a514631e721b72af`.
+- Artifact: `c002df87d23466b1bcfafea21f67a2db7a294dc2b4118b7aaf701220210b8033`.
+
+Scoped AI **content / provenance / rights: passed** for this exact history artifact. The rights conclusion remains limited to the documented text-only US local prototype, without legal/professional or wider-release clearance. Screen-reader/learner sessions remain unperformed, with no fabricated observation. No browser, source retrieval or repository edit was performed for this recheck.

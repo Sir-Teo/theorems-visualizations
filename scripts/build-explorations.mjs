@@ -31,7 +31,7 @@ export async function buildExplorations({ checkOnly = false } = {}) {
   ]);
   const context = { domainIds: coverage.domains.map(d => d.id), collectionIds: runtime.collections.map(c => c.id), sourceIds: receipts.sources.filter(s => ['body-read', 'table-read', 'file-read'].includes(s.access.status)).map(s => s.id) };
   const errors = runtime.problems.filter(p => p.level === 'error').map(p => p.msg);
-  const codePaths = ['explorations/contract.mjs', 'explorations/route-state.mjs', 'explorations/render.mjs', 'explorations/ui.mjs', 'explorations/style.css', 'scripts/build-explorations.mjs'];
+  const codePaths = ['explorations/contract.mjs', 'explorations/route-state.mjs', 'explorations/render.mjs', 'explorations/ui.mjs', 'explorations/style.css', 'explorations/method-models.mjs', 'explorations/method-views.mjs', 'explorations/method-ui.mjs', 'scripts/build-explorations.mjs'];
   const codeHashes = Object.fromEntries(await Promise.all(codePaths.map(async path => [path, textDigest(await readFile(resolve(ROOT, path), 'utf8'))])));
   const collectionTitles = Object.fromEntries(runtime.collections.map(c => [c.id, c.title]));
   const artifactDigest = r => reviewArtifactDigest(r, codeHashes, collectionTitles);

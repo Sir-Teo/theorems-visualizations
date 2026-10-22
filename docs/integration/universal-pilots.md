@@ -2,9 +2,9 @@
 
 **October 22, 2026 · local integration and declared review scope complete.**
 
-The package is now applied on `codex/universal-pilots-integration` in the dedicated managed worktree. Read the [current checkpoint](../verification/universal-pilots-integration.md). The manifest contains 53 files, including the three independent AI reports; the master plan is reconciled separately with its exact accepted-base version archived.
+The package is now applied on `codex/universal-pilots-integration` in the dedicated managed worktree. Read the [current checkpoint](../verification/universal-pilots-integration.md). The manifest contains 68 files, including five independent AI review roles and the whole-roadmap execution ledger; the master plan is reconciled separately with its exact accepted-base version archived.
 
-The [package manifest](universal-pilots.json) names every file to carry. Both pilots are revision 0.1.2, accepted for local preview under their declared bounded AI review scope. The [author review](../verification/universal-pilots-review.md) is preserved; subsequent independent AI findings, repairs and six scoped receipts are recorded in the [current checkpoint](../verification/universal-pilots-integration.md). The user removed the mandatory screen-reader and learner-session check. Neither session was performed; both are disclosed as limitations. Professional credentials and public-distribution clearance are not claimed.
+The [package manifest](universal-pilots.json) names every file to carry. Four pilots are accepted for local preview under declared bounded AI review: P01/P02 at 0.1.2, P03/P05 at 0.1.0. The [method checkpoint](../verification/universal-pilots-methods.md) records the latest changes and exact hashes. The [author review](../verification/universal-pilots-review.md) is preserved; the first pair’s independent AI findings, repairs and initial six scoped receipts are recorded in the [historical integration checkpoint](../verification/universal-pilots-integration.md). The user removed the mandatory screen-reader and learner-session check for P01/P02. Neither session was performed; both are disclosed as limitations. Professional credentials and public-distribution clearance are not claimed.
 
 ## Rehearse without modifying an active checkout
 
@@ -25,7 +25,7 @@ Rehearsals against later expansion/redesign commits are compatibility observatio
 1. Use the agreed accepted base and current ownership handoffs. Review the exact package hashes and any subsequent differences.
 2. Bring over the manifest's additive files. Review each conflict rather than copying whole directories over an active checkout.
 3. Reconcile **MASTER_PLAN.md manually**: add the broader vision/roadmap and handoff link while preserving current production facts. The old root master plan is intentionally excluded from automatic copying. README, existing content, assets, wave plans, ledgers and build/deploy workflows are also excluded.
-4. Rebuild/check the previews and run the focused tests. Keep the pair out of accepted production counts and preserve legacy note/progress stores.
+4. Rebuild/check the previews and run the focused tests. Keep the pilots out of accepted production counts and preserve legacy note/progress stores.
 5. Independently inspect exact artifact digests and required review receipts before editorial acceptance. The current source/language/prototype-reuse receipts identify separate AI reviewers and their limits. The independent code report does not supply an accessibility or learner pass.
 6. Public loading, catalog links, canonical routes and release review are a later implemented change. Run affected production checks at that boundary.
 
@@ -44,3 +44,5 @@ Keep that allowlist boundary explicit. `noindex` is not privacy. A host that pub
 - Rights/release: review the real distribution and any additional assets before publication.
 
 The first pair no longer occupies the unaccepted slots. Carry this reviewed local package at the normal integration boundary without writing over active Wave chats. Public loading and release remain separate U3 work; the next method pilots follow their own briefs.
+
+P03/P05 add source-linked argument reconstruction and measured-data inspection. Their specialist/human/publication gates remain explicit; see the current method checkpoint. Next method batch: P07/P08. The active goal still covers the full master-plan execution ledger.

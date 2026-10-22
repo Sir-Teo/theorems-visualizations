@@ -94,3 +94,68 @@ No actionable defect found in this delta. For this exact 0.1.2 candidate:
 - **Rights: passed** within documented selected-text evidence for a text-only US local prototype and its asset exclusions. No legal opinion or wider/public distribution clearance is asserted.
 
 Screen-reader and learner sessions remain **not performed**, now limitations rather than acceptance gates under the user's revised instruction. No observation-based accessibility or learning pass is issued. The Koto stop remains binding. No new source retrieval, browser use or repository edit occurred in this recheck. Earlier sections remain historical receipts; this section binds the conclusions to the current candidate and revised declared scope.
+
+
+# P02 shared-method additions: independent AI recheck
+
+Date: 2026-10-22. Reviewer: separate Codex `literature_review` AI agent. Role: English text, comparison claims, Japanese witness-boundary consistency and bounded selected-text reuse review. No professional Japanese-specialist, legal, accessibility or learner-observer credential is asserted. The reviewer did not author the additions or edit repository files.
+
+Candidate: `x-literature-0001`, revision `0.1.2`, local preview.
+Content digest: `f19e81195af44e606595a8d44c7ad16487e29bddbb30ed510e240c0c28416f95`.
+Artifact digest: `654876ddfa53635aa5cdd74e124a6d8d9eae693f6ba591ba395b39995cf2c186`.
+Related collection titles bound into this artifact: `ling` = “Linguistics”; `art` = “Visual Art & Color”.
+
+## Method and evidence
+
+Inspected `git diff e3b85eb1` for literature JSON and shared contract, renderer, UI, route-state, stylesheet and builder. Read the newly imported method modules, with attention to the branches reached by the existing annotation activity. Read the supplied static page `/tmp/atlas-next-review-pages/x-literature-0001.html` as HTML/text. No browser was launched and no visual, screen-reader or learner observation is claimed.
+
+Independently recomputed content and artifact hashes using Node 22.23.3 `node:crypto`, a locally defined recursive canonical serializer, the nine current builder-bound code files and current production collection titles. These reproduce the digests above and agree with `/tmp/atlas-next-pair-digests.json`. Each of the three selected-text hashes independently matches its canonical passage. Re-rendering the canonical record with current collection titles produces exactly the supplied review HTML. A first scratch computation had a syntax error before executing and was corrected; the successful computation is the evidence for these values. The stale acceptance receipts are expected to block a complete builder pass until exact-artifact reviews are appended; this report does not claim that the complete builder has already passed.
+
+No source retrieval was needed for this unchanged-content recheck. Earlier English-source checks are recorded in the independent literature receipt. The Koto retrieval stop was preserved: no request or alternate-host recovery was attempted and no fresh Japanese display verification is asserted.
+
+## Findings
+
+No actionable defect found within this bounded P02 recheck.
+
+- `explorations/literature.json` has no diff against `e3b85eb1`. Its quotations, source/edition attribution, rights decisions, review limitations, activity, claims and transfer rubric remain exactly the reviewed 0.1.2 content. No expansion into Japanese grammar, pronunciation or textual history is introduced.
+- Shared renderer headings change “comparison” to “exploration/evidence” and the navigation label changes “Both” to “All”. These remain accurate for the literature task. The substantive English comparison guides and transfer question remain present. The workshop's broader index introduction accommodates the new methods without changing what P02 claims to teach.
+- The new supplemental-reference rendering is conditional; P02's three source records all have selected passages, so that branch introduces no extra attribution or rights claim on its page.
+- New method rendering, assessment and state logic are reached only for their declared activity types. P02 stays on its annotation branch. Independently evaluated default state remains number/observation; an explicit punctuation/interpretation selection remains those selected values. This is a pure-state check, not an interactive browser test.
+- The rendered source cards still distinguish quotation from editorial context and retain the exact three passage texts, language tags, translator/edition labels and limited rights statements. The Japanese display remains a named modern institutional witness with explicit manuscript/critical-edition and interpretation boundaries.
+- The plural, phrase-order and punctuation guides retain modal interpretations and allow multiple readings. The transfer task continues to distinguish an English observation from a claim about what Bashō saw. No new causal, biographical or original-language conclusion appears.
+- The page visibly retains “Screen-reader and learner sessions have not been performed.” The page/footer describes review and public release separately. Broader domain/method additions create no new public-distribution clearance for P02.
+
+## Exact-candidate decisions
+
+**Content: passed**, within unchanged selected-text, source/edition labels, English comparison claims, task and interpretive-boundary scope.
+
+**Language: passed**, within English wording/order/punctuation observations and honest handling of Japanese witness boundaries. This is not fresh verification of Koto, a Japanese-specialist approval, or an evaluation of original-language fidelity.
+
+**Rights: passed**, within the previously inspected evidence for the selected historical texts in a text-only US local prototype, with contemporary site/municipal media excluded. This is not a legal opinion or permission for public release, additional assets or wider territories.
+
+These decisions bind only the exact digests above. Screen-reader and learner sessions remain unperformed limitations under the user's revised requirements; no such pass is fabricated. Existing historical receipts should be retained. Append current bounded AI review receipts rather than altering old digests. No new source access, browser use, other-chat message, nested delegation or repository edit was performed.
+
+## Final shared-validation repair recheck
+
+Date: 2026-10-22. Same independent AI reviewer and bounded role. Read the current measured-data validation additions, including malformed omitted-column handling and retained-data projection checks. These checks are confined to the measured-data branch; the annotation validation path and literary task remain unchanged. No literature JSON diff exists against `e3b85eb1`. No additional P02 defect found.
+
+Independently recomputed the current content and artifact hashes using Node 22.23.3, a separate canonical serializer and `node:crypto`, current bound files and related collection titles. Results agree with the refreshed digest manifest:
+
+- P02 `x-literature-0001`, revision `0.1.2`.
+- Content digest: `f19e81195af44e606595a8d44c7ad16487e29bddbb30ed510e240c0c28416f95`.
+- Current artifact digest: `9597e55409651d2ab0af404cd7d5d9c9ef7b8598e1c21e82ff84a58d39ade0a3`.
+
+The canonical re-render exactly matches the refreshed supplied review HTML. Earlier hashes above remain historical. For this exact current candidate, **content passed**, **language passed** (English observations and Japanese boundary handling only), and **rights passed** (selected-text evidence for the US text-only local prototype only), under all previously stated limits. No fresh Koto verification, Japanese-specialist/legal/public-release approval or screen-reader/learner observation is asserted. No source request, browser use or repository edit occurred in this recheck.
+
+
+## Readable chart final recheck
+
+Date: 2026-10-22. Same independent AI reviewer and bounded review scope. Inspected current shared additions: the soil plot now has a named, focusable horizontal-scroll region and targeted 700px SVG minimum width; the argument interface includes complete selected premise/action text. These changes are confined to method-specific markup, IDs/styles and activity branches that P02 does not use. No change to the literary content, claims, tasks, attribution, rights scope or limitations was found.
+
+Independently recomputed hashes using Node 22.23.3, a separate canonical serializer, `node:crypto`, current builder-bound files and related collection titles. Current candidate:
+
+- `x-literature-0001`, revision `0.1.2`.
+- Content digest: `f19e81195af44e606595a8d44c7ad16487e29bddbb30ed510e240c0c28416f95`.
+- Artifact digest: `04a0e3d355997fe2c55a8af73d3c707c2aefdb51915a83e7cf66403cc6609e95`.
+
+The recomputed values match the refreshed manifest; a canonical re-render exactly matches the refreshed review HTML. This section supersedes earlier artifact bindings for the current candidate while preserving their history. No actionable P02 defect found. **Content passed; language passed within English observations and Japanese boundary handling; prototype rights passed within selected-text US local use and asset exclusions.** All earlier professional/Japanese-source/legal/public-release limits remain. No actual screen-reader or learner observation is claimed. No browser, source retrieval, other-chat message, nested agent or repository edit occurred.

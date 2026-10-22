@@ -91,6 +91,90 @@
       "revision": "0.1.2",
       "contentDigest": "f1ad96959e069d4f3896063e82bd8468eb3241749096e856a514631e721b72af",
       "artifactDigest": "ffef0964100bbcdd7496cc798bea195a912d93375c4e2b892e4a656736e8dce4"
+    },
+    {
+      "dimension": "content",
+      "result": "passed",
+      "reviewer": {
+        "id": "history_review",
+        "role": "Independent AI history/provenance and scoped prototype-rights reviewer",
+        "independent": true
+      },
+      "revision": "0.1.2",
+      "contentDigest": "f1ad96959e069d4f3896063e82bd8468eb3241749096e856a514631e721b72af",
+      "artifactDigest": "bea7f7e523e89e0c36dec0c0bcf66c681dc1ccde92c05cd48079b8e1ad193eef",
+      "evidencePath": "docs/verification/universal-pilots-ai-history.md",
+      "reviewedOn": "2026-10-22"
+    },
+    {
+      "dimension": "provenance",
+      "result": "passed",
+      "reviewer": {
+        "id": "history_review",
+        "role": "Independent AI history/provenance and scoped prototype-rights reviewer",
+        "independent": true
+      },
+      "revision": "0.1.2",
+      "contentDigest": "f1ad96959e069d4f3896063e82bd8468eb3241749096e856a514631e721b72af",
+      "artifactDigest": "bea7f7e523e89e0c36dec0c0bcf66c681dc1ccde92c05cd48079b8e1ad193eef",
+      "evidencePath": "docs/verification/universal-pilots-ai-history.md",
+      "reviewedOn": "2026-10-22"
+    },
+    {
+      "dimension": "rights",
+      "result": "passed",
+      "reviewer": {
+        "id": "history_review",
+        "role": "Independent AI history/provenance and scoped prototype-rights reviewer",
+        "independent": true
+      },
+      "revision": "0.1.2",
+      "contentDigest": "f1ad96959e069d4f3896063e82bd8468eb3241749096e856a514631e721b72af",
+      "artifactDigest": "bea7f7e523e89e0c36dec0c0bcf66c681dc1ccde92c05cd48079b8e1ad193eef",
+      "evidencePath": "docs/verification/universal-pilots-ai-history.md",
+      "reviewedOn": "2026-10-22"
+    },
+    {
+      "dimension": "content",
+      "result": "passed",
+      "reviewer": {
+        "id": "history_review",
+        "role": "Independent AI history/provenance and scoped prototype-rights reviewer",
+        "independent": true
+      },
+      "revision": "0.1.2",
+      "contentDigest": "f1ad96959e069d4f3896063e82bd8468eb3241749096e856a514631e721b72af",
+      "artifactDigest": "c002df87d23466b1bcfafea21f67a2db7a294dc2b4118b7aaf701220210b8033",
+      "evidencePath": "docs/verification/universal-pilots-ai-history.md",
+      "reviewedOn": "2026-10-22"
+    },
+    {
+      "dimension": "provenance",
+      "result": "passed",
+      "reviewer": {
+        "id": "history_review",
+        "role": "Independent AI history/provenance and scoped prototype-rights reviewer",
+        "independent": true
+      },
+      "revision": "0.1.2",
+      "contentDigest": "f1ad96959e069d4f3896063e82bd8468eb3241749096e856a514631e721b72af",
+      "artifactDigest": "c002df87d23466b1bcfafea21f67a2db7a294dc2b4118b7aaf701220210b8033",
+      "evidencePath": "docs/verification/universal-pilots-ai-history.md",
+      "reviewedOn": "2026-10-22"
+    },
+    {
+      "dimension": "rights",
+      "result": "passed",
+      "reviewer": {
+        "id": "history_review",
+        "role": "Independent AI history/provenance and scoped prototype-rights reviewer",
+        "independent": true
+      },
+      "revision": "0.1.2",
+      "contentDigest": "f1ad96959e069d4f3896063e82bd8468eb3241749096e856a514631e721b72af",
+      "artifactDigest": "c002df87d23466b1bcfafea21f67a2db7a294dc2b4118b7aaf701220210b8033",
+      "evidencePath": "docs/verification/universal-pilots-ai-history.md",
+      "reviewedOn": "2026-10-22"
     }
   ],
   "extensions": {},

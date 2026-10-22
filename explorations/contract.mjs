@@ -1,3 +1,4 @@
+import { EXTRA_METHODS, validateMethod } from './method-models.mjs';
 import { createHash } from 'node:crypto';
 
 export const EXP_ID = /^x-[a-z][a-z0-9-]*-[0-9]{4}$/;
@@ -48,7 +49,7 @@ export function validateExploration(r, { domainIds, collectionIds, sourceIds, kn
   refs(r.domainIds, domainIds, 'domain');
   refs(r.relatedCollectionIds, collectionIds, 'related collection', true);
   refs(r.knowledgeModes, MODES, 'knowledge mode');
-  refs(r.methods, ['source-comparison', 'annotation'], 'implemented method');
+  refs(r.methods, ['source-comparison', 'annotation', ...EXTRA_METHODS], 'implemented method');
   refs(r.prerequisites, knownItemIds, 'prerequisite', true);
   for (const k of ['sources', 'passages', 'claims', 'context', 'timeline', 'relations', 'reviews', 'reviewRequirements'])
     check(Array.isArray(r[k]), k + ' must be an array');
@@ -87,7 +88,7 @@ export function validateExploration(r, { domainIds, collectionIds, sourceIds, kn
     if (['influenced-by', 'evidence-for', 'challenges', 'translation-of'].includes(rel.type)) refs(rel.sourceIds, sourceSet, 'relation evidence');
   }
   const a = r.activity;
-  check(['source-comparison', 'annotation'].includes(a?.type), 'unsupported activity type');
+  check(['source-comparison', 'annotation', ...EXTRA_METHODS].includes(a?.type), 'unsupported activity type');
   check(r.methods.includes(a?.type), 'activity type must be declared in methods');
   check(text(a?.transfer) && Array.isArray(a?.rubric) && a.rubric.length > 0 && a.rubric.every(text), 'transfer task/rubric missing');
   if (a?.type === 'source-comparison') {
@@ -113,6 +114,7 @@ export function validateExploration(r, { domainIds, collectionIds, sourceIds, kn
       check(Array.isArray(l.readings) && l.readings.length >= 2 && l.readings.every(text), 'allow multiple supported readings');
     }
   }
+  errors.push(...validateMethod(a, passageSet, sourceSet).map(x => r.id + ': ' + x));
   const dimensions = ['content', 'provenance', 'language', 'rights', 'accessibility', 'learning'];
   refs(r.reviewRequirements, dimensions, 'review requirement');
   for (const dimension of ['content', 'rights'])

@@ -74,3 +74,80 @@ Verified final 0.1.2 hashes:
 | Literature | `f19e81195af44e606595a8d44c7ad16487e29bddbb30ed510e240c0c28416f95` | `2e550a22fd30abaf6a6f5b4d0795701c0e42927d4a7df1743a55b1291cd537be` |
 
 **Bounded AI engineering review passes for this implementation delta; no actionable defect found.** No human observation, specialist credential or unrestricted rights clearance is inferred. Earlier report language describing human sessions as mandatory blockers applies to the superseded 0.1.1 requirements; under the user-authorized 0.1.2 contract those sessions are unperformed limitations, not acceptance requirements for this pair. Fresh exact-version independent AI receipts are still needed for all declared dimensions before changing this candidate from in-review to accepted. No production code edit, browser or other-chat action was performed by this reviewer.
+
+
+# Independent AI engineering review: P03/P05 methods
+
+Date: October 22, 2026. Reviewer: separate Codex AI engineering reviewer `code_review`, independent of the implementation author. Candidate: integration checkout diff since `e3b85eb1`, including untracked new method modules and JSON. This is source/pure-logic inspection, not a human screen-reader or learner session.
+
+## Actionable findings
+
+**P2: validate omitted-column metadata before rendering.** `explorations/method-models.mjs:26-43` validates measured-data provenance, selection, instruments and rows, but not `dataset.omittedColumns`. `explorations/method-views.mjs` unconditionally renders `d.omittedColumns.join(', ')` in attribution. Taking the actual agriculture record and replacing omittedColumns with undefined, null or a string makes `validateExploration()` return no errors and `renderExploration()` throw a TypeError. This fails the schema promise that malformed authored data receives useful diagnostics before rendering. Validate omittedColumns as an array of nonempty strings (and validate projection metadata if it is part of the declared data contract); add malformed cases. No currently authored value was found malformed.
+
+Initial result: changes requested for this bounded engineering validation defect. Recheck after repair; the remaining findings below do not claim acceptance.
+
+## Independently checked evidence
+
+Read new `method-models.mjs`, `method-views.mjs`, `method-ui.mjs`; core contract/state/render/UI/builder deltas; four records; and `docs/pilots/research/soil-subset.py`. No repository file edited and no browser launched. The author was adding tests concurrently; no broad suite or production build was run by this reviewer at this initial stage. The builder is expected to reject old history/literature artifact receipts until those are rechecked.
+
+Executed in-memory pure-logic checks with Node 22.23.3:
+
+- Twelve normalize/serialize/parse round-trips across P03/P05 with valid defaults, malformed input types, malicious unknown IDs/numeric text and private notes. Public state round-trips and excludes private/unknown fields.
+- Synthetic model returns 60 mm for upper .30, lower .15, depth .40 m; rejects blank, reversed fractions, zero depth and infinite input cases.
+- Both complete editorial premise lists match their selected guides without missing links; messages remain explicit that matching a guide does not establish truth or moral obligation.
+
+Independently reconstructed all plot 1 rows from the frozen local original CSV (not remote freshness evidence). SHA-256 `41308fba78d50d96152f40b85af43f45a9aed4d53e23568db483889c8ed744b1` matches the record. All **278** projected rows match exact source-row identities, eight columns, decimal strings and order: **102/93/83** for samples 000/010/050. The supplied reproduction script also passes. Repeated magnitudes are retained as distinct observations. Current magnitude range .0003377 to 17.3780083 MPa lies inside the fixed log-axis domain .0001 to 100 MPa. No fit, interpolation or connecting line is introduced.
+
+## Source inspection with no further actionable defect found
+
+New source and note text is escaped in HTML/SVG. Dynamic DOM text uses textContent except scatter HTML, whose strings are escaped and coordinates generated from validated finite numeric fields. IDs used in HTML attributes are constrained. Public states enumerate source sample/point or premise IDs and bounded numeric parameters; arbitrary text/private notes do not enter shared URLs. Existing notes identity/revision storage, corrupt-data export, reset semantics, earlier-version export and clipboard-race guard remain intact.
+
+Argument controls are native buttons/selects; ordered-list actions restore focus after replacement. The premise bank is deliberately unshared; selected ordered premises are shared. Role changes do not silently exchange the other person's preferences. Plot source data is available without JavaScript in full tables; the log-axis and instrument mapping are explicit. Synthetic assumptions are visually and textually separated from observations and do not update raw points.
+
+Builder artifact hashes now include all three new method modules, shared core modules and used related-collection labels. Thus their changes invalidate history/literature receipts too, as expected. Production runtime/content files are outside the inspected delta; no production acceptance or deployment is inferred. Capacity remains two unaccepted pilots; previously accepted history/literature need updated artifact receipts after shared code changes.
+
+## Initial candidate digests
+
+Copied from `/tmp/atlas-next-pair-digests.json` at review start; these are provisional and must be independently recomputed after repairs and final freeze:
+
+| Pilot | Revision | Content digest | Artifact digest |
+| --- | --- | --- | --- |
+| History | 0.1.2 | `f1ad96959e069d4f3896063e82bd8468eb3241749096e856a514631e721b72af` | `9d0101eb73f6bb3f964aeeaae46c642129928658640872fe82e514e30c143b75` |
+| Literature | 0.1.2 | `f19e81195af44e606595a8d44c7ad16487e29bddbb30ed510e240c0c28416f95` | `654876ddfa53635aa5cdd74e124a6d8d9eae693f6ba591ba395b39995cf2c186` |
+| Philosophy | 0.1.0 | `0cabe58a8d547b9d8ec2e6cb7cfe1d58c5769bbd85bc8dc165c933dd24ea2218` | `afc348414c98512c9cc20e51435c18f5b9befafab75e132353cb41e73f892754` |
+| Agriculture | 0.1.0 | `145a8e43d67936ce7b78fd1069ffd461d3952e9eda39e0307ed895e76c640513` | `85cdece4e9c9ad777527087877902e338228a7c9432bb38d2fbc79ac5df7e99e` |
+
+## Limits
+
+No actual screen-reader announcements, learner comprehension, empirical model applicability, scientific unit interpretation, specialist or legal expertise, or fresh remote source verification is claimed. Keyboard conclusions are engineering source observations only; browser behavior needs its own runtime evidence. The independent engineering review cannot substitute for the declared source/provenance/rights reviews.
+
+## Independent final repair recheck
+
+Inspected the repair: measured-data validation now rejects malformed omittedColumns before rendering and requires a nonempty, unique text projection array. Independently ran `node --test tests/exploration-methods.test.mjs` on Node 22.23.3: **6/6 passed**, zero failures/skips/cancellations. The new malformed-array regression includes the reported crash path. The original P2 is **resolved**. No further actionable engineering defect found within this review scope.
+
+Read the current P03/P05 review-limit statements: they describe local review scope and do not claim professional specialist, screen-reader or learner sessions. Their updated text is included in the content hashes. Independently recomputed all nine bound code-file hashes, current record content digests and used collection-label context, then verified exact equality with the refreshed digest file. Current final hashes:
+
+| Pilot | Revision | Content digest | Artifact digest |
+| --- | --- | --- | --- |
+| x-history-0001 | 0.1.2 | `f1ad96959e069d4f3896063e82bd8468eb3241749096e856a514631e721b72af` | `bea7f7e523e89e0c36dec0c0bcf66c681dc1ccde92c05cd48079b8e1ad193eef` |
+| x-literature-0001 | 0.1.2 | `f19e81195af44e606595a8d44c7ad16487e29bddbb30ed510e240c0c28416f95` | `9597e55409651d2ab0af404cd7d5d9c9ef7b8598e1c21e82ff84a58d39ade0a3` |
+| x-philosophy-0001 | 0.1.0 | `57c5cbf2d12cfce4e28395bbd2c929907572aba49c371c9000de03ee7c2c172e` | `7f69901c8cb45ba5cd589774c65ffe45bb92793d17e9ed18da08bbc6be454db3` |
+| x-agriculture-0001 | 0.1.0 | `d0f0f916bbed98c6abd120f748e1a4edd05e9496bc39c6dc3b56600eccdbac6d` | `3d78688e111a8e8a24ec2d85bf8bc610f5c13b05f8f6ffeb9ebd00dd8765baed` |
+
+Final result: **bounded independent AI engineering review passed** for these exact artifacts. This review supplies engineering evidence only; it does not grant content/provenance/rights approval or claim human observation. Browser tests, actual assistive-technology use and learner sessions were not performed by this reviewer. Prior P01/P02 source approvals must be independently rechecked against their changed shared-code artifact hashes before accepted-state validation can succeed. No repository edits or browser launches were performed by this reviewer.
+
+
+## Readable chart final recheck
+
+Independently inspected the final readability delta in method views/UI/style and its UI test assertions. The observed plot retains a 700px minimum SVG width within an overflow-x:auto container, preserving the authored 14px labels on narrow screens. The container is named, focusable, has a visible focus outline, and its static/dynamic captions explain horizontal scrolling. Replacing SVG content retains the parent scroll-region element. The premise bank now exposes its full selected text in a wrapping paragraph on initial application and selection changes; the action objection includes the full selected action label. Both insertions use textContent. No new actionable engineering defect found in this delta.
+
+Recomputed current content and artifact hashes from all nine bound code files, record contents and used collection labels. Exact matches to the refreshed digest file; content digests remain unchanged.
+
+| Pilot | Revision | Content digest | Artifact digest |
+| --- | --- | --- | --- |
+| x-history-0001 | 0.1.2 | `f1ad96959e069d4f3896063e82bd8468eb3241749096e856a514631e721b72af` | `c002df87d23466b1bcfafea21f67a2db7a294dc2b4118b7aaf701220210b8033` |
+| x-literature-0001 | 0.1.2 | `f19e81195af44e606595a8d44c7ad16487e29bddbb30ed510e240c0c28416f95` | `04a0e3d355997fe2c55a8af73d3c707c2aefdb51915a83e7cf66403cc6609e95` |
+| x-philosophy-0001 | 0.1.0 | `57c5cbf2d12cfce4e28395bbd2c929907572aba49c371c9000de03ee7c2c172e` | `b39627902223f674aa87adc4bcfbf9bd463d96e39db42fd074445e03452c74f1` |
+| x-agriculture-0001 | 0.1.0 | `d0f0f916bbed98c6abd120f748e1a4edd05e9496bc39c6dc3b56600eccdbac6d` | `e4a5eeec558a552bed8bb38c81825de88dfc3e882f5c974e15cac10e21452e6b` |
+
+**Final bounded AI engineering pass applies to these hashes**, superseding the immediately preceding artifact hashes. No browser launched, no tests redundantly run during the owner's browser suite, and no actual screen-reader or learner observation claimed. Runtime chart readability remains supported by the owner's separate visual/browser evidence rather than an invented observation by this reviewer.

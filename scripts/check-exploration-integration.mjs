@@ -8,8 +8,8 @@ import { fileURLToPath } from 'node:url';
 import { createHash } from 'node:crypto';
 import { ROOT } from './lib.mjs';
 const hash = data => createHash('sha256').update(data).digest('hex');
-const allowed = path => /^(explorations\/|labs\/atlas\/|docs\/(coverage\/|pilots\/|architecture\/universal-schema-urls\.md$|integration\/universal-pilots(?:-baseline-plan|-review-session)?\.(json|md)$|verification\/universal-pilots(?:-review|-integration|-ai-(?:history|literature|code))?\.md$|master-plan-handoff\.md$|exploration-authoring\.md$|universal-(coverage|atlas-research)\.md$))/.test(path)
-  || /^(MASTER_PLAN_V2_ARCHIVE\.md|scripts\/(build-explorations|validate-coverage|check-exploration-integration)\.mjs|tests\/(coverage-registry|explorations|explorations-ui|explorations-integration)\.test\.mjs|tests\/explorations-production\.mjs)$/.test(path);
+const allowed = path => /^(explorations\/|labs\/atlas\/|docs\/(coverage\/|pilots\/|architecture\/universal-schema-urls\.md$|integration\/universal-pilots(?:-baseline-plan|-review-session)?\.(json|md)$|verification\/universal-pilots(?:-review|-integration|-methods|-ai-(?:history|literature|philosophy|agriculture|code))?\.md$|master-plan-(?:handoff|execution)\.md$|exploration-authoring\.md$|universal-(coverage|atlas-research)\.md$))/.test(path)
+  || /^(MASTER_PLAN_V2_ARCHIVE\.md|scripts\/(build-explorations|validate-coverage|check-exploration-integration)\.mjs|tests\/(coverage-registry|explorations|exploration-methods|explorations-ui|explorations-integration)\.test\.mjs|tests\/explorations-production\.mjs)$/.test(path);
 export async function planOverlay(source, target, paths) {
   if (!Array.isArray(paths) || !paths.length || new Set(paths).size !== paths.length) throw new Error('Package paths must be unique');
   const plan=[];
@@ -46,7 +46,7 @@ export async function preflight({repo,base,ui=false}) {
   if(manifest.schemaVersion!==1 || manifest.mode!=='additive-local-preview' || manifest.manualReconcile?.join(',')!=='MASTER_PLAN.md') throw new Error('Unknown integration package contract');
   const plan=await planOverlay(ROOT,target,manifest.files);
   for(const {path,bytes} of plan){await mkdir(dirname(join(target,path)),{recursive:true});await writeFile(join(target,path),bytes);}
-  const commands=[['scripts/validate-coverage.mjs'],['scripts/build-explorations.mjs','--check'],['--test','tests/coverage-registry.test.mjs','tests/explorations.test.mjs','tests/explorations-integration.test.mjs']];
+  const commands=[['scripts/validate-coverage.mjs'],['scripts/build-explorations.mjs','--check'],['--test','tests/coverage-registry.test.mjs','tests/explorations.test.mjs','tests/explorations-integration.test.mjs','tests/exploration-methods.test.mjs']];
   if(ui){await symlink(join(ROOT,'node_modules'),join(target,'node_modules'),'dir');commands.push(['--test','tests/explorations-ui.test.mjs']);}
   const checks=[];
   for(const args of commands){
@@ -57,7 +57,7 @@ export async function preflight({repo,base,ui=false}) {
   const changed=[];
   for(const [path,digest] of Object.entries(before)) if(hash(await readFile(join(target,path)))!==digest)changed.push(path);
   if(changed.length)throw new Error('Base snapshot changed: '+changed.join(', '));
-  const report={schemaVersion:1,mode:manifest.mode,baseCommit:commit,sourceRepo:resolve(repo),snapshot:target,baseFilesPreserved:Object.keys(before).length,files:plan.map(({bytes,...entry})=>entry),manualReconcile:manifest.manualReconcile,checks,scope:'Engineering preflight only. Independent content/access/learner acceptance and public release remain open. No active checkout was written.'};
+  const report={schemaVersion:1,mode:manifest.mode,baseCommit:commit,sourceRepo:resolve(repo),snapshot:target,baseFilesPreserved:Object.keys(before).length,files:plan.map(({bytes,...entry})=>entry),manualReconcile:manifest.manualReconcile,checks,scope:'Engineering preservation preflight only. Exact-version local AI reviews are separate receipts; professional/human observations and public release are not established by these checks. No active checkout was written.'};
   await writeFile(join(temp,'report.json'),JSON.stringify(report,null,2)+'\n');
   return {result:'PASS',baseCommit:commit,baseFilesPreserved:report.baseFilesPreserved,packageFiles:plan.length,report:join(temp,'report.json'),snapshot:target};
 }

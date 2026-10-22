@@ -1,0 +1,340 @@
+{
+  "schemaVersion": 1,
+  "id": "x-philosophy-0001",
+  "pilotId": "P03",
+  "revision": "0.1.0",
+  "status": "accepted",
+  "publication": "local-preview",
+  "title": "Does reciprocity settle a disagreement?",
+  "subtitle": "Two passages, different preferences, and the premises between them.",
+  "summary": "Build a reasoned response to a disagreement over music and quiet. Separate the source words from assumptions you add, then test what changes when the roles reverse.",
+  "audience": "Curious general readers; no specialist background required.",
+  "scope": "Two English textual witnesses and an original hypothetical. This does not survey either tradition or establish historical influence.",
+  "author": "atlas-editor",
+  "updatedOn": "2026-10-22",
+  "domainIds": [
+    "D21",
+    "D22"
+  ],
+  "relatedCollectionIds": [
+    "phil",
+    "logic",
+    "game"
+  ],
+  "knowledgeModes": [
+    "interpretive",
+    "normative"
+  ],
+  "methods": [
+    "argument-map"
+  ],
+  "prerequisites": [],
+  "sources": [
+    {
+      "id": "legge-analects",
+      "title": "Confucian Analects, translated by James Legge",
+      "url": "https://www.gutenberg.org/cache/epub/3330/pg3330-images.html",
+      "locator": "Book XV, CHAP. XXIII; ebook 3330",
+      "creator": "Confucius as represented in the Analects; James Legge, translator",
+      "date": "Digital release 2002-07-01; updated 2021-01-08; print witness not verified",
+      "language": "English translation",
+      "rights": {
+        "decision": "usable-for-prototype",
+        "basis": "Gutenberg catalog identifies public domain in the USA. Translator died in 1897. Short unchanged attributed text selected for this local critical exercise.",
+        "scope": "USA text-reuse evidence; worldwide full-text distribution is not established. No Gutenberg package, branding or images imported."
+      }
+    },
+    {
+      "id": "web-matthew",
+      "title": "World English Bible Classic: Matthew 7",
+      "url": "https://ebible.org/eng-web/MAT07.htm",
+      "locator": "7:12, read with 7:7–12 and 7:28–29",
+      "creator": "Jesus’s teaching as presented in Matthew; World English Bible translators",
+      "date": "2020 stable text edition; HTML inspected 2026-10-22",
+      "language": "English translation",
+      "rights": {
+        "decision": "usable-for-prototype",
+        "basis": "Publisher public-domain dedication in its official rights statement; unchanged verse, attributed to the Classic edition.",
+        "scope": "Only unchanged English text. Editorial premises are separate; no logo, audio or endorsement."
+      }
+    },
+    {
+      "id": "eno-analects",
+      "title": "Robert Eno, The Analects of Confucius: An Online Teaching Translation",
+      "url": "https://scholarworks.iu.edu/iuswrrest/api/core/bitstreams/d1f62d31-9082-41d0-999f-4c3efa0c8857/content",
+      "locator": "Printed p.85, passage 15.24 (PDF page index 99)",
+      "creator": "Robert Eno",
+      "date": "2015, version 2.21",
+      "language": "English translation",
+      "rights": {
+        "decision": "usable-for-prototype",
+        "basis": "Link and original locator observation only; no translated passage reproduced. The PDF has limited educational/nonprofit permissions, not an unrestricted licence.",
+        "scope": "Supplemental numbering reference; not a Chinese critical-edition check."
+      }
+    },
+    {
+      "id": "sep-confucius",
+      "title": "Confucius — Stanford Encyclopedia of Philosophy",
+      "url": "https://plato.stanford.edu/entries/Confucius/",
+      "locator": "Section 4",
+      "creator": "Mark Csikszentmihalyi",
+      "date": "Substantive revision 2024-05-02",
+      "language": "English scholarly article",
+      "rights": {
+        "decision": "usable-for-prototype",
+        "basis": "Reference and original contextual paraphrase only; no article text or assets reproduced.",
+        "scope": "Supplemental context; no endorsement or exhaustive account."
+      }
+    },
+    {
+      "id": "web-rights",
+      "title": "World English Bible Classic: rights and edition statement",
+      "url": "https://ebible.org/eng-web/copr.htm",
+      "locator": "Public-domain declaration and 2020 stable text edition",
+      "creator": "World English Bible project",
+      "date": "Inspected 2026-10-22",
+      "language": "English",
+      "rights": {
+        "decision": "usable-for-prototype",
+        "basis": "Linked rights statement supports unchanged attributed WEB text.",
+        "scope": "The edition name must not label altered text as verbatim WEB."
+      }
+    }
+  ],
+  "passages": [
+    {
+      "id": "legge",
+      "sourceId": "legge-analects",
+      "title": "Reciprocity in an exchange",
+      "text": "What you do not want done to yourself, do not do to others.",
+      "context": "Tsze-kung asks for a rule to practise throughout life; the Master names reciprocity. These are Legge’s translated words in a transmitted dialogue, not an independently authenticated recording of a historical utterance.",
+      "form": "quotation",
+      "language": "en",
+      "sha256": "5f2ec688d69c736785726cd215244a76cfe37dfabfd4c9ee28aa2348855c5c13"
+    },
+    {
+      "id": "matthew",
+      "sourceId": "web-matthew",
+      "title": "A directive in a teaching sequence",
+      "text": "Therefore, whatever you desire for men to do to you, you shall also do to them; for this is the law and the prophets.",
+      "context": "Verses 7–11 concern asking, seeking and knocking, parental bread/fish comparisons and the Father in heaven giving good things. Verse 12 follows with “Therefore”; the chapter closes by presenting Jesus as teacher. The exercise does not require religious assent.",
+      "form": "quotation",
+      "language": "en",
+      "sha256": "e923578393d95b1d1f79691228e08c9e25adc6582ece8e35a5d7cbed461e9b5a"
+    }
+  ],
+  "claims": [
+    {
+      "id": "different-forms",
+      "text": "These English witnesses formulate reciprocity differently and belong to different textual settings.",
+      "kind": "textual",
+      "passageIds": [
+        "legge",
+        "matthew"
+      ],
+      "qualification": "The comparison concerns these translations only; it establishes neither identical ethics nor influence."
+    },
+    {
+      "id": "added-premises",
+      "text": "Applying either passage to the neighbor scenario requires interpretive and factual premises.",
+      "kind": "interpretive",
+      "passageIds": [
+        "legge",
+        "matthew"
+      ],
+      "qualification": "The modern scenario and reconstructions below are original editorial examples, not claims that either source mentions them."
+    }
+  ],
+  "context": [
+    "The selected Legge ebook labels the exchange XV.XXIII. The corresponding exchange is 15.24 in Eno’s 2015 English teaching translation, p.85. This resolves this pair of locators only; no reason for the discrepancy or universal modern numbering is asserted.",
+    "No Chinese or Greek original has been verified. Translation choices can affect this comparison.",
+    "The SEP discussion cautions that removing dialogue context can distort comparison. Neither short passage exhausts Confucian or Christian ethics.",
+    "A premise is a reason offered for a conclusion. An objection identifies a disputed premise or inference; it need not reject the whole source."
+  ],
+  "timeline": [],
+  "relations": [],
+  "reviews": [
+    {
+      "dimension": "content",
+      "result": "passed",
+      "reviewer": {
+        "id": "philosophy_source_review",
+        "role": "Independent AI source-context and scoped prototype-rights reviewer",
+        "independent": true
+      },
+      "revision": "0.1.0",
+      "contentDigest": "57c5cbf2d12cfce4e28395bbd2c929907572aba49c371c9000de03ee7c2c172e",
+      "artifactDigest": "7f69901c8cb45ba5cd589774c65ffe45bb92793d17e9ed18da08bbc6be454db3",
+      "evidencePath": "docs/verification/universal-pilots-ai-philosophy.md",
+      "reviewedOn": "2026-10-22"
+    },
+    {
+      "dimension": "provenance",
+      "result": "passed",
+      "reviewer": {
+        "id": "philosophy_source_review",
+        "role": "Independent AI source-context and scoped prototype-rights reviewer",
+        "independent": true
+      },
+      "revision": "0.1.0",
+      "contentDigest": "57c5cbf2d12cfce4e28395bbd2c929907572aba49c371c9000de03ee7c2c172e",
+      "artifactDigest": "7f69901c8cb45ba5cd589774c65ffe45bb92793d17e9ed18da08bbc6be454db3",
+      "evidencePath": "docs/verification/universal-pilots-ai-philosophy.md",
+      "reviewedOn": "2026-10-22"
+    },
+    {
+      "dimension": "rights",
+      "result": "passed",
+      "reviewer": {
+        "id": "philosophy_source_review",
+        "role": "Independent AI source-context and scoped prototype-rights reviewer",
+        "independent": true
+      },
+      "revision": "0.1.0",
+      "contentDigest": "57c5cbf2d12cfce4e28395bbd2c929907572aba49c371c9000de03ee7c2c172e",
+      "artifactDigest": "7f69901c8cb45ba5cd589774c65ffe45bb92793d17e9ed18da08bbc6be454db3",
+      "evidencePath": "docs/verification/universal-pilots-ai-philosophy.md",
+      "reviewedOn": "2026-10-22"
+    },
+    {
+      "dimension": "content",
+      "result": "passed",
+      "reviewer": {
+        "id": "philosophy_source_review",
+        "role": "Independent AI source-context and scoped prototype-rights reviewer",
+        "independent": true
+      },
+      "revision": "0.1.0",
+      "contentDigest": "57c5cbf2d12cfce4e28395bbd2c929907572aba49c371c9000de03ee7c2c172e",
+      "artifactDigest": "b39627902223f674aa87adc4bcfbf9bd463d96e39db42fd074445e03452c74f1",
+      "evidencePath": "docs/verification/universal-pilots-ai-philosophy.md",
+      "reviewedOn": "2026-10-22"
+    },
+    {
+      "dimension": "provenance",
+      "result": "passed",
+      "reviewer": {
+        "id": "philosophy_source_review",
+        "role": "Independent AI source-context and scoped prototype-rights reviewer",
+        "independent": true
+      },
+      "revision": "0.1.0",
+      "contentDigest": "57c5cbf2d12cfce4e28395bbd2c929907572aba49c371c9000de03ee7c2c172e",
+      "artifactDigest": "b39627902223f674aa87adc4bcfbf9bd463d96e39db42fd074445e03452c74f1",
+      "evidencePath": "docs/verification/universal-pilots-ai-philosophy.md",
+      "reviewedOn": "2026-10-22"
+    },
+    {
+      "dimension": "rights",
+      "result": "passed",
+      "reviewer": {
+        "id": "philosophy_source_review",
+        "role": "Independent AI source-context and scoped prototype-rights reviewer",
+        "independent": true
+      },
+      "revision": "0.1.0",
+      "contentDigest": "57c5cbf2d12cfce4e28395bbd2c929907572aba49c371c9000de03ee7c2c172e",
+      "artifactDigest": "b39627902223f674aa87adc4bcfbf9bd463d96e39db42fd074445e03452c74f1",
+      "evidencePath": "docs/verification/universal-pilots-ai-philosophy.md",
+      "reviewedOn": "2026-10-22"
+    }
+  ],
+  "reviewRequirements": [
+    "content",
+    "provenance",
+    "rights"
+  ],
+  "reviewLimitations": [
+    "Local review covers source fidelity, evidence labeling and bounded prototype reuse. No professional specialist, screen-reader or learner session has been performed."
+  ],
+  "extensions": {},
+  "activity": {
+    "type": "argument-map",
+    "scenario": "Original hypothetical: one neighbor enjoys music while working; another needs quiet to concentrate. They share a wall. For this exercise these preferences are stipulated facts, not measured evidence. The available arrangements and their effects remain assumptions.",
+    "definitions": "Interpretation: a reading of the source. Empirical assumption: a testable claim about the situation. Normative addition: a claim about what people ought to do. Proposed conclusion: an action supported by the selected reasons; no automatic moral score is assigned.",
+    "premises": [
+      {
+        "id": "reverse-position",
+        "kind": "interpretation",
+        "text": "Ask whether imposing an unwanted interruption would be acceptable in the relevant reversed position."
+      },
+      {
+        "id": "respect-preference",
+        "kind": "normative-addition",
+        "text": "Give the affected person’s actual need for concentration weight, rather than projecting the actor’s musical taste."
+      },
+      {
+        "id": "headphones-work",
+        "kind": "empirical-assumption",
+        "text": "Headphones or another room are available and would reduce the disturbance without creating a comparable burden."
+      },
+      {
+        "id": "responsive-attention",
+        "kind": "interpretation",
+        "text": "Read the directive as a reason to attend to how the other person would want to be treated in this setting."
+      },
+      {
+        "id": "ask-fair-terms",
+        "kind": "normative-addition",
+        "text": "Ask about the other person’s needs and seek terms both can reasonably accept."
+      },
+      {
+        "id": "schedule-feasible",
+        "kind": "empirical-assumption",
+        "text": "A conversation and a workable quiet/music schedule are feasible here."
+      }
+    ],
+    "actions": [
+      {
+        "id": "headphones",
+        "label": "Use headphones or move the music",
+        "objection": "This depends on a feasible alternative and a judgment about competing needs. The quoted words alone do not establish either."
+      },
+      {
+        "id": "negotiate",
+        "label": "Ask and negotiate quiet/music times",
+        "objection": "Asking alone does not guarantee a fair agreement; a power imbalance or an essential need could remain."
+      },
+      {
+        "id": "continue",
+        "label": "Continue playing music unchanged",
+        "objection": "Enjoying music yourself does not establish that the other person welcomes it. Explain why the affected person’s different preference can be set aside."
+      }
+    ],
+    "guides": [
+      {
+        "id": "restraint",
+        "title": "An editorial reconstruction of restraint",
+        "passageId": "legge",
+        "premiseIds": [
+          "reverse-position",
+          "respect-preference",
+          "headphones-work"
+        ],
+        "action": "headphones",
+        "conclusion": "On these added premises, choose a feasible arrangement that avoids imposing the unwanted interruption.",
+        "objection": "What counts as the relevant reversed position, and how competing needs should be weighed, remains contestable."
+      },
+      {
+        "id": "attention",
+        "title": "An editorial reconstruction of responsive attention",
+        "passageId": "matthew",
+        "premiseIds": [
+          "responsive-attention",
+          "ask-fair-terms",
+          "schedule-feasible"
+        ],
+        "action": "negotiate",
+        "conclusion": "On these added premises, ask about needs and negotiate an acceptable arrangement.",
+        "objection": "The actor can still project personal preferences, and consultation alone may leave unfair terms."
+      }
+    ],
+    "transfer": "Apply one reconstruction to a shared office where one person prefers a bright light and another is sensitive to glare. Identify what you would need to learn before recommending an action.",
+    "rubric": [
+      "Identify the selected textual witness and its setting.",
+      "Label source wording, stipulated facts, interpretation, empirical assumptions and normative additions separately.",
+      "Explain a proposed action and an objection; swapping roles must not silently swap the other person’s preferences.",
+      "Allow another defensible reconstruction. Neither example belongs exclusively to one tradition."
+    ]
+  }
+}

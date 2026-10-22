@@ -1,6 +1,6 @@
 # P05 · What does a soil-water curve actually measure?
 
-**Research brief · 2026-10-22 · D10 / D06 / D02 · researched, not authored or accepted.**
+**Research brief · 2026-10-22 · D10 / D06 / D02 · authored at 0.1.0; independently AI-reviewed for local preview, not public release.**
 
 Compare measured soil-water retention from a single research site with a deliberately separate, simplified water-storage model. Readers should identify an observation, a transformation and an assumption. The pilot does not prescribe irrigation or claim that one Wisconsin site represents all soils or agricultural knowledge.
 
@@ -12,7 +12,9 @@ Compare measured soil-water retention from a single research site with a deliber
 
 The snapshot has **12 sample records and 1,106 retention rows**, sampled May 29, 2025, at depths 0, 10 and 50 cm. Each retention sample joins to one characteristics record; no exact duplicate retention rows were found. These are repeated measurements within samples, not 1,106 independent field samples.
 
-Two issues constrain use. Metadata calls density “g m^-3” but values range approximately 0.859–1.691: the unit conflict must not be silently corrected. Also **10/12 conductivity records** carry caution flag 1. That flag concerns conductivity; it does not automatically invalidate every retention value. Exclude density-derived calculations and conductivity comparisons from the pilot. Water content is percent; the positive `MPa_Abs` values must be labeled suction/water-potential magnitude, with the sign convention explained. See the [reproducible audit](research/soil-quality.py) and [results](research/soil-quality.json).
+Two issues constrain use. Metadata calls density “g m^-3” but values range approximately 0.859–1.691: the unit conflict must not be silently corrected. Also **10/12 conductivity records** carry caution flag 1. That flag concerns conductivity; it does not automatically invalidate every retention value. Exclude density-derived calculations and conductivity comparisons from the pilot. The safe label is “reported water content (%)”: the available definition of `Vol_Water` does not explicitly establish volume/volume. the positive `MPa_Abs` values must be labeled suction/water-potential magnitude, with the sign convention explained. See the [reproducible audit](research/soil-quality.py) and [results](research/soil-quality.json).
+
+The [independent data audit](research/soil-source-review.md) and [exact-artifact review](../verification/universal-pilots-ai-agriculture.md) validate the bounded projection, labels and arithmetic. The [local pilot](../../labs/atlas/x-agriculture-0001/) provides unconnected points, all raw rows, instrument labels, keyboard selection and a separate synthetic model. These checks do not satisfy the professional soil-science or actual learner/accessibility observations required before broader publication.
 
 ## Reader task and exploration
 
@@ -35,7 +37,7 @@ Provide data tables, typed numeric inputs, keyboard point/sample selection, non-
 
 ## Rights, review and next steps
 
-Attribute dataset authors, title, DOI, licence, snapshot and transformations. Freeze a permitted small data subset only during authoring; no source CSV is bundled by this brief. FAO illustrations are not cleared for reuse; use original diagrams.
+Attribute dataset authors, title, DOI, licence, snapshot and transformations. The authored record embeds all 278 observed rows from plot 1, selected across all three depths. Eight columns retain source decimal strings and source-row identity; repeated magnitudes remain distinct. [Reproduce the projection](research/soil-subset.py) against the hash-pinned original CSV. The full source CSV is not bundled. FAO illustrations are not cleared for reuse; use original diagrams.
 
 **Review roles:** soil scientist/agronomist, data reviewer, accessibility reviewer; all unassigned. The narrower observed-data design is feasible, but unit interpretation and sample-selection review remain publication gates. No publisher contact has been sent.
 

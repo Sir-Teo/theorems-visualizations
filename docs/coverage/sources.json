@@ -262,7 +262,8 @@
         "plan": "Catalog states public domain in the USA; preserve translator and edition and check other distribution territories."
       },
       "findings": [
-        "This edition numbers the selected passage XXIII. Do not silently use a modern 15.24 locator without an edition crosswalk. English translation read, not the Chinese original."
+        "This edition numbers the selected passage XXIII. Do not silently use a modern 15.24 locator without an edition crosswalk. English translation read, not the Chinese original.",
+        "Crosswalk read against Eno 2015 v2.21, printed p.85: corresponding exchange is 15.24. English locator comparison only."
       ]
     },
     {
@@ -427,7 +428,10 @@
         "12 soil samples and 1,106 retention measurements; no orphan sample IDs or exact duplicate retention rows in inspected snapshot.",
         "Vol_Water is percent; MPa_Abs contains positive magnitudes while documentation describes negative water potential. Preserve magnitude labeling.",
         "Bulk_Den_g_m3 metadata says g m^-3 but values are 0.85856–1.69115. Unit conflict is unresolved; do not silently relabel or use it.",
-        "10/12 conductivity records have caution flag 1. That flag is defined for conductivity, not a blanket rejection of retention measurements."
+        "10/12 conductivity records have caution flag 1. That flag is defined for conductivity, not a blanket rejection of retention measurements.",
+        "Vol_Water is documented as Sample Water Content (%); volume/volume is not explicitly defined. Use reported water content wording.",
+        "Retain sourceRow identity; sample plus magnitude is not unique. The local pilot preserves all 278 plot 1 observations.",
+        "Later API check was tool-inaccessible; follow-up audit used frozen original metadata and hash-matched CSVs without claiming a fresh retrieval."
       ],
       "files": [
         {
@@ -750,6 +754,57 @@
         "plan": "Primary reference for the bounded reuse plan; no global legal clearance is inferred."
       },
       "findings": []
+    },
+    {
+      "id": "eno-analects",
+      "title": "Robert Eno, The Analects of Confucius: An Online Teaching Translation",
+      "url": "https://scholarworks.iu.edu/iuswrrest/api/core/bitstreams/d1f62d31-9082-41d0-999f-4c3efa0c8857/content",
+      "locator": "Printed p.85, passage 15.24 (PDF page index 99)",
+      "access": {
+        "status": "body-read",
+        "checkedOn": "2026-10-22",
+        "scope": "Independent AI source reviewer read the named English body/section; see docs/pilots/research/philosophy-source-review.md."
+      },
+      "rights": {
+        "plan": "Link and original locator observation only; no translated passage reproduced. The PDF has limited educational/nonprofit permissions, not an unrestricted licence."
+      },
+      "findings": [
+        "Supplemental numbering reference; not a Chinese critical-edition check."
+      ]
+    },
+    {
+      "id": "sep-confucius",
+      "title": "Confucius — Stanford Encyclopedia of Philosophy",
+      "url": "https://plato.stanford.edu/entries/Confucius/",
+      "locator": "Section 4",
+      "access": {
+        "status": "body-read",
+        "checkedOn": "2026-10-22",
+        "scope": "Independent AI source reviewer read the named English body/section; see docs/pilots/research/philosophy-source-review.md."
+      },
+      "rights": {
+        "plan": "Reference and original contextual paraphrase only; no article text or assets reproduced."
+      },
+      "findings": [
+        "Supplemental context; no endorsement or exhaustive account."
+      ]
+    },
+    {
+      "id": "web-rights",
+      "title": "World English Bible Classic: rights and edition statement",
+      "url": "https://ebible.org/eng-web/copr.htm",
+      "locator": "Public-domain declaration and 2020 stable text edition",
+      "access": {
+        "status": "body-read",
+        "checkedOn": "2026-10-22",
+        "scope": "Independent AI source reviewer read the named English body/section; see docs/pilots/research/philosophy-source-review.md."
+      },
+      "rights": {
+        "plan": "Linked rights statement supports unchanged attributed WEB text."
+      },
+      "findings": [
+        "The edition name must not label altered text as verbatim WEB."
+      ]
     }
   ]
 }

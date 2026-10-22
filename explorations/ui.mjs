@@ -1,3 +1,4 @@
+import { applyMethod, connectMethod } from './method-ui.mjs';
 import { normalizeState, parseState, serializeState, assessHistory } from './route-state.mjs';
 const record = JSON.parse(document.querySelector('#exploration-data').textContent);
 const $ = id => document.getElementById(id);
@@ -47,12 +48,14 @@ function apply() {
   for (const card of document.querySelectorAll('[data-passage]')) card.classList.toggle('selected', card.dataset.passage === state.evidence);
   if ($('feedback')) $('feedback').textContent = '';
   $('share-label').hidden = true; $('share-url').hidden = true; $('share-url').value = '';
-  lensDetail();
+  lensDetail(); applyMethod(record, state);
 }
-for (const control of document.querySelectorAll('.interactive select')) control.addEventListener('change', () => {
-  state = normalizeState(record, { ...state, [control.id]: control.value });
-  apply(); $('state-status').textContent = ''; history.replaceState(null, '', serializeState(record, state)); save();
-});
+function change(next) {
+  state = normalizeState(record, next); apply(); $('state-status').textContent = '';
+  history.replaceState(null, '', serializeState(record, state)); save();
+}
+for (const control of document.querySelectorAll('.interactive select:not([data-unshared])')) control.addEventListener('change', () => change({ ...state, [control.id]: control.value }));
+connectMethod(record, () => state, change);
 $('notes').addEventListener('input', save);
 $('check')?.addEventListener('click', () => {
   const result = assessHistory(record, state);

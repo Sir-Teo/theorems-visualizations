@@ -1,3 +1,4 @@
+import { renderMethod } from './method-views.mjs';
 export const esc = value => String(value ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 const list = xs => '<ul>' + xs.map(x => '<li>' + esc(x) + '</li>').join('') + '</ul>';
 const labels = { direct: 'Direct statement', inference: 'Interpretation / inference', unsupported: 'Not established by this pair' };
@@ -26,6 +27,7 @@ function activity(r) {
       <details class="static-guide"><summary>Read every claim and its evidence guide</summary>
       ${a.prompts.map(p => `<section><h3>${esc(p.claim)}</h3><p><strong>${labels[p.answer]}.</strong> ${esc(p.feedback)}</p><p>Evidence: ${p.evidenceIds.map(id => id === 'none' ? 'Neither selected document establishes this claim.' : `<a href="#passage-${id}">${esc(r.passages.find(x => x.id === id).title)}</a>`).join('; ')}</p></section>`).join('')}</details>`;
   }
+  if (a.type !== 'annotation') return renderMethod(r);
   return `<div class="interactive" hidden><label for="lens">Choose a reading focus</label>
     <select id="lens">${a.lenses.map(l => `<option value="${l.id}">${esc(l.label)}</option>`).join('')}</select>
     <div id="lens-detail" class="lens-detail" aria-live="polite"></div>
@@ -48,17 +50,18 @@ export function renderExploration(r, collectionTitles = {}) {
   if (r.status === 'withdrawn') return shell('Withdrawn preview', `<main id="main" tabindex="-1"><h1>This preview has been withdrawn</h1><p>The identity is reserved. Editorial source files may still retain the former text; this local preview is not a public takedown system.</p><a href="../">Return to the workshop</a></main>`, 3);
   const a = r.activity, prefix = '../../../';
   const status = { draft: 'Draft · independent review pending', 'in-review': 'Under independent review', accepted: 'Reviewed · local preview' }[r.status];
-  const body = `<main id="main" tabindex="-1"><nav aria-label="Workshop"><a href="../">← Both pilot explorations</a></nav>
+  const body = `<main id="main" tabindex="-1"><nav aria-label="Workshop"><a href="../">← All pilot explorations</a></nav>
     <section class="hero"><p class="eyebrow">${esc(status)}</p><h1>${esc(r.title)}</h1>
     <p class="subtitle">${esc(r.subtitle)}</p><p class="lede">${esc(r.summary)}</p>
     ${(r.reviewLimitations || []).map(note => `<p class="muted">${esc(note)}</p>`).join('')}
-    <p class="scope">${esc(r.scope)}</p><ol class="steps"><li>Read the sources</li><li>Compare the evidence</li><li>Explain a limitation</li></ol></section>
+    <p class="scope">${esc(r.scope)}</p><ol class="steps"><li>Read the sources</li><li>Explore the evidence</li><li>Explain a limitation</li></ol></section>
     <section aria-labelledby="source-heading"><div class="section-heading"><span>01</span><h2 id="source-heading">Read closely</h2></div>
     <div class="sources">${sourceCards(r)}</div></section>
-    <section class="context"><h2>What this comparison can establish</h2>${list(r.context)}
+    <section class="context"><h2>What this exploration can establish</h2>${list(r.context)}
 ${r.timeline.length ? '<ol class="timeline">' + r.timeline.map(t => `<li><strong>${esc(t.date)}</strong><span>${esc(t.event)}</span><small>${esc(t.precision)} precision</small></li>`).join('') + '</ol>' : ''}
     </section>
-    <section class="activity" aria-labelledby="activity-heading"><div class="section-heading"><span>02</span><h2 id="activity-heading">Make a comparison</h2></div>
+    ${r.sources.some(s => !r.passages.some(p => p.sourceId === s.id)) ? '<details><summary>Supplemental research and rights references</summary>' + r.sources.filter(s => !r.passages.some(p => p.sourceId === s.id)).map(s => `<p><a href="${esc(s.url)}">${esc(s.title)}</a> — ${esc(s.locator)}. ${esc(s.rights.scope)}</p>`).join('') + '</details>' : ''}
+    <section class="activity" aria-labelledby="activity-heading"><div class="section-heading"><span>02</span><h2 id="activity-heading">Explore the evidence</h2></div>
     <noscript><p>The source text, comparison guides and transfer task work without JavaScript. Use the guides below and write your notes separately.</p></noscript>
     ${activity(r)}<div class="interactive notes" hidden><label for="notes">Your evidence and explanation</label>
     <textarea id="notes" rows="5" maxlength="1500" aria-describedby="notes-help" placeholder="Name the words, then explain what they support and what they do not."></textarea>
@@ -77,6 +80,6 @@ ${r.timeline.length ? '<ol class="timeline">' + r.timeline.map(t => `<li><strong
   return shell(r.title, body, 3, `<script id="exploration-data" type="application/json">${json}</script><script type="module" src="../../../explorations/ui.mjs"></script>`);
 }
 export function renderIndex(records) {
-  return shell('Two ways to read evidence', `<main id="main" tabindex="-1"><section class="hero"><p class="eyebrow">New formats · two pilot explorations</p><h1>Two ways to read evidence</h1><p class="lede">Explore what a document establishes and how a translation shapes a reading. These local previews keep their sources and limits in view.</p></section>
-    <div class="pilot-grid">${records.map((r,i) => r.status === 'withdrawn' ? `<article class="source-card"><h2><a href="./${r.id}/">Withdrawn preview</a></h2><p>This identity remains reserved.</p></article>` : `<article class="source-card"><p class="eyebrow">0${i+1} · ${r.pilotId === 'P01' ? 'History' : 'Literature'}</p><h2><a href="./${r.id}/">${esc(r.title)} →</a></h2><p>${esc(r.summary)}</p><p class="muted">${r.status === 'accepted' ? 'Reviewed for local preview.' : r.status === 'in-review' ? 'Independent review in progress; local preview only.' : 'Declared independent reviews remain pending.'}</p>${(r.reviewLimitations || []).map(note => `<p class="muted">${esc(note)}</p>`).join('')}</article>`).join('')}</div></main>`, 2);
+  return shell('Ways to explore knowledge', `<main id="main" tabindex="-1"><section class="hero"><p class="eyebrow">New formats · ${records.filter(r => r.status !== 'withdrawn').length} pilot explorations</p><h1>Ways to explore knowledge</h1><p class="lede">Read documents, compare interpretations, build arguments and inspect measurements. These local previews keep their sources and limits in view.</p></section>
+    <div class="pilot-grid">${records.map((r,i) => r.status === 'withdrawn' ? `<article class="source-card"><h2><a href="./${r.id}/">Withdrawn preview</a></h2><p>This identity remains reserved.</p></article>` : `<article class="source-card"><p class="eyebrow">0${i+1} · ${esc({P01:'History',P02:'Literature',P03:'Philosophy and religion',P04:'Law',P05:'Agriculture',P06:'Health',P07:'Craft',P08:'Performance'}[r.pilotId])}</p><h2><a href="./${r.id}/">${esc(r.title)} →</a></h2><p>${esc(r.summary)}</p><p class="muted">${r.status === 'accepted' ? 'Reviewed for local preview.' : r.status === 'in-review' ? 'Independent review in progress; local preview only.' : 'Declared independent reviews remain pending.'}</p>${(r.reviewLimitations || []).map(note => `<p class="muted">${esc(note)}</p>`).join('')}</article>`).join('')}</div></main>`, 2);
 }

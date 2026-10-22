@@ -10,6 +10,14 @@
     {
       "id": "x-literature-0001",
       "file": "literature.json"
+    },
+    {
+      "id": "x-philosophy-0001",
+      "file": "philosophy.json"
+    },
+    {
+      "id": "x-agriculture-0001",
+      "file": "agriculture.json"
     }
   ]
 }

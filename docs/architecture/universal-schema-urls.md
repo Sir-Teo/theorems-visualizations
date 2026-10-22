@@ -1,6 +1,6 @@
 # Additive exploration schema and URL contract
 
-**Decision record · version 1.0.0-draft · October 22, 2026.** Adopted for the two local prototypes under the user's instruction to proceed. Production integration and public routes remain separate work.
+**Decision record · version 1.0.0-draft · October 22, 2026.** Adopted for four local prototypes under the user's instruction to proceed. Production integration and public routes remain separate work.
 
 The atlas can add source criticism and interpretation without renaming its 85 collections or altering a frozen chapter. New explorations live beside legacy content, with explicit evidence, rights and review records. A small static builder proves the contract before production loaders acquire new responsibilities.
 
@@ -23,7 +23,7 @@ For future legacy enrichment, use sidecar records keyed by the existing item ID.
 
 ## Executable record contract
 
-The [validator](../../explorations/contract.mjs) and [two real examples](../../explorations/manifest.json) define version 1. No second, untested JSON Schema is presented as authoritative.
+The [validator](../../explorations/contract.mjs) and [four real examples](../../explorations/manifest.json) define version 1. No second, untested JSON Schema is presented as authoritative.
 
 | Field group | Required meaning |
 | --- | --- |
@@ -42,7 +42,7 @@ The [validator](../../explorations/contract.mjs) and [two real examples](../../e
 | `extensions` | Namespaced future metadata; never executed or silently treated as a supported learning method |
 | `previousRevisions` | Optional distinct revision identifiers whose local notes can be explicitly exported; no automatic migration |
 
-Version 1 implements **source-comparison** and **annotation** activities. It recognizes formal, empirical, historical, interpretive, normative, procedural and creative knowledge modes, but does not claim to implement all their interfaces. Argument, case, dataset, practice, performance, map and object methods need their own payload validation and accepted vertical slices before registration. Unknown methods fail explicitly.
+Version 1 implements **source-comparison**, **annotation**, **argument-map** and **measured-data** activities. It recognizes formal, empirical, historical, interpretive, normative, procedural and creative knowledge modes, but does not claim to implement all their interfaces. Case, practice, performance, map and object methods need their own payload validation and accepted vertical slices before registration. Unknown methods fail explicitly.
 
 Text payloads are escaped. Only public HTTPS source links are allowed. No arbitrary HTML, executable code, imported iframe or external script is accepted in authored data. A source's availability does not establish its rights or epistemic reliability.
 
@@ -108,3 +108,11 @@ Revision 0.1.1 adds explicit export of listed earlier-revision stores. Unreadabl
 7. Public release is a separate authorized operation. Roll back an integration by removing the additive loader/link, retaining old IDs, content and progress. These prototypes require no production rollback because they are not loaded there.
 
 Implementation status and future work are tracked in [the master-plan handoff](../master-plan-handoff.md). This contract supports measured extension; it is not a claim that every future domain's data or review model is already solved.
+
+## Argument and measured-data additions
+
+`argument-map` validates a bounded premise bank, explicit interpretation/empirical-assumption/normative-addition kinds, actions with objections, and source-linked editorial guides. Public state contains guide, actor, action and ordered unique premise IDs. Native buttons edit that list; structural guidance does not compute moral truth or logical validity.
+
+`measured-data` carries the frozen projected rows inside the reviewed content. It validates unique source-row identities, positive finite magnitudes, reported percent range, instrument codes and exclusion of density/conductivity columns. Sample plus magnitude is deliberately not a unique key. Public state contains sample/comparison/source-row IDs and bounded synthetic parameters; full text/data tables work without JavaScript. The reproduction script verifies the entire projection against the hash-pinned original CSV. The log10 plot has no connecting/fitted lines; the assumed storage model never consumes measured rows.
+
+All three added method modules are bound into every artifact digest. Extending shared code triggers renewed exact-artifact reviews of existing accepted previews. Review roles, unperformed human observations and release scope remain separate.

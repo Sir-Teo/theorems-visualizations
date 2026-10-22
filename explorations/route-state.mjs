@@ -1,3 +1,4 @@
+import { normalizeMethodState } from './method-models.mjs';
 // Browser-safe public route and state contract. No private notes enter URLs.
 const expId = /^x-[a-z][a-z0-9-]*-[0-9]{4}$/;
 const legacyId = /^[a-z][a-z0-9]{1,7}-\d{1,2}(?:\.\d{1,3}){1,2}[a-z]?$/;
@@ -25,11 +26,11 @@ export function normalizeState(record, raw = {}) {
     state.task = a.prompts.some(x => x.id === raw.task) ? raw.task : a.prompts[0].id;
     state.evidence = ['none', ...record.passages.map(x => x.id)].includes(raw.evidence) ? raw.evidence : 'none';
     state.category = ['direct', 'inference', 'unsupported'].includes(raw.category) ? raw.category : 'direct';
-  } else {
+  } else if (a.type === 'annotation') {
     state.lens = a.lenses.some(x => x.id === raw.lens) ? raw.lens : a.lenses[0].id;
     state.category = ['observation', 'interpretation', 'needs-language-evidence'].includes(raw.category) ? raw.category : 'observation';
   }
-  return state;
+  return Object.assign(state, normalizeMethodState(record, raw));
 }
 export function parseState(record, hash = '') {
   if (hash.length > 1000) return { state: normalizeState(record), warning: 'This saved state is too long; defaults restored.' };

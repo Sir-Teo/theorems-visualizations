@@ -12,7 +12,7 @@ The original 13 runtime fields, collection IDs, chapter assignments, accepted ma
 | --- | --- |
 | [registry.json](registry.json) | Domain scope, aliases, questions, methods, gaps, candidate collections, representation gaps, proposed stewardship, collection mappings and classification crosswalks |
 | [classification-inventory.json](classification-inventory.json) | Pinned external code universes, editions, scope levels, source IDs and identifier hashes |
-| [sources.json](sources.json) | 42 source receipts, exact locators, access limits, rights plans, conflicts, stopped candidates and dataset hashes |
+| [sources.json](sources.json) | 45 source receipts, exact locators, access limits, rights plans, conflicts, stopped candidates and dataset hashes |
 | [Pilot records](../pilots/pilots.json) | Eight stable pilot IDs, brief paths, domain/source links, contexts, open gates and unassigned review roles |
 | [Pilot index](../pilots/README.md) | Bounded topics, sequencing and review work |
 | [Validator](../../scripts/validate-coverage.mjs) | Executable version-1 contract and semantic consistency checks |

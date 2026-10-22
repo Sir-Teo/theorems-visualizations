@@ -2,7 +2,9 @@
 
 **Updated October 22, 2026.** Entry point for future universal-atlas work. Production waves and visual redesign retain their own handoffs and ledgers.
 
-The broader plan now has a versioned coverage registry, eight researched briefs, an additive schema/URL contract, and **two working local prototypes at 0.1.2, accepted for local preview under their declared AI review scope**. The [integration package](integration/universal-pilots.md) passed a rehearsal on the accepted Wave 6 checkpoint and compatibility checks on frozen expansion/redesign snapshots. This is an implementation foundation and a concrete queue, not a claim that all future disciplines, sources or review needs are solved.
+The broader plan now has a versioned coverage registry, eight researched briefs, an additive schema/URL contract, and **four working local prototypes accepted under bounded AI review: P01/P02 at 0.1.2 and P03/P05 at 0.1.0**. The [integration package](integration/universal-pilots.md) passed a rehearsal on the accepted Wave 6 checkpoint and compatibility checks on frozen expansion/redesign snapshots. This is an implementation foundation and a concrete queue, not a claim that all future disciplines, sources or review needs are solved.
+
+The active **“do all”** goal covers U0–U5. Continue from the [whole-roadmap execution ledger](master-plan-execution.md); a finished pilot batch is not completion of the broader goal. Latest checks are in the [method checkpoint](verification/universal-pilots-methods.md).
 
 ## Read these first
 
@@ -27,9 +29,11 @@ Continue in `/Users/teodev/.codex/worktrees/universal-pilots-integration/theorem
 | Data and review contract | `explorations/contract.mjs` | Versioned IDs, evidence, claim boundaries, passage hashes, review history and content/artifact review checks |
 | History prototype | `explorations/history.json` | Reviewed for local preview; current AI content/provenance/prototype-rights receipts; human-session gate removed by user |
 | Literature prototype | `explorations/literature.json` | Reviewed for local preview; current AI content/English-language/prototype-rights receipts; human-session gate removed by user |
+| Philosophy prototype | `explorations/philosophy.json` | Local AI source/context/reuse review; ordered argument editor; English locator crosswalk; broader specialist/human checks open |
+| Agriculture prototype | `explorations/agriculture.json` | Local AI data/reuse review; 278 raw rows, log-spaced points and independent synthetic model; professional/human checks open |
 | Preview build | `scripts/build-explorations.mjs`; `labs/atlas/` | Isolated static pages; production loader/catalog unchanged |
 | State and compatibility helpers | `explorations/route-state.mjs` | Tested legacy URL preservation, bounded public state and no inferred legacy acceptance |
-| Verification | Scoped Node/browser tests and verification receipt | Three independent AI reports; six current receipts plus six historical; no professional, screen-reader or learner claim |
+| Verification | Scoped Node/browser tests and verification receipt | Five independent AI review roles; 12 current dimensional receipts plus retained history; no professional, screen-reader or learner claim |
 | Integration preparation | `docs/integration/universal-pilots.json`; `scripts/check-exploration-integration.mjs` | Explicit additive paths; pinned snapshot rehearsal; differing files refused; master plan manually reconciled |
 
 **Preview locally:** run `PORT=8219 node scripts/serve.mjs` from this checkout if that port is free, then open `http://localhost:8219/labs/atlas/`. Use another free port if needed. Direct pages are `labs/atlas/x-history-0001/` and `labs/atlas/x-literature-0001/`. No public deployment has been performed.
@@ -45,7 +49,7 @@ P01/P02 are accepted for local preview under the revised requirements. The user 
 | Removed by user · P01/P02 human gate | Screen-reader and learner sessions are optional follow-up | Not performed; visible limitation, not a passing observation |
 | Next · U2 contracts | Finalize source/annotation payloads from actual review findings | Changes preserve static text, old state or an explicit migration, and exact-content review validity |
 | Delivered · U2 first-pair local acceptance | Exact 0.1.2 receipts pass for all declared dimensions | Integrated locally; unchanged passages and prior-note export; no production count or publication change |
-| Next · U2 methods | P03 argument, P05 measured data, P07 practice, P08 performance, in bounded batches | Close each brief's source/asset/reviewer gates; implement its method contract; at most two unaccepted drafts |
+| Next · U2 methods | P03/P05 locally reviewed; next P07 practice and P08 performance, in bounded batches | Close each brief's source/asset/reviewer gates; implement its method contract; at most two unaccepted drafts |
 | Gated · U2 professions | P04 law and P06 care | Qualified legal/clinical review and the specific temporal/physiological gates; no generic automated approval |
 | U3 integration | Add opt-in production loading and evidence/review UI | Integrate from latest accepted base; old `verify`, IDs, links, deps, embeds and saved states survive |
 | U3 routes | Generate accepted public pages and aliases | Real static paths, canonical metadata/sitemap, project-base tests, no duplicate counts, no draft leakage |
@@ -94,7 +98,7 @@ node scripts/validate-coverage.mjs
 node scripts/build-explorations.mjs
 node scripts/build-explorations.mjs --check
 node --test tests/coverage-registry.test.mjs tests/explorations.test.mjs tests/explorations-ui.test.mjs
-node --test tests/explorations-integration.test.mjs
+node --test tests/explorations-integration.test.mjs tests/exploration-methods.test.mjs
 ```
 
 The draft build writes only `labs/atlas/`. It does not invoke `scripts/build.mjs` or load chapter modules. Browser checks use an ephemeral local port, independent of the active chats' servers. The production application suite is required when integrating runtime changes, not to make a planning artifact look accepted.
@@ -105,7 +109,7 @@ The draft build writes only `labs/atlas/`. It does not invoke `scripts/build.mjs
 - Selected-text rights are scoped for local prototypes; wider publication needs its actual distribution review.
 - The Japanese source is a modern institutional display witness, not a critical edition or facsimile.
 - Its Koto recheck timed out during the latest review; retain the earlier body-read receipt without claiming fresh verification or recovering a stopped source through another host.
-- The six other methods are briefed; their components/assets are not implemented.
+- P03 argument and P05 measured-data components are implemented and locally reviewed. P04 legal, P06 care, P07 practice and P08 performance remain to implement under their own briefs.
 - Public routes, sidecar loading, public withdrawal and note migrations are specified future work, not live features.
 - Detailed library schedules, community vocabularies and many place/language traditions remain outside the current crosswalk.
 - Map-performance work stays deferred; it is not reopened through “future readiness.”

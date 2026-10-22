@@ -155,3 +155,49 @@ test('text and control contrast plus enlarged text remain usable in both themes'
     }
   },{viewport:{width:320,height:900},colorScheme});
 });
+
+test('argument editing supports keyboard moves, role changes and private notes',async()=>run(async page=>{
+  await page.goto(base+'/labs/atlas/x-philosophy-0001/');
+  await page.locator('#premise-choice').selectOption('ask-fair-terms');assert.match(await page.locator('#premise-preview').textContent(),/reasonably accept/);
+  await page.locator('#load-guide').focus();await page.keyboard.press('Enter');
+  assert.equal(await page.locator('#argument-list li').count(),3);
+  const down=page.locator('#argument-list button[data-move="down"]').first();await down.focus();await page.keyboard.press('Enter');
+  assert.match(await page.locator('#argument-list li').first().textContent(),/actual need/);
+  await page.locator('#actor').selectOption('quiet');assert.match(await page.locator('#role-context').textContent(),/other person still enjoys music/);
+  await page.locator('#argument-list button[data-move="remove"]').first().click();assert.equal(await page.locator('#argument-list li').count(),2);
+  await page.locator('#notes').fill('PRIVATE argument');await page.reload();
+  assert.equal(await page.locator('#argument-list li').count(),2);assert.equal(await page.locator('#notes').inputValue(),'PRIVATE argument');
+  await page.locator('#share').click();const url=await page.locator('#share-url').inputValue();assert.ok(!url.includes('PRIVATE'));assert.ok(url.includes('premises='));
+  await page.locator('#guide').selectOption('attention');await page.locator('#load-guide').click();assert.equal(await page.locator('#action').inputValue(),'negotiate');
+  assert.match(await page.locator('#argument-feedback').textContent(),/does not establish/);
+}));
+test('data point selection keeps duplicate magnitudes, sample identities and synthetic model separate',async()=>run(async page=>{
+  await page.goto(base+'/labs/atlas/x-agriculture-0001/');
+  await page.locator('#point').selectOption('902');assert.match(await page.locator('#point-detail').textContent(),/19.12%/);
+  await page.locator('#point').selectOption('904');assert.match(await page.locator('#point-detail').textContent(),/12.21%/);
+  await page.locator('#compare').selectOption('US-DFC_1_010');assert.equal(await page.locator('#measured-plot .point-compare').count(),93);
+  const observed=await page.locator('#point-detail').textContent();
+  await page.locator('#upper').fill('0.1');await page.locator('#lower').focus();assert.match(await page.locator('#model-result').textContent(),/upper fraction must be at least/);
+  await page.locator('#upper').fill('0.30');await page.locator('#lower').focus();assert.match(await page.locator('#model-result').textContent(),/60 mm/);
+  assert.equal(await page.locator('#point-detail').textContent(),observed);
+  await page.locator('#sample').selectOption('US-DFC_1_050');assert.equal(await page.locator('#point option').count(),83);assert.ok(!(await page.locator('#point-detail').textContent()).includes('row 904'));
+  await page.locator('#notes').fill('PRIVATE soil');await page.locator('#share').click();const url=await page.locator('#share-url').inputValue();assert.ok(!url.includes('PRIVATE'));assert.ok(url.includes('sample=US-DFC_1_050'));
+  await page.reload();assert.equal(await page.locator('#sample').inputValue(),'US-DFC_1_050');assert.equal(await page.locator('#notes').inputValue(),'PRIVATE soil');
+}));
+test('new methods retain complete text and tables with JavaScript disabled',async()=>run(async page=>{
+  await page.goto(base+'/labs/atlas/x-philosophy-0001/');await page.locator('.static-guide summary').click();assert.equal(await page.locator('.static-guide section').count(),2);
+  await page.goto(base+'/labs/atlas/x-agriculture-0001/');assert.equal(await page.locator('tbody tr').count(),278);
+  await page.locator('.data-table summary').first().click();assert.ok(await page.locator('tbody tr').first().isVisible());assert.match(await page.locator('.synthetic').textContent(),/60 mm/);
+},{javaScriptEnabled:false}));
+test('new methods fit narrow layouts in both themes and enlarged text',async()=>{
+  for(const colorScheme of ['light','dark']) await run(async page=>{
+    for(const slug of ['philosophy','agriculture']){
+      await page.goto(base+'/labs/atlas/x-'+slug+'-0001/');await page.locator('#notes').waitFor();
+      if(slug==='philosophy')await page.locator('#load-guide').click();else {await page.locator('.data-table summary').first().click();assert.ok(await page.locator('#measured-plot').evaluate(el=>el.scrollWidth>el.clientWidth));assert.equal(await page.locator('#measured-plot').getAttribute('tabindex'),'0');await page.locator('#measured-plot').focus();await page.keyboard.press('ArrowRight');await page.waitForFunction(()=>document.getElementById('measured-plot').scrollLeft>0);assert.match(await page.locator('#plot-legend').textContent(),/scroll the chart horizontally/);}
+      assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth),false);
+      await page.screenshot({path:shots+'/'+slug+'-'+colorScheme+'-320.png',fullPage:true});
+      await page.addStyleTag({content:'html{font-size:200%} body{font-size:32px}'});
+      assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth),false);
+    }
+  },{viewport:{width:320,height:900},colorScheme});
+});
