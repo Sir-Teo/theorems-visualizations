@@ -196,45 +196,230 @@ export default {
     },
     // ───────────────────────────────────────────────────────────── 6
     {
-      n: 6,
-      title: 'Eigenvalue algorithms',
-      summary: String.raw`Power iteration finds the dominant eigenvector at a rate set by the ratio of the top two eigenvalues; shifting and inverting targets any eigenvalue, and updating the shift with the Rayleigh quotient gives cubic convergence for symmetric matrices. Iterating a whole basis at once is simultaneous iteration, which in disguise is the QR algorithm; with shifts and deflation on a Hessenberg matrix it is one of the great algorithms of the twentieth century. Jacobi rotations, bisection, divide and conquer and Golub–Kahan bidiagonalization complete the toolkit.`,
-      items: [
-        { num: '6.1', kind: 'Algorithm', name: 'Power iteration', deps: ['nla-5.1'], refs: ['Trefethen–Bau Lec. 27'],
-          pic: 'Repeatedly multiply a vector by a 2×2 or 3×3 matrix and normalize; the iterates swing toward the dominant eigenvector, drawn as a fixed line, with the angle error plotted on a log scale.' },
-        { num: '6.2', kind: 'Theorem', name: 'Convergence of power iteration: rate |λ₂/λ₁|', deps: ['nla-6.1'], refs: ['Trefethen–Bau Lec. 27'],
-          pic: 'Slide λ₂ toward λ₁; the measured slope of the log-error line matches log|λ₂/λ₁| and flattens to no convergence when the two have equal modulus.' },
-        { num: '6.3', kind: 'Algorithm', name: 'Inverse iteration with a shift', deps: ['nla-6.1', 'nla-4.3'], refs: ['Trefethen–Bau Lec. 27'],
-          pic: 'Drag a shift μ along the real axis among the eigenvalues; inverse iteration converges to the eigenvector whose eigenvalue is nearest μ, and faster the closer μ is.' },
-        { num: '6.4', kind: 'Definition', name: 'The Rayleigh quotient', deps: ['nla-5.9'], refs: ['Trefethen–Bau Lec. 27'],
-          pic: 'Move a unit vector around the circle for a symmetric 2×2 matrix; the Rayleigh quotient is plotted against the angle, stationary at the eigenvectors, and its error is quadratic in the angle error.' },
-        { num: '6.5', kind: 'Algorithm', name: 'Rayleigh quotient iteration', deps: ['nla-6.3', 'nla-6.4'], refs: ['Trefethen–Bau Lec. 27'],
-          pic: 'Use the current Rayleigh quotient as the shift for inverse iteration; the digits of accuracy triple each step in a readout table, compared with linear convergence of power iteration.' },
-        { num: '6.6', kind: 'Algorithm', name: 'Simultaneous (orthogonal) iteration', deps: ['nla-6.1', 'nla-2.2'], refs: ['Trefethen–Bau Lec. 28'],
-          pic: 'Iterate a pair of orthonormalized vectors in 3D; the plane they span converges to the dominant invariant plane, shown with the eigenvectors fixed in the background.' },
-        { num: '6.7', kind: 'Algorithm', name: 'The QR algorithm without shifts', deps: ['nla-2.6', 'nla-5.12'], refs: ['Trefethen–Bau Lec. 28'],
-          pic: 'Factor A = QR, form RQ, and repeat; the subdiagonal entries of the iterates shrink geometrically as an animated heat map, revealing the eigenvalues on the diagonal.' },
-        { num: '6.8', kind: 'Theorem', name: 'QR algorithm is simultaneous iteration in disguise', deps: ['nla-6.7', 'nla-6.6'], refs: ['Trefethen–Bau Lec. 28'],
-          pic: 'Run simultaneous iteration on the identity and the QR algorithm in lockstep; the accumulated Q matrices coincide at every step, displayed side by side.' },
-        { num: '6.9', kind: 'Algorithm', name: 'Shifted QR algorithm with deflation', deps: ['nla-6.8', 'nla-6.5'], refs: ['Trefethen–Bau Lec. 29'],
-          pic: 'Add a Rayleigh shift to each QR step on a tridiagonal matrix; the last subdiagonal entry plunges to machine precision in a few steps, the matrix deflates, and the counter of total iterations is about 2 per eigenvalue.' },
-        { num: '6.10', kind: 'Algorithm', name: 'Wilkinson shift', deps: ['nla-6.9'], refs: ['Trefethen–Bau Lec. 29'],
-          pic: 'On the symmetric matrix [[0, 1], [1, 0]] the Rayleigh shift stalls forever; switching to the Wilkinson shift from the trailing 2×2 block breaks the symmetry and converges at once.' },
-        { num: '6.11', kind: 'Algorithm', name: 'Jacobi eigenvalue algorithm', deps: ['nla-2.7', 'nla-5.9'], refs: ['Trefethen–Bau Lec. 30'],
-          pic: 'Annihilate the largest off-diagonal entry of a symmetric matrix by a plane rotation at each step; the off-diagonal Frobenius norm decreases monotonically on a log plot.' },
-        { num: '6.12', kind: 'Algorithm', name: 'Bisection with Sturm sequences', deps: ['nla-5.11', 'nla-5.12'], refs: ['Trefethen–Bau Lec. 30'],
-          pic: 'For a symmetric tridiagonal matrix, count sign changes of the leading principal minors at a trial x; the count tells how many eigenvalues lie below x, and bisection pins down any chosen one.' },
-        { num: '6.13', kind: 'Algorithm', name: 'Divide and conquer for symmetric eigenproblems', deps: ['nla-6.12'], refs: ['Trefethen–Bau Lec. 30'],
-          pic: 'Split a tridiagonal matrix into two halves plus a rank-one correction; the secular equation is plotted and its roots, lying between the eigenvalues of the halves, are the eigenvalues of the whole.' },
-        { num: '6.14', kind: 'Algorithm', name: 'Computing the SVD: Golub–Kahan bidiagonalization', deps: ['nla-6.9', 'nla-1.6'], refs: ['Trefethen–Bau Lec. 31'],
-          pic: 'Alternate left and right Householder reflections to reduce a matrix to bidiagonal form, then iterate; the singular values emerge on the diagonal and match those computed from AᵀA only for well-conditioned inputs.' },
-        { num: '6.15', kind: 'Model', name: 'PageRank as a power iteration', deps: ['nla-6.2'], refs: ['Trefethen–Bau Lec. 27'],
-          pic: 'Edit a small web graph; power iteration on the damped link matrix converges to the ranking vector, and lowering the damping factor speeds convergence as |λ₂| shrinks.' },
-        { num: '6.16', kind: 'Paper', name: 'The QR transformation',
-          paper: { authors: 'J. G. F. Francis', year: 1961, title: 'The QR Transformation: A Unitary Analogue to the LR Transformation — Part 1', venue: 'The Computer Journal 4 (3): 265–271', doi: '10.1093/comjnl/4.3.265' },
-          introduces: ['nla-6.7', 'nla-6.9'], deps: ['nla-2.2', 'nla-5.12'], refs: [],
-          pic: 'Iterate A ← RQ on a small matrix: the reader watches the subdiagonal entries decay like (λᵢ₊₁/λᵢ)ᵏ and the diagonal settle on the eigenvalues; turning on shifts collapses the iteration count and deflation peels off one eigenvalue at a time.' },
-      ],
+      "n": 6,
+      "title": "Eigenvalue algorithms",
+      "summary": "Repeated multiplication selects a dominant direction only when a spectral gap and initial overlap support it. Shifted solves, orthogonal iteration and QR turn that idea into eigenvalue algorithms. Symmetric structure also supports rotations, exact eigenvalue counts and rank-one merging; two-sided orthogonal reduction prepares an SVD without forming a Gram matrix.",
+      "items": [
+        {
+          "num": "6.1",
+          "kind": "Algorithm",
+          "name": "Power iteration",
+          "deps": [
+            "nla-5.1"
+          ],
+          "refs": [
+            "Bindel, CS6210 (2012), lecture 24, pp.1–2; supplied counterexamples"
+          ],
+          "pic": "Choose a matrix family and an initial direction, then move through the normalized iterates. Compare the actual vector trajectory with its Rayleigh residual."
+        },
+        {
+          "num": "6.2",
+          "kind": "Theorem",
+          "name": "Convergence of power iteration: rate |λ₂/λ₁|",
+          "deps": [
+            "nla-6.1"
+          ],
+          "refs": [
+            "Bindel, CS6210 (2012), lecture 24, p.1; eigenbasis proof supplied (correct ratio |λ₂/λ₁|)"
+          ],
+          "pic": "Move the second eigenvalue toward either ±3 and compare the measured angle to the exact two-dimensional formula. Set the starting angle to 90° to remove the dominant component."
+        },
+        {
+          "num": "6.3",
+          "kind": "Algorithm",
+          "name": "Inverse iteration with a shift",
+          "deps": [
+            "nla-6.1",
+            "nla-4.3"
+          ],
+          "refs": [
+            "Bindel, CS6210 (2012), lecture 24, pp.1–2"
+          ],
+          "pic": "Move the shift among −1, 2 and 5. Inspect squared eigenbasis components and the Rayleigh estimate, or select an exactly singular shift to see the algorithm stop."
+        },
+        {
+          "num": "6.4",
+          "kind": "Definition",
+          "name": "The Rayleigh quotient",
+          "deps": [
+            "ladr-7.29",
+            "nla-5.10"
+          ],
+          "refs": [
+            "Bindel, CS6210 (2012), lecture 24, p.2; spectral-theorem derivation supplied"
+          ],
+          "pic": "Rotate a unit vector and watch its quotient on the angle curve. The endpoint eigenvalues are stationary; the readout compares the exact quadratic angle identity and the residual."
+        },
+        {
+          "num": "6.5",
+          "kind": "Algorithm",
+          "name": "Rayleigh quotient iteration",
+          "deps": [
+            "nla-6.3",
+            "nla-6.4"
+          ],
+          "refs": [
+            "Bindel, CS6210 (2012), lecture 24, p.2; exact tangent map and failure example supplied"
+          ],
+          "pic": "Compare Rayleigh iteration with power iteration from the same direction. The singular counterexample has zero Rayleigh shift but a nonzero residual, so an exact shifted solve is unavailable."
+        },
+        {
+          "num": "6.6",
+          "kind": "Algorithm",
+          "name": "Simultaneous (orthogonal) iteration",
+          "deps": [
+            "nla-6.1",
+            "nla-2.2",
+            "ladr-7.29"
+          ],
+          "refs": [
+            "Bindel, CS6210 (2012), lecture 24, pp.2–4; lecture 25, pp.1–2; supplied block proof"
+          ],
+          "pic": "Follow a two-dimensional plane through its orthogonal projector. Its second basis vector is already an eigenvector; the remaining tilt decays at the exact ratio |λ₃/5|."
+        },
+        {
+          "num": "6.7",
+          "kind": "Algorithm",
+          "name": "The QR algorithm without shifts",
+          "deps": [
+            "nla-2.6",
+            "nla-5.12"
+          ],
+          "refs": [
+            "Bindel, CS6210 (2012), lecture 26, pp.1–4"
+          ],
+          "pic": "Step through unshifted QR on a symmetric tridiagonal matrix. Compare the changing matrix with its strict-lower norm and the accumulated similarity residual."
+        },
+        {
+          "num": "6.8",
+          "kind": "Theorem",
+          "name": "QR algorithm is simultaneous iteration in disguise",
+          "deps": [
+            "nla-6.7",
+            "nla-6.6",
+            "nla-2.2"
+          ],
+          "refs": [
+            "Bindel, CS6210 (2012), lecture 25, pp.2–4; induction and accumulation order supplied"
+          ],
+          "pic": "Run the two algorithms independently and compare their bases entry by entry. The difference plot checks every iteration under the same positive-diagonal sign convention."
+        },
+        {
+          "num": "6.9",
+          "kind": "Algorithm",
+          "name": "Shifted QR algorithm with deflation",
+          "deps": [
+            "nla-6.8",
+            "nla-6.5"
+          ],
+          "refs": [
+            "UT Austin ALAFF §10.3.6, complete practical QR algorithm; Bindel lecture 26, pp.5–6"
+          ],
+          "pic": "Compare no shift, a trailing Rayleigh shift and Wilkinson’s shift. Watch the active matrix shrink and inspect both the discarded-coupling bound and the actual similarity residual."
+        },
+        {
+          "num": "6.10",
+          "kind": "Algorithm",
+          "name": "Wilkinson shift",
+          "deps": [
+            "nla-6.9"
+          ],
+          "refs": [
+            "Bindel, CS6210 (2025), Nov.5, symmetric QR discussion; explicit stable 2×2 calculation supplied"
+          ],
+          "pic": "Compare the Rayleigh and Wilkinson shifts as the diagonal asymmetry passes through zero. At the symmetric stall, Wilkinson’s tie choice breaks the cycle."
+        },
+        {
+          "num": "6.11",
+          "kind": "Algorithm",
+          "name": "Jacobi eigenvalue algorithm",
+          "deps": [
+            "nla-2.7",
+            "ladr-7.29"
+          ],
+          "refs": [
+            "Bindel, CS6210 (2025), Nov.5, Jacobi methods; full off-diagonal norm proof supplied"
+          ],
+          "pic": "Annihilate the largest off-diagonal pair, inspect the next selected pivot and compare the norm drop with the exact two-pivot identity."
+        },
+        {
+          "num": "6.12",
+          "kind": "Algorithm",
+          "name": "Bisection with Sturm sequences",
+          "deps": [
+            "nla-5.11",
+            "nla-5.12"
+          ],
+          "refs": [
+            "Demmel–Heath–van der Vorst, LAPACK Working Note 60 (1993), §6.3.2 pp.38–39; Bindel lecture 30, pp.2–3; exact dyadic implementation supplied"
+          ],
+          "pic": "Select an ordered eigenvalue and bisect its Gershgorin bracket. Inspect the exact signs at each midpoint, including zero leading determinants."
+        },
+        {
+          "num": "6.13",
+          "kind": "Algorithm",
+          "name": "Divide and conquer for symmetric eigenproblems",
+          "deps": [
+            "nla-6.12",
+            "nla-5.1"
+          ],
+          "refs": [
+            "Bindel, CS6210 (2012), lecture 30, pp.4–5; CS6210 (2025), Nov.5, divide-and-conquer discussion"
+          ],
+          "pic": "Change the cut coupling and compare the modified block eigenvalues with the merged roots. The second plot displays arctan(g), separately between every pair of poles."
+        },
+        {
+          "num": "6.14",
+          "kind": "Algorithm",
+          "name": "Computing the SVD: Golub–Kahan bidiagonalization",
+          "deps": [
+            "nla-2.6",
+            "nla-1.6",
+            "ladr-7.70"
+          ],
+          "refs": [
+            "LAPACK Users’ Guide, computational routines for the SVD, node53; Bindel CS6210 (2025), Nov.5, SVD discussion"
+          ],
+          "pic": "Step through the actual two-sided reduction of a rectangular matrix. Compare its singular values with an analytic reference and with those inferred from the rounded Gram matrix."
+        },
+        {
+          "num": "6.15",
+          "kind": "Model",
+          "name": "PageRank as a power iteration",
+          "deps": [
+            "nla-6.2",
+            "nla-4.3"
+          ],
+          "refs": [
+            "Bindel, CS6241 (2025), Apr.17, spectral centrality section; 1-norm contraction proof supplied"
+          ],
+          "pic": "Edit the four-node link pattern, toggle a selected directed edge, and change damping or teleport preferences. Compare evolving ranks, residuals and the guaranteed contraction bound."
+        },
+        {
+          "num": "6.16",
+          "kind": "Paper",
+          "name": "The QR transformation",
+          "paper": {
+            "authors": "J. G. F. Francis",
+            "year": 1961,
+            "title": "The QR Transformation: A Unitary Analogue to the LR Transformation — Part 1",
+            "venue": "The Computer Journal 4 (3): 265–271",
+            "doi": "10.1093/comjnl/4.3.265"
+          },
+          "introduces": [
+            "nla-6.7",
+            "nla-6.9"
+          ],
+          "deps": [
+            "nla-2.2",
+            "nla-5.12"
+          ],
+          "refs": [
+            "Bindel, CS6210 (2012), lecture 26, pp.6–7 (actual modern source); Francis 1961 original body inaccessible"
+          ],
+          "pic": "Vary a complex conjugate pair and inspect the real polynomial’s first column. Compare the matrix before and after one full double-shift similarity and its remaining Hessenberg residual."
+        }
+      ]
     },
     // ───────────────────────────────────────────────────────────── 7
     {
