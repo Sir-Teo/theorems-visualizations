@@ -165,9 +165,13 @@ an eigen-direction, an orthonormal frame, an ellipse's axes) with live numbers.
 
 - Separate a local eigenvalue crossing from nonlinear Hopf hypotheses and attraction to a periodic orbit. Name the exact oscillator model version and rate table; multiplying all rates by c rescales time and cannot by itself explain temperature compensation. Keep biological observations separate from uncalibrated sensitivity controls. See the [oscillator review](verification/wave5-sysbio-review.md).
 
+- Tree distance diagnostics must separate a metric from an additive tree certificate; a zero diagnostic internal edge alone does not establish a star tree. Preserve signed NJ limbs, exact equal-rate limits and all optimal assignments separately from one traceback. A historical evidence explorer must not invent the unread original data. See the [phylogeny review](verification/wave5-bioinf-review.md).
+
 ## Medicine & health
 
 - Transform uncertainty sets through the model's actual domain. For half-life $\ln 2/k$, intersect a fitted rate interval with $k>0$ first: the image can be bounded, unbounded, or empty. A nonpositive fitted rate supplies no positive-decay point estimate, and a plotting cap is not an interval endpoint. Distinguish central-compartment simulations from clinical recovery. See the [PHARM peer](verification/pharm-independent-combined-peer.md).
+
+- Mix perfusion-weighted gas content before inverting to pressure, and distinguish exact shunt/zero-perfusion branches. Keep Henry conventions, gas-volume reference conditions and source temperatures explicit. Delayed-history interpolation has its own convergence order; an unresolved positive delay needs a numeric-status message rather than a zero-delay substitute or invented trace. See the [respiration review](verification/wave5-physio-review.md).
 
 - **A simulated population the reader controls**: cohorts on lifelines (Lexis-style), with
   prevalence, risk and rates measured live and compared with the formulas; icon arrays of 100 or
