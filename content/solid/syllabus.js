@@ -151,31 +151,149 @@ export default {
     },
     // ───────────────────────────────────────────────────────────── 5
     {
-      n: 5,
-      title: 'Torsion',
-      summary: String.raw`Twisting a circular shaft shears it, with stress growing linearly from the centre. The resulting formulas for stress, angle of twist and power transmission are the basis of every drive shaft. Non-circular sections warp and need Prandtl's stress function and its soap-film analogy, thin closed tubes carry a constant shear flow, and open sections turn out to be remarkably weak in torsion.`,
-      items: [
-        { num: '5.1', kind: 'Proposition', name: 'Torsion formula: τ = Tr/J', deps: ['solid-1.6'], refs: ['Gere–Goodno §3.2', 'Gere–Goodno §3.3'],
-          pic: 'Twist a shaft with a draggable torque: a painted line on its surface becomes a helix, and the shear stress over a cross-section is drawn growing linearly from zero at the centre.' },
-        { num: '5.2', kind: 'Proposition', name: 'Angle of twist: φ = TL/GJ', deps: ['solid-5.1'], refs: ['Gere–Goodno §3.3', 'Gere–Goodno §3.4'],
-          pic: 'Compare shafts of different lengths, diameters and materials: the end rotation scales with length and inversely with the fourth power of diameter.' },
-        { num: '5.3', kind: 'Proposition', name: 'Power transmission: P = Tω', deps: ['solid-5.1'], refs: ['Gere–Goodno §3.7'],
-          pic: 'Choose the power and rotation speed of a motor: the required shaft diameter for an allowable stress is computed, showing why fast-spinning shafts can be thin.' },
-        { num: '5.4', kind: 'Proposition', name: 'Hollow shafts carry torque efficiently', deps: ['solid-5.1'], refs: ['Gere–Goodno §3.3'],
-          pic: 'Bore out the centre of a shaft: weight drops much faster than torque capacity, plotted against inner-to-outer radius ratio.' },
-        { num: '5.5', kind: 'Phenomenon', name: 'Pure shear and 45° failure in torsion', deps: ['solid-5.1', 'solid-3.3'], refs: ['Gere–Goodno §3.5'],
-          pic: 'Twist a stick of chalk and a steel bar: Mohr’s circle for pure shear shows tension at 45°, so the chalk breaks on a helix while the ductile bar shears flat across.' },
-        { num: '5.6', kind: 'Model', name: 'Thin-walled closed tubes: shear flow and Bredt’s formula', deps: ['solid-5.1'], refs: ['Gere–Goodno §3.11'],
-          pic: 'Draw any closed thin-walled section: the shear flow around it is constant, the stress is highest where the wall is thinnest, and the stiffness depends on the enclosed area.' },
-        { num: '5.7', kind: 'Model', name: 'Torsion of non-circular sections: Prandtl stress function', deps: ['solid-5.1', 'solid-2.12'], refs: ['Gere–Goodno §3.10', 'Timoshenko–Goodier ch. 10'],
-          pic: 'Twist a square or triangular bar: cross-sections warp out of plane, and the stress function solved on the section gives a shear-stress map that peaks at the middle of the longest sides, not at the corners.' },
-        { num: '5.8', kind: 'Method', name: 'Prandtl’s membrane (soap-film) analogy', deps: ['solid-5.7'], refs: ['Timoshenko–Goodier ch. 10'],
-          pic: 'Inflate a membrane over a hole shaped like the section: the bubble’s slope maps the shear stress and its volume gives the torsional stiffness, computed live for a user-drawn section.' },
-        { num: '5.9', kind: 'Phenomenon', name: 'Open thin-walled sections are weak in torsion', deps: ['solid-5.6', 'solid-5.7'], refs: ['Gere–Goodno §3.10', 'Timoshenko–Goodier ch. 10'],
-          pic: 'Cut a slit along a thin tube: its torsional stiffness drops by orders of magnitude, shown by twisting the closed and slit tubes with the same torque.' },
-        { num: '5.10', kind: 'Phenomenon', name: 'Stress concentrations in torsion', deps: ['solid-5.1'], refs: ['Gere–Goodno §3.12'],
-          pic: 'Step a shaft from one diameter to another with an adjustable fillet radius: the peak shear stress at the shoulder rises sharply as the fillet becomes small.' },
-      ],
+      "n": 5,
+      "title": "Torsion",
+      "summary": "Circular shafts have a special symmetry: shear grows with radius, and a polar area moment determines twist. Noncircular sections need warping and a different torsional constant. This chapter computes circular and elliptical solutions, compares open and closed thin walls, and separates local corner concentration from a complete component-strength prediction.",
+      "items": [
+        {
+          "num": "5.1",
+          "kind": "Proposition",
+          "name": "Torsion formula: τ = Tr/J",
+          "deps": [
+            "solid-1.6"
+          ],
+          "refs": [
+            "Roylance, MIT Shear and Torsion (2000), pp5–11"
+          ],
+          "pic": "Signed torque and radius change the tangential circular-cut traction and a linked radial stress profile."
+        },
+        {
+          "num": "5.2",
+          "kind": "Proposition",
+          "name": "Angle of twist: φ = TL/GJ",
+          "deps": [
+            "solid-5.1"
+          ],
+          "refs": [
+            "Roylance, MIT Shear and Torsion (2000), pp5–11"
+          ],
+          "pic": "Unroll a painted surface generator to compare uniform and two-material half shafts; compute total twist and strain energy."
+        },
+        {
+          "num": "5.3",
+          "kind": "Proposition",
+          "name": "Power transmission: P = Tω",
+          "deps": [
+            "solid-5.1"
+          ],
+          "refs": [
+            "Roylance, MIT Shear and Torsion, p5 Eq8; pp8–9"
+          ],
+          "pic": "Choose signed power and speed, including exactly zero, then compute finite torque and chosen-allowable solid-shaft radius or explain incompatibility."
+        },
+        {
+          "num": "5.4",
+          "kind": "Proposition",
+          "name": "Hollow shafts carry torque efficiently",
+          "deps": [
+            "solid-5.1"
+          ],
+          "refs": [
+            "Roylance, MIT Shear and Torsion, pp9–10"
+          ],
+          "pic": "Compare fixed outer radius versus fixed material area using exact annular stiffness and torque-capacity ratios."
+        },
+        {
+          "num": "5.5",
+          "kind": "Phenomenon",
+          "name": "Pure shear and 45° failure in torsion",
+          "deps": [
+            "solid-5.1",
+            "solid-3.3"
+          ],
+          "refs": [
+            "Roylance, MIT Shear and Torsion, pp2–4; solid3.3 transformation"
+          ],
+          "pic": "Rotate a pure-shear plane and compare principal tension with maximum shear orientations, without simulating material fracture."
+        },
+        {
+          "num": "5.6",
+          "kind": "Model",
+          "name": "Thin-walled closed tubes: shear flow and Bredt’s formula",
+          "deps": [
+            "solid-1.6",
+            "solid-2.4",
+            "pma-10.51"
+          ],
+          "refs": [
+            "MIT16.20 Module6 §6.6, printed88–89, Bredt and compatibility"
+          ],
+          "pic": "Vary a rectangular single-cell median geometry and top thickness; compare constant flow, wall stresses and twist compatibility.",
+          "see": [
+            "solid-5.1"
+          ]
+        },
+        {
+          "num": "5.7",
+          "kind": "Model",
+          "name": "Torsion of non-circular sections: Prandtl stress function",
+          "deps": [
+            "solid-1.6",
+            "solid-2.4",
+            "pma-9.41a",
+            "pma-10.51"
+          ],
+          "refs": [
+            "MIT16.20 Module6 §§6.1–6.3, printed74–78; §6.5 for holes"
+          ],
+          "pic": "Compute the exact elliptical Prandtl potential, boundary shear and axial warping; distinguish torsional constant from polar moment.",
+          "see": [
+            "solid-5.1",
+            "solid-2.12"
+          ]
+        },
+        {
+          "num": "5.8",
+          "kind": "Method",
+          "name": "Prandtl’s membrane (soap-film) analogy",
+          "deps": [
+            "solid-5.7"
+          ],
+          "refs": [
+            "MIT16.20 Module6 §6.4, printed79–81"
+          ],
+          "pic": "Compute an elliptical linear membrane height and volume; monitor the small-slope condition and state its dimensional scaling."
+        },
+        {
+          "num": "5.9",
+          "kind": "Phenomenon",
+          "name": "Open thin-walled sections are weak in torsion",
+          "deps": [
+            "solid-5.6",
+            "solid-5.7"
+          ],
+          "refs": [
+            "MIT16.20 Module6 §6.4, printed81–84; §6.6, printed88–89"
+          ],
+          "pic": "Compare equal-perimeter closed/slit thin tubes and their through-wall shear profiles with the thinness and exact closed-annulus correction."
+        },
+        {
+          "num": "5.10",
+          "kind": "Phenomenon",
+          "name": "Stress concentrations in torsion",
+          "deps": [
+            "solid-5.7"
+          ],
+          "refs": [
+            "Roylance, MIT Shear and Torsion, pp12–13, corner discussion",
+            "Own separated polar-Laplacian calculation"
+          ],
+          "pic": "Compute a local reentrant-wedge harmonic stress power law versus radial cutoff, explicitly not a solved finite-radius fillet or empirical Kt.",
+          "see": [
+            "solid-5.1"
+          ]
+        }
+      ]
     },
     // ───────────────────────────────────────────────────────────── 6
     {

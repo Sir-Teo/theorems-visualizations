@@ -1,0 +1,68 @@
+# SOLID5 torsion — author evidence
+
+Status: **author complete and frozen; independent final native acceptance pending**. Ten frozen identities are authored in `ch05.js` and `ch05-b.js`, with chapter-local pure/UI helpers. The author browser and server are closed; the lane has been released. Only chapter5 syllabus rows were reconciled; non5/top-level metadata and every original identity are preserved. No shared renderer, generated data, Git or earlier chapter changed.
+
+## Sources actually read
+
+Actual source receipts and PDFs/text/renders are under `/tmp/atlas-wave5-solid-sources/`.
+
+- David Roylance, MIT *Shear and Torsion*, June23,2000, actual official14-page PDF: pp3–4 shear kinematics/elasticity, p5 Eq8 power, pp7–10 circular torque/stress/twist and hollow comparison, p11 Eqs15–16 energy, pp12–13 membrane and sharp-corner discussion. Rendered p8 and p12 were personally viewed. URL: https://ocw.mit.edu/courses/3-91-mechanical-behavior-of-plastics-spring-2007/7cef9270278ccb2fef0671826f176a6b_07_torsion.pdf . The numerical automobile example is not copied; the widget uses chosen parameters.
+- MIT16.20 *Module6 Torsion*, official no-solutions17-page PDF, actual printed74–78 §6.1–6.3 displacement/compatibility/stress function/ellipse;79–81 membrane;81–84 open walls;84–87 hole-boundary constants/compatibility;88–89 closed thin-wall equilibrium/Bredt/twist. The concept questions are independently solved here. Actual rendered printed78 and89 were personally viewed. URL: https://web.mit.edu/16.20/homepage/6_Torsion/Torsion_files/module_6_no_solutions.pdf . An initial search-result with-solutions link returned404; the normal official module page linked this readable no-solutions PDF. No denied original body was recovered.
+
+The syllabus's Gere/Timoshenko references were section-level planning pointers; no inaccessible textbook body or original Prandtl1903 body is claimed read. Written refs now identify the actual MIT passages. The wedge exponent is an explicitly supplied local polar-harmonic derivation, with the source providing qualitative corner context, not a fabricated empirical chart.
+
+## Actual prerequisite use and reconciliation
+
+Actual bodies saved/read in `/tmp/atlas-wave5-solid-inputs.json`: SOLID1.6 (small-strain shear modulus),2.4 (stress equilibrium),2.12 (Airy plane-stress potential),3.3 (Mohr-circle transformation), PMA9.41a (mixed partials),10.51 (divergence theorem). PMA10.51's planar identity is obtained by extrusion through constant thickness. No unwritten proof input is required.
+
+All names/kinds/numbers stay fixed. Necessary chapter5 corrections are:
+
+- 5.6 now consumes1.6/2.4/10.51 for wall-strip equilibrium, constitutive compatibility and median-loop area; circular5.1 is related, not the noncircular derivation.
+- 5.7 consumes1.6/2.4/9.41a/10.51. Airy2.12 is related only: its biharmonic plane-stress problem is different from Prandtl's Poisson torsion problem. Circular5.1 is also related.
+- 5.10 consumes5.7, not a circular nominal-stress formula as a supposed local notch solution;5.1 remains related.
+- Planning pictures match the real rectangular cell, exact ellipse/membrane, criterion-only stress orientations, and local wedge/cutoff experiment. No arbitrary drawn shape, square/triangle PDE solver, material fracture simulation or shoulder fillet-factor chart is advertised.
+
+## Mathematical scope and computed models
+
+Circular stress, signed twist and elastic energy follow moment balance and the actual constitutive input. The serial two-material example integrates piecewise twist, with equal torque and separate nonnegative energy. Its painted generator is explicitly an unrolled arc-displacement plot, not a claim of arbitrary finite-strain deformation.
+
+Power handles nonzero speed, incompatible nonzero power at zero speed, and underdetermined zero/zero separately. Radius uses the chosen allowable shear only. Hollow comparisons distinguish fixed outer envelope from fixed material area and do not silently turn a stiffness-per-mass gain into absolute capacity gain.
+
+Pure shear computes actual rotated stresses and ±|τ| eigenvalues. Plane-normal angles and sign reversal are explicit. Maximum-tension/shear criteria suggest different orientations; no measured chalk/steel fracture result or crack propagation is invented.
+
+The single-cell rectangular median wall computes constant q, unequal local stresses, compliance integral and twist compatibility. Its thinness diagnostic and end/corner restrictions remain visible. The exact elliptical potential supplies actual gradients, Poisson forcing, torque, torsional constant and axial warping. It avoids applying polar J to noncircular geometry, and does not set all hole-boundary constants to zero.
+
+The linear elliptical membrane uses constant pretension, uniform pressure, a fixed boundary, signed volume and an actual maximum-slope diagnostic. Dimensional field conversion requires c=2GαN/p; direct numerical identification is explicitly rescaled/dimensionless. It is not a nonlinear minimal-surface solution.
+
+The slit-tube comparison is leading free-warping thin-wall asymptotics, with local opposite face shears, an exact annular closed-section correction and no fictitious exact open-ring result. The corner model uses β∈(π,2π), traction-free straight sides and nonzero r. It computes A r^(π/β)sin(πθ/β), its gradient and cutoff ratio. The amplitude may vanish under a particular global loading; a full loaded section, rounded fillet peak and calibrated Kt are explicitly not determined.
+
+All parameters are chosen consistent units. No universal material strength, fatigue/critical-speed safety guarantee or empirical notch factor is introduced.
+
+## Focused and external numerical evidence
+
+`tests/wave5-solid.test.mjs`:14 focused groups cover exact frozen identities/full chapter mirrors; independent radial stress/energy quadrature; serial compatibility; signed/zero power cases; both hollow constraints; direct tensor-traction rotation; Bredt torque/circulation; ellipse boundary traction, PDE, warping compatibility and independent area torque integration; circle limit; dimensional membrane scaling; slit thinness correction; polar-harmonic local residual; subnormal retention; malformed/collapsed domains. Logs `/tmp/wave5-solid-math-draft.log`, scoped static `/tmp/wave5-solid-static-draft.log` (10items/0errors/0warnings).
+
+External reference tool `/tmp/wave5-solid-reference.py` independently evaluates1200 outputs in400-digit mpmath from binary64 inputs: circular geometry/twist/stress/energy, exact ellipse constant/rate/stress and membrane height/volume/slope. Log `/tmp/wave5-solid-reference.log`; maximum ordinary relative discrepancy below3e−14, with a two-ULP floor for subnormal reference comparisons. This is finite reference evidence, not a universal floating-point error theorem. Additional explicit tiny cases retain circular5MIN surface stress, a positive radius despite below-range torque, serial twistMIN, ellipse face4MIN stress, amplified corner3MIN stress and pressure-scaled representable volume. Zero and nonzero-underflow statuses are distinguished where needed.
+
+## Native, state and visual evidence
+
+The source-aligned production runner `tests/wave5-solid-browser.mjs` exercised all ten items at actual 1200/320 widths in both themes. It checks each model's readout and sampled drawn path, physical controls and every mode/end point, hidden inventories, computed canvas changes, zero buttons, exact browser-canonical native values, continuous off-grid states, actual Create-link replay and out-of-range/malformed rejection. Complete path/circle/rectangle strokes, dots/rings, glyphs/halos, rich text, display math, and readout horizontal/vertical bounds are checked separately.
+
+Final ordinary evidence covers **40 distinct configurations, 952 physical actions, 516 URL checks, including 292 actual Create-link clicks and their restorations**. This is disjoint replacement accounting, not one uninterrupted full-process result: unchanged items 1/2/4 retain twelve configurations (312 actions/156 URLs/88 Shares) from `/tmp/wave5-solid-native-v2.log`; final items 3/5/6/7/8/9/10 contribute 28 configurations (640/360/204) from `/tmp/wave5-solid-native-v3-tail.log`. Initial failures and intermediate captures remain available. Early failures were a test pixel target on deliberately normalized diagrams and subsequent source-level narrow layout/label repairs; only final successful configurations are counted.
+
+A separate final critical matrix covers **40 item/layout groups, 116 exact raw states, 116 actual Create-link clicks and 232 URL checks**. Unchanged items 3/4/5/6 retain sixteen groups (56 Shares/112 URLs) from `/tmp/wave5-solid-critical.log`; final items 1/2/7/8/9/10 provide 24 groups (60 Shares/120 URLs) from `/tmp/wave5-solid-critical-final.log`. The earlier run stopped because a stale test supplied torque −1 outside item 9's actual ±0.1 domain; rejection was correct and the fixture was corrected. Critical states include zero/signed/subnormal loads, joint subnormal power/speed, quantized nonzero torque with input-derived radius, nonzero-speed overflow, both hollow constraints, circular zero warping, Bredt early-underflow prevention, tiny membrane pressure, open-wall stress and reentrant cutoff extremes. These supplement, rather than replace, ordinary controls.
+
+The final 28-configuration ordinary tail and final 24-group critical run measured minimum full marker/ring clearance 11.083333 CSS pixels and glyph/halo clearance 2.884375 CSS pixels. Complete stroke bounds passed separately; these minima are not represented as minima of all ink or of the earlier retained twelve ordinary configurations.
+
+All **40 default captures and 40 selector-mode captures** were personally inspected, including all twenty narrow defaults at native width, ten two-theme wide sheets and ten four-layout mode sheets. `/tmp/wave5-solid-gallery-final-v1/manifest.json` records exact image paths and SHA256 values. Final ordinary captures are in `/tmp/wave5-solid-production-v2` (items 1/2/4) and `/tmp/wave5-solid-production-v3` (other items); final rich/default and raw captures are in `/tmp/wave5-solid-critical` (3/4/5/6) and `/tmp/wave5-solid-critical-final` (other items). Selected full-size raw images were inspected for input-derived subnormal sizing and overflow, Bredt stress/circulation, circle warping, tiny membrane volume, maximum slit stress and wedge cutoff. Actual dark320 full rich statement/scope/proof/source/dependency pages 3/7/10 were also inspected. No unread legend, crop, palette mismatch or remaining author finding was found.
+
+The peer's provisional source/model report is separate evidence in `wave5-solid-review.md`; its scalar/FEM comparisons are not counted as author checks or final peer native acceptance. The initial eight-file author manifest was `/tmp/wave5-solid-author-freeze-v1.sha256`. After its independent full40 pass, two bounded presentation findings were repaired without an author browser: the top-wall Bredt arrow now has the same positive-z torque orientation as item1, and the ellipse readout states the actual max(0.001, analytic field amplitude) color divisor. The native utility now asserts the top-arrow torque sign (including zero-load absence) and the actual floor wording. Scalar mechanics and all other product bytes are unchanged. The replacement eight-file manifest is `/tmp/wave5-solid-author-freeze-v2.sha256`; independent6/7 replacement is pending. Product, syllabus and tests are frozen pending independent review; the browser/server remain closed.
+
+
+A subsequent peer critical-state check found item1's sampled radial curve/dot multiplied the already rounded surface stress, while its readout correctly used original torque/radius. At T=MIN, R=.5 and r/R=.5 the former dot was2MIN versus direct3MIN. Only that curve/dot now uses the original-input T*(R*x/J); the scalar helper and readout are unchanged. Durable native assertions compare every actual radial sample and selected dot directly, and the actual Share critical fixture explicitly sets all three inputs. Syntax and14 focused tests pass. The final replacement manifest is `/tmp/wave5-solid-author-freeze-v3.sha256`; bounded independent item1 ordinary/critical replacement is pending. No author browser was opened for either v2 or v3 repair. All earlier logs and manifests are retained.
+
+
+The v3 original-input grouping was independently found insufficient when the selected radius fraction itself is subnormal: T=1,R=.5,x=MIN has stress5MIN but R*x rounded to0. Final v4 adds one pure radialStress function that groups the ordinary R/J coefficient with the larger original factor and multiplies the smaller last. Sampled path, selected dot and readout all consume it. Fifteen focused groups include both prior TMIN/R.5/x.5→3MIN and complementary T1/R.5/xMIN→5MIN, signed tiny-position and true below-range double-tiny cases. Actual Share critical fixtures include both. Native assertions use the original factors and check all samples/dot/readout. No other model or source/proof/syllabus changes; no author browser. Final manifest `/tmp/wave5-solid-author-freeze-v4.sha256`, bounded independent replacement pending.
+
+
+Final v5 adds the corresponding explicit selected-shear below-range sentence when both original torque and selected fraction are nonzero but their product rounds0. Exact zero torque or selected radius does not receive this status. Native asserts the sentence in the double-tiny fixture. The radial helper and fifteen focused groups are unchanged; syntax/focused rerun pass. `/tmp/wave5-solid-author-freeze-v5.sha256` supersedes v4 before any v4 native run. Browser/server remain closed.
