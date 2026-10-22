@@ -17510,9 +17510,9 @@
   "authoringDirection": "User confirmed prior work done; continuously author future waves without routine pauses.",
   "progress": {
     "total": 1031,
-    "written": 854,
-    "remaining": 177,
-    "writtenChapters": 66,
+    "written": 903,
+    "remaining": 128,
+    "writtenChapters": 70,
     "chapters": [
       {
         "collection": "ode",
@@ -18860,37 +18860,90 @@
         "collection": "ctrl",
         "chapter": 5,
         "total": 13,
-        "written": 0,
-        "remaining": 13,
-        "writtenItems": [],
-        "status": "planned"
+        "written": 13,
+        "remaining": 0,
+        "writtenItems": [
+          "ctrl-5.1",
+          "ctrl-5.2",
+          "ctrl-5.3",
+          "ctrl-5.4",
+          "ctrl-5.5",
+          "ctrl-5.6",
+          "ctrl-5.7",
+          "ctrl-5.8",
+          "ctrl-5.9",
+          "ctrl-5.10",
+          "ctrl-5.11",
+          "ctrl-5.12",
+          "ctrl-5.13"
+        ],
+        "status": "written"
       },
       {
         "collection": "circ",
         "chapter": 5,
         "total": 14,
-        "written": 0,
-        "remaining": 14,
-        "writtenItems": [],
-        "status": "planned"
+        "written": 14,
+        "remaining": 0,
+        "writtenItems": [
+          "circ-5.1",
+          "circ-5.2",
+          "circ-5.3",
+          "circ-5.4",
+          "circ-5.5",
+          "circ-5.6",
+          "circ-5.7",
+          "circ-5.8",
+          "circ-5.9",
+          "circ-5.10",
+          "circ-5.11",
+          "circ-5.12",
+          "circ-5.13",
+          "circ-5.14"
+        ],
+        "status": "written"
       },
       {
         "collection": "energy",
         "chapter": 5,
         "total": 12,
-        "written": 0,
-        "remaining": 12,
-        "writtenItems": [],
-        "status": "planned"
+        "written": 12,
+        "remaining": 0,
+        "writtenItems": [
+          "energy-5.1",
+          "energy-5.2",
+          "energy-5.3",
+          "energy-5.4",
+          "energy-5.5",
+          "energy-5.6",
+          "energy-5.7",
+          "energy-5.8",
+          "energy-5.9",
+          "energy-5.10",
+          "energy-5.11",
+          "energy-5.12"
+        ],
+        "status": "written"
       },
       {
         "collection": "solid",
         "chapter": 5,
         "total": 10,
-        "written": 0,
-        "remaining": 10,
-        "writtenItems": [],
-        "status": "planned"
+        "written": 10,
+        "remaining": 0,
+        "writtenItems": [
+          "solid-5.1",
+          "solid-5.2",
+          "solid-5.3",
+          "solid-5.4",
+          "solid-5.5",
+          "solid-5.6",
+          "solid-5.7",
+          "solid-5.8",
+          "solid-5.9",
+          "solid-5.10"
+        ],
+        "status": "written"
       },
       {
         "collection": "robot",
