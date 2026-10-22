@@ -61,3 +61,37 @@ Both queue rows correctly remain `researched-with-open-gates`, with null runtime
 Current reuse is links and original fictional cases/commentary. UK snapshots display OGL v3.0 with exceptions; exact excerpt attribution/release and third-party exceptions remain a future decision. Australian official hosting is not treated as blanket media clearance. These scoped planning decisions are consistent; this report grants no legal clearance or public-release authority.
 
 No learner, accessibility, qualified lawyer or dispute observation occurred. The pass is research-fidelity evidence for these exact files, not a professional sign-off or final authored-artifact review. Preserve the original case/source/authority boundaries and recheck changed bindings before treating this report as current.
+
+## Narrow preservation recheck after final research batch
+
+Date: 2026-10-22. Baseline: `13bc39de`. The previously reviewed P04 briefs are byte-identical, and their scoped source objects and queue items are structurally identical to that baseline. Shared research now contains sixteen `researched-with-open-gates` follow-ups and 34 receipts. All planning rows retain null runtime IDs, false authored/accepted flags and no accepted-item prerequisite edges. README keeps research, runtime and acceptance distinct.
+
+Current exact bindings for preservation only:
+
+| File | SHA-256 |
+| --- | --- |
+| p04-02-evidence.md | `86b60d6ca93fe908f3a2d3061eb9a5d45c4f1c47a1ff0c481a539f39fa68042e` |
+| p04-03-australia.md | `cf7740a6fa15ae55a71397d6e2fc18e4f2d58cc95d589c52fe80aa48e84e4b69` |
+| sources.json | `aa728ce4083c7d242484c8f998168f5e61e03e30f312ff12b0bd4e02736b18c6` |
+| queue.json | `2ad2477129d1d6aa871a07105c7a209df0ae66eefe452067f9e4acbac97ebcc4` |
+| README.md | `5fcec0f845678cb65e063b78302000faa2199449909a67eed51b0f50118d5c10` |
+
+Prior findings, source readings and limitations are retained. This append supplies no new historical/legal source review, professional approval, human observation, community mandate, lesson acceptance or public-release clearance.
+
+## Shared-source timeout preservation binding
+
+Date: 2026-10-22. The shared RSC teaching receipt and README now distinguish the original author body reading from the independent reviewer’s later timeout; the stopped request is not a fresh verification. I inspected that clarification without retrieving any source. It does not alter this report’s scoped craft, history or law source conclusions. Current shared-file hashes, superseding earlier shared-file bindings for preservation only:
+
+| File | SHA-256 |
+| --- | --- |
+| sources.json | `aa728ce4083c7d242484c8f998168f5e61e03e30f312ff12b0bd4e02736b18c6` |
+| queue.json | `2ad2477129d1d6aa871a07105c7a209df0ae66eefe452067f9e4acbac97ebcc4` |
+| README.md | `5fcec0f845678cb65e063b78302000faa2199449909a67eed51b0f50118d5c10` |
+
+No new performance-source pass or other subject/professional/human acceptance is supplied. All prior scoped limitations remain.
+
+## Engineering-only README punctuation rebinding
+
+2026-10-22, separate independent AI engineering/planning reviewer `code_review`. Mechanically verified that the sole README change from SHA-256 `5fcec0f845678cb65e063b78302000faa2199449909a67eed51b0f50118d5c10` is one inserted comma between the health/communication and craft review links. Removing precisely that comma from current bytes reproduces the prior hash. Current README SHA-256: `589316cf449084627cc28201c9a31c50478c613592f9548d5e6432042197015b`.
+
+This narrow addendum rebinds only that punctuation repair. Existing brief/source/queue/arithmetic scope bindings were checked against current bytes and remain unchanged. All local review links exist. The original reviewer's findings, source-reading provenance and limits remain intact; this engineering reviewer performed **no new subject/source review, professional approval, human session or lesson acceptance**. Earlier README hashes above remain historical; this is the current README binding.

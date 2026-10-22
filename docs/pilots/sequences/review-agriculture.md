@@ -84,3 +84,53 @@ Current shared-file binding hashes superseding earlier whole-file hashes only:
 - `docs/pilots/sequences/README.md`: `d77cc8e645c000085609c9c9996e4937fd987197cb2a941df023391632b8dd8f`.
 
 All earlier P05-specific source/audit/brief hashes remain valid. Only this narrow append was made to the agriculture report; no other agriculture source or authored file changed.
+
+
+## Narrow final shared-file rebinding after craft/performance research · 2026-10-22
+
+Independently compared the scoped brief/audit bytes and source-record/queue objects below with Git checkpoint `13bc39de`: all unchanged. This is a preservation and shared-binding recheck only. No craft/performance subject content, source body or professional/practitioner competence is approved by this append. No new source retrieval, browser, outreach or human observation occurred. Earlier findings and access/rights/preparation limits remain binding.
+
+Current queue contains **16 researched-with-open-gates follow-ups and 0 remaining research proposals**; source file contains **34 scoped receipts**. Every queue entry remains authored:false, accepted:false and runtimeId:null. README distinguishes research completion from authoring/acceptance and retains six authored previews/four local acceptances/24-lesson programme target. Relevant agronomy/current-standard/qualified-context, rights, learner/access and draft-capacity gates are preserved; no totals are promoted to delivered lessons.
+
+### Scoped original bytes, unchanged
+
+|File|SHA-256|
+|---|---|
+|docs/pilots/sequences/p05-02-irrigation.md|`bb68e98ec05fd1150892e9abb00aaeee8720afb40e18b40b5c1e9762c8ba1370`|
+|docs/pilots/sequences/p05-03-koraput.md|`236159dbcd3962657f0cec7a82864e8b611b0a76e97d38f7e56f53d5888653cc`|
+|docs/pilots/sequences/research/irrigation-accounting.json|`abd1554dc7e5f70e3fb256c35c30d8e49eda340f5581b42ba3e17031ac0bcd51`|
+|docs/pilots/sequences/research/irrigation-accounting.py|`bef282ee754742ba5358ff1759d2972289c250e2dfb2c2b280dbc5692be5218d`|
+
+### Scoped source and queue objects, unchanged
+
+Canonical hashes use sorted keys, UTF-8 and compact JSON separators.
+
+|Record|Canonical SHA-256|
+|---|---|
+|seq-umn-checkbook|`4e7695a61c9cbc2f59068676814432e0472726649a6e9cb03ccc5be78734269e`|
+|seq-ndsu-ae792|`165daef077bf44e3238051e5f93d62cac7cdc171894571e865507e020ff2b4d7`|
+|seq-fao-koraput|`3f1f1e04052f0c0cecd91841c5c959341ff30b65a5454547447ad2ba9dd2fbc4`|
+|seq-koraput-plan|`bed50f21aaa41d843a027a976b6944cefce4d74fad5f52e03d933ae4881dce7f`|
+|seq-mssrf-seeds|`94a80f070898251409eb4e80d0aaa8205f920388a579cb605d068337b23c226c`|
+|P05-L02|`b2a56dc5f9a04fa493d129424753fe00a20f13d34907916c0a5e441f2cad0428`|
+|P05-L03|`dc30716f9dd4cccfe6cce673f0ec803546a072313dbb1155086917cdc767e1ae`|
+
+### Current shared-file bindings
+
+These supersede earlier whole-file hashes for current shared documents only; unchanged scoped-source/brief evidence remains valid.
+
+- `docs/pilots/sequences/sources.json`: `aa728ce4083c7d242484c8f998168f5e61e03e30f312ff12b0bd4e02736b18c6`.
+- `docs/pilots/sequences/queue.json`: `2ad2477129d1d6aa871a07105c7a209df0ae66eefe452067f9e4acbac97ebcc4`.
+- `docs/pilots/sequences/README.md`: `5fcec0f845678cb65e063b78302000faa2199449909a67eed51b0f50118d5c10`.
+
+Prior FAO fresh-peer timeout and cached author tool-body distinction remain unchanged; no retry or body recovery occurred. Village discrepancy, agronomist/community review and release gates remain open.
+
+Bounded earlier desk-research result is preserved. No issue requiring a scoped content repair was found. Edited only this report for the requested rebinding.
+
+Narrow subsequent shared-file delta: `seq-rsc-performing` limits and README now distinguish the performance reviewer's later timeout (stopped without retry/mirror) from the original author's earlier body-read scope. This is a stricter provenance limit, not a fresh source confirmation or source-content approval by this reviewer. The nine P05/P06 source objects are unchanged against `13bc39de`; no new retrieval occurred. Current shared-file hashes immediately above bind this delta. All earlier scoped decisions and stops remain preserved.
+
+## Engineering-only README punctuation rebinding
+
+2026-10-22, separate independent AI engineering/planning reviewer `code_review`. Mechanically verified that the sole README change from SHA-256 `5fcec0f845678cb65e063b78302000faa2199449909a67eed51b0f50118d5c10` is one inserted comma between the health/communication and craft review links. Removing precisely that comma from current bytes reproduces the prior hash. Current README SHA-256: `589316cf449084627cc28201c9a31c50478c613592f9548d5e6432042197015b`.
+
+This narrow addendum rebinds only that punctuation repair. Existing brief/source/queue/arithmetic scope bindings were checked against current bytes and remain unchanged. All local review links exist. The original reviewer's findings, source-reading provenance and limits remain intact; this engineering reviewer performed **no new subject/source review, professional approval, human session or lesson acceptance**. Earlier README hashes above remain historical; this is the current README binding.

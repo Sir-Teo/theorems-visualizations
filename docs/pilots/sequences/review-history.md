@@ -88,3 +88,37 @@ Current exact shared-package bindings, for preservation only:
 | README.md | `d77cc8e645c000085609c9c9996e4937fd987197cb2a941df023391632b8dd8f` |
 
 Previous history scope and evidence remain intact. This append supplies no new historical subject review, legal/clinical competence, human/community acceptance or authored lesson. The separate law report names its own limited source/planning review. Only this review append and the separately requested new law report are written.
+
+## Narrow preservation recheck after final research batch
+
+Date: 2026-10-22. Baseline: `13bc39de`. The previously reviewed P01 briefs are byte-identical, and their scoped source objects and queue items are structurally identical to that baseline. Shared research now contains sixteen `researched-with-open-gates` follow-ups and 34 receipts. All planning rows retain null runtime IDs, false authored/accepted flags and no accepted-item prerequisite edges. README keeps research, runtime and acceptance distinct.
+
+Current exact bindings for preservation only:
+
+| File | SHA-256 |
+| --- | --- |
+| p01-02-perspectives.md | `e1bba720b4646d9c941c341b6e68776eeaadd3c60d38702e9bd84ac2118d4049` |
+| p01-03-material-evidence.md | `6168a16f585a96fddf1d70944c8b1393abb57ede7aa0b58939f019c7d84a8fb0` |
+| sources.json | `aa728ce4083c7d242484c8f998168f5e61e03e30f312ff12b0bd4e02736b18c6` |
+| queue.json | `2ad2477129d1d6aa871a07105c7a209df0ae66eefe452067f9e4acbac97ebcc4` |
+| README.md | `5fcec0f845678cb65e063b78302000faa2199449909a67eed51b0f50118d5c10` |
+
+Prior findings, source readings and limitations are retained. This append supplies no new historical/legal source review, professional approval, human observation, community mandate, lesson acceptance or public-release clearance.
+
+## Shared-source timeout preservation binding
+
+Date: 2026-10-22. The shared RSC teaching receipt and README now distinguish the original author body reading from the independent reviewer’s later timeout; the stopped request is not a fresh verification. I inspected that clarification without retrieving any source. It does not alter this report’s scoped craft, history or law source conclusions. Current shared-file hashes, superseding earlier shared-file bindings for preservation only:
+
+| File | SHA-256 |
+| --- | --- |
+| sources.json | `aa728ce4083c7d242484c8f998168f5e61e03e30f312ff12b0bd4e02736b18c6` |
+| queue.json | `2ad2477129d1d6aa871a07105c7a209df0ae66eefe452067f9e4acbac97ebcc4` |
+| README.md | `5fcec0f845678cb65e063b78302000faa2199449909a67eed51b0f50118d5c10` |
+
+No new performance-source pass or other subject/professional/human acceptance is supplied. All prior scoped limitations remain.
+
+## Engineering-only README punctuation rebinding
+
+2026-10-22, separate independent AI engineering/planning reviewer `code_review`. Mechanically verified that the sole README change from SHA-256 `5fcec0f845678cb65e063b78302000faa2199449909a67eed51b0f50118d5c10` is one inserted comma between the health/communication and craft review links. Removing precisely that comma from current bytes reproduces the prior hash. Current README SHA-256: `589316cf449084627cc28201c9a31c50478c613592f9548d5e6432042197015b`.
+
+This narrow addendum rebinds only that punctuation repair. Existing brief/source/queue/arithmetic scope bindings were checked against current bytes and remain unchanged. All local review links exist. The original reviewer's findings, source-reading provenance and limits remain intact; this engineering reviewer performed **no new subject/source review, professional approval, human session or lesson acceptance**. Earlier README hashes above remain historical; this is the current README binding.

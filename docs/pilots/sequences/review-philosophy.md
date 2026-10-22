@@ -67,3 +67,38 @@ Current full-file SHA-256 bindings supersede earlier whole-file bindings for the
 Independently checked shared counts: 16 follow-ups, 12 `researched-with-open-gates`, four `research-proposal`, 26 source receipts. README reports those counts and retains the research/authored/accepted distinction. Its P03 table descriptions, open specialist/current-code/practitioner gates, SGPC image-reading limits and stopped-source boundaries remain consistent with this review.
 
 Result: **preservation and shared-scope boundaries pass**. New law/health subject claims, standards, rights and legal/clinical interpretations are outside this recheck’s scope. No additional subject acceptance, authored lesson, human session, specialist credential, community participation or publication clearance is certified. Only this review file was edited.
+
+## Complete follow-up research queue binding recheck · 2026-10-22
+
+Narrow preservation and shared-boundary recheck, with no source retrieval. Compared both full P03 briefs, all three scoped P03 source objects and P03-L02/P03-L03 queue objects against Git commit `13bc39de`; every comparison is unchanged. No new review of craft/performance subject claims is included.
+
+Current exact full-file SHA-256 bindings, superseding prior shared-file bindings while preserving receipt history:
+
+| File | Current SHA-256 |
+| --- | --- |
+| `p03-02-disclosure.md` | `1d6c8df4ff82941263747847d565a9c24d48df33fed634454bbf61e582a46530` |
+| `p03-03-langar.md` | `134a999d8f107e40ba42094dfc36b9f3edb6a2836f2a0d1737b19c3e4dd9ae58` |
+| `sources.json` | `dfa8bf7a5c9887adda6dc056ebf52bbd3c405260ed2d1a81152af228a587bbfd` |
+| `queue.json` | `2ad2477129d1d6aa871a07105c7a209df0ae66eefe452067f9e4acbac97ebcc4` |
+| `README.md` | `667414d380699e3e89b8eec2e7358182df1eeb43ea68b135b1e19e8057858121` |
+
+Independently checked counts and lifecycle fields: 34 scoped source receipts; 16 follow-up queue items, all `researched-with-open-gates`; all runtime IDs null, authored false and accepted false. README matches those counts and explicitly preserves the distinction between research completion, authored lessons and acceptance. Its P03 table entries retain exact-selection/specialist reconstruction and English-code/practitioner-context work. Its delivery order, scope and verification sections retain preparation gates, capacity limits, bounded AI desk-review status and absence of participant recruitment/credentials/community consent. Prior SGPC visual-reading limits and source stops remain documented.
+
+Result: **preservation and shared boundaries pass; no required repair identified in this narrow scope**. Earlier P03 research conclusions and all limitations remain unchanged. This rebind does not approve new craft/performance content, supply any missing human/specialist evidence, create a runtime lesson, or grant publication/asset rights. Only this report was edited; no other worktree/chat or stopped source was accessed.
+
+### Later RSC fresh-reading timeout · narrow shared-file rebind
+
+No source retrieval. Inspected the new `seq-rsc-performing` limitation and corresponding README stop-list sentence: the independent performance reviewer’s later request timed out and stopped; the earlier scoped author receipt is retained without claiming independent fresh verification. Independently verified that removing only the added sentence restores each immediately prior sources/README hash, so no other shared-file delta is hidden by this rebind. Both P03 briefs retain their exact hashes; all three P03 source objects and both P03 queue entries remain unchanged against `13bc39de`. Queue bytes also retain the prior hash.
+
+Current bindings, superseding only the shared-file hashes in the immediately preceding addendum:
+
+- `sources.json`: `aa728ce4083c7d242484c8f998168f5e61e03e30f312ff12b0bd4e02736b18c6`
+- `README.md`: `5fcec0f845678cb65e063b78302000faa2199449909a67eed51b0f50118d5c10`
+
+The prior P03 conclusions, scope boundaries, queue count and all other exact bindings remain applicable. No new performance-subject review, fresh reading, lesson acceptance or human evidence is claimed. No issue identified within this narrow delta; the newly recorded stop remains binding. Only this report was edited.
+
+## Engineering-only README punctuation rebinding
+
+2026-10-22, separate independent AI engineering/planning reviewer `code_review`. Mechanically verified that the sole README change from SHA-256 `5fcec0f845678cb65e063b78302000faa2199449909a67eed51b0f50118d5c10` is one inserted comma between the health/communication and craft review links. Removing precisely that comma from current bytes reproduces the prior hash. Current README SHA-256: `589316cf449084627cc28201c9a31c50478c613592f9548d5e6432042197015b`.
+
+This narrow addendum rebinds only that punctuation repair. Existing brief/source/queue/arithmetic scope bindings were checked against current bytes and remain unchanged. All local review links exist. The original reviewer's findings, source-reading provenance and limits remain intact; this engineering reviewer performed **no new subject/source review, professional approval, human session or lesson acceptance**. Earlier README hashes above remain historical; this is the current README binding.

@@ -24,13 +24,13 @@ Documentation/manifest integration is a separate owner task and was not assumed 
 
 ## Current exact reviewed file hashes
 
-This current table supersedes earlier four/eight-brief bindings and covers the expanded 12-brief planning candidate. Earlier findings and rechecks are retained as history; their counts describe their stated checkpoints.
+This current table supersedes earlier four/eight/12-brief bindings and covers all 16 follow-up research briefs. Earlier findings/rechecks are retained as history; their counts apply to their stated checkpoints.
 
 | File | SHA-256 |
 | --- | --- |
-| queue.json | `2dddce061b3e242909ccd97d3db62ebd94d3ae007c1213b9a11fc06e196c1c28` |
-| sources.json | `ecd54002ee1f26ae30b55db68237276555bcf20d7625dd62fc50f30d0c89b9f4` |
-| README.md | `d77cc8e645c000085609c9c9996e4937fd987197cb2a941df023391632b8dd8f` |
+| queue.json | `2ad2477129d1d6aa871a07105c7a209df0ae66eefe452067f9e4acbac97ebcc4` |
+| sources.json | `aa728ce4083c7d242484c8f998168f5e61e03e30f312ff12b0bd4e02736b18c6` |
+| README.md | `589316cf449084627cc28201c9a31c50478c613592f9548d5e6432042197015b` |
 | p01-02-perspectives.md | `e1bba720b4646d9c941c341b6e68776eeaadd3c60d38702e9bd84ac2118d4049` |
 | p01-03-material-evidence.md | `6168a16f585a96fddf1d70944c8b1393abb57ede7aa0b58939f019c7d84a8fb0` |
 | p02-02-editions.md | `3fb0641ae4bcefa400c8a0eddfe4f09b74a9c329bdeb23433b439ded6ca15263` |
@@ -43,6 +43,10 @@ This current table supersedes earlier four/eight-brief bindings and covers the e
 | p05-03-koraput.md | `236159dbcd3962657f0cec7a82864e8b611b0a76e97d38f7e56f53d5888653cc` |
 | p06-02-measurement.md | `15131ee0126ec4ad0ab1d6b118c649ce4d6af529dcc04a91b5337e356c0f5ba6` |
 | p06-03-communication.md | `1a3468cfdf8ee5f11c954cefe0ee5ef1b0eab4d9c8c9ae194c0a711ea5adc335` |
+| p07-02-repair.md | `1cc0bc52cef3410d0ae871b2a7fd71afd5bf475082de9b2a839224cf3c054b93` |
+| p07-03-kente.md | `e7d7a774283bf97ab042a9645cb61891092b2faa6b9548c101d126f1cb92aa42` |
+| p08-02-staging.md | `97a174d60de8df5a666147e19e8737e8aeab79e5084682a43723b9b8b0ec0ea2` |
+| p08-03-kutiyattam.md | `2099548aeb116cb44129ca654a6f45aaa4696bc5fc23e28b4c43bd52bd4d8ebb` |
 | research/irrigation-accounting.json | `abd1554dc7e5f70e3fb256c35c30d8e49eda340f5581b42ba3e17031ac0bcd51` |
 | research/irrigation-accounting.py | `bef282ee754742ba5358ff1759d2972289c250e2dfb2c2b280dbc5692be5218d` |
 | research/volume-time.json | `4aec6d574a5d5a59e8b04e0a2c667ccbf256fb44d172b3e05da808771a62bfbf` |
@@ -95,3 +99,42 @@ Both review-law.md and review-health.md are now present; all README local links,
 The new reports explicitly identify bounded AI roles rather than legal/clinical qualifications, preserve current-law/current-standard, practitioner, access/learner and release gates, and do not manufacture patient data, professional certification or authored-lesson acceptance. Health review retains the two stopped-standard access limits. Law review retains supplied-snapshot provenance, differing UK change notices and incomplete legal-effective/branch validation. This check verifies delivery/internal binding; it does not re-perform source fidelity or legal/health approval.
 
 **Final bounded research-structure/arithmetic pass stands for the 19 exact bindings above. No pending law/health report delivery dependency or actionable structural finding remains.** No repeated browser/canonical test was needed. Only review-structure.md was updated; external handoff and manifest accounting remain the owner's separate packaging work.
+
+## All 16 follow-up briefs: independent final structure recheck
+
+**Passed for bounded independent AI research-structure review of these current 23 bound files. No substantive structural repair requested.** This extends the previous checkpoints to P07/P08 research. It supplies no source-subject approval, practitioner/performance competence, cultural/community authority, physical/human-session evidence or authored-lesson acceptance.
+
+Independently verified all 16 unique editorial IDs, exactly positions 2/3 for each of eight parents. All 16 now have researched-with-open-gates briefs and resolved scoped source references; there are no research-proposal rows left. All 34 receipts are uniquely identified and used; no unknown/orphan source reference found. Every brief names its editorial ID and queue source IDs. Every record still has runtimeId=null, authored=false, accepted=false and empty acceptedItemPrerequisites. Six existing runtime pilots remain six, four local acceptances remain four, and the two existing P07/P08 implementations still occupy exactly the two permitted unaccepted slots. Research does not create a third authored draft or add an accepted lesson toward the separate 24-lesson target.
+
+Compared against 13bc39de: original 26 source objects and unrelated 12 queue entries are unchanged as JSON values; all previous 12 briefs and four numeric fixture/audit files are byte-identical. No exploration/orientation/generated-atlas/dashboard path differs in the Git comparison. No pinned dashboard input was modified or canonical suite rerun by this reviewer.
+
+Read all four new briefs. P07 distinguishes proposed stitch/layer geometry from an attached, durable physical sample; independently reproduced instructions and practitioner/access checks remain open. Its situated kente case identifies one provider's context, leaves object/process evidence unpopulated and preserves terminology, participation, media and community-scope limits. P08 distinguishes intended staging from performed events and audience reports, and institutional work/manual listings from actual selected performance/text evidence. Real performer, participant, language/context, rights and learning/access gates remain required before corresponding claims. No new source-media reproduction, inferred consent, fake participant result or automatic extension of P01/P02's first-lesson requirement removal is introduced.
+
+All local brief/source/research links resolve. At this checkpoint craft/performance report delivery and other subject reviewers' shared-file rebindings were pending; the final delivery check below resolves these dependencies. External handoffs and manifest packaging remain the owner's separate work. This reviewer accessed no browser, blocked source body or Wave worktree and wrote only review-structure.md.
+
+## Frozen RSC receipt-limit update
+
+Rechecked the final shared source/README delta: the independent performance reviewer's later RSC teaching-page timeout is now explicit, stopped without retry/mirror, and does not erase or broaden the earlier author's scoped body-reading receipt. No new fresh independent reading is claimed. Confirmed the shared-file hashes above already match these frozen bytes; all 23 bound hashes remain current. This preserves rather than closes an evidence limitation. At that checkpoint final report-link/binding delivery review remained pending; the final delivery check below resolves it.
+
+## Final all-domain delivery and punctuation-only rebinding
+
+All eight subject reports are present. Independently verified current declared scope bindings in every report: both scoped briefs plus full sources/queue bindings, and the two arithmetic files where applicable. Their existing shared-file preservation rechecks are present. All README local links resolve, including all nine review links (eight subject reports and this structural report). No substantive delivery dependency remains.
+
+Mechanically verified the sole README repair against prior SHA-256 `5fcec0f845678cb65e063b78302000faa2199449909a67eed51b0f50118d5c10`: precisely one comma inserted between health/communication and craft links. Current SHA-256 is `589316cf449084627cc28201c9a31c50478c613592f9548d5e6432042197015b`. No other README byte changed; all other 22 structural bindings above remain unchanged. Added a clearly attributed engineering-only README rebinding addendum to each of the eight subject reports under the owner's explicit authorization. These addenda preserve original review history and make no new subject/source approval claim.
+
+Read-only package checks confirm **16 researched briefs, 34 source receipts, 16 editorial queue entries and 431 manifest files**. These counts describe research/package structure, not authored or accepted follow-up lessons. Only the eight authorized report addenda and review-structure.md were written by this final recheck. No browser, source request, runtime data, pinned dashboard input, Wave checkout or canonical suite was touched.
+
+**Final bounded independent research-structure pass stands for the current 23 file bindings and eight delivered reports below. No actionable structural defect or pending report-delivery dependency remains.** Source expertise, real practical/performance evidence, professional/human-session gates and authored-lesson acceptance remain outside this engineering rebinding.
+
+### Delivered subject-report hashes after narrow addenda
+
+| Report | SHA-256 |
+| --- | --- |
+| review-history.md | `b4fb20b85353ebf1fd5e58d6f56414d07d10b4207bfe2e261436e90c2358bbfa` |
+| review-literature.md | `4f96a12284715552102a4b58e8435419268ec25682473dce49fd423074fcb5c7` |
+| review-philosophy.md | `08987c2d4812d4042bcd127e2571069b2b6e272a0f8b86817e9a0ff6d1178f29` |
+| review-law.md | `32241d87c472097e2d4bd1b7fb6155afbbb1238d515d027995f00027625134ec` |
+| review-agriculture.md | `0de70d046d07d75c14449948a2f462750ed25e3e3745409be6b46186f58fab0c` |
+| review-health.md | `121ccc44fae607d1c55c6ec313016450a89debe62cb1b9c67e5a8f8d7169f4d6` |
+| review-craft.md | `a1babf1e42f2ac59cf3fc78452105db281e5bce512cdc00d76b0f4c8fd4e19b7` |
+| review-performance.md | `3a483f887dc3b2df4e97f956991f40bac9e25c07cc1f023615db55f70478abf8` |

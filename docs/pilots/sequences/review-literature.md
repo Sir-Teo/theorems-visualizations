@@ -107,3 +107,37 @@ Current complete-file SHA-256 bindings:
 | `README.md` | `d77cc8e645c000085609c9c9996e4937fd987197cb2a941df023391632b8dd8f` |
 
 **Outcome: preservation and shared bindings pass.** Prior bounded P02 research conclusions remain applicable to the unchanged literature records, with all preparation gates and limits retained. No new source-language, professional, human-observation or lesson acceptance is issued. Earlier receipts/repairs and access stops remain intact. Only this review file was edited.
+
+## Preservation rebind after all sixteen follow-ups were researched
+
+2026-10-22. Narrow local check only, without new literary source reading. Against `13bc39de`, both P02 brief files are byte-identical and all three literature source objects plus both P02 queue objects are parsed-identical. Shared files now hold 34 receipts and sixteen researched-with-open-gates plans. Every plan retains null runtime ID, authored/accepted false and empty accepted-item prerequisites; README preserves that research/runtime distinction and access stops.
+
+Current complete-file SHA-256 bindings:
+
+| File within `docs/pilots/sequences/` | SHA-256 |
+| --- | --- |
+| `p02-02-editions.md` | `3fb0641ae4bcefa400c8a0eddfe4f09b74a9c329bdeb23433b439ded6ca15263` |
+| `p02-03-narrative.md` | `cbf2326551d34c59bfd62ba7ec2faffa21bc31ba63db7c3f717993ed3a6abf14` |
+| `sources.json` | `dfa8bf7a5c9887adda6dc056ebf52bbd3c405260ed2d1a81152af228a587bbfd` |
+| `queue.json` | `2ad2477129d1d6aa871a07105c7a209df0ae66eefe452067f9e4acbac97ebcc4` |
+| `README.md` | `667414d380699e3e89b8eec2e7358182df1eeb43ea68b135b1e19e8057858121` |
+
+**Preservation/shared-boundary check passed.** This carries forward the bounded P02 research conclusion only for unchanged objects; no new literary/original-language source verification or authored/accepted lesson is claimed. All earlier repairs, receipts and open preparation gates remain. New craft/performance subject claims are outside this preservation check; a separate P08 report records its own fresh access outcome. Only the two authorised review reports were edited.
+
+### Final shared-file rebind after the P08 access-history correction
+
+2026-10-22. The shared source receipt and README now explicitly retain the P08 reviewer's fresh RSC timeout without claiming a new successful body reading. No P02 record or brief changed. Queue is unchanged; counts/status boundaries remain as above. This is a preservation/binding check only, with no literary source fetch or new subject/acceptance claim.
+
+Final shared-file SHA-256 values:
+
+- `sources.json`: `aa728ce4083c7d242484c8f998168f5e61e03e30f312ff12b0bd4e02736b18c6`.
+- `queue.json`: `2ad2477129d1d6aa871a07105c7a209df0ae66eefe452067f9e4acbac97ebcc4`.
+- `README.md`: `5fcec0f845678cb65e063b78302000faa2199449909a67eed51b0f50118d5c10`.
+
+The unchanged P02 brief hashes remain in the preceding table. Preservation/shared-boundary outcome remains passed; earlier literature findings/repairs and preparation gates are retained.
+
+## Engineering-only README punctuation rebinding
+
+2026-10-22, separate independent AI engineering/planning reviewer `code_review`. Mechanically verified that the sole README change from SHA-256 `5fcec0f845678cb65e063b78302000faa2199449909a67eed51b0f50118d5c10` is one inserted comma between the health/communication and craft review links. Removing precisely that comma from current bytes reproduces the prior hash. Current README SHA-256: `589316cf449084627cc28201c9a31c50478c613592f9548d5e6432042197015b`.
+
+This narrow addendum rebinds only that punctuation repair. Existing brief/source/queue/arithmetic scope bindings were checked against current bytes and remain unchanged. All local review links exist. The original reviewer's findings, source-reading provenance and limits remain intact; this engineering reviewer performed **no new subject/source review, professional approval, human session or lesson acceptance**. Earlier README hashes above remain historical; this is the current README binding.

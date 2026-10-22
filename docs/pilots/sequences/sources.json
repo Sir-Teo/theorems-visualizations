@@ -436,6 +436,136 @@
       "finding": "Language access and translation/interpreting roles require explicit attention; English repetition is not sufficient.",
       "limits": "Legal-compliance statements and linked resources not verified as current law or adopted; no language proficiency or translated artifact certified.",
       "reuse": "Original task and links only; no toolkit media or external assessment instrument copied."
+    },
+    {
+      "id": "seq-ifixit-patch",
+      "title": "How to Hand Stitch a Patch to Clothing",
+      "creator": "Eli Hardy and two other contributors; iFixit Featured Student Guide",
+      "edition": "Updated 25 August 2025",
+      "urls": [
+        "https://www.ifixit.com/Guide/How+to+Hand+Stitch+a+Patch+to+Clothing/172554"
+      ],
+      "readScope": "Introduction, tools, steps 1–8, conclusion and update/contributor labels; text only.",
+      "finding": "Patch overlap, edge attachment and tension are distinct construction considerations.",
+      "limits": "Photographs not inspected; no physical reproduction or professional endorsement established. Interface completion text is not evidence of our completion.",
+      "reuse": "Original exercise/diagrams and link only. No image or general redistribution licence established.",
+      "language": "en",
+      "readAt": "2026-10-22",
+      "access": "body-read-scoped"
+    },
+    {
+      "id": "seq-sca-basting",
+      "title": "Running Stitch: Basting, guideline 15.105",
+      "creator": "Sewing & Craft Alliance",
+      "edition": "Page-2 code 3/06; page-1 copyright notice 2008",
+      "urls": [
+        "https://www.sewing.org/files/guidelines/15_105_running_stitch_basting.pdf"
+      ],
+      "readScope": "Both pages in extracted text and local rendered images, including four diagrams and page-1 rights notice.",
+      "finding": "Distinguishes temporary basting; seam use is qualified by absence of strain. Intended layers and tension matter.",
+      "limits": "Dated sewing guidance; no current standard or physical repair tested. Web screenshot failed technically; same public PDF downloaded and rendered, not an access-denial bypass.",
+      "reuse": "Notice permits specified educators/retailers unchanged educational handouts, with alteration and other-use restrictions; no adapted figure or website-distribution clearance inferred. Link/original diagrams only.",
+      "downloadSha256": "928f7a7f034778a6f77895e437d6e01156a1db42851870bbde5f723afa2b628a",
+      "language": "en",
+      "readAt": "2026-10-22",
+      "access": "body-read-scoped"
+    },
+    {
+      "id": "seq-asare-context",
+      "title": "Kwasi Asare: practitioner and teaching self-presentation",
+      "creator": "Kwasi Asare website",
+      "edition": "Undated page retrieved 22 October 2026",
+      "urls": [
+        "https://kwasiasare.com/"
+      ],
+      "readScope": "Homepage biographical and teaching prose, including Ashanti tradition, father and Dento Mills/Nsawam account.",
+      "finding": "Identifies one practitioner and a named studio/place for a situated research route.",
+      "limits": "Self-presentation; lineage, promotional superlatives and current offers not independently verified. No object, video, course or loom inspected; not representative of all kente.",
+      "reuse": "Links/original commentary only; no course, image, pattern or design reuse permission established.",
+      "language": "en",
+      "readAt": "2026-10-22",
+      "access": "body-read-scoped"
+    },
+    {
+      "id": "seq-asare-workshop",
+      "title": "Kwasi Asare Kente Weaving Handloom Workshop",
+      "creator": "Kwasi Asare website",
+      "edition": "Undated provider account referring to a handloom developed in 2013",
+      "urls": [
+        "https://kwasiasare.com/kwasi-asare-kente-weaving-handloom-workshop/"
+      ],
+      "readScope": "Workshop description and advertised format; text only.",
+      "finding": "Provider connects introductory weaving/design teaching with geometry using a teaching handloom.",
+      "limits": "Same provider perspective as homepage, not independent corroboration. Offer is not current availability, observed learning or an equivalence to other practice. Promotional health/uniqueness claims excluded.",
+      "reuse": "Links/original commentary only; no demonstration, course content or loom design copied or cleared.",
+      "language": "en",
+      "readAt": "2026-10-22",
+      "access": "body-read-scoped"
+    },
+    {
+      "id": "seq-rsc-performing",
+      "title": "Performing Measure for Measure",
+      "creator": "Royal Shakespeare Company, Shakespeare Learning Zone",
+      "edition": "Undated teaching page retrieved 22 October 2026",
+      "urls": [
+        "https://www.rsc.org.uk/shakespeare-learning-zone/measure-for-measure/staging/performing"
+      ],
+      "readScope": "Main teaching prose/questions about setting, relationships, aims, status and positioning.",
+      "finding": "Provides play-specific prompts for staging decisions; these support a separately authored comparison task.",
+      "limits": "No universal gesture dictionary or observed audience outcome. Source images/performance media not inspected. Independent performance reviewer's later request timed out and was stopped without retry/mirror; that reviewer does not independently certify a fresh reading of this teaching page.",
+      "reuse": "Original script/maps and link only; no modern production media or source scene bundled.",
+      "language": "en",
+      "readAt": "2026-10-22",
+      "access": "body-read-scoped"
+    },
+    {
+      "id": "seq-rsc-kyle",
+      "title": "In focus: Barry Kyle 1978",
+      "creator": "Royal Shakespeare Company",
+      "edition": "Undated retrospective institutional account of the 1978 production",
+      "urls": [
+        "https://www.rsc.org.uk/measure-for-measure/past-productions/in-focus-barry-kyle-1978"
+      ],
+      "readScope": "Main production/design prose, cast/creative list, scene summary, gallery captions and rights labels; images not inspected.",
+      "finding": "Named production and designer provide a situated example of staging interpretation; reported criticism is distinct from audience measurement.",
+      "limits": "Rehearsal caption assigns Richard Griffiths to Lucio while prose/cast list assign him to Pompey; conflicting caption not adopted. No prompt-book image, photograph, recording or original critic publication inspected.",
+      "reuse": "Gallery labels identify multiple rights holders and image licensing; no blanket clearance inferred. Original task/links only, no critic quotation copied.",
+      "language": "en",
+      "readAt": "2026-10-22",
+      "access": "body-read-scoped"
+    },
+    {
+      "id": "seq-ammannur-history",
+      "title": "Ammannur Chachu Chakyar Smaraka Gurukulam: institutional account",
+      "creator": "Ammannur Gurukulam website",
+      "edition": "Undated history/homepage; homepage contains old festival announcements",
+      "urls": [
+        "https://www.ammannurgurukulam.com/",
+        "https://www.ammannurgurukulam.com/about.htm"
+      ],
+      "readScope": "Homepage institutional paragraph and history main prose; old event labels observed. Training/maestros pages inspected only to establish their reading limits.",
+      "finding": "Institution describes family teaching and subsequent training/performing organisation, giving 27 October 1982 as its start.",
+      "limits": "Historical institutional self-account, not independently complete history/current roster. Training page lacks curriculum body; maestros page has incomplete biography dates. No performance or original-language manual inspected.",
+      "reuse": "Site footer all rights reserved. Links/original commentary only; no images, manuals or recordings cleared.",
+      "language": "en",
+      "readAt": "2026-10-22",
+      "access": "body-read-scoped"
+    },
+    {
+      "id": "seq-ammannur-plays",
+      "title": "Plays in the Ammannur School",
+      "creator": "Ammannur Gurukulam website",
+      "edition": "Undated repertoire/production account with some dated entries",
+      "urls": [
+        "https://www.ammannurgurukulam.com/plays.htm"
+      ],
+      "readScope": "Main repertoire, acting-manual/direction and later-production entries; English labels only.",
+      "finding": "Lists Asokavanikamkam as fifth act of Ashcharyachoodamani and gives a sixteen-day description; differentiates some stage/acting-manual entries.",
+      "limits": "Listing not an inspected script/manual or event record; duration not a universal rule. English spellings and Sanskrit/Malayalam terminology need specialist review. No gesture, performance or translation competence inferred.",
+      "reuse": "Site all-rights-reserved footer; links/original commentary only. Event/text/media selection and permissions remain open.",
+      "language": "en",
+      "readAt": "2026-10-22",
+      "access": "body-read-scoped"
     }
   ]
 }
