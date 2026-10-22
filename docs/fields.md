@@ -269,6 +269,7 @@ an eigen-direction, an orthonormal frame, an ellipse's axes) with live numbers.
 - Visualizations show the invention *working* (a clock escapement ticking, a telegraph keying a
   message, packets routing around a broken link) or the historical dynamics quantitatively (waves
   of advance, Malthusian equilibria) with sliders for the parameters.
+- Keep decision criteria, priors and causal interventions explicit. Rank exact original-input differences before rounding regret tables, preserve undefined off-support conditionals, and distinguish infinite utility premises from calibrated probabilities. Tiny signed payoff tables need legible scientific labels and a scale based on actual nonzero values. See the [decision-theory review](verification/wave5-phil-review.md).
 - Philosophy items are made concrete through decision problems, probability puzzles and models
   (the two-envelope paradox simulated, Bayesian confirmation computed). Present arguments fairly;
   where philosophers disagree, say so.
