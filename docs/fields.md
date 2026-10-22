@@ -97,6 +97,8 @@ an eigen-direction, an orthonormal frame, an ellipse's axes) with live numbers.
 
 ## Computer science
 
+- Execute effects with an explicit store and control contexts. Keep captured continuations, CPS closure allocation and evaluator stack depth separate, and test variable freshness through shadowing. A cyclic store can implement recursion without a fix operator or recursive type; finite resource limits remain inconclusive. Distinguish a corrected executable historical subset from a verbatim interpreter or a simulated collector. See the [language-effects review](verification/wave5-pl-review.md).
+
 - Run the declared parser on actual grammar rules and tokens. Keep recognition, derivation multiplicity, conflicts and a bounded action limit separate: reaching a limit does not prove rejection. A normalization can preserve a language while changing its parse trees, and syntactic recognition does not establish a program’s meaning. Distinguish a modern proof from an unread historical original; preserve reciprocal Paper metadata and source flags. See the [grammar review](verification/wave5-toc-review.md).
 
 - State the schedule and failure model before applying a distributed impossibility result. A finite explored tree is an illustration of FLP, and a geometric necessary condition is not a protocol execution. Keep worst-case rounds, individual runs, right-censored randomized trials and exact agreement invariants distinct. See the [distributed-computing review](verification/wave5-dist-review.md).
@@ -222,6 +224,8 @@ an eigen-direction, an orthonormal frame, an ellipse's axes) with live numbers.
   horizon.
 
 ## Humanities
+
+- In linguistic examples, distinguish an actual grammar derivation from reader acceptability judgments and a declared parser's stack from human memory. Count CKY parses only in the stated grammar, retain exact totals behind abbreviated cells, and show dependency directions. A natural-language non-context-freeness argument needs explicit unbounded empirical premises and a valid regular restriction; finite crossings or equal-total filtering do not supply that proof. Word-order samples require separate denominators and honest missingness. See the [syntax review](verification/wave5-ling-review.md).
 
 - For sampled historical lists, distinguish a local typical-spacing heuristic, expected bin counts and a finite fitted regression slope. Equal numbers per logarithmic interval do not force collinearity or a slope of one. Keep that qualification consistent in statement, proof, caption and both readout modes. See the [four-consumer BIGHIST peer](verification/bighist-four-consumer-independent-peer.md).
 

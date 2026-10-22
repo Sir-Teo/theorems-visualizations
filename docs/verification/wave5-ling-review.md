@@ -1,6 +1,6 @@
 # Wave 5 LING5 — independent review
 
-**Independently accepted on final frozen bytes (2026-10-21).** The frozen inventory has 16 identities. All 16 identities have completed source/proof/model and native/visual review. This reviewer owns only this report and `/tmp` evidence. No product, syllabus, shared runtime, generated data or Git changes were made, and peer browser work used only the explicitly released lane. Both peer browser/server processes are now closed.
+**Independently accepted on final frozen bytes (2026-10-21).** The frozen inventory has 16 identities. All 16 identities have completed source/proof/model and native/visual review. This reviewer owns only this report and `/tmp` evidence. No product, syllabus, shared runtime, generated data or Git changes were made, and peer browser work used only the explicitly released lane. All peer browser/server processes are now closed.
 
 ## Actual sources and access limits
 
@@ -102,6 +102,6 @@ Minimum measured full marker/ring clearance over these runs is **7.81880 CSSpx**
 
 Original capture directories remain separate: `/tmp/wave5-ling-review-production`, `/tmp/wave5-ling-review-final-rest` and `/tmp/wave5-ling-review-visibility`. `/tmp/wave5-ling-review-final-captures` merges final applicable captures for inspection, without deleting the earlier evidence.
 
-All nine initial freeze hashes passed before launch. After the bounded2/11 fixes, the old manifest/report were preserved as `/tmp/wave5-ling-author-pre-visibility-freeze.sha256` and `/tmp/wave5-ling-author-pre-visibility-report.md`. All nine updated hashes in `/tmp/wave5-ling-author-freeze.sha256` passed before and after the final replacement runs (`/tmp/wave5-ling-peer-freeze-final.log`). Product/test bytes remain frozen. Both browser/server processes are closed and the lane was explicitly released.
+All nine initial freeze hashes passed before launch. After the bounded2/11 fixes, the old manifest/report were preserved as `/tmp/wave5-ling-author-pre-visibility-freeze.sha256` and `/tmp/wave5-ling-author-pre-visibility-report.md`. All nine updated hashes in `/tmp/wave5-ling-author-freeze.sha256` passed before and after the final replacement runs (`/tmp/wave5-ling-peer-freeze-final.log`). Product/test bytes remain frozen. All browser/server processes are closed and the lane was explicitly released.
 
-The original Chomsky body flag remains true, with exact access uncertainty and no invented HTTP status or alternate-body recovery. Shieber's original body is genuinely read, but the stronger capacity premise is explicitly conditional rather than falsely established by footnote4 alone. All143,381 independent oracle assertions remain applicable; their finite nature does not establish empirical unbounded productivity. **No required finding remains; LING5 is independently accepted.**
+The original Chomsky body flag remains true, with exact access uncertainty and no invented HTTP status or alternate-body recovery. Shieber's original body is genuinely read, but the stronger capacity premise is explicitly conditional rather than falsely established by footnote4 alone. All 143,381 independent oracle assertions remain applicable; their finite nature does not establish empirical unbounded productivity. **No required finding remains; LING5 is independently accepted.**
