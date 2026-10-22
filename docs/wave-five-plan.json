@@ -1,7 +1,7 @@
 {
   "version": 1,
   "wave": 5,
-  "status": "in-progress",
+  "status": "complete",
   "gates": {
     "sourceReviewsPending": 5,
     "automatedVerification": "required-per-chapter-and-wave",
@@ -17510,9 +17510,9 @@
   "authoringDirection": "User confirmed prior work done; continuously author future waves without routine pauses.",
   "progress": {
     "total": 1031,
-    "written": 1007,
-    "remaining": 24,
-    "writtenChapters": 78,
+    "written": 1031,
+    "remaining": 0,
+    "writtenChapters": 80,
     "chapters": [
       {
         "collection": "ode",
@@ -19305,20 +19305,55 @@
         "collection": "tech",
         "chapter": 6,
         "total": 12,
-        "written": 0,
-        "remaining": 12,
-        "writtenItems": [],
-        "status": "planned"
+        "written": 12,
+        "remaining": 0,
+        "writtenItems": [
+          "tech-6.1",
+          "tech-6.2",
+          "tech-6.3",
+          "tech-6.4",
+          "tech-6.5",
+          "tech-6.6",
+          "tech-6.7",
+          "tech-6.8",
+          "tech-6.9",
+          "tech-6.10",
+          "tech-6.11",
+          "tech-6.12"
+        ],
+        "status": "written"
       },
       {
         "collection": "bighist",
         "chapter": 5,
         "total": 12,
-        "written": 0,
-        "remaining": 12,
-        "writtenItems": [],
-        "status": "planned"
+        "written": 12,
+        "remaining": 0,
+        "writtenItems": [
+          "bighist-5.1",
+          "bighist-5.2",
+          "bighist-5.3",
+          "bighist-5.4",
+          "bighist-5.5",
+          "bighist-5.6",
+          "bighist-5.7",
+          "bighist-5.8",
+          "bighist-5.9",
+          "bighist-5.10",
+          "bighist-5.11",
+          "bighist-5.12"
+        ],
+        "status": "written"
       }
     ]
+  },
+  "completed": "2026-10-22T10:24:54.750Z",
+  "acceptance": {
+    "chapters": 80,
+    "newItems": 1031,
+    "source": "fdcb3fd55a5d6a036f0d57443d3b5259d007825d",
+    "report": "docs/verification/wave5-production.md",
+    "tests": 3413,
+    "mapPerformance": "deferred-by-user"
   }
 }
