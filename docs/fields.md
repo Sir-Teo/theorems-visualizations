@@ -147,6 +147,9 @@ an eigen-direction, an orthonormal frame, an ellipse's axes) with live numbers.
   3D shapes through `v.scene3`.
 - Separate encounter coefficients, surface reaction speeds and first-order transfer rates. The diffusion coefficient in m³/s needs the factor 1000 Nₐ to become L mol⁻¹ s⁻¹. Declare electrochemical current signs and distinguish a one-way Tafel/film approximation from the signed net Butler–Volmer current. See the [kinetics review](verification/wave5-kin-review.md).
 
+- A finite orbital basis has a capacity and a chosen energy ordering: reject unsupported occupations rather than clamp them. Zero formal bond order does not rule out weak dispersion binding. Keep nonorthogonal orbital coefficients separate from probabilities, and distinguish exact full-line Morse binding from finite-box eigenvalues. Modern Lewis or Gaussian exercises are not reproductions of unread original papers. See the [bonding review](verification/wave5-qchem-review.md).
+- Griffith energy accounting depends on fixed force versus fixed displacement; declare its reference energy and units. Plane-strain energy release uses the correct effective modulus. Preserve actual ellipse aspect ratios in stress-concentration pictures. Distinguish a Larson–Miller rupture-time relation from steady creep rate, and specify which deformation mechanisms add and which compete. See the [materials review](verification/wave5-mat-review.md).
+
 ## Biology
 
 - Initialize a finite diploid sample on its actual count grid K/(2N), and compare it with a deterministic trajectory starting at that same frequency. A finite positive mutation matrix retains positive equilibrium frequencies; a sharp long-sequence error threshold does not make a finite displayed genotype vanish exactly. See the [mutation/migration review](verification/wave5-popgen-review.md).
