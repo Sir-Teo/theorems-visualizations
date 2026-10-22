@@ -8,7 +8,7 @@ The [frozen inventory](../wave-6.md) has80 chapters,1,057 new items and two pres
 | --- | ---: | --- | --- |
 | ML6 The VC-Dimension | 16 | Independently accepted on exact author v1; integrated3adf7f9e | author_ml; independent reviewer wave5_reviewer |
 | VCALC6 Surfaces and surface integrals | 10 | Independently accepted1660d41d; integrated3adf7f9e | author_vcalc; independent reviewer root |
-| PDE6 Waves in space | 10 | Independently accepted6e871ce1; next accepted-export checkpoint pending | author_vcalc; independent reviewer root |
+| PDE6 Waves in space | 10 | Independently accepted6e871ce1; integratedfacab15e | author_vcalc; independent reviewer root |
 
 The first26 new ideas in two chapters have independent chapter acceptance; availability alone does not certify the remaining78 chapters. [ML source/model/native evidence](wave6-ml-review.md) retains exact atomic events, rational sine phases, qualified sample rates, the supplied natural-log proof and original-source stops. [Surface evidence](wave6-vcalc-review.md) retains the independent800-digit references, repaired original-angle/mesh-count/legend findings and complete tiny-value disclosures. Accepted author manifests are /tmp/wave6-ml-peer-final-freeze-v1.sha256 and /tmp/wave6-vcalc-peer-accepted-author-freeze-v2.sha256.
 
@@ -25,6 +25,17 @@ Logs `/tmp/atlas-wave6-two-{core,build,static,tests,production,home,smoke,invent
 
 Progress was refreshed only in the accepted export after these gates:26/1,057 new ideas, two accepted chapters,1,031 remaining. Frozen assignments, two preserved entries and completed legacy Wave5 plan remain unchanged. Only intended progress/inventory reports were copied back.
 
-PDE6's additional ten ideas are independently accepted at6e871ce1; [review evidence](wave6-pde-review.md) retains3,997 model/value/delay comparisons,2,373 phase increments, repaired quadrature/cancellation/aliasing findings and source stops. Fresh root40+16replacement layouts cover40 distinct final configurations with1,801 counted actions/1,192 state URLs/568 actual Creates plus five real input/related links and28 cold rich captures. Final21 focused/static10/0/0 and metadata checks pass. Manifest `/tmp/wave6-pde-peer-accepted-freeze-v1.sha256` preserves exact author bytes. Its accepted-export integration is now pending; saved inventory remains the prior26-item checkpoint until that gate passes.
+PDE6's additional ten ideas are independently accepted at6e871ce1; [review evidence](wave6-pde-review.md) retains3,997 model/value/delay comparisons,2,373 phase increments, repaired quadrature/cancellation/aliasing findings and source stops. Fresh root40+16replacement layouts cover40 distinct final configurations with1,801 counted actions/1,192 state URLs/568 actual Creates plus five real input/related links and28 cold rich captures. Final21 focused/static10/0/0 and metadata checks pass. Manifest `/tmp/wave6-pde-peer-accepted-freeze-v1.sha256` preserves exact author bytes.
 
-At most three workers and two browsers. ODE6 author repair and independent offline review continue after safe browser closure; ALG9 is being authored offline with distinct actual source bodies and the Judson original access stop retained. No draft is included in accepted-only exports. Root owns shared docs/bridges/Git/serial integration; local commits only. Source restrictions and deferred performance work remain binding.
+The next accepted-only source `facab15e297c645d4826935f2c011a4cf367ee88`, export `/tmp/atlas-wave6-three-export-path`, integrates36 new ideas in three chapters. ODE6/ALG9 drafts, tmp and dependency directories were excluded from git archive; installed dependencies were linked afterward. Node22.23.3 gates pass:
+
+- Strict build7,751written/5,823planned/531writtenchapters/85collections, zero errors/warnings; static7,688visualizations/0/0.
+- Full suite3,457/3,457, zero failures/skips/cancellations,68.483seconds. One full suite for this new accepted batch.
+- All ten new PDE items in320px light/dark:20distinct production cases/20physical control edits/20actual Create replays, generated metadata parity and rich/readout bounds, zero errors.
+-16targeted routes/zero errors, including all ten new item routes and functional home/map/bridges/status/chapter pages. All three actual home New links PDE6/ML6/VCALC6 pass; home123,750bytes gzip. No performance/timing claim.
+- All three accepted author manifests unchanged.15bridges/182steps/179unique written ideas/zero unresolved; symmetryqm8.8 note unchanged. No bridge edits or historical bridge browser matrix rerun.
+- All64 non-math collections meet25published cross-field edges under accepted accounting; old excluded BIGHIST3.5→PMA8.6 and acceptance metadata remain unchanged. Inventory counts do not certify source semantics.
+
+Logs `/tmp/atlas-wave6-three-{core,build,static,tests,production,home,smoke,inventory,progress}.log`. All root checkpoint browsers/servers actually closed. Progress was refreshed only in this accepted export after all gates:36/1,057new ideas/three accepted chapters/1,021remaining. Frozen assignments, two preserved entries and completed legacy Wave5 plan remain unchanged; only intended progress/inventory files were copied back.
+
+At most three workers and two browsers. ODE6 author native replacements and independent offline review continue with preserved genuine and fixture failures. ALG9 is being authored/reviewed offline with distinct actual source bodies and the Judson original access stop retained. No draft is included in these accepted-only exports. Root owns shared docs/bridges/Git/serial integration; local commits only. Source restrictions and deferred performance work remain binding.
