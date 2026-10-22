@@ -17510,9 +17510,9 @@
   "authoringDirection": "User confirmed prior work done; continuously author future waves without routine pauses.",
   "progress": {
     "total": 1031,
-    "written": 722,
-    "remaining": 309,
-    "writtenChapters": 55,
+    "written": 754,
+    "remaining": 277,
+    "writtenChapters": 58,
     "chapters": [
       {
         "collection": "ode",
@@ -18205,10 +18205,25 @@
         "collection": "cg",
         "chapter": 5,
         "total": 14,
-        "written": 0,
-        "remaining": 14,
-        "writtenItems": [],
-        "status": "planned"
+        "written": 14,
+        "remaining": 0,
+        "writtenItems": [
+          "cg-5.1",
+          "cg-5.2",
+          "cg-5.3",
+          "cg-5.4",
+          "cg-5.5",
+          "cg-5.6",
+          "cg-5.7",
+          "cg-5.8",
+          "cg-5.9",
+          "cg-5.10",
+          "cg-5.11",
+          "cg-5.12",
+          "cg-5.13",
+          "cg-5.14"
+        ],
+        "status": "written"
       },
       {
         "collection": "em",
@@ -18856,19 +18871,39 @@
         "collection": "behav",
         "chapter": 6,
         "total": 9,
-        "written": 0,
-        "remaining": 9,
-        "writtenItems": [],
-        "status": "planned"
+        "written": 9,
+        "remaining": 0,
+        "writtenItems": [
+          "behav-6.1",
+          "behav-6.2",
+          "behav-6.3",
+          "behav-6.4",
+          "behav-6.5",
+          "behav-6.6",
+          "behav-6.7",
+          "behav-6.8",
+          "behav-6.9"
+        ],
+        "status": "written"
       },
       {
         "collection": "psych",
         "chapter": 5,
         "total": 9,
-        "written": 0,
-        "remaining": 9,
-        "writtenItems": [],
-        "status": "planned"
+        "written": 9,
+        "remaining": 0,
+        "writtenItems": [
+          "psych-5.1",
+          "psych-5.2",
+          "psych-5.3",
+          "psych-5.4",
+          "psych-5.5",
+          "psych-5.6",
+          "psych-5.7",
+          "psych-5.8",
+          "psych-5.10"
+        ],
+        "status": "written"
       },
       {
         "collection": "soc",
