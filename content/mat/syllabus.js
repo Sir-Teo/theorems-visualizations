@@ -143,34 +143,177 @@ export default {
     },
     // ───────────────────────────────────────────────────────────── 5
     {
-      n: 5,
-      title: 'Fracture, fatigue and creep',
-      summary: String.raw`Materials fail by cracks that grow, by repeated loading far below the yield stress, or by slow flow at high temperature. Griffith's energy balance and the stress-intensity factor explain why flaws control brittle strength and why that strength is statistical; S–N curves and the Paris law govern fatigue; and creep laws, Larson–Miller extrapolation and deformation-mechanism maps tell how long a hot component will last.`,
-      items: [
-        { num: '5.1', kind: 'Concept', name: 'Ductile versus brittle fracture', deps: ['mat-4.1'], refs: ['Callister §8.3', 'Callister §8.4'],
-          pic: 'Break a bar of copper and a bar of glass in simulation: cup-and-cone fracture with large strain versus a flat cleavage surface with almost none, drawn with the stress–strain curves side by side.' },
-        { num: '5.2', kind: 'Proposition', name: 'Stress concentration at holes and notches', deps: ['mat-4.2'], refs: ['Callister §8.5'],
-          pic: 'Pull a plate containing an elliptical hole: the computed stress at the tip rises as 1 + 2a/b, reaching 3 for a circle and diverging as the ellipse flattens into a crack.' },
-        { num: '5.3', kind: 'Theorem', name: 'Griffith criterion', deps: ['mat-5.2', 'pchem-4.9', 'solid-11.4'], refs: ['Callister §8.5'],
-          pic: 'Grow a crack in a stressed plate: released elastic energy rises as a², the new-surface cost as a, and beyond the critical length the energy curve tips downhill and the crack runs.' },
-        { num: '5.4', kind: 'Definition', name: 'Stress intensity and fracture toughness K_IC', deps: ['mat-5.3', 'solid-11.6'], refs: ['Callister §8.5', 'Callister §8.6'],
-          pic: 'Choose a material and crack length: K = Yσ√(πa) is compared with K_IC, and a failure map shows which combinations of stress and flaw size are safe for steel, aluminium and glass.' },
-        { num: '5.5', kind: 'Phenomenon', name: 'Ductile-to-brittle transition', deps: ['mat-5.1', 'mat-3.4'], refs: ['Callister §8.6'],
-          pic: 'Run simulated Charpy tests across temperature for bcc steel and fcc aluminium: the steel’s absorbed energy collapses below a transition temperature — the failure of the Liberty ships — while aluminium’s does not.' },
-        { num: '5.6', kind: 'Model', name: 'Weibull statistics of brittle strength', deps: ['mat-5.4'], refs: ['Callister §12.8'],
-          pic: 'Break hundreds of ceramic bars with random flaw populations: failure strengths follow a Weibull distribution, and larger specimens are weaker because they are likelier to contain a big flaw.' },
-        { num: '5.7', kind: 'Law', name: 'S–N curves and Basquin’s law', deps: ['mat-4.3'], refs: ['Callister §8.8'],
-          pic: 'Cycle a specimen at different stress amplitudes: cycles to failure fall on a straight line on log axes, and steel shows a flat fatigue limit while aluminium keeps declining.' },
-        { num: '5.8', alias: 'solid-11.8', name: 'Paris law for fatigue crack growth' },
-        { num: '5.9', alias: 'solid-4.8', name: 'Miner’s rule of cumulative damage' },
-        { num: '5.10', kind: 'Phenomenon', name: 'Creep: primary, secondary and tertiary', deps: ['mat-2.7'], refs: ['Callister §8.12'],
-          pic: 'Hold a hot specimen at constant load: strain against time shows a decelerating, then steady, then accelerating stage, and raising the temperature or load shortens every stage.' },
-        { num: '5.11', kind: 'Law', name: 'Power-law creep and the Larson–Miller parameter', deps: ['mat-5.10'], refs: ['Callister §8.13', 'Callister §8.14'],
-          pic: 'Plot steady creep rate against stress on log axes for several temperatures: lines of slope n shifted by an Arrhenius factor, collapsed onto one master curve by the Larson–Miller parameter.' },
-        { num: '5.12', kind: 'Method', name: 'Deformation-mechanism maps', deps: ['mat-5.11', 'mat-3.5'], refs: ['Callister §8.13'],
-          pic: 'Drag a point over a stress–homologous-temperature map for nickel: regions of dislocation glide, power-law creep and diffusional creep are coloured with contours of strain rate, and grain size moves the boundaries.' },
-        { num: '5.13', alias: 'solid-11.12', name: 'The Phenomena of Rupture and Flow in Solids' },
-      ],
+      "n": 5,
+      "title": "Fracture, fatigue and creep",
+      "summary": "Cracks concentrate stress and change the potential energy available for growth. Brittle strength can be statistical; repeated loading and time-dependent flow introduce different failure processes. Every calculation here declares its loading convention and model: an elastic fracture threshold, an empirical fatigue law and a creep correlation answer different questions.",
+      "items": [
+        {
+          "num": "5.1",
+          "kind": "Concept",
+          "name": "Ductile versus brittle fracture",
+          "deps": [
+            "mat-4.1"
+          ],
+          "refs": [
+            "Roylance, Introduction to Fracture Mechanics, pp1–4,10–15",
+            "Bower, Applied Mechanics of Solids §9.1"
+          ],
+          "pic": "Compare an authored elastic specimen with an authored hardening specimen. Change the assigned separation strain and move through loading: the stress and integrated work are computed from the declared law. The uniform gauge drawing shows elongation only; it does not simulate voids, necking or a cup-and-cone fracture surface."
+        },
+        {
+          "num": "5.2",
+          "kind": "Proposition",
+          "name": "Stress concentration at holes and notches",
+          "deps": [
+            "mat-4.2"
+          ],
+          "refs": [
+            "Roylance, Closed-Form Solutions, pp7–10, Eq33–34"
+          ],
+          "pic": "Flatten the ellipse and rotate the remote uniaxial load. The boundary colours and angular curve use the actual Inglis boundary formula; compressive tangential portions are distinguished. The gold point tracks the selected boundary position. No interior stress field is invented."
+        },
+        {
+          "num": "5.3",
+          "kind": "Theorem",
+          "name": "Griffith criterion",
+          "deps": [
+            "mat-4.2",
+            "mat-5.2"
+          ],
+          "see": [
+            "solid-11.4",
+            "pchem-4.9"
+          ],
+          "refs": [
+            "Roylance, Introduction to Fracture Mechanics, energy/compliance sections pp2–8 (conventions restated here)",
+            "Pippan–Wurster–Kiener2018 §6 Fig13, correct plane-strain conversion",
+            "Bower §9.4.1–4"
+          ],
+          "pic": "Compare surface cost with released elastic potential for the central crack, then switch to a separate chosen compliance example. Fixed force and fixed displacement start at equal force but release different energy as compliance increases. The live derivative shows why crossing a threshold and subsequent instability are different claims."
+        },
+        {
+          "num": "5.4",
+          "kind": "Definition",
+          "name": "Stress intensity and fracture toughness K_IC",
+          "deps": [
+            "mat-5.3",
+            "mat-4.2"
+          ],
+          "see": [
+            "solid-11.6"
+          ],
+          "refs": [
+            "Pippan–Wurster–Kiener2018 §6/Fig13–14",
+            "Roylance fracture pp7–12, geometry/constraint caveats"
+          ],
+          "pic": "Change flaw half-length, remote stress, geometry and the chosen resistance. The map compares $K_I$ with that resistance; the second panel shows the leading on-axis elastic field and a plastic-zone size diagnostic. Values below the resistance are labelled below this model threshold, never universally safe."
+        },
+        {
+          "num": "5.5",
+          "kind": "Phenomenon",
+          "name": "Ductile-to-brittle transition",
+          "deps": [
+            "mat-5.1",
+            "mat-3.4"
+          ],
+          "refs": [
+            "NIST Charpy Machine Verification Program, test interpretation and transition-curve fitting",
+            "Roylance fracture pp13–15"
+          ],
+          "pic": "Change the midpoint and transition width of an explicitly authored absorbed-energy curve. Move the energy criterion to see its temperature shift, and compare a sharp with a broad transition. These are computed model values, not simulated Charpy measurements or Liberty-ship evidence."
+        },
+        {
+          "num": "5.6",
+          "kind": "Model",
+          "name": "Weibull statistics of brittle strength",
+          "deps": [
+            "mat-5.4"
+          ],
+          "refs": [
+            "Cook–DelRio2019, Material Flaw Populations…; Component Strength Distribution, Appendix: Inhomogeneous Loading",
+            "Roylance, Statistics of Fracture pp8–12"
+          ],
+          "pic": "Change the volume ratio, shape parameter and uniform/bending field. The analytic hazard integral changes the survival curve; 200 separately drawn values from the seeded model show a finite empirical CDF. The readout separates conditional-model probability, empirical fraction and its Monte Carlo standard-error estimate."
+        },
+        {
+          "num": "5.7",
+          "kind": "Law",
+          "name": "S–N curves and Basquin’s law",
+          "deps": [
+            "mat-4.2"
+          ],
+          "see": [
+            "mat-4.3",
+            "mat-5.8",
+            "mat-5.9"
+          ],
+          "refs": [
+            "MIT2.002 fatigue notes pp17–22, Basquin relation and reversals convention"
+          ],
+          "pic": "Change the amplitude and exponent. The waveform distinguishes amplitude from range, while the S–N panel and readout use cycles and reversals consistently. Switch on a chosen ideal floor to expose its extra assumption; it is not an experimentally established steel fatigue limit."
+        },
+        {
+          "num": "5.8",
+          "alias": "solid-11.8",
+          "name": "Paris law for fatigue crack growth"
+        },
+        {
+          "num": "5.9",
+          "alias": "solid-4.8",
+          "name": "Miner’s rule of cumulative damage"
+        },
+        {
+          "num": "5.10",
+          "kind": "Phenomenon",
+          "name": "Creep: primary, secondary and tertiary",
+          "deps": [
+            "mat-4.1"
+          ],
+          "see": [
+            "mat-2.7"
+          ],
+          "refs": [
+            "Roylance, Dislocation Basis of Yield and Creep pp12–13",
+            "MIT2.611 Creep p1"
+          ],
+          "pic": "Compare fixed force with fixed true stress, varying the initial rate and stress exponent. The strain and rate come from the exact integrated ODE. The time window stops before its mathematical blow-up; its location is not a measured or predicted rupture time."
+        },
+        {
+          "num": "5.11",
+          "kind": "Law",
+          "name": "Power-law creep and the Larson–Miller parameter",
+          "deps": [
+            "mat-5.10",
+            "mat-2.7"
+          ],
+          "refs": [
+            "Roylance, Dislocation Basis of Yield and Creep p13 Eq8",
+            "MIT2.611 Creep pp1–3, time-to-rupture parameter"
+          ],
+          "pic": "Compare separately computed rate and rupture-correlation panels across three temperatures. Change the stress exponent to affect the rate model, and the Larson–Miller constant to affect the rupture correlation. The readout exposes their independent assumptions and units."
+        },
+        {
+          "num": "5.12",
+          "kind": "Method",
+          "name": "Deformation-mechanism maps",
+          "deps": [
+            "mat-5.11",
+            "mat-2.7"
+          ],
+          "see": [
+            "mat-3.5"
+          ],
+          "refs": [
+            "Frost–Ashby, author-hosted Deformation-Mechanism Maps §§1.2–1.4,2.4–2.5,3.1–3.2"
+          ],
+          "pic": "Move the stress and temperature controls and change grain size. The coloured field is recomputed from four declared dimensionless rate candidates; contours approximate levels of the actual net rate. The bars give active contribution fractions at the selected point, including the excluded slower dislocation alternative as zero."
+        },
+        {
+          "num": "5.13",
+          "alias": "solid-11.12",
+          "name": "The Phenomena of Rupture and Flow in Solids"
+        }
+      ]
     },
     // ───────────────────────────────────────────────────────────── 6
     {
