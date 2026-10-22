@@ -243,6 +243,7 @@ an eigen-direction, an orthonormal frame, an ellipse's axes) with live numbers.
 
 ## Arts, music & design
 
+- Structural equilibrium, elastic displacement and material-volume proxies answer different questions. Declare supports, load positions, stress/service limits and excluded instability costs. A Maxwell count does not establish rigidity; a reciprocal needs globally shared force vertices. Scale unit-load solutions before final force rounding so underflowed displacements do not erase representable forces. See the [structural review](verification/wave5-arch-review.md).
 - **Make it audible** when it is about sound: `v.sound()` (once the runtime agent lands it) plays
   tones from partials and sample buffers; offer a "▶ Listen" button next to the picture. Sound
   must never autoplay.
