@@ -132,31 +132,189 @@ export default {
       ],
     },
     {
-      n: 5,
-      title: 'Nonlinear kinetics, metabolism and interactions',
-      summary: String.raw`When metabolizing enzymes saturate, elimination follows Michaelis–Menten kinetics and small dose changes can produce large changes in steady-state concentration. Enzyme inhibition and induction underlie most drug–drug interactions, and genetic variation in enzymes splits populations into poor and ultra-rapid metabolizers. Metabolites, prodrugs and target binding add further nonlinear behaviour.`,
-      items: [
-        { num: '5.1', kind: 'Model', name: 'Michaelis–Menten elimination', deps: ['mathbio-5.4', 'pharm-2.1', 'kin-6.2'], refs: ['Rowland–Tozer'],
-          pic: 'Elimination rate saturates at V_max as concentration rises; the semilog decline after a large dose is concave, nearly linear at high concentrations and exponential at low ones.' },
-        { num: '5.2', kind: 'Phenomenon', name: 'Phenytoin: disproportionate rise at steady state', deps: ['pharm-5.1'], refs: ['Rowland–Tozer'],
-          pic: 'Plot steady-state concentration against daily dose; as the dosing rate approaches V_max the curve shoots up, so a 20% dose increase can double the level.' },
-        { num: '5.3', kind: 'Phenomenon', name: 'Zero-order elimination of ethanol', deps: ['pharm-5.1'], refs: ['Goodman–Gilman ch. 6'],
-          pic: 'Blood alcohol after several drinks falls along a straight line at about one drink per hour, because alcohol dehydrogenase is saturated; the line bends only at low levels.' },
-        { num: '5.4', kind: 'Concept', name: 'Enzyme inhibition and induction', deps: ['pharm-5.1', 'mathbio-5.7'], refs: ['Goodman–Gilman ch. 6'],
-          pic: 'Add an inhibitor and intrinsic clearance falls; add an inducer and enzyme levels rise over days; the victim drug’s concentration curve shifts accordingly.' },
-        { num: '5.5', kind: 'Method', name: 'Predicting interaction size from the inhibitor’s Ki', deps: ['pharm-5.4'], refs: ['Rowland–Tozer'],
-          pic: 'The AUC ratio 1/(f_m/(1 + I/K_i) + 1 − f_m) is plotted against inhibitor concentration; interactions become severe only when the inhibited pathway dominates elimination.' },
-        { num: '5.6', kind: 'Concept', name: 'Pharmacogenetics: CYP2D6 metabolizer phenotypes', deps: ['pharm-5.4', 'popgen-1.5'], refs: ['Goodman–Gilman ch. 7'],
-          pic: 'Allele frequencies for null, reduced and duplicated CYP2D6 genes give Hardy–Weinberg genotype frequencies; each phenotype’s drug exposure is drawn as a separate concentration curve.' },
-        { num: '5.7', kind: 'Model', name: 'Autoinduction (carbamazepine)', deps: ['pharm-5.4'], refs: ['Rowland–Tozer'],
-          pic: 'A drug induces its own metabolism over weeks; concentrations rise at first and then fall even at constant dosing, as clearance creeps up.' },
-        { num: '5.8', kind: 'Model', name: 'Parent–metabolite kinetics and prodrugs', deps: ['pharm-2.7'], refs: ['Rowland–Tozer'],
-          pic: 'A prodrug is converted into its active metabolite; the metabolite curve lags the parent, and when its elimination is slower it outlasts the parent, as with codeine and morphine.' },
-        { num: '5.9', kind: 'Concept', name: 'Saturable protein binding', deps: ['pharm-1.7'], refs: ['Rowland–Tozer'],
-          pic: 'As total concentration rises, binding sites fill and the unbound fraction climbs; total and unbound steady-state levels then respond differently to dose increases.' },
-        { num: '5.10', kind: 'Model', name: 'Target-mediated drug disposition', deps: ['pharm-5.1', 'mathbio-5.2'], refs: ['Rowland–Tozer'],
-          pic: 'A biologic binds its target tightly and is cleared with it; low doses vanish quickly while high doses saturate the target and show slower linear elimination.' },
-      ],
+      "n": 5,
+      "title": "Nonlinear kinetics, metabolism and interactions",
+      "summary": "Concentration-dependent elimination breaks the constant-clearance picture. Saturation, enzyme turnover and binding each introduce a different mechanism; genotype classification introduces a different kind of uncertainty. Explicit balances show which changes affect free concentration, total concentration or metabolite formation. All numerical experiments use chosen educational parameters.",
+      "items": [
+        {
+          "num": "5.1",
+          "kind": "Model",
+          "name": "Michaelis–Menten elimination",
+          "deps": [
+            "mathbio-5.4",
+            "pharm-2.1"
+          ],
+          "refs": [
+            "MATHBIO 5.4: actual integrated depletion law and QSSA hypotheses",
+            "Authored constant-volume compartment reduction"
+          ],
+          "see": [
+            "kin-6.2",
+            "pharm-5.2"
+          ],
+          "pic": "Move the time marker and change the initial concentration, capacity and Michaelis scale. Compare the saturating elimination-rate curve with the computed decline. Switch to log concentration to see the slope become more negative as saturation eases."
+        },
+        {
+          "num": "5.2",
+          "kind": "Phenomenon",
+          "name": "Phenytoin: disproportionate rise at steady state",
+          "deps": [
+            "pharm-5.1"
+          ],
+          "refs": [
+            "Official DailyMed phenytoin label, §12.3 Metabolism",
+            "Independent steady balance and sensitivity derivation"
+          ],
+          "see": [
+            "pharm-5.5"
+          ],
+          "pic": "Change input as a fraction of elimination capacity. Near capacity, compare a small input change with the much larger steady concentration change. At or above capacity the readout reports no finite steady state. The plotted branch ends at q=0.95; its endpoint is a plotting limit."
+        },
+        {
+          "num": "5.3",
+          "kind": "Phenomenon",
+          "name": "Zero-order elimination of ethanol",
+          "deps": [
+            "pharm-5.1"
+          ],
+          "refs": [
+            "Wall, Luczak & Hiller-Sturmhöfel, Biology, Genetics, and Environment, printed p.60, Alcohol Metabolism",
+            "Authored asymptotic comparison of the5.1 model"
+          ],
+          "see": [
+            "pharm-5.8"
+          ],
+          "pic": "Compare the actual positive saturable decline with a high-concentration straight-line approximation and a low-concentration exponential. The straight segment is drawn only while its own concentration is at least 5 K, a declared illustration threshold; the exact curve continues smoothly below it."
+        },
+        {
+          "num": "5.4",
+          "kind": "Concept",
+          "name": "Enzyme inhibition and induction",
+          "deps": [
+            "pharm-5.1",
+            "mathbio-5.7",
+            "ode-1.4"
+          ],
+          "refs": [
+            "MATHBIO 5.7: competitive low-substrate limit",
+            "FDA/ICH M12 (2024), inhibition/induction mechanisms",
+            "Authored first-order enzyme step"
+          ],
+          "see": [
+            "pharm-5.5",
+            "pharm-5.7"
+          ],
+          "pic": "Change fixed inhibitor and inducer ratios and move through the enzyme response. Compare the immediate inhibition factor, the growing enzyme abundance and their combined pathway factor. A zero inducer removes the gradual change; a zero inhibitor removes the immediate reduction."
+        },
+        {
+          "num": "5.5",
+          "kind": "Method",
+          "name": "Predicting interaction size from the inhibitor’s Ki",
+          "deps": [
+            "pharm-5.4",
+            "pharm-1.5",
+            "pharm-1.4"
+          ],
+          "refs": [
+            "FDA/ICH M12 (2024), Appendix D §7.5.1, printed pp.50–51: scope comparison",
+            "Independent parallel-clearance and well-stirred balances"
+          ],
+          "see": [
+            "pharm-3.6"
+          ],
+          "pic": "Switch between the parallel total-clearance approximation and the well-stirred organ comparison. Change free inhibitor/Ki, the affected fraction or intrinsic clearance. The selected ratio is computed from the corresponding model, including its unaffected route."
+        },
+        {
+          "num": "5.6",
+          "kind": "Concept",
+          "name": "Pharmacogenetics: CYP2D6 metabolizer phenotypes",
+          "deps": [
+            "pharm-5.4",
+            "popgen-1.5"
+          ],
+          "refs": [
+            "CPIC 2026 ondansetron/tropisetron update, PDF p.2, Table 1 and genetic-test text",
+            "CPIC opioid guideline (2021), PDF p.3, inhibitor phenoconversion paragraph"
+          ],
+          "see": [
+            "pharm-5.8"
+          ],
+          "pic": "Choose an explicitly identified configuration or an unresolved/uncertain example, then compare baseline and inhibitor-adjusted classifications. In the separate two-haplotype pool, vary a chosen frequency and each haplotype's functional score; inspect the three exact expected genotype proportions."
+        },
+        {
+          "num": "5.7",
+          "kind": "Model",
+          "name": "Autoinduction (carbamazepine)",
+          "deps": [
+            "pharm-5.4",
+            "pharm-2.1",
+            "ode-1.4"
+          ],
+          "refs": [
+            "Official DailyMed carbamazepine extended-release label, Clinical Pharmacology",
+            "Authored concentration/enzyme turnover balance"
+          ],
+          "see": [
+            "pharm-5.2"
+          ],
+          "pic": "Change constant input, basal removal, induction strength and enzyme turnover. Watch the computed concentration and enzyme traces. Compare the achieved maximum with the final value and the derived equilibrium; weak or fast induction may have no visible overshoot."
+        },
+        {
+          "num": "5.8",
+          "kind": "Model",
+          "name": "Parent–metabolite kinetics and prodrugs",
+          "deps": [
+            "pharm-2.7",
+            "pharm-2.1"
+          ],
+          "refs": [
+            "PHARM 2.7: actual two-stage integrating-factor derivation",
+            "Independent formation-fraction and eliminated-equivalent balance"
+          ],
+          "see": [
+            "pharm-5.6"
+          ],
+          "pic": "Vary both rates, the formation fraction and the initial amount. Move the time marker to inspect parent, metabolite and eliminated equivalents in the accounting panel. Apply the equal-rate button to check the actual limiting formula."
+        },
+        {
+          "num": "5.9",
+          "kind": "Concept",
+          "name": "Saturable protein binding",
+          "deps": [
+            "pharm-1.7",
+            "mathbio-5.2",
+            "pharm-1.4"
+          ],
+          "refs": [
+            "MATHBIO 5.2: actual free-ligand binding and conservation",
+            "PHARM 1.7: low- versus high-extraction distinction",
+            "Independent monotone inverse and steady balance"
+          ],
+          "see": [
+            "pharm-5.10"
+          ],
+          "pic": "Choose total concentration to see the separately computed free and bound amounts. Switch to the constant-input steady comparison: change binding capacity while observing that the chosen model's free steady concentration is fixed by input/unbound clearance."
+        },
+        {
+          "num": "5.10",
+          "kind": "Model",
+          "name": "Target-mediated drug disposition",
+          "deps": [
+            "pharm-5.1",
+            "mathbio-5.2",
+            "pharm-2.1"
+          ],
+          "refs": [
+            "Mager & Jusko (2001), actually read PubMed abstract only; original body unread",
+            "Authored mass-action/turnover and ligand balance"
+          ],
+          "see": [
+            "pharm-5.9"
+          ],
+          "verify": true,
+          "pic": "Compare binding with internalization, binding without internalization and binding switched off. Change initial ligand, target abundance and association. Inspect free, bound and total drug alongside target turnover and the independently integrated elimination balance."
+        }
+      ]
     },
     {
       n: 6,
