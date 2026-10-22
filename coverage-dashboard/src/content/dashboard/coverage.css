@@ -1,0 +1,3 @@
+.coverage-dashboard{padding-top:16px}.coverage-links{display:flex;gap:20px;flex-wrap:wrap;font-size:13px;margin-bottom:20px}.coverage-links a{color:var(--text-secondary);text-underline-offset:3px}.coverage-note{font-size:13px;line-height:1.6;color:var(--text-secondary);margin:0 0 16px}.coverage-dashboard a:focus-visible{outline:3px solid var(--chart-1);outline-offset:3px}.coverage-dashboard .coverage-note:last-child{margin-top:12px;margin-bottom:0}
+
+.coverage-cell{display:block;white-space:normal;width:clamp(150px,22vw,330px);overflow-wrap:anywhere;line-height:1.5}

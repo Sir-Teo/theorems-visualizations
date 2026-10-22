@@ -1,0 +1,4 @@
+# Rebuilt output is staged once under ../labs/atlas/coverage/.
+/dist/
+/.data-app-offline/
+/node_modules/

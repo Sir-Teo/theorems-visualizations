@@ -12,6 +12,8 @@ Registry 0.3.0 completes an exact independent AI review of the 79 previously fla
 
 Thirty [domain orientations](coverage/overviews.md) now have scoped institutional reading receipts, original questions/methods/gaps, concrete next-reading tasks and exact independent AI source-content/engineering review. They render locally with existing collection and pilot links. This advances U3 navigation without adding lessons or production coverage; public routes remain open.
 
+The [coverage and review dashboard](coverage/dashboard/README.md) now provides a pinned, independently checked local view of canonical production counts, the pilot programme, distinct Wave/visual ledgers, review age and concrete open actions. It preserves unknown human/evaluation evidence and exposes the old 26/36 Wave ledger discrepancy. Refresh is reproducible; this is a snapshot, not a live monitor.
+
 ## Remaining execution queue
 
 | Stage | Concrete next work | Evidence required before marking it delivered |
@@ -22,7 +24,8 @@ Thirty [domain orientations](coverage/overviews.md) now have scoped institutiona
 | U3 production integration | Opt-in loading, evidence/review UI, public static routes and aliases, explicit withdrawal and note migration | Latest accepted production base; legacy IDs, dependencies, links, saved states and embeds preserved; draft exclusion; release-specific rights |
 | U3 domain orientation | Delivered locally: 30 researched and independently AI-reviewed overviews; broaden entry routes and integrate public navigation | Preserve exact review receipts, scope and gaps; additional situated/non-English routes need their own research; public integration remains separate |
 | U3 sequences | Research 16 follow-up lessons to extend eight pilots to 24 lessons | Each source and task researched before authoring, exact independent acceptance and no placeholder lesson targets |
-| U3 journeys and dashboard | Water/city; woven cloth; account/evidence; canonical coverage/review dashboard | All claimed lesson targets exist; evidence versus analogy distinguished; unique IDs and denominator reconciliation |
+| U3 dashboard | Delivered locally: separate canonical scopes, source inspector, review queues and reproducible refresh | Exact pinned source/build bindings; later ledger changes require refresh; no inferred human evidence |
+| U3 journeys | Water/city; woven cloth; account/evidence | All claimed lesson targets exist and are accepted; evidence versus analogy distinguished |
 | U4 introductory breadth | At least three accepted introductory explorations associated with each of 30 domains | Scoped syllabi, real accepted artifacts, method/place/language audit; cross-listings do not inflate global counts |
 | U4 depth | Freeze small new specialty batches from documented gaps | Source access and reviewer capacity, preserving existing mathematical/scientific depth |
 | U5 stewardship | Release scopes, correction/withdrawal queues, freshness and edition triggers, regional/language editions | Named responsibilities and reproducible evidence; no automatic claim that all knowledge is complete |

@@ -8,8 +8,8 @@ import { fileURLToPath } from 'node:url';
 import { createHash } from 'node:crypto';
 import { ROOT } from './lib.mjs';
 const hash = data => createHash('sha256').update(data).digest('hex');
-const allowed = path => /^(explorations\/|orientation\/|labs\/atlas\/|docs\/(coverage\/|pilots\/|architecture\/universal-schema-urls\.md$|integration\/universal-pilots(?:-baseline-plan|-review-session)?\.(json|md)$|verification\/universal-pilots(?:-review|-integration|-methods|-studio|-ai-(?:history|literature|philosophy|agriculture|craft|performance|code))?\.md$|master-plan-(?:handoff|execution)\.md$|exploration-authoring\.md$|universal-(coverage|atlas-research)\.md$))/.test(path)
-  || /^(MASTER_PLAN_V2_ARCHIVE\.md|scripts\/(build-explorations|build-domain-overviews|validate-coverage|check-exploration-integration)\.mjs|tests\/(coverage-registry|domain-overviews(?:-ui)?|explorations|exploration-methods|exploration-studio|explorations-ui|explorations-integration)\.test\.mjs|tests\/explorations-production\.mjs)$/.test(path);
+const allowed = path => /^(explorations\/|orientation\/|coverage-dashboard\/(?!dist\/|node_modules\/|\.data-app-offline\/)|labs\/atlas\/|docs\/(coverage\/|pilots\/|architecture\/universal-schema-urls\.md$|integration\/universal-pilots(?:-baseline-plan|-review-session)?\.(json|md)$|verification\/universal-pilots(?:-review|-integration|-methods|-studio|-ai-(?:history|literature|philosophy|agriculture|craft|performance|code))?\.md$|master-plan-(?:handoff|execution)\.md$|exploration-authoring\.md$|universal-(coverage|atlas-research)\.md$))/.test(path)
+  || /^(MASTER_PLAN_V2_ARCHIVE\.md|scripts\/(build-explorations|build-domain-overviews|build-coverage-dashboard(?:-data)?|capture-coverage-dashboard|coverage-dashboard-model|validate-coverage|check-exploration-integration)\.mjs|tests\/(coverage-registry|coverage-dashboard(?:-ui)?|domain-overviews(?:-ui)?|explorations|exploration-methods|exploration-studio|explorations-ui|explorations-integration)\.test\.mjs|tests\/explorations-production\.mjs)$/.test(path);
 export async function planOverlay(source, target, paths) {
   if (!Array.isArray(paths) || !paths.length || new Set(paths).size !== paths.length) throw new Error('Package paths must be unique');
   const plan=[];
@@ -46,12 +46,12 @@ export async function preflight({repo,base,ui=false}) {
   if(manifest.schemaVersion!==1 || manifest.mode!=='additive-local-preview' || manifest.manualReconcile?.join(',')!=='MASTER_PLAN.md') throw new Error('Unknown integration package contract');
   const plan=await planOverlay(ROOT,target,manifest.files);
   for(const {path,bytes} of plan){await mkdir(dirname(join(target,path)),{recursive:true});await writeFile(join(target,path),bytes);}
-  const commands=[['scripts/validate-coverage.mjs'],['scripts/build-explorations.mjs','--check'],['scripts/build-domain-overviews.mjs','--check'],['--test','tests/coverage-registry.test.mjs','tests/explorations.test.mjs','tests/explorations-integration.test.mjs','tests/exploration-methods.test.mjs','tests/exploration-studio.test.mjs','tests/domain-overviews.test.mjs']];
-  if(ui){await symlink(join(ROOT,'node_modules'),join(target,'node_modules'),'dir');commands.push(['--test','tests/explorations-ui.test.mjs'],['--test','tests/domain-overviews-ui.test.mjs']);}
+  const commands=[['scripts/validate-coverage.mjs'],['scripts/build-explorations.mjs','--check'],['scripts/build-domain-overviews.mjs','--check'],['scripts/build-coverage-dashboard.mjs'],['--test','tests/coverage-registry.test.mjs','tests/explorations.test.mjs','tests/explorations-integration.test.mjs','tests/exploration-methods.test.mjs','tests/exploration-studio.test.mjs','tests/domain-overviews.test.mjs','tests/coverage-dashboard.test.mjs']];
+  if(ui){await symlink(join(ROOT,'node_modules'),join(target,'node_modules'),'dir');commands.push(['--test','tests/explorations-ui.test.mjs'],['--test','tests/domain-overviews-ui.test.mjs'],['--test','tests/coverage-dashboard-ui.test.mjs']);}
   const checks=[];
   for(const args of commands){
     const log=join(temp,'check-'+(checks.length+1)+'.log');
-    try {const output=execFileSync(process.execPath,args,{cwd:target,encoding:'utf8',maxBuffer:8*1024*1024,env:{...process.env,ATLAS_PILOT_SCREENSHOTS:join(temp,'screenshots'),ATLAS_ORIENTATION_SCREENSHOTS:join(temp,'orientation-screenshots')}});await writeFile(log,output);checks.push({command:'node '+args.join(' '),result:'PASS',log});}
+    try {const output=execFileSync(process.execPath,args,{cwd:target,encoding:'utf8',maxBuffer:8*1024*1024,env:{...process.env,ATLAS_PILOT_SCREENSHOTS:join(temp,'screenshots'),ATLAS_ORIENTATION_SCREENSHOTS:join(temp,'orientation-screenshots'),ATLAS_COVERAGE_SCREENSHOTS:join(temp,'coverage-screenshots')}});await writeFile(log,output);checks.push({command:'node '+args.join(' '),result:'PASS',log});}
     catch(e){await writeFile(log,String(e.stdout||'')+String(e.stderr||''));throw new Error('Integration check failed; inspect '+log+'\n'+e.message);}
   }
   const changed=[];

@@ -4,7 +4,7 @@
 
 The broader plan now has a versioned coverage registry, eight researched briefs, an additive schema/URL contract, and **six working local prototypes: four accepted under bounded AI review (P01/P02 at 0.1.2 and P03/P05 at 0.1.0), plus P07/P08 in review with real-world and release checks open**. The [integration package](integration/universal-pilots.md) passed a rehearsal on the accepted Wave 6 checkpoint and compatibility checks on frozen expansion/redesign snapshots. This is an implementation foundation and a concrete queue, not a claim that all future disciplines, sources or review needs are solved.
 
-The active **“do all”** goal covers U0–U5. Continue from the [whole-roadmap execution ledger](master-plan-execution.md); a finished pilot batch is not completion of the broader goal. The latest U3 delivery is [30 reviewed local domain orientations](coverage/overviews.md). Classification checks are in the [crosswalk checkpoint](coverage/crosswalk-review.md), with pilot checks in the [studio checkpoint](verification/universal-pilots-studio.md); the earlier [method checkpoint](verification/universal-pilots-methods.md) remains historical evidence.
+The active **“do all”** goal covers U0–U5. Continue from the [whole-roadmap execution ledger](master-plan-execution.md); a finished pilot batch is not completion of the broader goal. The latest U3 deliveries are [30 reviewed local domain orientations](coverage/overviews.md) and the [coverage/review dashboard](coverage/dashboard/README.md). Classification checks are in the [crosswalk checkpoint](coverage/crosswalk-review.md), with pilot checks in the [studio checkpoint](verification/universal-pilots-studio.md); the earlier [method checkpoint](verification/universal-pilots-methods.md) remains historical evidence.
 
 ## Read these first
 
@@ -35,6 +35,7 @@ Continue in `/Users/teodev/.codex/worktrees/universal-pilots-integration/theorem
 | Preview build | `scripts/build-explorations.mjs`; `labs/atlas/` | Isolated static pages; production loader/catalog unchanged |
 | State and compatibility helpers | `explorations/route-state.mjs` | Tested legacy URL preservation, bounded public state and no inferred legacy acceptance |
 | Verification | Scoped Node/browser tests and verification receipt | Five independent AI review roles; 18 current scoped dimensional receipts plus retained history; no professional, screen-reader or learner claim |
+| Coverage/review dashboard | `coverage-dashboard/`; `labs/atlas/coverage/`; `docs/coverage/dashboard/` | Pinned canonical scopes, independent AI data/code checks, filters and source inspection; reproducible refresh; no live-monitor or human-observation claim |
 | Integration preparation | `docs/integration/universal-pilots.json`; `scripts/check-exploration-integration.mjs` | Explicit additive paths; pinned snapshot rehearsal; differing files refused; master plan manually reconciled |
 
 **Preview locally:** run `PORT=8219 node scripts/serve.mjs` from this checkout if that port is free, then open `http://localhost:8219/labs/atlas/`. Use another free port if needed. Direct pages are `labs/atlas/x-history-0001/` and `labs/atlas/x-literature-0001/`. No public deployment has been performed.
@@ -58,7 +59,7 @@ P01/P02 are accepted for local preview under the revised requirements. The user 
 | Delivered locally · U3 orientation | 30 scoped domain overviews, separate source/content and engineering AI reviews | Real source passages, questions, methods, gaps, language/place/practice context, proposed maintainer roles and next-reading tasks; no lesson or full-domain coverage claim; public navigation remains open |
 | U3 sequences | Research and build three lessons per pilot, 24 total | The 16 follow-ups are currently proposals; research each before authoring, then independently accept |
 | U3 journeys | Water and a city; a woven cloth; how an account becomes evidence | All claimed lesson targets exist and are accepted; distinguish evidence, analogy and prerequisite |
-| U3 dashboard | Coverage and review queue | Reconcile exact canonical IDs and ledger denominators; separate authored, accepted, redesigned, access-reviewed and evaluated |
+| Delivered locally · U3 dashboard | Coverage and review queue at `labs/atlas/coverage/` | Exact canonical IDs and distinct ledger denominators; authored/accepted/redesigned counts, explicit unknown human/evaluation counts, latest AI receipt age and next actions |
 | U4 introductory breadth | At least three accepted introductory explorations per domain | Versioned syllabi; no duplication through cross-listing; method/place/language audit |
 | U4–U5 deeper work | Research specialties and locally informed editions | Source and reviewer capacity before freezing small batches; preserve mathematical/scientific depth |
 | U5 stewardship | Corrections, source freshness, edition migrations, rights and withdrawal | Named release scope, dates, responsibilities and reproducible review; recurring jobs only when requested |

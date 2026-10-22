@@ -1,0 +1,2413 @@
+{
+  "schemaVersion": 1,
+  "asOf": "2026-10-22T21:17:51Z",
+  "domainRows": [
+    {
+      "domainId": "D01",
+      "domain": "Mathematics",
+      "primaryCollections": 21,
+      "crossListedCollections": 1,
+      "productionAccepted": 3155,
+      "productionPlanned": 1837,
+      "orientation": "reviewed-local",
+      "orientationReviewAgeDays": 0,
+      "localAuthored": 0,
+      "localAccepted": 0,
+      "visualScope": 314,
+      "redesigned": 112,
+      "retained": 12,
+      "visualPending": 190,
+      "humanAccessibilityReviewed": null,
+      "learningEvaluated": null,
+      "introductoryCoverage": "not-assessed",
+      "gaps": "Arithmetic, elementary geometry/algebra, mathematical modeling and history as accessible entry routes; deeper specialties remain versioned",
+      "maintainerRole": "Mathematics coverage editor"
+    },
+    {
+      "domainId": "D02",
+      "domain": "Statistics, data and research methods",
+      "primaryCollections": 4,
+      "crossListedCollections": 0,
+      "productionAccepted": 321,
+      "productionPlanned": 485,
+      "orientation": "reviewed-local",
+      "orientationReviewAgeDays": 0,
+      "localAuthored": 1,
+      "localAccepted": 1,
+      "visualScope": 64,
+      "redesigned": 20,
+      "retained": 0,
+      "visualPending": 44,
+      "humanAccessibilityReviewed": null,
+      "learningEvaluated": null,
+      "introductoryCoverage": "not-assessed",
+      "gaps": "Measurement, surveys, experimental design, qualitative/mixed methods, data stewardship, reproducibility",
+      "maintainerRole": "Statistics, data and research methods coverage editor"
+    },
+    {
+      "domainId": "D03",
+      "domain": "Computing and information systems",
+      "primaryCollections": 8,
+      "crossListedCollections": 0,
+      "productionAccepted": 664,
+      "productionPlanned": 594,
+      "orientation": "reviewed-local",
+      "orientationReviewAgeDays": 0,
+      "localAuthored": 0,
+      "localAccepted": 0,
+      "visualScope": 127,
+      "redesigned": 0,
+      "retained": 0,
+      "visualPending": 127,
+      "humanAccessibilityReviewed": null,
+      "learningEvaluated": null,
+      "introductoryCoverage": "not-assessed",
+      "gaps": "Programming practice, architecture, operating systems, networks, databases, software engineering, security, HCI, AI systems",
+      "maintainerRole": "Computing and information systems coverage editor"
+    },
+    {
+      "domainId": "D04",
+      "domain": "Physics, astronomy and space",
+      "primaryCollections": 10,
+      "crossListedCollections": 1,
+      "productionAccepted": 926,
+      "productionPlanned": 661,
+      "orientation": "reviewed-local",
+      "orientationReviewAgeDays": 0,
+      "localAuthored": 0,
+      "localAccepted": 0,
+      "visualScope": 109,
+      "redesigned": 9,
+      "retained": 0,
+      "visualPending": 100,
+      "humanAccessibilityReviewed": null,
+      "learningEvaluated": null,
+      "introductoryCoverage": "not-assessed",
+      "gaps": "Experimental measurement, nuclear/particle/plasma physics, cosmology, planetary science, space observation",
+      "maintainerRole": "Physics, astronomy and space coverage editor"
+    },
+    {
+      "domainId": "D05",
+      "domain": "Chemistry and materials",
+      "primaryCollections": 5,
+      "crossListedCollections": 0,
+      "productionAccepted": 283,
+      "productionPlanned": 274,
+      "orientation": "reviewed-local",
+      "orientationReviewAgeDays": 0,
+      "localAuthored": 0,
+      "localAccepted": 0,
+      "visualScope": 57,
+      "redesigned": 0,
+      "retained": 0,
+      "visualPending": 57,
+      "humanAccessibilityReviewed": null,
+      "learningEvaluated": null,
+      "introductoryCoverage": "not-assessed",
+      "gaps": "Organic, inorganic, analytical and environmental chemistry; polymers, electrochemistry, laboratory methods",
+      "maintainerRole": "Chemistry and materials coverage editor"
+    },
+    {
+      "domainId": "D06",
+      "domain": "Earth, climate, oceans and geography",
+      "primaryCollections": 4,
+      "crossListedCollections": 0,
+      "productionAccepted": 215,
+      "productionPlanned": 143,
+      "orientation": "reviewed-local",
+      "orientationReviewAgeDays": 0,
+      "localAuthored": 1,
+      "localAccepted": 1,
+      "visualScope": 34,
+      "redesigned": 0,
+      "retained": 0,
+      "visualPending": 34,
+      "humanAccessibilityReviewed": null,
+      "learningEvaluated": null,
+      "introductoryCoverage": "not-assessed",
+      "gaps": "Hydrology, soils, geochemistry, ocean observation, remote sensing, hazards, human geography",
+      "maintainerRole": "Earth, climate, oceans and geography coverage editor"
+    },
+    {
+      "domainId": "D07",
+      "domain": "Life sciences and organisms",
+      "primaryCollections": 4,
+      "crossListedCollections": 1,
+      "productionAccepted": 258,
+      "productionPlanned": 249,
+      "orientation": "reviewed-local",
+      "orientationReviewAgeDays": 0,
+      "localAuthored": 0,
+      "localAccepted": 0,
+      "visualScope": 41,
+      "redesigned": 0,
+      "retained": 0,
+      "visualPending": 41,
+      "humanAccessibilityReviewed": null,
+      "learningEvaluated": null,
+      "introductoryCoverage": "not-assessed",
+      "gaps": "Cell/molecular biology, biochemistry, microbiology, immunology, development, botany, zoology, taxonomy",
+      "maintainerRole": "Life sciences and organisms coverage editor"
+    },
+    {
+      "domainId": "D08",
+      "domain": "Ecology, conservation and environmental practice",
+      "primaryCollections": 1,
+      "crossListedCollections": 0,
+      "productionAccepted": 61,
+      "productionPlanned": 55,
+      "orientation": "reviewed-local",
+      "orientationReviewAgeDays": 0,
+      "localAuthored": 0,
+      "localAccepted": 0,
+      "visualScope": 12,
+      "redesigned": 0,
+      "retained": 0,
+      "visualPending": 12,
+      "humanAccessibilityReviewed": null,
+      "learningEvaluated": null,
+      "introductoryCoverage": "not-assessed",
+      "gaps": "Biodiversity, restoration, conservation biology, environmental assessment, pollution, resource management",
+      "maintainerRole": "Ecology, conservation and environmental practice coverage editor"
+    },
+    {
+      "domainId": "D09",
+      "domain": "Health, medicine, care and wellbeing",
+      "primaryCollections": 4,
+      "crossListedCollections": 1,
+      "productionAccepted": 236,
+      "productionPlanned": 148,
+      "orientation": "reviewed-local",
+      "orientationReviewAgeDays": 0,
+      "localAuthored": 0,
+      "localAccepted": 0,
+      "visualScope": 45,
+      "redesigned": 0,
+      "retained": 0,
+      "visualPending": 45,
+      "humanAccessibilityReviewed": null,
+      "learningEvaluated": null,
+      "introductoryCoverage": "not-assessed",
+      "gaps": "Anatomy, pathology, clinical reasoning, nursing, rehabilitation, dentistry, mental health, disability, nutrition, social care",
+      "maintainerRole": "Health, medicine, care and wellbeing coverage editor"
+    },
+    {
+      "domainId": "D10",
+      "domain": "Agriculture, food, forestry, fisheries and veterinary knowledge",
+      "primaryCollections": 0,
+      "crossListedCollections": 0,
+      "productionAccepted": 0,
+      "productionPlanned": 0,
+      "orientation": "reviewed-local",
+      "orientationReviewAgeDays": 0,
+      "localAuthored": 1,
+      "localAccepted": 1,
+      "visualScope": 0,
+      "redesigned": 0,
+      "retained": 0,
+      "visualPending": 0,
+      "humanAccessibilityReviewed": null,
+      "learningEvaluated": null,
+      "introductoryCoverage": "not-assessed",
+      "gaps": "Agronomy, horticulture, animal/plant health, forestry, aquaculture, food science, agricultural livelihoods",
+      "maintainerRole": "Agriculture, food, forestry, fisheries and veterinary knowledge coverage editor"
+    },
+    {
+      "domainId": "D11",
+      "domain": "Engineering, manufacturing and technical systems",
+      "primaryCollections": 7,
+      "crossListedCollections": 1,
+      "productionAccepted": 393,
+      "productionPlanned": 489,
+      "orientation": "reviewed-local",
+      "orientationReviewAgeDays": 0,
+      "localAuthored": 0,
+      "localAccepted": 0,
+      "visualScope": 83,
+      "redesigned": 0,
+      "retained": 0,
+      "visualPending": 83,
+      "humanAccessibilityReviewed": null,
+      "learningEvaluated": null,
+      "introductoryCoverage": "not-assessed",
+      "gaps": "Civil, chemical, environmental, industrial and marine engineering; manufacturing, metrology, maintenance, reliability",
+      "maintainerRole": "Engineering, manufacturing and technical systems coverage editor"
+    },
+    {
+      "domainId": "D12",
+      "domain": "Built environments, architecture and planning",
+      "primaryCollections": 1,
+      "crossListedCollections": 0,
+      "productionAccepted": 55,
+      "productionPlanned": 39,
+      "orientation": "reviewed-local",
+      "orientationReviewAgeDays": 0,
+      "localAuthored": 0,
+      "localAccepted": 0,
+      "visualScope": 15,
+      "redesigned": 0,
+      "retained": 0,
+      "visualPending": 15,
+      "humanAccessibilityReviewed": null,
+      "learningEvaluated": null,
+      "introductoryCoverage": "not-assessed",
+      "gaps": "Urban/regional planning, landscape, construction, housing, building services, transport, heritage conservation",
+      "maintainerRole": "Built environments, architecture and planning coverage editor"
+    },
+    {
+      "domainId": "D13",
+      "domain": "Economics and finance",
+      "primaryCollections": 5,
+      "crossListedCollections": 0,
+      "productionAccepted": 435,
+      "productionPlanned": 216,
+      "orientation": "reviewed-local",
+      "orientationReviewAgeDays": 0,
+      "localAuthored": 0,
+      "localAccepted": 0,
+      "visualScope": 53,
+      "redesigned": 0,
+      "retained": 0,
+      "visualPending": 53,
+      "humanAccessibilityReviewed": null,
+      "learningEvaluated": null,
+      "introductoryCoverage": "not-assessed",
+      "gaps": "Economic history, development, labor, public/institutional economics, household finance, competing schools and methods",
+      "maintainerRole": "Economics and finance coverage editor"
+    },
+    {
+      "domainId": "D14",
+      "domain": "Business, accounting and organizations",
+      "primaryCollections": 0,
+      "crossListedCollections": 0,
+      "productionAccepted": 0,
+      "productionPlanned": 0,
+      "orientation": "reviewed-local",
+      "orientationReviewAgeDays": 0,
+      "localAuthored": 0,
+      "localAccepted": 0,
+      "visualScope": 0,
+      "redesigned": 0,
+      "retained": 0,
+      "visualPending": 0,
+      "humanAccessibilityReviewed": null,
+      "learningEvaluated": null,
+      "introductoryCoverage": "not-assessed",
+      "gaps": "Accounting, management, entrepreneurship, operations, logistics, marketing, organizational behavior",
+      "maintainerRole": "Business, accounting and organizations coverage editor"
+    },
+    {
+      "domainId": "D15",
+      "domain": "Politics, governance and public affairs",
+      "primaryCollections": 1,
+      "crossListedCollections": 0,
+      "productionAccepted": 72,
+      "productionPlanned": 37,
+      "orientation": "reviewed-local",
+      "orientationReviewAgeDays": 0,
+      "localAuthored": 1,
+      "localAccepted": 1,
+      "visualScope": 10,
+      "redesigned": 0,
+      "retained": 0,
+      "visualPending": 10,
+      "humanAccessibilityReviewed": null,
+      "learningEvaluated": null,
+      "introductoryCoverage": "not-assessed",
+      "gaps": "Comparative institutions, public administration/policy, international relations, peace/conflict, security and military history",
+      "maintainerRole": "Politics, governance and public affairs coverage editor"
+    },
+    {
+      "domainId": "D16",
+      "domain": "Law, justice and legal institutions",
+      "primaryCollections": 0,
+      "crossListedCollections": 0,
+      "productionAccepted": 0,
+      "productionPlanned": 0,
+      "orientation": "reviewed-local",
+      "orientationReviewAgeDays": 0,
+      "localAuthored": 0,
+      "localAccepted": 0,
+      "visualScope": 0,
+      "redesigned": 0,
+      "retained": 0,
+      "visualPending": 0,
+      "humanAccessibilityReviewed": null,
+      "learningEvaluated": null,
+      "introductoryCoverage": "not-assessed",
+      "gaps": "Legal methods, constitutional/public/private law, international and comparative law, procedure, access to justice",
+      "maintainerRole": "Law, justice and legal institutions coverage editor"
+    },
+    {
+      "domainId": "D17",
+      "domain": "Sociology, anthropology and cultural life",
+      "primaryCollections": 2,
+      "crossListedCollections": 1,
+      "productionAccepted": 132,
+      "productionPlanned": 61,
+      "orientation": "reviewed-local",
+      "orientationReviewAgeDays": 0,
+      "localAuthored": 0,
+      "localAccepted": 0,
+      "visualScope": 29,
+      "redesigned": 0,
+      "retained": 0,
+      "visualPending": 29,
+      "humanAccessibilityReviewed": null,
+      "learningEvaluated": null,
+      "introductoryCoverage": "not-assessed",
+      "gaps": "Social institutions, ethnography, kinship, migration, inequality, gender, work, material culture, area studies",
+      "maintainerRole": "Sociology, anthropology and cultural life coverage editor"
+    },
+    {
+      "domainId": "D18",
+      "domain": "Psychology, mind and human development",
+      "primaryCollections": 2,
+      "crossListedCollections": 0,
+      "productionAccepted": 110,
+      "productionPlanned": 145,
+      "orientation": "reviewed-local",
+      "orientationReviewAgeDays": 0,
+      "localAuthored": 0,
+      "localAccepted": 0,
+      "visualScope": 20,
+      "redesigned": 0,
+      "retained": 0,
+      "visualPending": 20,
+      "humanAccessibilityReviewed": null,
+      "learningEvaluated": null,
+      "introductoryCoverage": "not-assessed",
+      "gaps": "Cognitive, social, developmental and clinical psychology; emotion, personality, lifespan development",
+      "maintainerRole": "Psychology, mind and human development coverage editor"
+    },
+    {
+      "domainId": "D19",
+      "domain": "Education and learning",
+      "primaryCollections": 0,
+      "crossListedCollections": 0,
+      "productionAccepted": 0,
+      "productionPlanned": 0,
+      "orientation": "reviewed-local",
+      "orientationReviewAgeDays": 0,
+      "localAuthored": 0,
+      "localAccepted": 0,
+      "visualScope": 0,
+      "redesigned": 0,
+      "retained": 0,
+      "visualPending": 0,
+      "humanAccessibilityReviewed": null,
+      "learningEvaluated": null,
+      "introductoryCoverage": "not-assessed",
+      "gaps": "Pedagogy, curriculum, literacy/numeracy, assessment, special/inclusive education, adult learning, educational institutions",
+      "maintainerRole": "Education and learning coverage editor"
+    },
+    {
+      "domainId": "D20",
+      "domain": "History, archaeology and historical methods",
+      "primaryCollections": 2,
+      "crossListedCollections": 0,
+      "productionAccepted": 109,
+      "productionPlanned": 130,
+      "orientation": "reviewed-local",
+      "orientationReviewAgeDays": 0,
+      "localAuthored": 1,
+      "localAccepted": 1,
+      "visualScope": 24,
+      "redesigned": 0,
+      "retained": 0,
+      "visualPending": 24,
+      "humanAccessibilityReviewed": null,
+      "learningEvaluated": null,
+      "introductoryCoverage": "not-assessed",
+      "gaps": "Regional/world histories, archaeology, historiography, oral history, paleography, archival methods, histories of everyday life",
+      "maintainerRole": "History, archaeology and historical methods coverage editor"
+    },
+    {
+      "domainId": "D21",
+      "domain": "Philosophy, ethics and intellectual traditions",
+      "primaryCollections": 1,
+      "crossListedCollections": 0,
+      "productionAccepted": 50,
+      "productionPlanned": 69,
+      "orientation": "reviewed-local",
+      "orientationReviewAgeDays": 0,
+      "localAuthored": 1,
+      "localAccepted": 1,
+      "visualScope": 16,
+      "redesigned": 0,
+      "retained": 0,
+      "visualPending": 16,
+      "humanAccessibilityReviewed": null,
+      "learningEvaluated": null,
+      "introductoryCoverage": "not-assessed",
+      "gaps": "Epistemology, metaphysics, ethics, aesthetics, political philosophy, traditions across regions and eras",
+      "maintainerRole": "Philosophy, ethics and intellectual traditions coverage editor"
+    },
+    {
+      "domainId": "D22",
+      "domain": "Religion, belief and worldview traditions",
+      "primaryCollections": 0,
+      "crossListedCollections": 1,
+      "productionAccepted": 0,
+      "productionPlanned": 0,
+      "orientation": "reviewed-local",
+      "orientationReviewAgeDays": 0,
+      "localAuthored": 1,
+      "localAccepted": 1,
+      "visualScope": 0,
+      "redesigned": 0,
+      "retained": 0,
+      "visualPending": 0,
+      "humanAccessibilityReviewed": null,
+      "learningEvaluated": null,
+      "introductoryCoverage": "not-assessed",
+      "gaps": "Religious studies, theology in context, scriptures/commentaries, ritual, secular worldviews, historical comparison",
+      "maintainerRole": "Religion, belief and worldview traditions coverage editor"
+    },
+    {
+      "domainId": "D23",
+      "domain": "Languages, linguistics and communication",
+      "primaryCollections": 1,
+      "crossListedCollections": 0,
+      "productionAccepted": 68,
+      "productionPlanned": 68,
+      "orientation": "reviewed-local",
+      "orientationReviewAgeDays": 0,
+      "localAuthored": 1,
+      "localAccepted": 1,
+      "visualScope": 16,
+      "redesigned": 0,
+      "retained": 0,
+      "visualPending": 16,
+      "humanAccessibilityReviewed": null,
+      "learningEvaluated": null,
+      "introductoryCoverage": "not-assessed",
+      "gaps": "Language families, descriptive linguistics, sociolinguistics, sign languages, language learning, translation, rhetoric",
+      "maintainerRole": "Languages, linguistics and communication coverage editor"
+    },
+    {
+      "domainId": "D24",
+      "domain": "Literature, philology and storytelling",
+      "primaryCollections": 0,
+      "crossListedCollections": 0,
+      "productionAccepted": 0,
+      "productionPlanned": 0,
+      "orientation": "reviewed-local",
+      "orientationReviewAgeDays": 0,
+      "localAuthored": 1,
+      "localAccepted": 1,
+      "visualScope": 0,
+      "redesigned": 0,
+      "retained": 0,
+      "visualPending": 0,
+      "humanAccessibilityReviewed": null,
+      "learningEvaluated": null,
+      "introductoryCoverage": "not-assessed",
+      "gaps": "Poetry, drama, prose, oral literature, literary history/criticism, textual scholarship, narrative traditions",
+      "maintainerRole": "Literature, philology and storytelling coverage editor"
+    },
+    {
+      "domainId": "D25",
+      "domain": "Visual arts, design and cultural heritage",
+      "primaryCollections": 1,
+      "crossListedCollections": 0,
+      "productionAccepted": 64,
+      "productionPlanned": 74,
+      "orientation": "reviewed-local",
+      "orientationReviewAgeDays": 0,
+      "localAuthored": 1,
+      "localAccepted": 0,
+      "visualScope": 9,
+      "redesigned": 0,
+      "retained": 0,
+      "visualPending": 9,
+      "humanAccessibilityReviewed": null,
+      "learningEvaluated": null,
+      "introductoryCoverage": "not-assessed",
+      "gaps": "Art history, drawing, painting, sculpture, photography, graphic/interaction design, museums, conservation",
+      "maintainerRole": "Visual arts, design and cultural heritage coverage editor"
+    },
+    {
+      "domainId": "D26",
+      "domain": "Music and sound",
+      "primaryCollections": 1,
+      "crossListedCollections": 0,
+      "productionAccepted": 144,
+      "productionPlanned": 49,
+      "orientation": "reviewed-local",
+      "orientationReviewAgeDays": 0,
+      "localAuthored": 1,
+      "localAccepted": 0,
+      "visualScope": 23,
+      "redesigned": 0,
+      "retained": 0,
+      "visualPending": 23,
+      "humanAccessibilityReviewed": null,
+      "learningEvaluated": null,
+      "introductoryCoverage": "not-assessed",
+      "gaps": "Performance, composition, ethnomusicology, music history, recording, instrument making and listening practices",
+      "maintainerRole": "Music and sound coverage editor"
+    },
+    {
+      "domainId": "D27",
+      "domain": "Theatre, dance, film and performance",
+      "primaryCollections": 0,
+      "crossListedCollections": 0,
+      "productionAccepted": 0,
+      "productionPlanned": 0,
+      "orientation": "reviewed-local",
+      "orientationReviewAgeDays": 0,
+      "localAuthored": 1,
+      "localAccepted": 0,
+      "visualScope": 0,
+      "redesigned": 0,
+      "retained": 0,
+      "visualPending": 0,
+      "humanAccessibilityReviewed": null,
+      "learningEvaluated": null,
+      "introductoryCoverage": "not-assessed",
+      "gaps": "Acting, choreography, dramaturgy, cinema, stagecraft, performance history and traditions",
+      "maintainerRole": "Theatre, dance, film and performance coverage editor"
+    },
+    {
+      "domainId": "D28",
+      "domain": "Media, journalism, information and archives",
+      "primaryCollections": 0,
+      "crossListedCollections": 0,
+      "productionAccepted": 0,
+      "productionPlanned": 0,
+      "orientation": "reviewed-local",
+      "orientationReviewAgeDays": 0,
+      "localAuthored": 1,
+      "localAccepted": 1,
+      "visualScope": 0,
+      "redesigned": 0,
+      "retained": 0,
+      "visualPending": 0,
+      "humanAccessibilityReviewed": null,
+      "learningEvaluated": null,
+      "introductoryCoverage": "not-assessed",
+      "gaps": "Journalism, media studies, publishing, library/information science, records, archives, information literacy",
+      "maintainerRole": "Media, journalism, information and archives coverage editor"
+    },
+    {
+      "domainId": "D29",
+      "domain": "Crafts, trades and everyday practical knowledge",
+      "primaryCollections": 0,
+      "crossListedCollections": 1,
+      "productionAccepted": 0,
+      "productionPlanned": 0,
+      "orientation": "reviewed-local",
+      "orientationReviewAgeDays": 0,
+      "localAuthored": 1,
+      "localAccepted": 0,
+      "visualScope": 0,
+      "redesigned": 0,
+      "retained": 0,
+      "visualPending": 0,
+      "humanAccessibilityReviewed": null,
+      "learningEvaluated": null,
+      "introductoryCoverage": "not-assessed",
+      "gaps": "Textiles, woodworking, ceramics, repair, cooking, domestic work, navigation, personal/community care practices",
+      "maintainerRole": "Crafts, trades and everyday practical knowledge coverage editor"
+    },
+    {
+      "domainId": "D30",
+      "domain": "Sport, movement, play and recreation",
+      "primaryCollections": 0,
+      "crossListedCollections": 0,
+      "productionAccepted": 0,
+      "productionPlanned": 0,
+      "orientation": "reviewed-local",
+      "orientationReviewAgeDays": 0,
+      "localAuthored": 0,
+      "localAccepted": 0,
+      "visualScope": 0,
+      "redesigned": 0,
+      "retained": 0,
+      "visualPending": 0,
+      "humanAccessibilityReviewed": null,
+      "learningEvaluated": null,
+      "introductoryCoverage": "not-assessed",
+      "gaps": "Exercise/movement, sport skills/rules/history, games, outdoor recreation, tourism and leisure practices",
+      "maintainerRole": "Sport, movement, play and recreation coverage editor"
+    }
+  ],
+  "collectionRows": [
+    {
+      "id": "pma",
+      "title": "Principles of Mathematical Analysis",
+      "written": 364,
+      "planned": 0,
+      "visualizations": 345,
+      "sourceFlags": 22,
+      "domainId": "D01"
+    },
+    {
+      "id": "rca",
+      "title": "Real and Complex Analysis",
+      "written": 388,
+      "planned": 0,
+      "visualizations": 369,
+      "sourceFlags": 137,
+      "domainId": "D01"
+    },
+    {
+      "id": "fa",
+      "title": "Functional Analysis",
+      "written": 310,
+      "planned": 0,
+      "visualizations": 285,
+      "sourceFlags": 208,
+      "domainId": "D01"
+    },
+    {
+      "id": "ode",
+      "title": "Ordinary Differential Equations & Dynamical Systems",
+      "written": 84,
+      "planned": 103,
+      "visualizations": 84,
+      "sourceFlags": 0,
+      "domainId": "D01"
+    },
+    {
+      "id": "pde",
+      "title": "Partial Differential Equations",
+      "written": 75,
+      "planned": 85,
+      "visualizations": 75,
+      "sourceFlags": 0,
+      "domainId": "D01"
+    },
+    {
+      "id": "vcalc",
+      "title": "Vector Calculus",
+      "written": 68,
+      "planned": 39,
+      "visualizations": 68,
+      "sourceFlags": 0,
+      "domainId": "D01"
+    },
+    {
+      "id": "ladr",
+      "title": "Linear Algebra Done Right",
+      "written": 365,
+      "planned": 0,
+      "visualizations": 365,
+      "sourceFlags": 3,
+      "domainId": "D01"
+    },
+    {
+      "id": "alg",
+      "title": "Abstract Algebra",
+      "written": 138,
+      "planned": 289,
+      "visualizations": 138,
+      "sourceFlags": 0,
+      "domainId": "D01"
+    },
+    {
+      "id": "rep",
+      "title": "Representation Theory",
+      "written": 62,
+      "planned": 44,
+      "visualizations": 62,
+      "sourceFlags": 0,
+      "domainId": "D01"
+    },
+    {
+      "id": "top",
+      "title": "Topology",
+      "written": 92,
+      "planned": 156,
+      "visualizations": 92,
+      "sourceFlags": 0,
+      "domainId": "D01"
+    },
+    {
+      "id": "dg",
+      "title": "Differential Geometry of Curves & Surfaces",
+      "written": 63,
+      "planned": 95,
+      "visualizations": 63,
+      "sourceFlags": 1,
+      "domainId": "D01"
+    },
+    {
+      "id": "mfd",
+      "title": "Manifolds & Riemannian Geometry",
+      "written": 58,
+      "planned": 93,
+      "visualizations": 58,
+      "sourceFlags": 0,
+      "domainId": "D01"
+    },
+    {
+      "id": "prob",
+      "title": "Probability: Theory and Examples",
+      "written": 386,
+      "planned": 149,
+      "visualizations": 386,
+      "sourceFlags": 37,
+      "domainId": "D01"
+    },
+    {
+      "id": "stoch",
+      "title": "Stochastic Processes",
+      "written": 69,
+      "planned": 125,
+      "visualizations": 69,
+      "sourceFlags": 0,
+      "domainId": "D01"
+    },
+    {
+      "id": "graph",
+      "title": "Graph Theory",
+      "written": 198,
+      "planned": 198,
+      "visualizations": 198,
+      "sourceFlags": 38,
+      "domainId": "D01"
+    },
+    {
+      "id": "comb",
+      "title": "Combinatorics",
+      "written": 77,
+      "planned": 103,
+      "visualizations": 77,
+      "sourceFlags": 0,
+      "domainId": "D01"
+    },
+    {
+      "id": "nt",
+      "title": "Number Theory",
+      "written": 78,
+      "planned": 121,
+      "visualizations": 78,
+      "sourceFlags": 1,
+      "domainId": "D01"
+    },
+    {
+      "id": "logic",
+      "title": "Logic & Foundations",
+      "written": 75,
+      "planned": 49,
+      "visualizations": 75,
+      "sourceFlags": 1,
+      "domainId": "D01"
+    },
+    {
+      "id": "num",
+      "title": "Numerical Analysis",
+      "written": 75,
+      "planned": 52,
+      "visualizations": 75,
+      "sourceFlags": 0,
+      "domainId": "D01"
+    },
+    {
+      "id": "nla",
+      "title": "Numerical Linear Algebra",
+      "written": 64,
+      "planned": 56,
+      "visualizations": 64,
+      "sourceFlags": 0,
+      "domainId": "D01"
+    },
+    {
+      "id": "opt",
+      "title": "Optimization",
+      "written": 66,
+      "planned": 80,
+      "visualizations": 66,
+      "sourceFlags": 1,
+      "domainId": "D01"
+    },
+    {
+      "id": "stat",
+      "title": "Statistical Inference",
+      "written": 143,
+      "planned": 90,
+      "visualizations": 143,
+      "sourceFlags": 0,
+      "domainId": "D02"
+    },
+    {
+      "id": "ml",
+      "title": "Understanding Machine Learning",
+      "written": 45,
+      "planned": 312,
+      "visualizations": 45,
+      "sourceFlags": 14,
+      "domainId": "D02"
+    },
+    {
+      "id": "deep",
+      "title": "Deep Learning Theory",
+      "written": 71,
+      "planned": 49,
+      "visualizations": 71,
+      "sourceFlags": 1,
+      "domainId": "D02"
+    },
+    {
+      "id": "causal",
+      "title": "Causal Inference",
+      "written": 62,
+      "planned": 34,
+      "visualizations": 62,
+      "sourceFlags": 1,
+      "domainId": "D02"
+    },
+    {
+      "id": "algo",
+      "title": "Algorithms",
+      "written": 220,
+      "planned": 61,
+      "visualizations": 220,
+      "sourceFlags": 0,
+      "domainId": "D03"
+    },
+    {
+      "id": "toc",
+      "title": "Theory of Computation",
+      "written": 67,
+      "planned": 123,
+      "visualizations": 67,
+      "sourceFlags": 1,
+      "domainId": "D03"
+    },
+    {
+      "id": "cplx",
+      "title": "Computational Complexity",
+      "written": 66,
+      "planned": 91,
+      "visualizations": 66,
+      "sourceFlags": 1,
+      "domainId": "D03"
+    },
+    {
+      "id": "info",
+      "title": "Information & Coding Theory",
+      "written": 74,
+      "planned": 80,
+      "visualizations": 74,
+      "sourceFlags": 0,
+      "domainId": "D03"
+    },
+    {
+      "id": "crypto",
+      "title": "Cryptography",
+      "written": 65,
+      "planned": 89,
+      "visualizations": 65,
+      "sourceFlags": 0,
+      "domainId": "D03"
+    },
+    {
+      "id": "dist",
+      "title": "Distributed Computing",
+      "written": 62,
+      "planned": 36,
+      "visualizations": 62,
+      "sourceFlags": 0,
+      "domainId": "D03"
+    },
+    {
+      "id": "pl",
+      "title": "Programming Languages & Types",
+      "written": 58,
+      "planned": 57,
+      "visualizations": 58,
+      "sourceFlags": 0,
+      "domainId": "D03"
+    },
+    {
+      "id": "cg",
+      "title": "Computational Geometry & Graphics",
+      "written": 52,
+      "planned": 57,
+      "visualizations": 52,
+      "sourceFlags": 0,
+      "domainId": "D03"
+    },
+    {
+      "id": "mech",
+      "title": "Classical Mechanics",
+      "written": 223,
+      "planned": 0,
+      "visualizations": 223,
+      "sourceFlags": 0,
+      "domainId": "D04"
+    },
+    {
+      "id": "em",
+      "title": "Electromagnetism",
+      "written": 85,
+      "planned": 142,
+      "visualizations": 85,
+      "sourceFlags": 0,
+      "domainId": "D04"
+    },
+    {
+      "id": "waves",
+      "title": "Waves & Optics",
+      "written": 71,
+      "planned": 56,
+      "visualizations": 71,
+      "sourceFlags": 0,
+      "domainId": "D04"
+    },
+    {
+      "id": "thermo",
+      "title": "Thermodynamics & Statistical Mechanics",
+      "written": 133,
+      "planned": 64,
+      "visualizations": 133,
+      "sourceFlags": 0,
+      "domainId": "D04"
+    },
+    {
+      "id": "qm",
+      "title": "Quantum Mechanics",
+      "written": 131,
+      "planned": 103,
+      "visualizations": 131,
+      "sourceFlags": 1,
+      "domainId": "D04"
+    },
+    {
+      "id": "cm",
+      "title": "Condensed Matter Physics",
+      "written": 57,
+      "planned": 14,
+      "visualizations": 57,
+      "sourceFlags": 1,
+      "domainId": "D04"
+    },
+    {
+      "id": "qinfo",
+      "title": "Quantum Information & Computation",
+      "written": 41,
+      "planned": 52,
+      "visualizations": 41,
+      "sourceFlags": 0,
+      "domainId": "D04"
+    },
+    {
+      "id": "rel",
+      "title": "Special & General Relativity",
+      "written": 67,
+      "planned": 88,
+      "visualizations": 67,
+      "sourceFlags": 0,
+      "domainId": "D04"
+    },
+    {
+      "id": "astro",
+      "title": "Astrophysics & Celestial Mechanics",
+      "written": 57,
+      "planned": 70,
+      "visualizations": 57,
+      "sourceFlags": 0,
+      "domainId": "D04"
+    },
+    {
+      "id": "fluid",
+      "title": "Fluid Dynamics",
+      "written": 61,
+      "planned": 72,
+      "visualizations": 61,
+      "sourceFlags": 0,
+      "domainId": "D04"
+    },
+    {
+      "id": "pchem",
+      "title": "Physical Chemistry: Thermodynamics & Equilibrium",
+      "written": 70,
+      "planned": 75,
+      "visualizations": 70,
+      "sourceFlags": 1,
+      "domainId": "D05"
+    },
+    {
+      "id": "kin",
+      "title": "Chemical Kinetics",
+      "written": 60,
+      "planned": 37,
+      "visualizations": 60,
+      "sourceFlags": 1,
+      "domainId": "D05"
+    },
+    {
+      "id": "qchem",
+      "title": "Quantum Chemistry & Spectroscopy",
+      "written": 61,
+      "planned": 70,
+      "visualizations": 61,
+      "sourceFlags": 2,
+      "domainId": "D05"
+    },
+    {
+      "id": "xtal",
+      "title": "Crystallography",
+      "written": 40,
+      "planned": 41,
+      "visualizations": 40,
+      "sourceFlags": 0,
+      "domainId": "D05"
+    },
+    {
+      "id": "mat",
+      "title": "Materials Science",
+      "written": 52,
+      "planned": 51,
+      "visualizations": 52,
+      "sourceFlags": 0,
+      "domainId": "D05"
+    },
+    {
+      "id": "geol",
+      "title": "Geology & Geophysics",
+      "written": 55,
+      "planned": 45,
+      "visualizations": 55,
+      "sourceFlags": 0,
+      "domainId": "D06"
+    },
+    {
+      "id": "geo",
+      "title": "Atmosphere & Ocean Dynamics",
+      "written": 43,
+      "planned": 35,
+      "visualizations": 43,
+      "sourceFlags": 1,
+      "domainId": "D06"
+    },
+    {
+      "id": "climate",
+      "title": "Climate Science",
+      "written": 61,
+      "planned": 44,
+      "visualizations": 61,
+      "sourceFlags": 1,
+      "domainId": "D06"
+    },
+    {
+      "id": "geog",
+      "title": "Geography & Cartography",
+      "written": 56,
+      "planned": 19,
+      "visualizations": 56,
+      "sourceFlags": 1,
+      "domainId": "D06"
+    },
+    {
+      "id": "popgen",
+      "title": "Population Genetics & Evolution",
+      "written": 70,
+      "planned": 74,
+      "visualizations": 70,
+      "sourceFlags": 1,
+      "domainId": "D07"
+    },
+    {
+      "id": "mathbio",
+      "title": "Mathematical Biology",
+      "written": 84,
+      "planned": 77,
+      "visualizations": 84,
+      "sourceFlags": 1,
+      "domainId": "D07"
+    },
+    {
+      "id": "ecol",
+      "title": "Ecology",
+      "written": 61,
+      "planned": 55,
+      "visualizations": 61,
+      "sourceFlags": 0,
+      "domainId": "D08"
+    },
+    {
+      "id": "neuro",
+      "title": "Computational Neuroscience",
+      "written": 47,
+      "planned": 41,
+      "visualizations": 47,
+      "sourceFlags": 1,
+      "domainId": "D18"
+    },
+    {
+      "id": "bioinf",
+      "title": "Bioinformatics Algorithms",
+      "written": 61,
+      "planned": 56,
+      "visualizations": 61,
+      "sourceFlags": 2,
+      "domainId": "D07"
+    },
+    {
+      "id": "sysbio",
+      "title": "Systems Biology",
+      "written": 43,
+      "planned": 42,
+      "visualizations": 43,
+      "sourceFlags": 0,
+      "domainId": "D07"
+    },
+    {
+      "id": "physio",
+      "title": "Human Physiology",
+      "written": 68,
+      "planned": 51,
+      "visualizations": 68,
+      "sourceFlags": 2,
+      "domainId": "D09"
+    },
+    {
+      "id": "pharm",
+      "title": "Pharmacology",
+      "written": 51,
+      "planned": 33,
+      "visualizations": 51,
+      "sourceFlags": 2,
+      "domainId": "D09"
+    },
+    {
+      "id": "epi",
+      "title": "Epidemiology & Evidence",
+      "written": 57,
+      "planned": 48,
+      "visualizations": 57,
+      "sourceFlags": 0,
+      "domainId": "D09"
+    },
+    {
+      "id": "imaging",
+      "title": "Medical Imaging",
+      "written": 60,
+      "planned": 16,
+      "visualizations": 60,
+      "sourceFlags": 1,
+      "domainId": "D09"
+    },
+    {
+      "id": "sig",
+      "title": "Signals & Systems",
+      "written": 71,
+      "planned": 117,
+      "visualizations": 71,
+      "sourceFlags": 0,
+      "domainId": "D11"
+    },
+    {
+      "id": "ctrl",
+      "title": "Control Theory",
+      "written": 63,
+      "planned": 92,
+      "visualizations": 63,
+      "sourceFlags": 1,
+      "domainId": "D11"
+    },
+    {
+      "id": "circ",
+      "title": "Circuits",
+      "written": 70,
+      "planned": 57,
+      "visualizations": 70,
+      "sourceFlags": 1,
+      "domainId": "D11"
+    },
+    {
+      "id": "energy",
+      "title": "Energy Systems",
+      "written": 57,
+      "planned": 39,
+      "visualizations": 57,
+      "sourceFlags": 1,
+      "domainId": "D11"
+    },
+    {
+      "id": "solid",
+      "title": "Solid Mechanics & Structures",
+      "written": 57,
+      "planned": 80,
+      "visualizations": 57,
+      "sourceFlags": 0,
+      "domainId": "D11"
+    },
+    {
+      "id": "robot",
+      "title": "Robotics",
+      "written": 36,
+      "planned": 52,
+      "visualizations": 36,
+      "sourceFlags": 0,
+      "domainId": "D11"
+    },
+    {
+      "id": "aero",
+      "title": "Aerospace Engineering",
+      "written": 39,
+      "planned": 52,
+      "visualizations": 39,
+      "sourceFlags": 0,
+      "domainId": "D11"
+    },
+    {
+      "id": "micro",
+      "title": "Microeconomics",
+      "written": 167,
+      "planned": 34,
+      "visualizations": 167,
+      "sourceFlags": 0,
+      "domainId": "D13"
+    },
+    {
+      "id": "macro",
+      "title": "Macroeconomics",
+      "written": 58,
+      "planned": 73,
+      "visualizations": 58,
+      "sourceFlags": 0,
+      "domainId": "D13"
+    },
+    {
+      "id": "fin",
+      "title": "Finance",
+      "written": 79,
+      "planned": 43,
+      "visualizations": 79,
+      "sourceFlags": 1,
+      "domainId": "D13"
+    },
+    {
+      "id": "game",
+      "title": "Game Theory & Social Choice",
+      "written": 55,
+      "planned": 49,
+      "visualizations": 55,
+      "sourceFlags": 0,
+      "domainId": "D13"
+    },
+    {
+      "id": "behav",
+      "title": "Behavioral Economics & Decisions",
+      "written": 76,
+      "planned": 17,
+      "visualizations": 76,
+      "sourceFlags": 1,
+      "domainId": "D13"
+    },
+    {
+      "id": "psych",
+      "title": "Psychology & Perception",
+      "written": 63,
+      "planned": 104,
+      "visualizations": 63,
+      "sourceFlags": 4,
+      "domainId": "D18"
+    },
+    {
+      "id": "soc",
+      "title": "Networks & Collective Behavior",
+      "written": 71,
+      "planned": 31,
+      "visualizations": 71,
+      "sourceFlags": 3,
+      "domainId": "D17"
+    },
+    {
+      "id": "polsci",
+      "title": "Political Science & Social Choice",
+      "written": 72,
+      "planned": 37,
+      "visualizations": 72,
+      "sourceFlags": 2,
+      "domainId": "D15"
+    },
+    {
+      "id": "demo",
+      "title": "Demography",
+      "written": 61,
+      "planned": 30,
+      "visualizations": 61,
+      "sourceFlags": 1,
+      "domainId": "D17"
+    },
+    {
+      "id": "music",
+      "title": "Music Theory & Acoustics",
+      "written": 144,
+      "planned": 49,
+      "visualizations": 144,
+      "sourceFlags": 2,
+      "domainId": "D26"
+    },
+    {
+      "id": "art",
+      "title": "Visual Art & Color",
+      "written": 64,
+      "planned": 74,
+      "visualizations": 64,
+      "sourceFlags": 1,
+      "domainId": "D25"
+    },
+    {
+      "id": "arch",
+      "title": "Architecture & Structural Form",
+      "written": 55,
+      "planned": 39,
+      "visualizations": 55,
+      "sourceFlags": 1,
+      "domainId": "D12"
+    },
+    {
+      "id": "ling",
+      "title": "Linguistics",
+      "written": 68,
+      "planned": 68,
+      "visualizations": 68,
+      "sourceFlags": 1,
+      "domainId": "D23"
+    },
+    {
+      "id": "phil",
+      "title": "Philosophy & Reasoning",
+      "written": 50,
+      "planned": 69,
+      "visualizations": 50,
+      "sourceFlags": 1,
+      "domainId": "D21"
+    },
+    {
+      "id": "tech",
+      "title": "History of Technology",
+      "written": 65,
+      "planned": 88,
+      "visualizations": 65,
+      "sourceFlags": 1,
+      "domainId": "D20"
+    },
+    {
+      "id": "bighist",
+      "title": "Big History & Quantitative History",
+      "written": 44,
+      "planned": 42,
+      "visualizations": 44,
+      "sourceFlags": 4,
+      "domainId": "D20"
+    }
+  ],
+  "waveRows": [
+    {
+      "domainId": "D01",
+      "chapter": "ode/6",
+      "total": 17,
+      "accepted": 0,
+      "awaitingReview": 0,
+      "outsideReviewedCheckpoints": 17
+    },
+    {
+      "domainId": "D01",
+      "chapter": "pde/6",
+      "total": 10,
+      "accepted": 10,
+      "awaitingReview": 0,
+      "outsideReviewedCheckpoints": 0
+    },
+    {
+      "domainId": "D01",
+      "chapter": "vcalc/6",
+      "total": 10,
+      "accepted": 10,
+      "awaitingReview": 0,
+      "outsideReviewedCheckpoints": 0
+    },
+    {
+      "domainId": "D01",
+      "chapter": "alg/9",
+      "total": 17,
+      "accepted": 0,
+      "awaitingReview": 0,
+      "outsideReviewedCheckpoints": 17
+    },
+    {
+      "domainId": "D01",
+      "chapter": "rep/6",
+      "total": 12,
+      "accepted": 0,
+      "awaitingReview": 12,
+      "outsideReviewedCheckpoints": 0
+    },
+    {
+      "domainId": "D01",
+      "chapter": "top/6",
+      "total": 17,
+      "accepted": 0,
+      "awaitingReview": 17,
+      "outsideReviewedCheckpoints": 0
+    },
+    {
+      "domainId": "D01",
+      "chapter": "dg/6",
+      "total": 17,
+      "accepted": 0,
+      "awaitingReview": 17,
+      "outsideReviewedCheckpoints": 0
+    },
+    {
+      "domainId": "D01",
+      "chapter": "mfd/6",
+      "total": 20,
+      "accepted": 0,
+      "awaitingReview": 20,
+      "outsideReviewedCheckpoints": 0
+    },
+    {
+      "domainId": "D01",
+      "chapter": "prob/7",
+      "total": 43,
+      "accepted": 0,
+      "awaitingReview": 43,
+      "outsideReviewedCheckpoints": 0
+    },
+    {
+      "domainId": "D01",
+      "chapter": "stoch/6",
+      "total": 15,
+      "accepted": 0,
+      "awaitingReview": 15,
+      "outsideReviewedCheckpoints": 0
+    },
+    {
+      "domainId": "D01",
+      "chapter": "graph/7",
+      "total": 38,
+      "accepted": 0,
+      "awaitingReview": 38,
+      "outsideReviewedCheckpoints": 0
+    },
+    {
+      "domainId": "D01",
+      "chapter": "comb/6",
+      "total": 11,
+      "accepted": 0,
+      "awaitingReview": 11,
+      "outsideReviewedCheckpoints": 0
+    },
+    {
+      "domainId": "D01",
+      "chapter": "nt/6",
+      "total": 15,
+      "accepted": 0,
+      "awaitingReview": 15,
+      "outsideReviewedCheckpoints": 0
+    },
+    {
+      "domainId": "D01",
+      "chapter": "logic/8",
+      "total": 11,
+      "accepted": 0,
+      "awaitingReview": 11,
+      "outsideReviewedCheckpoints": 0
+    },
+    {
+      "domainId": "D01",
+      "chapter": "num/6",
+      "total": 13,
+      "accepted": 0,
+      "awaitingReview": 13,
+      "outsideReviewedCheckpoints": 0
+    },
+    {
+      "domainId": "D01",
+      "chapter": "nla/6",
+      "total": 16,
+      "accepted": 0,
+      "awaitingReview": 16,
+      "outsideReviewedCheckpoints": 0
+    },
+    {
+      "domainId": "D01",
+      "chapter": "opt/6",
+      "total": 11,
+      "accepted": 0,
+      "awaitingReview": 11,
+      "outsideReviewedCheckpoints": 0
+    },
+    {
+      "domainId": "D02",
+      "chapter": "stat/10",
+      "total": 21,
+      "accepted": 0,
+      "awaitingReview": 0,
+      "outsideReviewedCheckpoints": 21
+    },
+    {
+      "domainId": "D02",
+      "chapter": "ml/6",
+      "total": 16,
+      "accepted": 16,
+      "awaitingReview": 0,
+      "outsideReviewedCheckpoints": 0
+    },
+    {
+      "domainId": "D02",
+      "chapter": "deep/7",
+      "total": 10,
+      "accepted": 0,
+      "awaitingReview": 0,
+      "outsideReviewedCheckpoints": 10
+    },
+    {
+      "domainId": "D02",
+      "chapter": "causal/6",
+      "total": 12,
+      "accepted": 0,
+      "awaitingReview": 0,
+      "outsideReviewedCheckpoints": 12
+    },
+    {
+      "domainId": "D03",
+      "chapter": "algo/13",
+      "total": 13,
+      "accepted": 0,
+      "awaitingReview": 0,
+      "outsideReviewedCheckpoints": 13
+    },
+    {
+      "domainId": "D03",
+      "chapter": "toc/6",
+      "total": 14,
+      "accepted": 0,
+      "awaitingReview": 0,
+      "outsideReviewedCheckpoints": 14
+    },
+    {
+      "domainId": "D03",
+      "chapter": "cplx/6",
+      "total": 11,
+      "accepted": 0,
+      "awaitingReview": 0,
+      "outsideReviewedCheckpoints": 11
+    },
+    {
+      "domainId": "D03",
+      "chapter": "info/6",
+      "total": 9,
+      "accepted": 0,
+      "awaitingReview": 0,
+      "outsideReviewedCheckpoints": 9
+    },
+    {
+      "domainId": "D03",
+      "chapter": "crypto/6",
+      "total": 12,
+      "accepted": 0,
+      "awaitingReview": 0,
+      "outsideReviewedCheckpoints": 12
+    },
+    {
+      "domainId": "D03",
+      "chapter": "dist/6",
+      "total": 10,
+      "accepted": 0,
+      "awaitingReview": 0,
+      "outsideReviewedCheckpoints": 10
+    },
+    {
+      "domainId": "D03",
+      "chapter": "pl/6",
+      "total": 11,
+      "accepted": 0,
+      "awaitingReview": 0,
+      "outsideReviewedCheckpoints": 11
+    },
+    {
+      "domainId": "D03",
+      "chapter": "cg/6",
+      "total": 8,
+      "accepted": 0,
+      "awaitingReview": 0,
+      "outsideReviewedCheckpoints": 8
+    },
+    {
+      "domainId": "D04",
+      "chapter": "em/6",
+      "total": 15,
+      "accepted": 0,
+      "awaitingReview": 0,
+      "outsideReviewedCheckpoints": 15
+    },
+    {
+      "domainId": "D04",
+      "chapter": "waves/6",
+      "total": 17,
+      "accepted": 0,
+      "awaitingReview": 0,
+      "outsideReviewedCheckpoints": 17
+    },
+    {
+      "domainId": "D04",
+      "chapter": "thermo/8",
+      "total": 16,
+      "accepted": 0,
+      "awaitingReview": 0,
+      "outsideReviewedCheckpoints": 16
+    },
+    {
+      "domainId": "D04",
+      "chapter": "qm/9",
+      "total": 13,
+      "accepted": 0,
+      "awaitingReview": 0,
+      "outsideReviewedCheckpoints": 13
+    },
+    {
+      "domainId": "D04",
+      "chapter": "cm/6",
+      "total": 14,
+      "accepted": 0,
+      "awaitingReview": 0,
+      "outsideReviewedCheckpoints": 14
+    },
+    {
+      "domainId": "D04",
+      "chapter": "qinfo/6",
+      "total": 12,
+      "accepted": 0,
+      "awaitingReview": 0,
+      "outsideReviewedCheckpoints": 12
+    },
+    {
+      "domainId": "D04",
+      "chapter": "rel/6",
+      "total": 13,
+      "accepted": 0,
+      "awaitingReview": 0,
+      "outsideReviewedCheckpoints": 13
+    },
+    {
+      "domainId": "D04",
+      "chapter": "astro/6",
+      "total": 14,
+      "accepted": 0,
+      "awaitingReview": 0,
+      "outsideReviewedCheckpoints": 14
+    },
+    {
+      "domainId": "D04",
+      "chapter": "fluid/6",
+      "total": 13,
+      "accepted": 0,
+      "awaitingReview": 0,
+      "outsideReviewedCheckpoints": 13
+    },
+    {
+      "domainId": "D05",
+      "chapter": "pchem/6",
+      "total": 12,
+      "accepted": 0,
+      "awaitingReview": 0,
+      "outsideReviewedCheckpoints": 12
+    },
+    {
+      "domainId": "D05",
+      "chapter": "kin/6",
+      "total": 12,
+      "accepted": 0,
+      "awaitingReview": 0,
+      "outsideReviewedCheckpoints": 12
+    },
+    {
+      "domainId": "D05",
+      "chapter": "qchem/6",
+      "total": 18,
+      "accepted": 0,
+      "awaitingReview": 0,
+      "outsideReviewedCheckpoints": 18
+    },
+    {
+      "domainId": "D05",
+      "chapter": "xtal/6",
+      "total": 13,
+      "accepted": 0,
+      "awaitingReview": 0,
+      "outsideReviewedCheckpoints": 13
+    },
+    {
+      "domainId": "D05",
+      "chapter": "mat/6",
+      "total": 10,
+      "accepted": 0,
+      "awaitingReview": 0,
+      "outsideReviewedCheckpoints": 10
+    },
+    {
+      "domainId": "D06",
+      "chapter": "geol/6",
+      "total": 8,
+      "accepted": 0,
+      "awaitingReview": 0,
+      "outsideReviewedCheckpoints": 8
+    },
+    {
+      "domainId": "D06",
+      "chapter": "geo/6",
+      "total": 7,
+      "accepted": 0,
+      "awaitingReview": 0,
+      "outsideReviewedCheckpoints": 7
+    },
+    {
+      "domainId": "D06",
+      "chapter": "climate/6",
+      "total": 9,
+      "accepted": 0,
+      "awaitingReview": 0,
+      "outsideReviewedCheckpoints": 9
+    },
+    {
+      "domainId": "D06",
+      "chapter": "geog/8",
+      "total": 8,
+      "accepted": 0,
+      "awaitingReview": 0,
+      "outsideReviewedCheckpoints": 8
+    },
+    {
+      "domainId": "D07",
+      "chapter": "popgen/6",
+      "total": 13,
+      "accepted": 0,
+      "awaitingReview": 0,
+      "outsideReviewedCheckpoints": 13
+    },
+    {
+      "domainId": "D07",
+      "chapter": "mathbio/6",
+      "total": 11,
+      "accepted": 0,
+      "awaitingReview": 0,
+      "outsideReviewedCheckpoints": 11
+    },
+    {
+      "domainId": "D08",
+      "chapter": "ecol/6",
+      "total": 14,
+      "accepted": 0,
+      "awaitingReview": 0,
+      "outsideReviewedCheckpoints": 14
+    },
+    {
+      "domainId": "D18",
+      "chapter": "neuro/6",
+      "total": 17,
+      "accepted": 0,
+      "awaitingReview": 0,
+      "outsideReviewedCheckpoints": 17
+    },
+    {
+      "domainId": "D07",
+      "chapter": "bioinf/6",
+      "total": 9,
+      "accepted": 0,
+      "awaitingReview": 0,
+      "outsideReviewedCheckpoints": 9
+    },
+    {
+      "domainId": "D07",
+      "chapter": "sysbio/6",
+      "total": 8,
+      "accepted": 0,
+      "awaitingReview": 0,
+      "outsideReviewedCheckpoints": 8
+    },
+    {
+      "domainId": "D09",
+      "chapter": "physio/6",
+      "total": 15,
+      "accepted": 0,
+      "awaitingReview": 0,
+      "outsideReviewedCheckpoints": 15
+    },
+    {
+      "domainId": "D09",
+      "chapter": "pharm/6",
+      "total": 16,
+      "accepted": 0,
+      "awaitingReview": 0,
+      "outsideReviewedCheckpoints": 16
+    },
+    {
+      "domainId": "D09",
+      "chapter": "epi/6",
+      "total": 6,
+      "accepted": 0,
+      "awaitingReview": 0,
+      "outsideReviewedCheckpoints": 6
+    },
+    {
+      "domainId": "D09",
+      "chapter": "imaging/6",
+      "total": 16,
+      "accepted": 0,
+      "awaitingReview": 0,
+      "outsideReviewedCheckpoints": 16
+    },
+    {
+      "domainId": "D11",
+      "chapter": "sig/6",
+      "total": 13,
+      "accepted": 0,
+      "awaitingReview": 0,
+      "outsideReviewedCheckpoints": 13
+    },
+    {
+      "domainId": "D11",
+      "chapter": "ctrl/6",
+      "total": 13,
+      "accepted": 0,
+      "awaitingReview": 0,
+      "outsideReviewedCheckpoints": 13
+    },
+    {
+      "domainId": "D11",
+      "chapter": "circ/6",
+      "total": 8,
+      "accepted": 0,
+      "awaitingReview": 0,
+      "outsideReviewedCheckpoints": 8
+    },
+    {
+      "domainId": "D11",
+      "chapter": "energy/6",
+      "total": 12,
+      "accepted": 0,
+      "awaitingReview": 0,
+      "outsideReviewedCheckpoints": 12
+    },
+    {
+      "domainId": "D11",
+      "chapter": "solid/6",
+      "total": 12,
+      "accepted": 0,
+      "awaitingReview": 0,
+      "outsideReviewedCheckpoints": 12
+    },
+    {
+      "domainId": "D11",
+      "chapter": "robot/6",
+      "total": 9,
+      "accepted": 0,
+      "awaitingReview": 0,
+      "outsideReviewedCheckpoints": 9
+    },
+    {
+      "domainId": "D11",
+      "chapter": "aero/6",
+      "total": 11,
+      "accepted": 0,
+      "awaitingReview": 0,
+      "outsideReviewedCheckpoints": 11
+    },
+    {
+      "domainId": "D13",
+      "chapter": "micro/12",
+      "total": 16,
+      "accepted": 0,
+      "awaitingReview": 0,
+      "outsideReviewedCheckpoints": 16
+    },
+    {
+      "domainId": "D13",
+      "chapter": "macro/6",
+      "total": 7,
+      "accepted": 0,
+      "awaitingReview": 0,
+      "outsideReviewedCheckpoints": 7
+    },
+    {
+      "domainId": "D13",
+      "chapter": "fin/7",
+      "total": 9,
+      "accepted": 0,
+      "awaitingReview": 0,
+      "outsideReviewedCheckpoints": 9
+    },
+    {
+      "domainId": "D13",
+      "chapter": "game/6",
+      "total": 12,
+      "accepted": 0,
+      "awaitingReview": 0,
+      "outsideReviewedCheckpoints": 12
+    },
+    {
+      "domainId": "D13",
+      "chapter": "behav/7",
+      "total": 8,
+      "accepted": 0,
+      "awaitingReview": 0,
+      "outsideReviewedCheckpoints": 8
+    },
+    {
+      "domainId": "D18",
+      "chapter": "psych/6",
+      "total": 17,
+      "accepted": 0,
+      "awaitingReview": 0,
+      "outsideReviewedCheckpoints": 17
+    },
+    {
+      "domainId": "D17",
+      "chapter": "soc/6",
+      "total": 8,
+      "accepted": 0,
+      "awaitingReview": 0,
+      "outsideReviewedCheckpoints": 8
+    },
+    {
+      "domainId": "D15",
+      "chapter": "polsci/7",
+      "total": 11,
+      "accepted": 0,
+      "awaitingReview": 0,
+      "outsideReviewedCheckpoints": 11
+    },
+    {
+      "domainId": "D17",
+      "chapter": "demo/6",
+      "total": 12,
+      "accepted": 0,
+      "awaitingReview": 0,
+      "outsideReviewedCheckpoints": 12
+    },
+    {
+      "domainId": "D26",
+      "chapter": "music/10",
+      "total": 13,
+      "accepted": 0,
+      "awaitingReview": 0,
+      "outsideReviewedCheckpoints": 13
+    },
+    {
+      "domainId": "D25",
+      "chapter": "art/6",
+      "total": 14,
+      "accepted": 0,
+      "awaitingReview": 0,
+      "outsideReviewedCheckpoints": 14
+    },
+    {
+      "domainId": "D12",
+      "chapter": "arch/6",
+      "total": 11,
+      "accepted": 0,
+      "awaitingReview": 0,
+      "outsideReviewedCheckpoints": 11
+    },
+    {
+      "domainId": "D23",
+      "chapter": "ling/6",
+      "total": 16,
+      "accepted": 0,
+      "awaitingReview": 0,
+      "outsideReviewedCheckpoints": 16
+    },
+    {
+      "domainId": "D21",
+      "chapter": "phil/6",
+      "total": 11,
+      "accepted": 0,
+      "awaitingReview": 0,
+      "outsideReviewedCheckpoints": 11
+    },
+    {
+      "domainId": "D20",
+      "chapter": "tech/7",
+      "total": 14,
+      "accepted": 0,
+      "awaitingReview": 0,
+      "outsideReviewedCheckpoints": 14
+    },
+    {
+      "domainId": "D20",
+      "chapter": "bighist/6",
+      "total": 11,
+      "accepted": 0,
+      "awaitingReview": 0,
+      "outsideReviewedCheckpoints": 11
+    }
+  ],
+  "pilotRows": [
+    {
+      "id": "P01",
+      "domainIds": [
+        "D20",
+        "D28",
+        "D15"
+      ],
+      "title": "Zimmermann telegram and Wilson speech",
+      "state": "accepted",
+      "explorationId": "x-history-0001",
+      "revision": "0.1.2",
+      "reviewedOn": "2026-10-22",
+      "reviewAgeDays": 0,
+      "missingRequiredReviews": null,
+      "nextAction": "Prepare public loading and release-specific review; retain scoped local acceptance.",
+      "openGates": [],
+      "limitations": [
+        "Screen-reader and learner sessions have not been performed."
+      ],
+      "briefPath": "docs/pilots/01-history.md",
+      "humanAccessibilityObserved": null,
+      "learningObserved": null
+    },
+    {
+      "id": "P02",
+      "domainIds": [
+        "D24",
+        "D23"
+      ],
+      "title": "Basho across two translations",
+      "state": "accepted",
+      "explorationId": "x-literature-0001",
+      "revision": "0.1.2",
+      "reviewedOn": "2026-10-22",
+      "reviewAgeDays": 0,
+      "missingRequiredReviews": null,
+      "nextAction": "Prepare public loading and release-specific review; retain scoped local acceptance.",
+      "openGates": [],
+      "limitations": [
+        "Screen-reader and learner sessions have not been performed."
+      ],
+      "briefPath": "docs/pilots/02-literature.md",
+      "humanAccessibilityObserved": null,
+      "learningObserved": null
+    },
+    {
+      "id": "P03",
+      "domainIds": [
+        "D21",
+        "D22"
+      ],
+      "title": "Reciprocity and different preferences",
+      "state": "accepted",
+      "explorationId": "x-philosophy-0001",
+      "revision": "0.1.0",
+      "reviewedOn": "2026-10-22",
+      "reviewAgeDays": 0,
+      "missingRequiredReviews": null,
+      "nextAction": "Prepare public loading and release-specific review; retain scoped local acceptance.",
+      "openGates": [],
+      "limitations": [
+        "Local review covers source fidelity, evidence labeling and bounded prototype reuse. No professional specialist, screen-reader or learner session has been performed."
+      ],
+      "briefPath": "docs/pilots/03-philosophy-religion.md",
+      "humanAccessibilityObserved": null,
+      "learningObserved": null
+    },
+    {
+      "id": "P04",
+      "domainIds": [
+        "D16",
+        "D14"
+      ],
+      "title": "Faulty goods in England and Wales",
+      "state": "brief-only",
+      "explorationId": null,
+      "revision": null,
+      "reviewedOn": null,
+      "reviewAgeDays": null,
+      "missingRequiredReviews": null,
+      "nextAction": "Resolve legal snapshot and outstanding-change notices",
+      "openGates": [
+        "Resolve legal snapshot and outstanding-change notices",
+        "Approve case fact matrix and branch scope",
+        "Independently check dates and remedies"
+      ],
+      "limitations": [
+        "Pilot not implemented; professional preparation gates remain."
+      ],
+      "briefPath": "docs/pilots/04-law.md",
+      "humanAccessibilityObserved": null,
+      "learningObserved": null
+    },
+    {
+      "id": "P05",
+      "domainIds": [
+        "D10",
+        "D06",
+        "D02"
+      ],
+      "title": "Measured soil-water retention",
+      "state": "accepted",
+      "explorationId": "x-agriculture-0001",
+      "revision": "0.1.0",
+      "reviewedOn": "2026-10-22",
+      "reviewAgeDays": 0,
+      "missingRequiredReviews": null,
+      "nextAction": "Prepare public loading and release-specific review; retain scoped local acceptance.",
+      "openGates": [],
+      "limitations": [
+        "Local review covers source fidelity, evidence labeling and bounded prototype reuse. No professional specialist, screen-reader or learner session has been performed."
+      ],
+      "briefPath": "docs/pilots/05-agriculture.md",
+      "humanAccessibilityObserved": null,
+      "learningObserved": null
+    },
+    {
+      "id": "P06",
+      "domainIds": [
+        "D09",
+        "D07"
+      ],
+      "title": "Breathing mechanics and observation",
+      "state": "brief-only",
+      "explorationId": null,
+      "revision": null,
+      "reviewedOn": null,
+      "reviewAgeDays": null,
+      "missingRequiredReviews": null,
+      "nextAction": "Adjudicate source conflict and observation rubric",
+      "openGates": [
+        "Adjudicate source conflict and observation rubric",
+        "Approve original schematic and cycle convention",
+        "Verify original assets and avoid restricted media"
+      ],
+      "limitations": [
+        "Pilot not implemented; professional preparation gates remain."
+      ],
+      "briefPath": "docs/pilots/06-health.md",
+      "humanAccessibilityObserved": null,
+      "learningObserved": null
+    },
+    {
+      "id": "P07",
+      "domainIds": [
+        "D29",
+        "D25"
+      ],
+      "title": "Paper plain weave",
+      "state": "in-review",
+      "explorationId": "x-craft-0001",
+      "revision": "0.1.0",
+      "reviewedOn": "2026-10-22",
+      "reviewAgeDays": 0,
+      "missingRequiredReviews": "learning, accessibility",
+      "nextAction": "Execute the unperformed physical-session packet with real evidence",
+      "openGates": [
+        "Make and photograph the real sample with creator/participant permissions",
+        "Practitioner verification and second-person whole-strip reproduction",
+        "Learning/accessibility task observations",
+        "Approve scoped original-asset public-release terms"
+      ],
+      "limitations": [
+        "Digital/source review is separate from unperformed physical and human checks. No real paper sample, sample photograph, practitioner check, second-person reproduction or learner/accessibility session is claimed."
+      ],
+      "briefPath": "docs/pilots/07-craft.md",
+      "humanAccessibilityObserved": null,
+      "learningObserved": null
+    },
+    {
+      "id": "P08",
+      "domainIds": [
+        "D26",
+        "D27"
+      ],
+      "title": "One phrase, two interpretations",
+      "state": "in-review",
+      "explorationId": "x-performance-0001",
+      "revision": "0.1.0",
+      "reviewedOn": "2026-10-22",
+      "reviewAgeDays": 0,
+      "missingRequiredReviews": "learning, accessibility",
+      "nextAction": "Execute the unperformed performer/access/learning session packet and record scoped release decision",
+      "openGates": [
+        "Performer/educator review of perceptible contrast and interpretation task",
+        "Learning/media-accessibility task observations",
+        "Approve scoped original-asset public-release terms"
+      ],
+      "limitations": [
+        "Digital/source review is separate from performer/educator review and actual screen-reader/learner sessions, which remain unperformed. Release licensing is proposed, not granted."
+      ],
+      "briefPath": "docs/pilots/08-performance.md",
+      "humanAccessibilityObserved": null,
+      "learningObserved": null
+    }
+  ],
+  "classificationRows": [
+    {
+      "id": "ford:1.7",
+      "schemeId": "ford",
+      "code": "1.7",
+      "disposition": "review",
+      "domainIds": [
+        "D04",
+        "D05",
+        "D06",
+        "D07",
+        "D08"
+      ],
+      "nextAction": "Review a concrete residual research topic and an authorized source defining its scope; do not retry or mirror the stopped manual body."
+    },
+    {
+      "id": "ford:2.11",
+      "schemeId": "ford",
+      "code": "2.11",
+      "disposition": "review",
+      "domainIds": [
+        "D11"
+      ],
+      "nextAction": "Review a concrete residual research topic and an authorized source defining its scope; do not retry or mirror the stopped manual body."
+    },
+    {
+      "id": "ford:3.5",
+      "schemeId": "ford",
+      "code": "3.5",
+      "disposition": "review",
+      "domainIds": [
+        "D09"
+      ],
+      "nextAction": "Review a concrete residual research topic and an authorized source defining its scope; do not retry or mirror the stopped manual body."
+    },
+    {
+      "id": "ford:4.5",
+      "schemeId": "ford",
+      "code": "4.5",
+      "disposition": "review",
+      "domainIds": [
+        "D10"
+      ],
+      "nextAction": "Review a concrete residual research topic and an authorized source defining its scope; do not retry or mirror the stopped manual body."
+    },
+    {
+      "id": "ford:5.9",
+      "schemeId": "ford",
+      "code": "5.9",
+      "disposition": "review",
+      "domainIds": [
+        "D13",
+        "D14",
+        "D15",
+        "D16",
+        "D17",
+        "D18",
+        "D19",
+        "D28"
+      ],
+      "nextAction": "Review a concrete residual research topic and an authorized source defining its scope; do not retry or mirror the stopped manual body."
+    },
+    {
+      "id": "ford:6.5",
+      "schemeId": "ford",
+      "code": "6.5",
+      "disposition": "review",
+      "domainIds": [
+        "D20",
+        "D21",
+        "D22",
+        "D23",
+        "D24",
+        "D25",
+        "D26",
+        "D27"
+      ],
+      "nextAction": "Review a concrete residual research topic and an authorized source defining its scope; do not retry or mirror the stopped manual body."
+    },
+    {
+      "id": "ich:oral-traditions",
+      "schemeId": "ich",
+      "code": "oral-traditions",
+      "disposition": "review",
+      "domainIds": [
+        "D17",
+        "D20",
+        "D22",
+        "D23",
+        "D24"
+      ],
+      "nextAction": "Develop a separately authorized, community-specific source and permission context; do not retry or recover the stopped overview body."
+    },
+    {
+      "id": "ich:performing-arts",
+      "schemeId": "ich",
+      "code": "performing-arts",
+      "disposition": "review",
+      "domainIds": [
+        "D26",
+        "D27"
+      ],
+      "nextAction": "Develop a separately authorized, community-specific source and permission context; do not retry or recover the stopped overview body."
+    },
+    {
+      "id": "ich:social-practices",
+      "schemeId": "ich",
+      "code": "social-practices",
+      "disposition": "review",
+      "domainIds": [
+        "D17",
+        "D22",
+        "D29"
+      ],
+      "nextAction": "Develop a separately authorized, community-specific source and permission context; do not retry or recover the stopped overview body."
+    },
+    {
+      "id": "ich:nature-knowledge",
+      "schemeId": "ich",
+      "code": "nature-knowledge",
+      "disposition": "review",
+      "domainIds": [
+        "D06",
+        "D07",
+        "D08",
+        "D09",
+        "D10"
+      ],
+      "nextAction": "Develop a separately authorized, community-specific source and permission context; do not retry or recover the stopped overview body."
+    },
+    {
+      "id": "ich:craftsmanship",
+      "schemeId": "ich",
+      "code": "craftsmanship",
+      "disposition": "review",
+      "domainIds": [
+        "D25",
+        "D29"
+      ],
+      "nextAction": "Develop a separately authorized, community-specific source and permission context; do not retry or recover the stopped overview body."
+    }
+  ],
+  "summary": {
+    "productionAccepted": 7751,
+    "productionPlanned": 5823,
+    "collections": 85,
+    "domains": 30,
+    "orientations": 30,
+    "localAuthored": 6,
+    "localAccepted": 4,
+    "pilotBriefs": 8,
+    "sequenceTarget": 24,
+    "waveAccepted": 36,
+    "waveAuthorVerified": 239,
+    "waveOutsideReviewedCheckpoints": 782,
+    "waveTotal": 1057,
+    "visualScope": 1101,
+    "redesigned": 141,
+    "retained": 12,
+    "visualPending": 948,
+    "visualOutsideAccepted": 34,
+    "classificationReview": 11,
+    "humanAccessibilityReviewed": null,
+    "learningEvaluated": null
+  },
+  "discrepancies": [
+    {
+      "id": "base-wave-progress",
+      "message": "The accepted commit carries an older saved Wave progress total (26). Canonical item IDs and the current owning ledger establish 36 accepted Wave 6 items; frozen assignments are unchanged."
+    }
+  ]
+}

@@ -1,0 +1,44 @@
+{
+  "schemaVersion": 1,
+  "sourceFiles": [
+    {
+      "path": "scripts/capture-coverage-dashboard.mjs",
+      "sha256": "a07b5b58111f59634add7c88dc9b3e987ccabd2df6439ab5a8ce212b6d64afc3"
+    },
+    {
+      "path": "scripts/coverage-dashboard-model.mjs",
+      "sha256": "ceb07ac4ec9356bcce600b3ac9c3883c7739170c11fae976805f28ef9458e2f3"
+    },
+    {
+      "path": "scripts/build-coverage-dashboard-data.mjs",
+      "sha256": "750146a8ca447bc4fa0cc3cfb5974f004c19f8aeba047bf395c6091182ef2b83"
+    },
+    {
+      "path": "scripts/build-coverage-dashboard.mjs",
+      "sha256": "55edd8c00c3bb59727eec4dfb71816118ee148a4b9c45c8290f175399c264728"
+    },
+    {
+      "path": "coverage-dashboard/src/content/dashboard/DashboardContent.jsx",
+      "sha256": "821295fda6178b19c1a5b06a8a390aea1ac64d579535d2e532cc58ca4af53669"
+    },
+    {
+      "path": "coverage-dashboard/src/content/dashboard/coverage.css",
+      "sha256": "214347dc646bc556c0261cb9b64bf21f9d29caaee00d4a15aecc554638aaf2e1"
+    },
+    {
+      "path": "coverage-dashboard/src/data.json",
+      "sha256": "f7e8caebee7e27fad2c6a40b4c296dfbcd0742bc0aedebdf9a336aedcaa0481f"
+    },
+    {
+      "path": "docs/coverage/dashboard/inputs.json",
+      "sha256": "306d9f348240e9c252508146dcfde0452c87f1a25204be5f6bfa021a484aebb9"
+    },
+    {
+      "path": "docs/coverage/dashboard/model.json",
+      "sha256": "69e2a35c800b6cadef0c76c7e55ed20997b48cf70e788b311ea0db6299414c5d"
+    }
+  ],
+  "htmlSha256": "3477df7fbc43db3215d13f4891a0591dd0691e3362a585fa2352a57a62e94b6b",
+  "snapshotSha256": "f7e8caebee7e27fad2c6a40b4c296dfbcd0742bc0aedebdf9a336aedcaa0481f",
+  "runtimeSha256": "9e3ede84b28aded3c7379b6e6a5611f0d95b9977eb0f781e279ceefabfcbd27e"
+}
