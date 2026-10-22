@@ -189,48 +189,274 @@ export default {
     },
     // ───────────────────────────────────────────────────────────── 5
     {
-      n: 5,
-      title: 'Diffusion, cascades and contagion',
-      summary: String.raw`Ideas, products and diseases spread through networks, but by different rules. Behaviours that need reinforcement from several neighbours spread as threshold cascades that tightly knit clusters can block, while diseases spread from single contacts and are helped by long-range ties and hubs. People also copy others because others’ choices carry information, which can lock a whole population into a wrong choice. Aggregate adoption often follows an S-curve that the Bass model describes.`,
-      items: [
-        { num: '5.1', kind: 'Model', name: 'Diffusion as a network coordination game', deps: ['soc-1.8', 'game-1.5'], refs: ['E&K §19.2'],
-          pic: 'Seed a few adopters of a new behaviour on a network; each node adopts when at least a fraction q of neighbours have, and the cascade either takes over or stalls as you vary q.' },
-        { num: '5.2', kind: 'Theorem', name: 'Dense clusters block cascades', deps: ['soc-5.1'], refs: ['E&K §19.3'],
-          pic: 'Paint a cluster where every node has more than 1 − q of its neighbours inside; the cascade stops at its edge, and the page proves the converse on graphs you draw.' },
-        { num: '5.3', kind: 'Concept', name: 'Simple versus complex contagion (Centola)', deps: ['soc-5.2', 'soc-4.5'], refs: ['E&K §19.4'],
-          pic: 'On a Watts–Strogatz network, a disease spreads faster as rewiring rises, while a two-neighbour-threshold behaviour spreads slower — two curves crossing over the rewiring axis.' },
-        { num: '5.4', kind: 'Model', name: 'Information cascades', deps: ['stat-10.1'], refs: ['E&K §16.5', 'E&K §16.6'],
-          pic: 'Agents in sequence get private signals and see predecessors’ choices; once two more choose one way than the other, everyone follows, and the page reports how often the cascade is wrong.' },
-        { num: '5.5', kind: 'Phenomenon', name: 'Herding in the urn experiment', deps: ['soc-5.4'], refs: ['E&K §16.2', 'E&K §16.4'],
-          pic: 'Guess which urn the balls come from after seeing your draw and others’ guesses; your choices are compared with the Bayesian posterior and the lab results of Anderson and Holt.' },
-        { num: '5.6', kind: 'Model', name: 'The Bass diffusion model', deps: ['soc-1.6', 'ode-1.6'], refs: [],
-          pic: 'Innovation (p) and imitation (q) sliders shape the adoption curve and the bell-shaped sales curve; fit p and q to historical TV or smartphone adoption.' },
-        { num: '5.7', kind: 'Concept', name: 'S-curves and adopter categories (Rogers)', deps: ['soc-5.6'], refs: [],
-          pic: 'Adoption times drawn as a normal curve split into innovators, early adopters, majorities and laggards, with the cumulative S-curve and the Bass fit overlaid.' },
-        { num: '5.8', kind: 'Model', name: 'Branching processes and the epidemic threshold', deps: ['stoch-3.9'], refs: ['E&K §21.2'],
-          pic: 'Each case infects a random number of others with mean R; outbreak trees die out or explode, and the extinction probability is computed as R crosses one.' },
-        { num: '5.9', kind: 'Model', name: 'SIR epidemics on networks', deps: ['ode-6.17', 'soc-5.8'], refs: ['E&K §21.3', 'Newman ch. 16'],
-          pic: 'Run SIR on a lattice, a small world and a random network with equal transmission: final size and peak timing differ, compared with the well-mixed ODE curve.' },
-        { num: '5.10', kind: 'Phenomenon', name: 'Hubs, superspreaders and the vanishing threshold', deps: ['soc-5.9', 'soc-4.10'], refs: ['Newman ch. 16'],
-          pic: 'Effective R on a network is ⟨k²⟩/⟨k⟩ times transmissibility; growing a scale-free network shows the epidemic threshold sliding toward zero, and targeting hubs for vaccination restores it.' },
-        { num: '5.11', kind: 'Phenomenon', name: 'Random failure versus targeted attack', deps: ['soc-4.2', 'soc-4.9'], refs: ['Newman ch. 15'],
-          pic: 'Remove nodes at random or highest-degree first from a heavy-tailed network; the giant component barely shrinks under random removal and shatters under attack.' },
-        { num: '5.12', kind: 'Model', name: 'Influence maximization (independent cascades)', deps: ['soc-5.8'], refs: [],
-          pic: 'Choose k seed nodes to maximize expected spread; the greedy algorithm’s picks and spread are compared with picking the highest-degree nodes, with its (1 − 1/e) guarantee drawn.' },
-        { num: '5.13', kind: 'Phenomenon', name: 'Network effects and tipping in markets', deps: ['micro-12.12', 'soc-1.6'], refs: ['E&K §17.2', 'E&K §17.3'],
-          pic: 'Willingness to pay rises with the share of users; the demand curve crosses the price line twice, and a dynamic simulation shows the market dying below the tipping point and taking off above it.' },
-        { num: '5.14', kind: 'Model', name: 'The El Farol bar problem', deps: ['soc-5.13'], refs: ['E&K §17.7'],
-          pic: 'Agents with a toolbox of forecasting rules decide whether to go to a bar that is fun only if under 60% full; attendance fluctuates around 60 without anyone coordinating.' },
-        { num: '5.15', kind: 'Model', name: 'SIS epidemics and endemic infection', deps: ['soc-5.9'], refs: ['E&K §21.4'],
-          pic: 'Recovered individuals become susceptible again; above threshold the infected share settles at a nonzero endemic level, below it the infection dies out.' },
-        { num: '5.16', kind: 'Phenomenon', name: 'Concurrency and the timing of contacts', deps: ['soc-5.9'], refs: ['E&K §21.6'],
-          pic: 'The same set of partnerships run sequentially or overlapping in time; concurrency opens time-respecting paths and the outbreak size jumps, with the time-ordered paths highlighted.' },
-        { num: '5.17', kind: 'Phenomenon', name: 'Lock-in under increasing returns (Arthur)', deps: ['soc-5.13', 'stoch-12.10'], refs: ['E&K §17.4'],
-          pic: 'Adopters choose between two technologies whose payoff grows with installed base; repeated runs lock in to either one at random, as in a Pólya urn, regardless of which is better.' },
-        { num: '5.18', kind: 'Theorem', name: 'Genealogies coalesce: a recent common ancestor', deps: ['soc-5.8', 'popgen-10.2'], refs: ['E&K §21.7'],
-          pic: 'Trace maternal lines backwards in a fixed-size population; lineages merge until one remains, and the time to the common ancestor scales with population size as the coalescent predicts.' },
+  "n": 5,
+  "title": "Diffusion, cascades and contagion",
+  "summary": "Threshold reinforcement, private information and random transmission produce different kinds of cascades. Explicit finite networks and event histories are compared with the precise branching, moment and mean-field limits they illustrate. Adoption timing, congestion, reinforcement and one-parent genealogies share feedback mechanisms while retaining different assumptions and uncertainties.",
+  "items": [
+    {
+      "num": "5.1",
+      "kind": "Model",
+      "name": "Diffusion as a network coordination game",
+      "deps": [
+        "soc-1.8",
+        "game-1.5"
       ],
+      "refs": [
+        "Easley–Kleinberg §19.2, pp.566–572; supplied finite closure"
+      ],
+      "pic": "Change the threshold, seed count and network. Select a round to inspect actual adopters and the computed adoption staircase.",
+      "see": []
     },
+    {
+      "num": "5.2",
+      "kind": "Theorem",
+      "name": "Dense clusters block cascades",
+      "deps": [
+        "soc-5.1"
+      ],
+      "refs": [
+        "Easley–Kleinberg §19.3, pp.573–577, both directions"
+      ],
+      "pic": "Inspect the actual final non-adopter set and every internal neighbour fraction. Vary q or seeds to make the certificate appear or disappear.",
+      "see": []
+    },
+    {
+      "num": "5.3",
+      "kind": "Concept",
+      "name": "Simple versus complex contagion (Centola)",
+      "deps": [
+        "soc-5.2",
+        "soc-4.5"
+      ],
+      "refs": [
+        "Easley–Kleinberg §19.4, pp.578–582; own finite count-threshold comparison"
+      ],
+      "pic": "Change the pseudorandom seed and selected rewiring probability. Compare final adoption counts and inspect the chosen graph, rather than treating a crossing of curves as a universal prediction.",
+      "see": []
+    },
+    {
+      "num": "5.4",
+      "kind": "Model",
+      "name": "Information cascades",
+      "deps": [
+        "prob-1.1.1",
+        "prob-2.1.1"
+      ],
+      "refs": [
+        "Easley–Kleinberg §§16.3–16.6, pp.490–502; supplied action-likelihood computation"
+      ],
+      "pic": "Change signal reliability, truth and the pseudorandom seed. Compare public evidence, private signals and actions; the companion finite-state calculation reports wrong-cascade probability.",
+      "see": [
+        "stat-10.1"
+      ]
+    },
+    {
+      "num": "5.5",
+      "kind": "Phenomenon",
+      "name": "Herding in the urn experiment",
+      "deps": [
+        "soc-5.4"
+      ],
+      "refs": [
+        "Easley–Kleinberg §§16.2/16.4, pp.485–489/494–496; no original lab table used"
+      ],
+      "pic": "Inspect the two urn compositions and an agent’s private draw. Reveal the true urn and compare the selected agent’s action and posterior with the public posterior.",
+      "see": []
+    },
+    {
+      "num": "5.6",
+      "kind": "Model",
+      "name": "The Bass diffusion model",
+      "deps": [
+        "soc-1.6",
+        "ode-1.6",
+        "ode-1.3"
+      ],
+      "refs": [
+        "Niu, A Piecewise-Diffusion Model (2005 author manuscript), PDF3–4 Eqs.1–4; own general initial-value solution"
+      ],
+      "pic": "Edit innovation, imitation and initial adoption. Compare the computed cumulative fraction, instantaneous flow and the separate innovation/imitation contributions.",
+      "see": []
+    },
+    {
+      "num": "5.7",
+      "kind": "Concept",
+      "name": "S-curves and adopter categories (Rogers)",
+      "deps": [
+        "soc-5.6"
+      ],
+      "refs": [
+        "OpenStax Principles of Marketing §10.5, adopter categories; supplied finite empirical CDF"
+      ],
+      "pic": "Change heterogeneity and seed. Inspect actual timing marks, the empirical cumulative staircase and the resulting five finite rank groups.",
+      "see": []
+    },
+    {
+      "num": "5.8",
+      "kind": "Model",
+      "name": "Branching processes and the epidemic threshold",
+      "deps": [
+        "stoch-3.9",
+        "stoch-3.10"
+      ],
+      "refs": [
+        "Easley–Kleinberg §§21.2/21.8A; own Binomial(2,p) calculation"
+      ],
+      "pic": "Change p, generation horizon and seed. Inspect the sampled offspring tree, exact finite-generation survival curve and infinite-process extinction probability.",
+      "see": []
+    },
+    {
+      "num": "5.9",
+      "kind": "Model",
+      "name": "SIR epidemics on networks",
+      "deps": [
+        "soc-5.8",
+        "stoch-1.1"
+      ],
+      "refs": [
+        "Easley–Kleinberg §21.3, pp.651–655, one-step infectious period"
+      ],
+      "pic": "Select ring, rewired, random or hub contacts. Move through rounds of the actual seeded epidemic and inspect S/I/R totals and the current network states.",
+      "see": [
+        "ode-6.17"
+      ]
+    },
+    {
+      "num": "5.10",
+      "kind": "Phenomenon",
+      "name": "Hubs, superspreaders and the vanishing threshold",
+      "deps": [
+        "soc-5.9",
+        "soc-2.3"
+      ],
+      "refs": [
+        "Newman, cond-mat/0205009v1 (2002), §III Eq.23; own finite moment sums"
+      ],
+      "pic": "Vary the degree exponent, cutoff and transmissibility. Compare the finite degree law and threshold as the cutoff changes; read the exact chosen moments.",
+      "see": [
+        "soc-4.10"
+      ]
+    },
+    {
+      "num": "5.11",
+      "kind": "Phenomenon",
+      "name": "Random failure versus targeted attack",
+      "deps": [
+        "soc-2.2",
+        "soc-4.2"
+      ],
+      "refs": [
+        "Newman (2002) §V.B, selective intervention context; supplied exact finite deletion/BFS experiment"
+      ],
+      "pic": "Compare one seeded random removal order with the declared static-degree order. Inspect survivors and both complete largest-component curves, including the empty graph.",
+      "see": [
+        "soc-4.9"
+      ]
+    },
+    {
+      "num": "5.12",
+      "kind": "Model",
+      "name": "Influence maximization (independent cascades)",
+      "deps": [
+        "soc-5.8",
+        "soc-2.2"
+      ],
+      "refs": [
+        "Kempe–Kleinberg–Tardos (2003), §2 Theorems2.1/2.2 and live-edge proof"
+      ],
+      "pic": "Vary edge probability and seed budget. Compare exact greedy, exhaustive optimum and highest-outdegree selection, and inspect the actual selected seed sets.",
+      "see": []
+    },
+    {
+      "num": "5.13",
+      "kind": "Phenomenon",
+      "name": "Network effects and tipping in markets",
+      "deps": [
+        "soc-1.6"
+      ],
+      "refs": [
+        "Easley–Kleinberg §§17.2–17.4, pp.514–526; own fixed-point derivative"
+      ],
+      "pic": "Change price and the initial expected share. Compare the response curve with the diagonal and follow the finite binary64 expectation-update orbit; near the unstable root, roundoff can be amplified.",
+      "see": [
+        "micro-12.12"
+      ]
+    },
+    {
+      "num": "5.14",
+      "kind": "Model",
+      "name": "The El Farol bar problem",
+      "deps": [
+        "soc-5.13"
+      ],
+      "refs": [
+        "Arthur (1994), actual author-hosted printed pp.407–408; E&K §17.7; authored predictor system"
+      ],
+      "pic": "Change capacity, memory and pseudorandom seed. Inspect the computed attendance history and each agent’s latest forecast against the capacity line.",
+      "see": []
+    },
+    {
+      "num": "5.15",
+      "kind": "Model",
+      "name": "SIS epidemics and endemic infection",
+      "deps": [
+        "soc-5.9",
+        "stoch-1.1"
+      ],
+      "refs": [
+        "Easley–Kleinberg §21.4, reinfection mechanism; own finite absorption proof and stated mean-field extension"
+      ],
+      "pic": "Vary transmission and recovery, move through the finite sample, and compare its prevalence with the separately labelled mean-field update.",
+      "see": []
+    },
+    {
+      "num": "5.16",
+      "kind": "Phenomenon",
+      "name": "Concurrency and the timing of contacts",
+      "deps": [
+        "soc-5.9"
+      ],
+      "refs": [
+        "Easley–Kleinberg §21.6, timing and concurrency; supplied explicit event schedule"
+      ],
+      "pic": "Switch the two schedules and change infectious duration or initial infection time. Inspect the contact-time chart and the actual time-respecting transmissions.",
+      "see": []
+    },
+    {
+      "num": "5.17",
+      "kind": "Phenomenon",
+      "name": "Lock-in under increasing returns (Arthur)",
+      "deps": [
+        "soc-5.13",
+        "prob-4.3.4a"
+      ],
+      "refs": [
+        "Written Durrett Pólya input, §4.3.2; E&K §17.5 historical-dependence context"
+      ],
+      "pic": "Change initial counts and seed. Compare finite reinforced paths, the initial expected share and the separate limiting variance.",
+      "see": [
+        "stoch-12.10"
+      ]
+    },
+    {
+      "num": "5.18",
+      "kind": "Theorem",
+      "name": "Genealogies coalesce: a recent common ancestor",
+      "deps": [
+        "prob-5.1.4",
+        "stoch-1.1"
+      ],
+      "refs": [
+        "Easley–Kleinberg §§21.7/21.8B, pp.669–685; own exact finite occupancy recursion"
+      ],
+      "pic": "Change population size, sample size, horizon and seed. Inspect merging sample lineages and compare the exact occupancy-chain expectation with the separately labelled approximation.",
+      "see": [
+        "soc-5.8",
+        "popgen-10.2"
+      ]
+    }
+  ]
+},
     // ───────────────────────────────────────────────────────────── 6
     {
       n: 6,
