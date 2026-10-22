@@ -133,37 +133,189 @@ export default {
     // ───────────────────────────────────────────────────────────── 5
     {
       n: 5,
-      title: 'Voronoi diagrams and Delaunay triangulations',
-      summary: String.raw`The Voronoi diagram divides the plane into the regions closest to each site; its dual, the Delaunay triangulation, connects sites whose circumcircles are empty. Both have linear size and are computed in O(n log n) time by Fortune’s sweep or by randomized incremental insertion with edge flips. Delaunay triangulations maximize the smallest angle, contain the minimum spanning tree and are a lower convex hull in disguise — which is why they underlie terrain interpolation, mesh generation and nearest-neighbour search.`,
+      title: "Voronoi diagrams and Delaunay triangulations",
+      summary: "Nearest-site halfplanes and empty circles link Voronoi cells to Delaunay subdivisions. Actual sweeps and insertion traces expose their invariants, while exact predicates separate geometric ties from numerical constructions. Lower lifting, spanning trees, farthest cells and centroid updates illustrate useful consequences with their degeneracy and approximation limits.",
       items: [
-        { num: '5.1', kind: 'Definition', name: 'Voronoi diagram', deps: ['cg-1.1'], refs: ['de Berg §7.1'],
-          pic: 'Click to add sites; the Voronoi cells are coloured live, and dragging a site shows its cell and its neighbours’ cells deforming.' },
-        { num: '5.2', kind: 'Theorem', name: 'Voronoi diagrams have linear complexity', deps: ['cg-5.1', 'cg-2.12'], refs: ['de Berg §7.1'],
-          pic: 'For random site sets of growing size, Voronoi vertices and edges are counted and plotted against n, staying under 2n − 5 and 3n − 6.' },
-        { num: '5.3', kind: 'Algorithm', name: 'Fortune’s sweep-line algorithm', deps: ['cg-5.1', 'cg-3.1'], refs: ['de Berg §7.2'],
-          pic: 'A sweep line descends with a beach line of parabolic arcs behind it; site and circle events are queued, and the Voronoi edges are traced by the breakpoints.' },
-        { num: '5.4', kind: 'Definition', name: 'Triangulations of point sets', deps: ['cg-3.5'], refs: ['de Berg §9.1'],
-          pic: 'Different triangulations of the same points are generated; all have the same number of triangles, determined by the number of hull and interior points.' },
-        { num: '5.5', kind: 'Definition', name: 'Delaunay triangulation and the empty-circle property', deps: ['cg-5.4'], refs: ['de Berg §9.2'],
-          pic: 'Click any triangle to draw its circumcircle; in the Delaunay triangulation every circle is empty, while in an arbitrary triangulation offending points are highlighted.' },
-        { num: '5.6', kind: 'Theorem', name: 'Delaunay–Voronoi duality', deps: ['cg-5.5', 'cg-5.1'], refs: ['de Berg §9.2'],
-          pic: 'The Voronoi diagram and the Delaunay triangulation are overlaid; each Delaunay edge crosses the Voronoi edge it is dual to, and each Voronoi vertex sits at a circumcentre.' },
-        { num: '5.7', kind: 'Theorem', name: 'Delaunay triangulations maximize the minimum angle', deps: ['cg-5.5'], refs: ['de Berg §9.1'],
-          pic: 'The sorted angle vectors of the Delaunay triangulation and of random triangulations are compared; Delaunay wins lexicographically every time.' },
-        { num: '5.8', kind: 'Algorithm', name: 'Edge flipping (Lawson)', deps: ['cg-5.7'], refs: ['de Berg §9.1'],
-          pic: 'Start from any triangulation and flip illegal edges whose quadrilateral violates the circle test; flips proceed until none remain and the result is Delaunay.' },
-        { num: '5.9', kind: 'Algorithm', name: 'Randomized incremental Delaunay triangulation', deps: ['cg-5.8', 'cg-4.4'], refs: ['de Berg §9.3', 'de Berg §9.4'],
-          pic: 'Points are inserted in random order, the containing triangle split and illegal edges flipped; the expected number of structural changes per insertion is plotted and stays constant.' },
-        { num: '5.10', kind: 'Theorem', name: 'Lifting map: Delaunay is a lower convex hull', deps: ['cg-5.5', 'cg-2.11'], refs: ['de Berg §11.5'],
-          pic: 'Points are lifted onto the paraboloid z = x² + y² in 3D; projecting the lower hull back down gives exactly the Delaunay triangulation, rotated into view.' },
-        { num: '5.11', kind: 'Theorem', name: 'The Euclidean minimum spanning tree lies in the Delaunay triangulation', deps: ['cg-5.5', 'algo-10.13'], refs: ['de Berg §9.6'],
-          pic: 'The minimum spanning tree of the reader’s points is drawn over the Delaunay triangulation; every tree edge is a Delaunay edge, so only O(n) candidates need to be examined.' },
-        { num: '5.12', kind: 'Definition', name: 'Farthest-point Voronoi diagrams', deps: ['cg-5.1'], refs: ['de Berg §7.4'],
-          pic: 'Each region collects the locations farthest from one site; only hull vertices have regions, and the smallest enclosing circle is centred on a vertex or edge of this diagram.' },
-        { num: '5.13', kind: 'Algorithm', name: 'Lloyd’s algorithm and centroidal Voronoi tessellations', deps: ['cg-5.1', 'info-7.8'], refs: ['de Berg ch. 7'],
-          pic: 'Move every site to the centroid of its cell and recompute; the cells relax into a near-hexagonal pattern and the energy readout falls at every step.' },
-        { num: '5.14', kind: 'Method', name: 'Terrain interpolation on triangulations', deps: ['cg-5.5'], refs: ['de Berg §9.1'],
-          pic: 'Height samples are interpolated linearly over two triangulations of the same points; the skinny-triangle version produces spurious ridges, the Delaunay version looks natural.' },
+        {
+          "num": "5.1",
+          "kind": "Definition",
+          "name": "Voronoi diagram",
+          "deps": [
+            "cg-1.1"
+          ],
+          "refs": [
+            "Mount2023 lecture10 pp1–3"
+          ],
+          "pic": "Click empty space to add a site, drag the site handles, or edit the JSON. Move the gold query to inspect actual distances and ties; the displayed cells are clipped to a finite window."
+        },
+        {
+          "num": "5.2",
+          "kind": "Theorem",
+          "name": "Voronoi diagrams have linear complexity",
+          "deps": [
+            "cg-5.1",
+            "cg-2.12"
+          ],
+          "refs": [
+            "Mount2023 lectures10p4,11p2; planar Euler/incidence derivation here"
+          ],
+          "pic": "Edit the site set. Prefix points show counts computed from the actual unbounded empty-circle complex; window corners and clipping intersections are excluded."
+        },
+        {
+          "num": "5.3",
+          "kind": "Algorithm",
+          "name": "Fortune’s sweep-line algorithm",
+          "deps": [
+            "cg-5.1",
+            "cg-3.1",
+            "cg-1.2"
+          ],
+          "refs": [
+            "Mount2023 lecture10 pp5–10"
+          ],
+          "pic": "Step through actual site and circle events. The ordered arc-instance list and dynamically updated queue accompany the parabolic beach line and breakpoint fragments."
+        },
+        {
+          "num": "5.4",
+          "kind": "Definition",
+          "name": "Triangulations of point sets",
+          "deps": [
+            "cg-3.5",
+            "cg-1.2"
+          ],
+          "refs": [
+            "Mount2023 lecture11p2; CGAL Triangulation2 Definitions"
+          ],
+          "pic": "Change the genuine flip sequence on the same sites and compare invariant counts. Collinear input is explicitly one-dimensional, rather than padded with fake triangles."
+        },
+        {
+          "num": "5.5",
+          "kind": "Definition",
+          "name": "Delaunay triangulation and the empty-circle property",
+          "deps": [
+            "cg-5.4",
+            "cg-1.2"
+          ],
+          "refs": [
+            "Mount2023 lecture11pp1–2,6–8; CGAL Delaunay description"
+          ],
+          "pic": "Choose Delaunay or an actually flipped triangulation and select a triangle. Its computed circle and exact inside/boundary/outside signs identify genuine violations."
+        },
+        {
+          "num": "5.6",
+          "kind": "Theorem",
+          "name": "Delaunay–Voronoi duality",
+          "deps": [
+            "cg-5.5",
+            "cg-5.1"
+          ],
+          "refs": [
+            "Mount2023 lecture11pp1–2; closed-cell degeneracy distinction here"
+          ],
+          "pic": "Select an actual edge in the overlaid diagrams. A gold point marks a collapsed cocircular dual; a missing clipped interval is identified as outside the window."
+        },
+        {
+          "num": "5.7",
+          "kind": "Theorem",
+          "name": "Delaunay triangulations maximize the minimum angle",
+          "deps": [
+            "cg-5.5"
+          ],
+          "refs": [
+            "Mount2023 lecture11pp4–6; explicit general-position scope and lifted convexity argument"
+          ],
+          "pic": "Compare actual sorted angle vectors for Delaunay and a valid flipped competitor. Edit sites to expose geometric ties; a finite example is not the proof of optimality."
+        },
+        {
+          "num": "5.8",
+          "kind": "Algorithm",
+          "name": "Edge flipping (Lawson)",
+          "deps": [
+            "cg-5.7",
+            "cg-1.2"
+          ],
+          "refs": [
+            "Mount2023 lecture11pp5–6, lecture12pp2–4; lifted local-to-global argument derived here"
+          ],
+          "pic": "Step through actual strict flips and inspect both local opposite-site tests and all global incircle tests. Exact ties are retained, not toggled forever."
+        },
+        {
+          "num": "5.9",
+          "kind": "Algorithm",
+          "name": "Randomized incremental Delaunay triangulation",
+          "deps": [
+            "cg-5.8",
+            "cg-4.4"
+          ],
+          "refs": [
+            "Mount2023 lecture12pp1–8, especially degree analysisp6 and stated location-cost simplificationp7"
+          ],
+          "pic": "Replay a separately seeded pseudorandom permutation and actual insertion/flips. The graph distinguishes observed final degree from actual edge edits; individual points can exceed the expectation bound."
+        },
+        {
+          "num": "5.10",
+          "kind": "Theorem",
+          "name": "Lifting map: Delaunay is a lower convex hull",
+          "deps": [
+            "cg-5.5",
+            "cg-1.2"
+          ],
+          "refs": [
+            "Mount2023 lecture11pp6–8"
+          ],
+          "pic": "Rotate the actual lifted sites and lower supporting polygons. Switch off the faces to inspect the points and compare their planar projection."
+        },
+        {
+          "num": "5.11",
+          "kind": "Theorem",
+          "name": "The Euclidean minimum spanning tree lies in the Delaunay triangulation",
+          "deps": [
+            "cg-5.5",
+            "algo-10.13"
+          ],
+          "refs": [
+            "Mount2023 lecture11pp2–3; strengthened closed-disk/cut argument here"
+          ],
+          "pic": "Compare complete-graph Kruskal with the restricted candidate graph. Select a tree edge and check the exact signs certifying its closed diameter disk has no other site."
+        },
+        {
+          "num": "5.12",
+          "kind": "Definition",
+          "name": "Farthest-point Voronoi diagrams",
+          "deps": [
+            "cg-5.1"
+          ],
+          "refs": [
+            "UPC computational-geometry teaching: Farthest-point Voronoi diagram & Smallest enclosing circle; support/convexity proof here"
+          ],
+          "pic": "Edit sites to obtain the actual farthest cells and an enclosing circle selected by exact rational coverage and radius ordering. Support sites are marked; window clipping does not imply a global cell is empty."
+        },
+        {
+          "num": "5.13",
+          "kind": "Algorithm",
+          "name": "Lloyd’s algorithm and centroidal Voronoi tessellations",
+          "deps": [
+            "cg-5.1",
+            "cg-1.1"
+          ],
+          "refs": [
+            "Du, Faber & Gunzburger1999 Proposition3.1,pp650–651;§5.2,p657; descent identity derived here"
+          ],
+          "pic": "Step through real uniform-square cells, centroid updates and energy integrals computed from polygon moments. Initial handles remain editable, while blue points show the current iteration."
+        },
+        {
+          "num": "5.14",
+          "kind": "Method",
+          "name": "Terrain interpolation on triangulations",
+          "deps": [
+            "cg-5.5",
+            "cg-1.1"
+          ],
+          "refs": [
+            "CGAL Triangulation2 terrain projection traits; barycentric affine-reproduction derivation here"
+          ],
+          "pic": "Drag the query, edit sites, rotate the real height mesh and switch between Delaunay and a valid flipped triangulation. The authored affine/saddle/peak fields give actual query errors, including outside-hull failures."
+        }
       ],
     },
     // ───────────────────────────────────────────────────────────── 6
