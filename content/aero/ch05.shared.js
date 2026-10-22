@@ -1,0 +1,47 @@
+// Chosen teaching aircraft; no aircraft performance table or operating procedure.
+import {atmo,G0} from './ch01.shared.js';
+export {G0};
+export const RHO_SEA=atmo(0).rho;
+const finite=(x,n)=>{if(!Number.isFinite(x))throw new RangeError(n+' must be finite');return x;};
+const positive=(x,n)=>{finite(x,n);if(x<=0)throw new RangeError(n+' must be positive');return x;};
+const bounded=(x,a,b,n)=>{finite(x,n);if(x<a||x>b)throw new RangeError(n+' outside domain');return x;};
+export function polar({weight=8000,area=14,cd0=.03,k=.05,clmax=1.4,altitude=0,rho}={}){
+ for(const[n,x]of Object.entries({weight,area,cd0,k,clmax}))positive(x,n);bounded(altitude,0,20000,'geometric altitude');rho=rho===undefined?atmo(altitude).rho:positive(rho,'density');
+ const A=.5*rho*area*cd0,B=2*k*weight*weight/(rho*area),vd=Math.sqrt(Math.sqrt(B/A)),vp=vd/Math.pow(3,.25),vs=Math.sqrt(2*weight/(rho*area*clmax));
+ return {weight,area,cd0,k,clmax,altitude,rho,A,B,vd,vp,vs,drag:v=>{positive(v,'speed');return A*v*v+B/(v*v);},power:v=>{positive(v,'speed');return A*v**3+B/v;},cl:v=>{positive(v,'speed');return 2*weight/(rho*area*v*v);},components:v=>[A*v*v,B/(v*v)],dragSlope:v=>2*A*v-2*B/v**3,powerSlope:v=>3*A*v*v-B/(v*v)};
+}
+export function minima(options={}){const p=polar(options),dragSpeed=Math.max(p.vd,p.vs),powerSpeed=Math.max(p.vp,p.vs);return{...p,dragSpeed,powerSpeed,minDrag:p.drag(dragSpeed),minPower:p.power(powerSpeed)};}
+export function glide({cl=.8,height=1000,...options}={}){positive(cl,'lift coefficient');bounded(height,0,5000,'height');const p=polar(options),cd=p.cd0+p.k*cl*cl,ld=cl/cd,gamma=Math.atan2(cd,cl),cos=cl/Math.hypot(cl,cd),sin=cd/Math.hypot(cl,cd),speed=Math.sqrt(2*p.weight*cos/(p.rho*p.area*cl)),bestCL=Math.min(Math.sqrt(p.cd0/p.k),p.clmax);return{...p,cl,cd,ld,gamma,cos,sin,speed,height,range:height*ld,sink:speed*sin,horizontal:speed*cos,bestCL,bestRatio:bestCL/(p.cd0+p.k*bestCL**2),feasible:cl<=p.clmax};}
+export function climb({speed=40,shaftPower=100000,efficiency=.8,...options}={}){positive(speed,'speed');bounded(shaftPower,0,400000,'shaft power');bounded(efficiency,0,1,'propulsive efficiency');const p=polar(options),available=shaftPower*efficiency,required=p.power(speed),excess=available-required;return{...p,speed,shaftPower,efficiency,available,required,excess,rate:excess/p.weight,cl:p.cl(speed),feasible:speed>=p.vs,availableUnderflow:shaftPower!==0&&efficiency!==0&&available===0};}
+export function ceiling({seaPower=130000,lapse=1,...options}={}){
+ positive(seaPower,'sea-level propulsive power');bounded(lapse,0,2,'density lapse exponent');const at=z=>{const p=minima({...options,altitude:z}),available=seaPower*Math.pow(p.rho/RHO_SEA,lapse);return{...p,available,rate:(available-p.minPower)/p.weight};};
+ const root=target=>{const a=at(0).rate-target,b=at(20000).rate-target;if(a===0)return{status:'root',altitude:0};if(a<0)return{status:'already below threshold at sea level',altitude:null};if(b>0)return{status:'root above search domain',altitude:null};let lo=0,hi=20000;for(let j=0;j<70;j++){const mid=(lo+hi)/2;if(at(mid).rate>target)lo=mid;else hi=mid;}return{status:'root',altitude:(lo+hi)/2};};
+ return{at,absolute:root(0),service:root(.508),threshold:.508,domain:[0,20000]};
+}
+export function breguet({speed=100,ld=15,cT=.0002,fuel=.25}={}){
+ positive(speed,'speed');positive(ld,'L/D');positive(cT,'fuel-weight coefficient');bounded(fuel,0,.8,'fuel fraction');const logWeight=-Math.log1p(-fuel),kernel=fuel===0?1:logWeight/fuel,duration=fuel*((ld/cT)*kernel),range=fuel*((speed*ld/cT)*kernel),normalizedBurn=s=>{bounded(s,0,1,'normalized elapsed time');if(fuel===0)return 0;const z=-s*logWeight,rel=z===0?1:Math.expm1(z)/z;return s*kernel*rel;};
+ return{speed,ld,cT,fuel,logWeight,duration,range,normalizedBurn,burn:s=>fuel*normalizedBurn(s),remaining:s=>1-fuel*normalizedBurn(s),underflow:fuel!==0&&(duration===0||range===0)};
+}
+export function fuelOptima({engine='jet',...options}={}){if(!['jet','propeller'].includes(engine))throw new RangeError('engine');const p=minima(options),enduranceFree=engine==='jet'?p.vd:p.vp,rangeFree=engine==='jet'?Math.pow(3,.25)*p.vd:p.vd,endurance=Math.max(enduranceFree,p.vs),range=Math.max(rangeFree,p.vs);return{...p,engine,enduranceFree,rangeFree,endurance,range,perTime:v=>engine==='jet'?p.drag(v):p.power(v),perDistance:v=>engine==='jet'?p.drag(v)/v:p.drag(v)};}
+export function turn({bank=25,speed=45,structural=3.5,...options}={}){bounded(bank,0,75,'bank degrees');positive(speed,'speed');positive(structural,'chosen positive load limit');const p=polar(options),angle=bank*Math.PI/180,n=1/Math.cos(angle),tan=Math.tan(angle),rate=G0*tan/speed,radius=bank===0?null:speed*speed/(G0*tan),stallLimit=.5*p.rho*speed*speed*p.area*p.clmax/p.weight,limit=Math.min(stallLimit,structural);return{...p,bank,speed,structural,n,rate,radius:Number.isFinite(radius)?radius:null,straight:bank===0,numericLimit:bank!==0&&(!Number.isFinite(radius)||rate===0),stallLimit,limit,feasible:n<=limit,turnStall:p.vs*Math.sqrt(n)};}
+function log1pRatio(a,b){if(a===0)return 0;const ratio=a/b;return Number.isFinite(ratio)?Math.log1p(ratio):Math.log(a)-Math.log(b)+Math.log1p(b/a);}
+export function groundRoll({mode='takeoff',weight=8000,altitude=0,thrust=1800,mu=.03,touchSpeed=40}={}){
+ if(!['takeoff','landing'].includes(mode))throw new RangeError('roll mode');positive(weight,'weight');bounded(altitude,0,12000,'altitude');bounded(thrust,0,5000,'thrust');bounded(mu,0,.08,'rolling/brake coefficient');positive(touchSpeed,'touchdown speed');const rho=atmo(altitude).rho,area=14,cd=.08,cl=.6,mass=weight/G0,F2=.5*rho*area*(mode==='takeoff'?cd-mu*cl:cd),F0=thrust-mu*weight,liftoff=Math.sqrt(2*weight/(rho*area*cl)),targetForce=thrust-weight*(cd/cl),speed=mode==='takeoff'?liftoff:touchSpeed;
+ if(mode==='takeoff'){
+  const scale=16*Number.EPSILON*Math.max(thrust,mu*weight,weight*cd/cl,1);let status=thrust===0||F0<-scale?'cannot start':Math.abs(F0)<=scale?'initial force numerically unresolved':targetForce<-scale?'cannot reach liftoff':Math.abs(targetForce)<=scale?'liftoff-force threshold numerically unresolved':'finite';
+  const distanceAt=v=>F2===0?mass*v*v/(2*F0):-mass/(2*F2)*Math.log1p(-F2*v*v/F0),distance=status==='finite'?distanceAt(liftoff):null;
+  return{mode,rho,weight,mass,area,cl,cd,mu,F0,F2,targetForce,liftoff,speed,status,distance,rows:status==='finite'?Array.from({length:121},(_,j)=>{const v=liftoff*j/120;return[distanceAt(v),v];}):[],force:v=>F0-F2*v*v};
+ }
+ const C=mu*weight;if(mu===0)return{mode,rho,weight,mass,area,cl:0,cd,mu,F2,speed,status:'no finite exact stop',distance:null,rows:[],force:v=>-F2*v*v};
+ const remaining=v=>{const numerator=F2*v*v;if(numerator===0)return 0;const logarithm=C<1e-300?Math.log(numerator)-Math.log(mu)-Math.log(weight)+Math.log1p(C/numerator):log1pRatio(numerator,C);return mass/(2*F2)*logarithm;},distance=remaining(touchSpeed),rows=Array.from({length:121},(_,j)=>{const s=j/120,v=touchSpeed*(1-s),den=C+F2*v*v,num=F2*touchSpeed*touchSpeed*s*(2-s),x=s===1?distance:mass/(2*F2)*log1pRatio(num,den);return[x,v];});
+ return{mode,rho,weight,mass,area,cl:0,cd,mu,F2,speed,status:'finite',distance,rows,force:v=>-C-F2*v*v};
+}
+export function speedStability({engine='constant power',trimRatio=.9,perturb=.025,duration=60,step=.2,...options}={}){
+ if(!['constant power','constant thrust'].includes(engine))throw new RangeError('engine law');bounded(trimRatio,.6,1.6,'trim/Vd');bounded(perturb,-.15,.15,'initial relative perturbation');positive(duration,'duration');positive(step,'step');const p=polar(options),trim=trimRatio*p.vd,mass=p.weight/G0,pa=p.power(trim),ta=p.drag(trim),par=p.A*trim*trim,ind=p.B/(trim*trim),lambda=(engine==='constant power'?ind-3*par:2*(ind-par))/(mass*trim),threshold=engine==='constant power'?p.vp:p.vd,scale=(ind+3*par)/(mass*trim),nearBoundary=Math.abs(lambda)<=32*Number.EPSILON*scale;
+ const coefficient=u=>{const r=1+u;return engine==='constant power'?(ind-par*r*(r*r+r+1))/(mass*trim*r*r):(2+u)*(ind/(r*r)-par)/(mass*trim);};
+ const verdict=nearBoundary?'zero-slope numerical boundary: no linear verdict':lambda<0?'locally asymptotically stable':'locally unstable';const initialSpeed=trim*(1+perturb),valid=trim>p.vs&&trim<160&&initialSpeed>p.vs&&initialSpeed<160;let status=trim<=p.vs?'trim at/below stall':trim>=160?'trim at/above upper model boundary':initialSpeed<=p.vs?'initial speed at/below stall':initialSpeed>=160?'initial speed at/above upper model boundary':'bounded trace complete';const rows=valid?[[0,perturb===0?0:1]]:[];let w=perturb===0?0:Math.log(Math.abs(perturb)),initial=w,t=0;
+ if(valid&&perturb!==0){const sign=Math.sign(perturb),derivative=z=>coefficient(sign*Math.exp(z));for(let j=0;j<Math.ceil(duration/step);j++){const h=Math.min(step,duration-t),a=derivative(w),b=derivative(w+h*a/2),c=derivative(w+h*b/2),d=derivative(w+h*c),next=w+h*(a+2*b+2*c+d)/6,u=sign*Math.exp(next),v=trim*(1+u);if(v<=p.vs||v>=160||!Number.isFinite(v)){status=v<=p.vs?'stopped before crossing stall boundary':'stopped before crossing upper model boundary';break;}w=next;t+=h;rows.push([t,Math.exp(w-initial)]);}}
+ else if(perturb===0&&valid){rows.push([duration,0]);t=duration;}
+ return{...p,engine,trim,initialSpeed,valid,perturb,pa,ta,lambda,threshold,nearBoundary,verdict,status,rows,coefficient,finalPerturb:perturb===0?0:Math.sign(perturb)*Math.exp(w),elapsed:t};
+}
+export function safe(x){return x===null?'unavailable':!Number.isFinite(x)?'outside numeric range':x===0?'0':Math.abs(x)<.0001||Math.abs(x)>=1e6?x.toExponential(5):x.toFixed(4).replace('-','−');}

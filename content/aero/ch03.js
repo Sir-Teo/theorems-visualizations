@@ -492,7 +492,7 @@ With $A,B>0$, drag is differentiable for every positive speed, so an interior mi
       deps: ['aero-3.5', 'pma-5.8'],
       refs: ['Anderson ch. 6'],
       tags: ['performance', 'drag', 'endurance'],
-      scope: String.raw`Steady level flight, constant weight, parabolic polar, incompressible aerodynamics and speeds above stall. Maximum range of a jet and maximum endurance of a propeller aircraft are flown at the minimum-drag speed and at the minimum-power speed, which is lower, $V_{mp}=V_{md}/3^{1/4}$ (not computed here).`,
+      scope: String.raw`Steady level flight, constant weight, parabolic polar, incompressible aerodynamics and speeds above stall. With a constant jet fuel-weight/thrust coefficient, instantaneous endurance is greatest at minimum drag; fixed-altitude jet range has a different speed optimum. With constant propeller efficiency and fuel-weight/shaft-power coefficient, endurance is greatest at minimum power, $V_{mp}=V_{md}/3^{1/4}$ (not computed here). These conclusions require the stated engine/fuel assumptions.`,
       credit: 'Standard parabolic-polar result, textbook performance analysis',
       viz(v) {
         const wsS = v.slider('wing loading $W/S$ (N/m²)', 300, 6000, 1000, { step: 10, log: true });
