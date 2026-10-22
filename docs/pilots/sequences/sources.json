@@ -282,6 +282,160 @@
       "finding": "Published farmer account mediated by institutional writer. Opening Nuaguda and closing Kumbharaguda conflict; location unresolved.",
       "limits": "Original interview, language/translation and participant reuse terms uninspected. Reported benefits are not measured causal effects.",
       "reuse": "Link/original bounded commentary; no photo, quotation, translation or practice-reproduction permission assumed."
+    },
+    {
+      "language": "en",
+      "readAt": "2026-10-22",
+      "access": "body-read-scoped",
+      "id": "seq-cra19",
+      "title": "Consumer Rights Act 2015, s19: Consumer's rights to enforce terms about goods",
+      "creator": "UK Parliament; revised text supplied by legislation.gov.uk",
+      "edition": "Latest-available revised page retrieved 22 October 2026; notice says known changes through 20 October 2026",
+      "urls": [
+        "https://www.legislation.gov.uk/ukpga/2015/15/section/19"
+      ],
+      "readScope": "Complete s19 body, change/commencement notices and licence footer.",
+      "finding": "The six-month presumption names particular remedy routes and retains exceptions; not an unconditional refund rule.",
+      "limits": "Web reader rejected XHTML content type; same public URL downloaded successfully and parsed locally. Outstanding/future effects and consolidated legal date not professionally verified.",
+      "reuse": "Site identifies OGL v3.0 with exceptions; original case and links now, exact excerpt/attribution review before release.",
+      "downloadSha256": "cace7192983aa605c5f524ceb5a1146b3fd23679c78b505fc97ccbf9fcbbd3ab"
+    },
+    {
+      "language": "en",
+      "readAt": "2026-10-22",
+      "access": "body-read-scoped",
+      "id": "seq-cra23",
+      "title": "Consumer Rights Act 2015, s23: Right to repair or replacement",
+      "creator": "UK Parliament; revised text supplied by legislation.gov.uk",
+      "edition": "Latest-available revised page retrieved 22 October 2026; notice says known changes through 21 October 2026",
+      "urls": [
+        "https://www.legislation.gov.uk/ukpga/2015/15/section/23"
+      ],
+      "readScope": "Complete s23 body, change/commencement notices and licence footer.",
+      "finding": "Repair/replacement has reasonableness, inconvenience and impossibility/disproportion conditions.",
+      "limits": "Web reader rejected XHTML content type; same public URL downloaded successfully and parsed locally. Outstanding/future effects and consolidated legal date not professionally verified.",
+      "reuse": "Site identifies OGL v3.0 with exceptions; original case and links now, exact excerpt/attribution review before release.",
+      "downloadSha256": "1e7eb052b3d9fb19bc8a5f9f362541801ae04308090bce46f2c82e97d5c508ea"
+    },
+    {
+      "language": "en",
+      "readAt": "2026-10-22",
+      "access": "body-read-scoped",
+      "id": "seq-cra24",
+      "title": "Consumer Rights Act 2015, s24: Right to price reduction or final right to reject",
+      "creator": "UK Parliament; revised text supplied by legislation.gov.uk",
+      "edition": "Latest-available revised page retrieved 22 October 2026; notice says known changes through 21 October 2026",
+      "urls": [
+        "https://www.legislation.gov.uk/ukpga/2015/15/section/24"
+      ],
+      "readScope": "Complete s24 body and change/commencement notices; related provision bodies require final scoped review.",
+      "finding": "Progression and refund deductions have their own statutory conditions; repair request is not a completed repair.",
+      "limits": "Web reader rejected XHTML content type; same public URL downloaded successfully and parsed locally. Outstanding/future effects and consolidated legal date not professionally verified.",
+      "reuse": "Site identifies OGL v3.0 with exceptions; original case and links now, exact excerpt/attribution review before release.",
+      "downloadSha256": "c6d728399eec311ff78580da444f03c6916cb3dd2dc22c345fa066301a35b115"
+    },
+    {
+      "language": "en",
+      "readAt": "2026-10-22",
+      "access": "body-read-scoped",
+      "id": "seq-acl-c167",
+      "title": "Competition and Consumer Act 2010, compilation 167: corporate application and selected Australian Consumer Law goods provisions",
+      "creator": "Office of Parliamentary Counsel, Australia",
+      "edition": "Compilation 167, 16 September 2026; C2026C00405 registered 24 September 2026",
+      "urls": [
+        "https://www.legislation.gov.au/C2004A00109/latest/text/4",
+        "https://www.legislation.gov.au/C2004A00109/2026-09-16/2026-09-16/text/original/pdf/4",
+        "https://www.legislation.gov.au/C2004A00109/2026-09-16/2026-09-16/text/original/pdf/3"
+      ],
+      "readScope": "Register latest-version label; volume 4 cover/compilation caveats, Schedule 2 ss3(1)–(2) pp87–88,54 pp143–144,259–263 pp334–338; volume 3 s131 p92. Selected PDF text extracted locally.",
+      "finding": "Selected federal goods/remedy structure includes major/non-major paths and contextual rejection restrictions; separate from UK provisions.",
+      "limits": "HTML navigation supplied contents, not provision bodies; pinned PDFs supplied bodies. State law, forum, full endnotes/commencement and modifications unverified. No regulated monetary threshold adopted.",
+      "reuse": "Links and original case/commentary only; no blanket government-media or excerpt licence asserted.",
+      "downloadSha256": {
+        "volume4": "f9c20a584170876838bd3393d8ea40518325e38c67e9b353a0dd5345c6440820",
+        "volume3": "114b3f333418b65b6d91ad9010e9c3157c4d23b3bace2da415f13398ed6e7dee"
+      }
+    },
+    {
+      "language": "en",
+      "readAt": "2026-10-22",
+      "access": "body-read-scoped",
+      "id": "seq-accc-remedies",
+      "title": "Repair, replace, refund, cancel",
+      "creator": "Australian Competition and Consumer Commission",
+      "edition": "Undated guidance page retrieved 22 October 2026",
+      "urls": [
+        "https://www.accc.gov.au/consumers/problem-with-a-product-or-service-you-bought/repair-replace-refund-cancel"
+      ],
+      "readScope": "Consumer guarantees, major/minor goods problems, remedies, supplier role, return conditions and stated ACCC role.",
+      "finding": "Guidance distinguishes remedy stages and says ACCC does not resolve individual disputes.",
+      "limits": "Guidance is not the statute or a ruling on the fictional case. Service/manufacturer/video examples are not adopted as lesson cases.",
+      "reuse": "Links/original commentary only; no source video, images or example narrative copied."
+    },
+    {
+      "language": "en",
+      "readAt": "2026-10-22",
+      "access": "body-read-scoped",
+      "id": "seq-nhlbi-lung-tests",
+      "title": "Tests for Lung Disease",
+      "creator": "National Heart, Lung, and Blood Institute, NIH",
+      "edition": "Last updated 4 October 2024",
+      "urls": [
+        "https://www.nhlbi.nih.gov/health/lung-tests"
+      ],
+      "readScope": "Lung function introduction, spirometry, lung volume and diffusion sections; update label.",
+      "finding": "Different tests assess different quantities; spirometry measures exhaled amount and speed.",
+      "limits": "Patient overview, not a technical quality standard. Embedded media, disease interpretation and other test instructions not adopted.",
+      "reuse": "Original schematic/arithmetic and links; no image/video redistribution clearance inferred."
+    },
+    {
+      "language": "en",
+      "readAt": "2026-10-22",
+      "access": "body-read-scoped",
+      "id": "seq-niosh-spirometry",
+      "title": "Spirometry Quality Assurance: Common Errors and Their Impact on Test Results",
+      "creator": "NIOSH; principal contributors Lu-Ann F. Beeckman-Wagner and Diana Freeland",
+      "edition": "DHHS (NIOSH) Publication 2012-116, January 2012",
+      "urls": [
+        "https://www.cdc.gov/niosh/docs/2012-116/pdfs/2012-116.pdf"
+      ],
+      "readScope": "Title, public-domain/credits pages3–4, introduction/abbreviations pp6–7; Error 5 pp18–19 text and rendered graphs.",
+      "finding": "Early termination can distort reported endpoint/ratio; numerical correctness is not sufficient quality evidence.",
+      "limits": "Dated technical teaching source, not current-standard verification. Source example values, reference equations, thresholds and coaching instructions are excluded. 2019 PMC candidate CAPTCHA and distinct 2022 ERS paper403 were stopped; no alternate copies retrieved.",
+      "reuse": "Page3 explicitly states public domain; current design still uses original samples and diagrams, no copied source figure.",
+      "downloadSha256": "ba2a9364f717d9a9ae42b6309f79a5144c51f4f9033eac2348b719ee2256e3b2"
+    },
+    {
+      "language": "en",
+      "readAt": "2026-10-22",
+      "access": "body-read-scoped",
+      "id": "seq-ahrq-tool5",
+      "title": "Use the Teach-Back Method: Tool 5",
+      "creator": "Agency for Healthcare Research and Quality",
+      "edition": "Health Literacy Universal Precautions Toolkit, third edition; reviewed April 2024, created February 2024",
+      "urls": [
+        "https://www.ahrq.gov/health-literacy/improve/precautions/tool5.html"
+      ],
+      "readScope": "Overview, actions, practice experiences, progress section and dates in HTML body.",
+      "finding": "Own-words checking, non-shaming clarification and checking again; acknowledgement/recitation alone is insufficient.",
+      "limits": "No linked external instrument/video or full toolkit PDF inspected. Practice anecdotes do not validate this proposed artifact or demonstrate patient outcomes.",
+      "reuse": "Original dialogue and links; source quotes/posters/media/external tools not bundled or cleared."
+    },
+    {
+      "language": "en",
+      "readAt": "2026-10-22",
+      "access": "body-read-scoped",
+      "id": "seq-ahrq-tool9",
+      "title": "Address Language Differences: Tool 9",
+      "creator": "Agency for Healthcare Research and Quality",
+      "edition": "Health Literacy Universal Precautions Toolkit, third edition; reviewed September 2024, created February 2024",
+      "urls": [
+        "https://www.ahrq.gov/health-literacy/improve/precautions/tool9.html"
+      ],
+      "readScope": "Language preferences, qualified support, written translation, planning/progress sections and dates.",
+      "finding": "Language access and translation/interpreting roles require explicit attention; English repetition is not sufficient.",
+      "limits": "Legal-compliance statements and linked resources not verified as current law or adopted; no language proficiency or translated artifact certified.",
+      "reuse": "Original task and links only; no toolkit media or external assessment instrument copied."
     }
   ]
 }

@@ -89,3 +89,21 @@ Current complete-file SHA-256 bindings:
 | `README.md` | `12504b8214ba1110601e4ab3933ae333bd65a3f5fc9651adbff350d1f41bdb0d` |
 
 **Outcome: preservation and shared-count/status bindings pass.** The prior bounded P02 research conclusion remains applicable to the unchanged literature objects; its preparation gates remain open. No new subject, original-language, professional or human-observation approval or lesson acceptance is issued. Earlier bindings and repair history are retained. Only this review file was edited.
+
+## Preservation and binding recheck after law/health research expansion
+
+2026-10-22. Narrow local preservation/count/status check only; no new source or subject review and no web retrieval. Against `5a86f166`, both P02 briefs are byte-identical, and parsed comparisons confirm the three literature source records and both P02 queue objects are unchanged.
+
+The shared files now contain 26 source receipts and 16 planning records: twelve researched-with-open-gates and four research proposals. All queue items retain null runtime IDs, authored/accepted false and empty accepted-item prerequisites. README agrees with these counts and continues to distinguish research briefs from authored/accepted lessons, preserve stopped-source limits and retain future preparation/qualified/human gates. New law/health subject claims are outside this recheck's scope.
+
+Current complete-file SHA-256 bindings:
+
+| Path within `docs/pilots/sequences/` | SHA-256 |
+| --- | --- |
+| `p02-02-editions.md` | `3fb0641ae4bcefa400c8a0eddfe4f09b74a9c329bdeb23433b439ded6ca15263` |
+| `p02-03-narrative.md` | `cbf2326551d34c59bfd62ba7ec2faffa21bc31ba63db7c3f717993ed3a6abf14` |
+| `sources.json` | `ecd54002ee1f26ae30b55db68237276555bcf20d7625dd62fc50f30d0c89b9f4` |
+| `queue.json` | `2dddce061b3e242909ccd97d3db62ebd94d3ae007c1213b9a11fc06e196c1c28` |
+| `README.md` | `d77cc8e645c000085609c9c9996e4937fd987197cb2a941df023391632b8dd8f` |
+
+**Outcome: preservation and shared bindings pass.** Prior bounded P02 research conclusions remain applicable to the unchanged literature records, with all preparation gates and limits retained. No new source-language, professional, human-observation or lesson acceptance is issued. Earlier receipts/repairs and access stops remain intact. Only this review file was edited.

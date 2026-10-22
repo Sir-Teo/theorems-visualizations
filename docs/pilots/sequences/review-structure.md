@@ -24,23 +24,29 @@ Documentation/manifest integration is a separate owner task and was not assumed 
 
 ## Current exact reviewed file hashes
 
-The following final table supersedes the earlier four-brief bindings and covers the expanded eight-brief planning candidate. Historical findings/rechecks remain below and above for auditability.
+This current table supersedes earlier four/eight-brief bindings and covers the expanded 12-brief planning candidate. Earlier findings and rechecks are retained as history; their counts describe their stated checkpoints.
 
 | File | SHA-256 |
 | --- | --- |
-| queue.json | `12bf7a87d5f388e367f279591008ad3cdcb8a4335fbd20f5442dcff3ba6cd1ad` |
-| sources.json | `daae4724054279706470d673f09a5c89c946e95d5d7af7d5abf731c37541f027` |
-| README.md | `12504b8214ba1110601e4ab3933ae333bd65a3f5fc9651adbff350d1f41bdb0d` |
+| queue.json | `2dddce061b3e242909ccd97d3db62ebd94d3ae007c1213b9a11fc06e196c1c28` |
+| sources.json | `ecd54002ee1f26ae30b55db68237276555bcf20d7625dd62fc50f30d0c89b9f4` |
+| README.md | `d77cc8e645c000085609c9c9996e4937fd987197cb2a941df023391632b8dd8f` |
 | p01-02-perspectives.md | `e1bba720b4646d9c941c341b6e68776eeaadd3c60d38702e9bd84ac2118d4049` |
 | p01-03-material-evidence.md | `6168a16f585a96fddf1d70944c8b1393abb57ede7aa0b58939f019c7d84a8fb0` |
 | p02-02-editions.md | `3fb0641ae4bcefa400c8a0eddfe4f09b74a9c329bdeb23433b439ded6ca15263` |
 | p02-03-narrative.md | `cbf2326551d34c59bfd62ba7ec2faffa21bc31ba63db7c3f717993ed3a6abf14` |
 | p03-02-disclosure.md | `1d6c8df4ff82941263747847d565a9c24d48df33fed634454bbf61e582a46530` |
 | p03-03-langar.md | `134a999d8f107e40ba42094dfc36b9f3edb6a2836f2a0d1737b19c3e4dd9ae58` |
+| p04-02-evidence.md | `86b60d6ca93fe908f3a2d3061eb9a5d45c4f1c47a1ff0c481a539f39fa68042e` |
+| p04-03-australia.md | `cf7740a6fa15ae55a71397d6e2fc18e4f2d58cc95d589c52fe80aa48e84e4b69` |
 | p05-02-irrigation.md | `bb68e98ec05fd1150892e9abb00aaeee8720afb40e18b40b5c1e9762c8ba1370` |
 | p05-03-koraput.md | `236159dbcd3962657f0cec7a82864e8b611b0a76e97d38f7e56f53d5888653cc` |
+| p06-02-measurement.md | `15131ee0126ec4ad0ab1d6b118c649ce4d6af529dcc04a91b5337e356c0f5ba6` |
+| p06-03-communication.md | `1a3468cfdf8ee5f11c954cefe0ee5ef1b0eab4d9c8c9ae194c0a711ea5adc335` |
 | research/irrigation-accounting.json | `abd1554dc7e5f70e3fb256c35c30d8e49eda340f5581b42ba3e17031ac0bcd51` |
 | research/irrigation-accounting.py | `bef282ee754742ba5358ff1759d2972289c250e2dfb2c2b280dbc5692be5218d` |
+| research/volume-time.json | `4aec6d574a5d5a59e8b04e0a2c667ccbf256fb44d172b3e05da808771a62bfbf` |
+| research/volume-time.py | `f2b77bf7b6441c07175e310936110bdb73e19807b64361337b7c4e1216bbf400` |
 
 These hashes bind this planning candidate only. Later repairs require an explicit recheck or superseding receipt. This AI research-structure review grants no lesson acceptance, source expert approval, public release or human-session result.
 
@@ -69,3 +75,23 @@ Both review-philosophy.md and review-agriculture.md now exist and the README's f
 The reports identify separate AI roles and retain their specialist, practice/community, learner/access, source-language and release limits. The agriculture report additionally records its independent FAO profile timeout and reliance on the supplied earlier author-returned text; that is explicitly not fresh independent retrieval. This structural check confirms the limit is preserved in the durable report without claiming a new source reading or changing the original author's receipt.
 
 **Final bounded research-structure pass stands; no pending domain-report delivery dependency or actionable structural defect remains.** No browser or repeated test run was needed; only review-structure.md was updated. External handoff/manifest packaging remains the owner's separate work. Domain/source fidelity and lesson acceptance remain outside this structural approval.
+
+## Expanded 12-brief structure and volume/time recheck
+
+**Passed for bounded independent AI research-structure and fictional-arithmetic review of these current 19 bound files. No substantive structural repair requested.** This extends the prior eight-brief checkpoint with P04/P06 research; it grants no legal/clinical/professional approval, human-session result or lesson acceptance.
+
+Independently verified 16 unique editorial IDs, exactly positions 2/3 for each P01–P08, now 12 researched-with-open-gates entries and four research proposals. Every entry retains runtimeId=null, authored=false, accepted=false and empty acceptedItemPrerequisites. All 26 source IDs are unique and referenced by the 12 existing briefs; each researched brief names its ID/source references. Compared against commit 5a86f166: original 17 source records and unrelated queue entries remain exactly unchanged as JSON values. No production, exploration, orientation, generated atlas or dashboard path changed against that baseline in the read-only Git comparison.
+
+Read all four new briefs. Legal snapshots/jurisdictions, facts versus presumptions and remedy conditions, statutory text versus guidance, measurement arithmetic versus clinical quantities, and scripted communication versus observed comprehension remain distinct. Current-standard access stops and unresolved effective-date/consolidation, specialist, learner/access and rights gates are preserved. The first-lesson requirement removal is not inherited. This checks internal planning structure; legal/health source fidelity belongs to separate reviewers.
+
+Inspected and ran research/volume-time.py: PASS, fixture SHA-256 4aec6d574a5d5a59e8b04e0a2c667ccbf256fb44d172b3e05da808771a62bfbf. Independently recomputed using Decimal and cross-multiplication rather than the supplied Fraction implementation: both full traces end at 4 L, volumes at 1 s are 3 L and 2 L respectively, and ratios are 3/4 and 1/2. Their interval-average flows are [4,2,.6,.3,.1,0] and [2,2,1,.6,.4,0] L/s. Multiplying each flow by its interval and summing recovers the authored end volume. Litres-to-millilitres conversion preserves each ratio. Cropped A retains only the prefix to 2 s/3.6 L and gives 3/3.6=5/6, greater than 3/4 solely because the endpoint denominator shrank. The fixture explicitly leaves its complete endpoint unknown and clinicalRatio=null. These checks establish fictional arithmetic/units/cropping only, not interpolation accuracy for patient data, clinical time-zero/acceptability, diagnosis, physiology, a working interface or a participant outcome.
+
+At this checkpoint review-law.md and review-health.md were still arriving; the final delivery recheck below resolves those dependencies. Other README/brief/research local links resolved. No repeated browser or canonical suite was run; the owner will perform the final offline integration rehearsal and external handoff/manifest updates. Only review-structure.md was edited.
+
+## Final law/health report delivery and binding recheck
+
+Both review-law.md and review-health.md are now present; all README local links, including its seven review reports, resolve. Independently verified five declared law file bindings and seven health file bindings against current bytes. All 19 structure-review bindings above remain current. No bound source, queue, README, brief or arithmetic file changed during this final delivery check.
+
+The new reports explicitly identify bounded AI roles rather than legal/clinical qualifications, preserve current-law/current-standard, practitioner, access/learner and release gates, and do not manufacture patient data, professional certification or authored-lesson acceptance. Health review retains the two stopped-standard access limits. Law review retains supplied-snapshot provenance, differing UK change notices and incomplete legal-effective/branch validation. This check verifies delivery/internal binding; it does not re-perform source fidelity or legal/health approval.
+
+**Final bounded research-structure/arithmetic pass stands for the 19 exact bindings above. No pending law/health report delivery dependency or actionable structural finding remains.** No repeated browser/canonical test was needed. Only review-structure.md was updated; external handoff and manifest accounting remain the owner's separate packaging work.

@@ -69,3 +69,18 @@ Local evidence hashes:
 - `/tmp/atlas-sequences-methods-20261022/fao-koraput-author-tool-capture.txt`: `d33e626799ee12452e40517098b045d62978749bb9d64e4223107997ce1961fc`.
 
 No product repair was made by this reviewer. Only this review file was written. The new independent FAO timeout/cached-evidence limit is reported here for preservation. Numerical checks establish fictional conservation arithmetic only; they cannot close field, agronomy, community, rights, learner or access gates.
+
+
+## Narrow preservation/binding recheck after P04/P06 research · 2026-10-22
+
+Independently compared current P05-L02/L03 brief bytes and irrigation JSON/Python audit bytes with Git checkpoint `5a86f166`: all four unchanged. Independently compared the complete first17 source-record objects with that checkpoint: all unchanged, including all five P05 records. No FAO refetch or timeout recovery was performed; prior peer timeout and cached-author-body limitations remain binding. The new professional-domain research neither closes P05 agronomy/community/location/rights gates nor reclassifies P05 research as a lesson.
+
+Current queue has16follow-up records: **12researched-with-open-gates +4proposals**. Current sources has**26receipts**. README states those totals and preserves8original briefs,6authored previews,4locally accepted previews and24lesson target. New law/health entries are outside this agriculture source-content review. P05 result remains bounded research PASS with open preparation gates; no new acceptance or human/professional evidence.
+
+Current shared-file binding hashes superseding earlier whole-file hashes only:
+
+- `docs/pilots/sequences/sources.json`: `ecd54002ee1f26ae30b55db68237276555bcf20d7625dd62fc50f30d0c89b9f4`.
+- `docs/pilots/sequences/queue.json`: `2dddce061b3e242909ccd97d3db62ebd94d3ae007c1213b9a11fc06e196c1c28`.
+- `docs/pilots/sequences/README.md`: `d77cc8e645c000085609c9c9996e4937fd987197cb2a941df023391632b8dd8f`.
+
+All earlier P05-specific source/audit/brief hashes remain valid. Only this narrow append was made to the agriculture report; no other agriculture source or authored file changed.

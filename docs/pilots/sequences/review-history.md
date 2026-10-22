@@ -72,3 +72,19 @@ Current exact file-byte SHA-256 bindings (superseding earlier shared-file hashes
 | README.md | `12504b8214ba1110601e4ab3933ae333bd65a3f5fc9651adbff350d1f41bdb0d` |
 
 The prior history-only substantive desk-review scope and open gates remain unchanged. This recheck does not review or approve the newly researched domains, create lessons, assert specialist/human/community acceptance or grant release clearance. Only this review file is modified.
+
+## Preservation recheck after profession-research expansion
+
+Date: 2026-10-22. Baseline: `5a86f166`. Both P01 briefs remain byte-identical, the first seventeen source records remain structurally identical, and P01 queue objects remain unchanged. The shared package now records twelve researched follow-ups with open gates, four proposals and 26 source receipts. All sixteen queue items still have null runtime IDs, `authored:false`, `accepted:false` and no accepted-item prerequisite edges. README distinguishes this research progress from lessons and professional approval.
+
+Current exact shared-package bindings, for preservation only:
+
+| File | SHA-256 |
+| --- | --- |
+| p01-02-perspectives.md | `e1bba720b4646d9c941c341b6e68776eeaadd3c60d38702e9bd84ac2118d4049` |
+| p01-03-material-evidence.md | `6168a16f585a96fddf1d70944c8b1393abb57ede7aa0b58939f019c7d84a8fb0` |
+| sources.json | `ecd54002ee1f26ae30b55db68237276555bcf20d7625dd62fc50f30d0c89b9f4` |
+| queue.json | `2dddce061b3e242909ccd97d3db62ebd94d3ae007c1213b9a11fc06e196c1c28` |
+| README.md | `d77cc8e645c000085609c9c9996e4937fd987197cb2a941df023391632b8dd8f` |
+
+Previous history scope and evidence remain intact. This append supplies no new historical subject review, legal/clinical competence, human/community acceptance or authored lesson. The separate law report names its own limited source/planning review. Only this review append and the separately requested new law report are written.

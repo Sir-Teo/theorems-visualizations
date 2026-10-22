@@ -49,3 +49,21 @@ Both queue items remain planned, unauthored, unaccepted and without runtime IDs/
 Before P03-L02 authoring, freeze exact English excerpts and speaker transitions, including Cicero’s decision; retain the digital-transcription caveat and obtain the named final reconstruction/context review. Before P03-L03 authoring, establish the intended English code status and practitioner/context review and fix exact source-card/quotation scope. Any later interviews or media need their own consent/reuse evidence. These are existing open gates, preserved by this review.
 
 No browser or other chat was used; no outreach occurred. The earlier Chinese Text Project HTTP403 and other recorded retrieval stops remain binding and were not retried, mirrored or recovered. The SGPC web-reader size limit is accurately distinguished from an access denial; inspecting its supplied same-URL download does not recover a stopped source. No files other than this report were edited.
+
+## Shared research expansion binding recheck · 2026-10-22
+
+Narrow preservation/rebinding only; no new source retrieval or subject review. Independently compared both complete P03 briefs, all three P03 source objects (`seq-cicero-miller`, `seq-sikh-faq`, `seq-sgpc-reht`) and both P03 queue objects against Git commit `5a86f166`. All are unchanged. Existing scoped findings, preparation gates, limitations and source stops therefore remain applicable.
+
+Current full-file SHA-256 bindings supersede earlier whole-file bindings for the expanded shared checkpoint; earlier receipt history above remains intact:
+
+| File | Current SHA-256 |
+| --- | --- |
+| `p03-02-disclosure.md` | `1d6c8df4ff82941263747847d565a9c24d48df33fed634454bbf61e582a46530` |
+| `p03-03-langar.md` | `134a999d8f107e40ba42094dfc36b9f3edb6a2836f2a0d1737b19c3e4dd9ae58` |
+| `sources.json` | `ecd54002ee1f26ae30b55db68237276555bcf20d7625dd62fc50f30d0c89b9f4` |
+| `queue.json` | `2dddce061b3e242909ccd97d3db62ebd94d3ae007c1213b9a11fc06e196c1c28` |
+| `README.md` | `d77cc8e645c000085609c9c9996e4937fd987197cb2a941df023391632b8dd8f` |
+
+Independently checked shared counts: 16 follow-ups, 12 `researched-with-open-gates`, four `research-proposal`, 26 source receipts. README reports those counts and retains the research/authored/accepted distinction. Its P03 table descriptions, open specialist/current-code/practitioner gates, SGPC image-reading limits and stopped-source boundaries remain consistent with this review.
+
+Result: **preservation and shared-scope boundaries pass**. New law/health subject claims, standards, rights and legal/clinical interpretations are outside this recheck’s scope. No additional subject acceptance, authored lesson, human session, specialist credential, community participation or publication clearance is certified. Only this review file was edited.

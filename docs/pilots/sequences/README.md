@@ -2,7 +2,7 @@
 
 Research checkpoint: 2026-10-22. The eight original pilot briefs each propose three lessons. This queue tracks the **16 follow-ups**, separately from the eight first lessons, six authored previews and four locally accepted previews. A research brief is not an authored or accepted lesson. The programme target remains 24 accepted lessons; none is added to that count here.
 
-Eight follow-ups now have scoped source readings, concrete reader tasks, rights boundaries and explicit preparation gates. Eight remain research proposals. See [queue.json](queue.json) for all 16 and [sources.json](sources.json) for 17 scoped receipts. Independent desk reports cover [history](review-history.md), [literature](review-literature.md), [philosophy/religion](review-philosophy.md), [agriculture](review-agriculture.md) and [planning structure](review-structure.md), with exact hashes and limitations. These planning IDs are not runtime IDs, URLs, prerequisites or promised accepted targets. The existing pilot registry, accepted JSON, generated previews, production counts and pinned dashboard inputs are unchanged.
+Twelve follow-ups now have scoped source readings, concrete reader tasks, rights boundaries and explicit preparation gates. Four remain research proposals. See [queue.json](queue.json) for all 16 and [sources.json](sources.json) for 26 scoped receipts. Independent desk reports cover [history](review-history.md), [literature](review-literature.md), [philosophy/religion](review-philosophy.md), [agriculture](review-agriculture.md), [law](review-law.md), [health/communication](review-health.md) and [planning structure](review-structure.md), with exact hashes and limitations. These planning IDs are not runtime IDs, URLs, prerequisites or promised accepted targets. The existing pilot registry, accepted JSON, generated previews, production counts and pinned dashboard inputs are unchanged.
 
 | Planning ID | Brief | Research decision / next action |
 | --- | --- | --- |
@@ -12,14 +12,18 @@ Eight follow-ups now have scoped source readings, concrete reader tasks, rights 
 | P02-L03 | [Who knows what in The Cabuliwallah?](p02-03-narrative.md) | English witness inspected; translator/print-edition attribution remains unresolved; Bengali analysis is not claimed |
 | P03-L02 | [Competing duties and disclosure](p03-02-disclosure.md) | Cicero/Miller speaker roles and resolution inspected; final selections and specialist reconstruction review remain |
 | P03-L03 | [Reading accounts of langar in context](p03-03-langar.md) | Institutional explanation and code distinguished from observed practice; English code status and practitioner/context review remain |
+| P04-L02 | [Evidence, presumptions and remedies](p04-02-evidence.md) | Remedy-specific presumption and exceptions inspected; differing change-notice dates and legal branch review remain |
+| P04-L03 | [A separately verified Australian consumer case](p04-03-australia.md) | Compilation 167 and ACCC guidance inspected; federal/state application and complete legal branch review remain |
 | P05-L02 | [A field water balance with explicit constraints](p05-02-irrigation.md) | Regional method and original arithmetic inspected; agronomic decision envelope and real field evidence remain |
 | P05-L03 | [Whose evidence describes a farming system?](p05-03-koraput.md) | Profile, plan and mediated farmer account distinguished; conflicting village names and participant/context scope remain |
+| P06-L02 | [What a lung-function measurement measures](p06-02-measurement.md) | Dated teaching source and original trace arithmetic inspected; current-standard body access and clinician review remain |
+| P06-L03 | [Care communication and teach-back](p06-03-communication.md) | AHRQ third-edition Tools 5/9 inspected; qualified dialogue/language-support review and real learning evidence remain |
 
 ## Research and delivery order
 
-1. Close the eight briefs' specific preparation gates before authoring. Preserve negative findings; do not replace inaccessible sources through mirrors.
-2. Retain the distinction between bounded desk review and final authored-lesson review. The [irrigation arithmetic audit](research/irrigation-accounting.py) checks fictional balances, not an agronomic recommendation, actual field data or a working interface.
-3. Research P04's evidence/remedy distinction and separate Australian jurisdiction; P06's measurement and care-communication tasks. Obtain qualified legal/clinical review before authoring those pilots' claims under their existing contracts.
+1. Close the twelve briefs' specific preparation gates before authoring. Preserve negative findings; do not replace inaccessible sources through mirrors.
+2. Retain the distinction between bounded desk review and final authored-lesson review. The [irrigation arithmetic audit](research/irrigation-accounting.py) and [volume/time audit](research/volume-time.py) check fictional numbers and explicit limits, not agronomic/clinical recommendations, actual field/patient data or working interfaces.
+3. Freeze legal-effective snapshots and resolve the measurement-standard gap. Obtain qualified legal/clinical review before authoring P04/P06 claims under their existing contracts; desk research does not supply these credentials.
 4. Research P07's repair and situated textile practice, then P08's staging/gesture and separately sourced performance tradition. Public descriptions do not establish community consent or practical competence.
 5. Author only when preparation gates and draft capacity permit. P07/P08 still occupy both unaccepted slots. Review each exact lesson independently; select existing accepted connections only afterwards. The P01/P02 first-lesson human-check removal is not automatically extended to these follow-ups.
 
@@ -33,6 +37,8 @@ Each future brief must name its source version/locator, reader question, inspect
 - Earlier stops recorded in [source decisions](../research/history-literature-resolution.md) remain in force. No failed fetch is counted as a fresh reading.
 - PDF page images were inspected for Mendoza printed p. 66 and Pompeii 2024 printed p. 8. The new SGPC source was read through rendered cover/contents, preface p. 6 and article XXI p. 49 with adjacent p. 50; Koraput's output table on printed p. 2 was also visually inspected. Other listed PDF passages were read as extracted text; no complete volume, manuscript, artefact or archaeological context was inspected firsthand.
 - The SGPC PDF exceeded the web reader's content-length limit. The same public URL was downloaded and rendered locally; this was a file-size limitation, not an access denial. Its nearly empty text layer was not treated as a source reading. No blocked source was retrieved through a substitute host.
+- The UK sections 19/23/24 were read from same-public-URL downloads after a web-reader XHTML content-type error. Their change notices differ (20 October for s19, 21 October for ss23/24), so retrieval on 22 October is not a certified common legal date. Australian HTML navigation returned contents/internal errors; the pinned official compilation PDFs supplied the actual selected provisions.
+- The 2019 ATS/ERS spirometry paper at `https://pmc.ncbi.nlm.nih.gov/articles/PMC6794117/` returned CAPTCHA; the distinct 2022 interpretation paper at `https://publications.ersnet.org/content/erj/60/1/2101499` returned 403. No alternate copies were retrieved. NIOSH's separate 2012 teaching publication was read with pp18–19 visually inspected; it does not close the current-standard gap. Neither search snippets nor old thresholds are adopted as current clinical rules.
 
 ## Verification
 
