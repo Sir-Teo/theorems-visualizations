@@ -17510,9 +17510,9 @@
   "authoringDirection": "User confirmed prior work done; continuously author future waves without routine pauses.",
   "progress": {
     "total": 1031,
-    "written": 694,
-    "remaining": 337,
-    "writtenChapters": 53,
+    "written": 722,
+    "remaining": 309,
+    "writtenChapters": 55,
     "chapters": [
       {
         "collection": "ode",
@@ -18183,10 +18183,23 @@
         "collection": "pl",
         "chapter": 5,
         "total": 12,
-        "written": 0,
-        "remaining": 12,
-        "writtenItems": [],
-        "status": "planned"
+        "written": 12,
+        "remaining": 0,
+        "writtenItems": [
+          "pl-5.1",
+          "pl-5.2",
+          "pl-5.3",
+          "pl-5.4",
+          "pl-5.5",
+          "pl-5.6",
+          "pl-5.7",
+          "pl-5.8",
+          "pl-5.9",
+          "pl-5.10",
+          "pl-5.11",
+          "pl-5.12"
+        ],
+        "status": "written"
       },
       {
         "collection": "cg",
@@ -18949,10 +18962,27 @@
         "collection": "ling",
         "chapter": 5,
         "total": 16,
-        "written": 0,
-        "remaining": 16,
-        "writtenItems": [],
-        "status": "planned"
+        "written": 16,
+        "remaining": 0,
+        "writtenItems": [
+          "ling-5.1",
+          "ling-5.2",
+          "ling-5.3",
+          "ling-5.4",
+          "ling-5.5",
+          "ling-5.6",
+          "ling-5.7",
+          "ling-5.8",
+          "ling-5.9",
+          "ling-5.10",
+          "ling-5.11",
+          "ling-5.12",
+          "ling-5.13",
+          "ling-5.14",
+          "ling-5.15",
+          "ling-5.16"
+        ],
+        "status": "written"
       },
       {
         "collection": "phil",
