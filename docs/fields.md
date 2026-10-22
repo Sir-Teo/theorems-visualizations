@@ -169,6 +169,9 @@ an eigen-direction, an orthonormal frame, an ellipse's axes) with live numbers.
 
 ## Medicine & health
 
+- Declare whether a metabolized fraction refers to total clearance or hepatic clearance before computing an interaction ratio. Separate reversible binding from elimination, and distinguish an integrated trajectory's sampled maximum from a proved continuous maximum. Keep genotype activity conventions and copy-phase ambiguity separate from a measured exposure prediction. See the [nonlinear pharmacokinetics review](verification/wave5-pharm-review.md).
+- Keep acoustic pressure coefficients distinct from intensity fractions, and exact collinear Doppler from a local angular projection. A phase below numeric range or an unresolved lag vector does not certify zero flow. Define significant wave/ensemble statistics and chosen synthetic maps without presenting them as measured anatomy. See the [ultrasound review](verification/wave5-imaging-review.md).
+
 - Transform uncertainty sets through the model's actual domain. For half-life $\ln 2/k$, intersect a fitted rate interval with $k>0$ first: the image can be bounded, unbounded, or empty. A nonpositive fitted rate supplies no positive-decay point estimate, and a plotting cap is not an interval endpoint. Distinguish central-compartment simulations from clinical recovery. See the [PHARM peer](verification/pharm-independent-combined-peer.md).
 
 - Mix perfusion-weighted gas content before inverting to pressure, and distinguish exact shunt/zero-perfusion branches. Keep Henry conventions, gas-volume reference conditions and source temperatures explicit. Delayed-history interpolation has its own convergence order; an unresolved positive delay needs a numeric-status message rather than a zero-delay substitute or invented trace. See the [respiration review](verification/wave5-physio-review.md).
