@@ -198,29 +198,142 @@ export default {
       title: 'Electoral systems and party systems',
       summary: String.raw`How votes become seats shapes how many parties there are. Single-member plurality districts reward the two largest parties and punish third parties, while proportional formulas translate vote shares into seat shares more faithfully. Political scientists measure the outcomes with the effective number of parties and disproportionality indices; Duverger’s law is a strong tendency with well-known exceptions rather than a law.`,
       items: [
-        { num: '6.1', kind: 'Definition', name: 'Single-member districts and proportional representation', deps: ['polsci-1.2'], refs: ['T&P ch. 5'],
-          pic: 'One national vote distribution counted two ways: district-by-district plurality and nationwide PR; the resulting parliaments are drawn as hemicycles side by side.' },
-        { num: '6.2', kind: 'Method', name: 'D’Hondt and Sainte-Laguë seat allocation', deps: ['polsci-6.1'], refs: ['T&P ch. 5'],
-          pic: 'A table of vote totals divided by 1, 2, 3… or 1, 3, 5…; seats go to the largest quotients in order, animated, with large parties favoured under D’Hondt.' },
-        { num: '6.3', kind: 'Method', name: 'Single transferable vote', deps: ['polsci-1.4', 'polsci-6.2'], refs: ['T&P ch. 5'],
-          pic: 'Multi-member STV with the Droop quota: surpluses of elected candidates and ballots of eliminated ones transfer fractionally until all seats fill.' },
-        { num: '6.4', kind: 'Phenomenon', name: 'Duverger’s law', deps: ['polsci-6.1', 'polsci-3.7'], refs: ['Shepsle: institutions'],
-          pic: 'Simulated plurality elections with strategic voters: support for a third party drains away over repeated elections, while the same electorate under PR sustains several parties; real exceptions (India, Canada) are marked.' },
-        { num: '6.5', kind: 'Theorem', name: 'Cox’s M + 1 rule', deps: ['polsci-6.4'], refs: ['Shepsle: institutions'],
-          pic: 'Vary district magnitude M: with strategic voters the number of viable candidates in equilibrium settles at M + 1, shown as vote shares collapsing onto that many.' },
-        { num: '6.6', kind: 'Definition', name: 'Effective number of parties (Laakso–Taagepera)', deps: ['polsci-6.1'], refs: ['Shepsle: institutions'],
-          pic: 'Drag vote shares and see 1/Σpᵢ² update: two equal parties give 2, a dominant party with many minnows gives less than 2.' },
-        { num: '6.7', kind: 'Phenomenon', name: 'The cube law of seats and votes', deps: ['polsci-6.1'], refs: ['T&P ch. 5'],
-          pic: 'Simulate plurality elections with normally distributed district swings; the seat-share curve S/(1−S) ≈ (V/(1−V))³ emerges, and its exponent changes with district heterogeneity.' },
-        { num: '6.8', kind: 'Definition', name: 'Gallagher’s disproportionality index', deps: ['polsci-6.2'], refs: ['T&P ch. 5'],
-          pic: 'Bars of vote share and seat share per party for real elections; the index is the root-mean-square gap, ranked across electoral systems.' },
-        { num: '6.9', kind: 'Method', name: 'Mixed-member proportional systems', deps: ['polsci-6.2'], refs: ['T&P ch. 5'],
-          pic: 'District seats are topped up from party lists to match the PR total; overhang seats appear when a party wins more districts than its proportional share.' },
-        { num: '6.10', kind: 'Paper', name: 'Les partis politiques',
-          paper: { authors: 'Maurice Duverger', year: 1951, title: 'Les partis politiques', venue: 'Paris: Armand Colin (English trans. Political Parties, London: Methuen, 1954)', url: 'https://archive.org/details/politicalparties0000duve' },
-          introduces: ['polsci-6.4'], deps: ['polsci-6.1', 'polsci-1.2'], refs: [],
-          pic: 'Duverger’s mechanical and psychological effects taken apart: simulate plurality elections in single-member districts with three parties, first with sincere votes (the third party wins votes but almost no seats), then letting its voters desert to the nearer of the two leaders until two parties remain; switch to proportional representation and watch the third party survive.' },
-      ],
+  {
+    "num": "6.1",
+    "kind": "Definition",
+    "name": "Single-member districts and proportional representation",
+    "deps": [
+      "polsci-1.2"
+    ],
+    "refs": [
+      "Electoral Commission, How votes are counted: first-past-the-post and list PR; Senedd April2024 Memorandum printed37 §§126–127"
+    ],
+    "pic": "Edit fictional district vote rows. Compare the actual district winners and seat hemicycle with nationwide D’Hondt at the same house size. A concentrated-support preset changes geography; zero-ballot districts remain vacant."
+  },
+  {
+    "num": "6.2",
+    "kind": "Method",
+    "name": "D’Hondt and Sainte-Laguë seat allocation",
+    "deps": [
+      "polsci-6.1"
+    ],
+    "refs": [
+      "Senedd Cymru, Senedd Cymru (Members and Elections) Bill Memorandum April2024, printed37 §§126–127"
+    ],
+    "pic": "Select a rule and house size, then step through the exact award sequence. The quotient table shows the divisors used for that award and the current seat bars. Edit party totals or use an all-zero profile."
+  },
+  {
+    "num": "6.3",
+    "kind": "Method",
+    "name": "Single transferable vote",
+    "deps": [
+      "polsci-1.4",
+      "polsci-6.2"
+    ],
+    "refs": [
+      "Scottish Local Government Elections Order2011 SSI2011/399 rules47–49,51,53; AEC, Exhaustion of preferences under the Senate’s new electoral system,2016 printed4/11 (weighted versus unweighted Gregory)"
+    ],
+    "pic": "Edit grouped ballot counts and rankings indexed0–4 for A–E. Step through exact rational transfers; two panels distinguish continuing and retained weights. Exhaustion and conservation remain visible in the live readout."
+  },
+  {
+    "num": "6.4",
+    "kind": "Phenomenon",
+    "name": "Duverger’s law",
+    "deps": [
+      "polsci-6.1",
+      "polsci-3.7"
+    ],
+    "refs": [
+      "Cox1999, Electoral Rules and Electoral Coordination, Annual Review of Political Science2:145–161, actual publisher abstract; Cox1997 concluding chapter publisher summary"
+    ],
+    "pic": "Separate a fixed-ballot mechanical comparison from an explicitly imposed switching experiment. The switching percent and chosen destination change actual district votes; both plurality and national D’Hondt seats are recomputed. No historical country markers or invented observations are shown."
+  },
+  {
+    "num": "6.5",
+    "kind": "Theorem",
+    "name": "Cox’s M + 1 rule",
+    "deps": [
+      "polsci-6.4"
+    ],
+    "refs": [
+      "Cox1997, Making Votes Count, Some concluding comments on strategic voting, publisher summary; Cox1999, Electoral Rules and Electoral Coordination, actual abstract"
+    ],
+    "pic": "Vary SNTV magnitude and a voter’s current action while keeping the other voters fixed. The actual five possible winning committees, utilities and deviation gains are computed. A tied-rival preset exposes the role of tie priority; the M+1 value is a conditional reference, not a forced simulation outcome.",
+    "verify": true
+  },
+  {
+    "num": "6.6",
+    "kind": "Definition",
+    "name": "Effective number of parties (Laakso–Taagepera)",
+    "deps": [
+      "polsci-6.1"
+    ],
+    "refs": [
+      "Armingeon etal, Comparative Political Data Set1960–2017 codebook update2019, printed9, effpar_ele/effpar_leg"
+    ],
+    "pic": "Party-share bars and squared-share contributions respond to edited integer counts. Equal-party and zero-total presets expose normalization and the undefined boundary; the readout gives the coincidence probability and its reciprocal."
+  },
+  {
+    "num": "6.7",
+    "kind": "Phenomenon",
+    "name": "The cube law of seats and votes",
+    "deps": [
+      "polsci-6.1"
+    ],
+    "refs": [
+      "Nuffield College, David Butler Archive, Cube rule, actual institutional history and two-party caveat; self-contained odds-family algebra and finite threshold count"
+    ],
+    "pic": "Compare a continuously adjustable authored odds-power family with the actual seat staircase of eight declared threshold districts. The same horizontal parameter selects both examples; neither curve is claimed fitted to an observed election."
+  },
+  {
+    "num": "6.8",
+    "kind": "Definition",
+    "name": "Gallagher’s disproportionality index",
+    "deps": [
+      "polsci-6.2"
+    ],
+    "refs": [
+      "Armingeon etal, Comparative Political Data Set1960–2017 codebook update2019, printed10, dis_gall"
+    ],
+    "pic": "Allocate seats by either divisor rule to fictional party totals. Separate vote and seat fraction panels and the live percentage-point gaps show exactly what enters the index; house size and ties can change it discretely."
+  },
+  {
+    "num": "6.9",
+    "kind": "Method",
+    "name": "Mixed-member proportional systems",
+    "deps": [
+      "polsci-6.2"
+    ],
+    "refs": [
+      "Electoral Commission, How votes are counted, additional member overview; self-contained authored overhang accounting with6.2"
+    ],
+    "pic": "Change separate fictional party-list totals and district A/B wins. Base entitlement bars are compared with stacked final seats: dark district seats plus pale list seats. The readout reports every top-up, overhang and the resulting house size."
+  },
+  {
+    "num": "6.10",
+    "kind": "Paper",
+    "name": "Les partis politiques",
+    "deps": [
+      "polsci-6.1",
+      "polsci-1.2"
+    ],
+    "refs": [
+      "Cox1999 actual abstract (modern context); Duverger1951 bibliographic record, original body unavailable"
+    ],
+    "pic": "Inspect two explicitly separated mechanisms with fictional districts and a chosen switching percentage. No published election series or script that guarantees two survivors is presented. The original citation and access uncertainty remain visible.",
+    "paper": {
+      "authors": "Maurice Duverger",
+      "year": 1951,
+      "title": "Les partis politiques",
+      "venue": "Paris: Armand Colin (English trans. Political Parties, London: Methuen, 1954)",
+      "url": "https://archive.org/details/politicalparties0000duve"
+    },
+    "introduces": [
+      "polsci-6.4"
+    ],
+    "verify": true
+  }
+],
     },
     // ───────────────────────────────────────────────────────────── 7
     {
