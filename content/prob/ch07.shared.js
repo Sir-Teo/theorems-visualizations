@@ -1,0 +1,33 @@
+// Finite, seeded models for Durrett's Brownian-motion chapter. A polygon is not a Brownian sample between its nodes.
+export const lin=(a,b,n=100)=>Array.from({length:n+1},(_,i)=>a+(b-a)*i/n);
+export function random(seed){let x=seed>>>0;return()=>{x+=0x6D2B79F5;let t=x;t=Math.imul(t^t>>>15,t|1);t^=t+Math.imul(t^t>>>7,t|61);return((t^t>>>14)>>>0)/4294967296;};}
+export const normal=r=>Math.sqrt(-2*Math.log(1-r()))*Math.cos(2*Math.PI*r());
+export const mean=a=>a.reduce((s,x)=>s+x,0)/a.length;
+export const variance=a=>{const m=mean(a);return mean(a.map(x=>(x-m)**2));};
+export function brownian(seed,level=9,T=1,x=0,draw){const rng=random(seed);draw??=()=>normal(rng);const N=2**level,a=Array(N+1);a[0]=x;a[N]=x+Math.sqrt(T)*draw();for(let gap=N;gap>1;gap/=2)for(let i=0;i<N;i+=gap)a[i+gap/2]=(a[i]+a[i+gap])/2+Math.sqrt(T*gap/(4*N))*draw();return a.map((y,i)=>[T*i/N,y]);}
+export function at(p,t){if(t<=p[0][0])return p[0][1];if(t>=p.at(-1)[0])return p.at(-1)[1];let l=0,r=p.length-1;while(r-l>1){const m=(l+r)>>1;if(p[m][0]<=t)l=m;else r=m;}const u=(t-p[l][0])/(p[r][0]-p[l][0]);return(1-u)*p[l][1]+u*p[r][1];}
+export const coarse=(p,level)=>{const stride=(p.length-1)/2**level;return Array.from({length:2**level+1},(_,j)=>p[j*stride]);};
+export function increments(times,z,x=0){let old=0,b=x;return times.map((t,i)=>{b+=Math.sqrt(t-old)*z[i];old=t;return b;});}
+export const covariance=times=>times.map(s=>times.map(t=>Math.min(s,t)));
+export function gridStats(p,gamma=.4){let jump=0,quotient=0,qv=0;for(let i=1;i<p.length;i++){const d=Math.abs(p[i][1]-p[i-1][1]);jump=Math.max(jump,d);qv+=d*d;}for(let i=0;i<p.length;i++)for(let j=i+1;j<p.length;j++)quotient=Math.max(quotient,Math.abs(p[j][1]-p[i][1])/(p[j][0]-p[i][0])**gamma);return{jump,quotient,qv};}
+export function momentBound(alpha,beta,gamma,N,K=1){const lambda=alpha-beta*gamma,ratio=2**(-lambda);return{lambda,terms:lin(0,16,16).map(n=>[n,K*2**(-lambda*n)]),tail:lambda>0?K*2**(-lambda*N)/(-Math.expm1(-lambda*Math.LN2)):null,holder:gamma>0&&lambda>0};}
+export function chain(q,r,level){const mesh=2**(-level),a=Math.floor(q/mesh)*mesh,b=Math.floor(r/mesh)*mesh;const endpoints=x=>{const out=[x];for(let k=level;k<=12;k++){const y=Math.floor(x*2**k)/2**k;if(y!==out.at(-1))out.push(y);}if(out.at(-1)!==x)out.push(x);return out;};return{mesh,a,b,left:endpoints(q),right:endpoints(r)};}
+export function nearZero(seed,depth=12){const rng=random(seed),points=[[1,normal(rng)]];for(let k=1;k<=depth;k++){const old=points.at(-1),t=2**(-k);points.push([t,old[1]/2+Math.sqrt(t/2)*normal(rng)]);}return[[0,0],...points.reverse()];}
+export function logPath(seed,depth=12,x=0){const rng=random(seed),points=[[1,x+normal(rng)]];for(let k=1;k<=depth;k++){const t=2**k;points.push([t,points.at(-1)[1]+Math.sqrt(t/2)*normal(rng)]);}return points;}
+export function crossings(p,level=0){const ts=[];for(let i=0;i<p.length;i++){if(p[i][1]===level)ts.push(p[i][0]);if(i&&((p[i-1][1]<level&&p[i][1]>level)||(p[i-1][1]>level&&p[i][1]<level)))ts.push(p[i-1][0]+(p[i][0]-p[i-1][0])*(level-p[i-1][1])/(p[i][1]-p[i-1][1]));}return ts;}
+export function hit(p,a){if(p[0][1]===a)return{time:p[0][0],index:0,value:a};for(let i=1;i<p.length;i++)if(((p[i-1][1]<=a&&p[i][1]>=a)||(p[i-1][1]>=a&&p[i][1]<=a))&&p[i-1][1]!==p[i][1])return{time:p[i-1][0]+(p[i][0]-p[i-1][0])*(a-p[i-1][1])/(p[i][1]-p[i-1][1]),index:i,value:a};return null;}
+export const strictRound=(t,n)=>Number.isFinite(t)?(Math.floor(t*2**n)+1)/2**n:Infinity;
+export function stopped(p,a,b,horizon=p.at(-1)[0]){if(p[0][1]<=a||p[0][1]>=b)return{time:p[0][0],value:p[0][1],index:0,exited:true};const left=hit(p,a),right=hit(p,b),candidates=[left,right].filter(q=>q&&q.time<=horizon).sort((x,y)=>x.time-y.time);const h=candidates[0];return h?{...h,exited:true}:{time:horizon,value:at(p,horizon),exited:false};}
+export function reflect(p,a){const h=hit(p,a);return{hit:h,path:h?[...p.filter(q=>q[0]<h.time),[h.time,a],...p.filter(q=>q[0]>h.time).map(([t,b])=>[t,2*a-b])]:p.map(q=>q.slice())};}
+export function normalCDF(x){if(x===0)return .5;const a=Math.abs(x);let tail;if(a<=2){let power=a,sum=a;for(let k=1;k<80;k++){power*=-a*a/(2*k);const term=power/(2*k+1);sum+=term;if(Math.abs(term)<1e-18)break;}tail=.5-sum/Math.sqrt(2*Math.PI);}else{let fraction=0;for(let k=200;k>=1;k--)fraction=k/(a+fraction);tail=Math.exp(-a*a/2)/Math.sqrt(2*Math.PI)/(a+fraction);}return x>0?1-tail:tail;}
+export const normalDensity=x=>Math.exp(-x*x/2)/Math.sqrt(2*Math.PI);
+export const hitCDF=(a,t)=>t<=0?(a===0?1:0):a===0?1:2*normalCDF(-Math.abs(a)/Math.sqrt(t));
+export const arcsineCDF=s=>s<=0?0:s>=1?1:2*Math.asin(Math.sqrt(s))/Math.PI;
+export const laplaceHit=(a,lambda)=>Math.exp(-Math.abs(a)*Math.sqrt(2*lambda));
+export const exitLaw=(a,b,x)=>({left:(b-x)/(b-a),right:(x-a)/(b-a),mean:(x-a)*(b-x)});
+export function heatPolynomial(order,t,x){switch(order){case 1:return x;case 2:return x*x-t;case 3:return x*x*x-3*t*x;case 4:return x**4-6*t*x*x+3*t*t;default:throw Error('order');}}
+export const heatDx=(order,t,x)=>order===1?1:order===2?2*x:order===3?3*x*x-3*t:4*x**3-12*t*x;
+export function ito(p,kind='square'){const f=kind==='square'?x=>x*x:kind==='cube'?x=>x**3:Math.sin,df=kind==='square'?x=>2*x:kind==='cube'?x=>3*x*x:Math.cos,ddf=kind==='square'?()=>2:kind==='cube'?x=>6*x:x=>-Math.sin(x);let stochastic=0,drift=0;const rows=[[0,0,0,0]];for(let i=1;i<p.length;i++){const[t,x]=p[i-1],[u,y]=p[i];stochastic+=df(x)*(y-x);drift+=.5*ddf(x)*(u-t);rows.push([u,f(y)-f(p[0][1]),stochastic,drift]);}return{rows,actual:rows.at(-1)[1],stochastic,drift,residual:rows.at(-1)[1]-stochastic-drift};}
+export function timeIto(p,mu=-.5,sigma=1){let stochastic=0,drift=0;const start=Math.exp(sigma*p[0][1]);const rows=[[p[0][0],0,0,0]];for(let i=1;i<p.length;i++){const[t,x]=p[i-1],[u,y]=p[i],f=Math.exp(mu*t+sigma*x);stochastic+=sigma*f*(y-x);drift+=(mu+sigma*sigma/2)*f*(u-t);rows.push([u,Math.exp(mu*u+sigma*y)-start,stochastic,drift]);}return{rows,stochastic,drift,actual:rows.at(-1)[1],coefficient:mu+sigma*sigma/2};}
+export function ito2(p,q,kind='radius'){let stochastic=0,drift=0,cross=0;const rows=[[0,0,0,0]];for(let i=1;i<p.length;i++){const[t,x]=p[i-1],[u,X]=p[i],y=q[i-1][1],Y=q[i][1],dx=X-x,dy=Y-y;stochastic+=kind==='radius'?2*x*dx+2*y*dy:y*dx+x*dy;drift+=kind==='radius'?2*(u-t):0;cross+=dx*dy;rows.push([u,kind==='radius'?X*X+Y*Y:X*Y,stochastic,drift]);}return{rows,stochastic,drift,cross,actual:rows.at(-1)[1]};}
+export function histogram(a,edges){const counts=Array(edges.length-1).fill(0);let outside=0;for(const x of a){const j=edges.findIndex((b,i)=>i<edges.length-1&&x>=b&&(x<edges[i+1]||(i===edges.length-2&&x===edges[i+1])));if(j<0)outside++;else counts[j]++;}return{counts,mass:counts.map(c=>c/a.length),outside};}
