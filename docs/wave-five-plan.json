@@ -17510,9 +17510,9 @@
   "authoringDirection": "User confirmed prior work done; continuously author future waves without routine pauses.",
   "progress": {
     "total": 1031,
-    "written": 955,
-    "remaining": 76,
-    "writtenChapters": 74,
+    "written": 1007,
+    "remaining": 24,
+    "writtenChapters": 78,
     "chapters": [
       {
         "collection": "ode",
@@ -19135,19 +19135,42 @@
         "collection": "polsci",
         "chapter": 6,
         "total": 10,
-        "written": 0,
-        "remaining": 10,
-        "writtenItems": [],
-        "status": "planned"
+        "written": 10,
+        "remaining": 0,
+        "writtenItems": [
+          "polsci-6.1",
+          "polsci-6.2",
+          "polsci-6.3",
+          "polsci-6.4",
+          "polsci-6.5",
+          "polsci-6.6",
+          "polsci-6.7",
+          "polsci-6.8",
+          "polsci-6.9",
+          "polsci-6.10"
+        ],
+        "status": "written"
       },
       {
         "collection": "demo",
         "chapter": 5,
         "total": 11,
-        "written": 0,
-        "remaining": 11,
-        "writtenItems": [],
-        "status": "planned"
+        "written": 11,
+        "remaining": 0,
+        "writtenItems": [
+          "demo-5.1",
+          "demo-5.2",
+          "demo-5.3",
+          "demo-5.4",
+          "demo-5.5",
+          "demo-5.6",
+          "demo-5.7",
+          "demo-5.8",
+          "demo-5.9",
+          "demo-5.10",
+          "demo-5.11"
+        ],
+        "status": "written"
       },
       {
         "collection": "music",
@@ -19205,10 +19228,26 @@
         "collection": "arch",
         "chapter": 5,
         "total": 15,
-        "written": 0,
-        "remaining": 15,
-        "writtenItems": [],
-        "status": "planned"
+        "written": 15,
+        "remaining": 0,
+        "writtenItems": [
+          "arch-5.1",
+          "arch-5.2",
+          "arch-5.3",
+          "arch-5.4",
+          "arch-5.5",
+          "arch-5.6",
+          "arch-5.7",
+          "arch-5.8",
+          "arch-5.9",
+          "arch-5.10",
+          "arch-5.11",
+          "arch-5.12",
+          "arch-5.13",
+          "arch-5.14",
+          "arch-5.15"
+        ],
+        "status": "written"
       },
       {
         "collection": "ling",
@@ -19240,10 +19279,27 @@
         "collection": "phil",
         "chapter": 5,
         "total": 16,
-        "written": 0,
-        "remaining": 16,
-        "writtenItems": [],
-        "status": "planned"
+        "written": 16,
+        "remaining": 0,
+        "writtenItems": [
+          "phil-5.1",
+          "phil-5.2",
+          "phil-5.3",
+          "phil-5.4",
+          "phil-5.5",
+          "phil-5.6",
+          "phil-5.8",
+          "phil-5.9",
+          "phil-5.10",
+          "phil-5.11",
+          "phil-5.12",
+          "phil-5.13",
+          "phil-5.14",
+          "phil-5.15",
+          "phil-5.16",
+          "phil-5.17"
+        ],
+        "status": "written"
       },
       {
         "collection": "tech",
