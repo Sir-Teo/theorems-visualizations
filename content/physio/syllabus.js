@@ -177,38 +177,237 @@ export default {
       ],
     },
     {
-      n: 5,
-      title: 'Respiration and gas exchange',
-      summary: String.raw`Breathing is driven by pressure differences created by the chest wall, resisted by lung elasticity and surface tension that surfactant tames. Gas laws set the partial pressures, the alveolar gas equation predicts alveolar oxygen, and Fick’s law governs transfer across the alveolar membrane. Matching ventilation to perfusion is the key to efficient exchange, and the chemical control of breathing is a feedback loop that can become unstable when delays grow.`,
-      items: [
-        { num: '5.1', kind: 'Law', name: 'Boyle’s law and the mechanics of breathing', deps: ['thermo-1.4'], refs: ['Keener–Sneyd ch. 14', 'Guyton–Hall'],
-          pic: 'Lower the diaphragm and the thoracic volume grows, alveolar pressure dips below atmospheric and air flows in; flow, volume and pressure traces are drawn through a breath.' },
-        { num: '5.2', kind: 'Concept', name: 'Lung compliance and the pressure–volume curve', deps: ['physio-5.1', 'physio-4.6'], refs: ['Keener–Sneyd ch. 14'],
-          pic: 'Inflate a lung with air and with saline; the saline curve is far less stiff and shows no hysteresis, revealing how much of lung recoil comes from surface tension.' },
-        { num: '5.3', kind: 'Law', name: 'Laplace’s law for alveoli and the role of surfactant', deps: ['physio-5.2', 'fluid-2.7'], refs: ['Keener–Sneyd ch. 14'],
-          pic: 'Connect two bubbles of different size: without surfactant the small one empties into the large one, but surfactant lowers tension as area shrinks and both stay stable.' },
-        { num: '5.4', kind: 'Concept', name: 'Lung volumes and spirometry', deps: ['physio-5.1'], refs: ['Guyton–Hall'],
-          pic: 'A spirometer trace shows tidal breathing, a maximal inspiration and a forced expiration; volumes and capacities are labelled, and an obstructive pattern slows the forced expiration.' },
-        { num: '5.5', kind: 'Concept', name: 'Dead space and alveolar ventilation', deps: ['physio-5.4'], refs: ['Guyton–Hall'],
-          pic: 'Compare deep slow and shallow fast breathing at the same minute ventilation; because each breath wastes the dead-space volume, alveolar ventilation is much lower for shallow breathing.' },
-        { num: '5.6', alias: 'pchem-1.5', name: 'Dalton’s law of partial pressures' },
-        { num: '5.7', kind: 'Law', name: 'Henry’s law of gas solubility', deps: ['physio-5.6', 'pchem-5.6'], refs: ['Guyton–Hall'],
-          pic: 'Equilibrate plasma with gas at different partial pressures; dissolved oxygen rises linearly and modestly while CO₂, twenty times more soluble, dissolves far more.' },
-        { num: '5.8', kind: 'Model', name: 'Alveolar gas equation', deps: ['physio-5.5', 'physio-5.6'], refs: ['Keener–Sneyd ch. 14'],
-          pic: 'Set inspired oxygen, arterial CO₂ and respiratory quotient; alveolar P_O₂ is computed, and hypoventilation that raises CO₂ visibly pushes alveolar oxygen down.' },
-        { num: '5.9', kind: 'Law', name: 'Fick’s law for alveolar gas transfer and diffusing capacity', deps: ['physio-1.3', 'physio-5.7'], refs: ['Keener–Sneyd ch. 14'],
-          pic: 'Thicken the alveolar–capillary barrier or shrink its area; the oxygen transfer rate falls in proportion and the diffusing-capacity readout drops, as in fibrosis or emphysema.' },
-        { num: '5.10', kind: 'Phenomenon', name: 'Perfusion-limited versus diffusion-limited transfer', deps: ['physio-5.9'], refs: ['Keener–Sneyd ch. 14'],
-          pic: 'Follow capillary P_O₂ along the capillary transit: at rest it equilibrates in a third of the transit, but in exercise with a thickened barrier it falls short, while carbon monoxide never equilibrates.' },
-        { num: '5.11', kind: 'Concept', name: 'Ventilation–perfusion ratio', deps: ['physio-5.8'], refs: ['Keener–Sneyd ch. 14'],
-          pic: 'Slide V/Q from zero (shunt) to infinity (dead space); the alveolar P_O₂ and P_CO₂ point moves along the O₂–CO₂ curve, and mixing units with different ratios lowers arterial oxygen.' },
-        { num: '5.12', kind: 'Model', name: 'West’s zones of the lung', deps: ['physio-5.11', 'physio-4.1'], refs: ['Guyton–Hall'],
-          pic: 'In an upright lung, compare alveolar, arterial and venous pressures at each height; capillaries collapse at the apex, behave like waterfalls in the middle and flow freely at the base.' },
-        { num: '5.13', kind: 'Model', name: 'Chemical control of breathing: the CO₂ loop', deps: ['physio-5.8', 'physio-1.2'], refs: ['Keener–Sneyd ch. 14'],
-          pic: 'Raise inspired CO₂; chemoreceptors drive ventilation up along a nearly linear CO₂ response curve, and the closed loop settles where the metabolic and response curves intersect.' },
-        { num: '5.14', kind: 'Phenomenon', name: 'Cheyne–Stokes breathing as a delayed-feedback instability', deps: ['physio-5.13', 'mathbio-1.17'], refs: ['Keener–Sneyd ch. 14'],
-          pic: 'Lengthen the circulation delay between lungs and chemoreceptors, as in heart failure; the ventilation trace switches from steady to waxing–waning periodic breathing once loop gain times delay crosses the threshold.' },
-      ],
+      "n": 5,
+      "title": "Respiration and gas exchange",
+      "summary": "Pressure moves air, but pressure, flow and lung volume are different quantities. Surface tension and elastic recoil shape breathing; gas conservation, diffusion and blood chemistry shape exchange. The final models compare static regulation with a delayed respiratory feedback loop, keeping their assumptions and numerical limits visible.",
+      "items": [
+        {
+          "num": "5.1",
+          "kind": "Law",
+          "name": "Boyle’s law and the mechanics of breathing",
+          "deps": [
+            "thermo-1.4",
+            "physio-4.1",
+            "physio-4.6"
+          ],
+          "refs": [
+            "Montgomery, official Cambridge excerpt (2008), pp.4–8",
+            "Authored periodic linear resistance/compliance solution"
+          ],
+          "see": [
+            "physio-5.2"
+          ],
+          "pic": "Switch between a sealed gas and an open airway. In the sealed mode, change volume and check the absolute-pressure product. In the open mode, move through a breath and change resistance: volume lags the drive, while flow changes direction when alveolar pressure crosses atmospheric pressure."
+        },
+        {
+          "num": "5.2",
+          "kind": "Concept",
+          "name": "Lung compliance and the pressure–volume curve",
+          "deps": [
+            "physio-5.1",
+            "physio-4.6"
+          ],
+          "refs": [
+            "Montgomery, official Cambridge excerpt, pp.7–9",
+            "Authored positive-slope pressure branches"
+          ],
+          "see": [
+            "physio-5.3"
+          ],
+          "pic": "Choose inflation or deflation and move the volume marker. Compare the local compliance readout with the idealized interface-free tissue line. Increasing the surface term stiffens the chosen air-filled model; increasing hysteresis widens its work loop."
+        },
+        {
+          "num": "5.3",
+          "kind": "Law",
+          "name": "Laplace’s law for alveoli and the role of surfactant",
+          "deps": [
+            "fluid-2.7",
+            "physio-5.2"
+          ],
+          "refs": [
+            "Montgomery, official Cambridge excerpt, pp.4–6",
+            "Independently derived two-sphere linearization"
+          ],
+          "see": [
+            "physio-5.1"
+          ],
+          "pic": "Change the split of the fixed model volume and the area dependence of surface tension. The arrow shows the computed transfer direction. At constant tension the smaller sphere loses volume; a sufficiently steep area-dependent tension reverses that direction."
+        },
+        {
+          "num": "5.4",
+          "kind": "Concept",
+          "name": "Lung volumes and spirometry",
+          "deps": [
+            "physio-5.1"
+          ],
+          "refs": [
+            "ATS/ERS, Standardization of Spirometry 2019 Update, definitions and Table9",
+            "Montgomery excerpt, p.9, volume definitions"
+          ],
+          "see": [
+            "physio-5.5"
+          ],
+          "pic": "Choose a fast or slow illustrative expiration and vary its capacity and time constant. The first-second marker and computed FEV₁/FVC follow the actual curve. Change the separately supplied RV to see TLC bookkeeping change without altering the expelled-volume trace."
+        },
+        {
+          "num": "5.5",
+          "kind": "Concept",
+          "name": "Dead space and alveolar ventilation",
+          "deps": [
+            "physio-5.4",
+            "thermo-1.4"
+          ],
+          "refs": [
+            "Keener author manuscript, pp.707–709, equations14.43–14.45"
+          ],
+          "see": [
+            "physio-5.8",
+            "physio-5.13"
+          ],
+          "pic": "Vary tidal volume, anatomical dead space and minute ventilation. Frequency is computed to keep the chosen minute volume fixed. A second shallow/deep comparison shows why equal minute volume can deliver different amounts of fresh alveolar gas. The CO₂ readout appears only where the declared steady balance exists."
+        },
+        {
+          "num": "5.6",
+          "alias": "pchem-1.5",
+          "name": "Dalton’s law of partial pressures"
+        },
+        {
+          "num": "5.7",
+          "kind": "Law",
+          "name": "Henry’s law of gas solubility",
+          "deps": [
+            "pchem-5.6",
+            "thermo-1.5"
+          ],
+          "refs": [
+            "Keener author manuscript, pp.639–640, equation13.5 and Table13.2"
+          ],
+          "see": [
+            "physio-5.9",
+            "physio-5.11"
+          ],
+          "pic": "Choose oxygen or carbon dioxide and move the partial-pressure marker. The line and micromolar readout use the selected listed coefficient. Compare both gases at the same pressure, keeping dissolved gas separate from the much larger chemical transport pools."
+        },
+        {
+          "num": "5.8",
+          "kind": "Model",
+          "name": "Alveolar gas equation",
+          "deps": [
+            "physio-5.5",
+            "thermo-1.5"
+          ],
+          "refs": [
+            "Cruickshank & Hirschauer (2004), pp.24–27, full correction p.26"
+          ],
+          "see": [
+            "physio-5.11"
+          ],
+          "pic": "Change inspired oxygen, CO₂, respiratory quotient or ambient pressure. Compare the full and short equations and their difference. At pure inspired oxygen the full equation leaves the dry pressure not occupied by CO₂; incompatible imposed states are marked instead of clamped."
+        },
+        {
+          "num": "5.9",
+          "kind": "Law",
+          "name": "Fick’s law for alveolar gas transfer and diffusing capacity",
+          "deps": [
+            "physio-1.3",
+            "physio-5.7"
+          ],
+          "refs": [
+            "Keener author manuscript, pp.699–700",
+            "Montgomery official excerpt, pp.9–10"
+          ],
+          "see": [
+            "physio-5.10"
+          ],
+          "pic": "Thicken the barrier, remove exchanging area or change permeability. The capacity and signed transfer rate are computed from those changes and the pressure gradient. Reversing the gradient reverses transfer; the reference capacity is a chosen scale."
+        },
+        {
+          "num": "5.10",
+          "kind": "Phenomenon",
+          "name": "Perfusion-limited versus diffusion-limited transfer",
+          "deps": [
+            "physio-5.9"
+          ],
+          "refs": [
+            "Keener author manuscript, pp.699–705, equations14.7–14.24"
+          ],
+          "see": [
+            "physio-5.11"
+          ],
+          "pic": "Change conductance, content capacitance and transit time. The exit marker shows how much of the initial pressure gap remains. The readout computes exchanged content per unit blood volume, distinguishing approaching equilibrium from the amount carried."
+        },
+        {
+          "num": "5.11",
+          "kind": "Concept",
+          "name": "Ventilation–perfusion ratio",
+          "deps": [
+            "thermo-1.5",
+            "physio-5.7",
+            "physio-5.10"
+          ],
+          "refs": [
+            "Keener author manuscript, pp.708–712, equations14.40–14.50",
+            "Authored two-unit content mixing"
+          ],
+          "see": [
+            "physio-5.8",
+            "physio-5.12"
+          ],
+          "pic": "Move along the single-unit V/Q curve, including exact shunt and zero-perfusion branches. Switch to two perfused units and redistribute a fixed ventilation volume between them. Compare the correctly mixed oxygen pressure with the pressure average; the latter generally differs."
+        },
+        {
+          "num": "5.12",
+          "kind": "Model",
+          "name": "West’s zones of the lung",
+          "deps": [
+            "physio-4.1",
+            "physio-5.11"
+          ],
+          "refs": [
+            "West, Dollery & Naimark (1964), metadata only; original body unread",
+            "Authored collapsible-resistor derivation"
+          ],
+          "see": [
+            "physio-5.9"
+          ],
+          "verify": true,
+          "pic": "Raise alveolar pressure or lower the arterial supply and watch the pressure regimes change with height. The selected-height readout gives all three pressures and computed local flow. The default has no obligatory no-flow apex."
+        },
+        {
+          "num": "5.13",
+          "kind": "Model",
+          "name": "Chemical control of breathing: the CO₂ loop",
+          "deps": [
+            "physio-5.5",
+            "physio-1.2"
+          ],
+          "refs": [
+            "Keener author manuscript, pp.713–715, respiratory tank and ventilatory closure",
+            "Authored piecewise-linear static controller"
+          ],
+          "see": [
+            "physio-5.8",
+            "physio-5.14"
+          ],
+          "pic": "Change CO₂ production, inspired CO₂, baseline ventilation or response slope. The intersection is computed from the actual metabolic and response laws. With no attainable ventilation the widget reports the missing steady state instead of drawing a fictitious intersection."
+        },
+        {
+          "num": "5.14",
+          "kind": "Phenomenon",
+          "name": "Cheyne–Stokes breathing as a delayed-feedback instability",
+          "deps": [
+            "physio-5.13"
+          ],
+          "refs": [
+            "Keener author manuscript, pp.713–718, equations14.56–14.66"
+          ],
+          "see": [
+            "mathbio-1.17",
+            "physio-1.2"
+          ],
+          "pic": "Choose an equilibrium and Hill exponent, then vary the circulation delay. The production parameter is derived from that equilibrium. Compare the computed trace at two numerical step sizes with the independently calculated stability boundary. Long delays can give waxing and waning ventilation; positive Hill ventilation approaches but does not attain literal zero at positive CO₂."
+        }
+      ]
     },
     {
       n: 6,
