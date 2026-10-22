@@ -148,45 +148,245 @@ export default {
     },
     // ───────────────────────────────────────────────────────────── 5
     {
-      n: 5,
-      title: 'Beams, columns and trusses',
-      summary: String.raw`A beam carries load by bending, with compression on one face and tension on the other, so material far from the middle does the most work. Columns fail by buckling long before crushing once they are slender. Trusses turn bending into axial forces in triangulated bars, and Maxwell’s counting rule and reciprocal diagrams make their analysis a matter of geometry.`,
-      items: [
-        { num: '5.1', kind: 'Theorem', name: 'The moment diagram is a funicular polygon', deps: ['solid-6.1', 'arch-1.5'], refs: ['Allen & Zalewski'],
-          pic: 'Drag loads on a simply supported beam: its bending-moment diagram and the funicular polygon for the same loads are drawn together and coincide up to scale.' },
-        { num: '5.2', kind: 'Concept', name: 'Structural depth and span-to-depth ratios', deps: ['solid-6.4', 'arch-5.1'], refs: ['Allen & Zalewski', 'Salvadori'],
-          pic: 'Slide span and depth for a beam, a truss and an arch: required material and deflection are computed, explaining rules of thumb such as span/20 for beams and span/10 for trusses.' },
-        { num: '5.3', kind: 'Concept', name: 'Form-active versus bending-active structures', deps: ['arch-5.1', 'arch-3.2'], refs: ['Allen & Zalewski'],
-          pic: 'Span the same gap with a beam, a truss, an arch and a cable under the same load: the material each needs is computed, and the funicular forms win by an order of magnitude.' },
-        { num: '5.4', kind: 'Event', name: 'Galileo’s cantilever problem (1638)', deps: ['arch-5.2', 'solid-6.4'], refs: ['Salvadori'],
-          pic: 'Galileo’s cantilever with a weight on the end: compare his assumption of a pivot at the bottom edge with the linear stress profile, which predicts one third of his breaking load.' },
-        { num: '5.5', kind: 'Concept', name: 'Columns: from the classical orders to steel', deps: ['solid-10.2', 'solid-10.4'], refs: ['Salvadori'],
-          pic: 'Line up Doric, Ionic, cast-iron and steel columns by slenderness: the buckling and crushing limits are drawn for each material, showing why stone columns are stocky and steel ones thin.' },
-        { num: '5.6', kind: 'Concept', name: 'Maillart’s deck-stiffened arches', deps: ['arch-3.2', 'arch-5.1'], refs: ['Salvadori'],
-          pic: 'A thin concrete arch braced by a stiff deck, as at Salginatobel: move a truck across and see the deck take the bending while the arch carries the thrust.' },
-        { num: '5.7', kind: 'Concept', name: 'Triangulation and trusses', deps: ['arch-1.2', 'solid-9.1'], refs: ['Allen & Zalewski'],
-          pic: 'Push on a square frame of pinned bars and it folds; add a diagonal and it locks; extend to a truss and see members coloured by tension and compression.' },
-        { num: '5.8', kind: 'Concept', name: 'Funicular trusses: chords shaped to the moment', deps: ['arch-5.7', 'arch-5.1'], refs: ['Allen & Zalewski'],
-          pic: 'Shape a truss’s bottom chord to the moment diagram of a uniform load: diagonal forces drop to zero, and a moving point load reintroduces them.' },
-        { num: '5.9', kind: 'Method', name: 'Maxwell–Cremona reciprocal diagrams', deps: ['arch-5.7', 'arch-1.4', 'solid-9.2'], refs: ['Allen & Zalewski'],
-          pic: 'A truss and its reciprocal force diagram side by side: every bar is parallel to its partner, whose length is the bar force; dragging a joint updates both.' },
-        { num: '5.10', kind: 'Theorem', name: 'Maxwell’s rule for rigid frameworks', deps: ['arch-5.7'], refs: ['Allen & Zalewski'],
-          pic: 'Add and remove bars in a planar framework: the count m = 2j − 3 is checked, and a flexing animation shows a mechanism whenever there are too few bars or they are badly placed.' },
-        { num: '5.11', kind: 'Concept', name: 'Truss types: Pratt, Howe, Warren and bowstring', deps: ['arch-5.8'], refs: ['Allen & Zalewski'],
-          pic: 'Switch a bridge truss between types under the same load: which diagonals are in tension changes, and the total steel weight is compared.' },
-        { num: '5.12', kind: 'Concept', name: 'Space frames and geodesic domes', deps: ['arch-5.10'], refs: ['Salvadori'],
-          pic: 'Subdivide an icosahedron and project to a sphere to make a geodesic dome; load one node and see forces spread through the triangulated net.' },
-        { num: '5.13', kind: 'Concept', name: 'Cantilever bridges and the Forth Bridge model', deps: ['arch-5.1'], refs: ['Salvadori'],
-          pic: 'Recreate the 1887 human model of the Forth Bridge: two men as cantilevers, a suspended span between them, counterweights at the ends, with the load path traced.' },
-        { num: '5.14', kind: 'Concept', name: 'Prestressed concrete', deps: ['arch-5.2', 'solid-6.4'], refs: ['Salvadori'],
-          pic: 'Add a tensioned tendon low in a concrete beam: the stress diagram shifts so that tension under load is cancelled; raise the load until cracks appear.' },
-        { num: '5.15', kind: 'Paper', name: 'On Reciprocal Figures and Diagrams of Forces',
-          paper: { authors: 'J. Clerk Maxwell', year: 1864, title: 'On Reciprocal Figures and Diagrams of Forces',
-                   venue: 'The London, Edinburgh, and Dublin Philosophical Magazine and Journal of Science 27 (182): 250–261', doi: '10.1080/14786446408643663' },
-          introduces: ['arch-5.9'], deps: ['arch-1.4', 'arch-5.7'], refs: [],
-          pic: 'A truss and its reciprocal figure: the reader drags the joints of a loaded roof truss and Maxwell’s reciprocal updates, each bar matched by a parallel line whose length is the bar’s force and each joint by a closed polygon, tension and compression coloured, and the external loads forming the load line.' },
+  n: 5,
+  title: "Beams, columns and trusses",
+  summary: "Beams carry load through a signed bending-stress field, while matching funicular forms and trusses can use axial force. Chosen stress, stiffness, geometry and support assumptions control every comparison. Rigidity is tested by actual first-order rank, not bar counts alone; a globally shared reciprocal connects joint equilibrium with a force diagram. Finite authored calculations are teaching models, not safety assessments of historical structures.",
+  items: [
+    {
+      num: "5.1",
+      kind: "Theorem",
+      name: "The moment diagram is a funicular polygon",
+      deps: [
+        "arch-1.2",
+        "arch-1.5"
       ],
+      refs: [
+        "Written ARCH1.2/1.5; supplied cut-equilibrium derivation; MIT2.080 Lecture 5 Eqs.5.3–5.4"
+      ],
+      pic: "Change the load, its position, distributed loading and H. Compare the computed moment with −H times the actual funicular ordinate.",
+      see: [
+        "solid-6.1"
+      ]
     },
+    {
+      num: "5.2",
+      kind: "Concept",
+      name: "Structural depth and span-to-depth ratios",
+      deps: [
+        "arch-5.1",
+        "solid-1.2",
+        "solid-1.4"
+      ],
+      refs: [
+        "MIT2.080 Lecture 4 Eqs.4.23–4.30; Lecture 5 beam equation and supplied central-load integration"
+      ],
+      pic: "Vary span, depth, load and chosen elastic constants. Read both stress and serviceability requirements instead of treating a span/depth ratio as a guarantee.",
+      see: [
+        "solid-6.4"
+      ]
+    },
+    {
+      num: "5.3",
+      kind: "Concept",
+      name: "Form-active versus bending-active structures",
+      deps: [
+        "arch-5.2",
+        "arch-3.2"
+      ],
+      refs: [
+        "Supplied joint-equilibrium and stress-volume derivations; MIT2.080 Lecture 4 bending stress"
+      ],
+      pic: "Hold the central load and allowed stress fixed while changing span and structural depth. Compare the actual conditional volumes and the omitted support/buckling costs."
+    },
+    {
+      num: "5.4",
+      kind: "Event",
+      name: "Galileo’s cantilever problem (1638)",
+      deps: [
+        "arch-5.2",
+        "solid-1.4"
+      ],
+      refs: [
+        "BCIT Civil Engineering eduFacts, Galileo; J. X. Wang, Decision Making Under Uncertainty, publisher preview §1.1 pp.1–3; supplied moment integrals; MIT2.080 Lecture 4"
+      ],
+      pic: "Compare the two section stress assumptions and their predicted nominal tip-load limits. Change depth and length to see the common square-depth/inverse-length scaling.",
+      see: [
+        "solid-6.4"
+      ]
+    },
+    {
+      num: "5.5",
+      kind: "Concept",
+      name: "Columns: from the classical orders to steel",
+      deps: [
+        "solid-1.4",
+        "arch-1.2"
+      ],
+      refs: [
+        "MIT2.080 Lecture 9 §9.2, Eqs.9.34–9.37; supplied endpoint calculation"
+      ],
+      pic: "Change length, square side, chosen modulus/compression limit and end condition. Compare Euler and compression limits on the positive log-load axis; the mode shape is normalized rather than a predicted postbuckling displacement.",
+      see: [
+        "solid-10.2",
+        "solid-10.4"
+      ]
+    },
+    {
+      num: "5.6",
+      kind: "Concept",
+      name: "Maillart’s deck-stiffened arches",
+      deps: [
+        "arch-5.1",
+        "solid-1.4"
+      ],
+      refs: [
+        "JHU Perspectives, Schwandbach Bridge entry; ASCE Salginatobel Bridge; supplied positive quadratic compatibility model"
+      ],
+      pic: "Change relative deck stiffness, connector stiffness and load position. Observe the compatible displacement amplitudes and computed restoring-force shares."
+    },
+    {
+      num: "5.7",
+      kind: "Concept",
+      name: "Triangulation and trusses",
+      deps: [
+        "arch-1.2",
+        "solid-1.4"
+      ],
+      refs: [
+        "Connelly et al. 2009 §2.1, compatibility/equilibrium matrices; supplied exact rhombus family"
+      ],
+      pic: "Fold the actual unbraced square while its side lengths remain fixed. Add the diagonal and compare computed rigidity rank; the fold control then disappears.",
+      see: [
+        "solid-9.1"
+      ]
+    },
+    {
+      num: "5.8",
+      kind: "Concept",
+      name: "Funicular trusses: chords shaped to the moment",
+      deps: [
+        "arch-5.7",
+        "arch-5.1"
+      ],
+      refs: [
+        "ETH eQUILIBRIUM constant-force chord examples; supplied nodal equilibrium and direct-stiffness model"
+      ],
+      pic: "Switch the lower chord between funicular and flat, add an unmatched first-node load, and inspect the actual signed diagonal forces and equilibrium residual.",
+      see: [
+        "solid-9.2"
+      ]
+    },
+    {
+      num: "5.9",
+      kind: "Method",
+      name: "Maxwell–Cremona reciprocal diagrams",
+      deps: [
+        "arch-5.7",
+        "arch-1.4"
+      ],
+      refs: [
+        "Van Mele & Block 2014 §§2.1–2.2; supplied complete four-vertex reciprocal"
+      ],
+      pic: "Change roof rise, apex position and load, then highlight each joint polygon. Compare paired directions, the shared force vertices and the external load line.",
+      see: [
+        "solid-9.2"
+      ]
+    },
+    {
+      num: "5.10",
+      kind: "Theorem",
+      name: "Maxwell’s rule for rigid frameworks",
+      deps: [
+        "arch-5.7",
+        "ladr-3.21",
+        "ladr-3.57"
+      ],
+      refs: [
+        "Connelly et al. 2009 §2.1; supplied planar rank-nullity derivation"
+      ],
+      pic: "Compare an unbraced square, one diagonal, two diagonals and a count-passing degenerate geometry. Read actual rank, mechanisms and self-stress rather than using a count as a certificate."
+    },
+    {
+      num: "5.11",
+      kind: "Concept",
+      name: "Truss types: Pratt, Howe, Warren and bowstring",
+      deps: [
+        "arch-5.8",
+        "solid-1.1"
+      ],
+      refs: [
+        "MIT public truss/direct-stiffness teaching context; supplied axial-energy assembly and equilibrium"
+      ],
+      pic: "Switch actual topologies and change depth/load. Compare computed tension/compression and all four equal-load stress-volume proxies."
+    },
+    {
+      num: "5.12",
+      kind: "Concept",
+      name: "Space frames and geodesic domes",
+      deps: [
+        "arch-5.10",
+        "ladr-3.21"
+      ],
+      refs: [
+        "Connelly et al. 2009 §2.1,3D count; supplied icosahedral subdivision and3D rigidity calculation"
+      ],
+      pic: "Change subdivision, height and viewing angle, or compare a braced/unbraced tetrahedron. Inspect actual 3D rank and boundary mechanisms beside the labelled orthographic projection."
+    },
+    {
+      num: "5.13",
+      kind: "Concept",
+      name: "Cantilever bridges and the Forth Bridge model",
+      deps: [
+        "arch-1.2",
+        "arch-5.1"
+      ],
+      refs: [
+        "Princeton CASCE, Human Cantilever Model; supplied one-side free-body balance"
+      ],
+      pic: "Change inner/outer arm lengths and suspended load. Trace the resulting pier and anchorage forces and test the equal-arm special case."
+    },
+    {
+      num: "5.14",
+      kind: "Concept",
+      name: "Prestressed concrete",
+      deps: [
+        "arch-5.2",
+        "solid-1.4"
+      ],
+      refs: [
+        "MIT2.080 Lecture 4 Eqs.4.23–4.30; supplied eccentric-force equilibrium and linear superposition"
+      ],
+      pic: "Move the tendon, change effective force and applied moment, and inspect both extreme stresses and the chosen tensile-limit crossing.",
+      see: [
+        "solid-6.4"
+      ]
+    },
+    {
+      num: "5.15",
+      kind: "Paper",
+      name: "On Reciprocal Figures and Diagrams of Forces",
+      deps: [
+        "arch-1.4",
+        "arch-5.7"
+      ],
+      refs: [
+        "Van Mele & Block 2014 §§2.1–2.2; supplied modern finite construction; Maxwell 1864 metadata only"
+      ],
+      pic: "Change the roof geometry and load and highlight each closed joint polygon in the shared reciprocal. Read the actual forces and the displayed force/P coordinates, and compare the external load line.",
+      paper: {
+        authors: "J. Clerk Maxwell",
+        year: 1864,
+        title: "On Reciprocal Figures and Diagrams of Forces",
+        venue: "The London, Edinburgh, and Dublin Philosophical Magazine and Journal of Science 27 (182): 250–261",
+        doi: "10.1080/14786446408643663"
+      },
+      introduces: [
+        "arch-5.9"
+      ],
+      verify: true
+    }
+  ]
+},
     // ───────────────────────────────────────────────────────────── 6
     {
       n: 6,
