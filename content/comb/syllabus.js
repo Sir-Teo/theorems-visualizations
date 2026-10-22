@@ -232,28 +232,155 @@ export default {
       title: 'Integer partitions',
       summary: String.raw`Partitions of an integer are counted by Euler’s infinite product, and that product turns bijections between Ferrers diagrams into identities between series. Euler’s odd–distinct theorem, the pentagonal number theorem with Franklin’s involution, the Jacobi triple product and the Rogers–Ramanujan identities are the classical highlights. Restricting partitions to a box brings back the q-binomial coefficients, and stacking them in three dimensions gives plane partitions.`,
       items: [
-        { num: '6.1', kind: 'Theorem', name: 'Euler’s generating function for partitions', deps: ['comb-1.16', 'comb-4.1'], refs: ['Stanley EC1 §1.8', 'Aigner ch. 3'],
-          pic: 'Multiply the factors 1/(1 − xᵏ) one at a time; the coefficient table fills in with p(n), and each factor’s contribution is shown as the number of parts equal to k.' },
-        { num: '6.2', kind: 'Theorem', name: 'Conjugation of partitions', deps: ['comb-1.16'], refs: ['Aigner ch. 1'],
-          pic: 'Reflect a Ferrers diagram in its diagonal; the number of parts and the largest part swap, so the two counts agree for every n.' },
-        { num: '6.3', kind: 'Theorem', name: 'Euler: distinct parts equal odd parts', deps: ['comb-6.1'], refs: ['Stanley EC1 §1.8'],
-          pic: 'List partitions of n into distinct parts beside partitions into odd parts; repeatedly halving even parts or merging equal pairs carries one list onto the other.' },
-        { num: '6.4', kind: 'Theorem', name: 'Glaisher’s bijection', deps: ['comb-6.3'], refs: ['Stanley EC1 §1.8'],
-          pic: 'Choose d and match partitions with no part divisible by d to partitions with no part repeated d or more times by splitting and merging parts; both columns are counted.' },
-        { num: '6.5', kind: 'Theorem', name: 'Euler’s pentagonal number theorem', deps: ['comb-6.1', 'comb-3.9'], refs: ['Stanley EC1 §1.8', 'Aigner ch. 3'],
-          pic: 'Franklin’s involution moves the smallest part onto the staircase slope or back; distinct-part partitions cancel in pairs except at pentagonal numbers, where the leftover diagram is drawn.' },
-        { num: '6.6', kind: 'Theorem', name: 'Euler’s recurrence for p(n)', deps: ['comb-6.5'], refs: ['Aigner ch. 3'],
-          pic: 'Compute p(n) up to a thousand with the pentagonal recurrence, timing it against brute-force enumeration and plotting log p(n) against √n.' },
-        { num: '6.7', kind: 'Theorem', name: 'Jacobi triple product identity', deps: ['comb-6.1'], refs: ['Stanley EC1 §1.8'],
-          pic: 'Truncate both sides of the triple product as two-variable series in z and q; the coefficient arrays agree entry by entry, and specialising z recovers the pentagonal theorem.' },
-        { num: '6.8', kind: 'Theorem', name: 'Rogers–Ramanujan identities', deps: ['comb-6.1'], refs: ['Stanley EC1 §1.8'],
-          pic: 'Count partitions of n whose parts differ by at least 2 and partitions into parts ≡ 1, 4 (mod 5); the two counts are listed side by side up to n = 100 and never differ.' },
-        { num: '6.9', kind: 'Theorem', name: 'Partitions in a box and Gaussian coefficients', deps: ['comb-2.9', 'comb-6.2'], refs: ['Stanley EC1 §1.7', 'Aigner ch. 1'],
-          pic: 'Fit Ferrers diagrams inside a k × (n − k) box; the size distribution is plotted and matches the coefficients of [n choose k]_q, which can also be traced as lattice paths along the boundary.' },
-        { num: '6.10', kind: 'Theorem', name: 'Unimodality of Gaussian coefficients', deps: ['comb-6.9'], refs: ['Stanley EC1 §1.7'],
-          pic: 'Choose n and k; the coefficient sequence of [n choose k]_q is drawn as bars that rise to a single peak and fall symmetrically, with any failure of unimodality flagged in red.' },
-        { num: '6.11', kind: 'Theorem', name: 'MacMahon’s plane partition generating function', deps: ['comb-6.1', 'comb-3.11'], refs: ['Stanley EC1 ch. 1'],
-          pic: 'Stack cubes in a corner to form plane partitions of n, viewed in 3D; the counts 1, 1, 3, 6, 13, 24, … agree with the coefficients of ∏(1 − xᵏ)⁻ᵏ.' },
+        {
+          "num": "6.1",
+          "kind": "Theorem",
+          "name": "Euler’s generating function for partitions",
+          "deps": [
+            "comb-1.16",
+            "comb-4.1"
+          ],
+          "refs": [
+            "Stanley, EC1 second-edition draft (15 July 2011), §1.8, pp.68–71; Proposition 1.8.2"
+          ],
+          "pic": "Change the largest allowed part and inspect a coefficient. The bars count the restricted product, the orange dots show unrestricted partition numbers, and the diagram is one actual contributing partition. The selector cycles through its complete finite list."
+        },
+        {
+          "num": "6.2",
+          "kind": "Theorem",
+          "name": "Conjugation of partitions",
+          "deps": [
+            "comb-1.16"
+          ],
+          "refs": [
+            "Stanley, Topics in Algebraic Combinatorics (1 February 2013), ch.6, pp.79–80"
+          ],
+          "pic": "Browse a partition and move the reflection slider. At the endpoints the same cells give the original diagram and its conjugate. Intermediate positions show the geometric motion and may overlap."
+        },
+        {
+          "num": "6.3",
+          "kind": "Theorem",
+          "name": "Euler: distinct parts equal odd parts",
+          "deps": [
+            "comb-6.1"
+          ],
+          "refs": [
+            "Stanley EC1 draft, Proposition 1.8.5, pp.72–73",
+            "Pak, Partition Bijections, a Survey (2002 preprint), §§3.1–3.2, p.20"
+          ],
+          "pic": "Choose either class as the starting list. Each diagram is carried to its actual partner by binary splitting or merging, so the displayed correspondence preserves the total weight and has an explicit inverse."
+        },
+        {
+          "num": "6.4",
+          "kind": "Theorem",
+          "name": "Glaisher’s bijection",
+          "deps": [
+            "comb-6.3"
+          ],
+          "refs": [
+            "Pak, Partition Bijections, a Survey, §3.2.3, p.20; base-d extension of §3.2.1"
+          ],
+          "pic": "Change the base and browse a partition with no divisible part. Its base-$d$ multiplicity digits determine the second diagram. The readout lists those digits and both diagrams are computed from the same partition."
+        },
+        {
+          "num": "6.5",
+          "kind": "Theorem",
+          "name": "Euler’s pentagonal number theorem",
+          "deps": [
+            "comb-6.1",
+            "comb-3.9"
+          ],
+          "refs": [
+            "Stanley EC1 draft, Proposition 1.8.7, pp.76–78",
+            "Pak §§5.1–5.2, pp.29–31, corrected by Grinberg errata (9 May 2021), p.2"
+          ],
+          "pic": "Choose a distinct-part partition. Gold marks the candidate smallest row and slope; the second panel shows the computed partner, or the exceptional fixed point. The signed count over the entire finite list is compared with direct product multiplication."
+        },
+        {
+          "num": "6.6",
+          "kind": "Theorem",
+          "name": "Euler’s recurrence for p(n)",
+          "deps": [
+            "comb-6.1",
+            "comb-6.5"
+          ],
+          "refs": [
+            "Stanley EC1 draft, equation (1.91), p.78",
+            "Pak §5.1.2, p.30, with Grinberg’s corrected signs and p symbols"
+          ],
+          "pic": "Choose a target through 1,000 and select one signed contribution. The exact integer recurrence supplies the counts; the panels show normalized contributions and the logarithm of the resulting growth. No timing or asymptotic estimate replaces the computed values."
+        },
+        {
+          "num": "6.7",
+          "kind": "Theorem",
+          "name": "Jacobi triple product identity",
+          "deps": [
+            "comb-6.1",
+            "comb-6.2"
+          ],
+          "refs": [
+            "Pak §§6.1.1 and 6.2.1–6.2.2, pp.35–36",
+            "Stanley EC1 draft, solution to Exercise 1.91, p.188"
+          ],
+          "pic": "Include factor triples one at a time and compare the exact two-variable coefficient arrays. A square marks a nonzero coefficient; inspect its signed integer value with the degree and power controls. A product truncated too early is allowed to disagree."
+        },
+        {
+          "num": "6.8",
+          "kind": "Theorem",
+          "name": "Rogers–Ramanujan identities",
+          "deps": [
+            "comb-6.1",
+            "comb-6.2",
+            "comb-6.7",
+            "comb-3.9"
+          ],
+          "refs": [
+            "Pak §§7.1–7.2, pp.38–42; Schur cancellation proof of the first identity and parallel second identity",
+            "Stanley EC1 draft, solution to Exercise 1.88(a),(b), p.187"
+          ],
+          "pic": "Switch between the two identities. Counts come independently from a gap recurrence, a residue product and the staircase series. Browse small examples from each class; the two list ranks are independent browsing choices, not a claimed explicit Rogers–Ramanujan bijection."
+        },
+        {
+          "num": "6.9",
+          "kind": "Theorem",
+          "name": "Partitions in a box and Gaussian coefficients",
+          "deps": [
+            "comb-2.9",
+            "comb-6.2"
+          ],
+          "refs": [
+            "Stanley EC1 draft, Proposition 1.7.3, pp.65–67",
+            "Stanley, Topics in Algebraic Combinatorics, Propositions 6.2–6.3 and Theorem 6.6, pp.80–84"
+          ],
+          "pic": "Resize the box, including zero sides, and browse all of its diagrams. The orange boundary is the corresponding monotone path. Its area picks out the correct Gaussian coefficient, while the readout gives the rotated complement."
+        },
+        {
+          "num": "6.10",
+          "kind": "Theorem",
+          "name": "Unimodality of Gaussian coefficients",
+          "deps": [
+            "comb-6.9"
+          ],
+          "refs": [
+            "Stanley, Topics in Algebraic Combinatorics, Lemma 4.6 and Theorem 4.7, pp.51–53; Theorem 5.8, pp.63–66; Theorem 6.9 and Corollary 6.10, pp.85–87"
+          ],
+          "pic": "Choose consecutive levels below the midpoint. A computed matching gives every lower diagram its own upper diagram obtained by adding one cell. The coefficient plot can have a plateau; the finite matching illustrates the universal invariant-subspace proof."
+        },
+        {
+          "num": "6.11",
+          "kind": "Theorem",
+          "name": "MacMahon’s plane partition generating function",
+          "deps": [
+            "comb-6.1",
+            "comb-6.2",
+            "comb-4.1"
+          ],
+          "refs": [
+            "Stanley, Topics in Algebraic Combinatorics, Appendix 2 to ch.8, pp.147–155, especially Theorem 8.18 and Corollary 8.19",
+            "Pak §9.1.1, p.49"
+          ],
+          "pic": "Browse every monotone height array of a small volume. Its unit cubes are drawn in a fixed isometric projection, and the exhaustive count is compared with the product coefficient. The empty stack is included; no analogous formula for solid partitions is implied."
+        },
       ],
     },
     // ───────────────────────────────────────────────────────────── 7
