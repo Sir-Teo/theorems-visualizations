@@ -189,43 +189,260 @@ export default {
     },
     // =====================================================================================================
     {
-      n: 6,
-      title: 'The VC-Dimension',
-      summary: String.raw`Size is not what makes a class learnable: thresholds on the line form an infinite class that ERM learns from log(2/δ)/ε examples. What matters is shattering — the largest set on which the class realizes every labelling — and a class of infinite VC-dimension is unlearnable by the No-Free-Lunch argument. The fundamental theorem of statistical learning shows the converse: finite VC-dimension, uniform convergence, agnostic and realizable PAC learnability, and the success of every ERM are all equivalent, with sample complexity governed by the VC-dimension. The proof runs through the Sauer–Shelah–Perles lemma, which caps the growth function polynomially, and a uniform convergence bound in terms of the growth function.`,
-      items: [
-        { num: '6.1a', kind: 'Definition', name: 'Threshold functions on the line', deps: ['ml-2.1d'], refs: ['UML §6.1', 'UML Example 6.1'], verify: true,
-          pic: 'Drag a threshold a along a line of labelled points: points left of a are labelled 1, the rest 0, and the training error of every threshold is drawn as a staircase underneath.' },
-        { num: '6.1', kind: 'Lemma', name: 'Thresholds are PAC learnable from log(2/δ)/ε examples', deps: ['ml-6.1a', 'ml-2.1', 'ml-2.2'], refs: ['UML §6.1'],
-          pic: 'The two intervals of mass ε on either side of the true threshold are shaded; over many samples the app counts how often one of them receives no sample point and compares the frequency with 2e^{−εm}.' },
-        { num: '6.2', kind: 'Definition', name: 'Restriction of H to a finite set', deps: ['ml-2.1d'], refs: ['UML §6.2'],
-          pic: 'Place three points on a line and list, as rows of 0/1 vectors, the labellings realized by thresholds, by intervals and by unions of two intervals.' },
-        { num: '6.3', kind: 'Definition', name: 'Shattering', deps: ['ml-6.2'], refs: ['UML §6.2'],
-          pic: 'A shattering game: the reader places points in the plane and demands labellings; the app tries to realize each with an axis-aligned rectangle and lights all 2^|C| cells when the set is shattered.' },
-        { num: '6.4', kind: 'Corollary', name: 'Shattered sets of size 2m defeat learners using m examples', deps: ['ml-6.3', 'ml-5.1'], refs: ['UML §6.2'],
-          pic: 'The No-Free-Lunch adversary works on a shattered set of size 2m, so its targets stay inside the class; any learner’s error on the unseen half hovers near 1/4 on average.' },
-        { num: '6.5', kind: 'Definition', name: 'VC-dimension', deps: ['ml-6.3'], refs: ['UML §6.2'],
-          pic: 'For a chosen class the app searches for the largest shattered point set; the reader proposes a set one point larger and the app exhibits a labelling the class cannot produce.' },
-        { num: '6.6', kind: 'Theorem', name: 'Infinite VC-dimension implies not PAC learnable', deps: ['ml-6.5', 'ml-6.4'], refs: ['UML §6.2'],
-          pic: 'For the class of sign patterns of sin(θx), sets of every size are shattered; whatever m the reader chooses, a shattered set of size 2m is produced and the learner’s failure rate stays above 1/7.' },
-        { num: '6.6a', kind: 'Proposition', name: 'VC-dimension of thresholds and of intervals: 1 and 2', deps: ['ml-6.5', 'ml-6.1a'], refs: ['UML §6.3.1–6.3.2'], verify: true,
-          pic: 'Try to shatter two points with thresholds or three with intervals: the impossible labellings (0, 1) and (1, 0, 1) are flashed, and no slider position reaches them.' },
-        { num: '6.6b', kind: 'Proposition', name: 'Axis-aligned rectangles have VC-dimension 4', deps: ['ml-6.5'], refs: ['UML §6.3.3'], verify: true,
-          pic: 'Four points in a diamond are shattered by rectangles, all 16 labellings shown; add a fifth point and the app picks the leftmost, rightmost, lowest and highest points and shows that labelling only them positive is impossible.' },
-        { num: '6.6c', kind: 'Proposition', name: 'Finite classes: VCdim(H) ≤ log₂|H|', deps: ['ml-6.5'], refs: ['UML §6.3.4'], verify: true,
-          pic: 'Thresholds on k grid points: |H| = k grows with the slider while the VC-dimension stays 1, and log₂|H| climbs away from it.' },
-        { num: '6.6d', kind: 'Proposition', name: 'VC-dimension is not the number of parameters', deps: ['ml-6.5'], refs: ['UML §6.3.5'], verify: true,
-          pic: 'A single frequency θ is tuned, by a binary-expansion recipe, so that the sign of sin(θx) matches any labelling the reader clicks on the points 10^{−1}, …, 10^{−d}: one parameter, infinite VC-dimension.' },
-        { num: '6.7', kind: 'Theorem', name: 'The fundamental theorem of statistical (PAC) learning', deps: ['ml-6.6', 'ml-6.5', 'ml-4.4'], see: ['ml-28.4', 'ml-32.2'], refs: ['UML §6.4'],
-          pic: 'Six equivalent conditions — uniform convergence, ERM agnostic learner, agnostic PAC, PAC, ERM PAC learner, finite VC-dimension — form a diagram; the reader picks a class and the app evaluates each condition, all lighting up together or not at all.' },
-        { num: '6.8', kind: 'Theorem', name: 'The fundamental theorem: quantitative version', deps: ['ml-6.7'], see: ['ml-28.1a', 'ml-28.1b', 'ml-28.1c', 'ml-28.4'], refs: ['UML §6.4'],
-          pic: 'For halfspaces in d dimensions, the sample size ERM needs to reach excess error ε is measured and plotted on log axes against ε and d, beside the agnostic rate (d + log 1/δ)/ε² and the realizable rate (d log(1/ε) + log 1/δ)/ε.' },
-        { num: '6.9', kind: 'Definition', name: 'Growth function', deps: ['ml-6.2'], refs: ['UML §6.5.1'],
-          pic: 'For intervals and for halfplanes, the number of distinct labellings of m random points is counted and plotted against m beside 2^m.' },
-        { num: '6.10', kind: 'Lemma', name: 'Sauer–Shelah–Perles lemma', deps: ['ml-6.9', 'ml-6.5'], see: ['ml-6.7', 'comb-8.12', 'ml-32.5'], refs: ['UML §6.5.1'],
-          pic: 'The growth function of a class of VC-dimension d bends away from 2^m right after m = d and stays under Σ_{i≤d} C(m, i) ≤ (em/d)^d; the inductive proof’s split of H_C into Y₀ and Y₁ is shown on a small table.' },
-        { num: '6.11', kind: 'Theorem', name: 'Uniform convergence from a small growth function', deps: ['ml-6.9', 'ml-4.5', 'ml-2.2'], see: ['ml-6.7', 'ml-32.4', 'ml-33.1a'], refs: ['UML §6.5.2'],
-          pic: 'The symmetrization trick is animated — a ghost sample S′ is drawn and paired points are swapped by random signs — and the measured expected worst gap stays under (4 + √log τ_H(2m))/√(2m).' },
-      ],
+      "n": 6,
+      "title": "The VC-Dimension",
+      "summary": "Finite restrictions and shattering characterize binary learnability under measurable ERM/supremum regularity. Universal class dimensions are proved separately from finite examples; atom-safe threshold bounds, exact sine witnesses, Sauer growth and independently derived expected-gap bounds retain their domains and source limits.",
+      "items": [
+        {
+          "num": "6.1a",
+          "kind": "Definition",
+          "name": "Threshold functions on the line",
+          "deps": [
+            "ml-2.1d"
+          ],
+          "refs": [
+            "UML §6.1",
+            "UML Example 6.1",
+            "Distinct source: Blum CMU §6.9, PDF25–28; Liang CS229T2016 §§3.8–3.11, PDF67–81; supplied derivations as stated"
+          ],
+          "verify": true,
+          "pic": "Edit the point coordinates and requested labels, then move the real threshold. Actual predictions and mistakes change at the strict boundary. The second plot enumerates every possible restriction and its training error."
+        },
+        {
+          "num": "6.1",
+          "kind": "Lemma",
+          "name": "Thresholds are PAC learnable from log(2/δ)/ε examples",
+          "deps": [
+            "ml-6.1a",
+            "ml-2.1",
+            "ml-2.2"
+          ],
+          "refs": [
+            "UML §6.1",
+            "Distinct source: Blum CMU §6.9, PDF25–28; Liang CS229T2016 §§3.8–3.11, PDF67–81; supplied derivations as stated"
+          ],
+          "pic": "The population is four atoms with an adjustable mass at the target boundary. Exact support-mask recursion calculates the probability that any consistent ERM has risk above ε, not just one tie choice; the chart compares it with the universal bound."
+        },
+        {
+          "num": "6.2",
+          "kind": "Definition",
+          "name": "Restriction of H to a finite set",
+          "deps": [
+            "ml-2.1d"
+          ],
+          "refs": [
+            "UML §6.2",
+            "Distinct source: Blum CMU §6.9, PDF25–28; Liang CS229T2016 §§3.8–3.11, PDF67–81; supplied derivations as stated"
+          ],
+          "pic": "Edit up to eight coordinates and choose thresholds, intervals or two intervals. A paged binary table lists actual distinct restrictions, including both constants. A requested integer pattern is tested against the enumeration."
+        },
+        {
+          "num": "6.3",
+          "kind": "Definition",
+          "name": "Shattering",
+          "deps": [
+            "ml-6.2"
+          ],
+          "refs": [
+            "UML §6.2",
+            "Distinct source: Blum CMU §6.9, PDF25–28; Liang CS229T2016 §§3.8–3.11, PDF67–81; supplied derivations as stated"
+          ],
+          "pic": "Edit planar points and demand a binary labeling. The tight positive box is drawn only as a diagnostic; if a negative lies inside it, the readout reports impossibility. The second panel displays every feasible or missing labeling."
+        },
+        {
+          "num": "6.4",
+          "kind": "Corollary",
+          "name": "Shattered sets of size 2m defeat learners using m examples",
+          "deps": [
+            "ml-6.3",
+            "ml-5.1"
+          ],
+          "refs": [
+            "UML §6.2",
+            "Distinct source: Blum CMU §6.9, PDF25–28; Liang CS229T2016 §§3.8–3.11, PDF67–81; supplied derivations as stated"
+          ],
+          "pic": "Vary m. Exact occupancy probabilities show how repeated sample points leave unseen points. A binomial mixture over independent unseen target bits gives mean risk and the tail at1/8 for the memorizer with a fixed default."
+        },
+        {
+          "num": "6.5",
+          "kind": "Definition",
+          "name": "VC-dimension",
+          "deps": [
+            "ml-6.3"
+          ],
+          "refs": [
+            "UML §6.2",
+            "Distinct source: Blum CMU §6.9, PDF25–28; Liang CS229T2016 §§3.8–3.11, PDF67–81; supplied derivations as stated"
+          ],
+          "pic": "Choose a class and edit coordinates. The exhaustive subset search highlights a largest shattered subset and compares restriction counts with2^k on each subset size. The live result is explicitly limited to the supplied domain."
+        },
+        {
+          "num": "6.6",
+          "kind": "Theorem",
+          "name": "Infinite VC-dimension implies not PAC learnable",
+          "deps": [
+            "ml-6.5",
+            "ml-6.4"
+          ],
+          "refs": [
+            "UML §6.2",
+            "Distinct source: Blum CMU §6.9, PDF25–28; Liang CS229T2016 §§3.8–3.11, PDF67–81; supplied derivations as stated"
+          ],
+          "pic": "The support expands to2m as the proposed budget increases. The exact unseen-target mixture is recalculated, and a symbolic sine-class construction supplies an actual shattered support rather than a fixed finite pattern list masquerading as an infinite class."
+        },
+        {
+          "num": "6.6a",
+          "kind": "Proposition",
+          "name": "VC-dimension of thresholds and of intervals: 1 and 2",
+          "deps": [
+            "ml-6.5",
+            "ml-6.1a"
+          ],
+          "refs": [
+            "UML §6.3.1–6.3.2",
+            "Distinct source: Blum CMU §6.9, PDF25–28; Liang CS229T2016 §§3.8–3.11, PDF67–81; supplied derivations as stated"
+          ],
+          "verify": true,
+          "pic": "Switch between the threshold two-point obstruction and interval three-point obstruction, or edit the coordinates. Every realizable pattern is counted; the chosen requested pattern is highlighted as feasible or missing."
+        },
+        {
+          "num": "6.6b",
+          "kind": "Proposition",
+          "name": "Axis-aligned rectangles have VC-dimension 4",
+          "deps": [
+            "ml-6.5"
+          ],
+          "refs": [
+            "UML §6.3.3",
+            "Distinct source: Blum CMU §6.9, PDF25–28; Liang CS229T2016 §§3.8–3.11, PDF67–81; supplied derivations as stated"
+          ],
+          "verify": true,
+          "pic": "Load the four-point diamond or add its center. Exact feasible patterns, the demanded box and extremal-point obstruction are computed from the supplied coordinates, with tied extrema handled explicitly."
+        },
+        {
+          "num": "6.6c",
+          "kind": "Proposition",
+          "name": "Finite classes: VCdim(H) ≤ log₂|H|",
+          "deps": [
+            "ml-6.5"
+          ],
+          "refs": [
+            "UML §6.3.4",
+            "Distinct source: Blum CMU §6.9, PDF25–28; Liang CS229T2016 §§3.8–3.11, PDF67–81; supplied derivations as stated"
+          ],
+          "verify": true,
+          "pic": "The finite domain grows while every real threshold restriction is enumerated. Compare its exact cardinality and finite-domain VC dimension with the counting upper bound log₂|H|; no inference from parameter count is made."
+        },
+        {
+          "num": "6.6d",
+          "kind": "Proposition",
+          "name": "VC-dimension is not the number of parameters",
+          "deps": [
+            "ml-6.5"
+          ],
+          "refs": [
+            "UML §6.3.5",
+            "Distinct source: Blum CMU §6.9, PDF25–28; Liang CS229T2016 §§3.8–3.11, PDF67–81; supplied derivations as stated"
+          ],
+          "verify": true,
+          "pic": "Choose a pattern and its length. The frequency numerator and each reduced rational phase are built with arbitrary-precision integers. Stable sine values use the exact distance to the nearest integer phase, retaining the correct sign even if a displayed decimal phase rounds onto1."
+        },
+        {
+          "num": "6.7",
+          "kind": "Theorem",
+          "name": "The fundamental theorem of statistical (PAC) learning",
+          "deps": [
+            "ml-6.6",
+            "ml-6.5",
+            "ml-4.4",
+            "ml-6.10",
+            "ml-6.11"
+          ],
+          "see": [
+            "ml-28.4",
+            "ml-32.2"
+          ],
+          "refs": [
+            "UML §6.4",
+            "Distinct source: Blum CMU §6.9, PDF25–28; Liang CS229T2016 §§3.8–3.11, PDF67–81; supplied derivations as stated"
+          ],
+          "pic": "Select a proof arrow and a finite restriction class. The implication diagram identifies its actual proof input. An exact finite-law supremum gap is recomputed beneath it as illustrative evidence, rather than deciding an infinite theorem by a finite search."
+        },
+        {
+          "num": "6.8",
+          "kind": "Theorem",
+          "name": "The fundamental theorem: quantitative version",
+          "deps": [
+            "ml-6.7"
+          ],
+          "see": [
+            "ml-28.1a",
+            "ml-28.1b",
+            "ml-28.1c",
+            "ml-28.4"
+          ],
+          "refs": [
+            "UML §6.4",
+            "Distinct source: Blum CMU §6.9, PDF25–28; Liang CS229T2016 §§3.8–3.11, PDF67–81; supplied derivations as stated"
+          ],
+          "pic": "Plot normalized rate shapes with unit coefficient, explicitly not certified bounds. A separate reproducible finite threshold ERM experiment measures excess risk under a chosen realizable or misspecified population. It may behave much better than a distribution-free rate.",
+          "verify": true
+        },
+        {
+          "num": "6.9",
+          "kind": "Definition",
+          "name": "Growth function",
+          "deps": [
+            "ml-6.2"
+          ],
+          "refs": [
+            "UML §6.5.1",
+            "Distinct source: Blum CMU §6.9, PDF25–28; Liang CS229T2016 §§3.8–3.11, PDF67–81; supplied derivations as stated"
+          ],
+          "pic": "Choose a one-dimensional class and the number of distinct ordered coordinates. Exact restriction counts are recalculated at each smaller size and compared with2^m. These ordered-class counts are independent of the spacings."
+        },
+        {
+          "num": "6.10",
+          "kind": "Lemma",
+          "name": "Sauer–Shelah–Perles lemma",
+          "deps": [
+            "ml-6.9",
+            "ml-6.5"
+          ],
+          "see": [
+            "ml-6.7",
+            "comb-8.12",
+            "ml-32.5"
+          ],
+          "refs": [
+            "UML §6.5.1",
+            "Distinct source: Blum CMU §6.9, PDF25–28; Liang CS229T2016 §§3.8–3.11, PDF67–81; supplied derivations as stated"
+          ],
+          "pic": "Inspect the exact prefix/twin split of a computed finite restriction family. The bars verify the cardinality identity and compare the current count with the binomial cap for its exhaustively computed finite-domain dimension."
+        },
+        {
+          "num": "6.11",
+          "kind": "Theorem",
+          "name": "Uniform convergence from a small growth function",
+          "deps": [
+            "ml-6.9",
+            "ml-4.5",
+            "ml-2.2",
+            "prob-1.6.4"
+          ],
+          "see": [
+            "ml-6.7",
+            "ml-32.4",
+            "ml-33.1a"
+          ],
+          "refs": [
+            "UML §6.5.2",
+            "Distinct source: Blum CMU §6.9, PDF25–28; Liang CS229T2016 §§3.8–3.11, PDF67–81; supplied derivations as stated"
+          ],
+          "pic": "Compute the exact expected worst gap under a finite three-atom population by multinomial enumeration. A second panel draws two actual samples and swaps their paired observations using selected sign bits; the worst ghost gap changes. The theorem bound and Markov conversion are labeled separately.",
+          "verify": true
+        }
+      ]
     },
     // =====================================================================================================
     {
