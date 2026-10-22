@@ -2,7 +2,7 @@
 
 ## Continuation — 2026-10-22
 
-Wave 5 is complete. Continue Wave 6 in the isolated expansion worktree below. The branch now contains **306 frozen new ideas: 36 accepted and 270 author-verified awaiting separate acceptance**. The accepted export remains 36/1,057. Preserve the 34 unaccepted ODE6/ALG9 drafts in the shipping worktree and all frozen assignments, source flags and access restrictions.
+Wave 5 is complete. Continue Wave 6 in the isolated expansion worktree below. The branch now contains **318 frozen new ideas: 36 accepted and 282 author-verified awaiting separate acceptance**. The accepted export remains 36/1,057. Preserve the 34 unaccepted ODE6/ALG9 drafts in the shipping worktree and all frozen assignments, source flags and access restrictions.
 
 Author-verified additions, with detailed evidence and retained failure logs:
 
@@ -23,12 +23,13 @@ Author-verified additions, with detailed evidence and retained failure logs:
 | OPT 6 | 11 | [Report](verification/wave6-opt.md) |
 | STAT 10 | 21 | [Report](verification/wave6-stat.md) |
 | DEEP 7 | 10 | [Report](verification/wave6-deep.md) |
+| CAUSAL 6 | 12 | [Report](verification/wave6-causal.md) |
 
-The latest DEEP checkpoint passes 14 focused groups, 2,796 independent numerical comparisons, strict build/static, 40 native layouts/1,276 actions/164 replays, both all-mode themes and all 15 routes. Pixel inspection includes all 74 final mode captures and the mobile/rich/boundary states documented in its report. Full integration passes **3,712 tests in 340.419 seconds**; all seven source/test files match their final freeze. All checkpoint browsers and servers are closed. The interrupted earlier run is not a pass.
+The latest CAUSAL checkpoint passes 16 focused groups, 2,921 independent numerical comparisons across 111 cases, strict build/static, 48 native layouts/3,216 actions/140 replays, both all-mode themes and all 17 routes. All 116 final mode captures, 24 mobile defaults, 24 narrow statement/proof pairs and 22 boundary captures were inspected. Seven source/test files match their final freeze; all chapter browsers and servers are closed. A combined CAUSAL/ALGO full integration run is pending. The last full integration checkpoint, DEEP, passed 3,712 tests in 340.419 seconds and predates CAUSAL.
 
-**Next: CAUSAL 6 (12 ideas), Instruments, Bounds and Natural Experiments.** Research has read What If (19 August 2026) chapter 16, PDF pages 218–235, all six original Balke–Pearl 1997 pages, and Roth et al. January 2023 DiD review PDF pages 1–10 through the recorded passage boundary. Exact receipts, prerequisite snapshots and an exact rational LP prototype are under `/tmp/wave6-causal-research/`. The prototype agrees with the published eight-term bounds on 100 valid tables, including deterministic boundary types, and supplies exact feasible witnesses. This is research evidence, not chapter completion. Replace unwritten STAT12.2/12.3/14.8 proof inputs with actual written prerequisites and supplied arguments; do not change frozen identities/kinds.
+**Next: ALGO 13 (13 ideas), String Algorithms.** Pure models and nine exhaustive/reference test groups pass. Research read selected actual pages of Juha Kärkkäinen’s 2014 Helsinki String Processing Algorithms lectures for tries, matching, suffix arrays and LCP; exact passage boundaries and the PDF hash are under `/tmp/wave6-algo-research/`. Editable scenes, statements and browser checks are next. Preserve frozen identities/kinds. The implementation counts Unicode code points, includes empty patterns and suffixes, verifies hash hits, and distinguishes the prefix-function KMP variant and output-sensitive Aho–Corasick scan.
 
-DEEP's Lee2018 OpenReview PDF browser-verification stop remains binding. New CAUSAL original-body stops: Davies–Holmes–Davey Smith2018 BMJ article and Lee–Lemieux NBER working-paper PDF both returned403; no alternate-host/cache recovery. Distinct readable What If passages cover the pedagogical MR and RD models. Preserve earlier CAUSAL5 source stops as well. This continuation does not claim the separate visual redesign is complete.
+Original-body stops remain binding: DEEP Lee2018 OpenReview verification; CAUSAL BMJ Davies–Holmes–Davey Smith2018 and NBER Lee–Lemieux PDFs (403); ALGO Princeton substring chapter (403), original Aho–Corasick and Kasai PDFs (timeout), and Erickson strings PDF after its opening epigraph (timeout). No alternate-host/cache recovery. Preserve all earlier source stops. These author checkpoints do not claim separate acceptance or completion of the separate visual redesign.
 
 ## Authorization and workspace
 
