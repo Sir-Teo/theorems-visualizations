@@ -226,36 +226,162 @@ export default {
     },
     // ───────────────────────────────────────────────────────────── 6
     {
-      n: 6,
-      title: 'Arbitrage, forwards and capital structure',
-      summary: String.raw`No-arbitrage reasoning — identical payoffs must have identical prices — is the most powerful tool in finance. It fixes forward prices from spot prices and interest rates, links currencies through covered interest parity, and, by separating hyperplanes, guarantees state prices whenever there is no free lunch. Applied to firms, it shows that capital structure cannot create value in a frictionless market.`,
-      items: [
-        { num: '6.1', kind: 'Method', name: 'Pricing by replication', deps: ['fin-1.13'], refs: ['Luenberger: General Principles', 'Hull ch. 5'],
-          pic: 'Pick a target payoff across three states and solve for the holdings of available assets that reproduce it; the cost of the replicating portfolio is the only arbitrage-free price.' },
-        { num: '6.2', kind: 'Theorem', name: 'Forward prices by cost of carry', deps: ['fin-6.1', 'fin-1.2'], refs: ['Hull ch. 5', 'Luenberger: Forwards, Futures and Swaps'],
-          pic: 'Buy the asset and borrow, or enter a forward: payoffs at expiry match only when F = S·e^{(r−q)T}; misprice the forward and a cash-and-carry arbitrage table appears.' },
-        { num: '6.3', kind: 'Concept', name: 'Futures, margin and marking to market', deps: ['fin-6.2'], refs: ['Hull ch. 2'],
-          pic: 'Daily settlement of a futures position over a volatile month: the margin account rises and falls, and a margin call is triggered when it hits the maintenance level.' },
-        { num: '6.4', kind: 'Method', name: 'Minimum-variance hedge ratio', deps: ['fin-6.3', 'fin-4.3'], refs: ['Hull ch. 3'],
-          pic: 'Hedge jet fuel with heating-oil futures: hedged-portfolio variance against hedge ratio is a parabola whose minimum is at ρσ_S/σ_F, computed from the scatter.' },
-        { num: '6.5', kind: 'Theorem', name: 'Covered interest parity', deps: ['fin-6.2'], refs: ['Hull ch. 5'],
-          pic: 'Invest at home, or convert, invest abroad and sell the proceeds forward: the two routes give equal returns at the parity forward rate, and post-2008 deviations are plotted.' },
-        { num: '6.6', kind: 'Concept', name: 'Interest-rate swaps as bond portfolios', deps: ['fin-2.6'], refs: ['Hull ch. 7'],
-          pic: 'A fixed-for-floating swap drawn as arrows of cash flows; valuing it as a long fixed bond and short floating bond shows the swap rate that gives zero initial value.' },
-        { num: '6.7', kind: 'Theorem', name: 'Fundamental theorem of asset pricing', deps: ['fin-6.1', 'fa-3.4', 'algo-11.18'], refs: ['Luenberger: General Principles', 'Hull ch. 28'],
-          pic: 'Two assets and three states: the set of payoffs costing nothing is separated from the positive orthant by a hyperplane exactly when there is no arbitrage, and its normal vector gives positive state prices.' },
-        { num: '6.8', kind: 'Theorem', name: 'Modigliani–Miller proposition I', deps: ['fin-6.1'], refs: [],
-          pic: 'Slice a firm’s cash flows into debt and equity in different proportions: the pie’s total value is unchanged, and an investor undoes any leverage by homemade borrowing.' },
-        { num: '6.9', kind: 'Theorem', name: 'Modigliani–Miller proposition II', deps: ['fin-6.8'], refs: [],
-          pic: 'Raise the debt-to-equity ratio: the cost of equity rises linearly, the cost of debt stays fixed until default risk appears, and the weighted average stays flat.' },
-        { num: '6.10', kind: 'Concept', name: 'Taxes, distress and the trade-off theory', deps: ['fin-6.9'], refs: [],
-          pic: 'Add the debt tax shield and expected bankruptcy costs: firm value as a function of leverage becomes a hump, with its maximum marking the optimal capital structure.' },
-        { num: '6.11', kind: 'Paper', name: 'The Cost of Capital, Corporation Finance and Investment',
-          paper: { authors: 'Franco Modigliani and Merton H. Miller', year: 1958, title: 'The Cost of Capital, Corporation Finance and the Theory of Investment', venue: 'American Economic Review 48 (3): 261–297', url: 'https://www.jstor.org/stable/1809766' },
-          introduces: ['fin-6.8', 'fin-6.9'], deps: ['fin-6.1', 'fin-1.13'], refs: [],
-          pic: 'Two firms with the same operating income, one of them levered: if the levered firm’s shares trade too high, an investor sells them and rebuilds the same income by borrowing personally and buying the unlevered firm (homemade leverage), so the values equalize; slide the debt–equity ratio and watch the cost of equity rise linearly while the overall cost of capital stays flat, then compare with their cross-sections of electric utilities and oil companies, where it does not fall with leverage either.' },
+  "n": 6,
+  "title": "Arbitrage, forwards and capital structure",
+  "summary": "No-arbitrage reasoning — identical payoffs must have identical prices — is the most powerful tool in finance. It fixes forward prices from spot prices and interest rates, links currencies through covered interest parity, and, by separating hyperplanes, guarantees state prices whenever there is no free lunch. Applied to firms, it shows that capital structure cannot create value in a frictionless market.",
+  "items": [
+    {
+      "num": "6.1",
+      "kind": "Method",
+      "name": "Pricing by replication",
+      "deps": [
+        "fin-1.13"
       ],
+      "refs": [
+        "MIT Lo15.401 (2008), lecture8–9 slides17–22; supplied finite linear-system proof"
+      ],
+      "pic": "Edit three target payoffs and collapse the third asset. Requested hollow dots and achieved solid dots coincide only when replication exists; holdings and cost are computed, including singular compatible targets."
     },
+    {
+      "num": "6.2",
+      "kind": "Theorem",
+      "name": "Forward prices by cost of carry",
+      "deps": [
+        "fin-6.1",
+        "fin-1.2"
+      ],
+      "refs": [
+        "MIT Lo15.401 (2008), lecture8–9 slides17–22; supplied continuous carry derivation"
+      ],
+      "pic": "Choose reinvested yield or one cash dividend, then change a declared quote offset. The table-equivalent terminal gain is constant across states only under the stated frictionless income and funding assumptions."
+    },
+    {
+      "num": "6.3",
+      "kind": "Concept",
+      "name": "Futures, margin and marking to market",
+      "deps": [
+        "fin-6.2"
+      ],
+      "refs": [
+        "MIT Lo15.401 (2008), lecture8–9 slides12–16; CME Money Calculations for Futures and Options (2015), settlement-variation section"
+      ],
+      "pic": "Move through a twelve-date authored price path. Red top-up markers restore the chosen initial margin after a maintenance breach; compare collateral cash with cumulative trading gain."
+    },
+    {
+      "num": "6.4",
+      "kind": "Method",
+      "name": "Minimum-variance hedge ratio",
+      "deps": [
+        "fin-6.3",
+        "fin-4.3"
+      ],
+      "refs": [
+        "Supplied covariance/completed-square derivation; fin4.3 written regression-slope definition"
+      ],
+      "pic": "The eight paired changes are authored, not commodity observations. Change common sensitivity, basis pattern and futures scale; the plotted variance is recomputed from actual residuals for each hedge."
+    },
+    {
+      "num": "6.5",
+      "kind": "Theorem",
+      "name": "Covered interest parity",
+      "deps": [
+        "fin-6.2"
+      ],
+      "refs": [
+        "BIS Borio–McCauley–McGuire–Sushko (2016), Covered interest parity lost, BoxA and limits-to-arbitrage discussion; supplied continuous-rate derivation"
+      ],
+      "pic": "Compare both fully covered routes with the quote explicitly in domestic per foreign units. The basis control is an authored log-rate discrepancy, not an observed post-crisis time series."
+    },
+    {
+      "num": "6.6",
+      "kind": "Concept",
+      "name": "Interest-rate swaps as bond portfolios",
+      "deps": [
+        "fin-2.6"
+      ],
+      "refs": [
+        "Supplied discount-factor replication and telescoping proof using fin2.6; MIT Lo15.401 lecture8–9 slide9 swap definition"
+      ],
+      "pic": "Change the positive discount curve, accrual schedule and fixed coupon. Compare actual discounted coupon bars; set the coupon to the computed par value and inspect the residual."
+    },
+    {
+      "num": "6.7",
+      "kind": "Theorem",
+      "name": "Fundamental theorem of asset pricing",
+      "deps": [
+        "fin-6.1",
+        "fa-3.4",
+        "algo-11.18"
+      ],
+      "refs": [
+        "Supplied finite-state separation and Farkas proof; written fa3.4 and algo11.18"
+      ],
+      "pic": "A unit bond and stock pay(1,1,1) and(0,1,2). Move the stock price across the exact open interval0<p<2B; display one positive state-price vector or an actual nonnegative-payoff arbitrage witness."
+    },
+    {
+      "num": "6.8",
+      "kind": "Theorem",
+      "name": "Modigliani–Miller proposition I",
+      "deps": [
+        "fin-6.1"
+      ],
+      "refs": [
+        "MIT Jenter15.402 (2003), Capital Structure1 slides11–18, PDF6–9"
+      ],
+      "pic": "Raise the promised debt payment through default states. The orange debt and blue equity pieces still sum to the same operating payoff, and their consistently priced values sum to the unchanged total."
+    },
+    {
+      "num": "6.9",
+      "kind": "Theorem",
+      "name": "Modigliani–Miller proposition II",
+      "deps": [
+        "fin-6.8"
+      ],
+      "refs": [
+        "MIT Jenter15.402 (2003), Capital Structure2 PDF2–3 WACC fallacy; supplied value-weighted expected-return derivation"
+      ],
+      "pic": "Track actual expected debt, equity and operating returns as the debt promise grows. Default changes debt returns; the weighted operating return remains unchanged where both claims have positive value."
+    },
+    {
+      "num": "6.10",
+      "kind": "Concept",
+      "name": "Taxes, distress and the trade-off theory",
+      "deps": [
+        "fin-6.9"
+      ],
+      "refs": [
+        "MIT Jenter15.402 (2003), Capital Structure2 PDF5–7 tax-shield assumptions and PDF12–13 financial distress; supplied quadratic closure"
+      ],
+      "pic": "Vary chosen tax-benefit and distress coefficients. The green shield and orange cost are separate inputs to an authored quadratic closure, with a computed maximizer and a flat case."
+    },
+    {
+      "num": "6.11",
+      "kind": "Paper",
+      "name": "The Cost of Capital, Corporation Finance and Investment",
+      "paper": {
+        "authors": "Franco Modigliani and Merton H. Miller",
+        "year": 1958,
+        "title": "The Cost of Capital, Corporation Finance and the Theory of Investment",
+        "venue": "American Economic Review 48 (3): 261–297",
+        "url": "https://www.jstor.org/stable/1809766"
+      },
+      "introduces": [
+        "fin-6.8",
+        "fin-6.9"
+      ],
+      "verify": true,
+      "deps": [
+        "fin-6.1",
+        "fin-1.13"
+      ],
+      "refs": [
+        "Modigliani–Miller (1958), preserved bibliographic record; original body unavailable",
+        "MIT Jenter15.402 (2003), Capital Structure1 PDF6–9; supplied finite replication"
+      ],
+      "pic": "Edit a declared hypothetical equity-price discrepancy and debt promise. Rebuild the payoff state by state; the initial gain and all later zero net cash flows are shown without invented historical utility or oil-company observations."
+    }
+  ]
+},
     // ───────────────────────────────────────────────────────────── 7
     {
       n: 7,
