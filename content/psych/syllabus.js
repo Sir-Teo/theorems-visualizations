@@ -176,30 +176,139 @@ export default {
     },
     // ───────────────────────────────────────────────────────────── 5
     {
-      n: 5,
-      title: 'Colour vision',
-      summary: String.raw`A single cone class cannot tell wavelength from intensity, so colour needs comparisons: three cone types make colour three-dimensional, which is why lights with different spectra can match. The cone signals are then recoded into red–green and blue–yellow opponent channels, which explains hue cancellation, unique hues and afterimages. Constancy across illuminants is achieved, imperfectly, by adapting each channel — and when the illuminant is ambiguous, people can see the same image in different colours.`,
-      items: [
-        { num: '5.1', kind: 'Principle', name: 'The principle of univariance', deps: ['psych-4.1'], refs: ['Goldstein ch. 9'],
-          pic: 'A single cone’s response to lights of different wavelength and intensity: find two lights it cannot tell apart, and add a second cone type to see the ambiguity resolved.' },
-        { num: '5.2', kind: 'Theorem', name: 'Metamers form the null space of the cone responses', deps: ['psych-5.1', 'art-4.3', 'ladr-3.11'], refs: ['Goldstein ch. 9'],
-          pic: 'Edit a spectrum with control points; adding any spectrum from the null space of the 3-row cone matrix changes the curve but leaves the three cone readouts and the colour swatch unchanged.' },
-        { num: '5.3', kind: 'Phenomenon', name: 'Wavelength discrimination function', deps: ['psych-5.1'], refs: ['Goldstein ch. 9'],
-          pic: 'Find the smallest wavelength step you can see at points along the spectrum; your Δλ curve dips where cone sensitivities cross and rises at the spectrum ends.' },
-        { num: '5.4', kind: 'Phenomenon', name: 'Hue cancellation (Hurvich–Jameson)', deps: ['art-5.7'], refs: ['Goldstein ch. 9'],
-          pic: 'Add green light to a yellowish-red until no red remains; repeating across wavelengths traces the red–green and blue–yellow opponent valence curves.' },
-        { num: '5.5', kind: 'Concept', name: 'Unique hues', deps: ['art-5.7'], refs: ['Goldstein ch. 9'],
-          pic: 'Pick the yellow that is neither reddish nor greenish on a hue wheel; your unique yellow, blue and green are compared with a population distribution, which is surprisingly broad.' },
-        { num: '5.6', kind: 'Model', name: 'Zone model: cones feeding opponent channels', deps: ['psych-5.2', 'art-5.7'], refs: ['Goldstein ch. 9'],
-          pic: 'A wiring diagram from L, M and S cones into L−M, S−(L+M) and L+M channels; drag a spectrum and watch all six signals, then knock out a cone to see which channel goes silent.' },
-        { num: '5.7', kind: 'Phenomenon', name: 'The McCollough effect', deps: ['psych-5.6'], refs: ['Goldstein ch. 9'],
-          pic: 'Adapt to alternating red-horizontal and green-vertical gratings for a few minutes; black-and-white test gratings then look tinted by orientation, an aftereffect that can last for days.' },
-        { num: '5.8', kind: 'Method', name: 'Colour-vision tests: Ishihara plates and the anomaloscope', deps: ['art-4.12'], refs: ['Goldstein ch. 9'],
-          pic: 'Plates of coloured dots are rendered through simulated protan, deutan and tritan projections, so you see which numerals vanish for each deficiency; a Rayleigh-match slider mimics the anomaloscope.' },
-        { num: '5.9', alias: 'art-6.7', name: 'Von Kries adaptation' },
-        { num: '5.10', kind: 'Phenomenon', name: '#TheDress: disagreement about the illuminant', deps: ['psych-5.9'], refs: ['Goldstein ch. 9'],
-          pic: 'One photograph, two interpretations: tell the page whether you assume warm or cool lighting and it discounts that illuminant, turning the same pixels white-gold or blue-black.' },
-      ],
+      "n": 5,
+      "title": "Colour vision",
+      "summary": "One receptor output cannot separately identify spectral composition and intensity. Comparing cone classes removes some ambiguities, but physically different spectra can still produce the same cone signals. Perceptual hue judgments, adaptation and colour constancy require further evidence: a convenient linear recoding alone does not determine appearance. The chapter keeps exact finite cone-response calculations, subjective tasks and published observations distinct.",
+      "items": [
+        {
+          "num": "5.1",
+          "kind": "Principle",
+          "name": "The principle of univariance",
+          "deps": [
+            "psych-4.1"
+          ],
+          "refs": [
+            "Stockman & Rider (2023), Introduction and §1.1 glossary: univariance and cone fundamentals",
+            "CIE170-1:2006 Table 6.7,2° energy-based LMS data; exact finite monochromatic model"
+          ],
+          "pic": "Choose two tabulated wavelengths, the cone class to match and the reference energy. The comparison energy is solved rather than guessed. Inspect the three actual source sensitivities and both sets of cone responses; a single matched class need not match the others."
+        },
+        {
+          "num": "5.2",
+          "kind": "Theorem",
+          "name": "Metamers form the null space of the cone responses",
+          "deps": [
+            "psych-5.1",
+            "art-4.3",
+            "ladr-3.11"
+          ],
+          "refs": [
+            "CIE170-1:2006 Table 6.7, declared finite source matrix",
+            "Stockman & Rider (2023), §1.1 metamers and cone fundamentals; self-contained finite linear-algebra proof"
+          ],
+          "pic": "Move along an exact null direction of the four-primary source matrix. Compare reference and edited powers and their cone responses. Switch to repeated wavelengths to change rank, or to black to see the physical interval collapse while algebraic null directions remain."
+        },
+        {
+          "num": "5.3",
+          "kind": "Phenomenon",
+          "name": "Wavelength discrimination function",
+          "deps": [
+            "psych-5.1",
+            "ladr-6.55"
+          ],
+          "refs": [
+            "Regan & Tyler (1971), Some dynamic features of colour vision, Methods and §3, pp.1308 and1317–1319",
+            "CIE2006 energy cone table; authored nuisance-intensity Gaussian measurement model"
+          ],
+          "pic": "Choose the available cone classes, intensity and noise, then inspect the local information along the source samples. A single class carries no wavelength information when intensity is unknown in this model. The readout identifies the finite-difference stencil and calculated scale; no screen discrimination test is performed."
+        },
+        {
+          "num": "5.4",
+          "kind": "Phenomenon",
+          "name": "Hue cancellation (Hurvich–Jameson)",
+          "deps": [
+            "art-5.7"
+          ],
+          "refs": [
+            "York University, Hue Cancellation Method, teaching exposition, observer-specific comparison hues and arbitrary sign",
+            "CIE2006 energy cone table; authored linear cancellation example; original Hurvich–Jameson body not checked"
+          ],
+          "pic": "Choose test and added wavelengths, a declared signed combination and its weight. Move added energy along the actual mixture path. A green point marks a nonnegative algebraic null only when it lies in range; the readout distinguishes an unavailable cancellation from a null outside the plot."
+        },
+        {
+          "num": "5.5",
+          "kind": "Concept",
+          "name": "Unique hues",
+          "deps": [
+            "art-5.7"
+          ],
+          "refs": [
+            "Webster, Miyahara, Malkoc & Raker (2000), Variations in normal color vision II: Unique hues, publisher metadata/abstract only",
+            "York University hue-cancellation exposition; authored uncalibrated judgment exercise"
+          ],
+          "pic": "Choose a screen hue and the hue pair to consider, then optionally record “first hue”, “second hue” or “neither”. The wheel locates only the authored screen angle. There is no fabricated population histogram, standard answer or conversion of your report to a measured wavelength."
+        },
+        {
+          "num": "5.6",
+          "kind": "Model",
+          "name": "Zone model: cones feeding opponent channels",
+          "deps": [
+            "psych-5.2",
+            "art-5.7"
+          ],
+          "refs": [
+            "ART 5.7, source-audited opponent-process account",
+            "CIE170-1:2006 Table 6.7; explicitly authored invertible transform"
+          ],
+          "pic": "Move a source wavelength and energy through the cone inputs. Inspect the three recoded signals and their inverse reconstruction. Apply the explicit input-zero intervention to test which channels change; do not assume a channel disappears simply because one cone input is absent."
+        },
+        {
+          "num": "5.7",
+          "kind": "Phenomenon",
+          "name": "The McCollough effect",
+          "deps": [
+            "psych-5.6"
+          ],
+          "refs": [
+            "Vul, Krizay & MacLeod (2008), The McCollough effect reflects permanent and transient adaptation in early visual cortex, General methods, Experiment 1 and Linear model",
+            "McCollough (1965), original bibliographic record only; original body inaccessible"
+          ],
+          "pic": "Scrub the model adaptation time, recovery time and test orientation. Compare the two chosen components and their signed sum. All time is a parameter in the chart; there is no timed adapting sequence or instruction to view alternating gratings."
+        },
+        {
+          "num": "5.8",
+          "kind": "Method",
+          "name": "Colour-vision tests: Ishihara plates and the anomaloscope",
+          "deps": [
+            "art-4.12",
+            "ladr-6.55"
+          ],
+          "refs": [
+            "National Eye Institute, Testing for Color Vision Deficiency, colour-plate and anomaloscope descriptions",
+            "CIE2006 energy cone table; authored545/610/590nm constraint example",
+            "Manufacturer instrument manual body unavailable; literal instrument wavelengths/protocol not reproduced"
+          ],
+          "pic": "Switch between the authored dot code and the spectral analogue. In the first, retain or discard the encoded component. In the second, adjust mixture and comparison brightness, choose retained equations and inspect both current and best-brightness mismatches. No result is scored or assigned a deficiency label."
+        },
+        {
+          "num": "5.9",
+          "alias": "art-6.7",
+          "name": "Von Kries adaptation"
+        },
+        {
+          "num": "5.10",
+          "kind": "Phenomenon",
+          "name": "#TheDress: disagreement about the illuminant",
+          "deps": [
+            "psych-5.2"
+          ],
+          "refs": [
+            "Lafer-Sousa, Hermann & Conway (2015), Striking individual differences in color perception uncovered by the dress photograph, complete main2pages and selected supplemental methods",
+            "Authored four-primary illumination/reflectance factorization"
+          ],
+          "pic": "Select one of the four published rounded aggregate categories. Separately change the assumed four-primary illuminant: the inferred reflectance changes while its product reconstructs the fixed observed spectrum. These model curves are not the source's perceptual categories or a recoloured original photograph."
+        }
+      ]
     },
     // ───────────────────────────────────────────────────────────── 6
     {
