@@ -28,6 +28,8 @@ tools to reach for. Read the section for your field before writing a chapter.
 
 ## Mathematics (book-anchored and curated)
 
+- Surface-area refinement needs control of tangent directions; shrinking inscribed triangles alone can give the wrong area. Keep chart singularities, covering multiplicity and global orientation separate, and count the actual displayed quotient mesh. Near a right angle, preserve the original degree complement before conversion. Match every legend key to drawn ink. See the [surface review](verification/wave6-vcalc-review.md).
+
 As in AUTHORING.md. Book-anchored collections (`pma`, `rca`, `fa`, `ladr`, …) use the book's
 numbering exactly. For linear algebra, work in ℝ² and ℝ³ with draggable vectors and matrices
 you can edit by dragging the images of basis vectors; use the n×n routines in `v.M` (eigen,
