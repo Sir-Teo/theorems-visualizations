@@ -18359,9 +18359,9 @@
   "started": "2026-10-22T10:26:01.661Z",
   "progress": {
     "total": 1057,
-    "written": 0,
-    "remaining": 1057,
-    "writtenChapters": 0,
+    "written": 26,
+    "remaining": 1031,
+    "writtenChapters": 2,
     "chapters": [
       {
         "collection": "ode",
@@ -18385,10 +18385,21 @@
         "collection": "vcalc",
         "chapter": 6,
         "total": 10,
-        "written": 0,
-        "remaining": 10,
-        "writtenItems": [],
-        "status": "planned"
+        "written": 10,
+        "remaining": 0,
+        "writtenItems": [
+          "vcalc-6.1",
+          "vcalc-6.2",
+          "vcalc-6.3",
+          "vcalc-6.4",
+          "vcalc-6.5",
+          "vcalc-6.6",
+          "vcalc-6.7",
+          "vcalc-6.8",
+          "vcalc-6.9",
+          "vcalc-6.10"
+        ],
+        "status": "written"
       },
       {
         "collection": "alg",
@@ -18529,10 +18540,27 @@
         "collection": "ml",
         "chapter": 6,
         "total": 16,
-        "written": 0,
-        "remaining": 16,
-        "writtenItems": [],
-        "status": "planned"
+        "written": 16,
+        "remaining": 0,
+        "writtenItems": [
+          "ml-6.1a",
+          "ml-6.1",
+          "ml-6.2",
+          "ml-6.3",
+          "ml-6.4",
+          "ml-6.5",
+          "ml-6.6",
+          "ml-6.6a",
+          "ml-6.6b",
+          "ml-6.6c",
+          "ml-6.6d",
+          "ml-6.7",
+          "ml-6.8",
+          "ml-6.9",
+          "ml-6.10",
+          "ml-6.11"
+        ],
+        "status": "written"
       },
       {
         "collection": "deep",
