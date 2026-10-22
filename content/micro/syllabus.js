@@ -462,38 +462,244 @@ export default {
       ],
     },
     {
-      n: 11,
-      title: 'Factor markets and time',
-      summary: String.raw`Labour and capital are traded in markets of their own. Firms hire labour until its marginal value equals the wage, and households supply it by trading leisure for consumption, sometimes offering fewer hours at higher wages. A single dominant employer changes these conclusions, to the point that a minimum wage can raise employment. Discounting puts payments at different dates on a common scale and turns education into an investment decision.`,
-      items: [
-        { num: '11.1', kind: 'Concept', name: 'Derived demand: the value of marginal product', deps: ['micro-7.1', 'micro-8.2'], refs: ['Mankiw Ch. 18', 'Varian Ch. 20'], tags: ['labour', 'factor demand'],
-          pic: 'The value-of-marginal-product curve p·MP_L with a wage slider: the firm hires until the curve meets the wage, and raising the output price shifts the whole labour-demand curve outward.' },
-        { num: '11.2', kind: 'Model', name: 'Labour–leisure choice', deps: ['micro-5.2'], refs: ['Varian Ch. 9', 'Mankiw Ch. 21'], tags: ['labour'],
-          pic: 'In the leisure–consumption plane a wage slider pivots the budget line around the time endowment plus non-labour income, and the optimal hours of work are read out.' },
-        { num: '11.3', kind: 'Phenomenon', name: 'Backward-bending labour supply', deps: ['micro-11.2', 'micro-6.1'], refs: ['Varian Ch. 9', 'Mankiw Ch. 21'], tags: ['labour'],
-          pic: 'Sweep the wage and plot hours worked: substitution and income arrows are drawn at each wage, and the supply curve bends back once the income effect on leisure wins.' },
-        { num: '11.4', kind: 'Model', name: 'Competitive labour market', deps: ['micro-11.1', 'micro-11.3', 'micro-2.5'], refs: ['Mankiw Ch. 18'], tags: ['labour', 'equilibrium'],
-          pic: 'Market labour demand (the summed value of marginal product) meets labour supply; shift supply with an immigration slider or demand with a productivity slider and read off the changes in wage and employment.' },
-        { num: '11.5', kind: 'Definition', name: 'Monopsony', deps: ['micro-11.4', 'micro-10.1'], refs: ['Varian Ch. 27'], tags: ['labour', 'market power'],
-          pic: 'A sole employer facing upward-sloping labour supply sees a marginal-factor-cost curve above it; it hires where that curve meets labour’s marginal value and pays only the supply-curve wage, below the competitive level.' },
-        { num: '11.6', kind: 'Proposition', name: 'Minimum wages under monopsony', deps: ['micro-11.5', 'micro-3.15'], refs: ['Varian Ch. 27'], tags: ['labour', 'price controls'],
-          pic: 'Raise a minimum wage: under monopsony employment rises until the wage reaches the competitive level and only then falls, while a competitive-market toggle shows every binding minimum cutting jobs.' },
-        { num: '11.7', kind: 'Concept', name: 'Compensating wage differentials', deps: ['micro-11.4'], refs: ['Mankiw Ch. 19'], tags: ['labour'],
-          pic: 'Workers differ in how much they dislike a dangerous job (a slider sets the spread): its wage premium settles where the marginal worker is indifferent between the jobs, and workers who mind less earn a rent.' },
-        { num: '11.8', kind: 'Model', name: 'Intertemporal budget constraint', deps: ['micro-4.1'], refs: ['Varian Ch. 10', 'CORE Unit 10'], tags: ['time', 'capital'],
-          pic: 'Two-period consumption around an income endowment: an interest-rate slider pivots the budget line through the endowment with slope −(1 + r), and the chosen point labels the consumer a borrower or a lender.' },
-        { num: '11.9', kind: 'Concept', name: 'Present value and discounting', deps: ['micro-11.8'], refs: ['Varian Ch. 10'], tags: ['time', 'capital'],
-          pic: 'Two payment streams drawn as bars, with their discounted values shrinking geometrically; move the interest rate and watch the present values, and which stream is worth more, switch.' },
-        { num: '11.10', kind: 'Model', name: 'Human capital investment', deps: ['micro-11.9'], refs: ['Mankiw Ch. 19'], tags: ['labour', 'time'],
-          pic: 'Choose years of schooling: forgone earnings early are traded for a higher earnings profile later, the present value of each plan is plotted against years of schooling, and its peak moves left as the interest rate rises.' },
-        { num: '11.11', kind: 'Principle', name: 'Hotelling’s rule for exhaustible resources', deps: ['micro-11.9'], refs: ['Varian Ch. 11'], tags: ['resources', 'time'],
-          pic: 'An owner of a fixed oil stock chooses when to extract: arbitrage between selling now and holding makes the price net of extraction cost rise at the interest rate, so the price path climbs exponentially until demand is choked off just as the stock runs out.' },
-        { num: '11.12', kind: 'Theorem', name: 'Fisher separation theorem', deps: ['micro-11.8', 'micro-11.9'], refs: ['CORE Unit 10', 'Varian Ch. 10'], tags: ['investment', 'time'],
-          pic: 'In the two-period plane a curved investment frontier meets a market borrowing line: the firm invests until the frontier’s slope equals 1 + r, maximizing present value, and owners of very different patience then borrow or lend along the same line to their own optima.' },
-        { num: '11.13', kind: 'Model', name: 'Taste-based discrimination (Becker)', deps: ['micro-11.4', 'micro-8.8'], refs: ['Mankiw Ch. 19'], tags: ['labour', 'discrimination'],
-          pic: 'Employers differ in a slider-set distaste for hiring one group: the wage gap is set by the marginal employer, and as the share of unprejudiced firms grows they hire the cheaper workers, out-earn their rivals and, with free entry, drive the gap toward zero.' },
+  "n": 11,
+  "title": "Factor markets and time",
+  "summary": "Factor hiring and labour supply are constrained optimization problems whose market conclusions depend on competitive or monopsony assumptions. Dated budgets and present values connect schooling, resource extraction and production investment, while explicit counterexamples show where common comparative-static or separation claims fail.",
+  "items": [
+    {
+      "num": "11.1",
+      "kind": "Concept",
+      "name": "Derived demand: the value of marginal product",
+      "deps": [
+        "micro-7.1",
+        "micro-8.2"
       ],
+      "refs": [
+        "OpenStax Principles of Economics 3e §14.1; supplied constrained calculus"
+      ],
+      "tags": [
+        "labour",
+        "factor demand"
+      ],
+      "pic": "Change productivity, output price and wage. Compare marginal value with wage and the actual profit curve; the gold points mark the constrained maximizer.",
+      "see": []
     },
+    {
+      "num": "11.2",
+      "kind": "Model",
+      "name": "Labour–leisure choice",
+      "deps": [
+        "micro-5.2",
+        "micro-4.1"
+      ],
+      "refs": [
+        "OpenStax 3e Appendix B, labour–leisure choice; supplied utility example"
+      ],
+      "tags": [
+        "labour"
+      ],
+      "pic": "Move the wage and non-labour income. The budget pivots around the time endowment, and the computed indifference curve touches it at the actual constrained choice.",
+      "see": []
+    },
+    {
+      "num": "11.3",
+      "kind": "Phenomenon",
+      "name": "Backward-bending labour supply",
+      "deps": [
+        "micro-11.2",
+        "micro-6.1"
+      ],
+      "refs": [
+        "OpenStax 3e Appendix B effects; independently derived nonhomothetic utility"
+      ],
+      "tags": [
+        "labour"
+      ],
+      "pic": "Select a new wage and compare it with a fixed baseline wage. The computed supply curve and three-point compensated decomposition show when the income effect outweighs substitution.",
+      "see": []
+    },
+    {
+      "num": "11.4",
+      "kind": "Model",
+      "name": "Competitive labour market",
+      "deps": [
+        "micro-11.1",
+        "micro-2.5"
+      ],
+      "refs": [
+        "OpenStax 3e §14.1; explicit affine market"
+      ],
+      "tags": [
+        "labour",
+        "equilibrium"
+      ],
+      "pic": "Shift demand productivity and the supply reservation intercept. The crossing and live residual show the wage and employment of this specified market.",
+      "see": [
+        "micro-11.3"
+      ]
+    },
+    {
+      "num": "11.5",
+      "kind": "Definition",
+      "name": "Monopsony",
+      "deps": [
+        "micro-11.4",
+        "micro-10.1"
+      ],
+      "refs": [
+        "OpenStax 3e §14.2; supplied continuous quadratic proof"
+      ],
+      "tags": [
+        "labour",
+        "market power"
+      ],
+      "pic": "Vary the slope of labour supply. Compare supply, marginal factor cost and marginal revenue value, with both monopsony and competitive allocations marked.",
+      "see": []
+    },
+    {
+      "num": "11.6",
+      "kind": "Proposition",
+      "name": "Minimum wages under monopsony",
+      "deps": [
+        "micro-11.5",
+        "micro-3.15"
+      ],
+      "refs": [
+        "OpenStax 3e monopsony marginal-cost setup; independent kinked-cost derivation"
+      ],
+      "tags": [
+        "labour",
+        "price controls"
+      ],
+      "pic": "Sweep the floor and toggle monopsony or competition. Inspect the computed employment path, current allocation and excess supply; no universal causal effect is inferred.",
+      "see": []
+    },
+    {
+      "num": "11.7",
+      "kind": "Concept",
+      "name": "Compensating wage differentials",
+      "deps": [
+        "micro-11.4"
+      ],
+      "refs": [
+        "Federal Reserve IFDP1106, compensating-differential framework; supplied uniform sorting model"
+      ],
+      "tags": [
+        "labour"
+      ],
+      "pic": "Change the required job fraction and preference spread. The cutoff, selected worker and shaded net-advantage area all come from the actual payoff difference.",
+      "see": []
+    },
+    {
+      "num": "11.8",
+      "kind": "Model",
+      "name": "Intertemporal budget constraint",
+      "deps": [
+        "micro-4.1",
+        "micro-5.2"
+      ],
+      "refs": [
+        "CORE Economy 1.0 §10.2–10.5; Parks/Zivot Fisher 1 slides 19–32"
+      ],
+      "tags": [
+        "time",
+        "capital"
+      ],
+      "pic": "Change the rate, future income and patience; toggle a borrowing constraint. The endowment, actual consumption pair and saving/borrowing amount are shown.",
+      "see": []
+    },
+    {
+      "num": "11.9",
+      "kind": "Concept",
+      "name": "Present value and discounting",
+      "deps": [
+        "micro-11.8"
+      ],
+      "refs": [
+        "Parks/Zivot Present Value Methodology, PDF 1–4"
+      ],
+      "tags": [
+        "time",
+        "capital"
+      ],
+      "pic": "Compare an early and a delayed payment stream. Raw bars and discounted bars are separate; edit rate and scale to see their computed finite present values.",
+      "see": []
+    },
+    {
+      "num": "11.10",
+      "kind": "Model",
+      "name": "Human capital investment",
+      "deps": [
+        "micro-11.9"
+      ],
+      "refs": [
+        "Parks/Zivot finite cash-flow valuation; authored schooling schedules"
+      ],
+      "tags": [
+        "labour",
+        "time"
+      ],
+      "pic": "Select tuition, the earnings premium and discount rate. Inspect all seven plan values and the actual annual cash-flow schedule of the selected plan.",
+      "see": []
+    },
+    {
+      "num": "11.11",
+      "kind": "Principle",
+      "name": "Hotelling’s rule for exhaustible resources",
+      "deps": [
+        "micro-11.9",
+        "ode-1.4"
+      ],
+      "refs": [
+        "MIT 15.031J 2012 Lecture 15 PDF 6–9; supplied linear-demand stock closure"
+      ],
+      "tags": [
+        "resources",
+        "time"
+      ],
+      "pic": "Change stock, extraction cost and the strictly positive rate. Compare gross price, net rent, extraction and remaining stock through the computed exhaustion date.",
+      "see": []
+    },
+    {
+      "num": "11.12",
+      "kind": "Theorem",
+      "name": "Fisher separation theorem",
+      "deps": [
+        "micro-11.8",
+        "micro-11.9",
+        "micro-7.1"
+      ],
+      "refs": [
+        "Parks/Zivot Fisher 2 slides 50–59 and supplied set-inclusion proof"
+      ],
+      "tags": [
+        "investment",
+        "time"
+      ],
+      "pic": "Compare two patience settings with common capital-market access, then switch to autarky. The production frontier, actual investment points and owner consumption pairs show what separates and what fails.",
+      "see": []
+    },
+    {
+      "num": "11.13",
+      "kind": "Model",
+      "name": "Taste-based discrimination (Becker)",
+      "deps": [
+        "micro-11.4"
+      ],
+      "refs": [
+        "MIT 14.662 2015 Recitation 9, modern taste-model cautions; supplied finite cutoff model"
+      ],
+      "tags": [
+        "labour",
+        "discrimination"
+      ],
+      "pic": "Edit the number of zero-distaste firms, B workers and distaste spread. The actual 21 employers, allocation, subjective cutoff and cash margins are displayed.",
+      "see": [
+        "micro-8.8"
+      ]
+    }
+  ]
+},
     {
       n: 12,
       title: 'Externalities, public goods and the commons',
