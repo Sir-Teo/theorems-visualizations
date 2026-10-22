@@ -42,7 +42,7 @@ The [validator](../../explorations/contract.mjs) and [six real examples](../../e
 | `extensions` | Namespaced future metadata; never executed or silently treated as a supported learning method |
 | `previousRevisions` | Optional distinct revision identifiers whose local notes can be explicitly exported; no automatic migration |
 
-Version 1 implements **source-comparison**, **annotation**, **argument-map** and **measured-data** activities. It recognizes formal, empirical, historical, interpretive, normative, procedural and creative knowledge modes, but does not claim to implement all their interfaces. Case, practice, performance, map and object methods need their own payload validation and accepted vertical slices before registration. Unknown methods fail explicitly.
+Version 1 implements **source-comparison**, **annotation**, **argument-map**, **measured-data**, **weave-structure** and **phrase-comparison** activities. The last two are bounded digital practice/performance models whose real-world checks remain open. It recognizes formal, empirical, historical, interpretive, normative, procedural and creative knowledge modes, but does not claim to implement all their interfaces. Legal/clinical case, additional practice/performance, map and object methods need their own payload validation and reviewed vertical slices before registration. Unknown methods fail explicitly. The separate [domain-orientation catalog](../coverage/overviews.md) supplies navigation pages, not exploration activities.
 
 Text payloads are escaped. Only public HTTPS source links are allowed. No arbitrary HTML, executable code, imported iframe or external script is accepted in authored data. A source's availability does not establish its rights or epistemic reliability.
 

@@ -1,0 +1,1319 @@
+{
+  "schemaVersion": 1,
+  "catalogVersion": "0.1.0",
+  "publication": "local-preview",
+  "updatedOn": "2026-10-22",
+  "purpose": "Thirty editorial orientation pages with bounded reading routes. They are not lessons, comprehensive syllabi, professional advice or claims of taught coverage.",
+  "framing": "Territory, questions and suggested ways to explore are atlas editorial framing. Each source receipt identifies the narrower reading actually inspected.",
+  "review": {
+    "author": "codex-root",
+    "status": "reviewed-local",
+    "receipts": [
+      {
+        "dimension": "source-content",
+        "domainIds": [
+          "D01",
+          "D02",
+          "D03",
+          "D04",
+          "D05",
+          "D06",
+          "D07",
+          "D08",
+          "D09",
+          "D10",
+          "D11",
+          "D12",
+          "D13",
+          "D14",
+          "D15"
+        ],
+        "result": "passed",
+        "reviewer": {
+          "id": "soil_data_review",
+          "kind": "ai",
+          "independent": true
+        },
+        "contentDigest": "d968dbcae08511f55dfff94124d79fceadae02415962d851ece7bb760ce5f8c9",
+        "evidencePath": "docs/coverage/reviews/orientation-science-20261022.md",
+        "reviewedOn": "2026-10-22"
+      },
+      {
+        "dimension": "source-content",
+        "domainIds": [
+          "D16",
+          "D17",
+          "D18",
+          "D19",
+          "D20",
+          "D21",
+          "D22",
+          "D23",
+          "D24",
+          "D25",
+          "D26",
+          "D27",
+          "D28",
+          "D29",
+          "D30"
+        ],
+        "result": "passed",
+        "reviewer": {
+          "id": "history_review",
+          "kind": "ai",
+          "independent": true
+        },
+        "contentDigest": "020cd9b9ff25cdafbd4c62b2d91534a694c0e1d67f379cb9f319ee4828ce9860",
+        "evidencePath": "docs/coverage/reviews/orientation-humanities-20261022.md",
+        "reviewedOn": "2026-10-22"
+      },
+      {
+        "dimension": "engineering",
+        "domainIds": [
+          "D01",
+          "D02",
+          "D03",
+          "D04",
+          "D05",
+          "D06",
+          "D07",
+          "D08",
+          "D09",
+          "D10",
+          "D11",
+          "D12",
+          "D13",
+          "D14",
+          "D15",
+          "D16",
+          "D17",
+          "D18",
+          "D19",
+          "D20",
+          "D21",
+          "D22",
+          "D23",
+          "D24",
+          "D25",
+          "D26",
+          "D27",
+          "D28",
+          "D29",
+          "D30"
+        ],
+        "result": "passed",
+        "reviewer": {
+          "id": "code_review",
+          "kind": "ai",
+          "independent": true
+        },
+        "contentDigest": "85f9cc98335776b33950c123a28b476c1bcb13e552f3599358c8eda8d2477680",
+        "evidencePath": "docs/coverage/reviews/orientation-code-20261022.md",
+        "reviewedOn": "2026-10-22",
+        "artifactDigest": "17d23371bbbe39d175dc12b71ed6e84758005e884a900ef629795334ae067f17"
+      }
+    ]
+  },
+  "overviews": [
+    {
+      "domainId": "D01",
+      "revision": "0.1.0",
+      "summary": "Mathematics studies structures, quantities, patterns and the consequences of assumptions. Begin by separating a useful example from a statement that has been proved for every case.",
+      "territory": [
+        "Number, algebra and discrete structures",
+        "Geometry, analysis and change",
+        "Probability, computation and mathematical models"
+      ],
+      "questions": [
+        "What has been assumed, and where is it used?",
+        "Which example would disprove the proposed claim?"
+      ],
+      "waysToExplore": [
+        "Construct examples and counterexamples before trying a proof.",
+        "Compare two proofs to see which hypotheses each needs.",
+        "Translate a practical question into a model, then identify what the model omits."
+      ],
+      "boundaries": [
+        "A finite picture can explain a proof idea without proving the general statement. The linked course begins after calculus."
+      ],
+      "representationGaps": {
+        "place": "Histories of mathematical work across regions need explicit treatment beyond the present textbook traditions.",
+        "language": "The current reading route is English; notation does not remove translation and terminology barriers.",
+        "practice": "Arithmetic and elementary algebra entry routes remain to be authored alongside existing advanced collections."
+      },
+      "sourceIds": [
+        "orientation-mit-analysis"
+      ],
+      "nextStep": {
+        "sourceId": "orientation-mit-analysis",
+        "task": "Read the analysis course description and prerequisites; choose one familiar limit claim and identify what you would need to prove.",
+        "preparation": "For this external analysis course, the syllabus names multivariable calculus; the overview itself has no prerequisite."
+      },
+      "relatedDomainIds": [
+        "D02",
+        "D03",
+        "D21"
+      ]
+    },
+    {
+      "domainId": "D02",
+      "revision": "0.1.0",
+      "summary": "Statistics and research methods connect questions to observations and justified conclusions. Study how evidence was produced before deciding what a pattern means.",
+      "territory": [
+        "Measurement, sampling and study design",
+        "Exploration, estimation and uncertainty",
+        "Causal, qualitative and mixed-method inquiry"
+      ],
+      "questions": [
+        "Who or what could have been observed but was not?",
+        "Which assumption connects the data to the conclusion?"
+      ],
+      "waysToExplore": [
+        "Inspect raw records, units and missingness before summarizing.",
+        "Compare a graph with an alternative grouping or scale.",
+        "Distinguish a descriptive pattern from a causal explanation."
+      ],
+      "boundaries": [
+        "Exploratory patterns are not automatically confirmatory evidence. The NIST entry supplies one quantitative lens, not the whole field."
+      ],
+      "representationGaps": {
+        "place": "Study populations and sampling contexts need explicit representation, including places missing from available datasets.",
+        "language": "Survey translation and local meanings of categories require their own research.",
+        "practice": "Qualitative fieldwork, participatory methods and research ethics need further worked cases."
+      },
+      "sourceIds": [
+        "orientation-nist-eda"
+      ],
+      "nextStep": {
+        "sourceId": "orientation-nist-eda",
+        "task": "Read the NIST EDA goals and identify one assumption and one anomaly you would inspect in a dataset.",
+        "preparation": "Basic familiarity with tables and graphs is useful; no specific software is required."
+      },
+      "relatedDomainIds": [
+        "D01",
+        "D17",
+        "D19"
+      ]
+    },
+    {
+      "domainId": "D03",
+      "revision": "0.1.0",
+      "summary": "Computing connects representations, procedures and systems with the people who use and maintain them. A working demonstration is a starting point for questions about correctness, resources and consequences.",
+      "territory": [
+        "Algorithms, programming and data",
+        "Hardware, operating systems and networks",
+        "Software engineering, security, interaction and societal context"
+      ],
+      "questions": [
+        "What behavior is guaranteed, and under which inputs?",
+        "Who is affected by a system’s failure or design choices?"
+      ],
+      "waysToExplore": [
+        "Trace a small input through a procedure.",
+        "Compare a specification with a failing test case.",
+        "Map the boundary between a component, its users and its dependencies."
+      ],
+      "boundaries": [
+        "A curriculum-area list is a navigation map, not proof of software competence or security."
+      ],
+      "representationGaps": {
+        "place": "Infrastructure constraints and computing histories outside dominant research centers need further examples.",
+        "language": "The current curriculum index is English; multilingual interfaces and accessibility need explicit design review.",
+        "practice": "Build, deployment, maintenance and human-computer interaction remain gaps beside the existing theoretical collections."
+      },
+      "sourceIds": [
+        "orientation-cs2023-areas"
+      ],
+      "nextStep": {
+        "sourceId": "orientation-cs2023-areas",
+        "task": "Read the CS2023 area list and select one systems area and one human or societal area that a familiar application depends on.",
+        "preparation": "No prerequisite for the area index; individual courses will set their own."
+      },
+      "relatedDomainIds": [
+        "D01",
+        "D11",
+        "D28"
+      ]
+    },
+    {
+      "domainId": "D04",
+      "revision": "0.1.0",
+      "summary": "Physics asks how measurable phenomena can be explained and predicted. Astronomy extends that inquiry to objects and histories often known through remote signals.",
+      "territory": [
+        "Motion, fields, matter and energy",
+        "Waves, thermal and quantum phenomena",
+        "Astronomy, cosmology and instruments"
+      ],
+      "questions": [
+        "What observation could distinguish these models?",
+        "How do instrument limits shape what can be inferred?"
+      ],
+      "waysToExplore": [
+        "Compare a prediction with a measured quantity and its units.",
+        "Vary an assumption and examine the regime where a model fails.",
+        "Trace an astronomical inference from detected signal to physical interpretation."
+      ],
+      "boundaries": [
+        "The linked physics preface outlines a calculus-based sequence; it does not verify every model or provide a complete astronomy course."
+      ],
+      "representationGaps": {
+        "place": "Observation sites, instrument access and histories of physical knowledge need geographically varied cases.",
+        "language": "Scientific terms, notation and instrument conventions need explicit explanation for multilingual readers.",
+        "practice": "Measurement, calibration and experimental technique remain distinct from manipulating a simulation."
+      },
+      "sourceIds": [
+        "orientation-openstax-physics"
+      ],
+      "nextStep": {
+        "sourceId": "orientation-openstax-physics",
+        "task": "Read the preface’s scope and choose a phenomenon whose explanation connects measurement with a model.",
+        "preparation": "The external course sequence is calculus-based; begin with its scope before selecting a technical chapter."
+      },
+      "relatedDomainIds": [
+        "D01",
+        "D06",
+        "D11"
+      ]
+    },
+    {
+      "domainId": "D05",
+      "revision": "0.1.0",
+      "summary": "Chemistry relates composition and structure to transformations and properties. Materials inquiry adds processing, scale and performance in use.",
+      "territory": [
+        "Atomic and molecular structure, bonding and reactions",
+        "Chemical analysis, synthesis and biological chemistry",
+        "Materials, interfaces, processing and scale"
+      ],
+      "questions": [
+        "Which observation supports this proposed composition or structure?",
+        "How would a different preparation change the result?"
+      ],
+      "waysToExplore": [
+        "Compare candidate structures against stated evidence.",
+        "Trace matter and energy through a bounded transformation.",
+        "Relate material processing to a property while naming uncontrolled factors."
+      ],
+      "boundaries": [
+        "A curricular overview is not a laboratory protocol. Laboratory work requires appropriate equipment, training and supervision."
+      ],
+      "representationGaps": {
+        "place": "Industrial, environmental and local material practices need examples beyond a single national degree framework.",
+        "language": "Names, nomenclature and locally used material categories need multilingual treatment.",
+        "practice": "Laboratory measurement and analytical interpretation need reviewed vertical examples before practical claims."
+      },
+      "sourceIds": [
+        "orientation-acs-coursework"
+      ],
+      "nextStep": {
+        "sourceId": "orientation-acs-coursework",
+        "task": "Read the ACS distinction between introductory, foundation and in-depth study; identify where a chosen materials question belongs.",
+        "preparation": "The guidelines describe progression; foundation-level coursework assumes introductory chemistry."
+      },
+      "relatedDomainIds": [
+        "D04",
+        "D07",
+        "D11"
+      ]
+    },
+    {
+      "domainId": "D06",
+      "revision": "0.1.0",
+      "summary": "Earth inquiry connects rocks, water, air, oceans, places and long histories. Geography also asks how people organize and experience those places.",
+      "territory": [
+        "Geology, landforms and Earth history",
+        "Weather, climate, oceans and water",
+        "Maps, remote sensing and human geography"
+      ],
+      "questions": [
+        "What changes when the spatial or time scale changes?",
+        "Which parts of a map or reconstruction are observations and which are choices?"
+      ],
+      "waysToExplore": [
+        "Compare observations made at different scales.",
+        "Read a map’s projection, legend and missing information.",
+        "Trace water or energy through a system with a stated boundary."
+      ],
+      "boundaries": [
+        "NOAA provides an ocean–atmosphere–water entrance. It does not stand for all geology, human geography or local hazard guidance."
+      ],
+      "representationGaps": {
+        "place": "Local and Indigenous place knowledge needs situated sources and participation, not generic global labels.",
+        "language": "Place names, map labels and contested boundaries need their languages and historical contexts.",
+        "practice": "Field observations and instrument records need provenance and uncertainty beyond schematic models."
+      },
+      "sourceIds": [
+        "orientation-noaa-resources"
+      ],
+      "nextStep": {
+        "sourceId": "orientation-noaa-resources",
+        "task": "Choose a NOAA collection on oceans, weather, climate or freshwater and distinguish a data resource from a lesson or explanatory image.",
+        "preparation": "No prerequisite for the portal; technical datasets have their own documentation."
+      },
+      "relatedDomainIds": [
+        "D04",
+        "D08",
+        "D12"
+      ]
+    },
+    {
+      "domainId": "D07",
+      "revision": "0.1.0",
+      "summary": "Life sciences investigate organisms, their processes and their relationships through time. Useful explanations connect levels of organization without treating one scale as the whole story.",
+      "territory": [
+        "Cells, molecules and inherited information",
+        "Development, physiology and organism diversity",
+        "Evolution, populations and ecological relationships"
+      ],
+      "questions": [
+        "At which level is this mechanism being explained?",
+        "What evidence could separate two accounts of a biological pattern?"
+      ],
+      "waysToExplore": [
+        "Trace a process while labeling what is observed and inferred.",
+        "Compare organisms or sequences with their sampling context.",
+        "Connect an experimental result to the limits of its study system."
+      ],
+      "boundaries": [
+        "The Biology 2e preface supplies a course map, not a validation of every chapter or a clinical interpretation."
+      ],
+      "representationGaps": {
+        "place": "Species and ecosystems absent from well-studied model systems need attention.",
+        "language": "Taxonomic names do not replace local names or community knowledge of organisms.",
+        "practice": "Microscopy, specimen work, experimental controls and biological data stewardship remain practical gaps."
+      },
+      "sourceIds": [
+        "orientation-openstax-biology"
+      ],
+      "nextStep": {
+        "sourceId": "orientation-openstax-biology",
+        "task": "Read the biology unit outline and choose two levels of organization that a question would need to connect.",
+        "preparation": "The external book is designed for science majors; use the outline to identify needed background."
+      },
+      "relatedDomainIds": [
+        "D05",
+        "D08",
+        "D09"
+      ]
+    },
+    {
+      "domainId": "D08",
+      "revision": "0.1.0",
+      "summary": "Ecology studies organisms in relation to each other and their environments. Conservation adds decisions about what to protect, for whom and under which changing conditions.",
+      "territory": [
+        "Organisms, populations, communities and ecosystems",
+        "Landscapes, disturbance and change",
+        "Conservation, restoration and human-environment relationships"
+      ],
+      "questions": [
+        "Which ecological process and which value judgment enter this decision?",
+        "Who selected the system boundary and the success measure?"
+      ],
+      "waysToExplore": [
+        "Compare field evidence with a stated model.",
+        "Trace interactions across organism, population and landscape scales.",
+        "Separate an intervention’s measured effect from its intended objective."
+      ],
+      "boundaries": [
+        "The inspected 4DEE framework explicitly omits traditional ecological knowledge in its current form. This overview cannot supply that missing participation."
+      ],
+      "representationGaps": {
+        "place": "Place-specific ecological and Indigenous perspectives need their own authorized sources and contexts.",
+        "language": "Species, landscape and stewardship vocabularies need local-language work.",
+        "practice": "Survey design, restoration practice and stakeholder deliberation need cases beyond population models."
+      },
+      "sourceIds": [
+        "orientation-esa-4dee"
+      ],
+      "nextStep": {
+        "sourceId": "orientation-esa-4dee",
+        "task": "Read the four 4DEE dimensions and identify which ones a familiar environmental question would require.",
+        "preparation": "No prerequisite for the framework overview."
+      },
+      "relatedDomainIds": [
+        "D06",
+        "D07",
+        "D15"
+      ]
+    },
+    {
+      "domainId": "D09",
+      "revision": "0.1.0",
+      "summary": "Health and care connect knowledge of bodies and populations with people’s experiences, services and support. Reading evidence and understanding its limits are useful starting points.",
+      "territory": [
+        "Anatomy, physiology and disease processes",
+        "Population health, evidence and prevention",
+        "Clinical and everyday care, rehabilitation and wellbeing"
+      ],
+      "questions": [
+        "What question can this source answer, and for which population?",
+        "What information would a professional need before applying it to a person?"
+      ],
+      "waysToExplore": [
+        "Distinguish a general explanation from an individual assessment.",
+        "Check the purpose and source of a medical-test description.",
+        "Compare information formats and access needs without ranking people’s experiences."
+      ],
+      "boundaries": [
+        "This is a route into health information, not diagnosis, treatment or a substitute for qualified care. The clinical pilot remains gated."
+      ],
+      "representationGaps": {
+        "place": "Health systems, disability experiences and community care vary by setting and need situated evidence.",
+        "language": "The current source offers English and Spanish routes; other languages and communication needs require review.",
+        "practice": "Supervised observation, clinical judgment and caring relationships cannot be certified by a browser model."
+      },
+      "sourceIds": [
+        "orientation-medlineplus-about"
+      ],
+      "nextStep": {
+        "sourceId": "orientation-medlineplus-about",
+        "task": "Read how MedlinePlus separates health topics, tests and genetics; choose the category that fits an educational question.",
+        "preparation": "No medical background is required for the service overview; personal decisions belong with appropriate professionals."
+      },
+      "relatedDomainIds": [
+        "D07",
+        "D18",
+        "D19"
+      ]
+    },
+    {
+      "domainId": "D10",
+      "revision": "0.1.0",
+      "summary": "Food and land-based livelihoods connect organisms, environments, practices and institutions. A useful account names both the biological conditions and the people making decisions.",
+      "territory": [
+        "Crops, soils, water and plant health",
+        "Animals, forestry, fisheries and veterinary knowledge",
+        "Food processing, distribution and livelihoods"
+      ],
+      "questions": [
+        "Which local conditions would change this practice’s outcome?",
+        "How do production choices affect livelihoods and ecosystems?"
+      ],
+      "waysToExplore": [
+        "Trace a food or material through its production system.",
+        "Compare measured observations with a separately labeled model.",
+        "Use related vocabulary to find what a first search missed."
+      ],
+      "boundaries": [
+        "AGROVOC is a discovery vocabulary, not evidence that a practice is effective or suitable at a particular site."
+      ],
+      "representationGaps": {
+        "place": "Soils, climates, tenure and livelihood systems need local sources beyond the current single-site soil pilot.",
+        "language": "Multilingual terms can reveal different search routes; equivalence and local use still require checking.",
+        "practice": "Growing, animal care, food handling and resource management need qualified practical review."
+      },
+      "sourceIds": [
+        "orientation-agrovoc-about"
+      ],
+      "nextStep": {
+        "sourceId": "orientation-agrovoc-about",
+        "task": "Read how AGROVOC separates concepts, terms and relationships; pick a food-system question and identify related search concepts.",
+        "preparation": "No prerequisite for the vocabulary introduction."
+      },
+      "relatedDomainIds": [
+        "D06",
+        "D08",
+        "D14"
+      ]
+    },
+    {
+      "domainId": "D11",
+      "revision": "0.1.0",
+      "summary": "Engineering turns needs into systems that must work within constraints. It includes design, construction, operation, maintenance and learning from failure.",
+      "territory": [
+        "Requirements, models and design tradeoffs",
+        "Components, interfaces and manufacture",
+        "Verification, operation, maintenance and retirement"
+      ],
+      "questions": [
+        "What would count as meeting the need rather than merely passing a component test?",
+        "Which interface or failure mode has been left out?"
+      ],
+      "waysToExplore": [
+        "Trace a requirement to a proposed verification.",
+        "Compare designs under stated cost, performance and use constraints.",
+        "Inspect how a local failure can affect the larger system."
+      ],
+      "boundaries": [
+        "NASA’s systems approach is a bounded example. It does not authorize construction or replace branch-specific standards and professional review."
+      ],
+      "representationGaps": {
+        "place": "Infrastructure, resources and maintenance capacity differ across locations.",
+        "language": "Technical terminology and operating instructions need clear local-language and accessibility work.",
+        "practice": "Fabrication, testing, maintenance and safety-critical decisions need evidence from real systems."
+      },
+      "sourceIds": [
+        "orientation-nasa-systems"
+      ],
+      "nextStep": {
+        "sourceId": "orientation-nasa-systems",
+        "task": "Read the systems-engineering introduction and list the people, processes and interfaces included in a familiar system.",
+        "preparation": "The opening overview is conceptual; detailed engineering work has discipline-specific prerequisites."
+      },
+      "relatedDomainIds": [
+        "D03",
+        "D05",
+        "D12"
+      ]
+    },
+    {
+      "domainId": "D12",
+      "revision": "0.1.0",
+      "summary": "Built environments join spatial form, materials, public choices and everyday use. Study a building or settlement as a place inhabited and changed by people.",
+      "territory": [
+        "Buildings, materials and environmental performance",
+        "Streets, housing, transport and settlement patterns",
+        "Planning, landscape, heritage and public participation"
+      ],
+      "questions": [
+        "Whose needs are served by a design decision?",
+        "How did a place’s present form emerge and who can change it?"
+      ],
+      "waysToExplore": [
+        "Read plans, sections and maps at a stated scale.",
+        "Compare design alternatives and the values built into them.",
+        "Trace the difference between intended use and observed use."
+      ],
+      "boundaries": [
+        "The linked 2006 course centers the American metropolis. A design discussion is not a permit, engineering approval or current local planning rule."
+      ],
+      "representationGaps": {
+        "place": "Rural, informal, Indigenous and other settlement traditions need their own sources.",
+        "language": "Place names, design language and public-consultation access need local treatment.",
+        "practice": "Site observation, participation and building performance require evidence beyond drawings."
+      },
+      "sourceIds": [
+        "orientation-mit-urban"
+      ],
+      "nextStep": {
+        "sourceId": "orientation-mit-urban",
+        "task": "Read the urban-design course description and identify one value and one stakeholder implicit in a familiar design proposal.",
+        "preparation": "No prerequisite is needed to read the syllabus; technical design tasks require additional preparation."
+      },
+      "relatedDomainIds": [
+        "D06",
+        "D11",
+        "D15"
+      ]
+    },
+    {
+      "domainId": "D13",
+      "revision": "0.1.0",
+      "summary": "Economics examines production, exchange, distribution and the institutions shaping choices. Finance studies claims on resources over time and under uncertainty.",
+      "territory": [
+        "Households, firms, markets and institutions",
+        "Growth, employment, distribution and economic history",
+        "Money, finance, uncertainty and public policy"
+      ],
+      "questions": [
+        "Which outcome does the model explain, and which does it leave outside?",
+        "How would a different institutional rule change the comparison?"
+      ],
+      "waysToExplore": [
+        "Separate assumptions, model results and empirical evidence.",
+        "Compare distribution as well as totals.",
+        "Inspect how a measure was constructed before treating it as wellbeing."
+      ],
+      "boundaries": [
+        "A model is not a forecast by itself. The linked guide is one introductory perspective and provides no personal investment advice."
+      ],
+      "representationGaps": {
+        "place": "Regional economic histories and institutional variation need more than one textbook perspective.",
+        "language": "Policy and household-finance terms need jurisdictional and language context.",
+        "practice": "Measurement, archival work and institutional case studies remain gaps beside mathematical models."
+      },
+      "sourceIds": [
+        "orientation-core-micro-guide"
+      ],
+      "nextStep": {
+        "sourceId": "orientation-core-micro-guide",
+        "task": "Read the CORE guide’s building blocks and Unit 1 narrative; identify a model assumption and a question requiring data.",
+        "preparation": "The opening guide is introductory; later mathematical blocks name their own dependencies."
+      },
+      "relatedDomainIds": [
+        "D02",
+        "D14",
+        "D15"
+      ]
+    },
+    {
+      "domainId": "D14",
+      "revision": "0.1.0",
+      "summary": "Organizations coordinate people and resources through records, decisions and routines. Accounting makes some of those commitments visible, while management asks how action is organized.",
+      "territory": [
+        "Accounting, reporting and resource flows",
+        "Operations, logistics and organizational behavior",
+        "Entrepreneurship, strategy and relationships with stakeholders"
+      ],
+      "questions": [
+        "Which record shows a stock, and which shows a flow over time?",
+        "Whose work or obligation is missing from the chosen measure?"
+      ],
+      "waysToExplore": [
+        "Trace an event into the records it changes.",
+        "Compare a reported outcome with the process that produced it.",
+        "Map responsibilities and incentives in a bounded case."
+      ],
+      "boundaries": [
+        "The SEC introduction is a dated corporate-reporting lens. It is not current standards advice or a complete account of public, cooperative or nonprofit organizations."
+      ],
+      "representationGaps": {
+        "place": "Organizational forms and reporting obligations vary across jurisdictions and sectors.",
+        "language": "Accounting labels and management terms need translation and standards context.",
+        "practice": "Bookkeeping, operations and decision-making require worked cases and review beyond a diagram."
+      },
+      "sourceIds": [
+        "orientation-sec-statements"
+      ],
+      "nextStep": {
+        "sourceId": "orientation-sec-statements",
+        "task": "Read the SEC guide’s statement types and explain why a balance-sheet date differs from an income-statement period.",
+        "preparation": "No accounting background is assumed by the linked introductory guide."
+      },
+      "relatedDomainIds": [
+        "D13",
+        "D16",
+        "D17"
+      ]
+    },
+    {
+      "domainId": "D15",
+      "revision": "0.1.0",
+      "summary": "Political inquiry asks how collective decisions gain authority, distribute power and face contestation. Institutions can be studied through arguments, records and comparison.",
+      "territory": [
+        "Political ideas, authority and participation",
+        "Comparative institutions and public administration",
+        "Policy, international relations and conflict"
+      ],
+      "questions": [
+        "What justifies a decision-making rule, and what evidence shows its effects?",
+        "Which voices and alternatives were excluded from the comparison?"
+      ],
+      "waysToExplore": [
+        "Compare institutions while naming differences in context.",
+        "Separate a normative argument from an empirical claim.",
+        "Trace a policy from proposal through implementation and evaluation."
+      ],
+      "boundaries": [
+        "The course syllabus illustrates inquiry; it does not rank all political systems or endorse a partisan program."
+      ],
+      "representationGaps": {
+        "place": "National, local, Indigenous and transnational institutions need distinct cases.",
+        "language": "Political terms and translations carry contested histories that should be made explicit.",
+        "practice": "Archival evidence, fieldwork and policy implementation need sources beyond formal voting models."
+      },
+      "sourceIds": [
+        "orientation-mit-politics"
+      ],
+      "nextStep": {
+        "sourceId": "orientation-mit-politics",
+        "task": "Read the comparative-politics objectives and turn an opinion about governance into a question that could be argued with evidence.",
+        "preparation": "The linked introductory course lists no prerequisites."
+      },
+      "relatedDomainIds": [
+        "D13",
+        "D16",
+        "D20"
+      ]
+    },
+    {
+      "domainId": "D16",
+      "revision": "0.1.0",
+      "summary": "Law connects institutional authority with rules, interpretation, procedure and contested facts. A legal question must be located in a jurisdiction and time before a source can be applied.",
+      "territory": [
+        "Legal sources, interpretation and reasoning",
+        "Public, private and international institutions",
+        "Procedure, remedies and access to justice"
+      ],
+      "questions": [
+        "Who issued the rule and where does it have authority?",
+        "Which fact, date or procedural stage would change the analysis?"
+      ],
+      "waysToExplore": [
+        "Distinguish an official legal source from commentary about it.",
+        "Trace a hypothetical claim through facts, authority and procedure.",
+        "Compare legal systems without assuming one vocabulary fits all of them."
+      ],
+      "boundaries": [
+        "This is legal-literacy orientation, not advice on a dispute. Wex explains US terminology; it is not the controlling source for the UK pilot or any other case."
+      ],
+      "representationGaps": {
+        "place": "Jurisdictions, customary systems and plural legal traditions need their own source and review work.",
+        "language": "Authoritative language versions and translations can differ in legal status.",
+        "practice": "Actual case advice and procedural decisions require qualified jurisdiction-specific review."
+      },
+      "sourceIds": [
+        "orientation-lii-authority"
+      ],
+      "nextStep": {
+        "sourceId": "orientation-lii-authority",
+        "task": "Read the primary-authority definition and identify the issuing body, jurisdiction and date you would need to check for a legal source.",
+        "preparation": "No prerequisite for the short reference entry; do not infer legal applicability from this overview."
+      },
+      "relatedDomainIds": [
+        "D15",
+        "D21",
+        "D28"
+      ]
+    },
+    {
+      "domainId": "D17",
+      "revision": "0.1.0",
+      "summary": "Social inquiry studies institutions, relationships and meanings in context. Anthropology adds comparative and situated approaches to human lives across places and time.",
+      "territory": [
+        "Institutions, inequality, population and social change",
+        "Culture, kinship, work and everyday life",
+        "Ethnographic, historical, comparative and quantitative methods"
+      ],
+      "questions": [
+        "Whose category is being used, and what does it mean locally?",
+        "How does the observer’s position shape the account?"
+      ],
+      "waysToExplore": [
+        "Compare a statistical pattern with the setting in which it was recorded.",
+        "Read an ethnographic account with attention to voice and method.",
+        "Trace how a social category changes across institutions or periods."
+      ],
+      "boundaries": [
+        "The AAA introduction explicitly locates its four-field model in the United States. It is not a universal map of anthropology or a sociology syllabus."
+      ],
+      "representationGaps": {
+        "place": "Community-specific perspectives must be represented through situated, authorized work.",
+        "language": "Translation can change kinship, identity and institutional categories.",
+        "practice": "Consent, relationships and fieldwork cannot be replaced by a generic scenario."
+      },
+      "sourceIds": [
+        "orientation-aaa-anthropology"
+      ],
+      "nextStep": {
+        "sourceId": "orientation-aaa-anthropology",
+        "task": "Read the AAA account and identify where its four-field description is geographically qualified.",
+        "preparation": "No prerequisite for the association’s introduction."
+      },
+      "relatedDomainIds": [
+        "D02",
+        "D20",
+        "D23"
+      ]
+    },
+    {
+      "domainId": "D18",
+      "revision": "0.1.0",
+      "summary": "Psychology investigates mind, behavior and development through evidence. It connects individual processes with environments, relationships and life histories.",
+      "territory": [
+        "Perception, memory, cognition and emotion",
+        "Development, personality and social behavior",
+        "Research methods and applied psychological fields"
+      ],
+      "questions": [
+        "What was measured, and how well does it represent the proposed construct?",
+        "For whom and under which conditions was the finding observed?"
+      ],
+      "waysToExplore": [
+        "Compare a research question with its operational measure.",
+        "Separate group-level evidence from claims about an individual.",
+        "Trace alternative explanations for a behavioral pattern."
+      ],
+      "boundaries": [
+        "A professional overview does not verify every application. This page offers no diagnosis, assessment or treatment."
+      ],
+      "representationGaps": {
+        "place": "Study populations and cultural contexts need explicit comparison and limits.",
+        "language": "Measures, questionnaires and emotion terms require language-specific validation.",
+        "practice": "Clinical assessment, participant research and intervention require appropriate expertise and ethics."
+      },
+      "sourceIds": [
+        "orientation-apa-psychology"
+      ],
+      "nextStep": {
+        "sourceId": "orientation-apa-psychology",
+        "task": "Read the APA science overview and choose one subfield; identify a question and the kind of evidence it would need.",
+        "preparation": "No prerequisite for the introductory page."
+      },
+      "relatedDomainIds": [
+        "D02",
+        "D09",
+        "D19"
+      ]
+    },
+    {
+      "domainId": "D19",
+      "revision": "0.1.0",
+      "summary": "Education asks what people learn, how learning is supported and how opportunities are organized. Inquiry spans classrooms, families, workplaces and learning throughout life.",
+      "territory": [
+        "Learning, development and motivation",
+        "Teaching, curriculum and assessment",
+        "Institutions, inclusion and lifelong learning"
+      ],
+      "questions": [
+        "What evidence would show that a learner can use an idea in a new setting?",
+        "How does the learner’s context affect the opportunity to learn?"
+      ],
+      "waysToExplore": [
+        "Compare a learning goal with the task used to assess it.",
+        "Inspect what a teaching claim assumes about learners and context.",
+        "Distinguish engagement, completion and demonstrated understanding."
+      ],
+      "boundaries": [
+        "The research summary motivates questions; it does not establish that this atlas improves learning."
+      ],
+      "representationGaps": {
+        "place": "School systems, family practices and adult-learning settings need varied local evidence.",
+        "language": "Literacy, numeracy and instructional language should not be treated as interchangeable across contexts.",
+        "practice": "Teaching observations, inclusive design and learner feedback require real sessions."
+      },
+      "sourceIds": [
+        "orientation-nas-learning"
+      ],
+      "nextStep": {
+        "sourceId": "orientation-nas-learning",
+        "task": "Read the opening summary of How People Learn II and list contextual influences that a learning evaluation would need to record.",
+        "preparation": "No prerequisite for the summary; technical conclusions require their supporting chapters and studies."
+      },
+      "relatedDomainIds": [
+        "D02",
+        "D18",
+        "D23"
+      ]
+    },
+    {
+      "domainId": "D20",
+      "revision": "0.1.0",
+      "summary": "History builds and revises accounts of the past from surviving traces. Archaeology makes material context central to questions about lives not fully represented in written records.",
+      "territory": [
+        "Chronology, change and historical explanation",
+        "Archives, oral histories and material evidence",
+        "Regional histories, archaeology and public memory"
+      ],
+      "questions": [
+        "Why did this trace survive, and what is missing?",
+        "How could another source change the interpretation?"
+      ],
+      "waysToExplore": [
+        "Compare accounts with their creators, dates and audiences.",
+        "Separate a surviving object from its reconstruction or later interpretation.",
+        "Test a causal account against chronology and alternative explanations."
+      ],
+      "boundaries": [
+        "A source-comparison pilot is a limited case. The AHA framework is not a complete world-history or archaeological field curriculum."
+      ],
+      "representationGaps": {
+        "place": "Regional histories and accounts excluded from institutional archives need explicit research.",
+        "language": "Source languages, scripts and translation histories must remain visible.",
+        "practice": "Excavation, oral-history collection and archival handling require their own ethics and practical training."
+      },
+      "sourceIds": [
+        "orientation-aha-history"
+      ],
+      "nextStep": {
+        "sourceId": "orientation-aha-history",
+        "task": "Read the AHA core competencies and choose one way an interpretation should change when evidence conflicts.",
+        "preparation": "No prerequisite for the framework; individual sources need their own historical context."
+      },
+      "relatedDomainIds": [
+        "D16",
+        "D24",
+        "D28"
+      ]
+    },
+    {
+      "domainId": "D21",
+      "revision": "0.1.0",
+      "summary": "Philosophy examines concepts, reasons and the commitments behind a position. It includes sustained disagreement over knowledge, reality, value and how to live.",
+      "territory": [
+        "Knowledge, reasoning and metaphysics",
+        "Ethics, aesthetics and political philosophy",
+        "Textual traditions and comparative philosophical inquiry"
+      ],
+      "questions": [
+        "Which premise carries the conclusion?",
+        "What would a serious objection require the argument to change?"
+      ],
+      "waysToExplore": [
+        "Reconstruct a position before criticizing it.",
+        "Separate validity, truth and interpretive adequacy.",
+        "Compare arguments while preserving their historical and conceptual context."
+      ],
+      "boundaries": [
+        "An argument editor cannot compute moral truth. One analytic course and one cross-text pilot do not represent every philosophical tradition."
+      ],
+      "representationGaps": {
+        "place": "African, Asian, Indigenous, Islamic and other traditions need specific sources, not a token universal comparison.",
+        "language": "Key concepts and translations need textual and linguistic review.",
+        "practice": "Dialogue and careful revision remain distinct from checking boxes in an argument outline."
+      },
+      "sourceIds": [
+        "orientation-mit-philosophy"
+      ],
+      "nextStep": {
+        "sourceId": "orientation-mit-philosophy",
+        "task": "Read the philosophy course description and choose a question; state one premise you would need to defend before drawing a conclusion.",
+        "preparation": "The linked introductory course lists no prerequisites."
+      },
+      "relatedDomainIds": [
+        "D01",
+        "D16",
+        "D22"
+      ]
+    },
+    {
+      "domainId": "D22",
+      "revision": "0.1.0",
+      "summary": "Religion and worldview inquiry studies texts, practices, institutions and lived commitments in context. It distinguishes a community’s normative claims from generalizations about everyone within a tradition.",
+      "territory": [
+        "Texts, interpretation and theology in context",
+        "Ritual, material culture and lived practice",
+        "Historical change, diversity and secular worldviews"
+      ],
+      "questions": [
+        "Which community, place and period does this account describe?",
+        "Is the claim devotional, historical, interpretive or comparative?"
+      ],
+      "waysToExplore": [
+        "Compare interpretations without flattening their differences.",
+        "Read an object or practice alongside its historical setting.",
+        "Trace who makes a normative claim and who contests it."
+      ],
+      "boundaries": [
+        "The Harvard principles offer a nonsectarian study approach, not a theological ruling or permission to represent a tradition."
+      ],
+      "representationGaps": {
+        "place": "Local communities and less-documented traditions need participation and situated sources.",
+        "language": "Scriptural, liturgical and everyday language can carry different meanings and authority.",
+        "practice": "Observation does not grant access to restricted or sacred practices."
+      },
+      "sourceIds": [
+        "orientation-harvard-religion"
+      ],
+      "nextStep": {
+        "sourceId": "orientation-harvard-religion",
+        "task": "Read the Harvard distinctions and identify the missing context in a broad claim about a religious group.",
+        "preparation": "No prerequisite for the principles page; particular traditions need contextual study."
+      },
+      "relatedDomainIds": [
+        "D17",
+        "D20",
+        "D21"
+      ]
+    },
+    {
+      "domainId": "D23",
+      "revision": "0.1.0",
+      "summary": "Language inquiry studies how people structure and use meaning. It includes language change, variation, acquisition, communication and the relationships between languages and their communities.",
+      "territory": [
+        "Sounds and signs, words, grammar and meaning",
+        "Use, variation, change and acquisition",
+        "Translation, rhetoric, documentation and language learning"
+      ],
+      "questions": [
+        "What pattern is supported by the examples, and what data are missing?",
+        "How does context change the interpretation of an utterance?"
+      ],
+      "waysToExplore": [
+        "Compare forms while keeping their meanings and contexts visible.",
+        "Test a proposed rule against counterexamples.",
+        "Trace what a translation changes, preserves or leaves ambiguous."
+      ],
+      "boundaries": [
+        "The linked syllabus is one theoretical entrance. A description of a language is not a ranking of its speakers or a language-learning course."
+      ],
+      "representationGaps": {
+        "place": "Endangered and minoritized languages need community-led priorities and appropriate access.",
+        "language": "Signed languages and multilingual practice need dedicated sources and qualified review.",
+        "practice": "Elicitation, conversation and documentation require consent and actual language competence."
+      },
+      "sourceIds": [
+        "orientation-mit-linguistics"
+      ],
+      "nextStep": {
+        "sourceId": "orientation-mit-linguistics",
+        "task": "Read the linguistics course description and separate a question about structure from one about acquisition or language change.",
+        "preparation": "The linked introductory course lists no prerequisites."
+      },
+      "relatedDomainIds": [
+        "D17",
+        "D19",
+        "D24"
+      ]
+    },
+    {
+      "domainId": "D24",
+      "revision": "0.1.0",
+      "summary": "Literary inquiry follows how words, forms and storytelling invite and resist interpretation. A defensible reading accounts for textual detail and the history of the text being read.",
+      "territory": [
+        "Poetry, drama, prose and oral narrative",
+        "Literary history, criticism and theory",
+        "Textual witnesses, editions, translation and philology"
+      ],
+      "questions": [
+        "Which words or formal choices support this reading?",
+        "How does another edition, translation or interpretive lens alter it?"
+      ],
+      "waysToExplore": [
+        "Annotate a bounded passage and explain the evidence for a reading.",
+        "Compare interpretive approaches and their blind spots.",
+        "Trace a text’s witness, editor and translator before treating it as an original."
+      ],
+      "boundaries": [
+        "The course foregrounds selected twentieth-century theory; the local haiku comparison is also bounded. Neither is a world-literature survey."
+      ],
+      "representationGaps": {
+        "place": "Oral, regional and diasporic traditions need more than a translated anthology entry.",
+        "language": "Original-language and textual-scholarship review remain distinct from English comparison.",
+        "practice": "Storytelling, performance and editorial practice need their own evidence and permissions."
+      },
+      "sourceIds": [
+        "orientation-mit-literary"
+      ],
+      "nextStep": {
+        "sourceId": "orientation-mit-literary",
+        "task": "Read the literary-theory overview and choose an interpretive lens; name one question it helps ask and one it may obscure.",
+        "preparation": "The linked course lists no prerequisites, but its theoretical readings may be demanding."
+      },
+      "relatedDomainIds": [
+        "D20",
+        "D23",
+        "D27"
+      ]
+    },
+    {
+      "domainId": "D25",
+      "revision": "0.1.0",
+      "summary": "Visual arts and design connect material, form, purpose and interpretation. Cultural-heritage inquiry also asks how objects are preserved, attributed, collected and encountered.",
+      "territory": [
+        "Drawing, painting, sculpture, photography and visual media",
+        "Design, materials and processes",
+        "Art histories, museums, conservation and heritage"
+      ],
+      "questions": [
+        "What is directly visible, and what requires contextual evidence?",
+        "How do making, ownership and display affect an object’s meaning?"
+      ],
+      "waysToExplore": [
+        "Describe formal features before assigning an interpretation.",
+        "Compare materials and design choices in context.",
+        "Trace provenance separately from a museum label or reconstruction."
+      ],
+      "boundaries": [
+        "Formal analysis is one method, not a universal code of emotional meanings. This page does not reproduce or clear rights to artworks."
+      ],
+      "representationGaps": {
+        "place": "Collections and canons require attention to absent makers, places and acquisition histories.",
+        "language": "Object names and artistic categories need local-language and historical context.",
+        "practice": "Making and conservation involve material expertise beyond looking at images."
+      },
+      "sourceIds": [
+        "orientation-getty-formal"
+      ],
+      "nextStep": {
+        "sourceId": "orientation-getty-formal",
+        "task": "Read the Getty element index and choose a familiar work you can lawfully view; distinguish description from an interpretation needing more evidence.",
+        "preparation": "No art-history background is needed for the introductory vocabulary."
+      },
+      "relatedDomainIds": [
+        "D12",
+        "D20",
+        "D29"
+      ]
+    },
+    {
+      "domainId": "D26",
+      "revision": "0.1.0",
+      "summary": "Music and sound inquiry joins listening, structure, making and cultural practice. Interpretation includes choices that a score or numerical description may leave open.",
+      "territory": [
+        "Rhythm, pitch, timbre and musical organization",
+        "Listening, performance, composition and recording",
+        "Musical histories, instruments and social contexts"
+      ],
+      "questions": [
+        "Which audible choice changed, and what did you actually hear?",
+        "Which convention makes this interpretation meaningful in its setting?"
+      ],
+      "waysToExplore": [
+        "Compare timing and articulation while holding other choices fixed.",
+        "Relate a description or score to a listening experience.",
+        "Trace a recording’s performers, production and context."
+      ],
+      "boundaries": [
+        "The Carnegie lesson is an orchestral-school perspective. Generated audio does not demonstrate human performance or universal emotional effects."
+      ],
+      "representationGaps": {
+        "place": "Musical systems and listening practices beyond the present repertoire need situated work.",
+        "language": "Terminology, oral transmission and notation practices differ across traditions.",
+        "practice": "Performer, listener and access observations remain open for the performance pilot."
+      },
+      "sourceIds": [
+        "orientation-carnegie-expression-overview"
+      ],
+      "nextStep": {
+        "sourceId": "orientation-carnegie-expression-overview",
+        "task": "Read the Carnegie definitions of tempo, dynamics and articulation; distinguish the parameter you can describe from the response you would need to observe.",
+        "preparation": "No notation knowledge is needed for the opening definitions; the linked media have separate access and rights conditions."
+      },
+      "relatedDomainIds": [
+        "D04",
+        "D23",
+        "D27"
+      ]
+    },
+    {
+      "domainId": "D27",
+      "revision": "0.1.0",
+      "summary": "Performance inquiry studies actions unfolding for and with audiences. Theatre, dance and film each combine interpretation with material, temporal and collaborative choices.",
+      "territory": [
+        "Acting, movement, choreography and dramaturgy",
+        "Staging, cinematography, editing and production",
+        "Performance traditions, audiences and histories"
+      ],
+      "questions": [
+        "How does an enacted or edited choice change a reading?",
+        "Which cultural context is lost when a performance is translated or recorded?"
+      ],
+      "waysToExplore": [
+        "Compare a text with a documented staging choice.",
+        "Annotate timing or movement while naming what the record cannot show.",
+        "Trace the roles and permissions behind a production."
+      ],
+      "boundaries": [
+        "A selected drama calendar offers one entrance, not mastery of theatre, dance or film. A recording does not reproduce the whole live event."
+      ],
+      "representationGaps": {
+        "place": "Local performance traditions need collaborators and specific histories.",
+        "language": "Translation includes gesture, conventions and audience expectations as well as words.",
+        "practice": "Rehearsal, movement and audience interpretation require real observations."
+      },
+      "sourceIds": [
+        "orientation-mit-drama"
+      ],
+      "nextStep": {
+        "sourceId": "orientation-mit-drama",
+        "task": "Read the drama calendar’s ritual and performance sessions; identify a question about cultural translation that a script alone cannot answer.",
+        "preparation": "The calendar is readable without prior training; performing its works requires preparation and appropriate rights."
+      },
+      "relatedDomainIds": [
+        "D24",
+        "D25",
+        "D26"
+      ]
+    },
+    {
+      "domainId": "D28",
+      "revision": "0.1.0",
+      "summary": "Information work shapes which records can be found, trusted, interpreted and preserved. Journalism, archives and libraries share questions about evidence while using different practices.",
+      "territory": [
+        "Journalism, editing, publishing and media systems",
+        "Libraries, archives, records and preservation",
+        "Information literacy, search and source evaluation"
+      ],
+      "questions": [
+        "Who created this information, through which process and for which audience?",
+        "What does the search system make easy or difficult to find?"
+      ],
+      "waysToExplore": [
+        "Trace a claim to the record that supports it.",
+        "Compare search strategies and inspect what each omits.",
+        "Distinguish source authority from popularity, format or availability."
+      ],
+      "boundaries": [
+        "The ACRL introduction is a higher-education framework, not a credibility score for every source or permission to republish records."
+      ],
+      "representationGaps": {
+        "place": "Institutional archives and media systems can omit communities and places.",
+        "language": "Search vocabulary and language availability shape what appears discoverable.",
+        "practice": "Reporting, preservation and records access need their own ethical and procedural cases."
+      },
+      "sourceIds": [
+        "orientation-acrl-literacy"
+      ],
+      "nextStep": {
+        "sourceId": "orientation-acrl-literacy",
+        "task": "Read the ACRL frame list and select two frames that expose a weakness in a familiar information search.",
+        "preparation": "No prerequisite for the introduction; the detailed frames and professional practices require further reading."
+      },
+      "relatedDomainIds": [
+        "D03",
+        "D16",
+        "D20"
+      ]
+    },
+    {
+      "domainId": "D29",
+      "revision": "0.1.0",
+      "summary": "Practical knowledge is developed through making, maintaining and caring in particular conditions. Explanations are useful when they make choices and observable criteria clear.",
+      "territory": [
+        "Textiles, wood, ceramics and other material crafts",
+        "Repair, maintenance and trades",
+        "Cooking, domestic work and everyday practices"
+      ],
+      "questions": [
+        "What can be specified in advance, and what must be judged while doing?",
+        "Which material or contextual difference changes the result?"
+      ],
+      "waysToExplore": [
+        "Describe a sequence and the evidence that each stage succeeded.",
+        "Compare a planned structure with an inspected outcome.",
+        "Diagnose a mismatch without pretending a screen model proves skill."
+      ],
+      "boundaries": [
+        "The ARTEX source concerns archaeological textiles, especially ancient Greece. It does not represent all craft traditions or verify physical making."
+      ],
+      "representationGaps": {
+        "place": "Local makers, domestic workers and trade communities need situated representation.",
+        "language": "Tacit vocabulary, demonstrations and names of tools need language-specific work.",
+        "practice": "The paper-weave pilot still needs physical reproduction and practitioner/access/learner evidence."
+      },
+      "sourceIds": [
+        "orientation-artex-techniques-overview"
+      ],
+      "nextStep": {
+        "sourceId": "orientation-artex-techniques-overview",
+        "task": "Read the ARTEX discussion and distinguish weave structure from material and production choices that can change appearance.",
+        "preparation": "No practical activity is required to read this account; actual making has its own materials and supervision needs."
+      },
+      "relatedDomainIds": [
+        "D05",
+        "D10",
+        "D25"
+      ]
+    },
+    {
+      "domainId": "D30",
+      "revision": "0.1.0",
+      "summary": "Play and recreation join rules, bodies, environments and shared meanings. Sport and movement can be studied through participation, history, institutions and access.",
+      "territory": [
+        "Games, rules, skill and strategy",
+        "Sport, movement and physical education",
+        "Outdoor recreation, leisure, tourism and inclusion"
+      ],
+      "questions": [
+        "How do rules and access conditions change who can participate?",
+        "What evidence distinguishes an intended benefit from an observed one?"
+      ],
+      "waysToExplore": [
+        "Compare rule variants and the choices they allow.",
+        "Inspect a participation barrier without assuming one body or ability.",
+        "Read a recreation practice in its environmental and cultural setting."
+      ],
+      "boundaries": [
+        "The UNESCO overview offers policy principles, not exercise prescriptions, clinical benefit estimates or sport-specific coaching."
+      ],
+      "representationGaps": {
+        "place": "Local games, recreation traditions and access to space need their own sources.",
+        "language": "Rules, coaching and participation information need appropriate language and communication formats.",
+        "practice": "Skill and movement require qualified instruction where relevant and real observation, not simulated completion."
+      },
+      "sourceIds": [
+        "orientation-unesco-sport"
+      ],
+      "nextStep": {
+        "sourceId": "orientation-unesco-sport",
+        "task": "Read the Charter overview and identify one access condition and one evaluation question for a sport or recreational activity.",
+        "preparation": "No physical activity or specialist background is required to read the overview."
+      },
+      "relatedDomainIds": [
+        "D09",
+        "D17",
+        "D27"
+      ]
+    }
+  ]
+}

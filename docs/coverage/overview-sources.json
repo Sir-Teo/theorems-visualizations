@@ -1,0 +1,604 @@
+{
+  "schemaVersion": 1,
+  "checkedOn": "2026-10-22",
+  "purpose": "Source receipts for orientation navigation; separate from pilot and classification acceptance. No full-syllabus audit is claimed.",
+  "sources": [
+    {
+      "id": "orientation-mit-analysis",
+      "domainIds": [
+        "D01"
+      ],
+      "title": "MIT OCW: Real Analysis syllabus",
+      "publisher": "MIT; Casey Rodriguez",
+      "edition": "Fall 2020",
+      "url": "https://ocw.mit.edu/courses/18-100a-real-analysis-fall-2020/pages/syllabus/",
+      "language": "en",
+      "access": {
+        "status": "body-read",
+        "checkedOn": "2026-10-22",
+        "locator": "Prerequisites, Course Description and Homework"
+      },
+      "summary": "The course uses real-number analysis to develop proof construction; it lists multivariable calculus as a prerequisite.",
+      "limitations": "One university analysis course, not a beginner arithmetic route or a survey of every mathematical tradition.",
+      "reuse": "Navigation citation and original summary only; no source passage, image, recording, score or assessment is republished. Linked material retains its own terms."
+    },
+    {
+      "id": "orientation-nist-eda",
+      "domainIds": [
+        "D02"
+      ],
+      "title": "NIST/SEMATECH: What is EDA?",
+      "publisher": "NIST/SEMATECH",
+      "edition": "e-Handbook section 1.1.1; inspected 2026-10-22",
+      "url": "https://www.itl.nist.gov/div898/handbook/eda/section1/eda11.htm",
+      "language": "en",
+      "access": {
+        "status": "body-read",
+        "checkedOn": "2026-10-22",
+        "locator": "Approach, Focus, Philosophy and Techniques"
+      },
+      "summary": "Exploratory data analysis examines structure, anomalies and assumptions using graphical and quantitative techniques.",
+      "limitations": "Engineering-oriented introduction; it does not cover the whole of qualitative, survey or causal methodology.",
+      "reuse": "Navigation citation and original summary only; no source passage, image, recording, score or assessment is republished. Linked material retains its own terms."
+    },
+    {
+      "id": "orientation-cs2023-areas",
+      "domainIds": [
+        "D03"
+      ],
+      "title": "CS2023 Knowledge Areas",
+      "publisher": "ACM / IEEE-CS / AAAI joint curriculum project",
+      "edition": "CS2023 knowledge-area index",
+      "url": "https://csed.acm.org/knowledge-areas/",
+      "language": "en",
+      "access": {
+        "status": "body-read",
+        "checkedOn": "2026-10-22",
+        "locator": "Complete 17-area list"
+      },
+      "summary": "The curriculum places systems, software, data, human-computer interaction and societal responsibilities alongside algorithms.",
+      "limitations": "The knowledge-area index was read; linked area syllabi and the full report were not audited here.",
+      "reuse": "Navigation citation and original summary only; no source passage, image, recording, score or assessment is republished. Linked material retains its own terms."
+    },
+    {
+      "id": "orientation-openstax-physics",
+      "domainIds": [
+        "D04"
+      ],
+      "title": "University Physics Volume 1: Preface",
+      "publisher": "OpenStax / Rice University",
+      "edition": "Web preface inspected 2026-10-22",
+      "url": "https://openstax.org/books/university-physics-volume-1/pages/preface",
+      "language": "en",
+      "access": {
+        "status": "body-read",
+        "checkedOn": "2026-10-22",
+        "locator": "About University Physics; Coverage and scope; Pedagogical foundation"
+      },
+      "summary": "The three-volume sequence connects measurement and mechanics to waves, thermodynamics, electromagnetism and modern physics.",
+      "limitations": "A calculus-based introductory sequence; the preface is a scope source, not verification of every chapter or an astronomy curriculum.",
+      "reuse": "Navigation citation and original summary only; no source passage, image, recording, score or assessment is republished. Linked material retains its own terms."
+    },
+    {
+      "id": "orientation-acs-coursework",
+      "domainIds": [
+        "D05"
+      ],
+      "title": "ACS bachelor-degree guidelines: Coursework",
+      "publisher": "American Chemical Society",
+      "edition": "2023 guidelines, current coursework page inspected 2026-10-22",
+      "url": "https://www.acs.org/education/policies/acs-approval-program/guidelines/coursework.html",
+      "language": "en",
+      "access": {
+        "status": "body-read",
+        "checkedOn": "2026-10-22",
+        "locator": "Section 5.1; introductory, foundation and in-depth experiences; NME"
+      },
+      "summary": "The guidance separates introductory knowledge, foundational breadth and deeper study, and explicitly includes scale beyond small molecules.",
+      "limitations": "A US chemistry-program framework, not a laboratory procedure, accreditation claim for this atlas or complete materials curriculum.",
+      "reuse": "Navigation citation and original summary only; no source passage, image, recording, score or assessment is republished. Linked material retains its own terms."
+    },
+    {
+      "id": "orientation-noaa-resources",
+      "domainIds": [
+        "D06"
+      ],
+      "title": "NOAA Education: Resource collections",
+      "publisher": "National Oceanic and Atmospheric Administration",
+      "edition": "Portal inspected 2026-10-22",
+      "url": "https://www.noaa.gov/education/resource-collections",
+      "language": "en",
+      "access": {
+        "status": "body-read",
+        "checkedOn": "2026-10-22",
+        "locator": "Ocean and coasts; Weather and atmosphere; Climate; Marine life; Freshwater"
+      },
+      "summary": "The portal offers separate entrances to ocean processes, weather observations, climate monitoring, marine life and watersheds.",
+      "limitations": "The portal descriptions were read, not every linked lesson or dataset; geology and human geography need additional sources.",
+      "reuse": "Navigation citation and original summary only; no source passage, image, recording, score or assessment is republished. Linked material retains its own terms."
+    },
+    {
+      "id": "orientation-openstax-biology",
+      "domainIds": [
+        "D07"
+      ],
+      "title": "Biology 2e: Preface",
+      "publisher": "OpenStax / Rice University",
+      "edition": "Second edition, web preface inspected 2026-10-22",
+      "url": "https://openstax.org/books/biology-2e/pages/preface",
+      "language": "en",
+      "access": {
+        "status": "body-read",
+        "checkedOn": "2026-10-22",
+        "locator": "About Biology 2e; Coverage and scope, units 1–8"
+      },
+      "summary": "The introductory sequence connects chemistry and cells with genetics, evolution, diversity, organism function and ecology.",
+      "limitations": "A science-majors course outline; no claim to have checked every biological explanation or organism group.",
+      "reuse": "Navigation citation and original summary only; no source passage, image, recording, score or assessment is republished. Linked material retains its own terms."
+    },
+    {
+      "id": "orientation-esa-4dee",
+      "domainIds": [
+        "D08"
+      ],
+      "title": "Four-Dimensional Ecology Education: The Framework",
+      "publisher": "Ecological Society of America",
+      "edition": "May 2025 version",
+      "url": "https://esa.org/4dee/framework/",
+      "language": "en",
+      "access": {
+        "status": "body-read",
+        "checkedOn": "2026-10-22",
+        "locator": "Framework introduction; Core Ecological Concepts; explicit TEK limitation"
+      },
+      "summary": "The framework joins ecological concepts, practices, human-environment interactions and cross-cutting themes. It explicitly says traditional ecological knowledge is not included in the current framework.",
+      "limitations": "Use as one curricular perspective. Its stated omission cannot be repaired by relabeling this overview as Indigenous knowledge.",
+      "reuse": "Navigation citation and original summary only; no source passage, image, recording, score or assessment is republished. Linked material retains its own terms."
+    },
+    {
+      "id": "orientation-medlineplus-about",
+      "domainIds": [
+        "D09"
+      ],
+      "title": "Learn about MedlinePlus",
+      "publisher": "US National Library of Medicine / NIH",
+      "edition": "Page last updated 2022-12-05; inspected 2026-10-22",
+      "url": "https://medlineplus.gov/about/general/aboutmedlineplus/",
+      "language": "en",
+      "access": {
+        "status": "body-read",
+        "checkedOn": "2026-10-22",
+        "locator": "Mission and MedlinePlus Features"
+      },
+      "summary": "The service distinguishes health topics, medical tests, genetics and medicines, with English, Spanish and additional language routes.",
+      "limitations": "Consumer-information navigation, not a clinical curriculum, diagnosis, treatment recommendation or verification of linked articles.",
+      "reuse": "Navigation citation and original summary only; no source passage, image, recording, score or assessment is republished. Linked material retains its own terms."
+    },
+    {
+      "id": "orientation-agrovoc-about",
+      "domainIds": [
+        "D10"
+      ],
+      "title": "AGROVOC: About",
+      "publisher": "Food and Agriculture Organization of the United Nations",
+      "edition": "About page dated 2020-06-24; inspected 2026-10-22",
+      "url": "https://www.fao.org/agrovoc/about",
+      "language": "en",
+      "access": {
+        "status": "body-read",
+        "checkedOn": "2026-10-22",
+        "locator": "Overview and concept/term/relationship explanation"
+      },
+      "summary": "AGROVOC organizes food and agriculture concepts across languages, including crops, aquaculture, value chains and forestry.",
+      "limitations": "A vocabulary supports discovery; it does not establish that a farming practice is suitable for a particular place.",
+      "reuse": "Navigation citation and original summary only; no source passage, image, recording, score or assessment is republished. Linked material retains its own terms."
+    },
+    {
+      "id": "orientation-nasa-systems",
+      "domainIds": [
+        "D11"
+      ],
+      "title": "Systems Engineering Handbook: Fundamentals",
+      "publisher": "NASA",
+      "edition": "Online section 2.0 inspected 2026-10-22",
+      "url": "https://www.nasa.gov/reference/2-0-fundamentals-of-systems-engineering/",
+      "language": "en",
+      "access": {
+        "status": "body-read",
+        "checkedOn": "2026-10-22",
+        "locator": "Opening definition and section 2.1 process groups"
+      },
+      "summary": "Systems engineering relates requirements, interfaces, design, realization and technical management across a system life cycle.",
+      "limitations": "NASA systems practice is one engineering lens, not all engineering branches or a substitute for discipline-specific design approval.",
+      "reuse": "Navigation citation and original summary only; no source passage, image, recording, score or assessment is republished. Linked material retains its own terms."
+    },
+    {
+      "id": "orientation-mit-urban",
+      "domainIds": [
+        "D12"
+      ],
+      "title": "Introduction to Urban Design and Development: Syllabus",
+      "publisher": "MIT OCW; Susan Silberberg",
+      "edition": "Spring 2006",
+      "url": "https://ocw.mit.edu/courses/11-001j-introduction-to-urban-design-and-development-spring-2006/pages/syllabus/",
+      "language": "en",
+      "access": {
+        "status": "body-read",
+        "checkedOn": "2026-10-22",
+        "locator": "Course Description"
+      },
+      "summary": "The course connects changing metropolitan form with values, design proposals, field study and collaboration among contending parties.",
+      "limitations": "An American-metropolis course from 2006; other settlement traditions and contemporary local planning rules remain separate research.",
+      "reuse": "Navigation citation and original summary only; no source passage, image, recording, score or assessment is republished. Linked material retains its own terms."
+    },
+    {
+      "id": "orientation-core-micro-guide",
+      "domainIds": [
+        "D13"
+      ],
+      "title": "The Economy 2.0: Microeconomics teaching guides",
+      "publisher": "CORE Econ",
+      "edition": "Online guide inspected 2026-10-22",
+      "url": "https://www.core-econ.org/te2-0-micro-guide/",
+      "language": "en",
+      "access": {
+        "status": "body-read",
+        "checkedOn": "2026-10-22",
+        "locator": "Building blocks and Unit 1 narrative, sections on data and institutions"
+      },
+      "summary": "The guide connects institutions, technology, distribution and environmental context with explicit model building blocks.",
+      "limitations": "Only the stated opening sections were read, not all ten unit guides. This is one introductory approach and no investment recommendation.",
+      "reuse": "Navigation citation and original summary only; no source passage, image, recording, score or assessment is republished. Linked material retains its own terms."
+    },
+    {
+      "id": "orientation-sec-statements",
+      "domainIds": [
+        "D14"
+      ],
+      "title": "Beginners’ Guide to Financial Statements",
+      "publisher": "US Securities and Exchange Commission",
+      "edition": "2007-02-04",
+      "url": "https://www.sec.gov/investor/pubs/begfinstmtguide.htm",
+      "language": "en",
+      "access": {
+        "status": "body-read",
+        "checkedOn": "2026-10-22",
+        "locator": "The Basics; main statement types; Balance Sheets"
+      },
+      "summary": "The guide distinguishes a balance-sheet snapshot from income and cash-flow information over time.",
+      "limitations": "Dated introductory corporate-accounting guidance; not current accounting-standard verification, business advice or a whole organization curriculum.",
+      "reuse": "Navigation citation and original summary only; no source passage, image, recording, score or assessment is republished. Linked material retains its own terms."
+    },
+    {
+      "id": "orientation-mit-politics",
+      "domainIds": [
+        "D15"
+      ],
+      "title": "Introduction to Comparative Politics: Syllabus",
+      "publisher": "MIT OCW; Chappell Lawson",
+      "edition": "Fall 2022",
+      "url": "https://ocw.mit.edu/courses/17-50-introduction-to-comparative-politics-fall-2022/pages/syllabus/",
+      "language": "en",
+      "access": {
+        "status": "body-read",
+        "checkedOn": "2026-10-22",
+        "locator": "Class Objectives and Class Participation"
+      },
+      "summary": "The course asks how governance is justified and evaluated, using analytical reasoning, empirical evidence and critique of arguments.",
+      "limitations": "One course perspective; it supplies no universal institutional ranking or current country assessment.",
+      "reuse": "Navigation citation and original summary only; no source passage, image, recording, score or assessment is republished. Linked material retains its own terms."
+    },
+    {
+      "id": "orientation-lii-authority",
+      "domainIds": [
+        "D16"
+      ],
+      "title": "Wex: Primary authority",
+      "publisher": "Cornell Legal Information Institute",
+      "edition": "Undated entry, inspected 2026-10-22",
+      "url": "https://www.law.cornell.edu/wex/primary_authority",
+      "language": "en",
+      "access": {
+        "status": "body-read",
+        "checkedOn": "2026-10-22",
+        "locator": "Definition and contrast link"
+      },
+      "summary": "The entry identifies primary legal sources by the official rule-making or interpretive capacity of their issuing body and jurisdiction.",
+      "limitations": "US legal-reference terminology only. Wex is explanatory material, not itself controlling law; applicability needs jurisdiction, date and the relevant source.",
+      "reuse": "Navigation citation and original summary only; no source passage, image, recording, score or assessment is republished. Linked material retains its own terms."
+    },
+    {
+      "id": "orientation-aaa-anthropology",
+      "domainIds": [
+        "D17"
+      ],
+      "title": "What is Anthropology?",
+      "publisher": "American Anthropological Association",
+      "edition": "Page inspected 2026-10-22",
+      "url": "https://americananthro.org/practice-teach/what-is-anthropology/",
+      "language": "en",
+      "access": {
+        "status": "body-read",
+        "checkedOn": "2026-10-22",
+        "locator": "Opening account and US four-field distinction"
+      },
+      "summary": "The association connects biological, archaeological, cultural and linguistic approaches while explicitly locating the four-field model in the United States.",
+      "limitations": "A professional-association introduction; not a universal disciplinary structure, a sociology syllabus or authority to represent a community.",
+      "reuse": "Navigation citation and original summary only; no source passage, image, recording, score or assessment is republished. Linked material retains its own terms."
+    },
+    {
+      "id": "orientation-apa-psychology",
+      "domainIds": [
+        "D18"
+      ],
+      "title": "Science of Psychology",
+      "publisher": "American Psychological Association",
+      "edition": "Created 2013; current page inspected 2026-10-22",
+      "url": "https://www.apa.org/education-career/guide/science",
+      "language": "en",
+      "access": {
+        "status": "body-read",
+        "checkedOn": "2026-10-22",
+        "locator": "The Go-To Science; Science in Action; Subfields"
+      },
+      "summary": "The page describes empirical inquiry into behavior and its relation to brains and environments, with basic and applied subfields.",
+      "limitations": "A professional-association overview, not confirmation of every advertised application or a clinical assessment tool.",
+      "reuse": "Navigation citation and original summary only; no source passage, image, recording, score or assessment is republished. Linked material retains its own terms."
+    },
+    {
+      "id": "orientation-nas-learning",
+      "domainIds": [
+        "D19"
+      ],
+      "title": "How People Learn II: Summary",
+      "publisher": "National Academies of Sciences, Engineering, and Medicine",
+      "edition": "2018; DOI 10.17226/24783",
+      "url": "https://www.nationalacademies.org/read/24783/chapter/2",
+      "language": "en",
+      "access": {
+        "status": "body-read",
+        "checkedOn": "2026-10-22",
+        "locator": "Summary printed pp. 1–3: remit, research methods and cultural influences"
+      },
+      "summary": "The report brings laboratory, classroom and adult-learning research into a view of learning shaped by developmental and cultural context.",
+      "limitations": "Only the opening summary pages were inspected here. The atlas has not demonstrated learning gains or validated a teaching intervention.",
+      "reuse": "Navigation citation and original summary only; no source passage, image, recording, score or assessment is republished. Linked material retains its own terms."
+    },
+    {
+      "id": "orientation-aha-history",
+      "domainIds": [
+        "D20"
+      ],
+      "title": "History Discipline Core",
+      "publisher": "American Historical Association; AHA Tuning Project",
+      "edition": "Revised 2016-12-02",
+      "url": "https://www.historians.org/resource/history-discipline-core/",
+      "language": "en",
+      "access": {
+        "status": "body-read",
+        "checkedOn": "2026-10-22",
+        "locator": "Discipline Profile and Core Concepts; Core Competencies and Learning Outcomes"
+      },
+      "summary": "The framework treats history as evidence-based interpretation, attentive to context, competing accounts, revision and incomplete records.",
+      "limitations": "A higher-education framework, not a world-history chronology or archaeological field protocol.",
+      "reuse": "Navigation citation and original summary only; no source passage, image, recording, score or assessment is republished. Linked material retains its own terms."
+    },
+    {
+      "id": "orientation-mit-philosophy",
+      "domainIds": [
+        "D21"
+      ],
+      "title": "Problems of Philosophy: Syllabus",
+      "publisher": "MIT OCW; Miriam Schoenfield",
+      "edition": "Fall 2019",
+      "url": "https://ocw.mit.edu/courses/24-00-problems-of-philosophy-fall-2019/pages/syllabus/",
+      "language": "en",
+      "access": {
+        "status": "body-read",
+        "checkedOn": "2026-10-22",
+        "locator": "Course Description and Requirements"
+      },
+      "summary": "The course pairs questions about mind, agency, value and identity with practice in critical argument and revised writing.",
+      "limitations": "One analytic introductory course; it is not a representation of all philosophical traditions or a resolution of its questions.",
+      "reuse": "Navigation citation and original summary only; no source passage, image, recording, score or assessment is republished. Linked material retains its own terms."
+    },
+    {
+      "id": "orientation-harvard-religion",
+      "domainIds": [
+        "D22"
+      ],
+      "title": "Core Principles",
+      "publisher": "Harvard Divinity School, Religion and Public Life",
+      "edition": "Page inspected 2026-10-22",
+      "url": "https://rpl.hds.harvard.edu/what-we-do/our-approach/core-principles",
+      "language": "en",
+      "access": {
+        "status": "body-read",
+        "checkedOn": "2026-10-22",
+        "locator": "Differentiations; three central assertions; diversity and change"
+      },
+      "summary": "The approach distinguishes devotional claims from the contextual study of religion and emphasizes diversity, historical change and cultural embedding.",
+      "limitations": "A religious-studies approach, not a theological ruling or authorization to speak for any tradition.",
+      "reuse": "Navigation citation and original summary only; no source passage, image, recording, score or assessment is republished. Linked material retains its own terms."
+    },
+    {
+      "id": "orientation-mit-linguistics",
+      "domainIds": [
+        "D23"
+      ],
+      "title": "Introduction to Linguistics: Syllabus",
+      "publisher": "MIT OCW; Norvin W. Richards",
+      "edition": "Spring 2022",
+      "url": "https://ocw.mit.edu/courses/24-900-introduction-to-linguistics-spring-2022/pages/syllabus/",
+      "language": "en",
+      "access": {
+        "status": "body-read",
+        "checkedOn": "2026-10-22",
+        "locator": "Course Description and Prerequisites"
+      },
+      "summary": "The course studies language structure and includes acquisition, historical change and endangerment as further questions.",
+      "limitations": "One introductory theoretical approach; it does not replace community-led documentation, sign-language expertise or language learning.",
+      "reuse": "Navigation citation and original summary only; no source passage, image, recording, score or assessment is republished. Linked material retains its own terms."
+    },
+    {
+      "id": "orientation-mit-literary",
+      "domainIds": [
+        "D24"
+      ],
+      "title": "Introduction to Literary Theory: Syllabus",
+      "publisher": "MIT OCW; Shankar Raman",
+      "edition": "Fall 2014",
+      "url": "https://ocw.mit.edu/courses/21l-451-introduction-to-literary-theory-fall-2014/pages/syllabus/",
+      "language": "en",
+      "access": {
+        "status": "body-read",
+        "checkedOn": "2026-10-22",
+        "locator": "Course Overview, Assignments and Calendar"
+      },
+      "summary": "The course compares interpretive approaches, asks about their limits and uses texts and films as cases for examining theory.",
+      "limitations": "A twentieth-century theory course with particular European and US emphases, not a universal literary history or permission to reproduce assigned works.",
+      "reuse": "Navigation citation and original summary only; no source passage, image, recording, score or assessment is republished. Linked material retains its own terms."
+    },
+    {
+      "id": "orientation-getty-formal",
+      "domainIds": [
+        "D25"
+      ],
+      "title": "Understanding Formal Analysis",
+      "publisher": "J. Paul Getty Museum, Education",
+      "edition": "Page inspected 2026-10-22",
+      "url": "https://www.getty.edu/education/teachers/building_lessons/formal_analysis.html",
+      "language": "en",
+      "access": {
+        "status": "body-read",
+        "checkedOn": "2026-10-22",
+        "locator": "Elements of Art introduction and element index"
+      },
+      "summary": "The guide supplies a vocabulary for describing line, shape, space, color and texture in works of art.",
+      "limitations": "Formal description is one lens; it cannot establish provenance, cultural significance or universal emotional responses to forms. Images are not reused.",
+      "reuse": "Navigation citation and original summary only; no source passage, image, recording, score or assessment is republished. Linked material retains its own terms."
+    },
+    {
+      "id": "orientation-carnegie-expression-overview",
+      "domainIds": [
+        "D26"
+      ],
+      "title": "Explore Expressive Qualities in Music and Movement",
+      "publisher": "Carnegie Hall, Link Up",
+      "edition": "Current curriculum page inspected 2026-10-22",
+      "url": "https://www.carnegiehall.org/Education/Programs/Link-Up/New-York-City/Explore-Expressive-Qualities-in-Music-and-Movement",
+      "language": "en",
+      "access": {
+        "status": "body-read",
+        "checkedOn": "2026-10-22",
+        "locator": "Aim, Summary, tempo/dynamics/articulation definitions and listening prompts"
+      },
+      "summary": "The lesson links tempo, dynamics and articulation to interpretive choices in listening and performance.",
+      "limitations": "A particular school/orchestral curriculum, not all musical systems. Its recordings, scores and performer rights are not transferred to this atlas.",
+      "reuse": "Navigation citation and original summary only; no source passage, image, recording, score or assessment is republished. Linked material retains its own terms."
+    },
+    {
+      "id": "orientation-mit-drama",
+      "domainIds": [
+        "D27"
+      ],
+      "title": "Introduction to Drama: Calendar",
+      "publisher": "MIT OCW; Diana Henderson",
+      "edition": "Fall 2004",
+      "url": "https://ocw.mit.edu/courses/21l-005-introduction-to-drama-fall-2004/pages/calendar/",
+      "language": "en",
+      "access": {
+        "status": "body-read",
+        "checkedOn": "2026-10-22",
+        "locator": "Sessions 1–18; Intensive Drama, Ritual and Drama, Extensive Drama"
+      },
+      "summary": "The course connects close reading, historical context and performance, with explicit attention to cultural translation and differences between media.",
+      "limitations": "A selected drama course, not a complete curriculum in dance, film or world performance; no performance recording is reused.",
+      "reuse": "Navigation citation and original summary only; no source passage, image, recording, score or assessment is republished. Linked material retains its own terms."
+    },
+    {
+      "id": "orientation-acrl-literacy",
+      "domainIds": [
+        "D28"
+      ],
+      "title": "Framework for Information Literacy for Higher Education",
+      "publisher": "Association of College and Research Libraries",
+      "edition": "Adopted 2016; revisions approved 2026-09-02",
+      "url": "https://www.ala.org/acrl/standards/ilframework",
+      "language": "en",
+      "access": {
+        "status": "body-read",
+        "checkedOn": "2026-10-22",
+        "locator": "Version header, frame list and Introduction"
+      },
+      "summary": "The framework connects inquiry with contextual authority, information production and value, scholarly conversation and strategic searching.",
+      "limitations": "Only the introduction and frame list were inspected here. This is a higher-education framework, not an audit of a news source or archive.",
+      "reuse": "Navigation citation and original summary only; no source passage, image, recording, score or assessment is republished. Linked material retains its own terms."
+    },
+    {
+      "id": "orientation-artex-techniques-overview",
+      "domainIds": [
+        "D29"
+      ],
+      "title": "Production techniques",
+      "publisher": "ARTEX, Hellenic Centre for Research and Conservation of Archaeological Textiles",
+      "edition": "Page inspected 2026-10-22",
+      "url": "https://artextiles.org/en/node/185",
+      "language": "en",
+      "access": {
+        "status": "body-read",
+        "checkedOn": "2026-10-22",
+        "locator": "Warp weighted loom section and distinctions among production techniques"
+      },
+      "summary": "The account distinguishes weave structure from thread, material and other production choices in an archaeological textile context.",
+      "limitations": "Primarily ancient Greek textile interpretation; it does not represent all crafts, verify a reader’s practical skill or grant rights to images.",
+      "reuse": "Navigation citation and original summary only; no source passage, image, recording, score or assessment is republished. Linked material retains its own terms."
+    },
+    {
+      "id": "orientation-unesco-sport",
+      "domainIds": [
+        "D30"
+      ],
+      "title": "International Charter of Physical Education, Physical Activity and Sport",
+      "publisher": "UNESCO",
+      "edition": "2015 charter; overview updated 2026-01-19",
+      "url": "https://www.unesco.org/en/sport-and-anti-doping/international-charter-sport",
+      "language": "en",
+      "access": {
+        "status": "body-read",
+        "checkedOn": "2026-10-22",
+        "locator": "Overview, revision context and The Charter in a glimpse"
+      },
+      "summary": "The overview frames sport through inclusion, evidence, qualified personnel, suitable facilities and ethical responsibilities.",
+      "limitations": "The overview is policy guidance, not a training prescription, clinical evidence of benefit or every sport’s rules. Linked charter PDFs were not inspected.",
+      "reuse": "Navigation citation and original summary only; no source passage, image, recording, score or assessment is republished. Linked material retains its own terms."
+    }
+  ],
+  "unavailableCandidates": [
+    {
+      "url": "https://www.who.int/health-topics/integrated-people-centered-care",
+      "result": "fetch timeout",
+      "action": "No body claim or retry; MedlinePlus supplies a different consumer-navigation source."
+    },
+    {
+      "url": "https://unhabitat.org/topic/urban-planning-and-design",
+      "result": "403 Forbidden",
+      "action": "Stopped; no mirror or body recovery. A separate MIT urban-design syllabus supplies a bounded course perspective."
+    },
+    {
+      "url": "https://books.core-econ.org/the-economy/microeconomics/index.html",
+      "result": "No readable body lines",
+      "action": "No body claim; a separately inspected teaching-guide page supplies the stated limited scope."
+    },
+    {
+      "url": "https://ocw.mit.edu/courses/21m-051-fundamentals-of-music-fall-2011/pages/syllabus/",
+      "result": "Unavailable via web tool",
+      "action": "No body claim; the separately inspected Carnegie Hall curriculum supplies a limited expressive-music lens."
+    },
+    {
+      "url": "https://www.vam.ac.uk/articles/what-is-craft",
+      "result": "404 Not Found",
+      "action": "No body claim; use the separately inspected ARTEX textile account with its narrow archaeological context."
+    }
+  ]
+}

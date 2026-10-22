@@ -10,6 +10,8 @@ P03 resolves the Legge/Eno English locator crosswalk, retains textual/theologica
 
 Registry 0.3.0 completes an exact independent AI review of the 79 previously flagged crosswalk entries: 68 ISCED editorial routes resolved, six FORD and five heritage entries retained under review. Overall dispositions are 205 mapped, 11 review and one excluded. See the [classification checkpoint](coverage/crosswalk-review.md); this changes navigation planning, not lesson or production counts.
 
+Thirty [domain orientations](coverage/overviews.md) now have scoped institutional reading receipts, original questions/methods/gaps, concrete next-reading tasks and exact independent AI source-content/engineering review. They render locally with existing collection and pilot links. This advances U3 navigation without adding lessons or production coverage; public routes remain open.
+
 ## Remaining execution queue
 
 | Stage | Concrete next work | Evidence required before marking it delivered |
@@ -18,7 +20,7 @@ Registry 0.3.0 completes an exact independent AI review of the 79 previously fla
 | U2 next method batch | P07 plain weave and P08 performance: digital models, original schematics/generated audio and engineering review delivered; execute real physical/performer/access/learning packets and resolve public-release terms | See studio checkpoint for exact AI/engineering scope; real physical reproduction, practitioner/performer and learner/access observations plus release decision remain open |
 | U2 professions | P04 legal case and P06 breathing/care: resolve documented source/snapshot conflicts, build bounded cases and professional review packets | Qualified legal/clinical approval for claims requiring it; AI desk review does not impersonate those roles |
 | U3 production integration | Opt-in loading, evidence/review UI, public static routes and aliases, explicit withdrawal and note migration | Latest accepted production base; legacy IDs, dependencies, links, saved states and embeds preserved; draft exclusion; release-specific rights |
-| U3 domain orientation | Research and author 30 scoped overviews | Sources, exclusions, essential questions, place/language/practice gaps and a real next step per domain |
+| U3 domain orientation | Delivered locally: 30 researched and independently AI-reviewed overviews; broaden entry routes and integrate public navigation | Preserve exact review receipts, scope and gaps; additional situated/non-English routes need their own research; public integration remains separate |
 | U3 sequences | Research 16 follow-up lessons to extend eight pilots to 24 lessons | Each source and task researched before authoring, exact independent acceptance and no placeholder lesson targets |
 | U3 journeys and dashboard | Water/city; woven cloth; account/evidence; canonical coverage/review dashboard | All claimed lesson targets exist; evidence versus analogy distinguished; unique IDs and denominator reconciliation |
 | U4 introductory breadth | At least three accepted introductory explorations associated with each of 30 domains | Scoped syllabi, real accepted artifacts, method/place/language audit; cross-listings do not inflate global counts |

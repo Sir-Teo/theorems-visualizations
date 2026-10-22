@@ -4,13 +4,14 @@
 
 This registry gives the broader atlas a concrete inventory without changing its production catalog. It contains **30 domains, 85 primary collection mappings, eight cross-listings, 217 classification entries, and eight researched pilot briefs (six have working prototypes: four locally accepted and two in review)**. Twenty domains have an existing primary collection; ten have none. A foothold is not evidence that a domain has introductory or advanced coverage.
 
-The original 13 runtime fields, collection IDs, chapter assignments, accepted manifests and production ledgers remain authoritative. These files are not loaded by the website, build or content acceptance process.
+The original 13 runtime fields, collection IDs, chapter assignments, accepted manifests and production ledgers remain authoritative. The registry does not alter the production website, build or content acceptance process. The isolated orientation builder reads its domain and collection context to generate local preview pages.
 
 ## Files and contract
 
 | File | Purpose |
 | --- | --- |
 | [registry.json](registry.json) | Domain scope, aliases, questions, methods, gaps, candidate collections, representation gaps, proposed stewardship, collection mappings and classification crosswalks |
+| [Domain orientations](overviews.md) | 30 researched local entry pages, separate source receipts, exact AI reviews and maintenance contract |
 | [Crosswalk review](crosswalk-review.md) | Research decisions, two independent AI reviews and remaining classification gates |
 | [classification-inventory.json](classification-inventory.json) | Pinned external code universes, editions, scope levels, source IDs and identifier hashes |
 | [sources.json](sources.json) | 45 source receipts, exact locators, access limits, rights plans, conflicts, stopped candidates and dataset hashes |
@@ -23,7 +24,7 @@ The JSON files use `schemaVersion: 1`. The validator is the executable contract;
 
 Collection relationships are `primary`, `cross-listed` or `reference-only`. Every current collection must have exactly one primary home; the same collection/domain pair cannot be repeated. The eight additional mappings are navigational footholds, not evidence of whole-domain instruction. There are no reference-only collection mappings yet. Candidate IDs such as `D10-C01` are planning proposals, not runtime collection IDs.
 
-Domain sources are classified honestly: most are classification/discovery seeds. Only the bounded pilot topics have new topic-specific bibliographies. No one has independently reviewed 30 whole-domain syllabi.
+Domain sources are classified honestly: most are classification/discovery seeds. The bounded pilot topics have topic-specific bibliographies; the new orientation sidecar supplies 30 narrower institutional reading routes. No one has independently reviewed 30 whole-domain syllabi.
 
 ## What the external crosswalk covers
 
