@@ -17510,9 +17510,9 @@
   "authoringDirection": "User confirmed prior work done; continuously author future waves without routine pauses.",
   "progress": {
     "total": 1031,
-    "written": 832,
-    "remaining": 199,
-    "writtenChapters": 64,
+    "written": 854,
+    "remaining": 177,
+    "writtenChapters": 66,
     "chapters": [
       {
         "collection": "ode",
@@ -18770,10 +18770,21 @@
         "collection": "pharm",
         "chapter": 5,
         "total": 10,
-        "written": 0,
-        "remaining": 10,
-        "writtenItems": [],
-        "status": "planned"
+        "written": 10,
+        "remaining": 0,
+        "writtenItems": [
+          "pharm-5.1",
+          "pharm-5.2",
+          "pharm-5.3",
+          "pharm-5.4",
+          "pharm-5.5",
+          "pharm-5.6",
+          "pharm-5.7",
+          "pharm-5.8",
+          "pharm-5.9",
+          "pharm-5.10"
+        ],
+        "status": "written"
       },
       {
         "collection": "epi",
@@ -18799,10 +18810,23 @@
         "collection": "imaging",
         "chapter": 5,
         "total": 12,
-        "written": 0,
-        "remaining": 12,
-        "writtenItems": [],
-        "status": "planned"
+        "written": 12,
+        "remaining": 0,
+        "writtenItems": [
+          "imaging-5.1",
+          "imaging-5.2",
+          "imaging-5.3",
+          "imaging-5.4",
+          "imaging-5.5",
+          "imaging-5.6",
+          "imaging-5.7",
+          "imaging-5.8",
+          "imaging-5.9",
+          "imaging-5.10",
+          "imaging-5.11",
+          "imaging-5.12"
+        ],
+        "status": "written"
       },
       {
         "collection": "sig",
