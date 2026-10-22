@@ -219,29 +219,149 @@ export default {
     },
     // ───────────────────────────────────────────────────────────── 6
     {
-      n: 6,
-      title: 'Social preferences and behavioral games',
-      summary: String.raw`In the lab people share money they could keep, reject offers they could accept, and pay to punish free riders. Models of inequity aversion and reciprocity capture these patterns, while level-k reasoning and noisy best responses explain why play in strategic games departs from Nash equilibrium. Incentives can even backfire when they crowd out intrinsic or social motives.`,
-      items: [
-        { num: '6.1', kind: 'Phenomenon', name: 'Ultimatum-game behaviour: low offers rejected', deps: ['game-4.7'], refs: ['W&K ch. 10'],
-          pic: 'Propose a split of $10 to simulated responders drawn from experimental data; offers below about 30% are often rejected, and your expected earnings by offer are plotted.' },
-        { num: '6.2', kind: 'Phenomenon', name: 'The dictator game', deps: ['behav-6.1'], refs: ['W&K ch. 10'],
-          pic: 'Remove the right to reject: average giving drops but stays well above zero, and toggles for anonymity and “taking” options show how fragile the generosity is.' },
-        { num: '6.3', kind: 'Phenomenon', name: 'Public goods games with punishment (Fehr–Gächter)', deps: ['micro-12.10', 'game-1.9'], refs: ['W&K ch. 10'],
-          pic: 'Ten rounds of contributions in a simulated group: without punishment contributions decay toward zero, with costly punishment they climb and stay high.' },
-        { num: '6.4', kind: 'Model', name: 'Inequity aversion (Fehr–Schmidt)', deps: ['behav-6.1'], refs: ['W&K ch. 10'],
-          pic: 'Utility penalised by envy (α) and guilt (β); drag the parameters and see which ultimatum offers a responder rejects and what a proposer should offer.' },
-        { num: '6.5', kind: 'Phenomenon', name: 'The trust game and reciprocity', deps: ['behav-6.1'], refs: ['W&K ch. 10'],
-          pic: 'Send money that triples in transit; simulated trustees return amounts drawn from experimental data, and the return per unit sent is plotted.' },
-        { num: '6.6', kind: 'Model', name: 'Level-k reasoning in the beauty contest', deps: ['game-1.8'], refs: ['W&K ch. 9'],
-          pic: 'Guess two-thirds of the average guess; a histogram of past responses shows spikes at 33 and 22 (level 1 and 2), far from the Nash answer of zero, and your guess is ranked.' },
-        { num: '6.7', kind: 'Model', name: 'Quantal response equilibrium', deps: ['psych-3.8', 'behav-6.6', 'game-1.3'], refs: ['W&K ch. 9'],
-          pic: 'Players choose by logit best responses with a precision slider; equilibrium choice probabilities move from uniform randomness at λ = 0 to Nash as λ grows, fitting lab data in between.' },
-        { num: '6.8', kind: 'Phenomenon', name: 'Motivation crowding out (the daycare fine)', deps: ['behav-6.3'], refs: ['W&K ch. 10'],
-          pic: 'Late pickups per week at Israeli daycares before, during and after a fine: lateness rises once the fine is introduced and stays high after it is removed.' },
-        { num: '6.9', kind: 'Phenomenon', name: 'Ultimatum offers across fifteen societies', deps: ['behav-6.1'], refs: ['W&K ch. 10'],
-          pic: 'Mean offers and rejection rates from the cross-cultural study plotted against market integration; the spread shows fairness norms vary widely between societies.' },
-      ],
+      "n": 6,
+      "title": "Social preferences and behavioral games",
+      "summary": "A rejected offer, a voluntary transfer and a costly sanction distinguish money from the preferences people may have over its distribution. Original observations are kept separate from declared preference models. Strategic belief models, noisy equilibrium and a field experiment then show why an explanation needs both an explicit game and evidence about its context.",
+      "items": [
+        {
+          "num": "6.1",
+          "kind": "Phenomenon",
+          "name": "Ultimatum-game behaviour: low offers rejected",
+          "deps": [
+            "game-4.7"
+          ],
+          "refs": [
+            "Güth, Schmittberger & Schwarze (1982), §2.2, §3.1, Tables 4–5, printed p. 375"
+          ],
+          "pic": "Choose the first or repeat table and a pair A–U. Each point is an observed offer fraction and actual acceptance decision, with no smoothing. The selected pair's stake, demand, offered amount and realized payoffs are reported exactly.",
+          "see": [
+            "behav-6.4"
+          ]
+        },
+        {
+          "num": "6.2",
+          "kind": "Phenomenon",
+          "name": "The dictator game",
+          "deps": [
+            "behav-6.1"
+          ],
+          "refs": [
+            "Henrich et al. (2001), dictator-game discussion, printed p. 75",
+            "Fehr & Schmidt (1999), §II, Eq. (2)"
+          ],
+          "pic": "Select a reported group to see its documented modal gift and available mean, without invented histogram heights. In the separate model, change β and the proposed integer gift; every maximizing gift is highlighted.",
+          "see": [
+            "behav-6.4"
+          ]
+        },
+        {
+          "num": "6.3",
+          "kind": "Phenomenon",
+          "name": "Public goods games with punishment (Fehr–Gächter)",
+          "deps": [
+            "game-1.9"
+          ],
+          "refs": [
+            "Fehr & Gächter (2000), §§I–III, Eqs. (1)–(2), Tables 2–4, pp. 981–988 and payoff discussion pp. 992–993"
+          ],
+          "pic": "Compare each source session or group, using either its ten-period mean or its final-period mean. The separate editable ledger uses the original contribution and punishment formulas; choose contributions and a directed sanction and inspect everyone's resulting money.",
+          "see": [
+            "micro-12.10",
+            "behav-6.4",
+            "behav-6.8"
+          ]
+        },
+        {
+          "num": "6.4",
+          "kind": "Model",
+          "name": "Inequity aversion (Fehr–Schmidt)",
+          "deps": [
+            "behav-6.1"
+          ],
+          "refs": [
+            "Fehr & Schmidt (1999), §II, Eqs. (1)–(2), §III.A/Proposition 1 and footnote 8"
+          ],
+          "pic": "Edit the stake and both players' weights. The left curve shows responder utility against rejection zero; the right shows proposer utility after the responder's actual decision. Green dots retain every best integer offer, and the selected offer reveals both money and utility.",
+          "see": [
+            "behav-6.2",
+            "behav-6.3"
+          ]
+        },
+        {
+          "num": "6.5",
+          "kind": "Phenomenon",
+          "name": "The trust game and reciprocity",
+          "deps": [
+            "behav-6.1"
+          ],
+          "refs": [
+            "Berg, Dickhaut & McCabe (1995), Trust, Reciprocity, and Social History, Games and Economic Behavior 10:122–142; original body unavailable"
+          ],
+          "pic": "Choose the sent amount and a fraction of the multiplied transfer to return. The diagram accounts for both initial endowments, the multiplied transfer and the final return; the readout reports each payoff and the newly created money.",
+          "verify": true
+        },
+        {
+          "num": "6.6",
+          "kind": "Model",
+          "name": "Level-k reasoning in the beauty contest",
+          "deps": [
+            "game-1.8"
+          ],
+          "refs": [
+            "Nagel (1995), §§I–IV.A, footnotes5/7/8 and Figure1, pp.1313–1317"
+          ],
+          "pic": "Change the level and target fraction to inspect exact rational benchmarks. Edit the separate integer guesses to compute their actual target and all nearest players. The readout gives the source’s first-round mean and median for the selected treatment; no histogram is reconstructed.",
+          "see": [
+            "behav-6.7"
+          ]
+        },
+        {
+          "num": "6.7",
+          "kind": "Model",
+          "name": "Quantal response equilibrium",
+          "deps": [
+            "psych-3.8",
+            "game-1.3",
+            "pma-4.23",
+            "pma-3.6"
+          ],
+          "refs": [
+            "McKelvey & Palfrey (1995), §§2–3, Definition1, logistic response and Theorem2, printed pp.8–12"
+          ],
+          "pic": "Change the two positive diagonal payoffs and precision. The actual response curves intersect at the solved pair; the second plot records the current game's solved probability across precision values. Inspect both response residuals and the mixed-Nash reference.",
+          "see": [
+            "behav-6.6",
+            "game-2.1"
+          ]
+        },
+        {
+          "num": "6.8",
+          "kind": "Phenomenon",
+          "name": "Motivation crowding out (the daycare fine)",
+          "deps": [
+            "behav-6.3"
+          ],
+          "refs": [
+            "Gneezy & Rustichini (2000), §§II–V, Tables1–2, especially pp.4–8 and13–15"
+          ],
+          "pic": "Choose per-centre event counts or pooled events per enrolled child-week, and inspect a week or individual centre. Shading identifies fine weeks 5–16; points after 17 retain their actual observed values. The readout recomputes baseline, during-fine and post-removal means and control-adjusted changes directly from the raw table."
+        },
+        {
+          "num": "6.9",
+          "kind": "Phenomenon",
+          "name": "Ultimatum offers across fifteen societies",
+          "deps": [
+            "behav-6.1"
+          ],
+          "refs": [
+            "Henrich et al. (2001), In Search of Homo Economicus: Behavioral Experiments in 15 Small-Scale Societies, AER 91(2):73–78"
+          ],
+          "pic": "Move a proposed common mean along the stake fraction and inspect its distances from the two reported extreme group means. Switch to absolute-money units by changing the illustrative stake. The band represents the range of reported means, not a confidence interval or all possible offers.",
+          "see": [
+            "behav-6.2"
+          ]
+        }
+      ]
     },
     // ───────────────────────────────────────────────────────────── 7
     {
