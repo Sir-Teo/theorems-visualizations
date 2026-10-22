@@ -151,40 +151,295 @@ export default {
     },
     // ───────────────────────────────────────────────────────────── 5
     {
-      n: 5,
-      title: 'Wind, water, heat and biomass',
-      summary: String.raw`Moving air and water carry kinetic and potential energy that turbines can harvest. Wind power grows with the cube of wind speed, but no turbine can extract more than 16/27 of the energy flowing through its disk — the Betz limit. Hydropower, tides and waves follow from equally simple physics, geothermal energy draws on the Earth's heat flow, and biomass is limited by the inefficiency of photosynthesis.`,
-      items: [
-        { num: '5.1', kind: 'Law', name: 'Power in the wind: ½ρAv³', deps: ['aero-1.3'], refs: ['MacKay ch. 4', 'Tester ch. 15'],
-          pic: 'Double the wind speed and the power through a rotor disk rises eightfold; a parcel of air passing through the disk carries its kinetic energy, drawn as a growing cube.' },
-        { num: '5.2', kind: 'Theorem', name: 'Betz limit: at most 16/27', deps: ['aero-7.3', 'energy-5.1'], refs: ['MacKay App. B', 'Tester ch. 15'],
-          pic: 'Slow the wind behind an actuator disk with a slider: extracted power rises then falls, peaking at 16/27 of the available power when the far wake is slowed to one third of the free-stream speed.' },
-        { num: '5.3', kind: 'Definition', name: 'Tip-speed ratio and the power coefficient curve', deps: ['energy-5.2'], refs: ['Tester ch. 15'],
-          pic: 'Spin a rotor at different speeds in a fixed wind: the power coefficient rises to a peak below the Betz line at an optimal tip-speed ratio, and stall or overspeed lose power on either side.' },
-        { num: '5.4', kind: 'Model', name: 'Wind-speed statistics and capacity factor', deps: ['energy-5.1', 'energy-1.4'], refs: ['Tester ch. 15'],
-          pic: 'A Weibull distribution of wind speeds is multiplied by a turbine power curve to give the energy yield; because of the cube law, the mean power is far above the power at the mean speed.' },
-        { num: '5.5', kind: 'Model', name: 'Wind shear: speed increases with height', deps: ['fluid-11.3'], refs: ['Tester ch. 15'],
-          pic: 'Raise a turbine hub: the logarithmic wind profile gives more speed and far more power at height, and the blade sweeps through a gradient of wind speeds.' },
-        { num: '5.6', kind: 'Phenomenon', name: 'Wake losses in wind farms', deps: ['energy-5.2'], refs: ['MacKay ch. 10', 'Tester ch. 15'],
-          pic: 'Lay out turbines on a grid with adjustable spacing: each sits in the slowed wakes of those upwind, and the farm’s output per turbine falls, limiting power per unit area to a few W/m².' },
-        { num: '5.7', kind: 'Model', name: 'Hydropower: P = ρgQH', deps: ['fluid-2.9'], refs: ['Tester ch. 12', 'MacKay ch. 8'],
-          pic: 'Set a dam’s head and flow rate: the power and the turbine’s share of it are computed, and a rainfall-to-river catchment model shows how much a mountain region could supply.' },
-        { num: '5.8', kind: 'Model', name: 'Tidal power', deps: ['mech-9.3', 'energy-5.7'], refs: ['Tester ch. 14', 'MacKay ch. 14'],
-          pic: 'A tidal lagoon fills and empties with a 12.4-hour tide: the energy per cycle scales with the square of the tidal range, and two-way generation is compared with ebb-only operation.' },
-        { num: '5.9', kind: 'Model', name: 'Ocean wave power', deps: ['fluid-9.2', 'fluid-9.3'], refs: ['Tester ch. 14', 'MacKay App. F'],
-          pic: 'Choose wave height and period: power per metre of wave crest, carried at the group velocity, is computed and compared with the output of a line of wave machines along a coastline.' },
-        { num: '5.10', kind: 'Model', name: 'Geothermal energy and reservoir depletion', deps: ['pchem-10.6', 'energy-2.2'], refs: ['Tester ch. 11', 'MacKay ch. 16'],
-          pic: 'Extract heat from hot rock faster than conduction resupplies it: the reservoir cools over decades, comparing sustainable heat flux (tens of mW/m²) with mining stored heat.' },
-        { num: '5.11', kind: 'Concept', name: 'Biomass and the efficiency of photosynthesis', deps: ['energy-4.1'], refs: ['Tester ch. 10', 'MacKay ch. 6'],
-          pic: 'Follow sunlight into a field of energy crops: losses at each step leave under 1% stored as biomass, so the land needed to fuel a country’s cars is drawn on a map.' },
-        { num: '5.12', kind: 'Paper', name: 'Das Maximum der theoretisch möglichen Ausnützung des Windes',
-          paper: { authors: 'A. Betz', year: 1920, title: 'Das Maximum der theoretisch möglichen Ausnützung des Windes durch Windmotoren',
-                   venue: 'Zeitschrift für das gesamte Turbinenwesen 26: 307–309' },
-          introduces: ['energy-5.2'], deps: ['aero-7.3', 'fluid-2.12', 'energy-5.1'], refs: [],
-          pic: 'Slow the wind through an actuator disk by an adjustable induction factor a and watch the stream tube widen; the power coefficient 4a(1 − a)² peaks at a = 1/3 with C_P = 16/27, and a real rotor’s curve sits below Betz’s ceiling.' },
-      ],
+      "n": 5,
+      "title": "Wind, water, heat and biomass",
+      "summary": "Air and water transport kinetic and potential energy; heat reservoirs and harvested biomass supply other energy budgets. Each conversion needs its own boundary and assumptions. The single-disk wind bound, regular and spectral wave conventions, finite-reservoir cooling and annual harvest accounting are derived explicitly, with chosen teaching parameters rather than site or crop forecasts.",
+      "items": [
+        {
+          "num": "5.1",
+          "kind": "Law",
+          "name": "Power in the wind: ½ρAv³",
+          "deps": [
+            "fluid-1.5",
+            "aero-1.3"
+          ],
+          "see": [
+            "energy-5.2"
+          ],
+          "tags": [
+            "wind",
+            "kinetic energy",
+            "power"
+          ],
+          "refs": [
+            "MIT 22.081J, Kalmikov and Dykes wind lecture (2010), actual PDF slides 16–18",
+            "Independent mass-transport derivation"
+          ],
+          "links": {
+            "lecture": "https://ocw.mit.edu/courses/22-081j-introduction-to-sustainable-energy-fall-2010/1b8f7cf6954227383a323ce08ffe6ae6_MIT22_081JF10_lec05b.pdf"
+          },
+          "scope": "Uniform steady flow through a specified perpendicular reference area, chosen constant density and nonnegative speed. No turbulence average, measured wind distribution, turbine conversion efficiency or fully extractable power is implied.",
+          "pic": "Change undisturbed speed, radius or density. The curve and gold point show computed reference power; the second panel shows the actual distance swept in one second, with normalized cross-section. The readout checks area and mass rate. At exact zero speed both mass transport and kinetic flux vanish."
+        },
+        {
+          "num": "5.2",
+          "kind": "Theorem",
+          "name": "Betz limit: at most 16/27",
+          "deps": [
+            "energy-5.1",
+            "fluid-1.5",
+            "fluid-2.12",
+            "fluid-2.9"
+          ],
+          "see": [
+            "energy-5.12"
+          ],
+          "tags": [
+            "wind",
+            "momentum",
+            "actuator disk"
+          ],
+          "refs": [
+            "Peter Godart, Thermodynamics and Climate Change, actual PDF 194–201 / printed 191–198, modern control-volume derivation",
+            "Independent thrust, pressure-jump and work calculation"
+          ],
+          "links": {
+            "modernDerivation": "https://ocw.mit.edu/courses/res-2-008-thermodynamics-and-climate-change-summer-2020/mitres-2-008su22_book.pdf"
+          },
+          "scope": "One ideal disk, no swirl, blockage, confinement, losses or added energy; $U>0$ and $0\\le a<1/2$. This does not give a universal bound for ducted, multistage or blocked-channel devices. The widget uses $a\\le0.49$ and chosen air properties. The original 1920 body is unread; the historical entry retains its separate uncertainty flag.",
+          "pic": "Move induction and compare the actual upstream, disk and far-wake speeds. The coefficient reaches the horizontal $16/27$ line at one third induction. The readout computes the three continuity areas. The exact $a=1/2$ endpoint is excluded because its finite-speed streamtube geometry becomes singular."
+        },
+        {
+          "num": "5.3",
+          "kind": "Definition",
+          "name": "Tip-speed ratio and the power coefficient curve",
+          "deps": [
+            "energy-5.1",
+            "energy-5.2"
+          ],
+          "tags": [
+            "wind",
+            "dimensionless ratio",
+            "rotor"
+          ],
+          "refs": [
+            "MIT wind lecture (2010), actual PDF 16–18 for the reference power coefficient",
+            "Independent definition and explicitly authored exponential response"
+          ],
+          "links": {
+            "normalization": "https://ocw.mit.edu/courses/22-081j-introduction-to-sustainable-energy-fall-2010/1b8f7cf6954227383a323ce08ffe6ae6_MIT22_081JF10_lec05b.pdf"
+          },
+          "scope": "Chosen response for a fixed-radius teaching rotor, not an aerodynamic calibration. No shaft torque is inferred at zero angular speed. A tiny positive coefficient may round to zero while power remains representable after combining all physical factors; these are evaluated separately and disclosed.",
+          "pic": "Change the formal tip-speed parameter, chosen optimum, wind speed or elapsed rotation time. The gold point selects the authored response and the blades rotate through the computed angle. Try exact zero wind: the rotor stops and the readout distinguishes an undefined physical ratio from the formal curve parameter."
+        },
+        {
+          "num": "5.4",
+          "kind": "Model",
+          "name": "Wind-speed statistics and capacity factor",
+          "deps": [
+            "energy-5.1",
+            "energy-1.4",
+            "energy-1.1"
+          ],
+          "tags": [
+            "wind",
+            "capacity factor",
+            "probability"
+          ],
+          "refs": [
+            "Official SAM Wind Resource help, actual annual Weibull distribution discussion",
+            "Independent density normalization, piecewise power integral and quadrature refinement"
+          ],
+          "links": {
+            "annualDistribution": "https://samrepo.nlr.gov/help/wind_resource.html"
+          },
+          "scope": "A chosen annual marginal distribution and chosen turbine curve, not measured weather or a chronological wind year. It supplies no wind direction, availability losses, multiwake calculation or grid integration forecast. Shape is restricted to 1.2–3 so the density is finite and zero at the origin. Quadrature differences are diagnostics rather than certified error bounds.",
+          "pic": "Change Weibull scale, shape or nameplate power. Compare probability density with density times normalized output, and inspect the chosen cut-in/rated/cut-out curve. The readout separates ramp and plateau contributions, retains the probability beyond cut-out, and converts mean power to energy over a declared 365.25-day model year."
+        },
+        {
+          "num": "5.5",
+          "kind": "Model",
+          "name": "Wind shear: speed increases with height",
+          "deps": [
+            "energy-5.1"
+          ],
+          "tags": [
+            "wind",
+            "height profile",
+            "empirical model"
+          ],
+          "refs": [
+            "Independent consequences of the explicitly chosen power-law profile; no atmospheric dataset or boundary-layer derivation"
+          ],
+          "scope": "Chosen profile on 5–200 m, constant reference conditions, exponent 0–0.5. No universal atmosphere law, turbulence solution, blade-shear load model or predicted increase of rated turbine output.",
+          "pic": "Move the selected hub height, reference speed and chosen exponent. The gold point lies on the actual profile and the readout evaluates the uncapped power multiplier when its reference is nonzero. Try zero exponent and zero reference speed to distinguish a flat moving-air profile from no wind."
+        },
+        {
+          "num": "5.6",
+          "kind": "Phenomenon",
+          "name": "Wake losses in wind farms",
+          "deps": [
+            "energy-5.1",
+            "energy-5.2"
+          ],
+          "tags": [
+            "wind",
+            "wakes",
+            "energy losses"
+          ],
+          "refs": [
+            "Independent prescribed two-device top-hat model; original Jensen 1983 institutional abstract only, original PDF inaccessible"
+          ],
+          "scope": "Two coaxial devices fully inside the prescribed top-hat wake, fixed local coefficient and no rating/cut-out curve. Recovery is an authored mixing assumption, not a globally momentum-conserving solution of the atmospheric boundary layer. Original Jensen 1983 body was not read; no figures, calibration or universal farm-density claims are reproduced.",
+          "pic": "Adjust spacing in diameters, wake expansion or induction. The selected downstream speed follows the prescribed recovery curve; two bars show the resulting upstream and downstream device powers. The readout separates deficit loss and total output. No grid layout, measured farm resource or calibrated power density is displayed."
+        },
+        {
+          "num": "5.7",
+          "kind": "Model",
+          "name": "Hydropower: P = ρgQH",
+          "deps": [
+            "fluid-1.5",
+            "fluid-2.9",
+            "energy-2.1"
+          ],
+          "tags": [
+            "hydropower",
+            "head",
+            "energy balance"
+          ],
+          "refs": [
+            "Independent steady control-volume mechanical-energy balance; actual fluid-2.9 and energy-2.1 proof inputs"
+          ],
+          "scope": "Steady incompressible flow, chosen constant density 1000 kg/m³ and standard gravity 9.80665 m/s², with nonnegative available total head and declared losses. No rainfall/catchment data, cavitation, seasonal storage, measured efficiency or site generation forecast.",
+          "pic": "Change flow, gross total head, hydraulic loss fraction or turbine-generator efficiency. The two curves compare net hydraulic resource and chosen electrical output; the gold point gives your selected flow. Exact zero flow, head or efficiency has its corresponding zero output, while tiny positive inputs retain rescuing unit factors before rounding."
+        },
+        {
+          "num": "5.8",
+          "kind": "Model",
+          "name": "Tidal power",
+          "deps": [
+            "energy-5.7",
+            "energy-2.1"
+          ],
+          "see": [
+            "mech-9.3"
+          ],
+          "tags": [
+            "tides",
+            "potential energy",
+            "basin"
+          ],
+          "refs": [
+            "Independent constant-area basin potential integral and separated orifice-law solution"
+          ],
+          "scope": "Constant basin area, fixed low sea, no inflow, constant chosen seawater density 1025 kg/m³ and chosen conversion efficiency. The normalized clock has no calibrated discharge coefficient or event duration. At H=0 all energies and head are zero and f is only a formal index. It is not a predicted local tide, lagoon geometry, refill cycle or tidal-stream turbine bound.",
+          "pic": "Move the fraction of ideal draining time, chosen initial head, basin area and conversion fraction. The actual head rectangle shrinks according to the orifice law; released and remaining energies sum to the initial resource. This is one ideal emptying event, without an assumed 12.4-hour refill or two-way generation schedule."
+        },
+        {
+          "num": "5.9",
+          "kind": "Model",
+          "name": "Ocean wave power",
+          "deps": [
+            "waves-3.7",
+            "waves-3.5"
+          ],
+          "tags": [
+            "waves",
+            "energy flux",
+            "ocean"
+          ],
+          "refs": [
+            "DOE-hosted EPRI 2011, Mapping and Assessment of the United States Ocean Wave Energy Resource, actual Appendix A-5–A-7 / PDF 111–113",
+            "Independent regular-wave pressure-work integral and finite orthogonal-spectrum sum"
+          ],
+          "links": {
+            "spectralConvention": "https://www.energy.gov/sites/prod/files/2013/12/f5/mappingandassessment.pdf"
+          },
+          "scope": "Linear deep-water gravity waves, no surface tension, currents or conversion device. The 1025 kg/m³ density is chosen. The regular mode reports ka and marks 0.1 as a chosen illustration threshold, not a universal validity certificate. The finite spectral signal is orthogonal over 21Te, with mean variance Hm0²/16; it is not a measured random sea. Spectral period means energy period, not peak period. Resource per crest length is not electrical output or device capture width.",
+          "pic": "Switch between a regular wave and a finite three-tone spectral illustration. For spectral mode, the height is $H_{m0}$ and period is $T_e$: component periods are $0.6,1,1.4$ times $T_e$, with variance weights $1/4,1/2,1/4$. Their amplitudes are $H_{m0}\\sqrt{w_j/8}$ and fixed phases are 0, 1 and 2 radians. The plotted signal is computed from these components. Change height and period, then compare surface displacement, resource flux and the selected gold point."
+        },
+        {
+          "num": "5.10",
+          "kind": "Model",
+          "name": "Geothermal energy and reservoir depletion",
+          "deps": [
+            "energy-2.1",
+            "energy-2.2",
+            "ode-1.4"
+          ],
+          "tags": [
+            "geothermal",
+            "finite reservoir",
+            "Carnot"
+          ],
+          "refs": [
+            "Independent lumped thermal balance, linear decay and finite-reservoir work integral; actual energy-2.2 and ode-1.4 proof inputs"
+          ],
+          "scope": "Chosen lumped reservoir with constant heat capacity, linear extraction conductance, 300 K environment and no replenishment. No fracture/flow geology, accessible rock resource, conduction resupply, sustainable surface heat flux, core-temperature efficiency or plant calibration is inferred. Direct small-time heat/work evaluation retains original factors when the displayed temperature change cannot resolve them.",
+          "pic": "Change model time, heat capacity, conductance, initial temperature excess or fraction of Carnot. Temperature and power curves follow the actual cooling law; the gold point selects time. The readout integrates extracted heat and electrical work using the same balance. Time is measured in declared 365.25-day years, with a fixed 300 K cold boundary."
+        },
+        {
+          "num": "5.11",
+          "kind": "Concept",
+          "name": "Biomass and the efficiency of photosynthesis",
+          "deps": [
+            "energy-1.1",
+            "energy-4.1"
+          ],
+          "tags": [
+            "biomass",
+            "photosynthesis",
+            "energy accounting"
+          ],
+          "refs": [
+            "Blankenship et al., Comparing Photosynthetic and Photovoltaic Efficiencies and Recognizing the Potential for Improvement (2011), actual original PDF 2–3 / printed 805–806 for efficiency boundaries",
+            "Independent chosen annual harvested-energy and dry-fuel accounting"
+          ],
+          "links": {
+            "efficiencyDefinitions": "https://www.gfmoorelab.com/uploads/4/2/3/1/42315775/blankenship_science_2011.pdf"
+          },
+          "scope": "All irradiance, annual net efficiency, dry heating value and electrical conversion inputs are chosen. Heating value uses the selected dry-fuel convention, without a measured feedstock or moisture correction. No calibrated crop yield, universal sub-1% bound, national land/food availability, lifecycle balance, carbon neutrality or current photovoltaic comparison is asserted.",
+          "pic": "Choose annual net chemical fraction, mean incident irradiance, harvest area, dry heating value and electrical fraction. The mass curve uses tonnes over a declared 365.25-day model year; the readout gives kilograms. Bars 0, 1 and 2 are incident, harvested chemical and electrical equivalent powers. The small downstream bars share the incident-power axis; the readout provides their exact computed values."
+        },
+        {
+          "num": "5.12",
+          "kind": "Paper",
+          "name": "Das Maximum der theoretisch möglichen Ausnützung des Windes",
+          "paper": {
+            "authors": "A. Betz",
+            "year": 1920,
+            "title": "Das Maximum der theoretisch möglichen Ausnützung des Windes durch Windmotoren",
+            "venue": "Zeitschrift für das gesamte Turbinenwesen 26: 307–309"
+          },
+          "introduces": [
+            "energy-5.2"
+          ],
+          "verify": true,
+          "deps": [
+            "energy-5.1",
+            "fluid-1.5",
+            "fluid-2.12"
+          ],
+          "see": [
+            "energy-5.2"
+          ],
+          "tags": [
+            "wind",
+            "history",
+            "actuator disk"
+          ],
+          "refs": [
+            "Frozen planned historical bibliography; original 1920 and restricted 2013 translation bodies unread",
+            "Godart, Thermodynamics and Climate Change, actual PDF 194–201 / printed 191–198: independent modern control-volume treatment"
+          ],
+          "links": {
+            "modernDerivation": "https://ocw.mit.edu/courses/res-2-008-thermodynamics-and-climate-change-summer-2020/mitres-2-008su22_book.pdf"
+          },
+          "scope": "Historical attribution and exact original body remain unverified. Restricted-access translation was not recovered from alternate copies. This authored geometry assumes a steady unconfined incompressible single disk, no swirl or added energy and equal remote ambient pressure. It does not reproduce original figures, real-rotor data or a universal bound on other device classes.",
+          "pic": "Move the authored induction parameter to compare the actual three-section area ratios and modern momentum coefficient. At one third induction, the coefficient reaches $16/27$. The construction is explicitly modern, and the original-body verification flag remains visible. Use the reciprocal link to energy-5.2 for the complete stated hypotheses."
+        }
+      ]
     },
-    // ───────────────────────────────────────────────────────────── 6
     {
       n: 6,
       title: 'Storage',
