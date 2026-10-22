@@ -4,7 +4,7 @@ import { mkdtemp, rm } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { loadRegistry } from '../scripts/lib.mjs';
-import { readCoverage, validateCoverage, validateBriefFiles } from '../scripts/validate-coverage.mjs';
+import { readCoverage, validateCoverage, validateBriefFiles, classificationReviewDigest, validateClassificationReviewFiles } from '../scripts/validate-coverage.mjs';
 
 const data = await readCoverage(), runtime = await loadRegistry();
 const ids = runtime.collections.map(x => x.id);
@@ -19,6 +19,7 @@ test('registry matches actual collection metadata and all brief files', async ()
   assert.deepEqual(runtime.problems.filter(x => x.level === 'error'), []);
   assert.deepEqual(validate(data), []);
   assert.deepEqual(await validateBriefFiles(data), []);
+  assert.deepEqual(await validateClassificationReviewFiles(data), []);
 });
 mutation('losing a collection primary is detected', d => {
   d.registry.collectionMappings = d.registry.collectionMappings.filter(x => x.collectionId !== 'pma');
@@ -78,4 +79,50 @@ test('missing brief files fail with a concrete path', async () => {
 test('malformed top-level structure is reported without crashing', () => {
   const copy = structuredClone(data); copy.registry.domains = null;
   assert.match(validate(copy).join('\n'), /expected object array/);
+});
+mutation('unspecified language fields cannot silently widen to the arts/humanities parent',d=>{
+ d.registry.crosswalks.find(c=>c.schemeId==='isced-f'&&c.code==='0230').routing.scopeCode='02';
+},/routing kind\/scope disagrees/);
+mutation('residual and interdisciplinary categories cannot exchange semantics',d=>{
+ d.registry.crosswalks.find(c=>c.schemeId==='isced-f'&&c.code==='0619').routing.kind='interdisciplinary';
+},/routing kind\/scope disagrees/);
+mutation('unknown fields and provisional heritage cannot become mapped by status alone',d=>{
+ d.registry.crosswalks.find(c=>c.schemeId==='ich').disposition='mapped';
+},/provisional heritage route requires review/);
+mutation('review scope cannot quietly drop a tagged classification row',d=>{
+ d.registry.classificationReviews[0].scopeKeys.pop();
+},/mapping review batch missing or out of scope/);
+function reviewedFixture(){
+ const copy=structuredClone(data),review=copy.registry.classificationReviews[0];review.status='reviewed';
+ const digest=classificationReviewDigest(copy,review);
+ review.receipts=['source-routing','engineering'].map(dimension=>({dimension,result:'passed',reviewer:{id:'fixture-'+dimension,kind:'ai',independent:true},digest,evidencePath:'docs/coverage/reviews/fixture-only.md',reviewedOn:'2026-10-22'}));
+ return copy;
+}
+test('exact reviewed routes bind parent scopes, domain meanings and source-access limitations',()=>{
+ const baseline=reviewedFixture();assert.deepEqual(validate(baseline),[]);
+ for(const edit of [d=>d.registry.crosswalks.find(c=>c.code==='0230').domainIds=['D01'],d=>d.registry.domains.find(x=>x.id==='D23').scope='Changed meaning',d=>d.sources.sources.find(x=>x.id==='isced2013').access.scope='Different evidence',d=>d.inventory.schemes.find(x=>x.id==='isced-f').edition='Unreviewed edition']){
+  const copy=structuredClone(baseline);edit(copy);assert.match(validate(copy).join('\n'),/review missing or stale/);
+ }
+ const unrelated=structuredClone(baseline);unrelated.pilots.pilots[0].nextAction='A changed planning action';assert.deepEqual(validate(unrelated),[]);
+});
+test('two separate independent AI roles are required to report the classification batch reviewed',()=>{
+ for(const edit of [r=>r.receipts=[],r=>r.receipts[1].reviewer.id=r.receipts[0].reviewer.id,r=>r.receipts[0].reviewer.id=r.author,r=>r.receipts[0].reviewer.kind='human']){
+  const copy=reviewedFixture();edit(copy.registry.classificationReviews[0]);assert.ok(validate(copy).length>0);
+ }
+});
+test('malformed review metadata reports diagnostics rather than throwing',()=>{
+ for(const edit of [d=>d.registry.classificationReviews[0].scopeKeys=null,d=>d.registry.classificationReviews[0].receipts=[null],d=>d.registry.routingKinds=null,d=>d.registry.crosswalks[0].routing=null]){
+  const copy=structuredClone(data);edit(copy);assert.ok(validate(copy).length>0);
+ }
+});
+test('classification evidence paths cannot escape the review directory',async()=>{
+ const copy=reviewedFixture();copy.registry.classificationReviews[0].receipts[0].evidencePath='../../private';
+ assert.match(validate(copy).join('\n'),/malformed review binding/);assert.match((await validateClassificationReviewFiles(copy)).join('\n'),/unsafe evidence path/);
+});
+test('classification evidence file checks preserve diagnostics on malformed metadata',async()=>{
+ for(const edit of [d=>d.registry=null,d=>d.registry.classificationReviews={},d=>d.registry.classificationReviews=[null],d=>d.registry.classificationReviews[0].receipts={},d=>d.registry.classificationReviews[0].receipts=[null],d=>d.registry.classificationReviews[0].receipts=[[]],d=>d.registry.classificationReviews[0].receipts[0].digest=null]){
+  const copy=reviewedFixture();edit(copy);
+  assert.ok((await validateClassificationReviewFiles(copy)).length>0);
+ }
+ assert.ok((await validateClassificationReviewFiles(null)).length>0);
 });

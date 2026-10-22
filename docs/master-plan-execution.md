@@ -8,11 +8,13 @@ Four local explorations have exact-content and exact-artifact AI review receipts
 
 P03 resolves the Legge/Eno English locator crosswalk, retains textual/theological context and exposes editorial premises through an ordered argument list. P05 preserves every selected source row, duplicate magnitudes, qualified units and instrument labels; measured observations and the synthetic storage model are separate. See [method verification](verification/universal-pilots-methods.md).
 
+Registry 0.3.0 completes an exact independent AI review of the 79 previously flagged crosswalk entries: 68 ISCED editorial routes resolved, six FORD and five heritage entries retained under review. Overall dispositions are 205 mapped, 11 review and one excluded. See the [classification checkpoint](coverage/crosswalk-review.md); this changes navigation planning, not lesson or production counts.
+
 ## Remaining execution queue
 
 | Stage | Concrete next work | Evidence required before marking it delivered |
 | --- | --- | --- |
-| U1 classification stewardship | Review 79 explicit review-needed dispositions; research genuinely uncovered domains | Exact selected classification editions, supported mappings or retained exclusions; no invented completeness percentage |
+| U1 classification stewardship | Follow the 11 retained topic/source/community gates; research detailed library schedules, local vocabularies and genuinely uncovered domains | Exact selected classification editions, supported mappings or retained exclusions; no invented completeness percentage |
 | U2 next method batch | P07 plain weave and P08 performance: digital models, original schematics/generated audio and engineering review delivered; execute real physical/performer/access/learning packets and resolve public-release terms | See studio checkpoint for exact AI/engineering scope; real physical reproduction, practitioner/performer and learner/access observations plus release decision remain open |
 | U2 professions | P04 legal case and P06 breathing/care: resolve documented source/snapshot conflicts, build bounded cases and professional review packets | Qualified legal/clinical approval for claims requiring it; AI desk review does not impersonate those roles |
 | U3 production integration | Opt-in loading, evidence/review UI, public static routes and aliases, explicit withdrawal and note migration | Latest accepted production base; legacy IDs, dependencies, links, saved states and embeds preserved; draft exclusion; release-specific rights |

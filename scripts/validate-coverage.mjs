@@ -21,6 +21,32 @@ const nonempty = (x) => typeof x === 'string' && x.trim().length > 0;
 const sha = (codes) => createHash('sha256').update([...codes].sort().join('\n')).digest('hex');
 const unique = (xs) => new Set(xs).size === xs.length;
 
+const FORD_RESIDUAL = new Set(['1.7','2.11','3.5','4.5','5.9','6.5']);
+const ROUTING_KINDS = ['subject','not-further-defined','not-elsewhere-classified','interdisciplinary','main-class','provisional-cultural-domain','unknown'];
+const canonical = value => value && typeof value === 'object' ? Array.isArray(value) ? value.map(canonical) : Object.fromEntries(Object.keys(value).sort().map(k=>[k,canonical(value[k])])) : value;
+export function expectedRouting(scheme,code) {
+  if(typeof code !== 'string')return null;
+  if(scheme==='isced-f'){
+    const kind=code==='9999'?'unknown':code.endsWith('88')?'interdisciplinary':code.endsWith('0')?'not-further-defined':code.endsWith('9')?'not-elsewhere-classified':'subject';
+    return {kind,scopeCode:kind==='unknown'?null:/00$|88$|99$/.test(code)?code.slice(0,2):code.slice(0,3)};
+  }
+  if(scheme==='ford')return {kind:FORD_RESIDUAL.has(code)?'not-elsewhere-classified':'subject',scopeCode:code.split('.')[0]};
+  if(scheme==='lcc')return {kind:'main-class',scopeCode:code};
+  if(scheme==='ich')return {kind:'provisional-cultural-domain',scopeCode:null};
+  return null;
+}
+export function classificationReviewDigest({registry,inventory,sources},review) {
+  const keys=new Set(review.scopeKeys),rows=registry.crosswalks.filter(c=>keys.has(c.schemeId+':'+c.code)).sort((a,b)=>(a.schemeId+':'+a.code).localeCompare(b.schemeId+':'+b.code));
+  const schemes=inventory.schemes.filter(s=>rows.some(c=>c.schemeId===s.id)).sort((a,b)=>a.id.localeCompare(b.id));
+  const sourceIds=new Set([...schemes.map(s=>s.sourceId),...rows.map(c=>c.reviewBasis?.sourceId).filter(Boolean)]);
+  const domainIds=new Set(rows.flatMap(c=>c.domainIds));
+  const projection={registryVersion:registry.registryVersion,routingPolicy:registry.routingPolicy,routingKinds:registry.routingKinds,
+    batch:{id:review.id,author:review.author,baselineCommit:review.baselineCommit,scopeKeys:[...keys].sort(),scope:review.scope},rows,schemes,
+    sources:sources.sources.filter(s=>sourceIds.has(s.id)).sort((a,b)=>a.id.localeCompare(b.id)),
+    domains:registry.domains.filter(d=>domainIds.has(d.id)).map(({id,title,scope,exclusions})=>({id,title,scope,exclusions})).sort((a,b)=>a.id.localeCompare(b.id))};
+  return createHash('sha256').update(JSON.stringify(canonical(projection))).digest('hex');
+}
+
 /** Pure checks used by CLI and mutation tests. Returns errors rather than modifying data. */
 export function validateCoverage({ registry, inventory, sources, pilots }, runtimeIds, fieldCount = 13) {
   const errors = [];
@@ -29,7 +55,7 @@ export function validateCoverage({ registry, inventory, sources, pilots }, runti
     check(value?.schemaVersion === 1, name + ': unsupported schemaVersion');
   const lists = [
     ['domains', registry?.domains], ['collectionMappings', registry?.collectionMappings],
-    ['crosswalks', registry?.crosswalks], ['schemes', inventory?.schemes],
+    ['crosswalks', registry?.crosswalks], ['classificationReviews', registry?.classificationReviews], ['schemes', inventory?.schemes],
     ['sources', sources?.sources], ['pilots', pilots?.pilots],
   ];
   for (const [name, value] of lists) check(Array.isArray(value) && value.every(x => x && typeof x === 'object'), name + ': expected object array');
@@ -46,8 +72,9 @@ export function validateCoverage({ registry, inventory, sources, pilots }, runti
     check(unique(xs), label + ': duplicate reference');
     for (const x of xs) check(set.has(x), label + ': unknown reference ' + x);
   };
-  check(registry.registryVersion === '0.2.0', 'registryVersion: update validator when migrating contract');
-  check(nonempty(registry.purpose) && nonempty(registry.countingPolicy), 'registry: missing scope/counting policy');
+  check(registry.registryVersion === '0.3.0', 'registryVersion: update validator when migrating contract');
+  check(nonempty(registry.purpose) && nonempty(registry.countingPolicy) && nonempty(registry.routingPolicy), 'registry: missing scope/counting policy');
+  check(registry.routingKinds && ROUTING_KINDS.every(k=>nonempty(registry.routingKinds[k])) && Object.keys(registry.routingKinds).length===ROUTING_KINDS.length, 'registry: missing or unknown routing-kind boundary');
   check(domains.length === 30 && domainIds.size === 30, 'domains: expected 30 unique domains');
   for (let i = 1; i <= 30; i++) check(domainIds.has('D' + String(i).padStart(2, '0')), 'domains: missing D' + String(i).padStart(2, '0'));
   check(registry.baseline?.collectionCount === runtime.size, 'baseline: runtime collection count drift');
@@ -112,8 +139,38 @@ export function validateCoverage({ registry, inventory, sources, pilots }, runti
     refs(c.domainIds, domainIds, key + ' domains', c.disposition === 'excluded');
     if (c.disposition === 'excluded') check(c.domainIds?.length === 0, key + ': excluded category cannot claim domains');
     check(nonempty(c.rationale), key + ': missing mapping rationale');
+    check(JSON.stringify(canonical(c.routing??null))===JSON.stringify(canonical(expectedRouting(c.schemeId,c.code))), key+': routing kind/scope disagrees with pinned code semantics');
+    if(c.routing?.kind==='unknown')check(c.disposition==='excluded',key+': unknown field must remain excluded');
+    if(c.routing?.kind==='provisional-cultural-domain')check(c.disposition==='review',key+': provisional heritage route requires review');
+    if(c.reviewBatchId){
+      check(typeof c.reviewBatchId==='string' && registry.classificationReviews.some(r=>r.id===c.reviewBatchId && Array.isArray(r.scopeKeys) && r.scopeKeys.includes(key)),key+': mapping review batch missing or out of scope');
+      check(sourceIds.has(c.reviewBasis?.sourceId) && ['locator','decision','nextAction'].every(k=>nonempty(c.reviewBasis?.[k])),key+': missing review evidence or next action');
+    }
+
   }
   for (const s of schemes) for (const code of s.codes || []) check(seen.has(s.id + ':' + code), 'crosswalk: missing category ' + s.id + ':' + code);
+  check(unique(registry.classificationReviews.map(r=>r.id)), 'classification reviews: duplicate batch');
+  for(const review of registry.classificationReviews){
+    const key='classification review '+review.id;
+    check(nonempty(review.id) && nonempty(review.author) && nonempty(review.scope) && /^[a-f0-9]{40}$/.test(review.baselineCommit||''),key+': missing identity, baseline or scope');
+    check(['pending','reviewed'].includes(review.status),key+': invalid status');
+    refs(review.scopeKeys,seen,key+' scope');
+    if(!Array.isArray(review.scopeKeys))continue;
+    for(const scopeKey of review.scopeKeys)check(crosswalks.some(c=>c.schemeId+':'+c.code===scopeKey && c.reviewBatchId===review.id),key+': scope key is not bound to batch '+scopeKey);
+    check(Array.isArray(review.receipts),key+': receipts must be an array');
+    if(!Array.isArray(review.receipts))continue;
+    const digest=classificationReviewDigest({registry,inventory,sources},review);
+    for(const receipt of review.receipts){
+      check(receipt && ['source-routing','engineering'].includes(receipt.dimension) && receipt.result==='passed',key+': invalid receipt dimension/result');
+      check(receipt?.reviewer?.independent===true && receipt.reviewer.kind==='ai' && nonempty(receipt.reviewer.id) && receipt.reviewer.id!==review.author,key+': independent AI reviewer required');
+      check(/^[a-f0-9]{64}$/.test(receipt?.digest||'') && /^\d{4}-\d{2}-\d{2}$/.test(receipt?.reviewedOn||'') && /^docs\/coverage\/reviews\/[a-z0-9-]+\.md$/.test(receipt?.evidencePath||''),key+': malformed review binding or evidence path');
+    }
+    if(review.status==='reviewed'){
+      const current=['source-routing','engineering'].map(d=>review.receipts.find(r=>r?.dimension===d && r.result==='passed' && r.digest===digest));
+      check(current.every(Boolean),key+': exact routing/source review missing or stale');
+      if(current.every(Boolean))check(new Set(current.map(r=>r.reviewer?.id)).size===2,key+': source and engineering reviewers must be separate');
+    }
+  }
   check(pilotRows.length === 8 && pilotIds.size === 8, 'pilots: expected eight unique briefs');
   for (let i = 1; i <= 8; i++) check(pilotIds.has('P0' + i), 'pilots: missing P0' + i);
   for (const p of pilotRows) {
@@ -168,12 +225,32 @@ export async function validateBriefFiles(data, root = ROOT) {
   return errors;
 }
 
+export async function validateClassificationReviewFiles(data,root=ROOT) {
+  const errors=[];
+  const batches=data?.registry?.classificationReviews;
+  if(!Array.isArray(batches))return ['classification review: batches must be an array'];
+  for(const batch of batches){
+    if(!batch || typeof batch!=='object' || Array.isArray(batch) || !Array.isArray(batch.receipts)){
+      errors.push('classification review: batch must contain a receipt array');continue;
+    }
+    for(const r of batch.receipts){
+    if(!r || typeof r!=='object' || Array.isArray(r)){errors.push('classification review: receipt must be an object');continue;}
+    if(!/^docs\/coverage\/reviews\/[a-z0-9-]+\.md$/.test(r.evidencePath||'')){errors.push('classification review: unsafe evidence path');continue;}
+    if(!/^[a-f0-9]{64}$/.test(r.digest||'')){errors.push('classification review: malformed evidence digest');continue;}
+    try{const text=await readFile(resolve(root,r.evidencePath),'utf8');if(!text.includes(r.digest))errors.push('classification review: evidence does not name exact digest '+r.evidencePath);}
+    catch{errors.push('classification review: evidence file missing '+r.evidencePath);}
+    }
+  }
+  return errors;
+}
+
 if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
   try {
     const [data, runtime] = await Promise.all([readCoverage(), loadRegistry()]);
     const errors = runtime.problems.filter(x => x.level === 'error').map(x => x.where + ': ' + x.msg);
     errors.push(...validateCoverage(data, runtime.collections.map(x => x.id), runtime.fields.length));
     errors.push(...await validateBriefFiles(data));
+    errors.push(...await validateClassificationReviewFiles(data));
     if (errors.length) {
       console.error(errors.map(x => '- ' + x).join('\n')); process.exitCode = 1;
     } else {
@@ -182,6 +259,7 @@ if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.ur
         primaryCollections: data.registry.collectionMappings.filter(x => x.relationship === 'primary').length,
         crossListings: data.registry.collectionMappings.filter(x => x.relationship === 'cross-listed').length,
         classificationEntries: data.registry.crosswalks.length, dispositions,
+        reviewedRoutingRows: new Set(data.registry.classificationReviews.filter(r=>r.status==='reviewed').flatMap(r=>r.scopeKeys)).size,
         sourceReceipts: data.sources.sources.length, pilotBriefs: data.pilots.pilots.length,
         scope: 'Planning structure only; no production or specialist acceptance asserted.' }, null, 2));
     }

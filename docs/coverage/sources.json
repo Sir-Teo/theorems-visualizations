@@ -10,14 +10,15 @@
       "access": {
         "status": "table-read",
         "checkedOn": "2026-10-22",
-        "scope": "Named passage or section only; not a whole-work verification."
+        "scope": "Pinned local PDF hash rechecked; Appendix I pp. 54–58 visually re-inspected and relevant parent descriptions read for the 68 flagged ISCED routes. No new education-programme assignments or whole-work endorsement."
       },
       "rights": {
         "plan": "CC BY-SA 3.0 IGO stated on publication p. 2. Registry retains factual code identifiers and original mappings; publication is attributed, not redistributed."
       },
       "findings": [
         "All five Appendix I table pages visually checked after text extraction. Scope is the 149 possible four-digit codes printed there, including residual codes and 9999.",
-        "The Finnish reference has duplicate 0731 and 0910 labels, omitting 0730 and 0920; it also includes 0549 and 0739 absent from this edition. Do not silently merge code sets."
+        "The Finnish reference has duplicate 0731 and 0910 labels, omitting 0730 and 0920; it also includes 0549 and 0739 absent from this edition. Do not silently merge code sets.",
+        "The 0/9/88 categories retain distinct routing semantics. Parent-scope routes are editorial navigation only; generic programme codes do not become subject-specialist education, and unknown 9999 remains excluded."
       ],
       "sha256": "b320b3006ff82ef7f7d3c9182a3c380bbab50db3e59b725b3c5467f5a764d44f",
       "publisher": "UNESCO Institute for Statistics; hosted by Hungarian Central Statistical Office"

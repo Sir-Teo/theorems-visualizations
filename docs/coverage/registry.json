@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "registryVersion": "0.2.0",
+  "registryVersion": "0.3.0",
   "updatedOn": "2026-10-22",
   "purpose": "Planning coverage and gap discovery; not a runtime manifest or a content acceptance ledger.",
   "baseline": {
@@ -2750,14 +2750,22 @@
     {
       "schemeId": "isced-f",
       "code": "0000",
-      "disposition": "review",
+      "disposition": "mapped",
       "domainIds": [
-        "D01",
-        "D19",
-        "D23",
-        "D28"
+        "D19"
       ],
-      "rationale": "Residual, unspecified or interdisciplinary code. Broad candidate homes only; scope review required."
+      "rationale": "General learning orientation only; this does not reclassify generic programmes as the academic study of education.",
+      "routing": {
+        "kind": "not-further-defined",
+        "scopeCode": "00"
+      },
+      "reviewBatchId": "u1-crosswalk-20261022",
+      "reviewBasis": {
+        "sourceId": "isced2013",
+        "locator": "Appendix I, printed p. 54; detailed field descriptions within the stated parent scope",
+        "decision": "Editorial route established from the pinned hierarchy; no programme-level or taught-coverage claim.",
+        "nextAction": "Inspect a concrete topic or programme before selecting detailed lessons, component fields or prerequisites."
+      }
     },
     {
       "schemeId": "isced-f",
@@ -2766,7 +2774,11 @@
       "domainIds": [
         "D19"
       ],
-      "rationale": "Editorial subject mapping; no claim of taught or accepted coverage."
+      "rationale": "Editorial subject mapping; no claim of taught or accepted coverage.",
+      "routing": {
+        "kind": "subject",
+        "scopeCode": "001"
+      }
     },
     {
       "schemeId": "isced-f",
@@ -2777,7 +2789,11 @@
         "D19",
         "D23"
       ],
-      "rationale": "Editorial subject mapping; no claim of taught or accepted coverage."
+      "rationale": "Editorial subject mapping; no claim of taught or accepted coverage.",
+      "routing": {
+        "kind": "subject",
+        "scopeCode": "002"
+      }
     },
     {
       "schemeId": "isced-f",
@@ -2787,28 +2803,51 @@
         "D19",
         "D29"
       ],
-      "rationale": "Editorial subject mapping; no claim of taught or accepted coverage."
+      "rationale": "Editorial subject mapping; no claim of taught or accepted coverage.",
+      "routing": {
+        "kind": "subject",
+        "scopeCode": "003"
+      }
     },
     {
       "schemeId": "isced-f",
       "code": "0099",
-      "disposition": "review",
+      "disposition": "mapped",
       "domainIds": [
-        "D01",
-        "D19",
-        "D23",
-        "D28"
+        "D19"
       ],
-      "rationale": "Residual, unspecified or interdisciplinary code. Broad candidate homes only; scope review required."
+      "rationale": "General learning orientation only; this does not reclassify generic programmes as the academic study of education.",
+      "routing": {
+        "kind": "not-elsewhere-classified",
+        "scopeCode": "00"
+      },
+      "reviewBatchId": "u1-crosswalk-20261022",
+      "reviewBasis": {
+        "sourceId": "isced2013",
+        "locator": "Appendix I, printed p. 54; detailed field descriptions within the stated parent scope",
+        "decision": "Editorial route established from the pinned hierarchy; no programme-level or taught-coverage claim.",
+        "nextAction": "Inspect a concrete topic or programme before selecting detailed lessons, component fields or prerequisites."
+      }
     },
     {
       "schemeId": "isced-f",
       "code": "0110",
-      "disposition": "review",
+      "disposition": "mapped",
       "domainIds": [
         "D19"
       ],
-      "rationale": "Residual, unspecified or interdisciplinary code. Broad candidate homes only; scope review required."
+      "rationale": "Use education and learning; do not infer a teacher specialism from the residual or unspecified code.",
+      "routing": {
+        "kind": "not-further-defined",
+        "scopeCode": "011"
+      },
+      "reviewBatchId": "u1-crosswalk-20261022",
+      "reviewBasis": {
+        "sourceId": "isced2013",
+        "locator": "Appendix I, printed p. 54; detailed field descriptions within the stated parent scope",
+        "decision": "Editorial route established from the pinned hierarchy; no programme-level or taught-coverage claim.",
+        "nextAction": "Inspect a concrete topic or programme before selecting detailed lessons, component fields or prerequisites."
+      }
     },
     {
       "schemeId": "isced-f",
@@ -2817,7 +2856,11 @@
       "domainIds": [
         "D19"
       ],
-      "rationale": "Editorial subject mapping; no claim of taught or accepted coverage."
+      "rationale": "Editorial subject mapping; no claim of taught or accepted coverage.",
+      "routing": {
+        "kind": "subject",
+        "scopeCode": "011"
+      }
     },
     {
       "schemeId": "isced-f",
@@ -2826,7 +2869,11 @@
       "domainIds": [
         "D19"
       ],
-      "rationale": "Editorial subject mapping; no claim of taught or accepted coverage."
+      "rationale": "Editorial subject mapping; no claim of taught or accepted coverage.",
+      "routing": {
+        "kind": "subject",
+        "scopeCode": "011"
+      }
     },
     {
       "schemeId": "isced-f",
@@ -2835,7 +2882,11 @@
       "domainIds": [
         "D19"
       ],
-      "rationale": "Editorial subject mapping; no claim of taught or accepted coverage."
+      "rationale": "Editorial subject mapping; no claim of taught or accepted coverage.",
+      "routing": {
+        "kind": "subject",
+        "scopeCode": "011"
+      }
     },
     {
       "schemeId": "isced-f",
@@ -2844,30 +2895,56 @@
       "domainIds": [
         "D19"
       ],
-      "rationale": "Editorial subject mapping; no claim of taught or accepted coverage."
+      "rationale": "Editorial subject mapping; no claim of taught or accepted coverage.",
+      "routing": {
+        "kind": "subject",
+        "scopeCode": "011"
+      }
     },
     {
       "schemeId": "isced-f",
       "code": "0119",
-      "disposition": "review",
+      "disposition": "mapped",
       "domainIds": [
         "D19"
       ],
-      "rationale": "Residual, unspecified or interdisciplinary code. Broad candidate homes only; scope review required."
+      "rationale": "Use education and learning; do not infer a teacher specialism from the residual or unspecified code.",
+      "routing": {
+        "kind": "not-elsewhere-classified",
+        "scopeCode": "011"
+      },
+      "reviewBatchId": "u1-crosswalk-20261022",
+      "reviewBasis": {
+        "sourceId": "isced2013",
+        "locator": "Appendix I, printed p. 54; detailed field descriptions within the stated parent scope",
+        "decision": "Editorial route established from the pinned hierarchy; no programme-level or taught-coverage claim.",
+        "nextAction": "Inspect a concrete topic or programme before selecting detailed lessons, component fields or prerequisites."
+      }
     },
     {
       "schemeId": "isced-f",
       "code": "0188",
-      "disposition": "review",
+      "disposition": "mapped",
       "domainIds": [
         "D19"
       ],
-      "rationale": "Residual, unspecified or interdisciplinary code. Broad candidate homes only; scope review required."
+      "rationale": "Education is the navigation home; subject-specialist teaching content still requires its own evidence.",
+      "routing": {
+        "kind": "interdisciplinary",
+        "scopeCode": "01"
+      },
+      "reviewBatchId": "u1-crosswalk-20261022",
+      "reviewBasis": {
+        "sourceId": "isced2013",
+        "locator": "Appendix I, printed p. 54; detailed field descriptions within the stated parent scope",
+        "decision": "Editorial route established from the pinned hierarchy; no programme-level or taught-coverage claim.",
+        "nextAction": "Inspect a concrete topic or programme before selecting detailed lessons, component fields or prerequisites."
+      }
     },
     {
       "schemeId": "isced-f",
       "code": "0200",
-      "disposition": "review",
+      "disposition": "mapped",
       "domainIds": [
         "D20",
         "D21",
@@ -2876,25 +2953,46 @@
         "D24",
         "D25",
         "D26",
-        "D27"
+        "D27",
+        "D28",
+        "D29"
       ],
-      "rationale": "Residual, unspecified or interdisciplinary code. Broad candidate homes only; scope review required."
+      "rationale": "Arts and humanities span historical, intellectual, language, literary, visual, sonic, performance, media and craft routes; select actual components from topic evidence.",
+      "routing": {
+        "kind": "not-further-defined",
+        "scopeCode": "02"
+      },
+      "reviewBatchId": "u1-crosswalk-20261022",
+      "reviewBasis": {
+        "sourceId": "isced2013",
+        "locator": "Appendix I, printed p. 54; detailed field descriptions within the stated parent scope",
+        "decision": "Editorial route established from the pinned hierarchy; no programme-level or taught-coverage claim.",
+        "nextAction": "Inspect a concrete topic or programme before selecting detailed lessons, component fields or prerequisites."
+      }
     },
     {
       "schemeId": "isced-f",
       "code": "0210",
-      "disposition": "review",
+      "disposition": "mapped",
       "domainIds": [
-        "D20",
-        "D21",
-        "D22",
-        "D23",
-        "D24",
         "D25",
         "D26",
-        "D27"
+        "D27",
+        "D28",
+        "D29"
       ],
-      "rationale": "Residual, unspecified or interdisciplinary code. Broad candidate homes only; scope review required."
+      "rationale": "Restrict intake to art/design, music, performance, media production and craft; history, philosophy and religion are not implied by this arts code.",
+      "routing": {
+        "kind": "not-further-defined",
+        "scopeCode": "021"
+      },
+      "reviewBatchId": "u1-crosswalk-20261022",
+      "reviewBasis": {
+        "sourceId": "isced2013",
+        "locator": "Appendix I, printed p. 54; detailed field descriptions within the stated parent scope",
+        "decision": "Editorial route established from the pinned hierarchy; no programme-level or taught-coverage claim.",
+        "nextAction": "Inspect a concrete topic or programme before selecting detailed lessons, component fields or prerequisites."
+      }
     },
     {
       "schemeId": "isced-f",
@@ -2905,7 +3003,11 @@
         "D27",
         "D28"
       ],
-      "rationale": "Editorial subject mapping; no claim of taught or accepted coverage."
+      "rationale": "Editorial subject mapping; no claim of taught or accepted coverage.",
+      "routing": {
+        "kind": "subject",
+        "scopeCode": "021"
+      }
     },
     {
       "schemeId": "isced-f",
@@ -2914,7 +3016,11 @@
       "domainIds": [
         "D25"
       ],
-      "rationale": "Editorial subject mapping; no claim of taught or accepted coverage."
+      "rationale": "Editorial subject mapping; no claim of taught or accepted coverage.",
+      "routing": {
+        "kind": "subject",
+        "scopeCode": "021"
+      }
     },
     {
       "schemeId": "isced-f",
@@ -2923,7 +3029,11 @@
       "domainIds": [
         "D25"
       ],
-      "rationale": "Editorial subject mapping; no claim of taught or accepted coverage."
+      "rationale": "Editorial subject mapping; no claim of taught or accepted coverage.",
+      "routing": {
+        "kind": "subject",
+        "scopeCode": "021"
+      }
     },
     {
       "schemeId": "isced-f",
@@ -2933,7 +3043,11 @@
         "D25",
         "D29"
       ],
-      "rationale": "Editorial subject mapping; no claim of taught or accepted coverage."
+      "rationale": "Editorial subject mapping; no claim of taught or accepted coverage.",
+      "routing": {
+        "kind": "subject",
+        "scopeCode": "021"
+      }
     },
     {
       "schemeId": "isced-f",
@@ -2943,39 +3057,57 @@
         "D26",
         "D27"
       ],
-      "rationale": "Editorial subject mapping; no claim of taught or accepted coverage."
+      "rationale": "Editorial subject mapping; no claim of taught or accepted coverage.",
+      "routing": {
+        "kind": "subject",
+        "scopeCode": "021"
+      }
     },
     {
       "schemeId": "isced-f",
       "code": "0219",
-      "disposition": "review",
+      "disposition": "mapped",
       "domainIds": [
-        "D20",
-        "D21",
-        "D22",
-        "D23",
-        "D24",
         "D25",
         "D26",
-        "D27"
+        "D27",
+        "D28",
+        "D29"
       ],
-      "rationale": "Residual, unspecified or interdisciplinary code. Broad candidate homes only; scope review required."
+      "rationale": "Restrict intake to art/design, music, performance, media production and craft; history, philosophy and religion are not implied by this arts code.",
+      "routing": {
+        "kind": "not-elsewhere-classified",
+        "scopeCode": "021"
+      },
+      "reviewBatchId": "u1-crosswalk-20261022",
+      "reviewBasis": {
+        "sourceId": "isced2013",
+        "locator": "Appendix I, printed p. 54; detailed field descriptions within the stated parent scope",
+        "decision": "Editorial route established from the pinned hierarchy; no programme-level or taught-coverage claim.",
+        "nextAction": "Inspect a concrete topic or programme before selecting detailed lessons, component fields or prerequisites."
+      }
     },
     {
       "schemeId": "isced-f",
       "code": "0220",
-      "disposition": "review",
+      "disposition": "mapped",
       "domainIds": [
         "D20",
         "D21",
-        "D22",
-        "D23",
-        "D24",
-        "D25",
-        "D26",
-        "D27"
+        "D22"
       ],
-      "rationale": "Residual, unspecified or interdisciplinary code. Broad candidate homes only; scope review required."
+      "rationale": "Use history, philosophy and religion. The source parent excludes languages; language and literature are not automatic homes here.",
+      "routing": {
+        "kind": "not-further-defined",
+        "scopeCode": "022"
+      },
+      "reviewBatchId": "u1-crosswalk-20261022",
+      "reviewBasis": {
+        "sourceId": "isced2013",
+        "locator": "Appendix I, printed p. 54; detailed field descriptions within the stated parent scope",
+        "decision": "Editorial route established from the pinned hierarchy; no programme-level or taught-coverage claim.",
+        "nextAction": "Inspect a concrete topic or programme before selecting detailed lessons, component fields or prerequisites."
+      }
     },
     {
       "schemeId": "isced-f",
@@ -2984,7 +3116,11 @@
       "domainIds": [
         "D22"
       ],
-      "rationale": "Editorial subject mapping; no claim of taught or accepted coverage."
+      "rationale": "Editorial subject mapping; no claim of taught or accepted coverage.",
+      "routing": {
+        "kind": "subject",
+        "scopeCode": "022"
+      }
     },
     {
       "schemeId": "isced-f",
@@ -2993,7 +3129,11 @@
       "domainIds": [
         "D20"
       ],
-      "rationale": "Editorial subject mapping; no claim of taught or accepted coverage."
+      "rationale": "Editorial subject mapping; no claim of taught or accepted coverage.",
+      "routing": {
+        "kind": "subject",
+        "scopeCode": "022"
+      }
     },
     {
       "schemeId": "isced-f",
@@ -3002,39 +3142,54 @@
       "domainIds": [
         "D21"
       ],
-      "rationale": "Editorial subject mapping; no claim of taught or accepted coverage."
+      "rationale": "Editorial subject mapping; no claim of taught or accepted coverage.",
+      "routing": {
+        "kind": "subject",
+        "scopeCode": "022"
+      }
     },
     {
       "schemeId": "isced-f",
       "code": "0229",
-      "disposition": "review",
+      "disposition": "mapped",
       "domainIds": [
         "D20",
         "D21",
-        "D22",
-        "D23",
-        "D24",
-        "D25",
-        "D26",
-        "D27"
+        "D22"
       ],
-      "rationale": "Residual, unspecified or interdisciplinary code. Broad candidate homes only; scope review required."
+      "rationale": "Use history, philosophy and religion. The source parent excludes languages; language and literature are not automatic homes here.",
+      "routing": {
+        "kind": "not-elsewhere-classified",
+        "scopeCode": "022"
+      },
+      "reviewBatchId": "u1-crosswalk-20261022",
+      "reviewBasis": {
+        "sourceId": "isced2013",
+        "locator": "Appendix I, printed p. 54; detailed field descriptions within the stated parent scope",
+        "decision": "Editorial route established from the pinned hierarchy; no programme-level or taught-coverage claim.",
+        "nextAction": "Inspect a concrete topic or programme before selecting detailed lessons, component fields or prerequisites."
+      }
     },
     {
       "schemeId": "isced-f",
       "code": "0230",
-      "disposition": "review",
+      "disposition": "mapped",
       "domainIds": [
-        "D20",
-        "D21",
-        "D22",
         "D23",
-        "D24",
-        "D25",
-        "D26",
-        "D27"
+        "D24"
       ],
-      "rationale": "Residual, unspecified or interdisciplinary code. Broad candidate homes only; scope review required."
+      "rationale": "Use language/linguistics and literature; do not infer coverage of all humanities.",
+      "routing": {
+        "kind": "not-further-defined",
+        "scopeCode": "023"
+      },
+      "reviewBatchId": "u1-crosswalk-20261022",
+      "reviewBasis": {
+        "sourceId": "isced2013",
+        "locator": "Appendix I, printed p. 54; detailed field descriptions within the stated parent scope",
+        "decision": "Editorial route established from the pinned hierarchy; no programme-level or taught-coverage claim.",
+        "nextAction": "Inspect a concrete topic or programme before selecting detailed lessons, component fields or prerequisites."
+      }
     },
     {
       "schemeId": "isced-f",
@@ -3043,7 +3198,11 @@
       "domainIds": [
         "D23"
       ],
-      "rationale": "Editorial subject mapping; no claim of taught or accepted coverage."
+      "rationale": "Editorial subject mapping; no claim of taught or accepted coverage.",
+      "routing": {
+        "kind": "subject",
+        "scopeCode": "023"
+      }
     },
     {
       "schemeId": "isced-f",
@@ -3053,28 +3212,37 @@
         "D23",
         "D24"
       ],
-      "rationale": "Editorial subject mapping; no claim of taught or accepted coverage."
+      "rationale": "Editorial subject mapping; no claim of taught or accepted coverage.",
+      "routing": {
+        "kind": "subject",
+        "scopeCode": "023"
+      }
     },
     {
       "schemeId": "isced-f",
       "code": "0239",
-      "disposition": "review",
+      "disposition": "mapped",
       "domainIds": [
-        "D20",
-        "D21",
-        "D22",
         "D23",
-        "D24",
-        "D25",
-        "D26",
-        "D27"
+        "D24"
       ],
-      "rationale": "Residual, unspecified or interdisciplinary code. Broad candidate homes only; scope review required."
+      "rationale": "Use language/linguistics and literature; do not infer coverage of all humanities.",
+      "routing": {
+        "kind": "not-elsewhere-classified",
+        "scopeCode": "023"
+      },
+      "reviewBatchId": "u1-crosswalk-20261022",
+      "reviewBasis": {
+        "sourceId": "isced2013",
+        "locator": "Appendix I, printed p. 54; detailed field descriptions within the stated parent scope",
+        "decision": "Editorial route established from the pinned hierarchy; no programme-level or taught-coverage claim.",
+        "nextAction": "Inspect a concrete topic or programme before selecting detailed lessons, component fields or prerequisites."
+      }
     },
     {
       "schemeId": "isced-f",
       "code": "0288",
-      "disposition": "review",
+      "disposition": "mapped",
       "domainIds": [
         "D20",
         "D21",
@@ -3083,14 +3251,27 @@
         "D24",
         "D25",
         "D26",
-        "D27"
+        "D27",
+        "D28",
+        "D29"
       ],
-      "rationale": "Residual, unspecified or interdisciplinary code. Broad candidate homes only; scope review required."
+      "rationale": "Arts and humanities span historical, intellectual, language, literary, visual, sonic, performance, media and craft routes; select actual components from topic evidence.",
+      "routing": {
+        "kind": "interdisciplinary",
+        "scopeCode": "02"
+      },
+      "reviewBatchId": "u1-crosswalk-20261022",
+      "reviewBasis": {
+        "sourceId": "isced2013",
+        "locator": "Appendix I, printed p. 54; detailed field descriptions within the stated parent scope",
+        "decision": "Editorial route established from the pinned hierarchy; no programme-level or taught-coverage claim.",
+        "nextAction": "Inspect a concrete topic or programme before selecting detailed lessons, component fields or prerequisites."
+      }
     },
     {
       "schemeId": "isced-f",
       "code": "0299",
-      "disposition": "review",
+      "disposition": "mapped",
       "domainIds": [
         "D20",
         "D21",
@@ -3099,37 +3280,69 @@
         "D24",
         "D25",
         "D26",
-        "D27"
+        "D27",
+        "D28",
+        "D29"
       ],
-      "rationale": "Residual, unspecified or interdisciplinary code. Broad candidate homes only; scope review required."
+      "rationale": "Arts and humanities span historical, intellectual, language, literary, visual, sonic, performance, media and craft routes; select actual components from topic evidence.",
+      "routing": {
+        "kind": "not-elsewhere-classified",
+        "scopeCode": "02"
+      },
+      "reviewBatchId": "u1-crosswalk-20261022",
+      "reviewBasis": {
+        "sourceId": "isced2013",
+        "locator": "Appendix I, printed p. 54; detailed field descriptions within the stated parent scope",
+        "decision": "Editorial route established from the pinned hierarchy; no programme-level or taught-coverage claim.",
+        "nextAction": "Inspect a concrete topic or programme before selecting detailed lessons, component fields or prerequisites."
+      }
     },
     {
       "schemeId": "isced-f",
       "code": "0300",
-      "disposition": "review",
+      "disposition": "mapped",
       "domainIds": [
         "D13",
         "D15",
         "D17",
         "D18",
-        "D23",
         "D28"
       ],
-      "rationale": "Residual, unspecified or interdisciplinary code. Broad candidate homes only; scope review required."
+      "rationale": "Use economics, public affairs, social/cultural study, psychology and information/media; language is not an automatic parent route.",
+      "routing": {
+        "kind": "not-further-defined",
+        "scopeCode": "03"
+      },
+      "reviewBatchId": "u1-crosswalk-20261022",
+      "reviewBasis": {
+        "sourceId": "isced2013",
+        "locator": "Appendix I, printed p. 55; detailed field descriptions within the stated parent scope",
+        "decision": "Editorial route established from the pinned hierarchy; no programme-level or taught-coverage claim.",
+        "nextAction": "Inspect a concrete topic or programme before selecting detailed lessons, component fields or prerequisites."
+      }
     },
     {
       "schemeId": "isced-f",
       "code": "0310",
-      "disposition": "review",
+      "disposition": "mapped",
       "domainIds": [
         "D13",
         "D15",
         "D17",
-        "D18",
-        "D23",
-        "D28"
+        "D18"
       ],
-      "rationale": "Residual, unspecified or interdisciplinary code. Broad candidate homes only; scope review required."
+      "rationale": "Restrict intake to economic, political, social/cultural and psychological inquiry; journalism/information is a separate narrow field.",
+      "routing": {
+        "kind": "not-further-defined",
+        "scopeCode": "031"
+      },
+      "reviewBatchId": "u1-crosswalk-20261022",
+      "reviewBasis": {
+        "sourceId": "isced2013",
+        "locator": "Appendix I, printed p. 55; detailed field descriptions within the stated parent scope",
+        "decision": "Editorial route established from the pinned hierarchy; no programme-level or taught-coverage claim.",
+        "nextAction": "Inspect a concrete topic or programme before selecting detailed lessons, component fields or prerequisites."
+      }
     },
     {
       "schemeId": "isced-f",
@@ -3138,7 +3351,11 @@
       "domainIds": [
         "D13"
       ],
-      "rationale": "Editorial subject mapping; no claim of taught or accepted coverage."
+      "rationale": "Editorial subject mapping; no claim of taught or accepted coverage.",
+      "routing": {
+        "kind": "subject",
+        "scopeCode": "031"
+      }
     },
     {
       "schemeId": "isced-f",
@@ -3147,7 +3364,11 @@
       "domainIds": [
         "D15"
       ],
-      "rationale": "Editorial subject mapping; no claim of taught or accepted coverage."
+      "rationale": "Editorial subject mapping; no claim of taught or accepted coverage.",
+      "routing": {
+        "kind": "subject",
+        "scopeCode": "031"
+      }
     },
     {
       "schemeId": "isced-f",
@@ -3156,7 +3377,11 @@
       "domainIds": [
         "D18"
       ],
-      "rationale": "Editorial subject mapping; no claim of taught or accepted coverage."
+      "rationale": "Editorial subject mapping; no claim of taught or accepted coverage.",
+      "routing": {
+        "kind": "subject",
+        "scopeCode": "031"
+      }
     },
     {
       "schemeId": "isced-f",
@@ -3165,35 +3390,54 @@
       "domainIds": [
         "D17"
       ],
-      "rationale": "Editorial subject mapping; no claim of taught or accepted coverage."
+      "rationale": "Editorial subject mapping; no claim of taught or accepted coverage.",
+      "routing": {
+        "kind": "subject",
+        "scopeCode": "031"
+      }
     },
     {
       "schemeId": "isced-f",
       "code": "0319",
-      "disposition": "review",
+      "disposition": "mapped",
       "domainIds": [
         "D13",
         "D15",
         "D17",
-        "D18",
-        "D23",
-        "D28"
+        "D18"
       ],
-      "rationale": "Residual, unspecified or interdisciplinary code. Broad candidate homes only; scope review required."
+      "rationale": "Restrict intake to economic, political, social/cultural and psychological inquiry; journalism/information is a separate narrow field.",
+      "routing": {
+        "kind": "not-elsewhere-classified",
+        "scopeCode": "031"
+      },
+      "reviewBatchId": "u1-crosswalk-20261022",
+      "reviewBasis": {
+        "sourceId": "isced2013",
+        "locator": "Appendix I, printed p. 55; detailed field descriptions within the stated parent scope",
+        "decision": "Editorial route established from the pinned hierarchy; no programme-level or taught-coverage claim.",
+        "nextAction": "Inspect a concrete topic or programme before selecting detailed lessons, component fields or prerequisites."
+      }
     },
     {
       "schemeId": "isced-f",
       "code": "0320",
-      "disposition": "review",
+      "disposition": "mapped",
       "domainIds": [
-        "D13",
-        "D15",
-        "D17",
-        "D18",
-        "D23",
         "D28"
       ],
-      "rationale": "Residual, unspecified or interdisciplinary code. Broad candidate homes only; scope review required."
+      "rationale": "Use media, journalism, information and archives; economic or psychological subject matter needs a separately evidenced cross-link.",
+      "routing": {
+        "kind": "not-further-defined",
+        "scopeCode": "032"
+      },
+      "reviewBatchId": "u1-crosswalk-20261022",
+      "reviewBasis": {
+        "sourceId": "isced2013",
+        "locator": "Appendix I, printed p. 55; detailed field descriptions within the stated parent scope",
+        "decision": "Editorial route established from the pinned hierarchy; no programme-level or taught-coverage claim.",
+        "nextAction": "Inspect a concrete topic or programme before selecting detailed lessons, component fields or prerequisites."
+      }
     },
     {
       "schemeId": "isced-f",
@@ -3202,7 +3446,11 @@
       "domainIds": [
         "D28"
       ],
-      "rationale": "Editorial subject mapping; no claim of taught or accepted coverage."
+      "rationale": "Editorial subject mapping; no claim of taught or accepted coverage.",
+      "routing": {
+        "kind": "subject",
+        "scopeCode": "032"
+      }
     },
     {
       "schemeId": "isced-f",
@@ -3211,71 +3459,122 @@
       "domainIds": [
         "D28"
       ],
-      "rationale": "Editorial subject mapping; no claim of taught or accepted coverage."
+      "rationale": "Editorial subject mapping; no claim of taught or accepted coverage.",
+      "routing": {
+        "kind": "subject",
+        "scopeCode": "032"
+      }
     },
     {
       "schemeId": "isced-f",
       "code": "0329",
-      "disposition": "review",
+      "disposition": "mapped",
       "domainIds": [
-        "D13",
-        "D15",
-        "D17",
-        "D18",
-        "D23",
         "D28"
       ],
-      "rationale": "Residual, unspecified or interdisciplinary code. Broad candidate homes only; scope review required."
+      "rationale": "Use media, journalism, information and archives; economic or psychological subject matter needs a separately evidenced cross-link.",
+      "routing": {
+        "kind": "not-elsewhere-classified",
+        "scopeCode": "032"
+      },
+      "reviewBatchId": "u1-crosswalk-20261022",
+      "reviewBasis": {
+        "sourceId": "isced2013",
+        "locator": "Appendix I, printed p. 55; detailed field descriptions within the stated parent scope",
+        "decision": "Editorial route established from the pinned hierarchy; no programme-level or taught-coverage claim.",
+        "nextAction": "Inspect a concrete topic or programme before selecting detailed lessons, component fields or prerequisites."
+      }
     },
     {
       "schemeId": "isced-f",
       "code": "0388",
-      "disposition": "review",
+      "disposition": "mapped",
       "domainIds": [
         "D13",
         "D15",
         "D17",
         "D18",
-        "D23",
         "D28"
       ],
-      "rationale": "Residual, unspecified or interdisciplinary code. Broad candidate homes only; scope review required."
+      "rationale": "Use economics, public affairs, social/cultural study, psychology and information/media; language is not an automatic parent route.",
+      "routing": {
+        "kind": "interdisciplinary",
+        "scopeCode": "03"
+      },
+      "reviewBatchId": "u1-crosswalk-20261022",
+      "reviewBasis": {
+        "sourceId": "isced2013",
+        "locator": "Appendix I, printed p. 55; detailed field descriptions within the stated parent scope",
+        "decision": "Editorial route established from the pinned hierarchy; no programme-level or taught-coverage claim.",
+        "nextAction": "Inspect a concrete topic or programme before selecting detailed lessons, component fields or prerequisites."
+      }
     },
     {
       "schemeId": "isced-f",
       "code": "0399",
-      "disposition": "review",
+      "disposition": "mapped",
       "domainIds": [
         "D13",
         "D15",
         "D17",
         "D18",
-        "D23",
         "D28"
       ],
-      "rationale": "Residual, unspecified or interdisciplinary code. Broad candidate homes only; scope review required."
+      "rationale": "Use economics, public affairs, social/cultural study, psychology and information/media; language is not an automatic parent route.",
+      "routing": {
+        "kind": "not-elsewhere-classified",
+        "scopeCode": "03"
+      },
+      "reviewBatchId": "u1-crosswalk-20261022",
+      "reviewBasis": {
+        "sourceId": "isced2013",
+        "locator": "Appendix I, printed p. 55; detailed field descriptions within the stated parent scope",
+        "decision": "Editorial route established from the pinned hierarchy; no programme-level or taught-coverage claim.",
+        "nextAction": "Inspect a concrete topic or programme before selecting detailed lessons, component fields or prerequisites."
+      }
     },
     {
       "schemeId": "isced-f",
       "code": "0400",
-      "disposition": "review",
+      "disposition": "mapped",
       "domainIds": [
         "D13",
         "D14",
         "D16"
       ],
-      "rationale": "Residual, unspecified or interdisciplinary code. Broad candidate homes only; scope review required."
+      "rationale": "Use finance, business/organizations and law as entry points; each actual programme needs its own narrower routing.",
+      "routing": {
+        "kind": "not-further-defined",
+        "scopeCode": "04"
+      },
+      "reviewBatchId": "u1-crosswalk-20261022",
+      "reviewBasis": {
+        "sourceId": "isced2013",
+        "locator": "Appendix I, printed p. 55; detailed field descriptions within the stated parent scope",
+        "decision": "Editorial route established from the pinned hierarchy; no programme-level or taught-coverage claim.",
+        "nextAction": "Inspect a concrete topic or programme before selecting detailed lessons, component fields or prerequisites."
+      }
     },
     {
       "schemeId": "isced-f",
       "code": "0410",
-      "disposition": "review",
+      "disposition": "mapped",
       "domainIds": [
         "D13",
-        "D14",
-        "D16"
+        "D14"
       ],
-      "rationale": "Residual, unspecified or interdisciplinary code. Broad candidate homes only; scope review required."
+      "rationale": "Use finance and business/organizations. A business code alone does not imply legal education.",
+      "routing": {
+        "kind": "not-further-defined",
+        "scopeCode": "041"
+      },
+      "reviewBatchId": "u1-crosswalk-20261022",
+      "reviewBasis": {
+        "sourceId": "isced2013",
+        "locator": "Appendix I, printed p. 55; detailed field descriptions within the stated parent scope",
+        "decision": "Editorial route established from the pinned hierarchy; no programme-level or taught-coverage claim.",
+        "nextAction": "Inspect a concrete topic or programme before selecting detailed lessons, component fields or prerequisites."
+      }
     },
     {
       "schemeId": "isced-f",
@@ -3284,7 +3583,11 @@
       "domainIds": [
         "D14"
       ],
-      "rationale": "Editorial subject mapping; no claim of taught or accepted coverage."
+      "rationale": "Editorial subject mapping; no claim of taught or accepted coverage.",
+      "routing": {
+        "kind": "subject",
+        "scopeCode": "041"
+      }
     },
     {
       "schemeId": "isced-f",
@@ -3294,7 +3597,11 @@
         "D13",
         "D14"
       ],
-      "rationale": "Editorial subject mapping; no claim of taught or accepted coverage."
+      "rationale": "Editorial subject mapping; no claim of taught or accepted coverage.",
+      "routing": {
+        "kind": "subject",
+        "scopeCode": "041"
+      }
     },
     {
       "schemeId": "isced-f",
@@ -3303,7 +3610,11 @@
       "domainIds": [
         "D14"
       ],
-      "rationale": "Editorial subject mapping; no claim of taught or accepted coverage."
+      "rationale": "Editorial subject mapping; no claim of taught or accepted coverage.",
+      "routing": {
+        "kind": "subject",
+        "scopeCode": "041"
+      }
     },
     {
       "schemeId": "isced-f",
@@ -3313,7 +3624,11 @@
         "D14",
         "D28"
       ],
-      "rationale": "Editorial subject mapping; no claim of taught or accepted coverage."
+      "rationale": "Editorial subject mapping; no claim of taught or accepted coverage.",
+      "routing": {
+        "kind": "subject",
+        "scopeCode": "041"
+      }
     },
     {
       "schemeId": "isced-f",
@@ -3323,7 +3638,11 @@
         "D14",
         "D29"
       ],
-      "rationale": "Editorial subject mapping; no claim of taught or accepted coverage."
+      "rationale": "Editorial subject mapping; no claim of taught or accepted coverage.",
+      "routing": {
+        "kind": "subject",
+        "scopeCode": "041"
+      }
     },
     {
       "schemeId": "isced-f",
@@ -3332,7 +3651,11 @@
       "domainIds": [
         "D14"
       ],
-      "rationale": "Editorial subject mapping; no claim of taught or accepted coverage."
+      "rationale": "Editorial subject mapping; no claim of taught or accepted coverage.",
+      "routing": {
+        "kind": "subject",
+        "scopeCode": "041"
+      }
     },
     {
       "schemeId": "isced-f",
@@ -3342,18 +3665,32 @@
         "D14",
         "D29"
       ],
-      "rationale": "Editorial subject mapping; no claim of taught or accepted coverage."
+      "rationale": "Editorial subject mapping; no claim of taught or accepted coverage.",
+      "routing": {
+        "kind": "subject",
+        "scopeCode": "041"
+      }
     },
     {
       "schemeId": "isced-f",
       "code": "0419",
-      "disposition": "review",
+      "disposition": "mapped",
       "domainIds": [
         "D13",
-        "D14",
-        "D16"
+        "D14"
       ],
-      "rationale": "Residual, unspecified or interdisciplinary code. Broad candidate homes only; scope review required."
+      "rationale": "Use finance and business/organizations. A business code alone does not imply legal education.",
+      "routing": {
+        "kind": "not-elsewhere-classified",
+        "scopeCode": "041"
+      },
+      "reviewBatchId": "u1-crosswalk-20261022",
+      "reviewBasis": {
+        "sourceId": "isced2013",
+        "locator": "Appendix I, printed p. 55; detailed field descriptions within the stated parent scope",
+        "decision": "Editorial route established from the pinned hierarchy; no programme-level or taught-coverage claim.",
+        "nextAction": "Inspect a concrete topic or programme before selecting detailed lessons, component fields or prerequisites."
+      }
     },
     {
       "schemeId": "isced-f",
@@ -3362,34 +3699,60 @@
       "domainIds": [
         "D16"
       ],
-      "rationale": "Editorial subject mapping; no claim of taught or accepted coverage."
+      "rationale": "Editorial subject mapping; no claim of taught or accepted coverage.",
+      "routing": {
+        "kind": "subject",
+        "scopeCode": "042"
+      }
     },
     {
       "schemeId": "isced-f",
       "code": "0488",
-      "disposition": "review",
+      "disposition": "mapped",
       "domainIds": [
         "D13",
         "D14",
         "D16"
       ],
-      "rationale": "Residual, unspecified or interdisciplinary code. Broad candidate homes only; scope review required."
+      "rationale": "Use finance, business/organizations and law as entry points; each actual programme needs its own narrower routing.",
+      "routing": {
+        "kind": "interdisciplinary",
+        "scopeCode": "04"
+      },
+      "reviewBatchId": "u1-crosswalk-20261022",
+      "reviewBasis": {
+        "sourceId": "isced2013",
+        "locator": "Appendix I, printed p. 55; detailed field descriptions within the stated parent scope",
+        "decision": "Editorial route established from the pinned hierarchy; no programme-level or taught-coverage claim.",
+        "nextAction": "Inspect a concrete topic or programme before selecting detailed lessons, component fields or prerequisites."
+      }
     },
     {
       "schemeId": "isced-f",
       "code": "0499",
-      "disposition": "review",
+      "disposition": "mapped",
       "domainIds": [
         "D13",
         "D14",
         "D16"
       ],
-      "rationale": "Residual, unspecified or interdisciplinary code. Broad candidate homes only; scope review required."
+      "rationale": "Use finance, business/organizations and law as entry points; each actual programme needs its own narrower routing.",
+      "routing": {
+        "kind": "not-elsewhere-classified",
+        "scopeCode": "04"
+      },
+      "reviewBatchId": "u1-crosswalk-20261022",
+      "reviewBasis": {
+        "sourceId": "isced2013",
+        "locator": "Appendix I, printed p. 55; detailed field descriptions within the stated parent scope",
+        "decision": "Editorial route established from the pinned hierarchy; no programme-level or taught-coverage claim.",
+        "nextAction": "Inspect a concrete topic or programme before selecting detailed lessons, component fields or prerequisites."
+      }
     },
     {
       "schemeId": "isced-f",
       "code": "0500",
-      "disposition": "review",
+      "disposition": "mapped",
       "domainIds": [
         "D01",
         "D02",
@@ -3399,22 +3762,39 @@
         "D07",
         "D08"
       ],
-      "rationale": "Residual, unspecified or interdisciplinary code. Broad candidate homes only; scope review required."
+      "rationale": "Offer the broad science/mathematics/statistics entry points without treating all of them as taught components.",
+      "routing": {
+        "kind": "not-further-defined",
+        "scopeCode": "05"
+      },
+      "reviewBatchId": "u1-crosswalk-20261022",
+      "reviewBasis": {
+        "sourceId": "isced2013",
+        "locator": "Appendix I, printed p. 56; detailed field descriptions within the stated parent scope",
+        "decision": "Editorial route established from the pinned hierarchy; no programme-level or taught-coverage claim.",
+        "nextAction": "Inspect a concrete topic or programme before selecting detailed lessons, component fields or prerequisites."
+      }
     },
     {
       "schemeId": "isced-f",
       "code": "0510",
-      "disposition": "review",
+      "disposition": "mapped",
       "domainIds": [
-        "D01",
-        "D02",
-        "D04",
         "D05",
-        "D06",
-        "D07",
-        "D08"
+        "D07"
       ],
-      "rationale": "Residual, unspecified or interdisciplinary code. Broad candidate homes only; scope review required."
+      "rationale": "Use life sciences and biochemical connections; mathematics, physics and geography are not implied by this narrow parent.",
+      "routing": {
+        "kind": "not-further-defined",
+        "scopeCode": "051"
+      },
+      "reviewBatchId": "u1-crosswalk-20261022",
+      "reviewBasis": {
+        "sourceId": "isced2013",
+        "locator": "Appendix I, printed p. 56; detailed field descriptions within the stated parent scope",
+        "decision": "Editorial route established from the pinned hierarchy; no programme-level or taught-coverage claim.",
+        "nextAction": "Inspect a concrete topic or programme before selecting detailed lessons, component fields or prerequisites."
+      }
     },
     {
       "schemeId": "isced-f",
@@ -3423,7 +3803,11 @@
       "domainIds": [
         "D07"
       ],
-      "rationale": "Editorial subject mapping; no claim of taught or accepted coverage."
+      "rationale": "Editorial subject mapping; no claim of taught or accepted coverage.",
+      "routing": {
+        "kind": "subject",
+        "scopeCode": "051"
+      }
     },
     {
       "schemeId": "isced-f",
@@ -3433,37 +3817,53 @@
         "D05",
         "D07"
       ],
-      "rationale": "Editorial subject mapping; no claim of taught or accepted coverage."
+      "rationale": "Editorial subject mapping; no claim of taught or accepted coverage.",
+      "routing": {
+        "kind": "subject",
+        "scopeCode": "051"
+      }
     },
     {
       "schemeId": "isced-f",
       "code": "0519",
-      "disposition": "review",
+      "disposition": "mapped",
       "domainIds": [
-        "D01",
-        "D02",
-        "D04",
         "D05",
-        "D06",
-        "D07",
-        "D08"
+        "D07"
       ],
-      "rationale": "Residual, unspecified or interdisciplinary code. Broad candidate homes only; scope review required."
+      "rationale": "Use life sciences and biochemical connections; mathematics, physics and geography are not implied by this narrow parent.",
+      "routing": {
+        "kind": "not-elsewhere-classified",
+        "scopeCode": "051"
+      },
+      "reviewBatchId": "u1-crosswalk-20261022",
+      "reviewBasis": {
+        "sourceId": "isced2013",
+        "locator": "Appendix I, printed p. 56; detailed field descriptions within the stated parent scope",
+        "decision": "Editorial route established from the pinned hierarchy; no programme-level or taught-coverage claim.",
+        "nextAction": "Inspect a concrete topic or programme before selecting detailed lessons, component fields or prerequisites."
+      }
     },
     {
       "schemeId": "isced-f",
       "code": "0520",
-      "disposition": "review",
+      "disposition": "mapped",
       "domainIds": [
-        "D01",
-        "D02",
-        "D04",
-        "D05",
         "D06",
-        "D07",
         "D08"
       ],
-      "rationale": "Residual, unspecified or interdisciplinary code. Broad candidate homes only; scope review required."
+      "rationale": "Use earth/environment and conservation practice; the code does not imply all natural sciences.",
+      "routing": {
+        "kind": "not-further-defined",
+        "scopeCode": "052"
+      },
+      "reviewBatchId": "u1-crosswalk-20261022",
+      "reviewBasis": {
+        "sourceId": "isced2013",
+        "locator": "Appendix I, printed p. 56; detailed field descriptions within the stated parent scope",
+        "decision": "Editorial route established from the pinned hierarchy; no programme-level or taught-coverage claim.",
+        "nextAction": "Inspect a concrete topic or programme before selecting detailed lessons, component fields or prerequisites."
+      }
     },
     {
       "schemeId": "isced-f",
@@ -3473,7 +3873,11 @@
         "D06",
         "D08"
       ],
-      "rationale": "Editorial subject mapping; no claim of taught or accepted coverage."
+      "rationale": "Editorial subject mapping; no claim of taught or accepted coverage.",
+      "routing": {
+        "kind": "subject",
+        "scopeCode": "052"
+      }
     },
     {
       "schemeId": "isced-f",
@@ -3482,37 +3886,54 @@
       "domainIds": [
         "D08"
       ],
-      "rationale": "Editorial subject mapping; no claim of taught or accepted coverage."
+      "rationale": "Editorial subject mapping; no claim of taught or accepted coverage.",
+      "routing": {
+        "kind": "subject",
+        "scopeCode": "052"
+      }
     },
     {
       "schemeId": "isced-f",
       "code": "0529",
-      "disposition": "review",
+      "disposition": "mapped",
       "domainIds": [
-        "D01",
-        "D02",
-        "D04",
-        "D05",
         "D06",
-        "D07",
         "D08"
       ],
-      "rationale": "Residual, unspecified or interdisciplinary code. Broad candidate homes only; scope review required."
+      "rationale": "Use earth/environment and conservation practice; the code does not imply all natural sciences.",
+      "routing": {
+        "kind": "not-elsewhere-classified",
+        "scopeCode": "052"
+      },
+      "reviewBatchId": "u1-crosswalk-20261022",
+      "reviewBasis": {
+        "sourceId": "isced2013",
+        "locator": "Appendix I, printed p. 56; detailed field descriptions within the stated parent scope",
+        "decision": "Editorial route established from the pinned hierarchy; no programme-level or taught-coverage claim.",
+        "nextAction": "Inspect a concrete topic or programme before selecting detailed lessons, component fields or prerequisites."
+      }
     },
     {
       "schemeId": "isced-f",
       "code": "0530",
-      "disposition": "review",
+      "disposition": "mapped",
       "domainIds": [
-        "D01",
-        "D02",
         "D04",
         "D05",
-        "D06",
-        "D07",
-        "D08"
+        "D06"
       ],
-      "rationale": "Residual, unspecified or interdisciplinary code. Broad candidate homes only; scope review required."
+      "rationale": "Use physics, chemistry and earth science; biology and mathematics are not automatically included.",
+      "routing": {
+        "kind": "not-further-defined",
+        "scopeCode": "053"
+      },
+      "reviewBatchId": "u1-crosswalk-20261022",
+      "reviewBasis": {
+        "sourceId": "isced2013",
+        "locator": "Appendix I, printed p. 56; detailed field descriptions within the stated parent scope",
+        "decision": "Editorial route established from the pinned hierarchy; no programme-level or taught-coverage claim.",
+        "nextAction": "Inspect a concrete topic or programme before selecting detailed lessons, component fields or prerequisites."
+      }
     },
     {
       "schemeId": "isced-f",
@@ -3521,7 +3942,11 @@
       "domainIds": [
         "D05"
       ],
-      "rationale": "Editorial subject mapping; no claim of taught or accepted coverage."
+      "rationale": "Editorial subject mapping; no claim of taught or accepted coverage.",
+      "routing": {
+        "kind": "subject",
+        "scopeCode": "053"
+      }
     },
     {
       "schemeId": "isced-f",
@@ -3530,7 +3955,11 @@
       "domainIds": [
         "D06"
       ],
-      "rationale": "Editorial subject mapping; no claim of taught or accepted coverage."
+      "rationale": "Editorial subject mapping; no claim of taught or accepted coverage.",
+      "routing": {
+        "kind": "subject",
+        "scopeCode": "053"
+      }
     },
     {
       "schemeId": "isced-f",
@@ -3539,37 +3968,54 @@
       "domainIds": [
         "D04"
       ],
-      "rationale": "Editorial subject mapping; no claim of taught or accepted coverage."
+      "rationale": "Editorial subject mapping; no claim of taught or accepted coverage.",
+      "routing": {
+        "kind": "subject",
+        "scopeCode": "053"
+      }
     },
     {
       "schemeId": "isced-f",
       "code": "0539",
-      "disposition": "review",
+      "disposition": "mapped",
       "domainIds": [
-        "D01",
-        "D02",
         "D04",
         "D05",
-        "D06",
-        "D07",
-        "D08"
+        "D06"
       ],
-      "rationale": "Residual, unspecified or interdisciplinary code. Broad candidate homes only; scope review required."
+      "rationale": "Use physics, chemistry and earth science; biology and mathematics are not automatically included.",
+      "routing": {
+        "kind": "not-elsewhere-classified",
+        "scopeCode": "053"
+      },
+      "reviewBatchId": "u1-crosswalk-20261022",
+      "reviewBasis": {
+        "sourceId": "isced2013",
+        "locator": "Appendix I, printed p. 56; detailed field descriptions within the stated parent scope",
+        "decision": "Editorial route established from the pinned hierarchy; no programme-level or taught-coverage claim.",
+        "nextAction": "Inspect a concrete topic or programme before selecting detailed lessons, component fields or prerequisites."
+      }
     },
     {
       "schemeId": "isced-f",
       "code": "0540",
-      "disposition": "review",
+      "disposition": "mapped",
       "domainIds": [
         "D01",
-        "D02",
-        "D04",
-        "D05",
-        "D06",
-        "D07",
-        "D08"
+        "D02"
       ],
-      "rationale": "Residual, unspecified or interdisciplinary code. Broad candidate homes only; scope review required."
+      "rationale": "Use mathematics and statistics; other natural sciences require a separate topic-level connection.",
+      "routing": {
+        "kind": "not-further-defined",
+        "scopeCode": "054"
+      },
+      "reviewBatchId": "u1-crosswalk-20261022",
+      "reviewBasis": {
+        "sourceId": "isced2013",
+        "locator": "Appendix I, printed p. 56; detailed field descriptions within the stated parent scope",
+        "decision": "Editorial route established from the pinned hierarchy; no programme-level or taught-coverage claim.",
+        "nextAction": "Inspect a concrete topic or programme before selecting detailed lessons, component fields or prerequisites."
+      }
     },
     {
       "schemeId": "isced-f",
@@ -3578,7 +4024,11 @@
       "domainIds": [
         "D01"
       ],
-      "rationale": "Editorial subject mapping; no claim of taught or accepted coverage."
+      "rationale": "Editorial subject mapping; no claim of taught or accepted coverage.",
+      "routing": {
+        "kind": "subject",
+        "scopeCode": "054"
+      }
     },
     {
       "schemeId": "isced-f",
@@ -3587,12 +4037,16 @@
       "domainIds": [
         "D02"
       ],
-      "rationale": "Editorial subject mapping; no claim of taught or accepted coverage."
+      "rationale": "Editorial subject mapping; no claim of taught or accepted coverage.",
+      "routing": {
+        "kind": "subject",
+        "scopeCode": "054"
+      }
     },
     {
       "schemeId": "isced-f",
       "code": "0588",
-      "disposition": "review",
+      "disposition": "mapped",
       "domainIds": [
         "D01",
         "D02",
@@ -3602,12 +4056,23 @@
         "D07",
         "D08"
       ],
-      "rationale": "Residual, unspecified or interdisciplinary code. Broad candidate homes only; scope review required."
+      "rationale": "Offer the broad science/mathematics/statistics entry points without treating all of them as taught components.",
+      "routing": {
+        "kind": "interdisciplinary",
+        "scopeCode": "05"
+      },
+      "reviewBatchId": "u1-crosswalk-20261022",
+      "reviewBasis": {
+        "sourceId": "isced2013",
+        "locator": "Appendix I, printed p. 56; detailed field descriptions within the stated parent scope",
+        "decision": "Editorial route established from the pinned hierarchy; no programme-level or taught-coverage claim.",
+        "nextAction": "Inspect a concrete topic or programme before selecting detailed lessons, component fields or prerequisites."
+      }
     },
     {
       "schemeId": "isced-f",
       "code": "0599",
-      "disposition": "review",
+      "disposition": "mapped",
       "domainIds": [
         "D01",
         "D02",
@@ -3617,16 +4082,38 @@
         "D07",
         "D08"
       ],
-      "rationale": "Residual, unspecified or interdisciplinary code. Broad candidate homes only; scope review required."
+      "rationale": "Offer the broad science/mathematics/statistics entry points without treating all of them as taught components.",
+      "routing": {
+        "kind": "not-elsewhere-classified",
+        "scopeCode": "05"
+      },
+      "reviewBatchId": "u1-crosswalk-20261022",
+      "reviewBasis": {
+        "sourceId": "isced2013",
+        "locator": "Appendix I, printed p. 56; detailed field descriptions within the stated parent scope",
+        "decision": "Editorial route established from the pinned hierarchy; no programme-level or taught-coverage claim.",
+        "nextAction": "Inspect a concrete topic or programme before selecting detailed lessons, component fields or prerequisites."
+      }
     },
     {
       "schemeId": "isced-f",
       "code": "0610",
-      "disposition": "review",
+      "disposition": "mapped",
       "domainIds": [
         "D03"
       ],
-      "rationale": "Residual, unspecified or interdisciplinary code. Broad candidate homes only; scope review required."
+      "rationale": "Use computing/information systems without inventing a software, database or network specialism.",
+      "routing": {
+        "kind": "not-further-defined",
+        "scopeCode": "061"
+      },
+      "reviewBatchId": "u1-crosswalk-20261022",
+      "reviewBasis": {
+        "sourceId": "isced2013",
+        "locator": "Appendix I, printed p. 56; detailed field descriptions within the stated parent scope",
+        "decision": "Editorial route established from the pinned hierarchy; no programme-level or taught-coverage claim.",
+        "nextAction": "Inspect a concrete topic or programme before selecting detailed lessons, component fields or prerequisites."
+      }
     },
     {
       "schemeId": "isced-f",
@@ -3636,7 +4123,11 @@
         "D03",
         "D19"
       ],
-      "rationale": "Editorial subject mapping; no claim of taught or accepted coverage."
+      "rationale": "Editorial subject mapping; no claim of taught or accepted coverage.",
+      "routing": {
+        "kind": "subject",
+        "scopeCode": "061"
+      }
     },
     {
       "schemeId": "isced-f",
@@ -3645,7 +4136,11 @@
       "domainIds": [
         "D03"
       ],
-      "rationale": "Editorial subject mapping; no claim of taught or accepted coverage."
+      "rationale": "Editorial subject mapping; no claim of taught or accepted coverage.",
+      "routing": {
+        "kind": "subject",
+        "scopeCode": "061"
+      }
     },
     {
       "schemeId": "isced-f",
@@ -3654,49 +4149,94 @@
       "domainIds": [
         "D03"
       ],
-      "rationale": "Editorial subject mapping; no claim of taught or accepted coverage."
+      "rationale": "Editorial subject mapping; no claim of taught or accepted coverage.",
+      "routing": {
+        "kind": "subject",
+        "scopeCode": "061"
+      }
     },
     {
       "schemeId": "isced-f",
       "code": "0619",
-      "disposition": "review",
+      "disposition": "mapped",
       "domainIds": [
         "D03"
       ],
-      "rationale": "Residual, unspecified or interdisciplinary code. Broad candidate homes only; scope review required."
+      "rationale": "Use computing/information systems without inventing a software, database or network specialism.",
+      "routing": {
+        "kind": "not-elsewhere-classified",
+        "scopeCode": "061"
+      },
+      "reviewBatchId": "u1-crosswalk-20261022",
+      "reviewBasis": {
+        "sourceId": "isced2013",
+        "locator": "Appendix I, printed p. 56; detailed field descriptions within the stated parent scope",
+        "decision": "Editorial route established from the pinned hierarchy; no programme-level or taught-coverage claim.",
+        "nextAction": "Inspect a concrete topic or programme before selecting detailed lessons, component fields or prerequisites."
+      }
     },
     {
       "schemeId": "isced-f",
       "code": "0688",
-      "disposition": "review",
+      "disposition": "mapped",
       "domainIds": [
         "D03"
       ],
-      "rationale": "Residual, unspecified or interdisciplinary code. Broad candidate homes only; scope review required."
+      "rationale": "Use computing/information systems as the leading route; any other interdisciplinary component needs actual content evidence.",
+      "routing": {
+        "kind": "interdisciplinary",
+        "scopeCode": "06"
+      },
+      "reviewBatchId": "u1-crosswalk-20261022",
+      "reviewBasis": {
+        "sourceId": "isced2013",
+        "locator": "Appendix I, printed p. 56; detailed field descriptions within the stated parent scope",
+        "decision": "Editorial route established from the pinned hierarchy; no programme-level or taught-coverage claim.",
+        "nextAction": "Inspect a concrete topic or programme before selecting detailed lessons, component fields or prerequisites."
+      }
     },
     {
       "schemeId": "isced-f",
       "code": "0700",
-      "disposition": "review",
+      "disposition": "mapped",
       "domainIds": [
-        "D05",
         "D11",
         "D12",
         "D29"
       ],
-      "rationale": "Residual, unspecified or interdisciplinary code. Broad candidate homes only; scope review required."
+      "rationale": "Use engineering/manufacturing, built environments and technical practice as intake routes; further subject links depend on the actual topic.",
+      "routing": {
+        "kind": "not-further-defined",
+        "scopeCode": "07"
+      },
+      "reviewBatchId": "u1-crosswalk-20261022",
+      "reviewBasis": {
+        "sourceId": "isced2013",
+        "locator": "Appendix I, printed p. 57; detailed field descriptions within the stated parent scope",
+        "decision": "Editorial route established from the pinned hierarchy; no programme-level or taught-coverage claim.",
+        "nextAction": "Inspect a concrete topic or programme before selecting detailed lessons, component fields or prerequisites."
+      }
     },
     {
       "schemeId": "isced-f",
       "code": "0710",
-      "disposition": "review",
+      "disposition": "mapped",
       "domainIds": [
-        "D05",
         "D11",
-        "D12",
         "D29"
       ],
-      "rationale": "Residual, unspecified or interdisciplinary code. Broad candidate homes only; scope review required."
+      "rationale": "Use engineering and technical trades; construction is not an automatic inference from this engineering-trades parent.",
+      "routing": {
+        "kind": "not-further-defined",
+        "scopeCode": "071"
+      },
+      "reviewBatchId": "u1-crosswalk-20261022",
+      "reviewBasis": {
+        "sourceId": "isced2013",
+        "locator": "Appendix I, printed p. 57; detailed field descriptions within the stated parent scope",
+        "decision": "Editorial route established from the pinned hierarchy; no programme-level or taught-coverage claim.",
+        "nextAction": "Inspect a concrete topic or programme before selecting detailed lessons, component fields or prerequisites."
+      }
     },
     {
       "schemeId": "isced-f",
@@ -3706,7 +4246,11 @@
         "D05",
         "D11"
       ],
-      "rationale": "Editorial subject mapping; no claim of taught or accepted coverage."
+      "rationale": "Editorial subject mapping; no claim of taught or accepted coverage.",
+      "routing": {
+        "kind": "subject",
+        "scopeCode": "071"
+      }
     },
     {
       "schemeId": "isced-f",
@@ -3716,7 +4260,11 @@
         "D08",
         "D11"
       ],
-      "rationale": "Editorial subject mapping; no claim of taught or accepted coverage."
+      "rationale": "Editorial subject mapping; no claim of taught or accepted coverage.",
+      "routing": {
+        "kind": "subject",
+        "scopeCode": "071"
+      }
     },
     {
       "schemeId": "isced-f",
@@ -3725,7 +4273,11 @@
       "domainIds": [
         "D11"
       ],
-      "rationale": "Editorial subject mapping; no claim of taught or accepted coverage."
+      "rationale": "Editorial subject mapping; no claim of taught or accepted coverage.",
+      "routing": {
+        "kind": "subject",
+        "scopeCode": "071"
+      }
     },
     {
       "schemeId": "isced-f",
@@ -3735,7 +4287,11 @@
         "D03",
         "D11"
       ],
-      "rationale": "Editorial subject mapping; no claim of taught or accepted coverage."
+      "rationale": "Editorial subject mapping; no claim of taught or accepted coverage.",
+      "routing": {
+        "kind": "subject",
+        "scopeCode": "071"
+      }
     },
     {
       "schemeId": "isced-f",
@@ -3745,7 +4301,11 @@
         "D11",
         "D29"
       ],
-      "rationale": "Editorial subject mapping; no claim of taught or accepted coverage."
+      "rationale": "Editorial subject mapping; no claim of taught or accepted coverage.",
+      "routing": {
+        "kind": "subject",
+        "scopeCode": "071"
+      }
     },
     {
       "schemeId": "isced-f",
@@ -3755,31 +4315,54 @@
         "D11",
         "D29"
       ],
-      "rationale": "Editorial subject mapping; no claim of taught or accepted coverage."
+      "rationale": "Editorial subject mapping; no claim of taught or accepted coverage.",
+      "routing": {
+        "kind": "subject",
+        "scopeCode": "071"
+      }
     },
     {
       "schemeId": "isced-f",
       "code": "0719",
-      "disposition": "review",
+      "disposition": "mapped",
       "domainIds": [
-        "D05",
         "D11",
-        "D12",
         "D29"
       ],
-      "rationale": "Residual, unspecified or interdisciplinary code. Broad candidate homes only; scope review required."
+      "rationale": "Use engineering and technical trades; construction is not an automatic inference from this engineering-trades parent.",
+      "routing": {
+        "kind": "not-elsewhere-classified",
+        "scopeCode": "071"
+      },
+      "reviewBatchId": "u1-crosswalk-20261022",
+      "reviewBasis": {
+        "sourceId": "isced2013",
+        "locator": "Appendix I, printed p. 57; detailed field descriptions within the stated parent scope",
+        "decision": "Editorial route established from the pinned hierarchy; no programme-level or taught-coverage claim.",
+        "nextAction": "Inspect a concrete topic or programme before selecting detailed lessons, component fields or prerequisites."
+      }
     },
     {
       "schemeId": "isced-f",
       "code": "0720",
-      "disposition": "review",
+      "disposition": "mapped",
       "domainIds": [
-        "D05",
+        "D10",
         "D11",
-        "D12",
         "D29"
       ],
-      "rationale": "Residual, unspecified or interdisciplinary code. Broad candidate homes only; scope review required."
+      "rationale": "Use manufacturing/processing and practical production, with a food-processing entry point; this does not imply architecture or that every material is studied.",
+      "routing": {
+        "kind": "not-further-defined",
+        "scopeCode": "072"
+      },
+      "reviewBatchId": "u1-crosswalk-20261022",
+      "reviewBasis": {
+        "sourceId": "isced2013",
+        "locator": "Appendix I, printed p. 57; detailed field descriptions within the stated parent scope",
+        "decision": "Editorial route established from the pinned hierarchy; no programme-level or taught-coverage claim.",
+        "nextAction": "Inspect a concrete topic or programme before selecting detailed lessons, component fields or prerequisites."
+      }
     },
     {
       "schemeId": "isced-f",
@@ -3789,7 +4372,11 @@
         "D10",
         "D11"
       ],
-      "rationale": "Editorial subject mapping; no claim of taught or accepted coverage."
+      "rationale": "Editorial subject mapping; no claim of taught or accepted coverage.",
+      "routing": {
+        "kind": "subject",
+        "scopeCode": "072"
+      }
     },
     {
       "schemeId": "isced-f",
@@ -3800,7 +4387,11 @@
         "D11",
         "D29"
       ],
-      "rationale": "Editorial subject mapping; no claim of taught or accepted coverage."
+      "rationale": "Editorial subject mapping; no claim of taught or accepted coverage.",
+      "routing": {
+        "kind": "subject",
+        "scopeCode": "072"
+      }
     },
     {
       "schemeId": "isced-f",
@@ -3811,7 +4402,11 @@
         "D25",
         "D29"
       ],
-      "rationale": "Editorial subject mapping; no claim of taught or accepted coverage."
+      "rationale": "Editorial subject mapping; no claim of taught or accepted coverage.",
+      "routing": {
+        "kind": "subject",
+        "scopeCode": "072"
+      }
     },
     {
       "schemeId": "isced-f",
@@ -3821,31 +4416,54 @@
         "D06",
         "D11"
       ],
-      "rationale": "Editorial subject mapping; no claim of taught or accepted coverage."
+      "rationale": "Editorial subject mapping; no claim of taught or accepted coverage.",
+      "routing": {
+        "kind": "subject",
+        "scopeCode": "072"
+      }
     },
     {
       "schemeId": "isced-f",
       "code": "0729",
-      "disposition": "review",
+      "disposition": "mapped",
       "domainIds": [
-        "D05",
+        "D10",
         "D11",
-        "D12",
         "D29"
       ],
-      "rationale": "Residual, unspecified or interdisciplinary code. Broad candidate homes only; scope review required."
+      "rationale": "Use manufacturing/processing and practical production, with a food-processing entry point; this does not imply architecture or that every material is studied.",
+      "routing": {
+        "kind": "not-elsewhere-classified",
+        "scopeCode": "072"
+      },
+      "reviewBatchId": "u1-crosswalk-20261022",
+      "reviewBasis": {
+        "sourceId": "isced2013",
+        "locator": "Appendix I, printed p. 57; detailed field descriptions within the stated parent scope",
+        "decision": "Editorial route established from the pinned hierarchy; no programme-level or taught-coverage claim.",
+        "nextAction": "Inspect a concrete topic or programme before selecting detailed lessons, component fields or prerequisites."
+      }
     },
     {
       "schemeId": "isced-f",
       "code": "0730",
-      "disposition": "review",
+      "disposition": "mapped",
       "domainIds": [
-        "D05",
         "D11",
-        "D12",
-        "D29"
+        "D12"
       ],
-      "rationale": "Residual, unspecified or interdisciplinary code. Broad candidate homes only; scope review required."
+      "rationale": "Use engineering and built environments; the parent concerns architecture/construction rather than chemistry or all manufacturing.",
+      "routing": {
+        "kind": "not-further-defined",
+        "scopeCode": "073"
+      },
+      "reviewBatchId": "u1-crosswalk-20261022",
+      "reviewBasis": {
+        "sourceId": "isced2013",
+        "locator": "Appendix I, printed p. 57; detailed field descriptions within the stated parent scope",
+        "decision": "Editorial route established from the pinned hierarchy; no programme-level or taught-coverage claim.",
+        "nextAction": "Inspect a concrete topic or programme before selecting detailed lessons, component fields or prerequisites."
+      }
     },
     {
       "schemeId": "isced-f",
@@ -3854,7 +4472,11 @@
       "domainIds": [
         "D12"
       ],
-      "rationale": "Editorial subject mapping; no claim of taught or accepted coverage."
+      "rationale": "Editorial subject mapping; no claim of taught or accepted coverage.",
+      "routing": {
+        "kind": "subject",
+        "scopeCode": "073"
+      }
     },
     {
       "schemeId": "isced-f",
@@ -3864,49 +4486,95 @@
         "D11",
         "D12"
       ],
-      "rationale": "Editorial subject mapping; no claim of taught or accepted coverage."
+      "rationale": "Editorial subject mapping; no claim of taught or accepted coverage.",
+      "routing": {
+        "kind": "subject",
+        "scopeCode": "073"
+      }
     },
     {
       "schemeId": "isced-f",
       "code": "0788",
-      "disposition": "review",
+      "disposition": "mapped",
       "domainIds": [
-        "D05",
         "D11",
         "D12",
         "D29"
       ],
-      "rationale": "Residual, unspecified or interdisciplinary code. Broad candidate homes only; scope review required."
+      "rationale": "Use engineering/manufacturing, built environments and technical practice as intake routes; further subject links depend on the actual topic.",
+      "routing": {
+        "kind": "interdisciplinary",
+        "scopeCode": "07"
+      },
+      "reviewBatchId": "u1-crosswalk-20261022",
+      "reviewBasis": {
+        "sourceId": "isced2013",
+        "locator": "Appendix I, printed p. 57; detailed field descriptions within the stated parent scope",
+        "decision": "Editorial route established from the pinned hierarchy; no programme-level or taught-coverage claim.",
+        "nextAction": "Inspect a concrete topic or programme before selecting detailed lessons, component fields or prerequisites."
+      }
     },
     {
       "schemeId": "isced-f",
       "code": "0799",
-      "disposition": "review",
+      "disposition": "mapped",
       "domainIds": [
-        "D05",
         "D11",
         "D12",
         "D29"
       ],
-      "rationale": "Residual, unspecified or interdisciplinary code. Broad candidate homes only; scope review required."
+      "rationale": "Use engineering/manufacturing, built environments and technical practice as intake routes; further subject links depend on the actual topic.",
+      "routing": {
+        "kind": "not-elsewhere-classified",
+        "scopeCode": "07"
+      },
+      "reviewBatchId": "u1-crosswalk-20261022",
+      "reviewBasis": {
+        "sourceId": "isced2013",
+        "locator": "Appendix I, printed p. 57; detailed field descriptions within the stated parent scope",
+        "decision": "Editorial route established from the pinned hierarchy; no programme-level or taught-coverage claim.",
+        "nextAction": "Inspect a concrete topic or programme before selecting detailed lessons, component fields or prerequisites."
+      }
     },
     {
       "schemeId": "isced-f",
       "code": "0800",
-      "disposition": "review",
+      "disposition": "mapped",
       "domainIds": [
         "D10"
       ],
-      "rationale": "Residual, unspecified or interdisciplinary code. Broad candidate homes only; scope review required."
+      "rationale": "Use agriculture, food, forestry, fisheries and veterinary knowledge; actual subfields remain unspecified by this route.",
+      "routing": {
+        "kind": "not-further-defined",
+        "scopeCode": "08"
+      },
+      "reviewBatchId": "u1-crosswalk-20261022",
+      "reviewBasis": {
+        "sourceId": "isced2013",
+        "locator": "Appendix I, printed p. 57; detailed field descriptions within the stated parent scope",
+        "decision": "Editorial route established from the pinned hierarchy; no programme-level or taught-coverage claim.",
+        "nextAction": "Inspect a concrete topic or programme before selecting detailed lessons, component fields or prerequisites."
+      }
     },
     {
       "schemeId": "isced-f",
       "code": "0810",
-      "disposition": "review",
+      "disposition": "mapped",
       "domainIds": [
         "D10"
       ],
-      "rationale": "Residual, unspecified or interdisciplinary code. Broad candidate homes only; scope review required."
+      "rationale": "Use agriculture within the broader food/land/veterinary domain; this does not infer forestry or veterinary instruction.",
+      "routing": {
+        "kind": "not-further-defined",
+        "scopeCode": "081"
+      },
+      "reviewBatchId": "u1-crosswalk-20261022",
+      "reviewBasis": {
+        "sourceId": "isced2013",
+        "locator": "Appendix I, printed p. 57; detailed field descriptions within the stated parent scope",
+        "decision": "Editorial route established from the pinned hierarchy; no programme-level or taught-coverage claim.",
+        "nextAction": "Inspect a concrete topic or programme before selecting detailed lessons, component fields or prerequisites."
+      }
     },
     {
       "schemeId": "isced-f",
@@ -3915,7 +4583,11 @@
       "domainIds": [
         "D10"
       ],
-      "rationale": "Editorial subject mapping; no claim of taught or accepted coverage."
+      "rationale": "Editorial subject mapping; no claim of taught or accepted coverage.",
+      "routing": {
+        "kind": "subject",
+        "scopeCode": "081"
+      }
     },
     {
       "schemeId": "isced-f",
@@ -3924,16 +4596,31 @@
       "domainIds": [
         "D10"
       ],
-      "rationale": "Editorial subject mapping; no claim of taught or accepted coverage."
+      "rationale": "Editorial subject mapping; no claim of taught or accepted coverage.",
+      "routing": {
+        "kind": "subject",
+        "scopeCode": "081"
+      }
     },
     {
       "schemeId": "isced-f",
       "code": "0819",
-      "disposition": "review",
+      "disposition": "mapped",
       "domainIds": [
         "D10"
       ],
-      "rationale": "Residual, unspecified or interdisciplinary code. Broad candidate homes only; scope review required."
+      "rationale": "Use agriculture within the broader food/land/veterinary domain; this does not infer forestry or veterinary instruction.",
+      "routing": {
+        "kind": "not-elsewhere-classified",
+        "scopeCode": "081"
+      },
+      "reviewBatchId": "u1-crosswalk-20261022",
+      "reviewBasis": {
+        "sourceId": "isced2013",
+        "locator": "Appendix I, printed p. 57; detailed field descriptions within the stated parent scope",
+        "decision": "Editorial route established from the pinned hierarchy; no programme-level or taught-coverage claim.",
+        "nextAction": "Inspect a concrete topic or programme before selecting detailed lessons, component fields or prerequisites."
+      }
     },
     {
       "schemeId": "isced-f",
@@ -3942,7 +4629,11 @@
       "domainIds": [
         "D10"
       ],
-      "rationale": "Editorial subject mapping; no claim of taught or accepted coverage."
+      "rationale": "Editorial subject mapping; no claim of taught or accepted coverage.",
+      "routing": {
+        "kind": "subject",
+        "scopeCode": "082"
+      }
     },
     {
       "schemeId": "isced-f",
@@ -3951,7 +4642,11 @@
       "domainIds": [
         "D10"
       ],
-      "rationale": "Editorial subject mapping; no claim of taught or accepted coverage."
+      "rationale": "Editorial subject mapping; no claim of taught or accepted coverage.",
+      "routing": {
+        "kind": "subject",
+        "scopeCode": "083"
+      }
     },
     {
       "schemeId": "isced-f",
@@ -3960,47 +4655,94 @@
       "domainIds": [
         "D10"
       ],
-      "rationale": "Editorial subject mapping; no claim of taught or accepted coverage."
+      "rationale": "Editorial subject mapping; no claim of taught or accepted coverage.",
+      "routing": {
+        "kind": "subject",
+        "scopeCode": "084"
+      }
     },
     {
       "schemeId": "isced-f",
       "code": "0888",
-      "disposition": "review",
+      "disposition": "mapped",
       "domainIds": [
         "D10"
       ],
-      "rationale": "Residual, unspecified or interdisciplinary code. Broad candidate homes only; scope review required."
+      "rationale": "Use agriculture, food, forestry, fisheries and veterinary knowledge; actual subfields remain unspecified by this route.",
+      "routing": {
+        "kind": "interdisciplinary",
+        "scopeCode": "08"
+      },
+      "reviewBatchId": "u1-crosswalk-20261022",
+      "reviewBasis": {
+        "sourceId": "isced2013",
+        "locator": "Appendix I, printed p. 57; detailed field descriptions within the stated parent scope",
+        "decision": "Editorial route established from the pinned hierarchy; no programme-level or taught-coverage claim.",
+        "nextAction": "Inspect a concrete topic or programme before selecting detailed lessons, component fields or prerequisites."
+      }
     },
     {
       "schemeId": "isced-f",
       "code": "0899",
-      "disposition": "review",
+      "disposition": "mapped",
       "domainIds": [
         "D10"
       ],
-      "rationale": "Residual, unspecified or interdisciplinary code. Broad candidate homes only; scope review required."
+      "rationale": "Use agriculture, food, forestry, fisheries and veterinary knowledge; actual subfields remain unspecified by this route.",
+      "routing": {
+        "kind": "not-elsewhere-classified",
+        "scopeCode": "08"
+      },
+      "reviewBatchId": "u1-crosswalk-20261022",
+      "reviewBasis": {
+        "sourceId": "isced2013",
+        "locator": "Appendix I, printed p. 57; detailed field descriptions within the stated parent scope",
+        "decision": "Editorial route established from the pinned hierarchy; no programme-level or taught-coverage claim.",
+        "nextAction": "Inspect a concrete topic or programme before selecting detailed lessons, component fields or prerequisites."
+      }
     },
     {
       "schemeId": "isced-f",
       "code": "0900",
-      "disposition": "review",
+      "disposition": "mapped",
       "domainIds": [
         "D09",
         "D17",
+        "D19",
         "D29"
       ],
-      "rationale": "Residual, unspecified or interdisciplinary code. Broad candidate homes only; scope review required."
+      "rationale": "Use health/care, social welfare, youth learning/care and everyday care practice as entry points, with actual programme components still to inspect.",
+      "routing": {
+        "kind": "not-further-defined",
+        "scopeCode": "09"
+      },
+      "reviewBatchId": "u1-crosswalk-20261022",
+      "reviewBasis": {
+        "sourceId": "isced2013",
+        "locator": "Appendix I, printed p. 58; detailed field descriptions within the stated parent scope",
+        "decision": "Editorial route established from the pinned hierarchy; no programme-level or taught-coverage claim.",
+        "nextAction": "Inspect a concrete topic or programme before selecting detailed lessons, component fields or prerequisites."
+      }
     },
     {
       "schemeId": "isced-f",
       "code": "0910",
-      "disposition": "review",
+      "disposition": "mapped",
       "domainIds": [
-        "D09",
-        "D17",
-        "D29"
+        "D09"
       ],
-      "rationale": "Residual, unspecified or interdisciplinary code. Broad candidate homes only; scope review required."
+      "rationale": "Use health, medicine and care. A health code alone does not imply social-work or domestic-trade instruction.",
+      "routing": {
+        "kind": "not-further-defined",
+        "scopeCode": "091"
+      },
+      "reviewBatchId": "u1-crosswalk-20261022",
+      "reviewBasis": {
+        "sourceId": "isced2013",
+        "locator": "Appendix I, printed p. 58; detailed field descriptions within the stated parent scope",
+        "decision": "Editorial route established from the pinned hierarchy; no programme-level or taught-coverage claim.",
+        "nextAction": "Inspect a concrete topic or programme before selecting detailed lessons, component fields or prerequisites."
+      }
     },
     {
       "schemeId": "isced-f",
@@ -4009,7 +4751,11 @@
       "domainIds": [
         "D09"
       ],
-      "rationale": "Editorial subject mapping; no claim of taught or accepted coverage."
+      "rationale": "Editorial subject mapping; no claim of taught or accepted coverage.",
+      "routing": {
+        "kind": "subject",
+        "scopeCode": "091"
+      }
     },
     {
       "schemeId": "isced-f",
@@ -4018,7 +4764,11 @@
       "domainIds": [
         "D09"
       ],
-      "rationale": "Editorial subject mapping; no claim of taught or accepted coverage."
+      "rationale": "Editorial subject mapping; no claim of taught or accepted coverage.",
+      "routing": {
+        "kind": "subject",
+        "scopeCode": "091"
+      }
     },
     {
       "schemeId": "isced-f",
@@ -4027,7 +4777,11 @@
       "domainIds": [
         "D09"
       ],
-      "rationale": "Editorial subject mapping; no claim of taught or accepted coverage."
+      "rationale": "Editorial subject mapping; no claim of taught or accepted coverage.",
+      "routing": {
+        "kind": "subject",
+        "scopeCode": "091"
+      }
     },
     {
       "schemeId": "isced-f",
@@ -4037,7 +4791,11 @@
         "D09",
         "D11"
       ],
-      "rationale": "Editorial subject mapping; no claim of taught or accepted coverage."
+      "rationale": "Editorial subject mapping; no claim of taught or accepted coverage.",
+      "routing": {
+        "kind": "subject",
+        "scopeCode": "091"
+      }
     },
     {
       "schemeId": "isced-f",
@@ -4046,7 +4804,11 @@
       "domainIds": [
         "D09"
       ],
-      "rationale": "Editorial subject mapping; no claim of taught or accepted coverage."
+      "rationale": "Editorial subject mapping; no claim of taught or accepted coverage.",
+      "routing": {
+        "kind": "subject",
+        "scopeCode": "091"
+      }
     },
     {
       "schemeId": "isced-f",
@@ -4055,7 +4817,11 @@
       "domainIds": [
         "D09"
       ],
-      "rationale": "Editorial subject mapping; no claim of taught or accepted coverage."
+      "rationale": "Editorial subject mapping; no claim of taught or accepted coverage.",
+      "routing": {
+        "kind": "subject",
+        "scopeCode": "091"
+      }
     },
     {
       "schemeId": "isced-f",
@@ -4065,29 +4831,54 @@
         "D09",
         "D17"
       ],
-      "rationale": "Editorial subject mapping; no claim of taught or accepted coverage."
+      "rationale": "Editorial subject mapping; no claim of taught or accepted coverage.",
+      "routing": {
+        "kind": "subject",
+        "scopeCode": "091"
+      }
     },
     {
       "schemeId": "isced-f",
       "code": "0919",
-      "disposition": "review",
+      "disposition": "mapped",
       "domainIds": [
-        "D09",
-        "D17",
-        "D29"
+        "D09"
       ],
-      "rationale": "Residual, unspecified or interdisciplinary code. Broad candidate homes only; scope review required."
+      "rationale": "Use health, medicine and care. A health code alone does not imply social-work or domestic-trade instruction.",
+      "routing": {
+        "kind": "not-elsewhere-classified",
+        "scopeCode": "091"
+      },
+      "reviewBatchId": "u1-crosswalk-20261022",
+      "reviewBasis": {
+        "sourceId": "isced2013",
+        "locator": "Appendix I, printed p. 58; detailed field descriptions within the stated parent scope",
+        "decision": "Editorial route established from the pinned hierarchy; no programme-level or taught-coverage claim.",
+        "nextAction": "Inspect a concrete topic or programme before selecting detailed lessons, component fields or prerequisites."
+      }
     },
     {
       "schemeId": "isced-f",
       "code": "0920",
-      "disposition": "review",
+      "disposition": "mapped",
       "domainIds": [
         "D09",
         "D17",
+        "D19",
         "D29"
       ],
-      "rationale": "Residual, unspecified or interdisciplinary code. Broad candidate homes only; scope review required."
+      "rationale": "Use non-medical care, social welfare, youth/child development and everyday care; do not recast welfare as clinical medical training.",
+      "routing": {
+        "kind": "not-further-defined",
+        "scopeCode": "092"
+      },
+      "reviewBatchId": "u1-crosswalk-20261022",
+      "reviewBasis": {
+        "sourceId": "isced2013",
+        "locator": "Appendix I, printed p. 58; detailed field descriptions within the stated parent scope",
+        "decision": "Editorial route established from the pinned hierarchy; no programme-level or taught-coverage claim.",
+        "nextAction": "Inspect a concrete topic or programme before selecting detailed lessons, component fields or prerequisites."
+      }
     },
     {
       "schemeId": "isced-f",
@@ -4097,7 +4888,11 @@
         "D09",
         "D29"
       ],
-      "rationale": "Editorial subject mapping; no claim of taught or accepted coverage."
+      "rationale": "Editorial subject mapping; no claim of taught or accepted coverage.",
+      "routing": {
+        "kind": "subject",
+        "scopeCode": "092"
+      }
     },
     {
       "schemeId": "isced-f",
@@ -4108,7 +4903,11 @@
         "D19",
         "D29"
       ],
-      "rationale": "Editorial subject mapping; no claim of taught or accepted coverage."
+      "rationale": "Editorial subject mapping; no claim of taught or accepted coverage.",
+      "routing": {
+        "kind": "subject",
+        "scopeCode": "092"
+      }
     },
     {
       "schemeId": "isced-f",
@@ -4118,66 +4917,129 @@
         "D09",
         "D17"
       ],
-      "rationale": "Editorial subject mapping; no claim of taught or accepted coverage."
+      "rationale": "Editorial subject mapping; no claim of taught or accepted coverage.",
+      "routing": {
+        "kind": "subject",
+        "scopeCode": "092"
+      }
     },
     {
       "schemeId": "isced-f",
       "code": "0929",
-      "disposition": "review",
+      "disposition": "mapped",
       "domainIds": [
         "D09",
         "D17",
+        "D19",
         "D29"
       ],
-      "rationale": "Residual, unspecified or interdisciplinary code. Broad candidate homes only; scope review required."
+      "rationale": "Use non-medical care, social welfare, youth/child development and everyday care; do not recast welfare as clinical medical training.",
+      "routing": {
+        "kind": "not-elsewhere-classified",
+        "scopeCode": "092"
+      },
+      "reviewBatchId": "u1-crosswalk-20261022",
+      "reviewBasis": {
+        "sourceId": "isced2013",
+        "locator": "Appendix I, printed p. 58; detailed field descriptions within the stated parent scope",
+        "decision": "Editorial route established from the pinned hierarchy; no programme-level or taught-coverage claim.",
+        "nextAction": "Inspect a concrete topic or programme before selecting detailed lessons, component fields or prerequisites."
+      }
     },
     {
       "schemeId": "isced-f",
       "code": "0988",
-      "disposition": "review",
+      "disposition": "mapped",
       "domainIds": [
         "D09",
         "D17",
+        "D19",
         "D29"
       ],
-      "rationale": "Residual, unspecified or interdisciplinary code. Broad candidate homes only; scope review required."
+      "rationale": "Use health/care, social welfare, youth learning/care and everyday care practice as entry points, with actual programme components still to inspect.",
+      "routing": {
+        "kind": "interdisciplinary",
+        "scopeCode": "09"
+      },
+      "reviewBatchId": "u1-crosswalk-20261022",
+      "reviewBasis": {
+        "sourceId": "isced2013",
+        "locator": "Appendix I, printed p. 58; detailed field descriptions within the stated parent scope",
+        "decision": "Editorial route established from the pinned hierarchy; no programme-level or taught-coverage claim.",
+        "nextAction": "Inspect a concrete topic or programme before selecting detailed lessons, component fields or prerequisites."
+      }
     },
     {
       "schemeId": "isced-f",
       "code": "0999",
-      "disposition": "review",
+      "disposition": "mapped",
       "domainIds": [
         "D09",
         "D17",
+        "D19",
         "D29"
       ],
-      "rationale": "Residual, unspecified or interdisciplinary code. Broad candidate homes only; scope review required."
+      "rationale": "Use health/care, social welfare, youth learning/care and everyday care practice as entry points, with actual programme components still to inspect.",
+      "routing": {
+        "kind": "not-elsewhere-classified",
+        "scopeCode": "09"
+      },
+      "reviewBatchId": "u1-crosswalk-20261022",
+      "reviewBasis": {
+        "sourceId": "isced2013",
+        "locator": "Appendix I, printed p. 58; detailed field descriptions within the stated parent scope",
+        "decision": "Editorial route established from the pinned hierarchy; no programme-level or taught-coverage claim.",
+        "nextAction": "Inspect a concrete topic or programme before selecting detailed lessons, component fields or prerequisites."
+      }
     },
     {
       "schemeId": "isced-f",
       "code": "1000",
-      "disposition": "review",
+      "disposition": "mapped",
       "domainIds": [
+        "D08",
+        "D09",
         "D11",
         "D14",
         "D15",
+        "D16",
         "D29",
         "D30"
       ],
-      "rationale": "Residual, unspecified or interdisciplinary code. Broad candidate homes only; scope review required."
+      "rationale": "Service routes include environmental/occupational health, transport/technical systems, organizations, security/justice, practical services and recreation. Inspect actual content before narrowing.",
+      "routing": {
+        "kind": "not-further-defined",
+        "scopeCode": "10"
+      },
+      "reviewBatchId": "u1-crosswalk-20261022",
+      "reviewBasis": {
+        "sourceId": "isced2013",
+        "locator": "Appendix I, printed p. 58; detailed field descriptions within the stated parent scope",
+        "decision": "Editorial route established from the pinned hierarchy; no programme-level or taught-coverage claim.",
+        "nextAction": "Inspect a concrete topic or programme before selecting detailed lessons, component fields or prerequisites."
+      }
     },
     {
       "schemeId": "isced-f",
       "code": "1010",
-      "disposition": "review",
+      "disposition": "mapped",
       "domainIds": [
-        "D11",
         "D14",
-        "D15",
         "D29",
         "D30"
       ],
-      "rationale": "Residual, unspecified or interdisciplinary code. Broad candidate homes only; scope review required."
+      "rationale": "Use personal-service organizations, practical daily services and recreation; security and engineering are not implied.",
+      "routing": {
+        "kind": "not-further-defined",
+        "scopeCode": "101"
+      },
+      "reviewBatchId": "u1-crosswalk-20261022",
+      "reviewBasis": {
+        "sourceId": "isced2013",
+        "locator": "Appendix I, printed p. 58; detailed field descriptions within the stated parent scope",
+        "decision": "Editorial route established from the pinned hierarchy; no programme-level or taught-coverage claim.",
+        "nextAction": "Inspect a concrete topic or programme before selecting detailed lessons, component fields or prerequisites."
+      }
     },
     {
       "schemeId": "isced-f",
@@ -4186,7 +5048,11 @@
       "domainIds": [
         "D29"
       ],
-      "rationale": "Editorial subject mapping; no claim of taught or accepted coverage."
+      "rationale": "Editorial subject mapping; no claim of taught or accepted coverage.",
+      "routing": {
+        "kind": "subject",
+        "scopeCode": "101"
+      }
     },
     {
       "schemeId": "isced-f",
@@ -4196,7 +5062,11 @@
         "D14",
         "D29"
       ],
-      "rationale": "Editorial subject mapping; no claim of taught or accepted coverage."
+      "rationale": "Editorial subject mapping; no claim of taught or accepted coverage.",
+      "routing": {
+        "kind": "subject",
+        "scopeCode": "101"
+      }
     },
     {
       "schemeId": "isced-f",
@@ -4207,7 +5077,11 @@
         "D14",
         "D29"
       ],
-      "rationale": "Editorial subject mapping; no claim of taught or accepted coverage."
+      "rationale": "Editorial subject mapping; no claim of taught or accepted coverage.",
+      "routing": {
+        "kind": "subject",
+        "scopeCode": "101"
+      }
     },
     {
       "schemeId": "isced-f",
@@ -4216,7 +5090,11 @@
       "domainIds": [
         "D30"
       ],
-      "rationale": "Editorial subject mapping; no claim of taught or accepted coverage."
+      "rationale": "Editorial subject mapping; no claim of taught or accepted coverage.",
+      "routing": {
+        "kind": "subject",
+        "scopeCode": "101"
+      }
     },
     {
       "schemeId": "isced-f",
@@ -4226,33 +5104,55 @@
         "D14",
         "D30"
       ],
-      "rationale": "Editorial subject mapping; no claim of taught or accepted coverage."
+      "rationale": "Editorial subject mapping; no claim of taught or accepted coverage.",
+      "routing": {
+        "kind": "subject",
+        "scopeCode": "101"
+      }
     },
     {
       "schemeId": "isced-f",
       "code": "1019",
-      "disposition": "review",
+      "disposition": "mapped",
       "domainIds": [
-        "D11",
         "D14",
-        "D15",
         "D29",
         "D30"
       ],
-      "rationale": "Residual, unspecified or interdisciplinary code. Broad candidate homes only; scope review required."
+      "rationale": "Use personal-service organizations, practical daily services and recreation; security and engineering are not implied.",
+      "routing": {
+        "kind": "not-elsewhere-classified",
+        "scopeCode": "101"
+      },
+      "reviewBatchId": "u1-crosswalk-20261022",
+      "reviewBasis": {
+        "sourceId": "isced2013",
+        "locator": "Appendix I, printed p. 58; detailed field descriptions within the stated parent scope",
+        "decision": "Editorial route established from the pinned hierarchy; no programme-level or taught-coverage claim.",
+        "nextAction": "Inspect a concrete topic or programme before selecting detailed lessons, component fields or prerequisites."
+      }
     },
     {
       "schemeId": "isced-f",
       "code": "1020",
-      "disposition": "review",
+      "disposition": "mapped",
       "domainIds": [
-        "D11",
-        "D14",
-        "D15",
-        "D29",
-        "D30"
+        "D08",
+        "D09",
+        "D11"
       ],
-      "rationale": "Residual, unspecified or interdisciplinary code. Broad candidate homes only; scope review required."
+      "rationale": "Use sanitation/environmental practice, occupational health and technical safety; do not inherit tourism or general personal services.",
+      "routing": {
+        "kind": "not-further-defined",
+        "scopeCode": "102"
+      },
+      "reviewBatchId": "u1-crosswalk-20261022",
+      "reviewBasis": {
+        "sourceId": "isced2013",
+        "locator": "Appendix I, printed p. 58; detailed field descriptions within the stated parent scope",
+        "decision": "Editorial route established from the pinned hierarchy; no programme-level or taught-coverage claim.",
+        "nextAction": "Inspect a concrete topic or programme before selecting detailed lessons, component fields or prerequisites."
+      }
     },
     {
       "schemeId": "isced-f",
@@ -4262,7 +5162,11 @@
         "D08",
         "D09"
       ],
-      "rationale": "Editorial subject mapping; no claim of taught or accepted coverage."
+      "rationale": "Editorial subject mapping; no claim of taught or accepted coverage.",
+      "routing": {
+        "kind": "subject",
+        "scopeCode": "102"
+      }
     },
     {
       "schemeId": "isced-f",
@@ -4272,33 +5176,55 @@
         "D09",
         "D11"
       ],
-      "rationale": "Editorial subject mapping; no claim of taught or accepted coverage."
+      "rationale": "Editorial subject mapping; no claim of taught or accepted coverage.",
+      "routing": {
+        "kind": "subject",
+        "scopeCode": "102"
+      }
     },
     {
       "schemeId": "isced-f",
       "code": "1029",
-      "disposition": "review",
+      "disposition": "mapped",
       "domainIds": [
-        "D11",
-        "D14",
-        "D15",
-        "D29",
-        "D30"
+        "D08",
+        "D09",
+        "D11"
       ],
-      "rationale": "Residual, unspecified or interdisciplinary code. Broad candidate homes only; scope review required."
+      "rationale": "Use sanitation/environmental practice, occupational health and technical safety; do not inherit tourism or general personal services.",
+      "routing": {
+        "kind": "not-elsewhere-classified",
+        "scopeCode": "102"
+      },
+      "reviewBatchId": "u1-crosswalk-20261022",
+      "reviewBasis": {
+        "sourceId": "isced2013",
+        "locator": "Appendix I, printed p. 58; detailed field descriptions within the stated parent scope",
+        "decision": "Editorial route established from the pinned hierarchy; no programme-level or taught-coverage claim.",
+        "nextAction": "Inspect a concrete topic or programme before selecting detailed lessons, component fields or prerequisites."
+      }
     },
     {
       "schemeId": "isced-f",
       "code": "1030",
-      "disposition": "review",
+      "disposition": "mapped",
       "domainIds": [
         "D11",
-        "D14",
         "D15",
-        "D29",
-        "D30"
+        "D16"
       ],
-      "rationale": "Residual, unspecified or interdisciplinary code. Broad candidate homes only; scope review required."
+      "rationale": "Use security/defence systems, public affairs and legal institutions; an actual historical case needs separate evidence.",
+      "routing": {
+        "kind": "not-further-defined",
+        "scopeCode": "103"
+      },
+      "reviewBatchId": "u1-crosswalk-20261022",
+      "reviewBasis": {
+        "sourceId": "isced2013",
+        "locator": "Appendix I, printed p. 58; detailed field descriptions within the stated parent scope",
+        "decision": "Editorial route established from the pinned hierarchy; no programme-level or taught-coverage claim.",
+        "nextAction": "Inspect a concrete topic or programme before selecting detailed lessons, component fields or prerequisites."
+      }
     },
     {
       "schemeId": "isced-f",
@@ -4309,7 +5235,11 @@
         "D15",
         "D20"
       ],
-      "rationale": "Editorial subject mapping; no claim of taught or accepted coverage."
+      "rationale": "Editorial subject mapping; no claim of taught or accepted coverage.",
+      "routing": {
+        "kind": "subject",
+        "scopeCode": "103"
+      }
     },
     {
       "schemeId": "isced-f",
@@ -4319,20 +5249,33 @@
         "D15",
         "D16"
       ],
-      "rationale": "Editorial subject mapping; no claim of taught or accepted coverage."
+      "rationale": "Editorial subject mapping; no claim of taught or accepted coverage.",
+      "routing": {
+        "kind": "subject",
+        "scopeCode": "103"
+      }
     },
     {
       "schemeId": "isced-f",
       "code": "1039",
-      "disposition": "review",
+      "disposition": "mapped",
       "domainIds": [
         "D11",
-        "D14",
         "D15",
-        "D29",
-        "D30"
+        "D16"
       ],
-      "rationale": "Residual, unspecified or interdisciplinary code. Broad candidate homes only; scope review required."
+      "rationale": "Use security/defence systems, public affairs and legal institutions; an actual historical case needs separate evidence.",
+      "routing": {
+        "kind": "not-elsewhere-classified",
+        "scopeCode": "103"
+      },
+      "reviewBatchId": "u1-crosswalk-20261022",
+      "reviewBasis": {
+        "sourceId": "isced2013",
+        "locator": "Appendix I, printed p. 58; detailed field descriptions within the stated parent scope",
+        "decision": "Editorial route established from the pinned hierarchy; no programme-level or taught-coverage claim.",
+        "nextAction": "Inspect a concrete topic or programme before selecting detailed lessons, component fields or prerequisites."
+      }
     },
     {
       "schemeId": "isced-f",
@@ -4342,40 +5285,76 @@
         "D11",
         "D14"
       ],
-      "rationale": "Editorial subject mapping; no claim of taught or accepted coverage."
+      "rationale": "Editorial subject mapping; no claim of taught or accepted coverage.",
+      "routing": {
+        "kind": "subject",
+        "scopeCode": "104"
+      }
     },
     {
       "schemeId": "isced-f",
       "code": "1088",
-      "disposition": "review",
+      "disposition": "mapped",
       "domainIds": [
+        "D08",
+        "D09",
         "D11",
         "D14",
         "D15",
+        "D16",
         "D29",
         "D30"
       ],
-      "rationale": "Residual, unspecified or interdisciplinary code. Broad candidate homes only; scope review required."
+      "rationale": "Service routes include environmental/occupational health, transport/technical systems, organizations, security/justice, practical services and recreation. Inspect actual content before narrowing.",
+      "routing": {
+        "kind": "interdisciplinary",
+        "scopeCode": "10"
+      },
+      "reviewBatchId": "u1-crosswalk-20261022",
+      "reviewBasis": {
+        "sourceId": "isced2013",
+        "locator": "Appendix I, printed p. 58; detailed field descriptions within the stated parent scope",
+        "decision": "Editorial route established from the pinned hierarchy; no programme-level or taught-coverage claim.",
+        "nextAction": "Inspect a concrete topic or programme before selecting detailed lessons, component fields or prerequisites."
+      }
     },
     {
       "schemeId": "isced-f",
       "code": "1099",
-      "disposition": "review",
+      "disposition": "mapped",
       "domainIds": [
+        "D08",
+        "D09",
         "D11",
         "D14",
         "D15",
+        "D16",
         "D29",
         "D30"
       ],
-      "rationale": "Residual, unspecified or interdisciplinary code. Broad candidate homes only; scope review required."
+      "rationale": "Service routes include environmental/occupational health, transport/technical systems, organizations, security/justice, practical services and recreation. Inspect actual content before narrowing.",
+      "routing": {
+        "kind": "not-elsewhere-classified",
+        "scopeCode": "10"
+      },
+      "reviewBatchId": "u1-crosswalk-20261022",
+      "reviewBasis": {
+        "sourceId": "isced2013",
+        "locator": "Appendix I, printed p. 58; detailed field descriptions within the stated parent scope",
+        "decision": "Editorial route established from the pinned hierarchy; no programme-level or taught-coverage claim.",
+        "nextAction": "Inspect a concrete topic or programme before selecting detailed lessons, component fields or prerequisites."
+      }
     },
     {
       "schemeId": "isced-f",
       "code": "9999",
       "disposition": "excluded",
       "domainIds": [],
-      "rationale": "Administrative unknown-field code, not a knowledge domain."
+      "rationale": "Administrative unknown-field code, not a knowledge domain.",
+      "routing": {
+        "kind": "unknown",
+        "scopeCode": null
+      }
     },
     {
       "schemeId": "ford",
@@ -4385,7 +5364,11 @@
         "D01",
         "D02"
       ],
-      "rationale": "Editorial mapping of a research field; no educational completeness inference."
+      "rationale": "Editorial mapping of a research field; no educational completeness inference.",
+      "routing": {
+        "kind": "subject",
+        "scopeCode": "1"
+      }
     },
     {
       "schemeId": "ford",
@@ -4395,7 +5378,11 @@
         "D03",
         "D28"
       ],
-      "rationale": "Editorial mapping of a research field; no educational completeness inference."
+      "rationale": "Editorial mapping of a research field; no educational completeness inference.",
+      "routing": {
+        "kind": "subject",
+        "scopeCode": "1"
+      }
     },
     {
       "schemeId": "ford",
@@ -4404,7 +5391,11 @@
       "domainIds": [
         "D04"
       ],
-      "rationale": "Editorial mapping of a research field; no educational completeness inference."
+      "rationale": "Editorial mapping of a research field; no educational completeness inference.",
+      "routing": {
+        "kind": "subject",
+        "scopeCode": "1"
+      }
     },
     {
       "schemeId": "ford",
@@ -4413,7 +5404,11 @@
       "domainIds": [
         "D05"
       ],
-      "rationale": "Editorial mapping of a research field; no educational completeness inference."
+      "rationale": "Editorial mapping of a research field; no educational completeness inference.",
+      "routing": {
+        "kind": "subject",
+        "scopeCode": "1"
+      }
     },
     {
       "schemeId": "ford",
@@ -4423,7 +5418,11 @@
         "D06",
         "D08"
       ],
-      "rationale": "Editorial mapping of a research field; no educational completeness inference."
+      "rationale": "Editorial mapping of a research field; no educational completeness inference.",
+      "routing": {
+        "kind": "subject",
+        "scopeCode": "1"
+      }
     },
     {
       "schemeId": "ford",
@@ -4433,7 +5432,11 @@
         "D07",
         "D08"
       ],
-      "rationale": "Editorial mapping of a research field; no educational completeness inference."
+      "rationale": "Editorial mapping of a research field; no educational completeness inference.",
+      "routing": {
+        "kind": "subject",
+        "scopeCode": "1"
+      }
     },
     {
       "schemeId": "ford",
@@ -4446,7 +5449,18 @@
         "D07",
         "D08"
       ],
-      "rationale": "Residual field: candidate homes require topic-level review."
+      "rationale": "Retained topic-level review for the residual research field under parent 1. Existing domain IDs remain candidate entry points; they are not an exhaustive definition of the residual.",
+      "routing": {
+        "kind": "not-elsewhere-classified",
+        "scopeCode": "1"
+      },
+      "reviewBatchId": "u1-crosswalk-20261022",
+      "reviewBasis": {
+        "sourceId": "ford2015",
+        "locator": "Earlier Table 2.2 text receipt, printed p. 59; later download stop remains binding",
+        "decision": "Retain review: no new source-body or detailed residual-membership verification.",
+        "nextAction": "Review a concrete residual research topic and an authorized source defining its scope; do not retry or mirror the stopped manual body."
+      }
     },
     {
       "schemeId": "ford",
@@ -4456,7 +5470,11 @@
         "D11",
         "D12"
       ],
-      "rationale": "Editorial mapping of a research field; no educational completeness inference."
+      "rationale": "Editorial mapping of a research field; no educational completeness inference.",
+      "routing": {
+        "kind": "subject",
+        "scopeCode": "2"
+      }
     },
     {
       "schemeId": "ford",
@@ -4466,7 +5484,11 @@
         "D03",
         "D11"
       ],
-      "rationale": "Editorial mapping of a research field; no educational completeness inference."
+      "rationale": "Editorial mapping of a research field; no educational completeness inference.",
+      "routing": {
+        "kind": "subject",
+        "scopeCode": "2"
+      }
     },
     {
       "schemeId": "ford",
@@ -4475,7 +5497,11 @@
       "domainIds": [
         "D11"
       ],
-      "rationale": "Editorial mapping of a research field; no educational completeness inference."
+      "rationale": "Editorial mapping of a research field; no educational completeness inference.",
+      "routing": {
+        "kind": "subject",
+        "scopeCode": "2"
+      }
     },
     {
       "schemeId": "ford",
@@ -4485,7 +5511,11 @@
         "D05",
         "D11"
       ],
-      "rationale": "Editorial mapping of a research field; no educational completeness inference."
+      "rationale": "Editorial mapping of a research field; no educational completeness inference.",
+      "routing": {
+        "kind": "subject",
+        "scopeCode": "2"
+      }
     },
     {
       "schemeId": "ford",
@@ -4495,7 +5525,11 @@
         "D05",
         "D11"
       ],
-      "rationale": "Editorial mapping of a research field; no educational completeness inference."
+      "rationale": "Editorial mapping of a research field; no educational completeness inference.",
+      "routing": {
+        "kind": "subject",
+        "scopeCode": "2"
+      }
     },
     {
       "schemeId": "ford",
@@ -4505,7 +5539,11 @@
         "D09",
         "D11"
       ],
-      "rationale": "Editorial mapping of a research field; no educational completeness inference."
+      "rationale": "Editorial mapping of a research field; no educational completeness inference.",
+      "routing": {
+        "kind": "subject",
+        "scopeCode": "2"
+      }
     },
     {
       "schemeId": "ford",
@@ -4515,7 +5553,11 @@
         "D08",
         "D11"
       ],
-      "rationale": "Editorial mapping of a research field; no educational completeness inference."
+      "rationale": "Editorial mapping of a research field; no educational completeness inference.",
+      "routing": {
+        "kind": "subject",
+        "scopeCode": "2"
+      }
     },
     {
       "schemeId": "ford",
@@ -4526,7 +5568,11 @@
         "D08",
         "D11"
       ],
-      "rationale": "Editorial mapping of a research field; no educational completeness inference."
+      "rationale": "Editorial mapping of a research field; no educational completeness inference.",
+      "routing": {
+        "kind": "subject",
+        "scopeCode": "2"
+      }
     },
     {
       "schemeId": "ford",
@@ -4536,7 +5582,11 @@
         "D07",
         "D11"
       ],
-      "rationale": "Editorial mapping of a research field; no educational completeness inference."
+      "rationale": "Editorial mapping of a research field; no educational completeness inference.",
+      "routing": {
+        "kind": "subject",
+        "scopeCode": "2"
+      }
     },
     {
       "schemeId": "ford",
@@ -4547,7 +5597,11 @@
         "D05",
         "D11"
       ],
-      "rationale": "Editorial mapping of a research field; no educational completeness inference."
+      "rationale": "Editorial mapping of a research field; no educational completeness inference.",
+      "routing": {
+        "kind": "subject",
+        "scopeCode": "2"
+      }
     },
     {
       "schemeId": "ford",
@@ -4556,7 +5610,18 @@
       "domainIds": [
         "D11"
       ],
-      "rationale": "Residual field: candidate homes require topic-level review."
+      "rationale": "Retained topic-level review for the residual research field under parent 2. Existing domain IDs remain candidate entry points; they are not an exhaustive definition of the residual.",
+      "routing": {
+        "kind": "not-elsewhere-classified",
+        "scopeCode": "2"
+      },
+      "reviewBatchId": "u1-crosswalk-20261022",
+      "reviewBasis": {
+        "sourceId": "ford2015",
+        "locator": "Earlier Table 2.2 text receipt, printed p. 59; later download stop remains binding",
+        "decision": "Retain review: no new source-body or detailed residual-membership verification.",
+        "nextAction": "Review a concrete residual research topic and an authorized source defining its scope; do not retry or mirror the stopped manual body."
+      }
     },
     {
       "schemeId": "ford",
@@ -4566,7 +5631,11 @@
         "D07",
         "D09"
       ],
-      "rationale": "Editorial mapping of a research field; no educational completeness inference."
+      "rationale": "Editorial mapping of a research field; no educational completeness inference.",
+      "routing": {
+        "kind": "subject",
+        "scopeCode": "3"
+      }
     },
     {
       "schemeId": "ford",
@@ -4575,7 +5644,11 @@
       "domainIds": [
         "D09"
       ],
-      "rationale": "Editorial mapping of a research field; no educational completeness inference."
+      "rationale": "Editorial mapping of a research field; no educational completeness inference.",
+      "routing": {
+        "kind": "subject",
+        "scopeCode": "3"
+      }
     },
     {
       "schemeId": "ford",
@@ -4584,7 +5657,11 @@
       "domainIds": [
         "D09"
       ],
-      "rationale": "Editorial mapping of a research field; no educational completeness inference."
+      "rationale": "Editorial mapping of a research field; no educational completeness inference.",
+      "routing": {
+        "kind": "subject",
+        "scopeCode": "3"
+      }
     },
     {
       "schemeId": "ford",
@@ -4594,7 +5671,11 @@
         "D07",
         "D09"
       ],
-      "rationale": "Editorial mapping of a research field; no educational completeness inference."
+      "rationale": "Editorial mapping of a research field; no educational completeness inference.",
+      "routing": {
+        "kind": "subject",
+        "scopeCode": "3"
+      }
     },
     {
       "schemeId": "ford",
@@ -4603,7 +5684,18 @@
       "domainIds": [
         "D09"
       ],
-      "rationale": "Residual field: candidate homes require topic-level review."
+      "rationale": "Retained topic-level review for the residual research field under parent 3. Existing domain IDs remain candidate entry points; they are not an exhaustive definition of the residual.",
+      "routing": {
+        "kind": "not-elsewhere-classified",
+        "scopeCode": "3"
+      },
+      "reviewBatchId": "u1-crosswalk-20261022",
+      "reviewBasis": {
+        "sourceId": "ford2015",
+        "locator": "Earlier Table 2.2 text receipt, printed p. 59; later download stop remains binding",
+        "decision": "Retain review: no new source-body or detailed residual-membership verification.",
+        "nextAction": "Review a concrete residual research topic and an authorized source defining its scope; do not retry or mirror the stopped manual body."
+      }
     },
     {
       "schemeId": "ford",
@@ -4612,7 +5704,11 @@
       "domainIds": [
         "D10"
       ],
-      "rationale": "Editorial mapping of a research field; no educational completeness inference."
+      "rationale": "Editorial mapping of a research field; no educational completeness inference.",
+      "routing": {
+        "kind": "subject",
+        "scopeCode": "4"
+      }
     },
     {
       "schemeId": "ford",
@@ -4621,7 +5717,11 @@
       "domainIds": [
         "D10"
       ],
-      "rationale": "Editorial mapping of a research field; no educational completeness inference."
+      "rationale": "Editorial mapping of a research field; no educational completeness inference.",
+      "routing": {
+        "kind": "subject",
+        "scopeCode": "4"
+      }
     },
     {
       "schemeId": "ford",
@@ -4630,7 +5730,11 @@
       "domainIds": [
         "D10"
       ],
-      "rationale": "Editorial mapping of a research field; no educational completeness inference."
+      "rationale": "Editorial mapping of a research field; no educational completeness inference.",
+      "routing": {
+        "kind": "subject",
+        "scopeCode": "4"
+      }
     },
     {
       "schemeId": "ford",
@@ -4640,7 +5744,11 @@
         "D07",
         "D10"
       ],
-      "rationale": "Editorial mapping of a research field; no educational completeness inference."
+      "rationale": "Editorial mapping of a research field; no educational completeness inference.",
+      "routing": {
+        "kind": "subject",
+        "scopeCode": "4"
+      }
     },
     {
       "schemeId": "ford",
@@ -4649,7 +5757,18 @@
       "domainIds": [
         "D10"
       ],
-      "rationale": "Residual field: candidate homes require topic-level review."
+      "rationale": "Retained topic-level review for the residual research field under parent 4. Existing domain IDs remain candidate entry points; they are not an exhaustive definition of the residual.",
+      "routing": {
+        "kind": "not-elsewhere-classified",
+        "scopeCode": "4"
+      },
+      "reviewBatchId": "u1-crosswalk-20261022",
+      "reviewBasis": {
+        "sourceId": "ford2015",
+        "locator": "Earlier Table 2.2 text receipt, printed p. 59; later download stop remains binding",
+        "decision": "Retain review: no new source-body or detailed residual-membership verification.",
+        "nextAction": "Review a concrete residual research topic and an authorized source defining its scope; do not retry or mirror the stopped manual body."
+      }
     },
     {
       "schemeId": "ford",
@@ -4658,7 +5777,11 @@
       "domainIds": [
         "D18"
       ],
-      "rationale": "Editorial mapping of a research field; no educational completeness inference."
+      "rationale": "Editorial mapping of a research field; no educational completeness inference.",
+      "routing": {
+        "kind": "subject",
+        "scopeCode": "5"
+      }
     },
     {
       "schemeId": "ford",
@@ -4668,7 +5791,11 @@
         "D13",
         "D14"
       ],
-      "rationale": "Editorial mapping of a research field; no educational completeness inference."
+      "rationale": "Editorial mapping of a research field; no educational completeness inference.",
+      "routing": {
+        "kind": "subject",
+        "scopeCode": "5"
+      }
     },
     {
       "schemeId": "ford",
@@ -4677,7 +5804,11 @@
       "domainIds": [
         "D19"
       ],
-      "rationale": "Editorial mapping of a research field; no educational completeness inference."
+      "rationale": "Editorial mapping of a research field; no educational completeness inference.",
+      "routing": {
+        "kind": "subject",
+        "scopeCode": "5"
+      }
     },
     {
       "schemeId": "ford",
@@ -4686,7 +5817,11 @@
       "domainIds": [
         "D17"
       ],
-      "rationale": "Editorial mapping of a research field; no educational completeness inference."
+      "rationale": "Editorial mapping of a research field; no educational completeness inference.",
+      "routing": {
+        "kind": "subject",
+        "scopeCode": "5"
+      }
     },
     {
       "schemeId": "ford",
@@ -4695,7 +5830,11 @@
       "domainIds": [
         "D16"
       ],
-      "rationale": "Editorial mapping of a research field; no educational completeness inference."
+      "rationale": "Editorial mapping of a research field; no educational completeness inference.",
+      "routing": {
+        "kind": "subject",
+        "scopeCode": "5"
+      }
     },
     {
       "schemeId": "ford",
@@ -4704,7 +5843,11 @@
       "domainIds": [
         "D15"
       ],
-      "rationale": "Editorial mapping of a research field; no educational completeness inference."
+      "rationale": "Editorial mapping of a research field; no educational completeness inference.",
+      "routing": {
+        "kind": "subject",
+        "scopeCode": "5"
+      }
     },
     {
       "schemeId": "ford",
@@ -4715,7 +5858,11 @@
         "D13",
         "D17"
       ],
-      "rationale": "Editorial mapping of a research field; no educational completeness inference."
+      "rationale": "Editorial mapping of a research field; no educational completeness inference.",
+      "routing": {
+        "kind": "subject",
+        "scopeCode": "5"
+      }
     },
     {
       "schemeId": "ford",
@@ -4725,7 +5872,11 @@
         "D23",
         "D28"
       ],
-      "rationale": "Editorial mapping of a research field; no educational completeness inference."
+      "rationale": "Editorial mapping of a research field; no educational completeness inference.",
+      "routing": {
+        "kind": "subject",
+        "scopeCode": "5"
+      }
     },
     {
       "schemeId": "ford",
@@ -4741,7 +5892,18 @@
         "D19",
         "D28"
       ],
-      "rationale": "Residual field: candidate homes require topic-level review."
+      "rationale": "Retained topic-level review for the residual research field under parent 5. Existing domain IDs remain candidate entry points; they are not an exhaustive definition of the residual.",
+      "routing": {
+        "kind": "not-elsewhere-classified",
+        "scopeCode": "5"
+      },
+      "reviewBatchId": "u1-crosswalk-20261022",
+      "reviewBasis": {
+        "sourceId": "ford2015",
+        "locator": "Earlier Table 2.2 text receipt, printed p. 59; later download stop remains binding",
+        "decision": "Retain review: no new source-body or detailed residual-membership verification.",
+        "nextAction": "Review a concrete residual research topic and an authorized source defining its scope; do not retry or mirror the stopped manual body."
+      }
     },
     {
       "schemeId": "ford",
@@ -4750,7 +5912,11 @@
       "domainIds": [
         "D20"
       ],
-      "rationale": "Editorial mapping of a research field; no educational completeness inference."
+      "rationale": "Editorial mapping of a research field; no educational completeness inference.",
+      "routing": {
+        "kind": "subject",
+        "scopeCode": "6"
+      }
     },
     {
       "schemeId": "ford",
@@ -4760,7 +5926,11 @@
         "D23",
         "D24"
       ],
-      "rationale": "Editorial mapping of a research field; no educational completeness inference."
+      "rationale": "Editorial mapping of a research field; no educational completeness inference.",
+      "routing": {
+        "kind": "subject",
+        "scopeCode": "6"
+      }
     },
     {
       "schemeId": "ford",
@@ -4770,7 +5940,11 @@
         "D21",
         "D22"
       ],
-      "rationale": "Editorial mapping of a research field; no educational completeness inference."
+      "rationale": "Editorial mapping of a research field; no educational completeness inference.",
+      "routing": {
+        "kind": "subject",
+        "scopeCode": "6"
+      }
     },
     {
       "schemeId": "ford",
@@ -4782,7 +5956,11 @@
         "D26",
         "D27"
       ],
-      "rationale": "Editorial mapping of a research field; no educational completeness inference."
+      "rationale": "Editorial mapping of a research field; no educational completeness inference.",
+      "routing": {
+        "kind": "subject",
+        "scopeCode": "6"
+      }
     },
     {
       "schemeId": "ford",
@@ -4798,7 +5976,18 @@
         "D26",
         "D27"
       ],
-      "rationale": "Residual field: candidate homes require topic-level review."
+      "rationale": "Retained topic-level review for the residual research field under parent 6. Existing domain IDs remain candidate entry points; they are not an exhaustive definition of the residual.",
+      "routing": {
+        "kind": "not-elsewhere-classified",
+        "scopeCode": "6"
+      },
+      "reviewBatchId": "u1-crosswalk-20261022",
+      "reviewBasis": {
+        "sourceId": "ford2015",
+        "locator": "Earlier Table 2.2 text receipt, printed p. 59; later download stop remains binding",
+        "decision": "Retain review: no new source-body or detailed residual-membership verification.",
+        "nextAction": "Review a concrete residual research topic and an authorized source defining its scope; do not retry or mirror the stopped manual body."
+      }
     },
     {
       "schemeId": "lcc",
@@ -4808,7 +5997,11 @@
         "D19",
         "D28"
       ],
-      "rationale": "Main-class routing only, based on indexed outline; detailed schedules and omissions remain unaudited."
+      "rationale": "Main-class routing only, based on indexed outline; detailed schedules and omissions remain unaudited.",
+      "routing": {
+        "kind": "main-class",
+        "scopeCode": "A"
+      }
     },
     {
       "schemeId": "lcc",
@@ -4819,7 +6012,11 @@
         "D21",
         "D22"
       ],
-      "rationale": "Main-class routing only, based on indexed outline; detailed schedules and omissions remain unaudited."
+      "rationale": "Main-class routing only, based on indexed outline; detailed schedules and omissions remain unaudited.",
+      "routing": {
+        "kind": "main-class",
+        "scopeCode": "B"
+      }
     },
     {
       "schemeId": "lcc",
@@ -4828,7 +6025,11 @@
       "domainIds": [
         "D20"
       ],
-      "rationale": "Main-class routing only, based on indexed outline; detailed schedules and omissions remain unaudited."
+      "rationale": "Main-class routing only, based on indexed outline; detailed schedules and omissions remain unaudited.",
+      "routing": {
+        "kind": "main-class",
+        "scopeCode": "C"
+      }
     },
     {
       "schemeId": "lcc",
@@ -4837,7 +6038,11 @@
       "domainIds": [
         "D20"
       ],
-      "rationale": "Main-class routing only, based on indexed outline; detailed schedules and omissions remain unaudited."
+      "rationale": "Main-class routing only, based on indexed outline; detailed schedules and omissions remain unaudited.",
+      "routing": {
+        "kind": "main-class",
+        "scopeCode": "D"
+      }
     },
     {
       "schemeId": "lcc",
@@ -4846,7 +6051,11 @@
       "domainIds": [
         "D20"
       ],
-      "rationale": "Main-class routing only, based on indexed outline; detailed schedules and omissions remain unaudited."
+      "rationale": "Main-class routing only, based on indexed outline; detailed schedules and omissions remain unaudited.",
+      "routing": {
+        "kind": "main-class",
+        "scopeCode": "E"
+      }
     },
     {
       "schemeId": "lcc",
@@ -4855,7 +6064,11 @@
       "domainIds": [
         "D20"
       ],
-      "rationale": "Main-class routing only, based on indexed outline; detailed schedules and omissions remain unaudited."
+      "rationale": "Main-class routing only, based on indexed outline; detailed schedules and omissions remain unaudited.",
+      "routing": {
+        "kind": "main-class",
+        "scopeCode": "F"
+      }
     },
     {
       "schemeId": "lcc",
@@ -4866,7 +6079,11 @@
         "D17",
         "D30"
       ],
-      "rationale": "Main-class routing only, based on indexed outline; detailed schedules and omissions remain unaudited."
+      "rationale": "Main-class routing only, based on indexed outline; detailed schedules and omissions remain unaudited.",
+      "routing": {
+        "kind": "main-class",
+        "scopeCode": "G"
+      }
     },
     {
       "schemeId": "lcc",
@@ -4877,7 +6094,11 @@
         "D14",
         "D17"
       ],
-      "rationale": "Main-class routing only, based on indexed outline; detailed schedules and omissions remain unaudited."
+      "rationale": "Main-class routing only, based on indexed outline; detailed schedules and omissions remain unaudited.",
+      "routing": {
+        "kind": "main-class",
+        "scopeCode": "H"
+      }
     },
     {
       "schemeId": "lcc",
@@ -4886,7 +6107,11 @@
       "domainIds": [
         "D15"
       ],
-      "rationale": "Main-class routing only, based on indexed outline; detailed schedules and omissions remain unaudited."
+      "rationale": "Main-class routing only, based on indexed outline; detailed schedules and omissions remain unaudited.",
+      "routing": {
+        "kind": "main-class",
+        "scopeCode": "J"
+      }
     },
     {
       "schemeId": "lcc",
@@ -4895,7 +6120,11 @@
       "domainIds": [
         "D16"
       ],
-      "rationale": "Main-class routing only, based on indexed outline; detailed schedules and omissions remain unaudited."
+      "rationale": "Main-class routing only, based on indexed outline; detailed schedules and omissions remain unaudited.",
+      "routing": {
+        "kind": "main-class",
+        "scopeCode": "K"
+      }
     },
     {
       "schemeId": "lcc",
@@ -4904,7 +6133,11 @@
       "domainIds": [
         "D19"
       ],
-      "rationale": "Main-class routing only, based on indexed outline; detailed schedules and omissions remain unaudited."
+      "rationale": "Main-class routing only, based on indexed outline; detailed schedules and omissions remain unaudited.",
+      "routing": {
+        "kind": "main-class",
+        "scopeCode": "L"
+      }
     },
     {
       "schemeId": "lcc",
@@ -4913,7 +6146,11 @@
       "domainIds": [
         "D26"
       ],
-      "rationale": "Main-class routing only, based on indexed outline; detailed schedules and omissions remain unaudited."
+      "rationale": "Main-class routing only, based on indexed outline; detailed schedules and omissions remain unaudited.",
+      "routing": {
+        "kind": "main-class",
+        "scopeCode": "M"
+      }
     },
     {
       "schemeId": "lcc",
@@ -4923,7 +6160,11 @@
         "D12",
         "D25"
       ],
-      "rationale": "Main-class routing only, based on indexed outline; detailed schedules and omissions remain unaudited."
+      "rationale": "Main-class routing only, based on indexed outline; detailed schedules and omissions remain unaudited.",
+      "routing": {
+        "kind": "main-class",
+        "scopeCode": "N"
+      }
     },
     {
       "schemeId": "lcc",
@@ -4934,7 +6175,11 @@
         "D24",
         "D27"
       ],
-      "rationale": "Main-class routing only, based on indexed outline; detailed schedules and omissions remain unaudited."
+      "rationale": "Main-class routing only, based on indexed outline; detailed schedules and omissions remain unaudited.",
+      "routing": {
+        "kind": "main-class",
+        "scopeCode": "P"
+      }
     },
     {
       "schemeId": "lcc",
@@ -4950,7 +6195,11 @@
         "D07",
         "D08"
       ],
-      "rationale": "Main-class routing only, based on indexed outline; detailed schedules and omissions remain unaudited."
+      "rationale": "Main-class routing only, based on indexed outline; detailed schedules and omissions remain unaudited.",
+      "routing": {
+        "kind": "main-class",
+        "scopeCode": "Q"
+      }
     },
     {
       "schemeId": "lcc",
@@ -4959,7 +6208,11 @@
       "domainIds": [
         "D09"
       ],
-      "rationale": "Main-class routing only, based on indexed outline; detailed schedules and omissions remain unaudited."
+      "rationale": "Main-class routing only, based on indexed outline; detailed schedules and omissions remain unaudited.",
+      "routing": {
+        "kind": "main-class",
+        "scopeCode": "R"
+      }
     },
     {
       "schemeId": "lcc",
@@ -4968,7 +6221,11 @@
       "domainIds": [
         "D10"
       ],
-      "rationale": "Main-class routing only, based on indexed outline; detailed schedules and omissions remain unaudited."
+      "rationale": "Main-class routing only, based on indexed outline; detailed schedules and omissions remain unaudited.",
+      "routing": {
+        "kind": "main-class",
+        "scopeCode": "S"
+      }
     },
     {
       "schemeId": "lcc",
@@ -4980,7 +6237,11 @@
         "D12",
         "D29"
       ],
-      "rationale": "Main-class routing only, based on indexed outline; detailed schedules and omissions remain unaudited."
+      "rationale": "Main-class routing only, based on indexed outline; detailed schedules and omissions remain unaudited.",
+      "routing": {
+        "kind": "main-class",
+        "scopeCode": "T"
+      }
     },
     {
       "schemeId": "lcc",
@@ -4991,7 +6252,11 @@
         "D15",
         "D20"
       ],
-      "rationale": "Main-class routing only, based on indexed outline; detailed schedules and omissions remain unaudited."
+      "rationale": "Main-class routing only, based on indexed outline; detailed schedules and omissions remain unaudited.",
+      "routing": {
+        "kind": "main-class",
+        "scopeCode": "U"
+      }
     },
     {
       "schemeId": "lcc",
@@ -5002,7 +6267,11 @@
         "D15",
         "D20"
       ],
-      "rationale": "Main-class routing only, based on indexed outline; detailed schedules and omissions remain unaudited."
+      "rationale": "Main-class routing only, based on indexed outline; detailed schedules and omissions remain unaudited.",
+      "routing": {
+        "kind": "main-class",
+        "scopeCode": "V"
+      }
     },
     {
       "schemeId": "lcc",
@@ -5011,7 +6280,11 @@
       "domainIds": [
         "D28"
       ],
-      "rationale": "Main-class routing only, based on indexed outline; detailed schedules and omissions remain unaudited."
+      "rationale": "Main-class routing only, based on indexed outline; detailed schedules and omissions remain unaudited.",
+      "routing": {
+        "kind": "main-class",
+        "scopeCode": "Z"
+      }
     },
     {
       "schemeId": "ich",
@@ -5024,7 +6297,18 @@
         "D23",
         "D24"
       ],
-      "rationale": "Provisional broad routing from indexed overview; body access stopped. Local communities define context and permissions."
+      "rationale": "Retained provisional discovery routing from the earlier indexed heritage overview. Neither full source-body verification nor community-specific context/permission has been supplied.",
+      "routing": {
+        "kind": "provisional-cultural-domain",
+        "scopeCode": null
+      },
+      "reviewBatchId": "u1-crosswalk-20261022",
+      "reviewBasis": {
+        "sourceId": "ich-domains",
+        "locator": "Earlier indexed five-domain overview; CAPTCHA stop remains binding",
+        "decision": "Retain review: broad cultural-domain routing is not a community-approved vocabulary or practice licence.",
+        "nextAction": "Develop a separately authorized, community-specific source and permission context; do not retry or recover the stopped overview body."
+      }
     },
     {
       "schemeId": "ich",
@@ -5034,7 +6318,18 @@
         "D26",
         "D27"
       ],
-      "rationale": "Provisional broad routing from indexed overview; body access stopped. Local communities define context and permissions."
+      "rationale": "Retained provisional discovery routing from the earlier indexed heritage overview. Neither full source-body verification nor community-specific context/permission has been supplied.",
+      "routing": {
+        "kind": "provisional-cultural-domain",
+        "scopeCode": null
+      },
+      "reviewBatchId": "u1-crosswalk-20261022",
+      "reviewBasis": {
+        "sourceId": "ich-domains",
+        "locator": "Earlier indexed five-domain overview; CAPTCHA stop remains binding",
+        "decision": "Retain review: broad cultural-domain routing is not a community-approved vocabulary or practice licence.",
+        "nextAction": "Develop a separately authorized, community-specific source and permission context; do not retry or recover the stopped overview body."
+      }
     },
     {
       "schemeId": "ich",
@@ -5045,7 +6340,18 @@
         "D22",
         "D29"
       ],
-      "rationale": "Provisional broad routing from indexed overview; body access stopped. Local communities define context and permissions."
+      "rationale": "Retained provisional discovery routing from the earlier indexed heritage overview. Neither full source-body verification nor community-specific context/permission has been supplied.",
+      "routing": {
+        "kind": "provisional-cultural-domain",
+        "scopeCode": null
+      },
+      "reviewBatchId": "u1-crosswalk-20261022",
+      "reviewBasis": {
+        "sourceId": "ich-domains",
+        "locator": "Earlier indexed five-domain overview; CAPTCHA stop remains binding",
+        "decision": "Retain review: broad cultural-domain routing is not a community-approved vocabulary or practice licence.",
+        "nextAction": "Develop a separately authorized, community-specific source and permission context; do not retry or recover the stopped overview body."
+      }
     },
     {
       "schemeId": "ich",
@@ -5058,7 +6364,18 @@
         "D09",
         "D10"
       ],
-      "rationale": "Provisional broad routing from indexed overview; body access stopped. Local communities define context and permissions."
+      "rationale": "Retained provisional discovery routing from the earlier indexed heritage overview. Neither full source-body verification nor community-specific context/permission has been supplied.",
+      "routing": {
+        "kind": "provisional-cultural-domain",
+        "scopeCode": null
+      },
+      "reviewBatchId": "u1-crosswalk-20261022",
+      "reviewBasis": {
+        "sourceId": "ich-domains",
+        "locator": "Earlier indexed five-domain overview; CAPTCHA stop remains binding",
+        "decision": "Retain review: broad cultural-domain routing is not a community-approved vocabulary or practice licence.",
+        "nextAction": "Develop a separately authorized, community-specific source and permission context; do not retry or recover the stopped overview body."
+      }
     },
     {
       "schemeId": "ich",
@@ -5068,7 +6385,144 @@
         "D25",
         "D29"
       ],
-      "rationale": "Provisional broad routing from indexed overview; body access stopped. Local communities define context and permissions."
+      "rationale": "Retained provisional discovery routing from the earlier indexed heritage overview. Neither full source-body verification nor community-specific context/permission has been supplied.",
+      "routing": {
+        "kind": "provisional-cultural-domain",
+        "scopeCode": null
+      },
+      "reviewBatchId": "u1-crosswalk-20261022",
+      "reviewBasis": {
+        "sourceId": "ich-domains",
+        "locator": "Earlier indexed five-domain overview; CAPTCHA stop remains binding",
+        "decision": "Retain review: broad cultural-domain routing is not a community-approved vocabulary or practice licence.",
+        "nextAction": "Develop a separately authorized, community-specific source and permission context; do not retry or recover the stopped overview body."
+      }
+    }
+  ],
+  "routingPolicy": "Domain IDs are editorial navigation entry points, not official code equivalences, programme assignments, exhaustive subject membership or evidence of teaching. An unspecified or residual code never proves which particular subjects a programme covers. Topic-level evidence is required before creating lessons or assigning more precise routes.",
+  "routingKinds": {
+    "subject": "Named source category; the atlas selects useful editorial homes without certifying instruction.",
+    "not-further-defined": "The source identifies only the stated broader scope. Do not infer a detailed field or treat missing detail as interdisciplinary study.",
+    "not-elsewhere-classified": "A residual within the stated scope. A particular topic must be inspected before assigning a more precise atlas route; this is not an all-subjects wildcard.",
+    "interdisciplinary": "Route by the named leading broad field; do not infer the other component fields or create prerequisite edges without actual programme content.",
+    "main-class": "Main-class library outline only. Subclasses, schedules and item-level call numbers have not been audited.",
+    "provisional-cultural-domain": "Discovery route from the earlier indexed overview only. Body access is stopped; community context and permissions remain unresolved.",
+    "unknown": "Administrative unknown-field value; deliberately excluded from domain and coverage claims."
+  },
+  "classificationReviews": [
+    {
+      "id": "u1-crosswalk-20261022",
+      "author": "codex-root",
+      "baselineCommit": "0317c54a1db1f2d6e463c04b2daefb6b0f4eaf88",
+      "scopeKeys": [
+        "isced-f:0000",
+        "isced-f:0099",
+        "isced-f:0110",
+        "isced-f:0119",
+        "isced-f:0188",
+        "isced-f:0200",
+        "isced-f:0210",
+        "isced-f:0219",
+        "isced-f:0220",
+        "isced-f:0229",
+        "isced-f:0230",
+        "isced-f:0239",
+        "isced-f:0288",
+        "isced-f:0299",
+        "isced-f:0300",
+        "isced-f:0310",
+        "isced-f:0319",
+        "isced-f:0320",
+        "isced-f:0329",
+        "isced-f:0388",
+        "isced-f:0399",
+        "isced-f:0400",
+        "isced-f:0410",
+        "isced-f:0419",
+        "isced-f:0488",
+        "isced-f:0499",
+        "isced-f:0500",
+        "isced-f:0510",
+        "isced-f:0519",
+        "isced-f:0520",
+        "isced-f:0529",
+        "isced-f:0530",
+        "isced-f:0539",
+        "isced-f:0540",
+        "isced-f:0588",
+        "isced-f:0599",
+        "isced-f:0610",
+        "isced-f:0619",
+        "isced-f:0688",
+        "isced-f:0700",
+        "isced-f:0710",
+        "isced-f:0719",
+        "isced-f:0720",
+        "isced-f:0729",
+        "isced-f:0730",
+        "isced-f:0788",
+        "isced-f:0799",
+        "isced-f:0800",
+        "isced-f:0810",
+        "isced-f:0819",
+        "isced-f:0888",
+        "isced-f:0899",
+        "isced-f:0900",
+        "isced-f:0910",
+        "isced-f:0919",
+        "isced-f:0920",
+        "isced-f:0929",
+        "isced-f:0988",
+        "isced-f:0999",
+        "isced-f:1000",
+        "isced-f:1010",
+        "isced-f:1019",
+        "isced-f:1020",
+        "isced-f:1029",
+        "isced-f:1030",
+        "isced-f:1039",
+        "isced-f:1088",
+        "isced-f:1099",
+        "ford:1.7",
+        "ford:2.11",
+        "ford:3.5",
+        "ford:4.5",
+        "ford:5.9",
+        "ford:6.5",
+        "ich:oral-traditions",
+        "ich:performing-arts",
+        "ich:social-practices",
+        "ich:nature-knowledge",
+        "ich:craftsmanship"
+      ],
+      "status": "reviewed",
+      "scope": "Independent AI desk review of 79 previously flagged routes: 68 hierarchy-based editorial resolutions and 11 explicitly retained source/topic/community gates. No specialist or community acceptance.",
+      "receipts": [
+        {
+          "dimension": "source-routing",
+          "result": "passed",
+          "reviewer": {
+            "id": "atlas-ai-history-review",
+            "kind": "ai",
+            "independent": true
+          },
+          "digest": "5103e5a69c8510c3bcfd5d5c754cd0e80375b9c50eb09dfc5ad38c063d918343",
+          "evidencePath": "docs/coverage/reviews/crosswalk-source-20261022.md",
+          "reviewedOn": "2026-10-22"
+        },
+        {
+          "dimension": "engineering",
+          "result": "passed",
+          "reviewer": {
+            "id": "code_review",
+            "kind": "ai",
+            "independent": true
+          },
+          "digest": "5103e5a69c8510c3bcfd5d5c754cd0e80375b9c50eb09dfc5ad38c063d918343",
+          "evidencePath": "docs/coverage/reviews/crosswalk-code-20261022.md",
+          "reviewedOn": "2026-10-22"
+        }
+      ]
     }
   ]
 }

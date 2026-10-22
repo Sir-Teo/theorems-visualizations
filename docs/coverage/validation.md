@@ -1,5 +1,7 @@
 # U1 validation and preservation receipt
 
+Historical registry 0.1.0 receipt. The current registry 0.3.0 review and checks are recorded in the [classification checkpoint](crosswalk-review.md); the dated counts below are preserved as evidence of the original delivery.
+
 **October 22, 2026 · registry 0.1.0 · root checkout delivery.**
 
 The requested coverage registry and eight research briefs are present. U1 as a whole remains in progress: the additive schema/URL proposal, source/rights gate closure and reviewer capacity are outstanding. No lesson, professional review or production acceptance is claimed.

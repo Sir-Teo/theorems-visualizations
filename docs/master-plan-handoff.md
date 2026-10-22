@@ -4,7 +4,7 @@
 
 The broader plan now has a versioned coverage registry, eight researched briefs, an additive schema/URL contract, and **six working local prototypes: four accepted under bounded AI review (P01/P02 at 0.1.2 and P03/P05 at 0.1.0), plus P07/P08 in review with real-world and release checks open**. The [integration package](integration/universal-pilots.md) passed a rehearsal on the accepted Wave 6 checkpoint and compatibility checks on frozen expansion/redesign snapshots. This is an implementation foundation and a concrete queue, not a claim that all future disciplines, sources or review needs are solved.
 
-The active **“do all”** goal covers U0–U5. Continue from the [whole-roadmap execution ledger](master-plan-execution.md); a finished pilot batch is not completion of the broader goal. Latest checks are in the [studio checkpoint](verification/universal-pilots-studio.md); the earlier [method checkpoint](verification/universal-pilots-methods.md) remains historical evidence.
+The active **“do all”** goal covers U0–U5. Continue from the [whole-roadmap execution ledger](master-plan-execution.md); a finished pilot batch is not completion of the broader goal. Latest classification checks are in the [crosswalk checkpoint](coverage/crosswalk-review.md), with pilot checks in the [studio checkpoint](verification/universal-pilots-studio.md); the earlier [method checkpoint](verification/universal-pilots-methods.md) remains historical evidence.
 
 ## Read these first
 
@@ -24,7 +24,7 @@ Continue in `/Users/teodev/.codex/worktrees/universal-pilots-integration/theorem
 
 | Deliverable | Canonical files | State |
 | --- | --- | --- |
-| Coverage | `docs/coverage/registry.json` and pinned inventories | 30 domains; 85 primary collection homes; eight cross-listings; 217 classification entries |
+| Coverage | `docs/coverage/registry.json` and pinned inventories | 30 domains; 85 primary collection homes; eight cross-listings; 217 classification entries; 205 mapped, 11 review and one excluded; 79 previously flagged entries independently AI-reviewed |
 | Research | `docs/pilots/*.md` and `docs/coverage/sources.json` | Eight bounded briefs; named access/rights/reviewer gates |
 | Data and review contract | `explorations/contract.mjs` | Versioned IDs, evidence, claim boundaries, passage hashes, review history and content/artifact review checks |
 | History prototype | `explorations/history.json` | Reviewed for local preview; current AI content/provenance/prototype-rights receipts; human-session gate removed by user |
@@ -45,7 +45,8 @@ P01/P02 are accepted for local preview under the revised requirements. The user 
 
 | Order / milestone | Work | Dependency and exit condition |
 | --- | --- | --- |
-| Now · U1 review | Inspect the registry crosswalk and proposed stewardship | 79 review-needed classification entries retain explicit dispositions; no invented coverage percentages |
+| Delivered · U1 routing review | 68 ISCED routes resolved; all 79 previously flagged decisions independently AI-reviewed | Exact source/routing digest and separate engineering receipt; navigation homes do not imply taught coverage |
+| Next · U1 stewardship | Follow six FORD and five heritage gates; research detailed library/local/community vocabularies | Eleven entries retain concrete topic/source/context actions; actual specialist/community participation is not inferred |
 | Delivered · U2 AI review | Three independent AI reviewers inspected history, literature/language and code | Two findings repaired and rechecked; six scoped receipts match current digests; professional or original-language expertise is not inferred |
 | Removed by user · P01/P02 human gate | Screen-reader and learner sessions are optional follow-up | Not performed; visible limitation, not a passing observation |
 | Next · U2 contracts | Finalize source/annotation payloads from actual review findings | Changes preserve static text, old state or an explicit migration, and exact-content review validity |
