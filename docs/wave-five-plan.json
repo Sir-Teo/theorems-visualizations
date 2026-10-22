@@ -17510,9 +17510,9 @@
   "authoringDirection": "User confirmed prior work done; continuously author future waves without routine pauses.",
   "progress": {
     "total": 1031,
-    "written": 754,
-    "remaining": 277,
-    "writtenChapters": 58,
+    "written": 782,
+    "remaining": 249,
+    "writtenChapters": 60,
     "chapters": [
       {
         "collection": "ode",
@@ -17857,10 +17857,24 @@
         "collection": "logic",
         "chapter": 7,
         "total": 13,
-        "written": 0,
-        "remaining": 13,
-        "writtenItems": [],
-        "status": "planned"
+        "written": 13,
+        "remaining": 0,
+        "writtenItems": [
+          "logic-7.1",
+          "logic-7.2",
+          "logic-7.3",
+          "logic-7.4",
+          "logic-7.5",
+          "logic-7.6",
+          "logic-7.7",
+          "logic-7.8",
+          "logic-7.9",
+          "logic-7.10",
+          "logic-7.11",
+          "logic-7.12",
+          "logic-7.13"
+        ],
+        "status": "written"
       },
       {
         "collection": "num",
@@ -18312,10 +18326,26 @@
         "collection": "qm",
         "chapter": 8,
         "total": 15,
-        "written": 0,
-        "remaining": 15,
-        "writtenItems": [],
-        "status": "planned"
+        "written": 15,
+        "remaining": 0,
+        "writtenItems": [
+          "qm-8.1",
+          "qm-8.2",
+          "qm-8.3",
+          "qm-8.4",
+          "qm-8.5",
+          "qm-8.6",
+          "qm-8.7",
+          "qm-8.8",
+          "qm-8.9",
+          "qm-8.10",
+          "qm-8.11",
+          "qm-8.12",
+          "qm-8.13",
+          "qm-8.14",
+          "qm-8.15"
+        ],
+        "status": "written"
       },
       {
         "collection": "cm",
