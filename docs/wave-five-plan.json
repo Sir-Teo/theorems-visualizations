@@ -17510,9 +17510,9 @@
   "authoringDirection": "User confirmed prior work done; continuously author future waves without routine pauses.",
   "progress": {
     "total": 1031,
-    "written": 805,
-    "remaining": 226,
-    "writtenChapters": 62,
+    "written": 832,
+    "remaining": 199,
+    "writtenChapters": 64,
     "chapters": [
       {
         "collection": "ode",
@@ -18707,10 +18707,25 @@
         "collection": "bioinf",
         "chapter": 5,
         "total": 14,
-        "written": 0,
-        "remaining": 14,
-        "writtenItems": [],
-        "status": "planned"
+        "written": 14,
+        "remaining": 0,
+        "writtenItems": [
+          "bioinf-5.1",
+          "bioinf-5.2",
+          "bioinf-5.3",
+          "bioinf-5.4",
+          "bioinf-5.5",
+          "bioinf-5.6",
+          "bioinf-5.7",
+          "bioinf-5.8",
+          "bioinf-5.9",
+          "bioinf-5.10",
+          "bioinf-5.11",
+          "bioinf-5.12",
+          "bioinf-5.13",
+          "bioinf-5.14"
+        ],
+        "status": "written"
       },
       {
         "collection": "sysbio",
@@ -18732,10 +18747,24 @@
         "collection": "physio",
         "chapter": 5,
         "total": 13,
-        "written": 0,
-        "remaining": 13,
-        "writtenItems": [],
-        "status": "planned"
+        "written": 13,
+        "remaining": 0,
+        "writtenItems": [
+          "physio-5.1",
+          "physio-5.2",
+          "physio-5.3",
+          "physio-5.4",
+          "physio-5.5",
+          "physio-5.7",
+          "physio-5.8",
+          "physio-5.9",
+          "physio-5.10",
+          "physio-5.11",
+          "physio-5.12",
+          "physio-5.13",
+          "physio-5.14"
+        ],
+        "status": "written"
       },
       {
         "collection": "pharm",
