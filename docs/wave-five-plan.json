@@ -17510,9 +17510,9 @@
   "authoringDirection": "User confirmed prior work done; continuously author future waves without routine pauses.",
   "progress": {
     "total": 1031,
-    "written": 782,
-    "remaining": 249,
-    "writtenChapters": 60,
+    "written": 805,
+    "remaining": 226,
+    "writtenChapters": 62,
     "chapters": [
       {
         "collection": "ode",
@@ -18490,10 +18490,24 @@
         "collection": "qchem",
         "chapter": 5,
         "total": 13,
-        "written": 0,
-        "remaining": 13,
-        "writtenItems": [],
-        "status": "planned"
+        "written": 13,
+        "remaining": 0,
+        "writtenItems": [
+          "qchem-5.2",
+          "qchem-5.3",
+          "qchem-5.4",
+          "qchem-5.5",
+          "qchem-5.6",
+          "qchem-5.7",
+          "qchem-5.8",
+          "qchem-5.9",
+          "qchem-5.10",
+          "qchem-5.11",
+          "qchem-5.12",
+          "qchem-5.13",
+          "qchem-5.14"
+        ],
+        "status": "written"
       },
       {
         "collection": "xtal",
@@ -18515,10 +18529,21 @@
         "collection": "mat",
         "chapter": 5,
         "total": 10,
-        "written": 0,
-        "remaining": 10,
-        "writtenItems": [],
-        "status": "planned"
+        "written": 10,
+        "remaining": 0,
+        "writtenItems": [
+          "mat-5.1",
+          "mat-5.2",
+          "mat-5.3",
+          "mat-5.4",
+          "mat-5.5",
+          "mat-5.6",
+          "mat-5.7",
+          "mat-5.10",
+          "mat-5.11",
+          "mat-5.12"
+        ],
+        "status": "written"
       },
       {
         "collection": "geol",
