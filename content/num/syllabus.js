@@ -216,37 +216,181 @@ export default {
     },
     // ───────────────────────────────────────────────────────────── 6
     {
-      n: 6,
-      title: 'Numerical integration',
-      summary: String.raw`Quadrature rules integrate an interpolant instead of the function. Composite Newton–Cotes rules converge at rates set by their degree, the Euler–Maclaurin formula explains the error of the trapezoidal rule and why it is spectacular for periodic functions, and Richardson extrapolation turns it into Romberg integration. Gauss quadrature chooses the nodes as well as the weights, integrating polynomials of twice the degree exactly; Clenshaw–Curtis, based on Chebyshev points, is nearly as good and easier to compute.`,
-      items: [
-        { num: '6.1', kind: 'Method', name: 'Newton–Cotes rules: trapezoidal and Simpson', deps: ['num-3.2', 'pma-6.1'], refs: ['Süli–Mayers ch. 7'],
-          pic: 'Integrate a function you draw with the trapezoidal and Simpson rules on one panel; the areas of the interpolating line and parabola are shaded against the exact area.' },
-        { num: '6.2', kind: 'Theorem', name: 'Composite rule error rates', deps: ['num-6.1', 'num-3.4'], refs: ['Süli–Mayers ch. 7'],
-          pic: 'Error against number of panels on log–log axes for the composite midpoint, trapezoidal and Simpson rules; the slopes −2, −2 and −4 appear and degrade for a function with a kink.' },
-        { num: '6.3', kind: 'Theorem', name: 'Peano kernel theorem', deps: ['num-6.1', 'pma-5.15'], refs: ['Süli–Mayers ch. 7'],
-          pic: 'The Peano kernel of a quadrature rule is plotted; when it does not change sign the error equals a constant times a single derivative value, checked on test functions.' },
-        { num: '6.4', kind: 'Theorem', name: 'Euler–Maclaurin formula', deps: ['num-6.2'], refs: ['Süli–Mayers ch. 7'],
-          pic: 'The trapezoidal error is expanded in even powers of h with Bernoulli-number coefficients; each correction term is added and the remaining error drops by the predicted factor.' },
-        { num: '6.5', kind: 'Phenomenon', name: 'The trapezoidal rule is spectral for periodic functions', deps: ['num-6.4'], refs: ['Süli–Mayers ch. 7'],
-          pic: 'Integrate e^{cos θ} over a full period with the trapezoidal rule; the error falls geometrically to machine precision in about 20 points, while for a non-periodic integrand it falls like N⁻².' },
-        { num: '6.6', kind: 'Algorithm', name: 'Romberg integration', deps: ['num-6.4', 'num-5.9'], refs: ['Süli–Mayers ch. 7'],
-          pic: 'Build the Romberg table by applying Richardson extrapolation to trapezoidal estimates with halved steps; the diagonal converges rapidly, with errors shown in each cell.' },
-        { num: '6.7', kind: 'Algorithm', name: 'Adaptive quadrature', deps: ['num-6.2'], refs: ['Süli–Mayers ch. 7'],
-          pic: 'Integrate a function with a sharp spike; subintervals are split recursively where the local error estimate is large, and the final mesh, drawn as tick marks, crowds around the spike.' },
-        { num: '6.8', kind: 'Phenomenon', name: 'High-order Newton–Cotes rules are unstable', deps: ['num-6.1', 'num-3.5'], refs: ['Süli–Mayers ch. 7'],
-          pic: 'Plot the weights of closed Newton–Cotes rules as the degree grows; negative weights appear and their sum of absolute values explodes, amplifying rounding errors in the computed integral.' },
-        { num: '6.9', kind: 'Theorem', name: 'Gauss quadrature: exact to degree 2n − 1', deps: ['num-4.11', 'num-6.1'], refs: ['Süli–Mayers ch. 10'],
-          pic: 'Place n nodes freely and choose weights to integrate polynomials; the highest exactly integrated degree is read out and reaches 2n − 1 only when the nodes sit at the zeros of the Legendre polynomial.' },
-        { num: '6.10', kind: 'Theorem', name: 'Positive weights and convergence of Gauss quadrature', deps: ['num-6.9', 'num-4.1'], refs: ['Süli–Mayers ch. 10'],
-          pic: 'Gauss weights are shown to be positive and to sum to the interval length; applied to a merely continuous function, the quadrature error is plotted converging to zero.' },
-        { num: '6.11', kind: 'Algorithm', name: 'Golub–Welsch algorithm', deps: ['num-6.9', 'nla-8.3'], refs: ['Trefethen ATAP ch. 19'],
-          pic: 'Gauss nodes and weights for a chosen weight function are computed as eigenvalues and squared first eigenvector components of the Jacobi matrix, and checked by integrating test monomials.' },
-        { num: '6.12', kind: 'Algorithm', name: 'Clenshaw–Curtis quadrature', deps: ['num-3.6', 'num-6.1'], refs: ['Trefethen ATAP ch. 19'],
-          pic: 'Integrate the Chebyshev interpolant exactly by summing its coefficients; the weights are computed by FFT and are all positive, shown as a bar chart.' },
-        { num: '6.13', kind: 'Phenomenon', name: 'Clenshaw–Curtis is nearly as good as Gauss', deps: ['num-6.12', 'num-6.9'], refs: ['Trefethen ATAP ch. 19'],
-          pic: 'Errors of Gauss and Clenshaw–Curtis are plotted against n for analytic, smooth and kinked integrands; the two curves nearly coincide except for very smooth integrands, despite Gauss’ factor-of-two degree advantage.' },
-      ],
+      "n": 6,
+      "title": "Numerical integration",
+      "summary": "Quadrature replaces an integral by weighted samples. Low-degree composite rules have derivative-based bounds; endpoint corrections and extrapolation improve smooth problems. Adaptive estimates can miss unsampled structure. Gauss and Clenshaw–Curtis use carefully chosen nodes, but polynomial exactness alone does not determine accuracy.",
+      "items": [
+        {
+          "num": "6.1",
+          "kind": "Method",
+          "name": "Newton–Cotes rules: trapezoidal and Simpson",
+          "deps": [
+            "num-3.2",
+            "pma-6.1"
+          ],
+          "refs": [
+            "Persson, Math 128A, Fall 2026, §4.3"
+          ],
+          "pic": "Choose a function and a panel width. Compare the actual curve, its interpolating line or parabola, and the weighted samples. The second plot shows their signed difference."
+        },
+        {
+          "num": "6.2",
+          "kind": "Theorem",
+          "name": "Composite rule error rates",
+          "deps": [
+            "num-6.1",
+            "num-3.4"
+          ],
+          "refs": [
+            "Persson §4.4; O’Donohoe, Numerical Analysis II, pp.19–21, Peano kernels"
+          ],
+          "pic": "Double the number of equal subintervals and compare all three rules. Smooth examples show the predicted rates; the displaced corner gives irregular error ratios."
+        },
+        {
+          "num": "6.3",
+          "kind": "Theorem",
+          "name": "Peano kernel theorem",
+          "deps": [
+            "num-6.1",
+            "pma-5.15"
+          ],
+          "refs": [
+            "M. R. O’Donohoe, Numerical Analysis II, §2.1.3, Theorems 2.2–2.3, pp.18–21"
+          ],
+          "pic": "Inspect the kernel and its product with the relevant derivative. Change the test function and compare the integral representation with the direct quadrature error."
+        },
+        {
+          "num": "6.4",
+          "kind": "Theorem",
+          "name": "Euler–Maclaurin formula",
+          "deps": [
+            "num-6.2"
+          ],
+          "refs": [
+            "NIST DLMF §2.10(i), equation (2.10.1); Driscoll–Braun, FNC §5.6.2"
+          ],
+          "pic": "Add one, two or three endpoint corrections to the trapezoidal estimate of exp(λx). Compare the remaining error with the explicit finite-remainder bound."
+        },
+        {
+          "num": "6.5",
+          "kind": "Phenomenon",
+          "name": "The trapezoidal rule is spectral for periodic functions",
+          "deps": [
+            "num-6.4"
+          ],
+          "refs": [
+            "Trefethen, Lecture 5: Quadrature, 4 Oct. 2017, §1; explicit Poisson-kernel calculation supplied here"
+          ],
+          "pic": "Compare an analytic periodic kernel, a periodic function with a corner, and a nonperiodic exponential. The analytic example also shows its exact truncation error separately from the computed difference."
+        },
+        {
+          "num": "6.6",
+          "kind": "Algorithm",
+          "name": "Romberg integration",
+          "deps": [
+            "num-6.4",
+            "num-5.9"
+          ],
+          "refs": [
+            "Persson §4.5; Driscoll–Braun, FNC §§5.6.2–5.6.3"
+          ],
+          "pic": "Build the triangular table and select a cell. Each tile shows the base-10 logarithm of its absolute error; compare a smooth exponential with a corner and a square root."
+        },
+        {
+          "num": "6.7",
+          "kind": "Algorithm",
+          "name": "Adaptive quadrature",
+          "deps": [
+            "num-6.2"
+          ],
+          "refs": [
+            "Driscoll–Braun, Fundamentals of Numerical Computation, §5.7.1–5.7.3; explicit compact-bump counterexample supplied here"
+          ],
+          "pic": "Compare a resolved peak with a hidden compact bump. Inspect the sampled points, leaf intervals, estimated error and actual reference error. More initial intervals can expose a feature the first grid missed."
+        },
+        {
+          "num": "6.8",
+          "kind": "Phenomenon",
+          "name": "High-order Newton–Cotes rules are unstable",
+          "deps": [
+            "num-6.1",
+            "num-3.5"
+          ],
+          "refs": [
+            "Trefethen, Exactness of Quadrature Formulas, author manuscript, §2, pp.2–3; sharp data-error derivation supplied here"
+          ],
+          "pic": "Increase the equispaced degree and inspect positive and negative weights. Add the worst-sign bounded sample perturbation and compare its observed effect with the sharp bound."
+        },
+        {
+          "num": "6.9",
+          "kind": "Theorem",
+          "name": "Gauss quadrature: exact to degree 2n − 1",
+          "deps": [
+            "num-4.11",
+            "num-6.1"
+          ],
+          "refs": [
+            "Persson, Math 128A, Fall 2026, §4.7, Theorem 4.3; sharpness argument supplied here"
+          ],
+          "pic": "Test monomials, Chebyshev polynomials and the squared node polynomial. The last example exposes the first degree at which exactness must fail."
+        },
+        {
+          "num": "6.10",
+          "kind": "Theorem",
+          "name": "Positive weights and convergence of Gauss quadrature",
+          "deps": [
+            "num-6.9",
+            "num-4.1"
+          ],
+          "refs": [
+            "O’Donohoe, Numerical Analysis II, §2.2, p.21; positivity and convergence proof supplied using NUM 4.1 and 6.9"
+          ],
+          "pic": "Inspect the positive weights and integrate |x|^α. A small exponent makes the function rise sharply from its corner and slows convergence."
+        },
+        {
+          "num": "6.11",
+          "kind": "Algorithm",
+          "name": "Golub–Welsch algorithm",
+          "deps": [
+            "num-6.9",
+            "num-4.11",
+            "ladr-7.29"
+          ],
+          "refs": [
+            "Golub and Welsch, Calculation of Gauss Quadrature Rules (1969), §§1–2, pp.221–223, especially equation (2.6)"
+          ],
+          "pic": "Inspect the tridiagonal matrix, its eigenvalues and the weights from squared first components. Select an eigenvector and check its residual and total weight.",
+          "see": [
+            "nla-8.3"
+          ]
+        },
+        {
+          "num": "6.12",
+          "kind": "Algorithm",
+          "name": "Clenshaw–Curtis quadrature",
+          "deps": [
+            "num-3.6",
+            "num-6.1"
+          ],
+          "refs": [
+            "Trefethen, Exactness of Quadrature Formulas, §3, pp.4–6; cosine coefficient and moment derivations supplied here"
+          ],
+          "pic": "Compare the sampled function with its Chebyshev interpolant and inspect each coefficient’s contribution to the integral. A high-degree Chebyshev polynomial makes aliasing explicit."
+        },
+        {
+          "num": "6.13",
+          "kind": "Phenomenon",
+          "name": "Clenshaw–Curtis is nearly as good as Gauss",
+          "deps": [
+            "num-6.12",
+            "num-6.9"
+          ],
+          "refs": [
+            "Trefethen, Exactness of Quadrature Formulas, §3, pp.4–6; author manuscript distinct from the unavailable 2008 article"
+          ],
+          "pic": "Compare errors using the same number of function evaluations for each rule. Switch between an analytic Runge function, a smooth nonanalytic function and a displaced corner; inspect the associated Chebyshev mode errors."
+        }
+      ]
     },
     // ───────────────────────────────────────────────────────────── 7
     {
