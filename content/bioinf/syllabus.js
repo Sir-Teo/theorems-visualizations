@@ -158,42 +158,198 @@ export default {
       ],
     },
     {
-      n: 5,
-      title: 'Phylogenetic trees: distances and parsimony',
-      summary: String.raw`Evolutionary history is a tree, and the number of possible trees explodes super-exponentially. Distance methods build trees from pairwise distances — UPGMA assumes a clock, neighbour-joining does not and is exact for additive distances — once raw differences are corrected for multiple hits by substitution models. Parsimony instead counts the fewest changes on a tree, computed efficiently for a fixed tree by Fitch and Sankoff, but long-branch attraction can mislead it.`,
-      items: [
-        { num: '5.1', kind: 'Concept', name: 'Trees and the number of topologies', deps: [], refs: ['Durbin ch. 7'],
-          pic: 'Add taxa one at a time to every branch of an unrooted tree; the count (2n − 5)!! is plotted on a log axis and passes the number of atoms in the universe near 50 taxa.' },
-        { num: '5.2', kind: 'Concept', name: 'Additive tree metrics and the four-point condition', deps: ['bioinf-5.1'], refs: ['Compeau–Pevzner ch. 7'],
-          pic: 'Edit a distance matrix for four taxa; the three pairwise sums are compared, and the matrix fits a tree exactly when the two largest are equal.' },
-        { num: '5.3', kind: 'Algorithm', name: 'UPGMA', deps: ['bioinf-5.1'], refs: ['Durbin ch. 7'],
-          pic: 'Repeatedly merge the closest pair of clusters and average distances; the growing ultrametric tree is drawn with node heights equal to half the merging distance.' },
-        { num: '5.4', kind: 'Concept', name: 'Ultrametric trees and the molecular clock', deps: ['bioinf-5.3', 'popgen-3.9'], refs: ['Durbin ch. 7'],
-          pic: 'Simulate evolution with and without a clock; UPGMA recovers the true tree only when rates are equal, as rate variation is dialled up.' },
-        { num: '5.5', kind: 'Algorithm', name: 'Neighbour-joining', deps: ['bioinf-5.2'], refs: ['Durbin ch. 7', 'Compeau–Pevzner ch. 7'],
-          pic: 'Compute the Q-matrix, join the minimizing pair and update distances step by step; the unrooted tree is built while the matrix shrinks.' },
-        { num: '5.6', kind: 'Theorem', name: 'Neighbour-joining recovers additive trees exactly', deps: ['bioinf-5.5'], refs: ['Durbin ch. 7'],
-          pic: 'Generate distances from a random tree and add noise of increasing size; NJ returns the true topology exactly at zero noise and degrades gracefully afterwards.' },
-        { num: '5.7', kind: 'Model', name: 'Jukes–Cantor model and distance correction', deps: ['popgen-3.1', 'stoch-1.2'], refs: ['Durbin ch. 8'],
-          pic: 'Evolve a sequence under equal substitution rates; observed differences curve away from true substitutions, and the correction −¾ ln(1 − 4p/3) straightens them.' },
-        { num: '5.8', kind: 'Model', name: 'Kimura two-parameter model', deps: ['bioinf-5.7'], refs: ['Durbin ch. 8'],
-          pic: 'Separate transition and transversion rates; with a high transition bias the Jukes–Cantor correction underestimates distance and the Kimura correction fixes it.' },
-        { num: '5.9', kind: 'Phenomenon', name: 'Saturation: observed difference plateaus at 3/4', deps: ['bioinf-5.7'], refs: ['Durbin ch. 8'],
-          pic: 'Run substitutions for a long time; the fraction of differing sites levels off at 0.75 and corrected distances become wildly uncertain, shown by error bars blowing up.' },
-        { num: '5.10', kind: 'Algorithm', name: 'Fitch’s small-parsimony algorithm', deps: ['bioinf-5.1'], refs: ['Durbin ch. 7'],
-          pic: 'Pass state sets up a fixed tree, taking intersections or unions at each node; the number of unions is the minimum number of changes, then states are assigned top-down.' },
-        { num: '5.11', kind: 'Algorithm', name: 'Sankoff’s weighted parsimony', deps: ['bioinf-5.10', 'algo-7.15'], refs: ['Durbin ch. 7'],
-          pic: 'With unequal substitution costs, a DP table of minimal costs per state is filled at every node; the root minimum gives the weighted parsimony score.' },
-        { num: '5.12', kind: 'Theorem', name: 'Large parsimony is NP-hard; heuristic tree search', deps: ['bioinf-5.10', 'algo-14.4'], refs: ['Compeau–Pevzner ch. 7'],
-          pic: 'Nearest-neighbour interchanges move between trees on a landscape of parsimony scores; local search climbs to a local optimum that random restarts sometimes improve.' },
-        { num: '5.13', kind: 'Phenomenon', name: 'Long-branch attraction', deps: ['bioinf-5.10'], refs: ['Durbin ch. 8'],
-          pic: 'Simulate a four-taxon tree with two long non-sister branches; as sites accumulate, parsimony becomes ever more confident in the wrong tree that groups the long branches.' },
-        { num: '5.14', kind: 'Paper', name: 'Phylogenetic Structure of the Prokaryotic Domain',
-          paper: { authors: 'Carl R. Woese and George E. Fox', year: 1977, title: 'Phylogenetic structure of the prokaryotic domain: The primary kingdoms',
-                   venue: 'Proceedings of the National Academy of Sciences 74 (11): 5088–5090', doi: '10.1073/pnas.74.11.5088' },
-          introduces: [], deps: ['bioinf-5.3'], refs: [],
-          pic: 'Cluster the paper’s table of ribosomal-RNA association coefficients S_AB between organisms: average-linkage clustering splits them into three groups — the eubacteria, the methanogens Woese and Fox called archaebacteria, and the eukaryotic “urkaryotes” — and dragging the cut height shows the methanogens are as far from ordinary bacteria as from eukaryotes.' },
-      ],
+      "n": 5,
+      "title": "Phylogenetic trees: distances and parsimony",
+      "summary": "Distance and character methods ask different questions about a proposed genealogy. Additive and ultrametric distances give exact mathematical recovery results, whereas substitution corrections, parsimony and finite alignments require their own assumptions. The experiments use declared toy inputs; an unread original association table is never replaced by invented historical data.",
+      "items": [
+        {
+          "num": "5.1",
+          "kind": "Concept",
+          "name": "Trees and the number of topologies",
+          "deps": [],
+          "refs": [
+            "Durbin §7.1, printed pp163–165"
+          ],
+          "pic": "Switch rooted/unrooted counting, enumerate a selected small taxon set, and inspect individual actual topologies. The count graph uses exact integer products before taking logarithms. Its horizontal $10^{80}$ reference is a chosen comparison, not an astronomical measurement."
+        },
+        {
+          "num": "5.2",
+          "kind": "Concept",
+          "name": "Additive tree metrics and the four-point condition",
+          "deps": [
+            "bioinf-5.1"
+          ],
+          "refs": [
+            "Durbin §7.2, additive distances; quartet construction derived here"
+          ],
+          "pic": "Edit six integer distances in order AB,AC,AD,BC,BD,CD. Compare the three exact sums, triangle tests and reconstructed signed limbs. Try the equal-sum nonmetric counterexample: its negative limb prevents a nonnegative tree representation."
+        },
+        {
+          "num": "5.3",
+          "kind": "Algorithm",
+          "name": "UPGMA",
+          "deps": [
+            "bioinf-5.1"
+          ],
+          "refs": [
+            "Durbin §7.3, printed pp166–169"
+          ],
+          "pic": "Edit a four-taxon distance matrix and step through actual joins, cluster sizes, heights and weighted updates. The unequal-size example gives distance14 from ABC to D; an equal-cluster-weight update would incorrectly give14.5 for that example."
+        },
+        {
+          "num": "5.4",
+          "kind": "Concept",
+          "name": "Ultrametric trees and the molecular clock",
+          "deps": [
+            "bioinf-5.3",
+            "popgen-3.9"
+          ],
+          "refs": [
+            "Durbin §§7.3–7.4, printed pp166–170"
+          ],
+          "pic": "Compare a declared clock tree, two long non-sister terminal branches and an earlier sampled tip. Inspect actual path distances, triplet residuals and UPGMA reconstruction rather than a fabricated sequence or a guaranteed monotonic loss of accuracy."
+        },
+        {
+          "num": "5.5",
+          "kind": "Algorithm",
+          "name": "Neighbour-joining",
+          "deps": [
+            "bioinf-5.2"
+          ],
+          "refs": [
+            "Durbin §7.4, printed pp169–172; algorithm trace"
+          ],
+          "pic": "Edit actual distances and inspect every Q matrix, chosen join, limb and reduced matrix through the step player. Compare the three-taxon nonmetric example whose computed limbs are −3,5,5: the signed result and failure of a nonnegative metric interpretation remain visible."
+        },
+        {
+          "num": "5.6",
+          "kind": "Theorem",
+          "name": "Neighbour-joining recovers additive trees exactly",
+          "deps": [
+            "bioinf-5.5"
+          ],
+          "refs": [
+            "Durbin appendix §7.8, printed pp190–191; omitted exercise cases completed by the edge-split proof here"
+          ],
+          "pic": "Select an enumerated exact small tree and change its positive internal and nonnegative terminal lengths. Compare NJ's recovered splits, all pair distances and signed edge values. These finite checks test the implementation; the edge-split proof, rather than the experiment, supplies the all-size guarantee."
+        },
+        {
+          "num": "5.7",
+          "kind": "Model",
+          "name": "Jukes–Cantor model and distance correction",
+          "deps": [
+            "stoch-1.2"
+          ],
+          "see": [
+            "popgen-3.1",
+            "popgen-3.9"
+          ],
+          "refs": [
+            "Durbin §8.1, printed pp193–197",
+            "Felsenstein2019 X.2, printed pp457–460"
+          ],
+          "pic": "Generate an actual seeded alignment through Poisson substitution events and see which multiple/reverse events disappear from the observed mismatches. Compare its finite correction with the generating expected path length and the exact model curve. Saturated samples are retained and labelled."
+        },
+        {
+          "num": "5.8",
+          "kind": "Model",
+          "name": "Kimura two-parameter model",
+          "deps": [
+            "bioinf-5.7"
+          ],
+          "refs": [
+            "Durbin §8.1 Eq8.5–8.6, rendered printed p196"
+          ],
+          "pic": "Change the two generating rates and inspect actual seeded transition/transversion counts, then enter your own [transition,transversion,total] counts. Compare fitted rates and distance with the generating path. Invalid domains and negative unconstrained rate estimates remain visible; no estimate is silently clipped into the model."
+        },
+        {
+          "num": "5.9",
+          "kind": "Phenomenon",
+          "name": "Saturation: observed difference plateaus at 3/4",
+          "deps": [
+            "bioinf-5.7"
+          ],
+          "refs": [
+            "Durbin §§8.1,8.6, multiple substitutions and distance limitations"
+          ],
+          "pic": "Generate separately seeded finite alignments at the chosen length and site count. Inspect actual mismatch counts, domain failures, Wilson endpoints and the transformed interval. The count histogram retains saturated observations, while the generating curve carries its log-decay separately."
+        },
+        {
+          "num": "5.10",
+          "kind": "Algorithm",
+          "name": "Fitch’s small-parsimony algorithm",
+          "deps": [
+            "bioinf-5.1"
+          ],
+          "refs": [
+            "Durbin §7.5, printed pp174–176, including the all-optima warning"
+          ],
+          "pic": "Edit an actual binary tree and its leaf symbols. Step through intersections/unions and inspect the chosen ancestral states and counted edge changes. IUPAC ambiguity, a missing symbol and the optional gap state have explicit meanings; the table displays the actual postorder sets."
+        },
+        {
+          "num": "5.11",
+          "kind": "Algorithm",
+          "name": "Sankoff’s weighted parsimony",
+          "deps": [
+            "bioinf-5.10",
+            "algo-7.15"
+          ],
+          "refs": [
+            "Durbin §7.5, weighted-parsimony recurrence pp174–175"
+          ],
+          "pic": "Edit the supplied tree, observed/ambiguous site and actual5×5 cost matrix. Inspect every conditional table, root minimizer and a backtracked assignment. Directed costs and zero-cost ties are allowed; the readout verifies the chosen assignment cost and counts optima."
+        },
+        {
+          "num": "5.12",
+          "kind": "Theorem",
+          "name": "Large parsimony is NP-hard; heuristic tree search",
+          "verify": true,
+          "deps": [
+            "bioinf-5.10"
+          ],
+          "see": [
+            "toc-13.2"
+          ],
+          "refs": [
+            "Awasthi–Blum–Morgenstern–Sheffet, Additive Approximation for Near-Perfect Phylogeny Construction, pp1–3 (cited Hamming-Steiner hardness)"
+          ],
+          "pic": "Edit a small binary alignment. Exhaustively enumerate every unrooted binary topology to certify its toy optimum, then compare genuine seeded nearest-neighbour-interchange descent and restarts. The score landscape and actual search path expose local optima and ties without inventing an exponential-time lower bound for every instance."
+        },
+        {
+          "num": "5.13",
+          "kind": "Phenomenon",
+          "name": "Long-branch attraction",
+          "deps": [
+            "bioinf-5.10"
+          ],
+          "refs": [
+            "Durbin §8.6, printed pp224–227, inconsistency and long branches; independent exact fixture derived here"
+          ],
+          "pic": "Change the three edge-probability settings, inspect all16 computed pattern probabilities and their parsimony contributions, and generate an actual finite sampled alignment. The expected ordering can change as parameters change; finite scores may tie or favour another tree."
+        },
+        {
+          "num": "5.14",
+          "kind": "Paper",
+          "name": "Phylogenetic Structure of the Prokaryotic Domain",
+          "paper": {
+            "authors": "Carl R. Woese and George E. Fox",
+            "year": 1977,
+            "title": "Phylogenetic structure of the prokaryotic domain: The primary kingdoms",
+            "venue": "Proceedings of the National Academy of Sciences 74 (11): 5088–5090",
+            "doi": "10.1073/pnas.74.11.5088"
+          },
+          "introduces": [],
+          "verify": true,
+          "deps": [],
+          "see": [
+            "bioinf-5.3"
+          ],
+          "refs": [
+            "Woese–Fox1977, official PMC publication metadata and abstract only; original body unverified"
+          ],
+          "pic": "Select a claim to see which evidence is actually available. The three historical abstract labels are shown as categories without invented distances or connecting tree edges; the source-boundary panel identifies the missing original numerical evidence."
+        }
+      ]
     },
     {
       n: 6,
