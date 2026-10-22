@@ -179,41 +179,206 @@ export default {
     },
     // ───────────────────────────────────────────────────────────── 5
     {
-      n: 5,
-      title: 'Capacitors, inductors and first-order transients',
-      summary: String.raw`Capacitors and inductors store energy in electric and magnetic fields, so circuits containing them have memory and evolve in time. A single storage element gives a first-order differential equation whose solution relaxes exponentially with time constant RC or L/R. These transients explain delays in digital logic, the CV² cost of switching, the voltage spike when an inductor is interrupted, and one of the classic paradoxes of circuit theory.`,
-      items: [
-        { num: '5.1', kind: 'Definition', name: 'Capacitor: i = C dv/dt', deps: ['circ-1.1', 'pma-5.1', 'em-3.8'], refs: ['Agarwal–Lang §9.1', 'Horowitz–Hill §1.4'],
-          pic: 'Draw any voltage waveform across a capacitor with the mouse; the current is drawn as its scaled derivative, spiking at every steep edge.' },
-        { num: '5.2', kind: 'Definition', name: 'Inductor: v = L di/dt', deps: ['circ-1.1', 'pma-5.1', 'em-9.15'], refs: ['Agarwal–Lang §9.1', 'Horowitz–Hill §1.5'],
-          pic: 'Draw a current waveform through an inductor and see the voltage as its scaled derivative; a ramp in current gives a constant voltage.' },
-        { num: '5.3', kind: 'Proposition', name: 'Energy stored: ½CV² and ½LI²', deps: ['circ-5.1', 'circ-5.2', 'circ-1.2', 'em-2.11', 'em-9.17'], refs: ['Agarwal–Lang §9.5'],
-          pic: 'Charge a capacitor with a constant current: the power v·i integrated over time is shaded and equals ½CV² at every instant, with an analogous panel for an inductor.' },
-        { num: '5.4', kind: 'Proposition', name: 'Continuity of capacitor voltage and inductor current', deps: ['circ-5.3'], refs: ['Agarwal–Lang §10.3'],
-          pic: 'Close a switch in a circuit with storage elements: capacitor voltages and inductor currents evolve continuously while other variables jump, highlighted in different colours.' },
-        { num: '5.5', kind: 'Model', name: 'RC circuit: charging and discharging', deps: ['circ-5.1', 'circ-2.2', 'ode-1.4'], refs: ['Agarwal–Lang §10.1', 'Horowitz–Hill §1.4'],
-          pic: 'Flip a switch and watch the capacitor voltage approach the source exponentially; markers at τ, 2τ and 3τ show 63%, 86% and 95% of the final value as R and C are changed.' },
-        { num: '5.6', kind: 'Definition', name: 'Time constant', deps: ['circ-5.5'], refs: ['Agarwal–Lang §10.1'],
-          pic: 'The tangent to an exponential at any point hits the final value exactly one time constant later — drag the tangent point along the curve to verify.' },
-        { num: '5.7', kind: 'Model', name: 'RL circuit transients', deps: ['circ-5.2', 'circ-2.2'], refs: ['Agarwal–Lang §10.2'],
-          pic: 'Switch a source onto an inductor and resistor: the current builds up with time constant L/R while the inductor voltage decays, the two curves complementary.' },
-        { num: '5.8', kind: 'Method', name: 'First-order step response from initial, final value and τ', deps: ['circ-5.6', 'circ-5.7', 'circ-3.2'], refs: ['Agarwal–Lang §10.3'],
-          pic: 'For any first-order circuit drawn by the user, the solver finds the Thévenin resistance seen by the storage element, then sketches the response from three numbers and overlays the full simulation.' },
-        { num: '5.9', kind: 'Phenomenon', name: 'Inductive kick', deps: ['circ-5.7'], refs: ['Horowitz–Hill §1.5'],
-          pic: 'Open the switch feeding a relay coil: the inductor voltage spikes to hundreds of volts; add a flyback diode and the spike is clamped while the current decays gently.' },
-        { num: '5.10', kind: 'Model', name: 'RC integrator and differentiator', deps: ['circ-5.5'], refs: ['Horowitz–Hill §1.4'],
-          pic: 'Feed a square wave into an RC network and vary τ relative to the period: for long τ the output across C is a triangle (integral), for short τ the output across R is spikes (derivative).' },
-        { num: '5.11', kind: 'Paradox', name: 'Two-capacitor paradox', deps: ['circ-5.3', 'circ-5.5'], refs: ['Agarwal–Lang §9.5'],
-          pic: 'Connect a charged capacitor to an identical empty one through a resistor: charge is conserved but exactly half the energy disappears as heat — whatever the resistance, the integrated I²R matches, and shrinking R only makes the pulse taller and shorter.' },
-        { num: '5.12', kind: 'Model', name: 'Gate delay and RC propagation in logic', deps: ['circ-5.5', 'circ-4.8'], refs: ['Agarwal–Lang §10.4'],
-          pic: 'A chain of inverters drives capacitive loads; the threshold crossings march down the chain with a delay set by R_on·C, adjustable by sliders.' },
-        { num: '5.13', kind: 'Phenomenon', name: 'Switching power: P = fCV²', deps: ['circ-5.11', 'circ-5.12'], refs: ['Agarwal–Lang §11.3'],
-          pic: 'Raise the clock frequency and supply voltage of a toy processor: dissipated power grows linearly with f and quadratically with V, explaining why chips lowered their supply voltage.' },
-        { num: '5.14', kind: 'Invention', name: 'Switching power converter (buck)', deps: ['circ-5.7', 'circ-4.7', 'circ-4.1'], refs: ['Agarwal–Lang §16.4', 'Horowitz–Hill ch. 9'],
-          pic: 'A switch chops a supply at high frequency into an inductor and diode: the inductor current ripples as a sawtooth, the output settles at the duty cycle times the input, and efficiency stays high unlike a resistive divider.' },
-      ],
+      "n": 5,
+      "title": "Capacitors, inductors and first-order transients",
+      "summary": "Ideal storage laws, explicit transients and energy accounting are separated from impulsive limits and unmodeled switching physics.",
+      "items": [
+        {
+          "num": "5.1",
+          "kind": "Definition",
+          "name": "Capacitor: i = C dv/dt",
+          "deps": [
+            "circ-1.1",
+            "pma-5.1",
+            "em-3.8"
+          ],
+          "refs": [
+            "MIT 6.200 S26 public lecture09 capacitor slides, PDF5,7–9"
+          ],
+          "pic": "Choose a sinusoid, ramp or smooth step and edit its amplitude, rate and capacitance. Compare the actual voltage with its analytic derivative scaled by C."
+        },
+        {
+          "num": "5.2",
+          "kind": "Definition",
+          "name": "Inductor: v = L di/dt",
+          "deps": [
+            "circ-1.1",
+            "pma-5.1"
+          ],
+          "refs": [
+            "MIT 6.200 S26 public lecture10 inductor slides, PDF5–9"
+          ],
+          "pic": "Choose a current waveform and vary L. A ramp produces constant voltage; a changing current can have either voltage sign."
+        },
+        {
+          "num": "5.3",
+          "kind": "Proposition",
+          "name": "Energy stored: ½CV² and ½LI²",
+          "deps": [
+            "circ-5.1",
+            "circ-5.2",
+            "circ-1.2"
+          ],
+          "refs": [
+            "MIT capacitor PDF5,9; inductor PDF5,9"
+          ],
+          "pic": "Switch between electric and magnetic storage. The state–conjugate phase curve, instantaneous power and stored energy come from the same analytic sinusoid; a selected point verifies the energy formula."
+        },
+        {
+          "num": "5.4",
+          "kind": "Proposition",
+          "name": "Continuity of capacitor voltage and inductor current",
+          "deps": [
+            "circ-5.1",
+            "circ-5.2"
+          ],
+          "refs": [
+            "MIT capacitor PDF8 and inductor PDF8; explicit integrated-law argument"
+          ],
+          "pic": "Change a finite transition width or select the ideal impulse limit. The regularized drive gets taller at fixed area; the impulse mode reports area and draws no invented finite current or voltage height."
+        },
+        {
+          "num": "5.5",
+          "kind": "Model",
+          "name": "RC circuit: charging and discharging",
+          "deps": [
+            "circ-5.1",
+            "circ-2.2",
+            "ode-1.4"
+          ],
+          "refs": [
+            "MIT first-order lecture11 slides PDF2,4–7"
+          ],
+          "pic": "Edit R, C, source and initial voltage. Inspect the actual selected time and compare normalized time t/(RC) with physical milliseconds."
+        },
+        {
+          "num": "5.6",
+          "kind": "Definition",
+          "name": "Time constant",
+          "deps": [
+            "circ-5.5"
+          ],
+          "refs": [
+            "MIT inductor lecture10 PDF12; first-order PDF6"
+          ],
+          "pic": "Move the selected tangent point along the normalized exponential. The gold point marks its exact intersection one time constant later; read physical RC time alongside the normalized coordinates."
+        },
+        {
+          "num": "5.7",
+          "kind": "Model",
+          "name": "RL circuit transients",
+          "deps": [
+            "circ-5.2",
+            "circ-2.2",
+            "ode-1.4"
+          ],
+          "refs": [
+            "MIT inductor PDF11–12 and first-order PDF3,8"
+          ],
+          "pic": "Change L, R, source and initial current. Compare computed current with the complementary inductor voltage and physical L/R time."
+        },
+        {
+          "num": "5.8",
+          "kind": "Method",
+          "name": "First-order step response from initial, final value and τ",
+          "deps": [
+            "circ-5.6",
+            "circ-5.7",
+            "circ-3.2",
+            "circ-2.1"
+          ],
+          "refs": [
+            "MIT first-order PDF4–6; explicit Thévenin/KCL reduction"
+          ],
+          "pic": "Edit the two physical resistor values and capacitance. The schematic marks the computed node voltage, while branch currents and the effective resistance verify the reduction."
+        },
+        {
+          "num": "5.9",
+          "kind": "Phenomenon",
+          "name": "Inductive kick",
+          "deps": [
+            "circ-5.7",
+            "circ-5.1",
+            "ode-1.4"
+          ],
+          "refs": [
+            "MIT inductor PDF5–9; independently derived specified switching closures"
+          ],
+          "pic": "Compare a specified lossless parasitic LC path with a flyback clamp. Vary the parasitic capacitance or clamp/winding values; inspect actual current, switch voltage and remaining stored energy."
+        },
+        {
+          "num": "5.10",
+          "kind": "Model",
+          "name": "RC integrator and differentiator",
+          "deps": [
+            "circ-5.5"
+          ],
+          "refs": [
+            "MIT first-order PDF4–6; independently derived periodic piecewise solution"
+          ],
+          "pic": "Vary τ relative to the square-wave period and select capacitor or resistor output. Inspect the exact periodic steady-state waveform, with finite high-pass jumps at ideal input edges."
+        },
+        {
+          "num": "5.11",
+          "kind": "Paradox",
+          "name": "Two-capacitor paradox",
+          "deps": [
+            "circ-5.3",
+            "circ-5.5",
+            "circ-2.1"
+          ],
+          "refs": [
+            "Independent charge-conservation, RC and Joule-integral derivation"
+          ],
+          "pic": "Edit both capacitances, initial voltages and positive connecting resistance. Compare both voltages, transferred charge and exact cumulative Joule heat; verify stored energy plus heat equals its initial value."
+        },
+        {
+          "num": "5.12",
+          "kind": "Model",
+          "name": "Gate delay and RC propagation in logic",
+          "deps": [
+            "circ-5.5",
+            "circ-4.8"
+          ],
+          "refs": [
+            "MIT capacitor/first-order dynamics; authored event-driven inverter model"
+          ],
+          "pic": "Change RC, threshold and stage count. Actual RC output curves start when their predecessor crosses the threshold, and marked crossing times show the accumulated delay."
+        },
+        {
+          "num": "5.13",
+          "kind": "Phenomenon",
+          "name": "Switching power: P = fCV²",
+          "deps": [
+            "circ-5.11",
+            "circ-5.12"
+          ],
+          "refs": [
+            "TI SCAA035B, actual PDF7–9, external-load Eq5–9; independent energy accounting"
+          ],
+          "pic": "Select a cyclic bit pattern and edit clock, C and V. The diagram marks actual charging events; the computed power uses their rate and the readout separates stored energy from full-cycle loss."
+        },
+        {
+          "num": "5.14",
+          "kind": "Invention",
+          "name": "Switching power converter (buck)",
+          "deps": [
+            "circ-5.7",
+            "circ-5.1",
+            "circ-4.7",
+            "circ-2.1",
+            "ode-3.3"
+          ],
+          "refs": [
+            "MIT energy-processing lecture14 PDF7,10–11; authored LC-output affine-flow extension"
+          ],
+          "pic": "Vary duty, L, C, load and switching frequency. The current and output ripple are actual periodic switched-ODE states; their endpoint residual and minimum current check closure and conduction regime.",
+          "see": [
+            "circ-4.1"
+          ]
+        }
+      ]
     },
-    // ───────────────────────────────────────────────────────────── 6
     {
       n: 6,
       title: 'Second-order circuits',
