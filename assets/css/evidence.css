@@ -1,0 +1,11 @@
+.evidence-view { overflow-wrap: anywhere; line-height: 1.65; }
+.evidence-view > section { margin-block: 1.25rem; }
+.evidence-view h3 { margin-block: 1rem .5rem; font-size: 1.12rem; }
+.evidence-view h4 { margin-block: 1rem .35rem; font-size: 1rem; }
+.evidence-view p { margin-block: .6rem; }
+.evidence-view ul { padding-inline-start: 1.4rem; }
+.evidence-view li { margin-block: .35rem; }
+.evidence-view section section { border-inline-start: 2px solid var(--border); padding-inline-start: 1rem; }
+.evidence-disclosure { margin-block-start: 1rem; }
+.evidence-disclosure > summary { cursor: pointer; padding-block: .5rem; }
+.evidence-page { max-width: 900px; padding-bottom: 3rem; }

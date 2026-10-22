@@ -4,7 +4,7 @@
 
 The broader plan now has a versioned coverage registry, eight researched briefs, an additive schema/URL contract, and **six working local prototypes: four accepted under bounded AI review (P01/P02 at 0.1.2 and P03/P05 at 0.1.0), plus P07/P08 in review with real-world and release checks open**. The [integration package](integration/universal-pilots.md) passed a rehearsal on the accepted Wave 6 checkpoint and compatibility checks on frozen expansion/redesign snapshots. This is an implementation foundation and a concrete queue, not a claim that all future disciplines, sources or review needs are solved.
 
-The active **“do all”** goal covers U0–U5. Continue from the [whole-roadmap execution ledger](master-plan-execution.md); a finished pilot batch is not completion of the broader goal. The latest U3 deliveries are [30 reviewed local domain orientations](coverage/overviews.md) and the [coverage/review dashboard](coverage/dashboard/README.md). Classification checks are in the [crosswalk checkpoint](coverage/crosswalk-review.md), with pilot checks in the [studio checkpoint](verification/universal-pilots-studio.md); the earlier [method checkpoint](verification/universal-pilots-methods.md) remains historical evidence.
+The active **“do all”** goal covers U0–U5. Continue from the [whole-roadmap execution ledger](master-plan-execution.md); a finished pilot batch is not completion of the broader goal. The latest U3 deliveries are [30 reviewed local domain orientations](coverage/overviews.md), the [coverage/review dashboard](coverage/dashboard/README.md), [16 researched sequence briefs](pilots/sequences/README.md) and the [optional legacy evidence integration](integration/evidence-view.md). Classification checks are in the [crosswalk checkpoint](coverage/crosswalk-review.md), with pilot checks in the [studio checkpoint](verification/universal-pilots-studio.md); the earlier [method checkpoint](verification/universal-pilots-methods.md) remains historical evidence.
 
 ## Read these first
 
@@ -32,7 +32,8 @@ Continue in `/Users/teodev/.codex/worktrees/universal-pilots-integration/theorem
 | Philosophy prototype | `explorations/philosophy.json` | Local AI source/context/reuse review; ordered argument editor; English locator crosswalk; broader specialist/human checks open |
 | Agriculture prototype | `explorations/agriculture.json` | Local AI data/reuse review; 278 raw rows, log-spaced points and independent synthetic model; professional/human checks open |
 | Craft/performance prototypes | `explorations/craft.json`, `explorations/performance.json` | Working digital weave model and original generated phrase; physical/performer/access/learning and asset release remain open |
-| Preview build | `scripts/build-explorations.mjs`; `labs/atlas/` | Isolated static pages; production loader/catalog unchanged |
+| Preview build | `scripts/build-explorations.mjs`; `labs/atlas/` | Isolated static pages; no production loading of new explorations |
+| Legacy evidence integration | `evidence/manifest.json`; `assets/js/evidence-*.js`; separate integration manifest | Lazy production disclosure/route and exact sidecar review bindings; 126 scoped tests and accepted-base parity pass; zero real records; no publication |
 | State and compatibility helpers | `explorations/route-state.mjs` | Tested legacy URL preservation, bounded public state and no inferred legacy acceptance |
 | Verification | Scoped Node/browser tests and verification receipt | Five independent AI review roles; 18 current scoped dimensional receipts plus retained history; no professional, screen-reader or learner claim |
 | Coverage/review dashboard | `coverage-dashboard/`; `labs/atlas/coverage/`; `docs/coverage/dashboard/` | Pinned canonical scopes, independent AI data/code checks, filters and source inspection; reproducible refresh; no live-monitor or human-observation claim |
@@ -54,7 +55,7 @@ P01/P02 are accepted for local preview under the revised requirements. The user 
 | Delivered · U2 first-pair local acceptance | Exact 0.1.2 receipts pass for all declared dimensions | Integrated locally; unchanged passages and prior-note export; no production count or publication change |
 | Next · U2 methods | P03/P05 locally reviewed; P07/P08 digital implementations in review, real-world checks open | Close physical/performer/access/learning and release gates without inventing observations; at most two unaccepted drafts |
 | Gated · U2 professions | P04 law and P06 care | Qualified legal/clinical review and the specific temporal/physiological gates; no generic automated approval |
-| U3 integration | Add opt-in production loading and evidence/review UI | Integrate from latest accepted base; old `verify`, IDs, links, deps, embeds and saved states survive |
+| U3 integration | Legacy evidence view/sidecar loading implemented locally; new-format exploration loading remains open | Separate two-file production delta and pinned rehearsal; old `verify`, IDs, links, deps, embeds and saved states survive |
 | U3 routes | Generate accepted public pages and aliases | Real static paths, canonical metadata/sitemap, project-base tests, no duplicate counts, no draft leakage |
 | Delivered locally · U3 orientation | 30 scoped domain overviews, separate source/content and engineering AI reviews | Real source passages, questions, methods, gaps, language/place/practice context, proposed maintainer roles and next-reading tasks; no lesson or full-domain coverage claim; public navigation remains open |
 | U3 sequences | Research and build three lessons per pilot, 24 total | [All 16 follow-ups have independently desk-reviewed research briefs](pilots/sequences/README.md), with 34 scoped source receipts, recorded review/access limits and open preparation gates. No new lesson is authored or accepted by this research |
@@ -113,7 +114,7 @@ The draft build writes only `labs/atlas/`. It does not invoke `scripts/build.mjs
 - The Japanese source is a modern institutional display witness, not a critical edition or facsimile.
 - Its Koto recheck timed out during the latest review; retain the earlier body-read receipt without claiming fresh verification or recovering a stopped source through another host.
 - P03 argument and P05 measured-data components are implemented and locally reviewed. P07 practice and P08 performance have digital prototypes with unperformed real-world checks and pending release terms. P04 legal and P06 care retain their professional preparation gates.
-- Public routes, sidecar loading, public withdrawal and note migrations are specified future work, not live features.
+- Legacy evidence sidecar loading and minimal evidence withdrawal are implemented locally with an empty real registry. New-format public routes/catalogs, published exploration withdrawal/version retention and note migrations remain open. No deployment has occurred.
 - Detailed library schedules, community vocabularies and many place/language traditions remain outside the current crosswalk.
 - Map-performance work stays deferred; it is not reopened through “future readiness.”
 

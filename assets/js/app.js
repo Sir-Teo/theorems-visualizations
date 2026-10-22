@@ -508,6 +508,7 @@ async function pageTheorem(id, params = new URLSearchParams()) {
       <div class="side-grid">
         <div class="card panel"><h2>Why it's true</h2><div class="prose" id="idea"><span class="faint">…</span></div>
           ${it.refs || links.length ? `<div class="refs-inline">${it.refs ? `<span class="eyebrow">Read more</span> ${escapeHTML(it.refs.join(' · '))}` : ''}${links.map(([k, u]) => ` · <a href="${escapeHTML(u)}" target="_blank" rel="noopener">${escapeHTML(k)}</a>`).join('')}</div>` : ''}
+          <details class="evidence-disclosure"><summary>Sources and review status</summary><div class="evidence-content" role="status">Open to inspect existing references and any additional review record.</div></details>
         </div>
         <div class="card panel">
           <h2>Builds on <span class="count">${deps.length + pdeps.length}</span></h2>
@@ -530,6 +531,22 @@ async function pageTheorem(id, params = new URLSearchParams()) {
   const fullParams = new URLSearchParams(params); fullParams.delete('embed');
   fullURL.hash = `/t/${encodeURIComponent(id)}${fullParams.size ? `?${fullParams}` : ''}`;
   el.querySelector('.embed-attribution').href = fullURL.href;
+  let evidenceLoading = false, evidenceLoaded = false;
+  el.querySelector('.evidence-disclosure').addEventListener('toggle', async event => {
+    if (!event.target.open || evidenceLoading || evidenceLoaded) return;
+    evidenceLoading = true;
+    const container = el.querySelector('.evidence-content');
+    container.textContent = 'Loading evidence…';
+    try {
+      const { loadEvidence, renderEvidenceView } = await import('./evidence-view.js');
+      const result = shardData.has(it.col) ? await loadEvidence(it, C) : { kind: 'unavailable' };
+      if (!isCurrent() || !container.isConnected) return;
+      container.removeAttribute('role');
+      container.replaceChildren(renderEvidenceView(it, C, result, { detailsAvailable: shardData.has(it.col) }));
+      evidenceLoaded = result.kind !== 'unavailable';
+    } catch { if (isCurrent()) container.textContent = 'Evidence could not be loaded. Close and reopen this section to retry.'; }
+    finally { evidenceLoading = false; }
+  });
   wireLineage(el, it);
   // keyboard prev/next
   const onKey = (e) => {
@@ -772,13 +789,32 @@ function pageNotFound() {
   app.replaceChildren(h(`<div class="wrap page-head"><h1>Not found</h1><p class="sub">That page doesn't exist (yet). <a href="#/">Back to the start</a>.</p></div>`));
 }
 
+async function pageEvidence(requestedId, originalHash) {
+  const isCurrent = viewIsCurrent();
+  const id = G.alias.get(requestedId) || requestedId, item = G.byId.get(id);
+  if (!item || item.planned) return pageNotFound();
+  const collection = G.colById.get(item.col);
+  const { loadEvidence, renderEvidenceView } = await import('./evidence-view.js');
+  const { evidenceRoute } = await import('./evidence-model.js');
+  await loadShard(item.col);
+  if (!isCurrent()) return;
+  const result = shardData.has(item.col) ? await loadEvidence(item, collection) : { kind: 'unavailable' };
+  if (!isCurrent()) return;
+  setTitle('Evidence: ' + item.name.replace(/\$/g, '')); setNav('fields'); curCol = item.col;
+  const el = h(`<div class="wrap page-head evidence-page"><p><a class="evidence-return" href="${escapeHTML(evidenceRoute(originalHash, 'idea'))}">← Return to the explanation</a></p><h1>Evidence for ${inlineHTML(item.name)}</h1><p class="sub">References, qualifications and the scope of any additional review.</p></div>`);
+  el.append(renderEvidenceView(item, collection, result, { detailsAvailable: shardData.has(item.col) }));
+  app.replaceChildren(el);
+}
+
 // ------------------------------------------------------------ router
 async function route(event) {
   const version = ++routeVersion;
   cleanup?.(); cleanup = null;
   const raw = location.hash.replace(/^#/, '') || '/';
   if (raw === 'fields') { if (location.hash !== '#/') { history.replaceState(null, '', '#/'); await route(); } document.getElementById('fields')?.scrollIntoView(); return; }
-  const [path, qs] = raw.split('?');
+  const queryStart = raw.indexOf('?');
+  const path = queryStart < 0 ? raw : raw.slice(0, queryStart);
+  const qs = queryStart < 0 ? '' : raw.slice(queryStart + 1);
   const params = new URLSearchParams(qs || '');
   const parts = path.split('/').filter(Boolean);
   document.documentElement.classList.toggle('embed-view', parts[0] === 't' && (new URLSearchParams(location.search).get('embed') === '1' || params.get('embed') === '1'));
@@ -794,6 +830,7 @@ async function route(event) {
     else if (parts[0] === 'c' && parts.length === 3) await pageChapter(parts[1], +parts[2]);
     else if (parts[0] === 't' && parts[1] && G.alias.has(decodeURIComponent(parts[1]))) location.replace(`#/t/${G.alias.get(decodeURIComponent(parts[1]))}${qs ? `?${qs}` : ''}`);
     else if (parts[0] === 't' && parts[1]) await pageTheorem(decodeURIComponent(parts[1]), params);
+    else if (parts[0] === 'evidence' && parts.length === 2) await pageEvidence(decodeURIComponent(parts[1]), location.hash);
     else if (parts[0] === 'map') await pageMap(params);
     else if (parts[0] === 'status') pageStatus();
     else if (parts[0] === 'timeline') await pageTimeline(params);

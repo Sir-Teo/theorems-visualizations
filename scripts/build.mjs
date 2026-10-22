@@ -9,6 +9,7 @@ import { join } from 'node:path';
 import { gzipSync } from 'node:zlib';
 import { loadAll, loadBridges, validate, printProblems, cmpNum, ROOT } from './lib.mjs';
 import { makeHomeCatalog, HOME_JSON_BUDGET } from './home-catalog.mjs';
+import { prepareEvidenceSidecars } from './evidence-sidecars.mjs';
 
 const strict = process.argv.includes('--strict');
 const { fields, collections, chapters, items, planned, aliases, problems } = await loadAll();
@@ -283,6 +284,7 @@ const homePlanned = ghosts.map(it => ({
 }));
 const homeJSON = JSON.stringify(makeHomeCatalog(index, homePlanned)), homeGzipBytes = gzipSync(homeJSON).length;
 if (homeGzipBytes > HOME_JSON_BUDGET) throw new Error(`Home JSON exceeds its ${HOME_JSON_BUDGET}-byte gzip budget: ${homeGzipBytes} bytes`);
+const evidence = await prepareEvidenceSidecars({ root: ROOT, items: all, collections });
 // write into a private folder, then swap it in, so pages being served or checked never see a half-written data/
 const OUT = `data.tmp-${process.pid}`;
 await rm(join(ROOT, OUT), { recursive: true, force: true });
@@ -302,7 +304,7 @@ for (const C of collections) {
   const its = all.filter((it) => it.col === C.id), pl = ghosts.filter((it) => it.col === C.id);
   if (!its.length && !pl.length) continue;
   const det = {};
-  for (const it of its) det[it.id] = { st: it.statement, refs: it.refs?.length ? it.refs : undefined, scope: it.scope || undefined, credit: it.credit || undefined, links: it.links || undefined, paper: it.paper || undefined };
+  for (const it of its) det[it.id] = { st: it.statement, refs: it.refs?.length ? it.refs : undefined, scope: it.scope || undefined, credit: it.credit || undefined, links: it.links || undefined, paper: it.paper || undefined, ...(evidence.targetImplementations.has(it.id) ? { evidenceImplementationDigest: evidence.targetImplementations.get(it.id) } : {}) };
   for (const it of pl) det[it.id] = { pic: it.pic || undefined, refs: it.refs?.length ? it.refs : undefined, tags: it.tags?.length ? it.tags : undefined, paper: it.paper || undefined };
   // chapter summaries live here (not in index.json) to keep the catalog small
   const sums = Object.fromEntries([...chapters.values()].filter((c) => c.col === C.id && c.summary).map((c) => [c.chapter, c.summary]));
@@ -310,6 +312,10 @@ for (const C of collections) {
   await writeFile(join(ROOT, OUT, 'col', `${C.id}.json`), JSON.stringify(det));
 }
 await writeFile(join(ROOT, OUT, 'atlas.css'), css);
+for (const [path, bytes] of evidence.outputs) {
+  await mkdir(join(ROOT, OUT, 'evidence'), { recursive: true });
+  await writeFile(join(ROOT, OUT, path), bytes);
+}
 const OLD = `data.old-${process.pid}`;
 await rename(join(ROOT, 'data'), join(ROOT, OLD)).catch(() => {});
 await rename(join(ROOT, OUT), join(ROOT, 'data'));

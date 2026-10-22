@@ -17,9 +17,9 @@ The atlas can add source criticism and interpretation without renaming its 85 co
 
 A new namespace avoids collision with old item IDs. The family segment is an identity label, not an obligation to keep the exploration in one domain forever. Moving a lesson among domains never renumbers it.
 
-The [legacy evidence adapter](../../explorations/route-state.mjs) preserves `verify: true` as a legacy uncertainty flag and copies prerequisite IDs without mutating them. It does **not** infer acceptance from “written,” the presence of a visualization, or absence of a verification flag. The adapter is tested but is not wired into the production renderer.
+The [legacy evidence adapter](../../explorations/route-state.mjs) preserves `verify: true` as a legacy uncertainty flag and copies prerequisite IDs without mutating them. It does **not** infer acceptance from “written,” the presence of a visualization, or absence of a verification flag. That prototype adapter remains unchanged. The [production evidence adapter and optional reader view](legacy-evidence.md) now additionally recognize compact `verify: 1`, bind the authored implementation and preserve the same uncertainty semantics.
 
-For future legacy enrichment, use sidecar records keyed by the existing item ID. Do not rewrite every chapter to add empty metadata. An absent sidecar means “no additional review information,” not failure or acceptance. Freeze the sidecar path and loader only during the production integration change.
+Legacy enrichment now has an explicit [sidecar contract](legacy-evidence.md) keyed by the existing item ID, lazy catalog/shard loading and reviewed minimal withdrawal behavior. The real manifest is empty. An absent sidecar means “no additional review information,” not failure or acceptance; no chapter is rewritten to add empty metadata. This legacy integration does not publish the new-format prototypes.
 
 ## Executable record contract
 
@@ -73,6 +73,7 @@ The current builder emits local previews only and rejects `publication: "publish
 | Purpose | URL relative to deployment base | State now |
 | --- | --- | --- |
 | Existing idea | `#/t/pma-4.19?…` | Unchanged production route and parameter contract |
+| Optional legacy evidence | `#/evidence/pma-4.19?…` | Implemented locally; lazy review view and opaque return state |
 | Existing collection/chapter | `#/c/pma`, `#/c/pma/4` | Unchanged |
 | Existing field/map/path/bridge/search | Current hash routes | Unchanged; no blanket redirect |
 | Prototype index | `labs/atlas/` | Implemented, static HTML, noindex |
@@ -85,7 +86,7 @@ All paths must work under both `/` and a static-host project base such as `/theo
 
 Public routes should contain semantic HTML, a self-canonical URL and sitemap entries **only for accepted, published material**. Drafts remain noindex and outside sitemap/home/search/production counts. Do not publish a canonical tag pointing at an unimplemented route. “Noindex” is not authentication: private or restricted evidence must never be embedded merely because a page is a draft.
 
-A future opt-in legacy redirect must preserve the exact idea ID, alias resolution, query parameters, embed mode and visualization state. First audit and test every existing route family. Keep unknown legacy parameters opaque until their owner defines a migration; never strip saved state to simplify routing. The old router is not changed by this delivery.
+A future opt-in legacy redirect must preserve the exact idea ID, alias resolution, query parameters, embed mode and visualization state. First audit and test every existing route family. Keep unknown legacy parameters opaque until their owner defines a migration; never strip saved state to simplify routing. The legacy evidence integration adds only its opt-in fragment route/disclosure and fixes alias query parsing to split at the first question mark. It does not implement a static-path redirect or migrate existing routes.
 
 An alias maps once to a canonical identity, with provenance and no cycles. It must not cause duplicate authored counts or chains of redirects. Reserve retired public IDs and provide a tombstone when appropriate; do not recycle an ID for a different idea.
 

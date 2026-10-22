@@ -1,0 +1,5 @@
+{
+  "schemaVersion": 1,
+  "scope": "Optional legacy-item evidence sidecars. Empty means no additional review records; it does not certify or reject the existing content.",
+  "entries": []
+}

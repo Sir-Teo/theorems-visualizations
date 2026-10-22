@@ -1,0 +1,32 @@
+{
+  "schemaVersion": 1,
+  "mode": "legacy-evidence-local-integration",
+  "baseCommit": "facab15e297c645d4826935f2c011a4cf367ee88",
+  "replacements": [
+    {
+      "path": "assets/js/app.js",
+      "baseSha256": "5c0fab01a6acf4504df1347b8e3355219e7cc1b41ee2c968d0fe74724001a0ac"
+    },
+    {
+      "path": "scripts/build.mjs",
+      "baseSha256": "96ae599afd970e8e642e31c577f59bde9a99c0ce7fda7f1b4d6237d9409f5f88"
+    }
+  ],
+  "additions": [
+    "assets/css/evidence.css",
+    "assets/js/evidence-model.js",
+    "assets/js/evidence-view.js",
+    "docs/architecture/legacy-evidence.md",
+    "docs/integration/evidence-view.json",
+    "docs/integration/evidence-view.md",
+    "docs/verification/universal-evidence-ai-code.md",
+    "docs/verification/universal-evidence.md",
+    "evidence/manifest.json",
+    "scripts/check-evidence-integration.mjs",
+    "scripts/evidence-module-digest.mjs",
+    "scripts/evidence-sidecars.mjs",
+    "tests/evidence-fixture.mjs",
+    "tests/evidence-ui.test.mjs",
+    "tests/evidence.test.mjs"
+  ]
+}
