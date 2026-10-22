@@ -162,9 +162,9 @@ async function pageHome() {
   const pillars = H.home.pillars.map(id => homeById.get(id));
   const liveFields = G.fields.filter((F) => fieldCols(F).some((C) => C.count));
   const newChapters = [
+    ['logic', 7, 'Arithmetic and Gödel’s incompleteness theorems'],
+    ['qm', 8, 'Three dimensions and the hydrogen atom'],
     ['cg', 5, 'Voronoi diagrams and Delaunay triangulations'],
-    ['behav', 6, 'Social preferences and behavioral games'],
-    ['psych', 5, 'Colour vision'],
   ].filter(([col, chapter]) => H.collections.some(C => C.id === col && C.chapters.some(Ch => Ch.n === chapter && Ch.count)));
   const el = h(`<div>
     <section class="wrap hero">

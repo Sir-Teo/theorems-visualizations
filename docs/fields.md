@@ -44,6 +44,8 @@ an eigen-direction, an orthonormal frame, an ellipse's axes) with live numbers.
 
 - In a two-involution argument, identify which map actually supplies the desired fixed point. Gaussian and Eisenstein factorization require their own norm, unit and ramification facts. Keep zero cases separate in divisor formulas, and distinguish finite searches from proofs of global nonexistence. Read the actual written prerequisite; a planned advanced theorem cannot be treated as an available proof. See the [Diophantine review](verification/wave5-nt-review.md).
 
+- In arithmetic metatheory, distinguish numeralwise representation from uniform totality, and state the consistency or provability licenses each theorem needs. Quantifier printers must preserve scope under parsing and capture-avoiding substitution. A bounded automaton or machine executor must report an exhausted resource budget as inconclusive; finite traces do not establish unbounded decision or undecidability claims. See the [logic review](verification/wave5-logic-review.md).
+
 ## Physics & astronomy, Earth & environment, engineering
 
 - Distinguish paraxial momentum nθ from exact n sinθ, and two-dimensional canonical area from full projected three-dimensional étendue. Lossless reduced radiance L/n² is conserved; absorption changes flux. Separate exact focal infinity, finite near-singularity and virtual images. A rounded near-critical Snell discriminant may be inconclusive; omit its uncertain ray rather than inventing a spot. Computed optical-length differences near subtraction precision need the same honesty. See the [geometrical-optics review](verification/wave5-waves-review.md).
@@ -72,6 +74,8 @@ an eigen-direction, an orthonormal frame, an ellipse's axes) with live numbers.
 - Near kinematic singularities, normal-equation back-substitution can lose accuracy even when the singular values appear plausible. Check actual velocity and nullspace residuals against an independent near-singular oracle; state the numerical rank cutoff and conditioning limits. A damped local correction does not establish global nonlinear convergence. See the [robotics review](verification/wave5-robot-review.md).
 
 - Declare potential, displacement and stress signs before comparing physical models. A positive geodetic disturbing potential differs from the negative mechanical potential; top-fibre stress depends on the through-thickness coordinate. Compute small column imbalances directly instead of subtracting large nearly equal pressures. See the [geophysics review](verification/wave5-geol-review.md).
+
+- For central quantum Hamiltonians, a joint separated basis does not mean every degenerate superposition factors. Keep operator domains distinct from the Hilbert space and radial probability distinct from volume density. Evaluate whole nodal slices exactly before applying relative colour scaling; a tiny trigonometric residue must not become a bright orbital. Near a binding threshold, solve for a stable decay quantity instead of subtracting nearly equal energies. See the [QM review](verification/wave5-qm-review.md).
 
 ## Statistics & data science
 

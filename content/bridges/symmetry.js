@@ -18,5 +18,6 @@ export default {
     { id: 'mech-7.3', note: String.raw`In mechanics, Noether's theorem turns continuous symmetries into conservation laws.` },
     { id: 'mech-7.5', note: String.raw`If a system’s Lagrangian is invariant under rotations about an axis, the angular-momentum component along that axis is conserved. Full rotational invariance conserves the whole vector; an external asymmetric potential can break it.` },
     { id: 'qm-7.6', note: String.raw`In quantum mechanics angular momentum is the generator of rotations: exponentiating $-i\theta\,\mathbf n\cdot\mathbf J/\hbar$ gives the rotation operator. Group action has become an operator acting on the state.` },
+    { id: 'qm-8.8', note: String.raw`On a fixed negative-energy Coulomb eigenspace, angular momentum and the suitably rescaled Runge–Lenz vector form two commuting angular-momentum algebras. Together with the Coulomb radial spectrum, their equal-spin representation accounts for the n² spatial states across different orbital angular momenta at one energy. Rotational symmetry alone supplies each 2ell+1 multiplet; this additional bound-state symmetry connects those multiplets.` },
   ],
 };
