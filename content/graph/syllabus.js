@@ -848,82 +848,561 @@ export default {
       title: 'Extremal Graph Theory',
       summary: String.raw`How many edges force a given subgraph? Turán's theorem answers this exactly for complete graphs, and the Erdős–Stone theorem shows that for any H the extremal density is governed by its chromatic number alone. For minors and topological minors, average degree bounds (Mader, Kostochka–Thomason, Komlós–Szemerédi) and large girth force complete minors; Hadwiger's conjecture, which links chromatic number to complete minors, is proved for small cases. Szemerédi's regularity lemma partitions every large graph into random-like pairs; with the blow-up, counting and removal lemmas it proves Erdős–Stone, bounds Ramsey numbers of bounded-degree graphs, and yields Roth's theorem on three-term arithmetic progressions.`,
       items: [
-        { num: '7.1.1a', kind: 'Definition', name: 'Extremal number ex(n, H) and Turán graphs', deps: ['graph-1.6.1a', 'graph-1.1.1c'], refs: ['Diestel §7.1'], verify: true,
-          pic: 'Sliders for n and r: the Turán graph T^(r−1)(n) is drawn as r − 1 nearly equal classes completely joined, with its edge count t_{r−1}(n) shown.' },
-        { num: '7.1.1', kind: 'Theorem', name: 'Turán’s theorem', deps: ['graph-7.1.1a'], refs: ['Diestel §7.1'], see: ['comb-12.6'],
-          pic: 'Add edges to an n-vertex graph while the app forbids Kʳ; the edge counter peaks at t_{r−1}(n), and the unique extremal graph reached is the Turán graph.' },
-        { num: '7.1.2', kind: 'Theorem', name: 'Erdős–Stone theorem', deps: ['graph-7.1.1a'], refs: ['Diestel §7.1'], see: ['graph-7.4.1', 'graph-7.5.2'],
-          pic: 'With εn² edges above the Turán number, random dense graphs are searched for a complete r-partite K_s^r; the app finds one and highlights its parts.' },
-        { num: '7.1.3', kind: 'Corollary', name: 'Erdős–Stone–Simonovits: extremal density is (χ − 2)/(χ − 1)', deps: ['graph-7.1.2', 'graph-5.1.1a'], refs: ['Diestel §7.1'],
-          pic: 'Pick a graph H; its chromatic number sets the limit of ex(n, H)/(n choose 2), plotted against n for exact small values and the asymptote.' },
-        { num: '7.1.4', kind: 'Lemma', name: 'Turán graphs have edge density tending to (r − 2)/(r − 1)', deps: ['graph-7.1.1a'], refs: ['Diestel §7.1'], see: ['graph-7.1.3'],
-          pic: 'Plot t_{r−1}(n)/(n choose 2) against n for several r; the curves converge to (r − 2)/(r − 1).' },
-        { num: '7.2.1', kind: 'Proposition', name: 'Average degree 2^(r−2) forces a Kʳ minor', deps: ['graph-1.7.1a', 'graph-1.2.1a'], refs: ['Diestel §7.2'],
-          pic: 'Contract edges of a dense graph to keep it dense while shrinking it; a vertex’s neighbourhood becomes dense enough to contain a K^(r−1) minor by induction, and adding the vertex gives Kʳ.' },
-        { num: '7.2.2', kind: 'Proposition', name: 'Average degree 2^(r choose 2) forces a topological Kʳ', deps: ['graph-1.2.2', 'graph-1.3.1', 'graph-1.7.1b'], refs: ['Diestel §7.2'], see: ['graph-3.5.1'],
-          pic: 'Build a topological minor with r branch vertices one edge at a time, each new subdivided edge found by a density argument, while the average degree requirement halves each step.' },
-        { num: '7.2.3', kind: 'Theorem', name: 'Average degree c·r² forces a topological Kʳ', deps: ['graph-1.4.3', 'graph-3.5.3', 'graph-1.7.1b'], refs: ['Diestel §7.2'],
-          pic: 'In a graph of average degree 10r², the app finds a highly connected subgraph, chooses r branch vertices with many neighbours, and links them using linkedness.' },
-        { num: '7.2.4', kind: 'Theorem', name: 'Kostochka–Thomason: d(G) ≥ c·r√log r forces a Kʳ minor', deps: ['graph-7.2.1'], refs: ['Diestel §7.2'],
-          pic: 'Plot the average degree needed to force a Kʳ minor against r: the bounds 2^(r−2) and c·r√log r, together with random graphs that show the latter is tight.' },
-        { num: '7.2.5', kind: 'Lemma', name: 'Large girth yields minors of huge minimum degree', deps: ['graph-1.3.1b', 'graph-1.7.1a'], refs: ['Diestel §7.2'],
-          pic: 'Choose far-apart centres in a high-girth graph, grow disjoint trees around them, and contract each tree: the resulting minor has enormous minimum degree.' },
-        { num: '7.2.6', kind: 'Theorem', name: 'Thomassen: large girth and δ ≥ 3 force a Kʳ minor', deps: ['graph-7.2.5', 'graph-7.2.4'], refs: ['Diestel §7.2'],
-          pic: 'For cubic graphs of growing girth, the app contracts local trees into a dense minor and finds a Kʳ minor inside it.' },
-        { num: '7.2.7', kind: 'Theorem', name: 'Kühn–Osthus: large girth, δ ≥ r − 1 force a topological Kʳ', deps: ['graph-1.3.1b', 'graph-1.7.1b'], refs: ['Diestel §7.2'],
-          pic: 'In graphs of large girth and minimum degree r − 1, the app locates a subdivided Kʳ, contrasting with dense graphs that need much larger degree.' },
-        { num: '7.3.1a', kind: 'Hypothesis', name: 'Hadwiger’s conjecture', deps: ['graph-5.1.1a', 'graph-1.7.1a'], refs: ['Diestel §7.3'], verify: true,
-          pic: 'For each small graph you draw, the app computes χ and the largest complete minor, plotting the pair; every point satisfies "χ ≥ r implies a Kʳ minor" so far.' },
-        { num: '7.3.1', kind: 'Proposition', name: 'No K⁴ minor: edge-maximal graphs are pasted triangles', deps: ['graph-1.7.3', 'graph-4.4.4'], refs: ['Diestel §7.3'],
-          pic: 'Build graphs by gluing triangles along edges (2-trees); adding any further edge creates a K⁴ minor, which the app highlights.' },
-        { num: '7.3.2', kind: 'Corollary', name: 'Edge-maximal graphs without a K⁴ minor have 2n − 3 edges', deps: ['graph-7.3.1'], refs: ['Diestel §7.3'],
-          pic: 'Glue triangles one at a time: each adds one vertex and two edges, so the counter stays at 2n − 3.' },
-        { num: '7.3.3', kind: 'Corollary', name: 'Hadwiger’s conjecture holds for r = 4', deps: ['graph-7.3.1', 'graph-7.3.1a', 'graph-5.5.2'], refs: ['Diestel §7.3'],
-          pic: 'Graphs without a K⁴ minor are 3-coloured by colouring triangle by triangle along the pasting order.' },
-        { num: '7.3.4', kind: 'Theorem', name: 'Wagner’s structure theorem for graphs without a K⁵ minor', deps: ['graph-4.4.4', 'graph-4.4.6'], refs: ['Diestel §7.3'],
-          pic: 'Decompose an edge-maximal graph without a K⁵ minor along separating triangles and edges into plane triangulations and copies of the Wagner graph W, shown in a tree.' },
-        { num: '7.3.5', kind: 'Corollary', name: 'Graphs without a K⁵ minor have at most 3n − 6 edges', deps: ['graph-7.3.4', 'graph-4.2.10'], refs: ['Diestel §7.3'],
-          pic: 'Paste triangulations and Wagner graphs along triangles and edges; the edge counter never exceeds 3n − 6.' },
-        { num: '7.3.6', kind: 'Corollary', name: 'Hadwiger’s conjecture holds for r = 5', deps: ['graph-7.3.4', 'graph-5.1.1', 'graph-7.3.1a'], refs: ['Diestel §7.3'],
-          pic: 'Colour each planar piece with four colours and each Wagner graph with three, then permute colours to agree on the pasted triangles and edges.' },
-        { num: '7.3.7', kind: 'Theorem', name: 'Robertson–Seymour–Thomas: Hadwiger’s conjecture for r = 6', deps: ['graph-7.3.1a', 'graph-5.1.1'], refs: ['Diestel §7.3'],
-          pic: 'A minimal counterexample would have an apex vertex over a planar graph; the app shows how removing the apex and 4-colouring the rest gives 5 colours.' },
-        { num: '7.3.8', kind: 'Theorem', name: 'Kühn–Osthus: Hadwiger for K_{s,s}-free graphs and large r', deps: ['graph-7.3.1a', 'graph-7.2.4'], refs: ['Diestel §7.3'],
-          pic: 'For K_{s,s}-free graphs of large chromatic number, the app finds the predicted complete minor, compared with random graphs that contain K_{s,s}.' },
-        { num: '7.3.9', kind: 'Corollary', name: 'Large girth: chromatic number r forces a topological Kʳ', deps: ['graph-5.2.3', 'graph-7.2.7'], refs: ['Diestel §7.3'],
-          pic: 'In high-girth graphs of chromatic number r, a critical subgraph of minimum degree r − 1 is found and a subdivided Kʳ inside it is highlighted.' },
-        { num: '7.4.1a', kind: 'Definition', name: 'ε-regular pairs and ε-regular partitions', deps: ['graph-1.1.1c', 'graph-1.6.1a'], refs: ['Diestel §7.4'], verify: true,
-          pic: 'Choose two vertex sets A, B and subsets X ⊆ A, Y ⊆ B with a slider for ε; the densities d(X, Y) and d(A, B) are compared, and the pair is flagged irregular when they differ by more than ε.' },
-        { num: '7.4.1', kind: 'Theorem', name: 'Szemerédi’s regularity lemma', deps: ['graph-7.4.1a'], refs: ['Diestel §7.4'], see: ['comb-13.1', 'graph-7.4.4'],
-          pic: 'A large random-like graph with planted structure is partitioned iteratively; the adjacency matrix reorders into blocks of near-constant density, with irregular pairs marked.' },
-        { num: '7.4.2', kind: 'Lemma', name: 'Refining a partition does not decrease its index', deps: ['graph-7.4.1a'], refs: ['Diestel §7.4'], see: ['graph-7.4.1'],
-          pic: 'Refine a partition step by step; the index q, a mean square density, is plotted and never decreases.' },
-        { num: '7.4.3', kind: 'Lemma', name: 'An irregular pair splits to raise the index by ε⁴', deps: ['graph-7.4.2'], refs: ['Diestel §7.4'], see: ['graph-7.4.1'],
-          pic: 'Given an irregular pair with witness sets X and Y, split A and B along them; the index of the pair jumps by at least ε⁴, shown numerically.' },
-        { num: '7.4.4', kind: 'Lemma', name: 'An irregular partition has a refinement of much larger index', deps: ['graph-7.4.3', 'graph-7.4.2'], refs: ['Diestel §7.4'], see: ['graph-7.4.1'],
-          pic: 'Apply all splitting witnesses at once and equalise part sizes; the index gains ε⁵/2, so after boundedly many rounds the partition must be regular.' },
-        { num: '7.5.1', kind: 'Lemma', name: 'ε-regular pairs: most vertices see large sets typically', deps: ['graph-7.4.1a'], refs: ['Diestel §7.5'],
-          pic: 'In an ε-regular pair, pick Y ⊆ B larger than ε|B|; vertices of A with fewer than (d − ε)|Y| neighbours in Y are coloured red and are always fewer than ε|A|.' },
-        { num: '7.5.1a', kind: 'Definition', name: 'Regularity graph', deps: ['graph-7.4.1a', 'graph-7.4.1'], refs: ['Diestel §7.5'], verify: true,
-          pic: 'From a regular partition, draw a vertex for each part and an edge for each ε-regular pair of density at least d, giving the reduced graph R.' },
-        { num: '7.5.2', kind: 'Lemma', name: 'Blow-up lemma', deps: ['graph-7.5.1', 'graph-7.5.1a'], refs: ['Diestel §7.5'], see: ['graph-7.1.2'],
-          pic: 'Blow up each vertex of the regularity graph into a large set: a bounded-degree graph H mapped homomorphically into R is embedded vertex by vertex into G, keeping candidate sets large.' },
-        { num: '7.6.1', kind: 'Proposition', name: 'Uniform multipartite graphs have the expected clique count', deps: ['graph-7.4.1a'], refs: ['Diestel §7.6'],
-          pic: 'For a k-partite graph with uniform pairs of given densities, the number of k-cliques is counted and compared with the product of densities times the part sizes.' },
-        { num: '7.6.2', kind: 'Lemma', name: 'Counting lemma', deps: ['graph-7.6.1'], refs: ['Diestel §7.6'],
-          pic: 'Count homomorphic copies of a small graph H in a graph built from uniform pairs; the count tracks the product of pair densities as ε shrinks.' },
-        { num: '7.6.3', kind: 'Lemma', name: 'Removal lemma', deps: ['graph-7.4.1', 'graph-7.6.2'], refs: ['Diestel §7.6'], see: ['comb-13.2'],
-          pic: 'Take a graph with few copies of H; the app deletes edges of irregular, sparse and small pairs of a regular partition, at most ρn² in total, and no copy of H survives.' },
-        { num: '7.6.4', kind: 'Theorem', name: 'Thinly spread copies of H force o(n²) edges', deps: ['graph-7.6.3'], refs: ['Diestel §7.6'],
-          pic: 'For graphs where every edge lies in a bounded number of copies of H, plot edges against n²; the ratio drifts to zero as n grows.' },
-        { num: '7.6.5', kind: 'Corollary', name: 'Ruzsa–Szemerédi (6,3) theorem: one triangle per edge', deps: ['graph-7.6.4'], refs: ['Diestel §7.6'],
-          pic: 'Build graphs in which every edge lies in exactly one triangle (from 3-AP-free sets); the edge density drops towards zero as n grows.' },
-        { num: '7.7.1', kind: 'Theorem', name: 'Szemerédi’s theorem on arithmetic progressions', deps: [], refs: ['Diestel §7.7'], see: ['comb-13.4', 'comb-11.8'],
-          pic: 'Choose a set of positive upper density on a number line (say, via a pattern); the app finds arithmetic progressions of the length you request, highlighted in colour.' },
-        { num: '7.7.2', kind: 'Theorem', name: 'Szemerédi’s theorem in density form: r_k(n) = o(n)', deps: ['graph-7.7.1'], refs: ['Diestel §7.7'],
-          pic: 'Compute the largest subsets of {0, …, n − 1} without k-term progressions for small n; the density r_k(n)/n is plotted and slowly decreases.' },
-        { num: '7.7.3', kind: 'Proposition', name: 'Roth’s theorem: r₃(n) = o(n)', deps: ['graph-7.6.5'], refs: ['Diestel §7.7'], see: ['comb-13.3'],
-          pic: 'A set without 3-term progressions is turned into a tripartite graph in which every edge lies in exactly one triangle; the removal lemma then caps its size, shown with Behrend-type examples.' },
+        {
+          "num": "7.1.1a",
+          "kind": "Definition",
+          "name": "Extremal number ex(n, H) and Turán graphs",
+          "deps": [
+            "graph-1.6.1a",
+            "graph-1.1.1c"
+          ],
+          "refs": [
+            "Diestel, Graph Theory, 6th ed. (2025), §7.1, pp.179–181; official Chapter 7 preview"
+          ],
+          "verify": true,
+          "pic": "Change the graph order and number of classes. Inspect the actual class sizes, graph and exact quadratic edge count, including empty classes."
+        },
+        {
+          "num": "7.1.1",
+          "kind": "Theorem",
+          "name": "Turán’s theorem",
+          "deps": [
+            "graph-7.1.1a"
+          ],
+          "refs": [
+            "Diestel, Graph Theory, 6th ed. (2025), Theorem 7.1.1 and duplication proof, pp.181–183; official Chapter 7 preview"
+          ],
+          "see": [
+            "comb-12.6"
+          ],
+          "pic": "Compare a seeded greedy edge-maximal graph with the balanced maximum. Different edge orders can leave a genuine gap even though every further edge creates the forbidden clique."
+        },
+        {
+          "num": "7.1.2",
+          "kind": "Theorem",
+          "name": "Erdős–Stone theorem",
+          "deps": [
+            "graph-7.1.1",
+            "graph-7.1.4",
+            "graph-7.4.1",
+            "graph-7.5.2"
+          ],
+          "refs": [
+            "Diestel, Graph Theory, 6th ed. (2025), Theorem 7.1.2, p.183; regularity proof, pp.203–205; official Chapter 7 preview"
+          ],
+          "pic": "Add seeded within-class edges above a Turán graph, then exhaustively search for an injective multipartite witness. The readout reports the finite result without inventing a threshold n₀."
+        },
+        {
+          "num": "7.1.3",
+          "kind": "Corollary",
+          "name": "Erdős–Stone–Simonovits: extremal density is (χ − 2)/(χ − 1)",
+          "deps": [
+            "graph-7.1.2",
+            "graph-7.1.4",
+            "graph-5.1.1a"
+          ],
+          "refs": [
+            "Diestel, Graph Theory, 6th ed. (2025), Corollary 7.1.3 and proof, pp.184–185; official Chapter 7 preview"
+          ],
+          "pic": "Choose a small forbidden graph and compute its exact extremal number by checking every labelled graph up to order six. Compare those finite densities with the chromatic-number limit."
+        },
+        {
+          "num": "7.1.4",
+          "kind": "Lemma",
+          "name": "Turán graphs have edge density tending to (r − 2)/(r − 1)",
+          "deps": [
+            "graph-7.1.1a"
+          ],
+          "refs": [
+            "Diestel, Graph Theory, 6th ed. (2025), Lemma 7.1.4, p.184; Exercises 7–8, p.219; official Chapter 7 preview"
+          ],
+          "see": [
+            "graph-7.1.3"
+          ],
+          "pic": "Trace the exact density and its finite correction as the order grows. The selected point is computed from balanced integer class sizes."
+        },
+        {
+          "num": "7.2.1",
+          "kind": "Proposition",
+          "name": "Average degree 2^(r−2) forces a Kʳ minor",
+          "deps": [
+            "graph-1.7.1a",
+            "graph-1.2.1a"
+          ],
+          "refs": [
+            "Diestel, Graph Theory, 6th ed. (2025), Proposition 7.2.1 and proof, pp.185–186; official Chapter 7 preview"
+          ],
+          "pic": "Contract edges only when the density threshold survives. Track the actual branch sets and edges-per-vertex ratio, including inputs that fail the original hypothesis."
+        },
+        {
+          "num": "7.2.2",
+          "kind": "Proposition",
+          "name": "Average degree 2^(r choose 2) forces a topological Kʳ",
+          "deps": [
+            "graph-1.2.2",
+            "graph-1.3.1",
+            "graph-1.7.1b"
+          ],
+          "refs": [
+            "Diestel, Graph Theory, 6th ed. (2025), Proposition 7.2.2 and proof, p.186; official Chapter 7 preview"
+          ],
+          "see": [
+            "graph-3.5.1"
+          ],
+          "pic": "Reveal internally disjoint paths one at a time, and compare the elementary sufficient degree bound on a logarithmic axis."
+        },
+        {
+          "num": "7.2.3",
+          "kind": "Theorem",
+          "name": "Average degree c·r² forces a topological Kʳ",
+          "deps": [
+            "graph-1.4.3",
+            "graph-3.5.3",
+            "graph-1.7.1b"
+          ],
+          "refs": [
+            "Diestel, Graph Theory, 6th ed. (2025), Theorem 7.2.3 and proof, p.187; attribution, p.224; official Chapter 7 preview"
+          ],
+          "pic": "Inspect the private-neighbor construction and reveal its disjoint routes. A separate panel displays the sufficient density and linkedness requirements used by the proof."
+        },
+        {
+          "num": "7.2.4",
+          "kind": "Theorem",
+          "name": "Kostochka–Thomason: d(G) ≥ c·r√log r forces a Kʳ minor",
+          "deps": [
+            "graph-1.7.1a",
+            "graph-1.2.1a"
+          ],
+          "refs": [
+            "Diestel, Graph Theory, 6th ed. (2025), Theorem 7.2.4 and discussion, p.187; notes, p.224; official Chapter 7 preview"
+          ],
+          "see": [
+            "graph-7.2.1"
+          ],
+          "pic": "Compare logarithmic growth plots for the elementary exponential bound and r√log r. The latter uses coefficient one only as a scale, with no asserted sufficient constant."
+        },
+        {
+          "num": "7.2.5",
+          "kind": "Lemma",
+          "name": "Large girth yields minors of huge minimum degree",
+          "deps": [
+            "graph-1.3.1b",
+            "graph-1.7.1a"
+          ],
+          "refs": [
+            "Diestel, Graph Theory, 6th ed. (2025), Lemma 7.2.5 and proof, p.188; official Chapter 7 preview"
+          ],
+          "pic": "Grow and contract actual center trees in small graphs. Compare measured girth and minimum degree with the hypothesis, and inspect the resulting simple minor."
+        },
+        {
+          "num": "7.2.6",
+          "kind": "Theorem",
+          "name": "Thomassen: large girth and δ ≥ 3 force a Kʳ minor",
+          "deps": [
+            "graph-7.2.5",
+            "graph-7.2.1",
+            "graph-7.2.4"
+          ],
+          "refs": [
+            "Diestel, Graph Theory, 6th ed. (2025), Theorem 7.2.6 and proof, p.188; explicit weaker consequence using 7.2.1; official Chapter 7 preview"
+          ],
+          "pic": "Follow an explicit sufficient chain from girth to a dense minor to a clique minor. The two degree requirements are compared on a logarithmic scale."
+        },
+        {
+          "num": "7.2.7",
+          "kind": "Theorem",
+          "name": "Kühn–Osthus: large girth, δ ≥ r − 1 force a topological Kʳ",
+          "deps": [
+            "graph-1.3.1b",
+            "graph-1.7.1b"
+          ],
+          "refs": [
+            "Diestel, Graph Theory, 6th ed. (2025), Theorem 7.2.7, p.189; research attribution, p.225; official Chapter 7 preview"
+          ],
+          "pic": "Lengthen every path in an explicit clique subdivision. Its girth rises, but its minimum degree can fall below r−1, exposing the separate degree hypothesis."
+        },
+        {
+          "num": "7.3.1a",
+          "kind": "Hypothesis",
+          "name": "Hadwiger’s conjecture",
+          "deps": [
+            "graph-5.1.1a",
+            "graph-1.7.1a"
+          ],
+          "refs": [
+            "Diestel, Graph Theory, 6th ed. (2025), §7.3, pp.189–192; official Chapter 7 preview",
+            "OpenAI, A counterexample to Hadwiger’s conjecture, September 2026: historical section and repository status read; full proof not independently verified",
+            "Wood, arXiv:2610.10831v2, abstract/comments, 16 October 2026"
+          ],
+          "verify": true,
+          "pic": "Compute an exact minimum coloring and largest complete minor for a small selected graph. Inspect the connected branch sets and the limits of what these finite checks establish."
+        },
+        {
+          "num": "7.3.1",
+          "kind": "Proposition",
+          "name": "No K⁴ minor: edge-maximal graphs are pasted triangles",
+          "deps": [
+            "graph-1.7.3",
+            "graph-4.4.4",
+            "graph-3.3.4"
+          ],
+          "refs": [
+            "Diestel, Graph Theory, 6th ed. (2025), Proposition 7.3.1 and proof, pp.190–191; Exercise 29, p.221; official Chapter 7 preview"
+          ],
+          "pic": "Build a chain or fan of pasted triangles. Add any selectable missing edge and compute the resulting complete minor with an explicit branch-set certificate."
+        },
+        {
+          "num": "7.3.2",
+          "kind": "Corollary",
+          "name": "Edge-maximal graphs without a K⁴ minor have 2n − 3 edges",
+          "deps": [
+            "graph-7.3.1",
+            "graph-1.7.3"
+          ],
+          "refs": [
+            "Diestel, Graph Theory, 6th ed. (2025), Corollary 7.3.2, p.191; official Chapter 7 preview"
+          ],
+          "pic": "Add triangles to a common edge and track the exact two-edges-per-vertex count, including the K2 endpoint."
+        },
+        {
+          "num": "7.3.3",
+          "kind": "Corollary",
+          "name": "Hadwiger’s conjecture holds for r = 4",
+          "deps": [
+            "graph-7.3.1",
+            "graph-5.1.1a"
+          ],
+          "refs": [
+            "Diestel, Graph Theory, 6th ed. (2025), Corollary 7.3.3, p.191; official Chapter 7 preview"
+          ],
+          "see": [
+            "graph-7.3.1a",
+            "graph-5.5.2"
+          ],
+          "pic": "Step through the three-color extension along a triangle-pasting order. Every new vertex sees exactly the two colors on its attachment edge."
+        },
+        {
+          "num": "7.3.4",
+          "kind": "Theorem",
+          "name": "Wagner’s structure theorem for graphs without a K⁵ minor",
+          "deps": [
+            "graph-1.7.1a",
+            "graph-4.4.6"
+          ],
+          "refs": [
+            "Diestel, Graph Theory, 6th ed. (2025), Theorem 7.3.4, p.191; notes, pp.225–226; official Chapter 7 preview"
+          ],
+          "see": [
+            "graph-4.4.4"
+          ],
+          "pic": "Paste K4 triangulations or Wagner graphs along a shared edge, or triangulations along a shared triangle. Inspect the original block and the resulting graph."
+        },
+        {
+          "num": "7.3.5",
+          "kind": "Corollary",
+          "name": "Graphs without a K⁵ minor have at most 3n − 6 edges",
+          "deps": [
+            "graph-7.3.4",
+            "graph-4.2.10"
+          ],
+          "refs": [
+            "Diestel, Graph Theory, 6th ed. (2025), Corollary 7.3.5, p.191; Exercise 35, p.221; official Chapter 7 preview"
+          ],
+          "pic": "Count vertices and edges under edge or triangle pasting. Compare each exact count with 3n−6 and expose the slack contributed by Wagner pieces."
+        },
+        {
+          "num": "7.3.6",
+          "kind": "Corollary",
+          "name": "Hadwiger’s conjecture holds for r = 5",
+          "deps": [
+            "graph-7.3.4",
+            "graph-5.1.1",
+            "graph-4.4.6"
+          ],
+          "refs": [
+            "Diestel, Graph Theory, 6th ed. (2025), Corollary 7.3.6, p.192; official Chapter 7 preview"
+          ],
+          "see": [
+            "graph-7.3.1a"
+          ],
+          "pic": "Color the pasted graph and an individual building block. The shared clique explains why a permutation of color labels makes the pieces compatible."
+        },
+        {
+          "num": "7.3.7",
+          "kind": "Theorem",
+          "name": "Robertson–Seymour–Thomas: Hadwiger’s conjecture for r = 6",
+          "deps": [
+            "graph-5.1.1",
+            "graph-1.7.1a"
+          ],
+          "refs": [
+            "Diestel, Graph Theory, 6th ed. (2025), Theorem 7.3.7 and explanation, p.192; reference, p.225; official Chapter 7 preview"
+          ],
+          "see": [
+            "graph-7.3.1a"
+          ],
+          "pic": "Remove an apex from an explicit planar-base example, color the base and restore the apex with a fresh color. This isolates the easy final step from the deep reduction."
+        },
+        {
+          "num": "7.3.8",
+          "kind": "Theorem",
+          "name": "Kühn–Osthus: Hadwiger for K_{s,s}-free graphs and large r",
+          "deps": [
+            "graph-5.2.3",
+            "graph-1.7.1a",
+            "graph-1.6.1a"
+          ],
+          "refs": [
+            "Diestel, Graph Theory, 6th ed. (2025), Theorem 7.3.8, p.192; stronger bound and attribution, p.226; official Chapter 7 preview"
+          ],
+          "see": [
+            "graph-7.3.1a",
+            "graph-7.2.4"
+          ],
+          "pic": "Search small graphs exactly for a balanced complete bipartite subgraph, a minimum coloring and a largest complete minor. The unknown large-r threshold remains explicit."
+        },
+        {
+          "num": "7.3.9",
+          "kind": "Corollary",
+          "name": "Large girth: chromatic number r forces a topological Kʳ",
+          "deps": [
+            "graph-5.2.3",
+            "graph-7.2.7"
+          ],
+          "refs": [
+            "Diestel, Graph Theory, 6th ed. (2025), Corollary 7.3.9, p.192; Hajós discussion, p.225; official Chapter 7 preview"
+          ],
+          "pic": "Delete vertices while preserving the exact chromatic number. Track the surviving original labels, minimum degree and girth, then identify the two inputs to the subdivision theorem."
+        },
+        {
+          "num": "7.4.1a",
+          "kind": "Definition",
+          "name": "ε-regular pairs and ε-regular partitions",
+          "deps": [
+            "graph-1.1.1c",
+            "graph-1.6.1a"
+          ],
+          "refs": [
+            "Diestel, Graph Theory, 6th ed. (2025), ε-regular pair and partition definitions, p.193; official Chapter 7 preview"
+          ],
+          "verify": true,
+          "pic": "Choose subsets by their binary masks and compare densities. A separate exhaustive search checks every eligible subset pair, retaining the undefined empty-subset case."
+        },
+        {
+          "num": "7.4.1",
+          "kind": "Theorem",
+          "name": "Szemerédi’s regularity lemma",
+          "deps": [
+            "graph-7.4.1a",
+            "graph-7.4.4"
+          ],
+          "refs": [
+            "Diestel, Graph Theory, 6th ed. (2025), Theorem 7.4.1, p.193; proof, pp.199–200; official Chapter 7 preview"
+          ],
+          "see": [
+            "comb-13.1"
+          ],
+          "pic": "Check a planted graph along a nested sequence of equitable partitions. Every class pair is tested exhaustively; the readout compares the actual number of irregular pairs with εk²."
+        },
+        {
+          "num": "7.4.2",
+          "kind": "Lemma",
+          "name": "Refining a partition does not decrease its index",
+          "deps": [
+            "graph-7.4.1a"
+          ],
+          "refs": [
+            "Diestel, Graph Theory, 6th ed. (2025), Index definition and Lemma 7.4.2, pp.194–195; official Chapter 7 preview"
+          ],
+          "see": [
+            "graph-7.4.1"
+          ],
+          "pic": "Refine the same graph from two classes to four and then singletons. Inspect the exact index sequence and the corresponding class coloring."
+        },
+        {
+          "num": "7.4.3",
+          "kind": "Lemma",
+          "name": "An irregular pair splits to raise the index by ε⁴",
+          "deps": [
+            "graph-7.4.2"
+          ],
+          "refs": [
+            "Diestel, Graph Theory, 6th ed. (2025), Lemma 7.4.3 and proof, pp.195–196; official Chapter 7 preview"
+          ],
+          "see": [
+            "graph-7.4.1"
+          ],
+          "pic": "Find a real irregular witness and split the bipartite matrix along it. Compare the before/after index with the correctly weighted lower increment."
+        },
+        {
+          "num": "7.4.4",
+          "kind": "Lemma",
+          "name": "An irregular partition has a refinement of much larger index",
+          "deps": [
+            "graph-7.4.3",
+            "graph-7.4.2"
+          ],
+          "refs": [
+            "Diestel, Graph Theory, 6th ed. (2025), Lemma 7.4.4 and proof, pp.197–199; official Chapter 7 preview"
+          ],
+          "see": [
+            "graph-7.4.1"
+          ],
+          "pic": "Apply all actual irregular-pair witnesses, then compare their possibly unequal atoms with an equitable singleton refinement for the small example."
+        },
+        {
+          "num": "7.5.1",
+          "kind": "Lemma",
+          "name": "ε-regular pairs: most vertices see large sets typically",
+          "deps": [
+            "graph-7.4.1a"
+          ],
+          "refs": [
+            "Diestel, Graph Theory, 6th ed. (2025), Lemma 7.5.1 and proof, p.201; official Chapter 7 preview"
+          ],
+          "pic": "Choose the target subset Y and count each vertex’s neighbors in it. Check the pair regularity and subset size before applying the strict bad-vertex bound."
+        },
+        {
+          "num": "7.5.1a",
+          "kind": "Definition",
+          "name": "Regularity graph",
+          "deps": [
+            "graph-7.4.1a"
+          ],
+          "refs": [
+            "Diestel, Graph Theory, 6th ed. (2025), Regularity graph and blow-up definitions, p.201; official Chapter 7 preview"
+          ],
+          "verify": true,
+          "see": [
+            "graph-7.4.1"
+          ],
+          "pic": "Vary both thresholds and inspect which pairs survive into the reduced graph. The readout also checks whether the original equitable partition is globally regular."
+        },
+        {
+          "num": "7.5.2",
+          "kind": "Lemma",
+          "name": "Blow-up lemma",
+          "deps": [
+            "graph-7.5.1",
+            "graph-7.5.1a"
+          ],
+          "refs": [
+            "Diestel, Graph Theory, 6th ed. (2025), Lemma 7.5.2 and proof, pp.201–203; scope note, p.226; official Chapter 7 preview"
+          ],
+          "see": [
+            "graph-7.1.2"
+          ],
+          "pic": "Embed a four-vertex path into two host clusters and display each actual candidate count. Check regularity, cluster capacity and the numerical sufficient inequalities separately."
+        },
+        {
+          "num": "7.6.1",
+          "kind": "Proposition",
+          "name": "Uniform multipartite graphs have the expected clique count",
+          "deps": [
+            "graph-7.4.1a"
+          ],
+          "refs": [
+            "Diestel, Graph Theory, 6th ed. (2025), Uniformity definition and Proposition 7.6.1, pp.206–209; official Chapter 7 preview"
+          ],
+          "pic": "Count every triangle in a three-part graph and compare with the product-of-densities estimate. The uniform discrepancy and error bound are computed by exhaustive subset checks."
+        },
+        {
+          "num": "7.6.2",
+          "kind": "Lemma",
+          "name": "Counting lemma",
+          "deps": [
+            "graph-7.6.1"
+          ],
+          "refs": [
+            "Diestel, Graph Theory, 6th ed. (2025), Lemma 7.6.2 and proof, pp.210–211; official Chapter 7 preview"
+          ],
+          "pic": "Compare the number of all cluster-respecting homomorphisms with the injective count and the density product for a path, cycle, star or triangle."
+        },
+        {
+          "num": "7.6.3",
+          "kind": "Lemma",
+          "name": "Removal lemma",
+          "deps": [
+            "graph-7.4.1",
+            "graph-7.6.2"
+          ],
+          "refs": [
+            "Diestel, Graph Theory, 6th ed. (2025), Lemma 7.6.3 and proof, pp.211–214; official Chapter 7 preview"
+          ],
+          "see": [
+            "comb-13.2"
+          ],
+          "pic": "For six-vertex graphs, compute an exact minimum set of edges hitting every triangle. Compare the actual deletion fraction with a chosen budget without inventing η or n₀."
+        },
+        {
+          "num": "7.6.4",
+          "kind": "Theorem",
+          "name": "Thinly spread copies of H force o(n²) edges",
+          "deps": [
+            "graph-7.6.3"
+          ],
+          "refs": [
+            "Diestel, Graph Theory, 6th ed. (2025), Thin spread definition and Theorem 7.6.4, pp.214–215; Exercise 49, p.222; official Chapter 7 preview"
+          ],
+          "pic": "Compare a one-triangle-per-edge family, a book with growing multiplicity and an uncovered dense bipartite family. Measure all edge multiplicities and the actual density."
+        },
+        {
+          "num": "7.6.5",
+          "kind": "Corollary",
+          "name": "Ruzsa–Szemerédi (6,3) theorem: one triangle per edge",
+          "deps": [
+            "graph-7.6.4"
+          ],
+          "refs": [
+            "Diestel, Graph Theory, 6th ed. (2025), Corollary 7.6.5, p.216; construction used on pp.217–219; official Chapter 7 preview"
+          ],
+          "pic": "Build a graph from an exactly progression-free set and verify that each edge lies in one triangle. Keep all isolated vertices in the order and density calculations."
+        },
+        {
+          "num": "7.7.1",
+          "kind": "Theorem",
+          "name": "Szemerédi’s theorem on arithmetic progressions",
+          "deps": [
+            "graph-7.7.2"
+          ],
+          "refs": [
+            "Diestel, Graph Theory, 6th ed. (2025), Theorem 7.7.1 and implication from 7.7.2, pp.216–217; official Chapter 7 preview"
+          ],
+          "see": [
+            "comb-13.4",
+            "comb-11.8"
+          ],
+          "pic": "Choose a periodic set by a residue mask, inspect its exact infinite density and highlight a progression of the requested length."
+        },
+        {
+          "num": "7.7.2",
+          "kind": "Theorem",
+          "name": "Szemerédi’s theorem in density form: r_k(n) = o(n)",
+          "deps": [],
+          "refs": [
+            "Diestel, Graph Theory, 6th ed. (2025), Theorem 7.7.2, p.217; original attribution, p.226; official Chapter 7 preview"
+          ],
+          "see": [
+            "graph-7.7.1",
+            "graph-7.7.3"
+          ],
+          "pic": "Compute exact maximum progression-free subsets up to a selected small window. Plot the actual extremal density without smoothing away finite increases."
+        },
+        {
+          "num": "7.7.3",
+          "kind": "Proposition",
+          "name": "Roth’s theorem: r₃(n) = o(n)",
+          "deps": [
+            "graph-7.6.5"
+          ],
+          "refs": [
+            "Diestel, Graph Theory, 6th ed. (2025), Proposition 7.7.3 and proof, pp.217–219; official Chapter 7 preview"
+          ],
+          "see": [
+            "comb-13.3"
+          ],
+          "pic": "Inspect the tripartite construction and its defining triangles. Switch to a set containing progressions to see the extra triangles that invalidate the reduction."
+        }
       ],
     },
     // =====================================================================================================
