@@ -157,35 +157,179 @@ export default {
       ],
     },
     {
-      n: 5,
-      title: 'Ultrasound',
-      summary: String.raw`Ultrasound images are built from echoes: pulses reflect at interfaces between tissues of different acoustic impedance, and the round-trip time gives depth. Attenuation forces a trade-off between frequency and penetration, resolution depends on pulse length and beam width, and arrays focus and steer electronically. The Doppler shift of echoes from moving blood measures velocity, with aliasing limits and clinical uses such as estimating pressure gradients.`,
-      items: [
-        { num: '5.1', kind: 'Concept', name: 'Acoustic waves and the speed of sound in tissue', deps: ['fluid-9.11'], refs: ['Prince–Links ch. 10'],
-          pic: 'A pressure pulse travels through layers of fat, muscle and bone; speeds computed from √(K/ρ) are shown, with soft tissue clustered near 1540 m/s.' },
-        { num: '5.2', kind: 'Concept', name: 'Acoustic impedance and reflection at interfaces', deps: ['imaging-5.1', 'waves-1.8'], refs: ['Prince–Links ch. 10'], see: ['music-11.3'],
-          pic: 'Choose two tissues; the reflection coefficient ((Z₂ − Z₁)/(Z₂ + Z₁))² is computed, small for soft-tissue boundaries and nearly total at tissue–air and tissue–bone interfaces.' },
-        { num: '5.3', kind: 'Concept', name: 'Attenuation and the depth–frequency trade-off', deps: ['imaging-5.1'], refs: ['Prince–Links ch. 10'],
-          pic: 'Attenuation of about 0.5 dB/cm/MHz is applied to the round trip; raise frequency and the maximum imaging depth shrinks while resolution improves.' },
-        { num: '5.4', kind: 'Concept', name: 'Pulse-echo ranging', deps: ['imaging-5.1'], refs: ['Prince–Links ch. 11'],
-          pic: 'Send a pulse into layered tissue and plot the received echoes against time; depths are computed as ct/2 to form an A-mode line, then many lines form a B-mode image.' },
-        { num: '5.5', kind: 'Concept', name: 'Axial and lateral resolution', deps: ['imaging-5.4'], refs: ['Prince–Links ch. 11'],
-          pic: 'Two reflectors are moved closer along and across the beam; they merge axially at half the pulse length and laterally at the beam width, which is narrowest at the focus.' },
-        { num: '5.6', kind: 'Method', name: 'Beamforming with phased arrays', deps: ['imaging-5.5'], refs: ['Prince–Links ch. 11'],
-          pic: 'Apply time delays across array elements; the transmitted wavefronts converge at a chosen focus or steer at an angle, computed by superposition of element waves.' },
-        { num: '5.7', kind: 'Method', name: 'Time-gain compensation', deps: ['imaging-5.3'], refs: ['Prince–Links ch. 11'],
-          pic: 'Echoes from deep tissue are weaker; drag the gain curve to amplify later echoes and flatten image brightness with depth.' },
-        { num: '5.8', kind: 'Phenomenon', name: 'Ultrasound speckle', deps: ['imaging-5.5', 'waves-8.11'], refs: ['Prince–Links ch. 11'],
-          pic: 'Many sub-resolution scatterers interfere to produce a granular texture with Rayleigh-distributed amplitude; averaging images from different angles reduces it.' },
-        { num: '5.9', kind: 'Law', name: 'Doppler equation for ultrasound', deps: ['imaging-5.1', 'waves-1.14'], refs: ['Prince–Links ch. 11'],
-          pic: 'Echoes from blood moving at speed v and angle θ are shifted by 2f₀v cos θ / c; drag the insonation angle and see the shift vanish at 90°.' },
-        { num: '5.10', kind: 'Method', name: 'Pulsed-wave Doppler and the Nyquist velocity limit', deps: ['imaging-5.9', 'imaging-1.5'], refs: ['Prince–Links ch. 11'],
-          pic: 'Sample the Doppler signal at the pulse repetition frequency; velocities beyond the Nyquist limit wrap around in the spectral display, and lowering depth raises the limit.' },
-        { num: '5.11', kind: 'Method', name: 'Pressure gradients from Doppler velocities', deps: ['imaging-5.9', 'physio-4.18'], refs: ['Prince–Links ch. 11'],
-          pic: 'Measure the peak velocity jet through a narrowed valve; the simplified Bernoulli relation ΔP ≈ 4v² gives the pressure gradient used to grade stenosis.' },
-        { num: '5.12', kind: 'Method', name: 'Colour flow imaging by autocorrelation', deps: ['imaging-5.10'], refs: ['Prince–Links ch. 11'],
-          pic: 'Estimate mean velocity at each pixel from the phase change between successive pulses; flow toward and away from the probe is coloured red and blue over the B-mode image.' },
-      ],
+      "n": 5,
+      "title": "Ultrasound",
+      "summary": "Ultrasound turns travelling pressure pulses into echoes and inferred motion. These models separate amplitude from energy, true path times from assumed reconstruction, and finite interference from statistical limits. Array phases, pulse sampling and complex correlation expose ambiguities rather than turning a teaching calculation into a clinical diagnosis.",
+      "items": [
+        {
+          "num": "5.1",
+          "kind": "Concept",
+          "name": "Acoustic waves and the speed of sound in tissue",
+          "deps": [
+            "fluid-1.5",
+            "fluid-2.8",
+            "waves-1.4"
+          ],
+          "refs": [
+            "MIT6.013 official Acoustics chapter, §§13.1–13.2, printed399–406",
+            "Authored finite model and explicit derivation"
+          ],
+          "pic": "Change the chosen fluid modulus and density. The moving pulse position is computed from the resulting speed; the readout also shows wavelength at the chosen frequency."
+        },
+        {
+          "num": "5.2",
+          "kind": "Concept",
+          "name": "Acoustic impedance and reflection at interfaces",
+          "deps": [
+            "imaging-5.1",
+            "waves-1.8"
+          ],
+          "refs": [
+            "MIT6.013 official Acoustics chapter, §§13.1–13.2, printed399–406",
+            "Authored finite model and explicit derivation"
+          ],
+          "see": [
+            "music-11.3"
+          ],
+          "pic": "Change the two chosen impedances. Compare signed pressure traces with reflected/transmitted intensity fractions: a large pressure coefficient is different from a large energy fraction."
+        },
+        {
+          "num": "5.3",
+          "kind": "Concept",
+          "name": "Attenuation and the depth–frequency trade-off",
+          "deps": [
+            "imaging-5.1"
+          ],
+          "refs": [
+            "Authored finite model and explicit derivation"
+          ],
+          "pic": "Raise frequency, depth or the chosen attenuation coefficient. Compare amplitude with intensity and the two-way decibel loss; the depth curve uses the actual selected frequency."
+        },
+        {
+          "num": "5.4",
+          "kind": "Concept",
+          "name": "Pulse-echo ranging",
+          "deps": [
+            "imaging-5.1",
+            "imaging-5.2",
+            "waves-1.6"
+          ],
+          "refs": [
+            "Authored finite model and explicit derivation"
+          ],
+          "pic": "Change the two speeds and target depth. Two actual computed pulse echoes show the layer interface and the deeper reflector; compare true depth with reconstruction using 1540 m/s."
+        },
+        {
+          "num": "5.5",
+          "kind": "Concept",
+          "name": "Axial and lateral resolution",
+          "deps": [
+            "imaging-5.4",
+            "waves-1.6"
+          ],
+          "refs": [
+            "Authored finite model and explicit derivation"
+          ],
+          "pic": "Move two reflectors together and switch axial/lateral response. Pulse-cycle count changes axial support; Gaussian width changes the separate lateral model. The component curves and their sum are computed."
+        },
+        {
+          "num": "5.6",
+          "kind": "Method",
+          "name": "Beamforming with phased arrays",
+          "deps": [
+            "imaging-5.5",
+            "waves-1.6"
+          ],
+          "refs": [
+            "Podkowa, Oelze & Ketterling (2018), actual pp1–6, DOI10.3390/app8020227",
+            "Authored finite model and explicit derivation"
+          ],
+          "pic": "Choose focus or far-field steering. Element delays and the actual summed intensity change with pitch and angle; larger pitch can produce additional lobes rather than a unique beam."
+        },
+        {
+          "num": "5.7",
+          "kind": "Method",
+          "name": "Time-gain compensation",
+          "deps": [
+            "imaging-5.3"
+          ],
+          "refs": [
+            "Authored finite model and explicit derivation"
+          ],
+          "pic": "Change the gain slope and pre-gain noise amplitude. Compare equal-reflector raw pressure, amplified output and clipped display values across depth."
+        },
+        {
+          "num": "5.8",
+          "kind": "Phenomenon",
+          "name": "Ultrasound speckle",
+          "deps": [
+            "imaging-5.5",
+            "waves-1.6",
+            "prob-3.10.7",
+            "prob-2.2.1"
+          ],
+          "refs": [
+            "Wagner, Insana & Brown (1986), earlier-read introduction only; Gaussian-limit proof supplied here",
+            "Authored finite model and explicit derivation"
+          ],
+          "pic": "Change scatterer count, pseudorandom seed and number of intensity looks. Compare angle-like phase changes on one fixed scatterer set with resampled-look illustrations, keeping coherent fields separate from incoherent intensity averaging."
+        },
+        {
+          "num": "5.9",
+          "kind": "Law",
+          "name": "Doppler equation for ultrasound",
+          "deps": [
+            "imaging-5.1",
+            "waves-1.14"
+          ],
+          "refs": [
+            "Podkowa, Oelze & Ketterling (2018), actual pp1–6, DOI10.3390/app8020227",
+            "Authored finite model and explicit derivation"
+          ],
+          "pic": "Change signed speed, frequency and local angle. Compare the low-speed shift with the exact collinear reference evaluated at the radial component; at 90° the model reports the missing total-speed information."
+        },
+        {
+          "num": "5.10",
+          "kind": "Method",
+          "name": "Pulsed-wave Doppler and the Nyquist velocity limit",
+          "deps": [
+            "imaging-5.9",
+            "imaging-1.5"
+          ],
+          "refs": [
+            "Podkowa, Oelze & Ketterling (2018), actual pp1–6, DOI10.3390/app8020227",
+            "Authored finite model and explicit derivation"
+          ],
+          "pic": "Vary maximum depth, speed and the fraction of the ideal range-compatiblePRF. The phasor samples, wrapped frequency and apparent axial velocity are computed, including sign reversal after aliasing."
+        },
+        {
+          "num": "5.11",
+          "kind": "Method",
+          "name": "Pressure gradients from Doppler velocities",
+          "deps": [
+            "imaging-5.9",
+            "physio-4.18"
+          ],
+          "refs": [
+            "Authored finite model and explicit derivation"
+          ],
+          "pic": "Change proximal and throat velocities, then a separately chosen recovery fraction. Pressure bars distinguish the local throat drop, recovered amount and residual modeled loss; compare the simplified 4 v² number."
+        },
+        {
+          "num": "5.12",
+          "kind": "Method",
+          "name": "Colour flow imaging by autocorrelation",
+          "deps": [
+            "imaging-5.10",
+            "ladr-6.14"
+          ],
+          "refs": [
+            "Podkowa, Oelze & Ketterling (2018), actual pp1–6, DOI10.3390/app8020227",
+            "Authored finite model and explicit derivation"
+          ],
+          "pic": "Change the tone shift, stationary clutter and pseudorandom noise. Inspect the complex samples, lag-one vector, principal frequency, coherence and computed finite frequency map; a near-cancelled vector is reported unresolved rather than silently set to zero flow."
+        }
+      ]
     },
     {
       n: 6,
