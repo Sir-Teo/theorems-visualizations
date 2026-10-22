@@ -153,40 +153,213 @@ export default {
     },
     // ───────────────────────────────────────────────────────────── 5
     {
-      n: 5,
-      title: 'PID control',
-      summary: String.raw`The proportional–integral–derivative controller acts on the present, past and predicted future of the error, and it runs most of the world's control loops. Each term has a clear role and a clear failure mode. This chapter covers how the terms work together, classic and modern tuning rules, and the practical details — windup, derivative filtering, setpoint weighting, cascades — that separate textbook PID from industrial PID.`,
-      items: [
-        { num: '5.1', kind: 'Definition', name: 'Proportional control and its offset', deps: ['ctrl-4.6'], refs: ['Åström–Murray §11.1', 'Franklin–Powell §4.3'],
-          pic: 'Raise the proportional gain on a first-order plant: the steady-state error shrinks like 1/(1 + kP) but never vanishes, while the response speeds up.' },
-        { num: '5.2', kind: 'Definition', name: 'Integral action removes the offset', deps: ['ctrl-5.1', 'ctrl-4.7'], refs: ['Åström–Murray §11.1'],
-          pic: 'Switch on integral action: the integrator state keeps growing as long as any error remains, driving the error to exactly zero, and too much integral gain makes the response oscillate.' },
-        { num: '5.3', kind: 'Definition', name: 'Derivative action adds damping', deps: ['ctrl-5.1'], refs: ['Åström–Murray §11.1'],
-          pic: 'Add derivative action to an oscillatory loop: the controller anticipates the error trend, the overshoot drops, and amplified sensor noise appears on the control signal.' },
-        { num: '5.4', kind: 'Definition', name: 'The PID controller', deps: ['ctrl-5.2', 'ctrl-5.3'], refs: ['Åström–Murray §11.1', 'Franklin–Powell §4.3'],
-          pic: 'Three sliders for kP, kI and kD drive a live plant; the contributions of the three terms are plotted separately and summed into the control signal.' },
-        { num: '5.5', kind: 'Method', name: 'Ziegler–Nichols tuning', deps: ['ctrl-5.4', 'ctrl-1.9'], refs: ['Åström–Murray §11.3', 'Franklin–Powell §4.3'],
-          pic: 'Raise a pure proportional gain until the loop just oscillates; the ultimate gain and period are measured automatically and plugged into the Ziegler–Nichols table to give an aggressive PID.' },
-        { num: '5.6', kind: 'Method', name: 'Relay autotuning', deps: ['ctrl-5.5', 'ctrl-3.11'], refs: ['Åström–Murray §11.3'],
-          pic: 'Replace the controller by a relay: the loop settles into a limit cycle whose amplitude and period reveal the ultimate gain, and the resulting PID tuning is applied with one click.' },
-        { num: '5.7', kind: 'Phenomenon', name: 'Integrator windup', deps: ['ctrl-5.2', 'ctrl-2.12'], refs: ['Åström–Murray §11.4', 'Franklin–Powell §9.3'],
-          pic: 'Command a large setpoint change through a saturating actuator: the integrator keeps charging while the actuator is pinned, causing a huge overshoot when the output finally arrives.' },
-        { num: '5.8', kind: 'Method', name: 'Anti-windup: clamping and back-calculation', deps: ['ctrl-5.7'], refs: ['Åström–Murray §11.4', 'Franklin–Powell §9.3'],
-          pic: 'Toggle anti-windup on the saturating loop: the integrator is held back while the actuator saturates and the overshoot disappears, with the tracking-time constant adjustable.' },
-        { num: '5.9', kind: 'Method', name: 'Derivative filtering and setpoint weighting', deps: ['ctrl-5.3'], refs: ['Åström–Murray §11.5'],
-          pic: 'Step the setpoint with a raw derivative term and the control signal spikes; filter the derivative and weight the setpoint, and the kick disappears without changing disturbance rejection.' },
-        { num: '5.10', kind: 'Method', name: 'Lambda (IMC) tuning for dead-time processes', deps: ['ctrl-2.11', 'ctrl-5.4'], refs: ['Åström–Murray §11.3'],
-          pic: 'Choose the desired closed-loop time constant λ for a first-order-plus-dead-time plant: the PI gains are computed and the response is as fast as requested, but no faster than the delay allows.' },
-        { num: '5.11', kind: 'Concept', name: 'Two-degree-of-freedom control', deps: ['ctrl-5.9', 'ctrl-1.10'], refs: ['Åström–Murray §12.4'],
-          pic: 'Shape the reference response with a prefilter while the feedback is tuned for disturbances: the two responses are adjusted independently with separate sliders.' },
-        { num: '5.12', kind: 'Method', name: 'Cascade control', deps: ['ctrl-5.4'], refs: ['Åström–Murray ch. 11'],
-          pic: 'Add an inner flow loop under an outer temperature loop: a valve disturbance is corrected by the fast inner loop before the temperature even notices.' },
-        { num: '5.13', kind: 'Paper', name: 'Optimum Settings for Automatic Controllers',
-          paper: { authors: 'J. G. Ziegler and N. B. Nichols', year: 1942, title: 'Optimum Settings for Automatic Controllers',
-                   venue: 'Transactions of the ASME 64 (8): 759–765', doi: '10.1115/1.4019264' },
-          introduces: ['ctrl-5.5'], deps: ['ctrl-5.4', 'ctrl-4.1'], refs: [],
-          pic: 'On a simulated process loop, raise a proportional gain until the output oscillates steadily, read off the ultimate gain and period, and apply the Ziegler–Nichols table for P, PI or PID; the step response shows the quarter-amplitude decay the rules aim for.' },
-      ],
+      "n": 5,
+      "title": "PID control",
+      "summary": "Proportional, integral and derivative actions have different roles and different failure modes. Exact equilibria and executable loops distinguish stable regulation from a finite transient, saturation and delayed feedback. Modern tuning rules, a relay experiment and two-loop architectures are computed on declared models; the unavailable1942 original remains explicitly flagged.",
+      "items": [
+        {
+          "num": "5.1",
+          "kind": "Definition",
+          "name": "Proportional control and its offset",
+          "deps": [
+            "ctrl-4.6",
+            "ode-3.3"
+          ],
+          "see": [
+            "ctrl-1.9"
+          ],
+          "refs": [
+            "Åström–Murray, Feedback Systems, public draft29Jun2019 §11.1,11-3–11-5"
+          ],
+          "pic": "Change the gain, plant type and constant input load. The blue curve is the exact computed output; the readout gives its asymptotic error, which is different from the error at the end of a finite plot."
+        },
+        {
+          "num": "5.2",
+          "kind": "Definition",
+          "name": "Integral action removes the offset",
+          "deps": [
+            "ctrl-5.1",
+            "ode-3.8",
+            "ode-3.3"
+          ],
+          "see": [
+            "ctrl-4.7",
+            "ctrl-5.7"
+          ],
+          "refs": [
+            "Åström–Murray, Feedback Systems, public draft29Jun2019 §11.1,11-4–11-6; §11.2,11-9–11-10"
+          ],
+          "pic": "Vary PI gains and the input load applied at t8. Watch the actual error–integral phase path and the finite-horizon residual; a stable asymptotic zero does not make a simulated finite-time residual exactly zero."
+        },
+        {
+          "num": "5.3",
+          "kind": "Definition",
+          "name": "Derivative action adds damping",
+          "deps": [
+            "ctrl-5.1",
+            "ode-3.8"
+          ],
+          "refs": [
+            "Åström–Murray, Feedback Systems, public draft29Jun2019 §11.1,11-6; §11.5,11-20"
+          ],
+          "pic": "Move the derivative gain to change actual oscillator damping. Independently vary the noise frequency and filter time to compare ideal and filtered noise gains; the noise panel is not a noisy version of the displayed velocity-feedback trajectory."
+        },
+        {
+          "num": "5.4",
+          "kind": "Definition",
+          "name": "The PID controller",
+          "deps": [
+            "ctrl-5.2",
+            "ctrl-5.3",
+            "ode-3.12"
+          ],
+          "refs": [
+            "Åström–Murray, Feedback Systems, public draft29Jun2019 Eq11.1,11.4–11.5"
+          ],
+          "pic": "Choose a plant and edit all three gains and the derivative filter. Use the step player to inspect an actual selected state: the bars show P, I, D, their sum and the applied control. The output curve is integrated from those same terms."
+        },
+        {
+          "num": "5.5",
+          "kind": "Method",
+          "name": "Ziegler–Nichols tuning",
+          "deps": [
+            "ctrl-5.4",
+            "ctrl-1.9"
+          ],
+          "see": [
+            "ctrl-5.13"
+          ],
+          "refs": [
+            "Åström–Murray, Feedback Systems, public draft29Jun2019 §11.3,Table11.1(b),11-12–11-13"
+          ],
+          "pic": "Sweep the experimental gain through8, compare the measured period with the exact boundary period, and select the modern P, PI or PID rule. The tuned response is computed with its declared derivative filter; neither a quarter-decay ratio nor robustness is imposed on the curve."
+        },
+        {
+          "num": "5.6",
+          "kind": "Method",
+          "name": "Relay autotuning",
+          "deps": [
+            "ctrl-5.5",
+            "ctrl-2.12",
+            "ode-3.12"
+          ],
+          "see": [
+            "ctrl-3.11"
+          ],
+          "refs": [
+            "Åström–Hägglund, Automatic Tuning of Simple Regulators,TFRT-7269(1984),Eq1,6–20",
+            "Åström–Murray, Feedback Systems, public draft29Jun2019 §11.3,11-15–11-16; §10.5,10-26–10-27"
+          ],
+          "pic": "Compare an event-refined three-lag relay run with the exact first-order hysteresis cycle. Change relay amplitude and hysteresis, inspect the waveform and phase loop, and compare the estimated gain with the known three-lag gain8. Invalid first-order bands are reported instead of fabricating a cycle."
+        },
+        {
+          "num": "5.7",
+          "kind": "Phenomenon",
+          "name": "Integrator windup",
+          "deps": [
+            "ctrl-5.2",
+            "ctrl-2.12"
+          ],
+          "refs": [
+            "Åström–Murray, Feedback Systems, public draft29Jun2019 §11.4,11-16–11-17"
+          ],
+          "pic": "Compare command with applied control during a setpoint step and its return at t12. Change the actuator limit and integral gain, then inspect the selected actual state with the player. The label identifies whether the initial target is reachable."
+        },
+        {
+          "num": "5.8",
+          "kind": "Method",
+          "name": "Anti-windup: clamping and back-calculation",
+          "deps": [
+            "ctrl-5.7"
+          ],
+          "refs": [
+            "Åström–Murray, Feedback Systems, public draft29Jun2019 §11.4,Fig11.11 and11-19 state equation"
+          ],
+          "pic": "Switch between no protection, directional clamping and back-calculation. Tune the tracking time and inspect both integral histories. The selected-state readout reports the command–actuator mismatch and feasibility; improvements are computed, not guaranteed."
+        },
+        {
+          "num": "5.9",
+          "kind": "Method",
+          "name": "Derivative filtering and setpoint weighting",
+          "deps": [
+            "ctrl-5.3",
+            "ctrl-5.4"
+          ],
+          "refs": [
+            "Åström–Murray, Feedback Systems, public draft29Jun2019 §11.5,11-20–11-22,Eq11.14"
+          ],
+          "pic": "Change reference weights, filter time and deterministic sensor-noise amplitude. One panel shows the full computed control signal; the other isolates the exact reference-induced proportional and filtered-derivative terms, so a removed derivative kick is not confused with a zero total control jump."
+        },
+        {
+          "num": "5.10",
+          "kind": "Method",
+          "name": "Lambda (IMC) tuning for dead-time processes",
+          "deps": [
+            "ctrl-2.11",
+            "ctrl-5.4",
+            "ode-3.12"
+          ],
+          "refs": [
+            "Åström–Murray, Feedback Systems, public draft29Jun2019 §15.4,IMC architecture andEq15.5; self-contained FOPDT approximation"
+          ],
+          "pic": "Choose the design lambda and nominal delay, then deliberately mismatch the actual delay. The output comes from the actual delay equation; its onset and shape are not forced to match the requested lambda. The readout distinguishes nominal stability from an unproved mismatched-loop guarantee."
+        },
+        {
+          "num": "5.11",
+          "kind": "Concept",
+          "name": "Two-degree-of-freedom control",
+          "deps": [
+            "ctrl-5.9",
+            "ctrl-1.10",
+            "ode-3.12"
+          ],
+          "refs": [
+            "Åström–Murray, Feedback Systems, public draft29Jun2019 §11.5,Eq11.14; §15.4"
+          ],
+          "pic": "Vary the reference proportional weight to change the step response. The separate load experiments overlap because their feedback law is fixed. Change a feedback gain to see both paths change; the reference and disturbance have explicitly different entry ports."
+        },
+        {
+          "num": "5.12",
+          "kind": "Method",
+          "name": "Cascade control",
+          "deps": [
+            "ctrl-5.4",
+            "ctrl-5.8",
+            "ode-3.12"
+          ],
+          "refs": [
+            "Åström–Murray, Feedback Systems, public draft29Jun2019 §15.4,15-17–15-18,Fig15.13"
+          ],
+          "pic": "Change the inner plant time constant and gain, then compare primary and intermediate trajectories after the input disturbance at t10. Inspect command, applied actuator and both integrators at actual selected times. A bounded mode shows the stated tracking scheme, not an automatic stability certificate."
+        },
+        {
+          "num": "5.13",
+          "kind": "Paper",
+          "name": "Optimum Settings for Automatic Controllers",
+          "paper": {
+            "authors": "J. G. Ziegler and N. B. Nichols",
+            "year": 1942,
+            "title": "Optimum Settings for Automatic Controllers",
+            "venue": "Transactions of the ASME 64 (8): 759–765",
+            "doi": "10.1115/1.4019264"
+          },
+          "introduces": [
+            "ctrl-5.5"
+          ],
+          "verify": true,
+          "deps": [
+            "ctrl-5.4",
+            "ctrl-4.1"
+          ],
+          "see": [
+            "ctrl-5.5"
+          ],
+          "refs": [
+            "Åström–Murray, Feedback Systems, public draft29Jun2019 §11.3,Table11.1(b); original ASME body unavailable"
+          ],
+          "pic": "Compare the modern P, PI and PID versions and inspect the computed peak ratios. Adjust the implemented derivative filter. The evidence panel keeps the unread original separate from the actual authored model run and identifies cases with too few positive peaks for a ratio."
+        }
+      ]
     },
     // ───────────────────────────────────────────────────────────── 6
     {
