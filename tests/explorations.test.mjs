@@ -129,6 +129,22 @@ test('superseded receipts remain recoverable while only latest exact-version rev
   assert.match(validateExploration(r,context).join('\n'),/acceptance missing review: content/);
 });
 
+test('changed related collection labels invalidate acceptance but unrelated metadata does not', () => {
+  for (const original of records) {
+    const r=structuredClone(original), code={'test-runtime':'a'.repeat(64)};
+    const titles=Object.fromEntries(runtime.collections.map(c=>[c.id,c.title]));
+    const digest=reviewArtifactDigest(r,code,titles);
+    r.reviews=r.reviewRequirements.map(dimension=>({dimension,result:'passed',reviewer:{id:'independent-test-reviewer',role:'Fixture only',independent:true},revision:r.revision,contentDigest:contentDigest(r),artifactDigest:digest,evidencePath:'test-only',reviewedOn:'2026-10-22'}));
+    r.status='accepted';
+    assert.deepEqual(validateExploration(r,{...ctx,artifactDigest:digest}),[]);
+    const changed={...titles,[r.relatedCollectionIds[0]]:'Changed visible collection title'};
+    assert.notEqual(renderExploration(r,titles),renderExploration(r,changed));
+    assert.match(validateExploration(r,{...ctx,artifactDigest:reviewArtifactDigest(r,code,changed)}).join('\n'),/rendered artifact/);
+    assert.equal(reviewArtifactDigest(r,code,{...titles,'unrelated-collection':'Another title'}),digest);
+    assert.equal(reviewArtifactDigest(r,code,{}),reviewArtifactDigest(r,code,Object.fromEntries(r.relatedCollectionIds.map(id=>[id,id]))));
+  }
+});
+
 
 test('malformed author payloads produce diagnostics rather than crashing the builder',()=>{
   const mutations=[r=>r.activity.prompts={},r=>r.activity.prompts=[null],r=>r.activity.prompts[1].evidenceIds=null,r=>r.timeline=[null],r=>r.relations=[null],r=>r.sources=[[]],r=>r.previousRevisions=['../../escape']];

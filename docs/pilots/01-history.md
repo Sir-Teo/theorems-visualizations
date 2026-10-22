@@ -43,3 +43,7 @@ Use original explanation, limited attributed excerpts, and links initially. A go
 ## Prototype and resolved source scope
 
 The [working draft](../../labs/atlas/x-history-0001/index.html) uses [canonical data](../../explorations/history.json) and the [source/reuse decisions](research/history-literature-resolution.md). `nara-reuse` records the [National Archives copyright guidance](https://www.archives.gov/faqs#copyright). Text selection and scoped reuse are resolved for this prototype; facsimiles are excluded. Qualified content/provenance, accessibility and learner review remain open. This is one of the two permitted unaccepted drafts.
+
+## Independent AI review update
+
+The user-authorized separate AI reviewer completed bounded content, provenance and text-only local-prototype reuse checks for revision 0.1.1. Current exact-version receipts, repairs and limitations are in the [integration checkpoint](../verification/universal-pilots-integration.md). Lifecycle is now `in-review`, with no overall acceptance. Actual screen-reader and formative learner observations remain open; no professional specialist credential or public-release clearance is inferred. Both unaccepted slots remain occupied.

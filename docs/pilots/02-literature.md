@@ -43,3 +43,7 @@ The identified historical translations have edition credits and a selected-text 
 ## Prototype and resolved source scope
 
 The [working draft](../../labs/atlas/x-literature-0001/index.html) uses [canonical data](../../explorations/literature.json) and the [source/reuse decisions](research/history-literature-resolution.md). New receipts are `koto-basho` for the [Koto City display witness](https://www.city.koto.lg.jp/kuse/koho/houdou/r08/r0810/r081002furuike.html), `gutenberg42735` for the [Hearn rights field](https://www.gutenberg.org/ebooks/42735), and `copyright-basics` for the [US Copyright Office explanation](https://www.copyright.gov/what-is-copyright/). The Japanese panel is not an inspected manuscript or critical edition. Selected-text reuse is scoped to the local US prototype; no modern image/audio asset is bundled. This resolves the drafting gap while preserving independent language and release review.
+
+## Independent AI review update
+
+The user-authorized separate AI reviewer completed bounded content, English comparisons/Japanese witness limits and text-only local-prototype reuse checks for revision 0.1.1. Current exact-version receipts, repairs and limitations are in the [integration checkpoint](../verification/universal-pilots-integration.md). Lifecycle is now `in-review`, with no overall acceptance. Actual screen-reader and formative learner observations remain open; no professional specialist credential or public-release clearance is inferred. Both unaccepted slots remain occupied.

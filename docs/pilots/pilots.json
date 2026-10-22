@@ -56,7 +56,7 @@
         "Release-specific territory and rights review before wider publication"
       ],
       "rightsStatus": "prototype-text-scoped",
-      "nextAction": "Review revised 0.1.1 against its content/artifact digests; complete independent content, access and learner gates; use the scoped integration package at the normal handoff boundary.",
+      "nextAction": "Scoped independent AI checks and repairs are recorded for 0.1.1. Complete actual screen-reader and formative learner sessions; retain specialist/release limits and exact current digests before acceptance. Use the dedicated additive integration branch without modifying active Wave chats.",
       "prototypePath": "labs/atlas/x-history-0001/index.html",
       "contentPath": "explorations/history.json",
       "sourceResolutionPath": "docs/pilots/research/history-literature-resolution.md"
@@ -117,7 +117,7 @@
         "Release-specific territory and rights review before wider publication"
       ],
       "rightsStatus": "prototype-text-scoped",
-      "nextAction": "Review revised 0.1.1 against its content/artifact digests; complete independent content, access and learner gates; use the scoped integration package at the normal handoff boundary.",
+      "nextAction": "Scoped independent AI checks and repairs are recorded for 0.1.1. Complete actual screen-reader and formative learner sessions; retain specialist/release limits and exact current digests before acceptance. Use the dedicated additive integration branch without modifying active Wave chats.",
       "prototypePath": "labs/atlas/x-literature-0001/index.html",
       "contentPath": "explorations/literature.json",
       "sourceResolutionPath": "docs/pilots/research/history-literature-resolution.md"

@@ -2,9 +2,9 @@
 
 **October 22, 2026 · local engineering integration complete; independent acceptance pending.**
 
-The package is now applied on `codex/universal-pilots-integration` in the dedicated managed worktree. Read the [current checkpoint](../verification/universal-pilots-integration.md). The manifest contains 50 files, including four integration-specific additions; the master plan is reconciled separately with its exact accepted-base version archived.
+The package is now applied on `codex/universal-pilots-integration` in the dedicated managed worktree. Read the [current checkpoint](../verification/universal-pilots-integration.md). The manifest contains 53 files, including the three independent AI reports; the master plan is reconciled separately with its exact accepted-base version archived.
 
-The [package manifest](universal-pilots.json) names every file to carry. Both pilots are revision 0.1.1 drafts. The review and repairs are recorded in [the review receipt](../verification/universal-pilots-review.md). Independent specialist, screen-reader, learner and distribution reviews remain open; no fabricated acceptance receipt is included.
+The [package manifest](universal-pilots.json) names every file to carry. Both pilots are revision 0.1.1, in review. The [author review](../verification/universal-pilots-review.md) is preserved; subsequent independent AI findings, repairs and six scoped receipts are recorded in the [current checkpoint](../verification/universal-pilots-integration.md). Professional specialist scope, actual screen-reader/learner observations and distribution review remain open. No overall acceptance is claimed.
 
 ## Rehearse without modifying an active checkout
 
@@ -26,7 +26,7 @@ Rehearsals against later expansion/redesign commits are compatibility observatio
 2. Bring over the manifest's additive files. Review each conflict rather than copying whole directories over an active checkout.
 3. Reconcile **MASTER_PLAN.md manually**: add the broader vision/roadmap and handoff link while preserving current production facts. The old root master plan is intentionally excluded from automatic copying. README, existing content, assets, wave plans, ledgers and build/deploy workflows are also excluded.
 4. Rebuild/check the previews and run the focused tests. Keep the pair out of accepted production counts and preserve legacy note/progress stores.
-5. Independently inspect exact artifact digests and required review receipts before editorial acceptance. The current review is by the authoring agent, not an independent specialist or learner.
+5. Independently inspect exact artifact digests and required review receipts before editorial acceptance. The current source/language/prototype-reuse receipts identify separate AI reviewers and their limits. The independent code report does not supply an accessibility or learner pass.
 6. Public loading, catalog links, canonical routes and release review are a later implemented change. Run affected production checks at that boundary.
 
 ## Publication isolation
@@ -35,12 +35,12 @@ The inspected Pages workflow assembles only `index.html`, `assets`, `content`, `
 
 Keep that allowlist boundary explicit. `noindex` is not privacy. A host that publishes the repository root would expose preview/editorial files and needs a separate release decision. Local withdrawal hides the reader page and index summary but does not erase source JSON or Git history.
 
-## Review tasks still requiring people
+## Remaining review and publication gates
 
-- History: verify the bounded source criticism, conditionality, dependence and transfer rubric.
-- Literature: check the display witness/edition labels, English comparisons and original-language boundaries; the Koto recheck timed out, and its prior reading is not a new receipt.
+- History: retain the bounded AI content/provenance/reuse results; new claims beyond that corpus need appropriate further review.
+- Literature: retain the bounded AI English comparison and reuse results. Original-language specialist approval is not claimed; the Koto recheck timed out and its prior reading is not a new receipt.
 - Accessibility: complete actual screen-reader tasks and report observed behavior. Automated contrast, keyboard and text-size checks are partial evidence.
 - Learning: observe readers doing the tasks and transferring the distinction; do not infer learning from successful automated clicks.
 - Rights/release: review the real distribution and any additional assets before publication.
 
-Both draft slots remain occupied. Next action: review the revised versions and record concrete findings, then reconcile the package at the normal integration boundary.
+Both unaccepted slots remain occupied. Next action: use the prepared real-session protocol, repair observed barriers, and append exact-version receipts before acceptance. Carry the reviewed package at the normal integration boundary without writing over the active Wave chats.

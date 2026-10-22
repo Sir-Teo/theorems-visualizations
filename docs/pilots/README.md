@@ -6,8 +6,8 @@ These pilots test source comparison, close reading, argument, legal cases, measu
 
 | Pilot | First exploration | Current state / next gate |
 | --- | --- | --- |
-| [P01 History](01-history.md) | Zimmermann telegram and its use in Wilson's speech | Draft available; independent source/content review next |
-| [P02 Literature](02-literature.md) | Bashō's old pond in Aston and Hearn | Display witness and editions fixed; independent literary/language review next |
+| [P01 History](01-history.md) | Zimmermann telegram and its use in Wilson's speech | In review; scoped AI content/provenance/reuse checks complete; screen-reader and learner tasks next |
+| [P02 Literature](02-literature.md) | Bashō's old pond in Aston and Hearn | In review; scoped AI English comparison/reuse checks complete; screen-reader and learner tasks next |
 | [P03 Philosophy and religion](03-philosophy-religion.md) | Reciprocity when preferences differ | Review the situated argument and translation/locator differences |
 | [P04 Law](04-law.md) | Faulty kettle in England and Wales | Freeze a verified legal snapshot and have a qualified reviewer approve the branches |
 | [P05 Agriculture](05-agriculture.md) | Soil-water observations versus a synthetic storage model | Approve the retained data subset, units and exclusions |
@@ -28,13 +28,13 @@ These findings are incorporated into the brief requirements. They are not reason
 | Step | Responsible role | Work product and exit condition |
 | --- | --- | --- |
 | 1. Close U1 design | Coverage editor and platform owner | Local contract delivered; registry specialist review and production URL integration remain separate |
-| 2. Prepare the first pair | History editor and Japanese-language editor | Selected sources and local reuse scope resolved; independent reviewer roles remain unassigned |
+| 2. Prepare the first pair | History editor and Japanese-language editor | Selected sources and local reuse scope resolved; separate AI source/language/code reviews recorded |
 | 3. Build two vertical slices | Authors and platform owner | Implemented source comparison and annotation with semantic text, keyboard access and isolated saved state; no runtime field migration |
 | 4. Review and accept the pair | Independent domain and access reviewers | Verify content, sources, rights, inputs and reader tasks; record formative observations and repairs; accept exact versions through a new-format contract |
 | 5. Prove the other methods | Relevant editors and reviewers | P03 argument; P05 observations; P07 practice; P08 performance. P04/P06 proceed only with qualified legal/clinical review |
 | 6. Extend after evidence | Coverage editor and integration owner | Research the proposed follow-ups, then build U3's 24-lesson sequences and three journeys; select actual accepted connection targets |
 
-The [schema/URL decision](../architecture/universal-schema-urls.md) is adopted for local prototypes. The design, selected-source preparation and implementation in steps 1–3 are delivered at that scope; independent reviewer assignment and step 4 remain open. No existing wave's acceptance rules are weakened. **At most two new-format explorations may wait for independent review.** Reviewer roles are unassigned; they are not evidence of availability, consent or approval. No outreach or booking has been performed.
+The [schema/URL decision](../architecture/universal-schema-urls.md) is adopted for local prototypes. The design, selected-source preparation and implementation in steps 1–3 are delivered at that scope; scoped AI checks are complete, while actual screen-reader/learner evidence and final acceptance in step 4 remain open. No existing wave's acceptance rules are weakened. **At most two new-format explorations may wait for independent review.** Professional specialist and participant roles remain unassigned; AI reports do not imply their availability, consent or approval. No outreach or booking has been performed.
 
 Before starting a lesson, record its exact sources/versions, assets/licences, audience, supported claim types, access alternatives and reviewer responsibilities. After review, record which checks were performed rather than replacing them with a single “verified” badge.
 
@@ -42,7 +42,7 @@ The pilot set contains distinct historical and tradition contexts and inspected 
 
 ## Preserving active work
 
-No pilot creates a collection, edits a frozen chapter, refreshes production progress or alters the redesign denominator. The Wave 5/6 chats retain their worktrees and operational ledgers. This root-checkout package can be reconciled at the normal integration boundary; it has not been copied into either active worktree.
+No pilot creates a collection, edits a frozen chapter, refreshes production progress or alters the redesign denominator. The Wave 5/6 chats retain their worktrees and operational ledgers. This package is integrated on the dedicated accepted-base branch and can be reconciled at the normal handoff boundary; it has not been copied into either active worktree.
 
 Validation is described in the [registry guide](../coverage/README.md). The [soil audit](research/soil-quality.py) additionally reproduces the limited dataset checks from pinned local files; [saved results](research/soil-quality.json) state their scope and unresolved issues.
 
@@ -51,4 +51,4 @@ Validation is described in the [registry guide](../coverage/README.md). The [soi
 
 Open the [two-pilot workshop](../../labs/atlas/index.html) through the local server. The [master-plan handoff](../master-plan-handoff.md) is the continuation entry point, with implementation status, exact checks, review gates and integration boundaries. Both unaccepted draft slots are occupied. See [source decisions](research/history-literature-resolution.md) and [verification](../verification/universal-pilots.md).
 
-P01/P02 are now revised to 0.1.1 after [author-led source/editorial/access review and repairs](../verification/universal-pilots-review.md). The [additive integration package](../integration/universal-pilots.md) has passed frozen-snapshot rehearsals. These checks prepare integration; independent acceptance remains open.
+P01/P02 are now revised to 0.1.1 after [author-led source/editorial/access review and repairs](../verification/universal-pilots-review.md). The [additive integration package](../integration/universal-pilots.md) has passed frozen-snapshot rehearsals. Three separate AI reviews and six scope-limited receipts are now recorded in the [current checkpoint](../verification/universal-pilots-integration.md). Source-registry reuse wording and review-digest binding defects were repaired and independently rechecked. Actual screen-reader/learner evidence and overall acceptance remain open.

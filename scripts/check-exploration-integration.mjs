@@ -8,7 +8,7 @@ import { fileURLToPath } from 'node:url';
 import { createHash } from 'node:crypto';
 import { ROOT } from './lib.mjs';
 const hash = data => createHash('sha256').update(data).digest('hex');
-const allowed = path => /^(explorations\/|labs\/atlas\/|docs\/(coverage\/|pilots\/|architecture\/universal-schema-urls\.md$|integration\/universal-pilots(?:-baseline-plan|-review-session)?\.(json|md)$|verification\/universal-pilots(?:-review|-integration)?\.md$|master-plan-handoff\.md$|exploration-authoring\.md$|universal-(coverage|atlas-research)\.md$))/.test(path)
+const allowed = path => /^(explorations\/|labs\/atlas\/|docs\/(coverage\/|pilots\/|architecture\/universal-schema-urls\.md$|integration\/universal-pilots(?:-baseline-plan|-review-session)?\.(json|md)$|verification\/universal-pilots(?:-review|-integration|-ai-(?:history|literature|code))?\.md$|master-plan-handoff\.md$|exploration-authoring\.md$|universal-(coverage|atlas-research)\.md$))/.test(path)
   || /^(MASTER_PLAN_V2_ARCHIVE\.md|scripts\/(build-explorations|validate-coverage|check-exploration-integration)\.mjs|tests\/(coverage-registry|explorations|explorations-ui|explorations-integration)\.test\.mjs|tests\/explorations-production\.mjs)$/.test(path);
 export async function planOverlay(source, target, paths) {
   if (!Array.isArray(paths) || !paths.length || new Set(paths).size !== paths.length) throw new Error('Package paths must be unique');

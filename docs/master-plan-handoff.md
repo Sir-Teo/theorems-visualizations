@@ -2,7 +2,7 @@
 
 **Updated October 22, 2026.** Entry point for future universal-atlas work. Production waves and visual redesign retain their own handoffs and ledgers.
 
-The broader plan now has a versioned coverage registry, eight researched briefs, an additive schema/URL contract, and **two working local prototypes, revised to 0.1.1 after author-led review**. The [integration package](integration/universal-pilots.md) passed a rehearsal on the accepted Wave 6 checkpoint and compatibility checks on frozen expansion/redesign snapshots. This is an implementation foundation and a concrete queue, not a claim that all future disciplines, sources or review needs are solved.
+The broader plan now has a versioned coverage registry, eight researched briefs, an additive schema/URL contract, and **two working local prototypes at 0.1.1, now in review with scoped independent AI receipts**. The [integration package](integration/universal-pilots.md) passed a rehearsal on the accepted Wave 6 checkpoint and compatibility checks on frozen expansion/redesign snapshots. This is an implementation foundation and a concrete queue, not a claim that all future disciplines, sources or review needs are solved.
 
 ## Read these first
 
@@ -12,7 +12,7 @@ The broader plan now has a versioned coverage registry, eight researched briefs,
 4. [Exploration authoring](exploration-authoring.md): method, evidence, privacy, access and review workflow.
 5. [Pilot index](pilots/README.md), [source decisions](pilots/research/history-literature-resolution.md), and [prototype verification](verification/universal-pilots.md).
 6. The active content/redesign handoffs below before any integration.
-7. [Latest pilot review](verification/universal-pilots-review.md) and [integration manifest/procedure](integration/universal-pilots.md): concrete fixes, remaining reviews and a read-only rehearsal command.
+7. [Current independent-review checkpoint](verification/universal-pilots-integration.md) and [integration manifest/procedure](integration/universal-pilots.md): concrete fixes, remaining reviews and a read-only rehearsal command.
 
 ## Active integration
 
@@ -25,11 +25,11 @@ Continue in `/Users/teodev/.codex/worktrees/universal-pilots-integration/theorem
 | Coverage | `docs/coverage/registry.json` and pinned inventories | 30 domains; 85 primary collection homes; eight cross-listings; 217 classification entries |
 | Research | `docs/pilots/*.md` and `docs/coverage/sources.json` | Eight bounded briefs; named access/rights/reviewer gates |
 | Data and review contract | `explorations/contract.mjs` | Versioned IDs, evidence, claim boundaries, passage hashes, review history and content/artifact review checks |
-| History prototype | `explorations/history.json` | Authored draft; claim/evidence comparison; independent acceptance pending |
-| Literature prototype | `explorations/literature.json` | Authored draft; three reading lenses, named Japanese display witness; independent acceptance pending |
+| History prototype | `explorations/history.json` | In review; AI content/provenance/prototype-rights checks recorded; actual access/learner evidence pending |
+| Literature prototype | `explorations/literature.json` | In review; AI content/English-language/prototype-rights checks recorded; actual access/learner evidence pending |
 | Preview build | `scripts/build-explorations.mjs`; `labs/atlas/` | Isolated static pages; production loader/catalog unchanged |
 | State and compatibility helpers | `explorations/route-state.mjs` | Tested legacy URL preservation, bounded public state and no inferred legacy acceptance |
-| Verification | Scoped Node/browser tests and verification receipt | Author checks, not specialist or learner acceptance |
+| Verification | Scoped Node/browser tests and verification receipt | Three independent AI reports and six scoped receipts; no professional, screen-reader or learner claim |
 | Integration preparation | `docs/integration/universal-pilots.json`; `scripts/check-exploration-integration.mjs` | Explicit additive paths; pinned snapshot rehearsal; differing files refused; master plan manually reconciled |
 
 **Preview locally:** run `PORT=8219 node scripts/serve.mjs` from this checkout if that port is free, then open `http://localhost:8219/labs/atlas/`. Use another free port if needed. Direct pages are `labs/atlas/x-history-0001/` and `labs/atlas/x-literature-0001/`. No public deployment has been performed.
@@ -41,7 +41,7 @@ Both new-format draft slots are occupied. The user's instruction authorizes thes
 | Order / milestone | Work | Dependency and exit condition |
 | --- | --- | --- |
 | Now · U1 review | Inspect the registry crosswalk and proposed stewardship | 79 review-needed classification entries retain explicit dispositions; no invented coverage percentages |
-| Now · U2 first pair | Independently review P01 source criticism and P02 literary/language scope | Competent named reviewers inspect the exact current digests; resolve changes requested |
+| Delivered · U2 AI review | Three independent AI reviewers inspected history, literature/language and code | Two findings repaired and rechecked; six scoped receipts match current digests; professional or original-language expertise is not inferred |
 | Now · U2 access/learning | Screen-reader task review and formative reader observation | Both tasks can be completed using their promised alternatives; observed defects repaired; receipts identify scope |
 | Next · U2 contracts | Finalize source/annotation payloads from actual review findings | Changes preserve static text, old state or an explicit migration, and exact-content review validity |
 | Next · U2 acceptance | Accept the first pair through the new-format contract | Latest receipt for every required dimension passes for the current revision and content/artifact digests; do not add them to frozen Wave 6 counts |
@@ -101,7 +101,7 @@ The draft build writes only `labs/atlas/`. It does not invoke `scripts/build.mjs
 
 ## Open decisions that must stay visible
 
-- Qualified reviewers and learner participants are not assigned or recruited.
+- Independent AI review is recorded with actual scope. Professional specialist reviewers and learner participants are not assigned or recruited.
 - Selected-text rights are scoped for local prototypes; wider publication needs its actual distribution review.
 - The Japanese source is a modern institutional display witness, not a critical edition or facsimile.
 - Its Koto recheck timed out during the latest review; retain the earlier body-read receipt without claiming fresh verification or recovering a stopped source through another host.

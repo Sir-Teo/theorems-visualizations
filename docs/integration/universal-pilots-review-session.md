@@ -1,6 +1,6 @@
 # Remaining pilot review sessions
 
-**Exact candidate:** history and literature 0.1.1. Use the current builder's content/artifact digests before recording a receipt. These are session instructions and an empty evidence record, not completed reviews.
+**Exact candidate:** history and literature 0.1.1. Use the current builder's content/artifact digests before recording a receipt. These are session instructions and an empty human-observation evidence record. The [current checkpoint](../verification/universal-pilots-integration.md) separately records completed scoped AI source/language/code checks; none supplies an actual screen-reader or learner session.
 
 ## Independent source and language review
 

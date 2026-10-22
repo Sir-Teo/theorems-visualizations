@@ -33,15 +33,16 @@ export async function buildExplorations({ checkOnly = false } = {}) {
   const errors = runtime.problems.filter(p => p.level === 'error').map(p => p.msg);
   const codePaths = ['explorations/contract.mjs', 'explorations/route-state.mjs', 'explorations/render.mjs', 'explorations/ui.mjs', 'explorations/style.css', 'scripts/build-explorations.mjs'];
   const codeHashes = Object.fromEntries(await Promise.all(codePaths.map(async path => [path, textDigest(await readFile(resolve(ROOT, path), 'utf8'))])));
+  const collectionTitles = Object.fromEntries(runtime.collections.map(c => [c.id, c.title]));
+  const artifactDigest = r => reviewArtifactDigest(r, codeHashes, collectionTitles);
   if (!checkCapacity(records, manifest.maxUnaccepted)) errors.push('More than two explorations await independent acceptance');
-  for (const r of records) errors.push(...validateExploration(r, { ...context, artifactDigest: reviewArtifactDigest(r, codeHashes) }));
+  for (const r of records) errors.push(...validateExploration(r, { ...context, artifactDigest: artifactDigest(r) }));
   if (errors.length) throw new Error(errors.join('\n'));
   for (const r of records.filter(r => r.status === 'accepted')) for (const review of r.reviews) {
     if (!/^docs\/verification\/[a-z0-9/.-]+\.md$/.test(review.evidencePath) || review.evidencePath.includes('..')) throw new Error('Unsafe review receipt path');
     await readFile(resolve(ROOT, review.evidencePath), 'utf8');
   }
   const outputs = new Map([['labs/atlas/index.html', renderIndex(records)]]);
-  const collectionTitles = Object.fromEntries(runtime.collections.map(c => [c.id, c.title]));
   for (const r of records) outputs.set('labs/atlas/' + r.id + '/index.html', renderExploration(r, collectionTitles));
   // Unexpected old draft directories are reported, never silently deleted.
   const dirs = await readdir(resolve(ROOT, 'labs/atlas'), { withFileTypes: true }).catch(() => []);
@@ -53,7 +54,7 @@ export async function buildExplorations({ checkOnly = false } = {}) {
       if (current !== html) throw new Error('Regenerate stale preview: ' + path);
     } else { await mkdir(dirname(absolute), { recursive: true }); await writeFile(absolute, html); }
   }
-  return { pages: outputs.size, records: records.map(r => ({ id: r.id, revision: r.revision, digest: contentDigest(r), artifactDigest: reviewArtifactDigest(r, codeHashes), status: r.status })) };
+  return { pages: outputs.size, records: records.map(r => ({ id: r.id, revision: r.revision, digest: contentDigest(r), artifactDigest: artifactDigest(r), status: r.status })) };
 }
 if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
   try { console.log(JSON.stringify(await buildExplorations({ checkOnly: process.argv.includes('--check') }), null, 2)); }

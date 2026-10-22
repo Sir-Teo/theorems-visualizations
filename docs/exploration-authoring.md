@@ -37,9 +37,9 @@ Use this receipt checklist for each required dimension:
 - For learner observation, task, participant context, observed failure/success and resulting repairs; no invented efficacy claim.
 - For publication, actual distribution scope and asset-level rights, with withdrawal/update responsibilities.
 
-Automated tests are author checks. They do not appoint a subject reviewer, prove screen-reader usability or replace formative learning observation. Do not create a passing receipt merely to satisfy a validator.
+User-authorized separate AI reviewers may supply bounded source, English-language and prototype-reuse checks when their actual AI role, evidence, limits and independent conclusions are recorded. The current pair has three such receipts each; the engineering report is supplemental and supplies no accessibility or learning pass. See the [integration checkpoint](verification/universal-pilots-integration.md). Actual screen-reader and learner sessions remain required. Automated tests are author checks. They do not appoint a subject reviewer, prove screen-reader usability or replace formative learning observation. Do not create a passing receipt merely to satisfy a validator.
 
-If a claim, source boundary, activity, rights decision or bound rendering code changes, return the record to draft and obtain fresh reviews for the changed artifact. Historical receipts remain in the append-only array and do not block draft rendering. Only the latest appended receipt per required dimension can approve acceptance, and it must match the current revision and both digests. The latest changes-requested review blocks that dimension even if an earlier review passed. Do not reorder or erase superseded receipts.
+If a claim, source boundary, activity, rights decision, bound rendering code or displayed related-collection label changes, return the record to draft and obtain fresh reviews for the changed artifact. Historical receipts remain in the append-only array and do not block draft rendering. Only the latest appended receipt per required dimension can approve acceptance, and it must match the current revision and both digests. The latest changes-requested review blocks that dimension even if an earlier review passed. Do not reorder or erase superseded receipts.
 
 ## Validate and hand off
 

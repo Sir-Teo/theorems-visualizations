@@ -18,8 +18,11 @@ export function contentDigest(record) {
   const { reviews, status, publication, ...content } = record;
   return textDigest(canonical(content));
 }
-export function reviewArtifactDigest(record, codeHashes) {
-  return textDigest(canonical({ contentDigest: contentDigest(record), codeHashes }));
+export function reviewArtifactDigest(record, codeHashes, collectionTitles = {}) {
+  // Bind the labels actually shown by the renderer, including its ID fallback.
+  // Unrelated production collections must not invalidate a pilot review.
+  const relatedCollectionTitles = Object.fromEntries(record.relatedCollectionIds.map(id => [id, collectionTitles[id] || id]));
+  return textDigest(canonical({ contentDigest: contentDigest(record), codeHashes, relatedCollectionTitles }));
 }
 export function validateExploration(r, { domainIds, collectionIds, sourceIds, knownItemIds = [], artifactDigest }) {
   const errors = [], check = (ok, why) => { if (!ok) errors.push((r?.id || 'record') + ': ' + why); };
