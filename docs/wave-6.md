@@ -4,6 +4,8 @@
 
 The previous saved wave was explicitly marked complete and all its frozen items were present in actual content. This does not authorize automatic advancement or certify independent acceptance of the current wave.
 
+**Checkpoint scope:** the inventory below records the last accepted export. The expansion branch additionally contains 12 author-verified REP 6 ideas pending separate peer acceptance; see [evidence](verification/wave6-rep.md). The frozen assignments and accepted checkpoint remain unchanged.
+
 36/1057 frozen new items are written; 1021 remain. Written counts describe availability, not review acceptance. The [machine-readable inventory](wave-6-plan.json) freezes chapter assignments and identities, including completed chapters. Refresh preserves these assignments. Syllabi remain authoritative for researched source/dependency corrections; preserve source flags and access restrictions.
 
 Run `node scripts/plan-content-wave.mjs --wave 6` to refresh. Only an explicit `--start` changes prepared to in-progress. Completion must be recorded by root after independent chapter and wave gates; this CLI has no completion switch.

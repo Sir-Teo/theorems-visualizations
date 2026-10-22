@@ -2,7 +2,7 @@
 
 ## Continuation — 2026-10-22
 
-The user confirmed Wave 5 is complete and asked to update the documentation and continue Wave 6. The original chat checkout was stale; resume from f0a324f9 in the isolated wave-six-expansion worktree. The frozen accepted baseline is 36/1,057 new Wave 6 ideas in three chapters. Preserve the 34 unaccepted ODE6/ALG9 draft ideas in the shipping worktree; start the next untouched chapter, REP6 (12 induced-representation ideas). This continuation does not claim the separate visual redesign is complete.
+The user confirmed Wave 5 is complete and asked to update the documentation and continue Wave 6. The original chat checkout was stale; resume from f0a324f9 in the isolated wave-six-expansion worktree. The frozen accepted baseline is 36/1,057 new Wave 6 ideas in three chapters. Preserve the 34 unaccepted ODE6/ALG9 draft ideas in the shipping worktree; REP6 now adds 12 author-verified induced-representation ideas, pending separate peer acceptance. Its 3,470-test integration checkpoint and full native/pixel checks pass; see docs/verification/wave6-rep.md. Continue with TOP6 (17 ideas). This continuation does not claim the separate visual redesign is complete.
 
 ## Authorization and workspace
 

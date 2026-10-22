@@ -43,3 +43,5 @@ At most three workers and two browsers. ODE6 author native replacements and inde
 ## Expansion continuation — 2026-10-22
 
 The user confirmed Wave 5 completion and directed continued Wave 6 expansion. The new `codex/wave-six-expansion` worktree starts at `f0a324f9`, preserving the shipping worktree's 34 unaccepted ODE 6 / ALG 9 draft ideas. REP 6 (12 ideas) is the next untouched chapter. Current work begins with source research and distinct interactive scenes. The accepted count remains 36 until fresh chapter and integration gates pass; the separate Wave 5–6 visual redesign remains its own workstream.
+
+REP 6 now has 12 author-verified ideas in the expansion worktree. Its 13 mathematical groups, strict build, all 7,700 static visualizations, 3,470-test integration suite and 17 production routes pass. Native checks cover 48 distinct layouts, 600 initial control actions and 96 replays; five repaired scenes pass a further 20 replacement cases, 264 actions and 40 replays. All 110 harness mode screenshots and 24 narrow defaults were inspected. See [author evidence](wave6-rep.md). Separate peer acceptance is pending, so the frozen accepted inventory remains 36/1,057.
