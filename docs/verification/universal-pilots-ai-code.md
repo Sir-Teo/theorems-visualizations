@@ -151,3 +151,39 @@ Recomputed current content and artifact hashes from all nine bound code files, r
 | x-agriculture-0001 | 0.1.0 | `d0f0f916bbed98c6abd120f748e1a4edd05e9496bc39c6dc3b56600eccdbac6d` | `e4a5eeec558a552bed8bb38c81825de88dfc3e882f5c974e15cac10e21452e6b` |
 
 **Final bounded AI engineering pass applies to these hashes**, superseding the immediately preceding artifact hashes. No browser launched, no tests redundantly run during the owner's browser suite, and no actual screen-reader or learner observation claimed. Runtime chart readability remains supported by the owner's separate visual/browser evidence rather than an invented observation by this reviewer.
+
+
+---
+
+# Final independent AI engineering recheck — P07/P08 studio bundle
+
+October 22, 2026. Reviewer: separate Codex AI engineering reviewer `code_review`, independent of the implementation author. Read-only review of the current 13-file artifact bundle in the universal-pilots integration checkout; no browser or authored-file edits.
+
+## Actionable findings
+
+None found in this bounded engineering recheck. The earlier strict-floating-point assertion is corrected with a justified tolerance. Independently ran the studio and existing method pure suites on Node 22.23.3: **16/16 pass**, zero failures/skips/cancellations.
+
+## Final delta inspected
+
+The WAV now appends a correctly sized/padded RIFF LIST/INFO/ICMT chunk after PCM data, retaining RIFF length and data chunk length. NUL-terminated ASCII JSON escapes Unicode without changing its recovered content. Metadata includes exact event/settings/region/revision, formula and renderer version, synthesis and pending release terms; it excludes private notes, playback cursor and volume. The test parses metadata, verifies bounds/ASCII/NUL, checks exact recovered values and verifies PCM bytes unchanged. Signal timing/region isolation, maximum gain, gap silence and WAV quantization tests continue to pass.
+
+Repeated Play while playing now returns without resetting transport; the existing single audio element, pending-play token, cropped-region WAV, currentTime-derived cursor, pause/stop/seek and pagehide logic remain intact. Source inspection found no new actionable race. Actual browser/media-policy behavior is supplied by the owner's separate runtime checks, not an invented observation by this reviewer.
+
+Event tables now have a 42rem minimum width inside existing named, focusable horizontal-scroll regions. This keeps table columns from collapsing on phones while retaining the text alternative. The reviewer read the style/view changes; visual/browser assertions were not independently run here.
+
+Current P07/P08 review-limit statements accurately distinguish digital/source checks from unperformed physical, practitioner, performer/educator, screen-reader and learner sessions. Both remain in-review with learning/accessibility and release/asset gates retained. No full acceptance, human observation or granted release licence is claimed. Existing note/privacy state and old-four authored content remain intact.
+
+## Independently verified exact hashes
+
+Recomputed all 13 code-file hashes, every record content digest and used collection-label context. Exact equality with the current candidate digest file:
+
+| Pilot | Revision | Content digest | Artifact digest |
+| --- | --- | --- | --- |
+| x-history-0001 | 0.1.2 | `f1ad96959e069d4f3896063e82bd8468eb3241749096e856a514631e721b72af` | `451251379199fcc10fda552dc6e27c227fc87b0b4e986a6d9ae17da84e4c37ec` |
+| x-literature-0001 | 0.1.2 | `f19e81195af44e606595a8d44c7ad16487e29bddbb30ed510e240c0c28416f95` | `9a7cc8ac0bc6b2cb9df513f40738baf8283c9604cc55a7698c79f1bbcf269b74` |
+| x-philosophy-0001 | 0.1.0 | `57c5cbf2d12cfce4e28395bbd2c929907572aba49c371c9000de03ee7c2c172e` | `be1f4628813b985cefebd7efcec4307c39f650150f125b15ff1ff5517650db5e` |
+| x-agriculture-0001 | 0.1.0 | `d0f0f916bbed98c6abd120f748e1a4edd05e9496bc39c6dc3b56600eccdbac6d` | `34a8ee3489077d0f5d3f31e698769cef43893855ecd03aee8bd6c4450b3f542f` |
+| x-craft-0001 | 0.1.0 | `dc94eecd0cfbc9e820935e68dec7bcd3fcfd16d24f9dc07018c9a8b7752ad14f` | `eb5af71f25c46901dda59b4f604cf6f290fdf94c62bd7792f0a9da71b14bbde8` |
+| x-performance-0001 | 0.1.0 | `40190c5a0dc101882934a6579af5e9c3eb75a2d38b65d18e728fee03d9e23aaa` | `14fcf71efb415de3c2e36c19f56ba413d09628ef5c5fefda0e9018004edb382d` |
+
+**Bounded independent AI engineering review passes for these exact artifacts.** This supplies engineering evidence only. Independent source/provenance/rights conclusions require their own reviewers. Shared-code changes correctly invalidate the previous four artifact receipts until rechecked; this report does not alter their lifecycle or required receipt rules. Browser tests and all real-world human/physical checks were not performed by this reviewer.

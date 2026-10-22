@@ -1,6 +1,6 @@
 # P07 · Make, inspect and repair a paper plain weave
 
-**Research brief · 2026-10-22 · D29 / D25 · researched, not authored or accepted.**
+**Research brief · 2026-10-22 · D29 / D25 · authored digital prototype; physical demonstration and full acceptance open.**
 
 The craft pilot combines a symbolic pattern with an optional physical task. Readers should trace alternating over/under crossings, find a local mistake, and explain what the digital representation cannot assess. A correct grid is not proof of hand skill, tension control or textile knowledge.
 
@@ -16,7 +16,7 @@ Audience: beginners. Supplies for the optional activity are pre-cut paper strips
 
 Start with a 6-by-6 grid, labeling warp and weft. In the simplified checkerboard representation, parity determines which strip passes over at each crossing. Readers predict the next crossing, switch between front and back views, find an intentionally repeated over-crossing, and repair the relevant strip sequence. Explain that an error may affect more than one visible crossing; the digital correction must correspond to a possible physical reweaving.
 
-An original illustrated sequence will show an actual paper sample at key steps. Those images do not exist yet: their creation, material labels and inspection are U2 work. Until they are available, the brief is not a demonstrated physical lesson.
+Seven original schematic stages now accompany a working 6-by-6 model, canonical strip labels, front/back projection and whole-weft repair. They are diagrams, not sample photographs. Actual sample images do not exist yet; their creation, material labels and inspection remain U2 work. The [physical-session packet](research/craft-physical-session.md) defines the specimen, images, error/repair and independent reproduction evidence. Until those exist, this is not a demonstrated physical lesson.
 
 State: grid size fixed for the first slice, selected strip/crossing, over/under sequence, view and repair history. A step list and row/column table mirror every action. Do not add arbitrary decorative complexity before the plain-weave task works.
 
@@ -32,9 +32,9 @@ Every crossing is addressable with row/column labels and keyboard controls; prov
 
 ## Rights, review and next steps
 
-Create the diagram, photographs and captions specifically for the atlas, with an explicit licence and any contributor permissions. Reference the source description without copying its photographs. No demonstration assets have been commissioned or acquired by this brief.
+Create the diagram, photographs and captions specifically for the atlas, with an explicit licence and any contributor permissions. Reference the source description without copying its photographs. Original code-generated schematics are present. Real demonstration photographs have not been commissioned or acquired. The [asset proposal](research/studio-original-assets.md) records pending public-release terms; it is not a licence grant.
 
-**Review roles:** textile/craft practitioner, instructional editor, accessibility reviewer; all unassigned. Before authoring: build and photograph the sample, verify each step and approve the material list. Before acceptance: physical reproduction by a second person, digital model checks and accessibility/task observation.
+**Review roles:** textile/craft practitioner, instructional editor, accessibility reviewer; all unassigned. The conceptual prototype was authored under the user’s instruction to proceed; this does not satisfy the original physical preparation gate. Before demonstrated physical instruction: build and photograph the sample, verify each step and approve the material list. Before full acceptance: physical reproduction by a second person and accessibility/task observation. Digital structure checks and scoped independent AI desk review are recorded separately in the [studio checkpoint](../verification/universal-pilots-studio.md).
 
 **Existing connections:** `art`, `mat` and `comb` offer possible routes into material, visual and structural questions; choose exact accepted items later.
 

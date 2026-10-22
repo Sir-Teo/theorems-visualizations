@@ -372,8 +372,8 @@
       "contexts": [
         "Generic plain-weave exercise; Greek institutional technical reference"
       ],
-      "status": "researched-with-gates",
-      "authored": false,
+      "status": "prototype",
+      "authored": true,
       "accepted": false,
       "reviewers": [
         {
@@ -393,12 +393,17 @@
         }
       ],
       "openGates": [
-        "Make and independently reproduce physical sample",
-        "Create original step images and licences",
-        "Verify tactile versus digital assessment boundary"
+        "Make and photograph the real sample with creator/participant permissions",
+        "Practitioner verification and second-person whole-strip reproduction",
+        "Learning/accessibility task observations",
+        "Approve scoped original-asset public-release terms"
       ],
-      "rightsStatus": "scoped-plan-not-asset-clearance",
-      "nextAction": "Make and independently reproduce physical sample"
+      "rightsStatus": "prototype-original-assets-scoped",
+      "nextAction": "Execute the unperformed physical-session packet with real evidence",
+      "prototypePath": "labs/atlas/x-craft-0001/index.html",
+      "contentPath": "explorations/craft.json",
+      "sourceResolutionPath": "docs/pilots/research/craft-source-review.md",
+      "rightsScope": "Original locally authored prose, diagrams and generated signal only; proposed public-release terms are not granted. No external images, samples or performances are reused."
     },
     {
       "id": "P08",
@@ -423,8 +428,8 @@
       "contexts": [
         "Western notation educational exercise"
       ],
-      "status": "researched-with-gates",
-      "authored": false,
+      "status": "prototype",
+      "authored": true,
       "accepted": false,
       "reviewers": [
         {
@@ -439,12 +444,16 @@
         }
       ],
       "openGates": [
-        "Compose and license original phrase",
-        "Create labeled generated playback and event fixtures",
-        "Review expressive contrast and accessible alternatives"
+        "Performer/educator review of perceptible contrast and interpretation task",
+        "Learning/media-accessibility task observations",
+        "Approve scoped original-asset public-release terms"
       ],
-      "rightsStatus": "scoped-plan-not-asset-clearance",
-      "nextAction": "Compose and license original phrase"
+      "rightsStatus": "prototype-original-assets-scoped",
+      "nextAction": "Execute the unperformed performer/access/learning session packet and record scoped release decision",
+      "prototypePath": "labs/atlas/x-performance-0001/index.html",
+      "contentPath": "explorations/performance.json",
+      "sourceResolutionPath": "docs/pilots/research/performance-source-review.md",
+      "rightsScope": "Original locally authored prose, diagrams and generated signal only; proposed public-release terms are not granted. No external images, samples or performances are reused."
     }
   ]
 }

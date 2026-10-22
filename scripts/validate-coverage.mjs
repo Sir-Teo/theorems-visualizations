@@ -125,7 +125,7 @@ export function validateCoverage({ registry, inventory, sources, pilots }, runti
     const prototype = ['prototype', 'reviewed-local'].includes(p.status);
     check(['researched-with-gates', 'prototype', 'reviewed-local'].includes(p.status) && p.authored === prototype && p.accepted === false, p.id + ': research or prototype cannot claim accepted production status or inconsistent authorship');
     if (p.status === 'reviewed-local') check(p.localReviewStatus === 'accepted' && /^\d+\.\d+\.\d+$/.test(p.reviewedRevision), p.id + ': local review must name its state and revision');
-    check(prototype ? ['prototype-text-scoped', 'prototype-data-attributed'].includes(p.rightsStatus) : p.rightsStatus === 'scoped-plan-not-asset-clearance', p.id + ': source reading is not unrestricted asset clearance');
+    check(prototype ? ['prototype-text-scoped', 'prototype-data-attributed', 'prototype-original-assets-scoped'].includes(p.rightsStatus) : p.rightsStatus === 'scoped-plan-not-asset-clearance', p.id + ': source reading is not unrestricted asset clearance');
     if (prototype) check(/^labs\/atlas\/x-[a-z0-9-]+\/index\.html$/.test(p.prototypePath) && /^explorations\/[a-z-]+\.json$/.test(p.contentPath), p.id + ': prototype must name actual content and preview paths');
     check(Array.isArray(p.openGates) && p.openGates.length > 0 && p.openGates.every(nonempty) && nonempty(p.nextAction), p.id + ': missing publication gates');
     check(Array.isArray(p.reviewers) && p.reviewers.length > 0 && p.reviewers.every(x => nonempty(x.role) && x.assignee === null && x.status === 'unassigned'), p.id + ': reviewer role is not an assignment or approval');

@@ -145,7 +145,7 @@ test('superseded receipts remain recoverable while only latest exact-version rev
 });
 
 test('changed related collection labels invalidate acceptance but unrelated metadata does not', () => {
-  for (const original of records) {
+  for (const original of records.filter(r=>currentRecords.find(c=>c.id===r.id).status==='accepted')) {
     const r=structuredClone(original), code={'test-runtime':'a'.repeat(64)};
     const titles=Object.fromEntries(runtime.collections.map(c=>[c.id,c.title]));
     const digest=reviewArtifactDigest(r,code,titles);
@@ -175,4 +175,11 @@ test('rendered source forms distinguish original editorial writing from quotatio
 test('withdrawn index entries do not leak former titles or summaries',()=>{
   const r=structuredClone(h);r.status='withdrawn';r.publication='withdrawn';
   const html=renderIndex([r,l]);assert.ok(!html.includes(r.title));assert.ok(!html.includes(r.summary));assert.match(html,/Withdrawn preview/);
+});
+test('studio drafts cannot gain full acceptance from invented all-pass review fixtures',()=>{
+ for(const original of records.filter(r=>['P07','P08'].includes(r.pilotId))){
+  const r=structuredClone(original),artifactDigest=reviewArtifactDigest(r,{'test-runtime':'a'.repeat(64)});r.status='accepted';
+  r.reviews=r.reviewRequirements.map(dimension=>({dimension,result:'passed',reviewer:{id:'independent-fixture',role:'Fixture only',independent:true},revision:r.revision,contentDigest:contentDigest(r),artifactDigest,evidencePath:'test-only',reviewedOn:'2026-10-22'}));
+  assert.match(validateExploration(r,{...ctx,artifactDigest}).join('\n'),r.pilotId==='P07'?/physical/:/release/);
+ }
 });

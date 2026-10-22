@@ -172,6 +172,48 @@
       "artifactDigest": "e4a5eeec558a552bed8bb38c81825de88dfc3e882f5c974e15cac10e21452e6b",
       "evidencePath": "docs/verification/universal-pilots-ai-agriculture.md",
       "reviewedOn": "2026-10-22"
+    },
+    {
+      "dimension": "content",
+      "result": "passed",
+      "reviewer": {
+        "id": "soil_data_review",
+        "role": "Independent AI data/source and scoped prototype-rights reviewer",
+        "independent": true
+      },
+      "revision": "0.1.0",
+      "contentDigest": "d0f0f916bbed98c6abd120f748e1a4edd05e9496bc39c6dc3b56600eccdbac6d",
+      "artifactDigest": "34a8ee3489077d0f5d3f31e698769cef43893855ecd03aee8bd6c4450b3f542f",
+      "evidencePath": "docs/verification/universal-pilots-ai-agriculture.md",
+      "reviewedOn": "2026-10-22"
+    },
+    {
+      "dimension": "provenance",
+      "result": "passed",
+      "reviewer": {
+        "id": "soil_data_review",
+        "role": "Independent AI data/source and scoped prototype-rights reviewer",
+        "independent": true
+      },
+      "revision": "0.1.0",
+      "contentDigest": "d0f0f916bbed98c6abd120f748e1a4edd05e9496bc39c6dc3b56600eccdbac6d",
+      "artifactDigest": "34a8ee3489077d0f5d3f31e698769cef43893855ecd03aee8bd6c4450b3f542f",
+      "evidencePath": "docs/verification/universal-pilots-ai-agriculture.md",
+      "reviewedOn": "2026-10-22"
+    },
+    {
+      "dimension": "rights",
+      "result": "passed",
+      "reviewer": {
+        "id": "soil_data_review",
+        "role": "Independent AI data/source and scoped prototype-rights reviewer",
+        "independent": true
+      },
+      "revision": "0.1.0",
+      "contentDigest": "d0f0f916bbed98c6abd120f748e1a4edd05e9496bc39c6dc3b56600eccdbac6d",
+      "artifactDigest": "34a8ee3489077d0f5d3f31e698769cef43893855ecd03aee8bd6c4450b3f542f",
+      "evidencePath": "docs/verification/universal-pilots-ai-agriculture.md",
+      "reviewedOn": "2026-10-22"
     }
   ],
   "reviewRequirements": [

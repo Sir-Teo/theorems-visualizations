@@ -1,0 +1,43 @@
+# P08 performance: independent AI source and instructional-design review
+
+Date: 2026-10-22. Reviewer: separate Codex `literature_review` AI agent, acting as a source/instructional reviewer. No performer, music-educator, copyright-lawyer or accessibility-observer credential is claimed. Reviewed `docs/pilots/08-performance.md` and the proposed original eight-beat, oscillator-generated comparison described in the review request. This is a source/design review; no implemented P08 artifact or playback has been inspected, and no final artifact acceptance is issued.
+
+## Primary source check
+
+Freshly opened [Carnegie Hall, Explore Expressive Qualities in Music and Movement](https://www.carnegiehall.org/Education/Programs/Link-Up/New-York-City/Explore-Expressive-Qualities-in-Music-and-Movement). The actual body supports teaching about tempo, dynamics and articulation (returned lines 279–297), comparing observations and explaining responses (301–309), and making original musical work with reasons for choices (398–406). It does not validate this particular synthesized stimulus, prove learning outcomes, or establish universal emotion labels. Its repertoire, recordings, lyrics, PDFs and other assets remain separate material. No such asset was downloaded or selected for copying. The source therefore supports the teaching approach within the brief's boundary, not a licence to reproduce its examples.
+
+Also inspected the [official Web Audio specification](https://www.w3.org/TR/webaudio/) as a technical reference for browser synthesis. Its current response identifies itself as a 2026 Working Draft; it describes oscillator and audio-parameter mechanisms but does not certify a particular browser implementation or perceptual result. An oscillator and gain envelope are an appropriate implementation direction; actual timing and playback need implementation-level verification. No source access stop or alternate-host recovery was encountered or attempted.
+
+## Findings and required precision before the implementation is frozen
+
+The proposed bounded activity is reasonable. Two points need precise labels/specification rather than a blanket assertion that every other perceptual property is constant.
+
+1. **Control the signal parameters; do not promise invariant perceived loudness or timbre.** The proposed phrase “same BPM/amplitude/timbre” is too strong if it describes what a listener will perceive. Changing the envelope's sustained duration changes signal energy and can affect perceived loudness and tone character even at equal peak gain and oscillator settings. State the actual controlled values: onset pattern, pitch/frequency, oscillator waveform, pan, peak gain and BPM. State the intentional change as the envelope duration/shape. Do not say equal perceived volume, equal energy or identical timbre unless measured and appropriately qualified. The brief's `:19` and `:27` should be realized with this parameter-level precision. A constant master-volume control is not loudness matching.
+2. **Call the initial contrast short versus sustained, unless connection is actually demonstrated.** A longer tone is not automatically legato: if silence remains before the next onset it may still be detached. Carnegie's articulation category supports the comparison, but cannot justify calling every long-envelope variant connected. Label the generated variants by measured envelope lengths and gaps. If the original phrase is described as percussion, make clear that the stimulus uses synthetic pitched tones/tone envelopes rather than a recorded percussion instrument. This does not prevent an original rhythmic exercise.
+
+These are implementation requirements, not reasons to abandon the pilot. No other blocking source or instructional-design defect was found in the brief's bounded scope.
+
+## Concrete implementation contract
+
+- Freeze an original event list with stable event IDs, onset positions, base frequency/waveform and explicit envelope parameters. Specify whether onset positions are zero-based; display beats in an understandable one-based form if desired. Define “eight beats” as a metric span, not eight required events or a claim about eight physical strikes. Represent rests/gaps and any last-note tail.
+- Use constant BPM for the initial A/B comparison. Publish the exact duration/gate parameters for both versions, including attack/release; smooth gain transitions to avoid introducing unintended clicks as the comparison cue. If the sustained variant overlaps the next event, document the overlap and bound summed gain to avoid clipping. If it does not overlap, do not call it legato solely because it lasts longer.
+- For tempo, specify what scales. Beat-fixed onset time follows `t_seconds = beat_offset * 60 / BPM`; a one-based displayed beat uses offset `beat - 1`. Decide whether gate durations are beat fractions or fixed milliseconds. Either can be a deliberate design choice, but they give different comparisons. Show the choice and use it consistently in tables, score/timeline and playback. One original phrase can be replayed at multiple speeds without a falsely identical seconds axis.
+- Define the phrase-span endpoint separately from audible release-tail completion. Report both where different. Schedule all events and envelope transitions against the audio clock, deriving the visible playhead from that same clock; a visual timer alone is not evidence of accurate audible onset timing.
+- Keep variant and tempo controls distinct and explicit. Changing tempo during playback needs a defined behavior (restart or reschedule); do not leave old scheduled events playing under a new display. Pause, stop and replay-region boundaries must actually silence/clean up scheduled nodes and present truthful position/state. Do not encode volatile live playback position as a claim that another reader heard that same position.
+- Provide an event table with ID, beat onset, seconds at the selected BPM, duration and any gap/overlap. The reader can cite a specific event or region, identify the measured duration/speed change, then offer two possible effects with reasons. No mood answer key or automatically scored emotional response. Transfer should ask what a new listener's response would require beyond timing evidence.
+- Keep generated audio explicitly labeled, user-started, volume-adjustable and stoppable. Handle unavailable/blocked audio with the static event/parameter evidence task. A structural event description gives useful access to the timing comparison; it does not duplicate the experience of hearing or prove an expressive effect. Reduced-motion mode can retain event focus without a moving playhead.
+
+## Provenance and reuse
+
+The proposal copies no Carnegie repertoire, recording, score, lyrics, photograph or worksheet. Link/attribute the teaching source and use independently authored wording. Record the phrase/event authoring process, exact notation and synthesis code/version, waveform/envelope settings and the applicable repository licence. “No third-party samples” should be a factual dependency check, not a substitute for documenting provenance. If the phrase or notation is AI-generated, identify that honestly; do not invent a human composer, performer release or legally assured exclusive copyright. Browser oscillators create a generated stimulus without a sample recording or performer. Any later human performance, sampled instrument or external media requires its own asset/performer rights record. This is a bounded prototype evidence review, not legal clearance for public distribution.
+
+## Decisions and retained observations
+
+- Teaching-source relevance and brief's source boundary: **passed**.
+- Bounded instructional design: **suitable to implement with the two precision repairs above**; no implemented content/behavior pass is claimed yet.
+- Proposed text-only source use and original synthesis provenance approach: **suitable for prototype**, conditional on the actual asset/provenance record; no external asset licence is inferred.
+- Performer/educator perceptibility and pedagogical-meaning review: **not performed; keep open**.
+- Formative learner evidence/interpretation observation: **not performed; keep open**.
+- Actual keyboard/audio/timing/accessibility and no-audio/reduced-motion behavior: **not performed; verify on the implemented candidate**.
+
+No browser was launched, no repository file was edited, no other chat was contacted and no nested agent was used. This report is not a receipt for an exact implemented artifact. Once the phrase, parameters, rights record and code exist, bind the independent recheck to their actual content/artifact digests.

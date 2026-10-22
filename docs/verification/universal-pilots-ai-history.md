@@ -163,3 +163,22 @@ Independently recomputed final hashes:
 - Artifact: `c002df87d23466b1bcfafea21f67a2db7a294dc2b4118b7aaf701220210b8033`.
 
 Scoped AI **content / provenance / rights: passed** for this exact history artifact. The rights conclusion remains limited to the documented text-only US local prototype, without legal/professional or wider-release clearance. Screen-reader/learner sessions remain unperformed, with no fabricated observation. No browser, source retrieval or repository edit was performed for this recheck.
+
+
+---
+
+# History recheck after studio additions
+
+Date: 2026-10-22. Reviewer: atlas-ai-history-review, independent AI source/context and conceptual-model reviewer. No practitioner, historian, lawyer or accessibility-observer credential is asserted.
+
+I inspected the final shared code relevant to this candidate, the current JSON and refreshed HTML. I independently recomputed canonical SHA-256 using a separately written serializer, actual bytes of all thirteen builder-listed files and actual related collection labels. The hashes match the supplied candidate digest file. In-memory rendering exactly matches the supplied review HTML; selected-text hashes and visible review-limitations text also match. No browser, repository edit, source retrieval, other-chat contact or nested reviewer was used.
+
+- ID/revision: x-history-0001 / 0.1.2.
+- Content digest: `f1ad96959e069d4f3896063e82bd8468eb3241749096e856a514631e721b72af`.
+- Artifact digest: `451251379199fcc10fda552dc6e27c227fc87b0b4e986a6d9ae17da84e4c37ec`.
+
+## Findings and decisions
+
+No required repair found for the bounded history review. History content digest is unchanged from the already checked revision 0.1.2. Thus the source/passage selections, quotations, source/reuse metadata, answer guides, context, dates and task remain identical. The new studio method branches and performance WAV metadata do not replace the history source-comparison branch. The refreshed static page retains the quotation/context distinction, source and reuse details, source-dependence warning, missing Mexican reply/causal-chain limits, original newspaper-transfer task and disclosure of unperformed human sessions. Table-layout changes do not alter those historical claims.
+
+This report supplements the prior independent NARA body checks and /tmp/atlas-history-methods-recheck.md; it does not assert new remote verification. Scoped AI **content / provenance / prototype-rights: passed** for these exact hashes. Rights remain limited to the documented short-text US local prototype assessment. No historian/lawyer clearance, public-distribution approval, screen-reader or learner observation is asserted.

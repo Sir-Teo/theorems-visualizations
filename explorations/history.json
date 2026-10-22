@@ -175,6 +175,48 @@
       "artifactDigest": "c002df87d23466b1bcfafea21f67a2db7a294dc2b4118b7aaf701220210b8033",
       "evidencePath": "docs/verification/universal-pilots-ai-history.md",
       "reviewedOn": "2026-10-22"
+    },
+    {
+      "dimension": "content",
+      "result": "passed",
+      "reviewer": {
+        "id": "history_review",
+        "role": "Independent AI history/provenance and scoped prototype-rights reviewer",
+        "independent": true
+      },
+      "revision": "0.1.2",
+      "contentDigest": "f1ad96959e069d4f3896063e82bd8468eb3241749096e856a514631e721b72af",
+      "artifactDigest": "451251379199fcc10fda552dc6e27c227fc87b0b4e986a6d9ae17da84e4c37ec",
+      "evidencePath": "docs/verification/universal-pilots-ai-history.md",
+      "reviewedOn": "2026-10-22"
+    },
+    {
+      "dimension": "provenance",
+      "result": "passed",
+      "reviewer": {
+        "id": "history_review",
+        "role": "Independent AI history/provenance and scoped prototype-rights reviewer",
+        "independent": true
+      },
+      "revision": "0.1.2",
+      "contentDigest": "f1ad96959e069d4f3896063e82bd8468eb3241749096e856a514631e721b72af",
+      "artifactDigest": "451251379199fcc10fda552dc6e27c227fc87b0b4e986a6d9ae17da84e4c37ec",
+      "evidencePath": "docs/verification/universal-pilots-ai-history.md",
+      "reviewedOn": "2026-10-22"
+    },
+    {
+      "dimension": "rights",
+      "result": "passed",
+      "reviewer": {
+        "id": "history_review",
+        "role": "Independent AI history/provenance and scoped prototype-rights reviewer",
+        "independent": true
+      },
+      "revision": "0.1.2",
+      "contentDigest": "f1ad96959e069d4f3896063e82bd8468eb3241749096e856a514631e721b72af",
+      "artifactDigest": "451251379199fcc10fda552dc6e27c227fc87b0b4e986a6d9ae17da84e4c37ec",
+      "evidencePath": "docs/verification/universal-pilots-ai-history.md",
+      "reviewedOn": "2026-10-22"
     }
   ],
   "extensions": {},

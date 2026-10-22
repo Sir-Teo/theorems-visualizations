@@ -201,3 +201,66 @@ test('new methods fit narrow layouts in both themes and enlarged text',async()=>
     }
   },{viewport:{width:320,height:900},colorScheme});
 });
+const craftPath='/labs/atlas/x-craft-0001/',performancePath='/labs/atlas/x-performance-0001/';
+test('weave controls preserve crossing identity, whole-strip repair and private saved work',async()=>run(async page=>{
+ await page.goto(base+craftPath);await page.locator('#row').selectOption('3');await page.locator('#column').selectOption('2');
+ assert.match(await page.locator('#crossing-readout').textContent(),/F3\/W2; screen column 2.*Warp W2 is visible/);
+ await page.locator('#view').selectOption('back');assert.match(await page.locator('#crossing-readout').textContent(),/F3\/W2; screen column 5.*Weft F3 is visible/);
+ await page.locator('#weave-error').focus();await page.keyboard.press('Enter');assert.match(await page.locator('#weave-diagnosis').textContent(),/1 crossings differ/);
+ await page.locator('#row').selectOption('4');await page.locator('#weave-error').click();assert.match(await page.locator('#weave-diagnosis').textContent(),/2 crossings differ/);
+ await page.locator('#weave-repair').focus();await page.keyboard.press('Enter');assert.match(await page.locator('#weave-diagnosis').textContent(),/1 crossings differ/);assert.match(await page.locator('#repair-history').textContent(),/F4/);
+ await page.locator('#step').selectOption('2');assert.equal(await page.locator('#weave-error').isDisabled(),true);assert.equal(await page.locator('#weave-repair').isDisabled(),true);
+ await page.locator('#notes').fill('PRIVATE making note');await page.reload();assert.equal(await page.locator('#view').inputValue(),'back');assert.equal(await page.locator('#step').inputValue(),'2');assert.equal(await page.locator('#notes').inputValue(),'PRIVATE making note');
+ await page.locator('#share').click();const url=await page.locator('#share-url').inputValue();assert.ok(url.includes('view=back')&&url.includes('cells='));assert.ok(!url.includes('PRIVATE'));
+ await page.locator('#weave-restore').click();assert.match(await page.locator('#weave-diagnosis').textContent(),/0 crossings differ/);
+}));
+test('real native audio plays, pauses, resumes and stops the exact rendered replay region',async()=>run(async page=>{
+ await page.goto(base+performancePath);assert.equal(await page.locator('#phrase-player').getAttribute('src'),null);
+ await page.locator('#bpm').selectOption('120');await page.locator('#region').selectOption('first');await page.locator('#phrase-play').click();
+ await page.waitForFunction(()=>{const a=document.getElementById('phrase-player');return !a.paused&&a.currentTime>.2;});
+ assert.equal(await page.locator('#phrase-player').evaluate(a=>a.duration),2);
+ const before=await page.locator('#phrase-player').evaluate(a=>a.currentTime);await page.locator('#phrase-play').click();assert.ok(await page.locator('#phrase-player').evaluate(a=>a.currentTime)>=before);
+ await page.locator('#phrase-pause').click();const paused=await page.locator('#phrase-player').evaluate(a=>({paused:a.paused,time:a.currentTime}));assert.ok(paused.paused&&paused.time>.2);
+ await page.waitForTimeout(180);assert.ok(Math.abs(await page.locator('#phrase-player').evaluate(a=>a.currentTime)-paused.time)<.01);
+ await page.locator('#phrase-play').click();await page.waitForFunction(t=>document.getElementById('phrase-player').currentTime>t+.1,paused.time);
+ await page.locator('#phrase-stop').click();assert.equal(await page.locator('#phrase-player').evaluate(a=>a.paused),true);assert.equal(await page.locator('#playback-position').getAttribute('data-beat'),'0');
+ await page.locator('#region').selectOption('second');await page.locator('#phrase-play').click();await page.waitForFunction(()=>document.getElementById('phrase-player').ended);assert.equal(await page.locator('#playback-position').getAttribute('data-beat'),'8');assert.match(await page.locator('#playback-status').textContent(),/finished/);
+}));
+test('event seek, source changes and reset use media time without stale playback',async()=>run(async page=>{
+ await page.goto(base+performancePath);await page.locator('#event').selectOption('e7');await page.locator('#phrase-seek').click();
+ assert.equal(await page.locator('#playback-position').getAttribute('data-beat'),'5.5');await page.locator('#phrase-play').click();
+ await page.waitForFunction(()=>{const a=document.getElementById('phrase-player');return !a.paused&&a.currentTime>5.5*60/90;});
+ await page.locator('#version').selectOption('sustained');assert.equal(await page.locator('#phrase-player').evaluate(a=>a.paused),true);assert.equal(await page.locator('#phrase-player').getAttribute('src'),null);
+ await page.locator('#phrase-play').click();await page.waitForFunction(()=>!document.getElementById('phrase-player').paused);await page.locator('#volume').fill('0.1');assert.equal(await page.locator('#phrase-player').evaluate(a=>a.volume),.1);
+ await page.locator('#bpm').selectOption('120');assert.equal(await page.locator('#phrase-player').evaluate(a=>a.paused),true);
+ await page.locator('#reset').click();await page.locator('#phrase-play').click();await page.waitForFunction(()=>!document.getElementById('phrase-player').paused);await page.locator('#reset').click();assert.equal(await page.locator('#phrase-player').evaluate(a=>a.paused),true);assert.equal(await page.locator('#playback-position').getAttribute('data-beat'),'0');
+}));
+test('blocked audio and stale play promises leave honest, usable text alternatives',async()=>run(async page=>{
+ await page.addInitScript(()=>{HTMLMediaElement.prototype.play=()=>Promise.reject(new DOMException('Blocked for test','NotAllowedError'));});
+ await page.goto(base+performancePath);await page.locator('#phrase-play').click();await page.waitForFunction(()=>document.getElementById('playback-status').textContent.includes('could not start'));
+ assert.equal(await page.locator('#event-table tbody tr').count(),9);
+ await page.evaluate(()=>{HTMLMediaElement.prototype.play=()=>new Promise(resolve=>{window.resolvePlay=resolve;});});
+ await page.locator('#phrase-play').click();await page.locator('#region').selectOption('second');await page.evaluate(()=>window.resolvePlay());assert.match(await page.locator('#playback-status').textContent(),/Stopped/);assert.equal(await page.locator('#phrase-player').evaluate(a=>a.paused),true);
+}));
+test('WAV download retains exact provenance and pending terms without sharing private notes',async()=>run(async page=>{
+ await page.goto(base+performancePath);await page.locator('#version').selectOption('sustained');await page.locator('#bpm').selectOption('120');await page.locator('#region').selectOption('second');await page.locator('#notes').fill('PRIVATE listener note');
+ const pending=page.waitForEvent('download');await page.locator('#phrase-download').click();const download=await pending,bytes=await readFile(await download.path()),offset=44+bytes.readUInt32LE(40),length=bytes.readUInt32LE(offset+16);
+ assert.equal(bytes.subarray(0,4).toString(),'RIFF');assert.equal(bytes.readUInt32LE(40),96000*2);assert.equal(bytes.subarray(offset+8,offset+16).toString(),'INFOICMT');
+ const meta=JSON.parse(bytes.subarray(offset+20,offset+20+length-1).toString());assert.equal(meta.events.length,9);assert.equal(meta.selection.region,'second');assert.equal(meta.synthesis.frequencyHz,440);assert.equal(meta.assetRights.status,'local-draft');assert.ok(!JSON.stringify(meta).includes('PRIVATE'));
+ await page.locator('#share').click();assert.ok(!(await page.locator('#share-url').inputValue()).includes('PRIVATE'));await page.reload();assert.equal(await page.locator('#notes').inputValue(),'PRIVATE listener note');assert.equal(await page.locator('#phrase-player').getAttribute('src'),null);
+}));
+test('studio static alternatives expose all seven stages and both full event tables',async()=>run(async page=>{
+ await page.goto(base+craftPath);await page.locator('.static-guide summary').click();assert.equal(await page.locator('.static-guide section').count(),7);assert.equal(await page.locator('#weave-table tbody tr').count(),6);
+ await page.goto(base+performancePath);await page.locator('.static-guide summary').click();assert.equal(await page.locator('.static-guide tbody tr').count(),18);assert.match(await page.locator('.static-guide').textContent(),/does not reproduce hearing/);
+},{javaScriptEnabled:false}));
+test('studio diagrams remain keyboard scrollable and readable at narrow widths and enlarged text',async()=>{
+ for(const width of [1280,320])for(const colorScheme of ['light','dark'])await run(async page=>{
+  for(const [slug,diagram] of [['craft','weave'],['performance','phrase']]){
+   await page.goto(base+'/labs/atlas/x-'+slug+'-0001/');await page.locator('#notes').waitFor();const figure=page.locator('#'+diagram+'-diagram');await figure.scrollIntoViewIfNeeded();
+   if(slug==='performance')assert.ok((await page.locator('#event-table th').first().boundingBox()).height<100);
+   if(width===320){assert.ok(await figure.evaluate(el=>el.scrollWidth>el.clientWidth));await figure.focus();await page.keyboard.press('ArrowRight');await page.waitForFunction(id=>document.getElementById(id).scrollLeft>0,diagram+'-diagram');}
+   assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth),false);await page.screenshot({path:shots+'/'+slug+'-'+width+'-'+colorScheme+'.png'});
+   await page.addStyleTag({content:'html{font-size:200%} body{font-size:32px}'});assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth),false);
+  }
+ },{viewport:{width,height:900},colorScheme});
+});

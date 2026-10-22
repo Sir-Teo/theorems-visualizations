@@ -508,13 +508,14 @@
       "access": {
         "status": "body-read",
         "checkedOn": "2026-10-22",
-        "scope": "Named passage or section only; not a whole-work verification."
+        "scope": "Weaving section body re-read for plain-weave over-one/under-one description and appearance affected by thread/material properties; no whole-site or image licence review."
       },
       "rights": {
         "plan": "Reference technical description only. Website photographs and diagrams are not licensed for reuse by this receipt."
       },
       "findings": [
-        "Alternating warp/weft construction supports a generic paper exercise; no claim of a unique cultural origin."
+        "Alternating warp/weft construction supports a generic paper exercise; no claim of a unique cultural origin.",
+        "Generic structure does not establish a unique cultural origin or a whole situated craft tradition. Front/back projection and whole-strip repair are original model decisions checked separately; no physical sample observation is supplied by the webpage."
       ]
     },
     {
@@ -525,13 +526,14 @@
       "access": {
         "status": "body-read",
         "checkedOn": "2026-10-22",
-        "scope": "Named passage or section only; not a whole-work verification."
+        "scope": "Body sections on tempo, dynamics, articulation and comparing expressive choices re-read; no score, recording or worksheet imported."
       },
       "rights": {
         "plan": "Reference teaching approach only; do not copy recordings, scores or assume a worksheet licence covers all website media."
       },
       "findings": [
-        "Supports comparison of expressive choices, not a universal mapping from musical parameters to emotion."
+        "Supports comparison of expressive choices, not a universal mapping from musical parameters to emotion.",
+        "The original nine-event/eight-beat sine-tone stimulus is an atlas design, not a Carnegie Hall composition. Equal frequency and peak gain do not establish equal perceived loudness, timbre or energy. Performer/learner response remains unobserved."
       ]
     },
     {

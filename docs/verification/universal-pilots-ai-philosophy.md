@@ -75,3 +75,31 @@ Current changed code hashes:
 - explorations/method-ui.mjs 1b91c76229f4628cd8262618f75e69723d3eec59d7cf8bae10abca5dc098f84a
 
 Final scoped decisions at this current exact hash: **content passed; provenance passed; bounded local-prototype rights passed; argument-learning desk review passed**. No blocking finding. All prior professional-specialist, original-language, human-session and publication limitations remain. This section supersedes prior artifact hashes for current acceptance.
+
+
+---
+
+# P03 shared studio bundle regression recheck — 2026-10-22
+
+Reviewer: ai-philosophy-source-review, independent AI source/context reviewer. Read-only repository review; no browser, source retrieval, specialist recruitment or human-session observation. This recheck extends the source evidence and bounded decisions in /tmp/atlas-p03-source-review.md and /tmp/atlas-p03-artifact-review.md to the current shared code bundle. It does not independently approve the new craft/performance pilots.
+
+Artifact: x-philosophy-0001, revision0.1.0.
+
+Independently recomputed content digest: **57c5cbf2d12cfce4e28395bbd2c929907572aba49c371c9000de03ee7c2c172e**.
+
+Independently recomputed artifact digest: **be1f4628813b985cefebd7efcec4307c39f650150f125b15ff1ff5517650db5e**.
+
+Both match /tmp/atlas-studio-digests.json. I used a separate Python canonical JSON/hash implementation, hashing all thirteen current bound code files and actual related collection titles (phil Philosophy & Reasoning; logic Logic & Foundations; game Game Theory & Social Choice). Full independently computed code hashes are in /tmp/atlas-studio-philosophy-hashes.json. Authoritative git show04d3ec62:explorations/philosophy.json compared against current JSON proves all authored content unchanged after excluding only reviews/status/publication. Source/passages/context/rights/activity and reader-facing limitations remain unchanged.
+
+Inspected shared diff from04d3ec62 and new imported modules. New methods dispatch by weave-structure/phrase-comparison; argument-map validation, normalization, model assessment and render branch retain prior behavior. New studio UI dispatch returns without DOM/audio activity for argument-map; its module-level transport declaration does not start media. Imported practice/performance models have function/constant definitions and no source fetch or browser/media initialization at import. New acceptance restrictions apply only to craft and performance. Added style selectors target studio diagrams/event tables, absent from P03. The renderer’s supplemental-reference change is whitespace only.
+
+Current candidate /tmp/atlas-studio-review-pages/x-philosophy-0001.html equals a fresh renderExploration result byte-for-byte using the current record and runtime collection titles. Its source quotation, edition/context labels, complete editorial reconstructions, objections and reuse limitations remain present. Direct Node checks of two guides × three actions (quiet perspective) preserve six model/state URL roundtrips and example-premise feedback without truth, moral-necessity or logical-validity scoring.
+
+Decisions at these exact hashes:
+
+- **content: passed**, bounded AI English-source fidelity and editorial-argument review. No source, interpretation or tradition-equivalence regression.
+- **provenance: passed**, bounded edition/locator/context review. Legge XV.XXIII, bounded Eno15.24 correspondence, WEB Classic2020, supplemental distinctions and English-only limits remain.
+- **rights: passed for declared local prototype scope only**, unchanged short quotations and original editorial exercise. No source assets, additional text, altered WEB wording or broadened Legge worldwide-distribution claim is introduced.
+- **argument-learning desk check: passed**, no scoring or invented observed learning effect.
+
+No blocking finding. Prior limitations remain: no professional specialist, Chinese/Greek verification, screen-reader or learner session has been performed; no legal advice, public release or worldwide full-text redistribution clearance is claimed. Previously recorded source retrieval stops remain binding and were not revisited. Acceptance receipts must reference the current exact artifact digest; this report does not waive stale-review enforcement.

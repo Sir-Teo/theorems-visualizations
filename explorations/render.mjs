@@ -60,7 +60,7 @@ export function renderExploration(r, collectionTitles = {}) {
     <section class="context"><h2>What this exploration can establish</h2>${list(r.context)}
 ${r.timeline.length ? '<ol class="timeline">' + r.timeline.map(t => `<li><strong>${esc(t.date)}</strong><span>${esc(t.event)}</span><small>${esc(t.precision)} precision</small></li>`).join('') + '</ol>' : ''}
     </section>
-    ${r.sources.some(s => !r.passages.some(p => p.sourceId === s.id)) ? '<details><summary>Supplemental research and rights references</summary>' + r.sources.filter(s => !r.passages.some(p => p.sourceId === s.id)).map(s => `<p><a href="${esc(s.url)}">${esc(s.title)}</a> — ${esc(s.locator)}. ${esc(s.rights.scope)}</p>`).join('') + '</details>' : ''}
+${r.sources.some(s => !r.passages.some(p => p.sourceId === s.id)) ? '<details><summary>Supplemental research and rights references</summary>' + r.sources.filter(s => !r.passages.some(p => p.sourceId === s.id)).map(s => `<p><a href="${esc(s.url)}">${esc(s.title)}</a> — ${esc(s.locator)}. ${esc(s.rights.scope)}</p>`).join('') + '</details>' : ''}
     <section class="activity" aria-labelledby="activity-heading"><div class="section-heading"><span>02</span><h2 id="activity-heading">Explore the evidence</h2></div>
     <noscript><p>The source text, comparison guides and transfer task work without JavaScript. Use the guides below and write your notes separately.</p></noscript>
     ${activity(r)}<div class="interactive notes" hidden><label for="notes">Your evidence and explanation</label>

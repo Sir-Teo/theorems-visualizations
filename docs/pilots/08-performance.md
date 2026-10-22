@@ -1,8 +1,8 @@
 # P08 · One eight-beat phrase, two interpretations
 
-**Research brief · 2026-10-22 · D26 / D27 · researched, not authored or accepted.**
+**Research brief · 2026-10-22 · D26 / D27 · authored generated-audio prototype; performer/access/learning and release checks open.**
 
-Create one original short percussion phrase and compare two deliberately different interpretations. Readers identify an audible or visible choice, locate evidence in time, and explain a possible expressive effect. This is a narrow music-and-movement exercise, not coverage of theatre, dance, film or global performance traditions.
+The first prototype uses one original sine-tone event phrase and compares two tone durations. This narrows the earlier percussion proposal to a sample-free generated stimulus; it does not claim to demonstrate a human percussion technique. Readers identify an audible or visible choice, locate evidence in time, and explain a possible expressive effect. This is a narrow music-and-movement exercise, not coverage of theatre, dance, film or global performance traditions.
 
 ## Source and design boundary
 
@@ -34,9 +34,9 @@ Playback is user-started, with keyboard play/pause/stop, volume, replay region a
 
 ## Rights, review and next steps
 
-Compose the phrase and create its notation and generated sound specifically for the atlas. Record author, licence, synthesizer/sample provenance and any performer releases. Prefer synthesis without third-party samples. No audio/video assets currently exist; acquisition and verification are explicit U2 work.
+Compose the phrase and create its notation and generated sound specifically for the atlas. Record author, licence, synthesizer/sample provenance and any performer releases. Prefer synthesis without third-party samples. Original event diagrams and locally generated mono PCM audio now exist. Nine onsets span eight beats; short/sustained gates are 0.12/0.42 beats, with separate 60/90/120 BPM controls. Frequency, waveform and peak gain remain fixed; perceived loudness, timbre and total energy do not. WAV exports carry exact events, settings, renderer version/formula and pending terms in embedded JSON; private notes are excluded. No human recording or video exists. See the [source/design review](research/performance-source-review.md) and [release proposal](research/studio-original-assets.md).
 
-**Review roles:** performer/music educator, accessibility reviewer with media experience, and movement specialist if a movement assessment is added; all unassigned. Before authoring: freeze the phrase, variables, event representation and asset licence. Before acceptance: native playback checks, timing checks, independent performance review and reader observation.
+**Review roles:** performer/music educator, accessibility reviewer with media experience, and movement specialist if a movement assessment is added; all unassigned. The phrase, variables and event representation are implemented under the user’s instruction to proceed. Public-release terms remain proposed rather than granted. Engineering timing and native-playback checks are recorded in the [studio checkpoint](../verification/universal-pilots-studio.md). Before full acceptance: performer/educator review, access/task observation and scoped release approval. The [session packet](research/performance-session.md) specifies evidence still needed; no session or outreach is implied.
 
 **Existing connections:** `music`, `waves` and `art` are optional related routes. Do not edit existing music lessons or source-audit files to launch this pilot.
 

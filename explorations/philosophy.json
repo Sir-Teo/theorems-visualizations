@@ -237,6 +237,48 @@
       "artifactDigest": "b39627902223f674aa87adc4bcfbf9bd463d96e39db42fd074445e03452c74f1",
       "evidencePath": "docs/verification/universal-pilots-ai-philosophy.md",
       "reviewedOn": "2026-10-22"
+    },
+    {
+      "dimension": "content",
+      "result": "passed",
+      "reviewer": {
+        "id": "philosophy_source_review",
+        "role": "Independent AI source-context and scoped prototype-rights reviewer",
+        "independent": true
+      },
+      "revision": "0.1.0",
+      "contentDigest": "57c5cbf2d12cfce4e28395bbd2c929907572aba49c371c9000de03ee7c2c172e",
+      "artifactDigest": "be1f4628813b985cefebd7efcec4307c39f650150f125b15ff1ff5517650db5e",
+      "evidencePath": "docs/verification/universal-pilots-ai-philosophy.md",
+      "reviewedOn": "2026-10-22"
+    },
+    {
+      "dimension": "provenance",
+      "result": "passed",
+      "reviewer": {
+        "id": "philosophy_source_review",
+        "role": "Independent AI source-context and scoped prototype-rights reviewer",
+        "independent": true
+      },
+      "revision": "0.1.0",
+      "contentDigest": "57c5cbf2d12cfce4e28395bbd2c929907572aba49c371c9000de03ee7c2c172e",
+      "artifactDigest": "be1f4628813b985cefebd7efcec4307c39f650150f125b15ff1ff5517650db5e",
+      "evidencePath": "docs/verification/universal-pilots-ai-philosophy.md",
+      "reviewedOn": "2026-10-22"
+    },
+    {
+      "dimension": "rights",
+      "result": "passed",
+      "reviewer": {
+        "id": "philosophy_source_review",
+        "role": "Independent AI source-context and scoped prototype-rights reviewer",
+        "independent": true
+      },
+      "revision": "0.1.0",
+      "contentDigest": "57c5cbf2d12cfce4e28395bbd2c929907572aba49c371c9000de03ee7c2c172e",
+      "artifactDigest": "be1f4628813b985cefebd7efcec4307c39f650150f125b15ff1ff5517650db5e",
+      "evidencePath": "docs/verification/universal-pilots-ai-philosophy.md",
+      "reviewedOn": "2026-10-22"
     }
   ],
   "reviewRequirements": [

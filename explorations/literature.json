@@ -175,6 +175,48 @@
       "artifactDigest": "04a0e3d355997fe2c55a8af73d3c707c2aefdb51915a83e7cf66403cc6609e95",
       "evidencePath": "docs/verification/universal-pilots-ai-literature.md",
       "reviewedOn": "2026-10-22"
+    },
+    {
+      "dimension": "content",
+      "result": "passed",
+      "reviewer": {
+        "id": "literature_review",
+        "role": "Independent AI textual/English-language and scoped prototype-rights reviewer",
+        "independent": true
+      },
+      "revision": "0.1.2",
+      "contentDigest": "f19e81195af44e606595a8d44c7ad16487e29bddbb30ed510e240c0c28416f95",
+      "artifactDigest": "9a7cc8ac0bc6b2cb9df513f40738baf8283c9604cc55a7698c79f1bbcf269b74",
+      "evidencePath": "docs/verification/universal-pilots-ai-literature.md",
+      "reviewedOn": "2026-10-22"
+    },
+    {
+      "dimension": "language",
+      "result": "passed",
+      "reviewer": {
+        "id": "literature_review",
+        "role": "Independent AI textual/English-language and scoped prototype-rights reviewer",
+        "independent": true
+      },
+      "revision": "0.1.2",
+      "contentDigest": "f19e81195af44e606595a8d44c7ad16487e29bddbb30ed510e240c0c28416f95",
+      "artifactDigest": "9a7cc8ac0bc6b2cb9df513f40738baf8283c9604cc55a7698c79f1bbcf269b74",
+      "evidencePath": "docs/verification/universal-pilots-ai-literature.md",
+      "reviewedOn": "2026-10-22"
+    },
+    {
+      "dimension": "rights",
+      "result": "passed",
+      "reviewer": {
+        "id": "literature_review",
+        "role": "Independent AI textual/English-language and scoped prototype-rights reviewer",
+        "independent": true
+      },
+      "revision": "0.1.2",
+      "contentDigest": "f19e81195af44e606595a8d44c7ad16487e29bddbb30ed510e240c0c28416f95",
+      "artifactDigest": "9a7cc8ac0bc6b2cb9df513f40738baf8283c9604cc55a7698c79f1bbcf269b74",
+      "evidencePath": "docs/verification/universal-pilots-ai-literature.md",
+      "reviewedOn": "2026-10-22"
     }
   ],
   "extensions": {},

@@ -4,7 +4,7 @@ Updated 2026-10-22. The active goal is **“do all”**. It covers the complete 
 
 ## Current checkpoint
 
-Four local explorations have exact-content and exact-artifact AI review receipts: P01 history and P02 literature at 0.1.2; P03 philosophy and P05 agriculture at 0.1.0. These are reviewed local previews, not published production content or professional/human acceptance. Their canonical JSON and generated pages are in the explicit integration manifest. The two-unaccepted-draft limit remains.
+Four local explorations have exact-content and exact-artifact AI review receipts: P01 history and P02 literature at 0.1.2; P03 philosophy and P05 agriculture at 0.1.0. These are reviewed local previews, not published production content or professional/human acceptance. Their canonical JSON and generated pages are in the explicit integration manifest. P07/P08 now add two unaccepted digital prototypes; they occupy both draft slots. The two-unaccepted-draft limit remains.
 
 P03 resolves the Legge/Eno English locator crosswalk, retains textual/theological context and exposes editorial premises through an ordered argument list. P05 preserves every selected source row, duplicate magnitudes, qualified units and instrument labels; measured observations and the synthetic storage model are separate. See [method verification](verification/universal-pilots-methods.md).
 
@@ -13,7 +13,7 @@ P03 resolves the Legge/Eno English locator crosswalk, retains textual/theologica
 | Stage | Concrete next work | Evidence required before marking it delivered |
 | --- | --- | --- |
 | U1 classification stewardship | Review 79 explicit review-needed dispositions; research genuinely uncovered domains | Exact selected classification editions, supported mappings or retained exclusions; no invented completeness percentage |
-| U2 next method batch | P07 plain weave and P08 performance: create original instructional assets, formalize practice/performance state, build and independently review | Source-specific rights, exact artifacts, keyboard/text alternatives, clearly labeled synthetic media; physical reproduction and performer/learner observations remain unclaimed until observed |
+| U2 next method batch | P07 plain weave and P08 performance: digital models, original schematics/generated audio and engineering review delivered; execute real physical/performer/access/learning packets and resolve public-release terms | See studio checkpoint for exact AI/engineering scope; real physical reproduction, practitioner/performer and learner/access observations plus release decision remain open |
 | U2 professions | P04 legal case and P06 breathing/care: resolve documented source/snapshot conflicts, build bounded cases and professional review packets | Qualified legal/clinical approval for claims requiring it; AI desk review does not impersonate those roles |
 | U3 production integration | Opt-in loading, evidence/review UI, public static routes and aliases, explicit withdrawal and note migration | Latest accepted production base; legacy IDs, dependencies, links, saved states and embeds preserved; draft exclusion; release-specific rights |
 | U3 domain orientation | Research and author 30 scoped overviews | Sources, exclusions, essential questions, place/language/practice gaps and a real next step per domain |

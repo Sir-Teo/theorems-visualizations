@@ -1,6 +1,6 @@
 # Eight researched pilot briefs
 
-**October 22, 2026 · U1 contract delivered; P01/P02/P03/P05 locally reviewed; full roadmap active.**
+**October 22, 2026 · U1 contract delivered; four locally reviewed pilots plus P07/P08 digital prototypes; full roadmap active.**
 
 These pilots test source comparison, close reading, argument, legal cases, measured data, physiological explanation, physical practice and performance. Each brief specifies an audience, concrete task, inspectable state, source boundaries, rights plan, accessible route, acceptance checks and a proposed three-lesson sequence. The follow-up lessons are proposals, not 24 completed research briefs.
 
@@ -12,14 +12,14 @@ These pilots test source comparison, close reading, argument, legal cases, measu
 | [P04 Law](04-law.md) | Faulty kettle in England and Wales | Freeze a verified legal snapshot and have a qualified reviewer approve the branches |
 | [P05 Agriculture](05-agriculture.md) | Soil-water observations versus a synthetic storage model | Locally reviewed 0.1.0; all 278 rows checked; soil-scientist and human observations open for wider release |
 | [P06 Health and care](06-health.md) | Breathing mechanics and counted cycles | Resolve source conflict and obtain clinician approval of the observation rubric |
-| [P07 Craft](07-craft.md) | Make and repair a paper plain weave | Create original demonstrations and independently reproduce the physical task |
-| [P08 Performance](08-performance.md) | One original phrase, two interpretations | Create/licence the phrase and playback, and review expressive and access tasks |
+| [P07 Craft](07-craft.md) | Make and repair a paper plain weave | Digital weave model and seven schematic stages implemented; real demonstration/reproduction remain open |
+| [P08 Performance](08-performance.md) | One original phrase, two interpretations | Original generated phrase, native playback and provenance export implemented; performer/access/release checks remain open |
 
 The [machine-readable records](pilots.json) connect these briefs to the [coverage registry](../coverage/registry.json) and [45 source receipts](../coverage/sources.json). Exact accepted-item prerequisites are intentionally empty: the listed existing collections are related routes pending item selection. No fabricated dependency edges are added.
 
 ## Research conclusions that affect the designs
 
-The history pair is dependent evidence, so the task tests that limitation. The initial Japanese reference record is a discovery lead; the prototype now uses a named Koto City display transcription, without claiming a historical manuscript witness. Legge XV.XXIII is cross-referenced to Eno 15.24 in the named English editions only. The law page's October 21 effective-change statement is distinct from the October 22 reading date. Soil density metadata and conductivity flags constrain the data subset. A nursing textbook's diaphragm description conflicts with the physiology sources and is excluded from that claim. Craft and performance require original assets and practical review before a credible lesson exists.
+The history pair is dependent evidence, so the task tests that limitation. The initial Japanese reference record is a discovery lead; the prototype now uses a named Koto City display transcription, without claiming a historical manuscript witness. Legge XV.XXIII is cross-referenced to Eno 15.24 in the named English editions only. The law page's October 21 effective-change statement is distinct from the October 22 reading date. Soil density metadata and conductivity flags constrain the data subset. A nursing textbook's diaphragm description conflicts with the physiology sources and is excluded from that claim. Craft and performance now have original digital assets; practical, perceptual and learner evidence remains required for their broader lesson claims.
 
 These findings are incorporated into the brief requirements. They are not reasons to discard the broader vision or to import unverified substitutes. Stopped sources and exact use limits stay in the receipts.
 
@@ -49,8 +49,8 @@ Validation is described in the [registry guide](../coverage/README.md). The [soi
 
 ## Current continuation
 
-Open the [four-pilot workshop](../../labs/atlas/index.html) through the local server. The [master-plan handoff](../master-plan-handoff.md) is the continuation entry point, with implementation status, exact checks, review gates and integration boundaries. Both unaccepted draft slots are now available; keep the two-draft limit for subsequent methods. See [source decisions](research/history-literature-resolution.md) and [verification](../verification/universal-pilots.md).
+Open the [six-pilot workshop](../../labs/atlas/index.html) through the local server. The [master-plan handoff](../master-plan-handoff.md) is the continuation entry point, with implementation status, exact checks, review gates and integration boundaries. P07/P08 occupy both unaccepted draft slots. Continue independent classification/orientation/integration research and professional review preparation while their real-world checks remain open; do not start a third unaccepted lesson or fabricate a pass. See [source decisions](research/history-literature-resolution.md) and [verification](../verification/universal-pilots.md).
 
 P01/P02 were revised to 0.1.1 after [author-led source/editorial/access review and repairs](../verification/universal-pilots-review.md). The [additive integration package](../integration/universal-pilots.md) has passed frozen-snapshot rehearsals. Three separate AI reviews and six scope-limited receipts are now recorded in the [current checkpoint](../verification/universal-pilots-integration.md). Source-registry reuse wording and review-digest binding defects were repaired and independently rechecked. P01/P02 now pass the revised declared requirements at 0.1.2. Human screen-reader/learner sessions were not performed; the user removed that gate and the limitation is visible. Public release remains separate.
 
-The current P03/P05 delivery and final shared-code rechecks are recorded in the [method checkpoint](../verification/universal-pilots-methods.md). P07/P08 are next. The [execution ledger](../master-plan-execution.md) retains every U0–U5 obligation; no batch closes the whole goal.
+The current P03/P05 delivery and final shared-code rechecks are recorded in the [method checkpoint](../verification/universal-pilots-methods.md). P07/P08 digital prototypes and remaining gates are recorded in the [studio checkpoint](../verification/universal-pilots-studio.md). The [execution ledger](../master-plan-execution.md) retains every U0–U5 obligation; no batch closes the whole goal.

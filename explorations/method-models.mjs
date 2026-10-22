@@ -1,5 +1,7 @@
+import {validatePractice, normalizeWeave} from './practice-model.mjs';
+import {validatePerformance, normalizePerformance} from './performance-model.mjs';
 // Shared pure logic for argument reconstruction and observed-data exploration.
-export const EXTRA_METHODS = ['argument-map', 'measured-data'];
+export const EXTRA_METHODS = ['argument-map', 'measured-data', 'weave-structure', 'phrase-comparison'];
 export const PREMISE_KINDS = ['interpretation', 'empirical-assumption', 'normative-addition'];
 const text = x => typeof x === 'string' && x.trim().length > 0;
 const id = x => typeof x === 'string' && /^[a-z][a-z0-9-]*$/.test(x);
@@ -44,6 +46,8 @@ export function validateMethod(a, passageIds, sourceIds) {
     }
     for (const s of d.selection.Sample_ID) check(d.rows.some(r => r.Sample_ID === s), 'sample without rows');
   }
+  if (a?.type === 'weave-structure') errors.push(...validatePractice(a));
+  if (a?.type === 'phrase-comparison') errors.push(...validatePerformance(a));
   return errors;
 }
 function numeric(raw, fallback, max) {
@@ -72,6 +76,8 @@ export function normalizeMethodState(record, raw) {
       point: String(rows.some(r => String(r.sourceRow) === String(raw.point)) ? raw.point : rows[0].sourceRow),
       upper: numeric(raw.upper, '0.3', 1), lower: numeric(raw.lower, '0.15', 1), depth: numeric(raw.depth, '0.4', 2) };
   }
+  if (a.type === 'weave-structure') return normalizeWeave(raw);
+  if (a.type === 'phrase-comparison') return normalizePerformance(a,raw);
   return {};
 }
 export function argumentAssessment(record, state) {

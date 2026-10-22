@@ -1,6 +1,6 @@
 # Argument and measured-data pilot checkpoint
 
-2026-10-22 · local preview only. The whole “do all” goal remains active; see the [execution ledger](../master-plan-execution.md).
+2026-10-22 · historical four-pilot checkpoint, local preview only. Current six-pilot hashes and status are in the [studio checkpoint](universal-pilots-studio.md). The whole “do all” goal remains active; see the [execution ledger](../master-plan-execution.md).
 
 ## Delivered behavior
 

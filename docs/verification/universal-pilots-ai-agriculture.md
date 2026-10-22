@@ -82,3 +82,45 @@ Scoped content, provenance and prototype-rights decisions remain **PASS** for th
 ### Correction: caption finding withdrawn
 
 The prior low-severity caption recommendation was incorrect and is withdrawn. Independently reread `explorations/method-ui.mjs` line26: its dynamic `plot-legend` text already ends “On a narrow screen, scroll the chart horizontally.” The current file SHA-256 is `1b91c76229f4628cd8262618f75e69723d3eec59d7cf8bae10abca5dc098f84a`, exactly matching the independently recorded file hash for artifact `e4a5eeec558a552bed8bb38c81825de88dfc3e882f5c974e15cac10e21452e6b`. Thus the issue was a reviewer reading error, not a subsequent fix or code change. Static and dynamic captions both preserve the instruction. All scoped PASS decisions remain unchanged, with no outstanding finding.
+
+
+---
+
+# P05 shared-artifact regression recheck · 2026-10-22
+
+Reviewer identity: `ai-p05-data-source-reviewer`; independent AI data/source reviewer. Read-only repository inspection and local pure-code execution; no browser, source retrieval, authored-file edits, other chats or nested reviewers. No soil-scientist qualification or human/professional observation is claimed.
+
+## Exact current artifact and decisions
+
+For `x-agriculture-0001` / P05 revision0.1.0:
+
+- Content digest **`d0f0f916bbed98c6abd120f748e1a4edd05e9496bc39c6dc3b56600eccdbac6d`**.
+- Artifact digest **`34a8ee3489077d0f5d3f31e698769cef43893855ecd03aee8bd6c4450b3f542f`**.
+- Candidate HTML SHA-256 `b9f9d5befb48e091e1947a30a7c1fe932d408a4927bb328c4d8deb2f51fa124b`.
+- Candidate path `/tmp/atlas-studio-review-pages/x-agriculture-0001.html` reproduces byte-for-byte from current record and collection titles.
+- **Bounded AI content: PASS. Provenance: PASS. Prototype rights: PASS. No outstanding finding.** These decisions retain the same limited local-prototype scope as the earlier independent full P05 review, not public-release or professional scientific approval.
+
+Independently recomputed content and complete13-file artifact digests with Node crypto and a separate recursive canonical serializer, without exported digest helpers. All current13 code-file hashes and related collection labels are recorded in `/tmp/atlas-studio-agriculture-hashes.json`. They match `/tmp/atlas-studio-digests.json`. P05 content is unchanged from accepted checkpoint04d3ec62; no P05 authored-file diff was present.
+
+## Regression scope and evidence
+
+Inspected diff from04d3ec62 for contract, route state, renderer, styles, shared method model/view/UI and builder, plus the new studio UI/view and model modules relevant to dispatch. The measured-data branch is unchanged. The new model validators and state normalization dispatch only for weave-structure/phrase-comparison. The new rendering fallback occurs after the existing measured-data return. New studio UI dispatch is called before existing method handling, but both functions do nothing for measured-data.
+
+Directly invoked applyStudio/connectStudio for P05 in Node with no DOM globals installed: both return without DOM access, listener setup, audio generation or transport calls. New imports initialize only function/constant definitions or an unset transport variable; they do not start performance audio or physical-practice behavior for P05. New CSS selectors target studio/phrase/event classes, absent from the P05 measured chart/table; existing measured-plot scrolling rules are unchanged. Shared renderer diff is whitespace only. New contract acceptance restrictions apply only to P07/P08 activity types.
+
+Repeated pure behavior checks:
+
+- Current P05 validation returns no errors.
+- Default state remains sampleUS-DFC_1_000, point2, no comparison, assumed fractions0.30/0.15 and depth0.40m.
+- Synthetic result remains60mm; measured rows are not inputs to this function.
+- Independently generated primary scatter groups remain102,93,83 for the three samples, totalling278 observations.
+- Reran the pinned source projection check: every retained source row/value/order remains exact, source SHA-256 `41308fba78d50d96152f40b85af43f45a9aed4d53e23568db483889c8ed744b1`.
+- Positive water-potential magnitude, qualified reported-water-content percent labels, raw decimal tables, duplicate-magnitude row identities, instrument1=WP4C/2=HyProp, no fitted/connecting curve, named scrollable chart and static/dynamic scrolling instruction remain unchanged.
+
+## Retained source and rights conclusions
+
+The earlier full review independently compared all278 authored records and all278 rendered table rows to the frozen source. The unchanged content and measured rendering logic preserve that evidence. Creators/title/version DOI10.5281/zenodo.18273606, CC BY4.0 declaration, pinned hash, sample/date distinctions and selection/projection/log10-transform attribution remain intact. No new external asset or data source was introduced into P05 by the studio bundle.
+
+Density and conductivity fields/calculations remain excluded. Metadata does not explicitly establish volume/volume for measured percent; the artifact retains qualified wording and makes no conversion of measured values into storage. Repeated measurements do not become independent field samples. The three-depth comparison is descriptive within plot1, not controlled causal inference or site representation. The separate synthetic60mm model remains an invented uniform-layer assumption, not field capacity, wilting point or irrigation advice.
+
+No new live remote access, measurement calibration, laboratory-protocol verification, uncertainty audit, representative sampling, actual screen-reader/learner observation or soil-science approval was performed. This is bounded regression evidence for existing local acceptance only; all publication limitations from the source/artifact review remain.

@@ -1,6 +1,6 @@
 # Additive exploration schema and URL contract
 
-**Decision record · version 1.0.0-draft · October 22, 2026.** Adopted for four local prototypes under the user's instruction to proceed. Production integration and public routes remain separate work.
+**Decision record · version 1.0.0-draft · October 22, 2026.** Adopted for six local prototypes under the user's instruction to proceed. Production integration and public routes remain separate work.
 
 The atlas can add source criticism and interpretation without renaming its 85 collections or altering a frozen chapter. New explorations live beside legacy content, with explicit evidence, rights and review records. A small static builder proves the contract before production loaders acquire new responsibilities.
 
@@ -23,7 +23,7 @@ For future legacy enrichment, use sidecar records keyed by the existing item ID.
 
 ## Executable record contract
 
-The [validator](../../explorations/contract.mjs) and [four real examples](../../explorations/manifest.json) define version 1. No second, untested JSON Schema is presented as authoritative.
+The [validator](../../explorations/contract.mjs) and [six real examples](../../explorations/manifest.json) define version 1. No second, untested JSON Schema is presented as authoritative.
 
 | Field group | Required meaning |
 | --- | --- |

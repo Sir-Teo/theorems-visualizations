@@ -1,10 +1,10 @@
 # Universal pilots: additive integration package
 
-**October 22, 2026 · local integration and declared review scope complete.**
+**October 22, 2026 · six local previews; scoped AI reviews recorded; real-world and release gates open.**
 
-The package is now applied on `codex/universal-pilots-integration` in the dedicated managed worktree. Read the [current checkpoint](../verification/universal-pilots-integration.md). The manifest contains 68 files, including five independent AI review roles and the whole-roadmap execution ledger; the master plan is reconciled separately with its exact accepted-base version archived.
+The package is now applied on `codex/universal-pilots-integration` in the dedicated managed worktree. Read the [current checkpoint](../verification/universal-pilots-integration.md). The manifest contains 85 files, including five independent AI review roles and the whole-roadmap execution ledger; the master plan is reconciled separately with its exact accepted-base version archived.
 
-The [package manifest](universal-pilots.json) names every file to carry. Four pilots are accepted for local preview under declared bounded AI review: P01/P02 at 0.1.2, P03/P05 at 0.1.0. The [method checkpoint](../verification/universal-pilots-methods.md) records the latest changes and exact hashes. The [author review](../verification/universal-pilots-review.md) is preserved; the first pair’s independent AI findings, repairs and initial six scoped receipts are recorded in the [historical integration checkpoint](../verification/universal-pilots-integration.md). The user removed the mandatory screen-reader and learner-session check for P01/P02. Neither session was performed; both are disclosed as limitations. Professional credentials and public-distribution clearance are not claimed.
+The [package manifest](universal-pilots.json) names every file to carry. Four pilots are accepted for local preview under declared bounded AI review: P01/P02 at 0.1.2, P03/P05 at 0.1.0. Two further digital prototypes, P07/P08, remain in review. The [studio checkpoint](../verification/universal-pilots-studio.md) records the latest changes and exact hashes. The [author review](../verification/universal-pilots-review.md) is preserved; the first pair’s independent AI findings, repairs and initial six scoped receipts are recorded in the [historical integration checkpoint](../verification/universal-pilots-integration.md). The user removed the mandatory screen-reader and learner-session check for P01/P02. Neither session was performed; both are disclosed as limitations. Professional credentials and public-distribution clearance are not claimed.
 
 ## Rehearse without modifying an active checkout
 
@@ -45,4 +45,4 @@ Keep that allowlist boundary explicit. `noindex` is not privacy. A host that pub
 
 The first pair no longer occupies the unaccepted slots. Carry this reviewed local package at the normal integration boundary without writing over active Wave chats. Public loading and release remain separate U3 work; the next method pilots follow their own briefs.
 
-P03/P05 add source-linked argument reconstruction and measured-data inspection. Their specialist/human/publication gates remain explicit; see the current method checkpoint. Next method batch: P07/P08. The active goal still covers the full master-plan execution ledger.
+P03/P05 add source-linked argument reconstruction and measured-data inspection. Their specialist/human/publication gates remain explicit; see the current method checkpoint. P07/P08 now have reviewed digital structure and generated media, with physical/performer/access/learning and release gates still open. Both unaccepted slots are occupied; independent U1/U3 work can proceed. The active goal still covers the full master-plan execution ledger.

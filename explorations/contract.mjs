@@ -127,6 +127,8 @@ export function validateExploration(r, { domainIds, collectionIds, sourceIds, kn
     check(/^\d+\.\d+\.\d+$/.test(review.revision) && /^[a-f0-9]{64}$/.test(review.contentDigest || '') && /^[a-f0-9]{64}$/.test(review.artifactDigest || ''), 'review version/digests missing');
   }
   if (r.status === 'accepted') {
+    check(a?.type !== 'weave-structure', 'P07 physical evidence and asset contract remain unimplemented; structural review cannot accept the full craft pilot');
+    check(a?.type !== 'phrase-comparison' || a.assetRights?.status !== 'local-draft', 'P08 release terms and declared observations remain open; keep this prototype unaccepted');
     for (const dimension of r.reviewRequirements) {
       const latest = r.reviews.filter(x => x?.dimension === dimension).at(-1);
       check(latest?.result === 'passed', 'acceptance missing review: ' + dimension);

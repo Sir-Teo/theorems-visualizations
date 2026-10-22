@@ -18,6 +18,14 @@
     {
       "id": "x-agriculture-0001",
       "file": "agriculture.json"
+    },
+    {
+      "id": "x-craft-0001",
+      "file": "craft.json"
+    },
+    {
+      "id": "x-performance-0001",
+      "file": "performance.json"
     }
   ]
 }

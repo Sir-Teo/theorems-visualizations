@@ -159,3 +159,26 @@ Independently recomputed hashes using Node 22.23.3, a separate canonical seriali
 - Artifact digest: `04a0e3d355997fe2c55a8af73d3c707c2aefdb51915a83e7cf66403cc6609e95`.
 
 The recomputed values match the refreshed manifest; a canonical re-render exactly matches the refreshed review HTML. This section supersedes earlier artifact bindings for the current candidate while preserving their history. No actionable P02 defect found. **Content passed; language passed within English observations and Japanese boundary handling; prototype rights passed within selected-text US local use and asset exclusions.** All earlier professional/Japanese-source/legal/public-release limits remain. No actual screen-reader or learner observation is claimed. No browser, source retrieval, other-chat message, nested agent or repository edit occurred.
+
+
+---
+
+# P02 recheck after studio-method additions
+
+Date: 2026-10-22. Reviewer: separate Codex `literature_review` AI textual/English-language and scoped prototype-rights reviewer. No professional Japanese, legal or accessibility credential is claimed.
+
+Exact candidate: `x-literature-0001`, revision `0.1.2`, local-preview.
+Content digest: `f19e81195af44e606595a8d44c7ad16487e29bddbb30ed510e240c0c28416f95`.
+Artifact digest: `9a7cc8ac0bc6b2cb9df513f40738baf8283c9604cc55a7698c79f1bbcf269b74`.
+
+Independently recomputed both hashes with Node 22.23.3, a separate canonical serializer and `node:crypto`, current bound-file contents and collection titles. The values agree with the supplied studio manifest; canonical rendering exactly matches the refreshed literature review HTML. The literature diff since `e3b85eb1` contains appended review receipts only; authored text/source/activity/rights content remains unchanged, as its stable content digest confirms.
+
+Read the shared studio additions and refreshed static P02 output. Weave and phrase playback/provenance changes remain confined to their respective activity branches. The existing annotation path retains the selected quotations and their attribution, English number/order/punctuation guides, Japanese witness/interpretation limits, open-ended transfer task, private-note explanation and unperformed-session limitation. No new source/asset or perceptual claim appears in P02. No actionable defect found within this scope.
+
+For this exact current artifact:
+
+- **Content: passed** within the selected-text/source/edition and English comparison task scope.
+- **Language: passed** within observable English differences and honest handling of Japanese display limitations. No fresh Koto verification or original-language/specialist approval is asserted.
+- **Rights: passed** within the previously inspected selected historical texts for the text-only US local prototype and stated asset exclusions. No public/wider-territory or legal clearance is asserted.
+
+Earlier independent reports retain the source-inspection details. Koto's retrieval stop remains binding; no source request or workaround occurred. No browser, human learner/screen-reader observation, repository edit, other-chat message or nested agent was used. These bounded AI passes do not fabricate professional or observation-based approval.
