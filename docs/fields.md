@@ -48,6 +48,8 @@ an eigen-direction, an orthonormal frame, an ellipse's axes) with live numbers.
 
 ## Physics & astronomy, Earth & environment, engineering
 
+- Distinguish constant-power and constant-thrust flight models, exact finite glides and shallow-climb approximations. Fuel-weight coefficients require an engine convention; a braking-distance bound is not an unbraked rollout prediction. Retain the original small factors when evaluating near-ceiling roots. See the [aircraft-performance review](verification/wave5-aero-review.md).
+
 - Keep ideal resource flux, recoverable mechanical energy and converted electricity distinct. State single-disk hypotheses, wake-spacing conventions, regular versus spectral wave heights/periods, and annual harvest boundaries. An independent modern proof does not verify an unread original paper. See the [renewable-energy review](verification/wave5-energy-review.md).
 - Controller tuning rules require their stated plant, delay, filter and sampling assumptions. A modern relay or lambda example does not verify an unread historical tuning table. Integrate actual actuator/filter/history states and distinguish zero input from positive effects below numeric range. See the [PID review](verification/wave5-ctrl-review.md).
 - Torsion stress and torque must share the same evaluator and sign convention, including the selected radius. Closed-cell thin-wall and reentrant-wedge asymptotics have different hypotheses from solid circular shafts or finite-radius fillets. Preserve tiny original factors until final rounding. See the [torsion review](verification/wave5-solid-review.md).
@@ -194,6 +196,10 @@ an eigen-direction, an orthonormal frame, an ellipse's axes) with live numbers.
 - A case-control estimand depends on the control-sampling scheme. A finite sampled ratio need not equal its population target; incidence-density sampling does not require a rare-disease approximation. Preserve the original cohort strata and denominators instead of inventing a joint risk score from marginal tables. See the [study-design review](verification/wave5-epi-review.md).
 
 ## Economics & finance, social sciences
+
+- State information sets and conditioning events before applying Bayes or comparing insurance choices. Preserve complete maximizing sets at ties, validate every own array index and evaluate discounted flows without losing small original contributions. See the [uncertainty review](verification/wave5-micro-review.md).
+- Separate no-arbitrage identities from equilibrium or corporate-finance assumptions. Define settlement, borrowing and dividend conventions; a zero-price claim has no defined percentage return. Evaluate tiny forward, debt and parity quantities from original factors, and distinguish an independent proof from verification of an unread original. See the [finance review](verification/wave5-fin-review.md).
+- Distinguish finite network processes, branching limits and mean-field closures. Copied actions need their actual information history; an exact finite influence oracle does not prove a general approximation theorem. Near an unstable equilibrium, disclose amplification of binary64 roundoff and choose a default whose displayed path is meaningful. Finite haploid ancestry is not human pedigree ancestry. See the [diffusion review](verification/wave5-soc-review.md).
 
 - Distinguish a limiting equilibrium definition from a finite numerical diagnostic. Full trembling-hand perfection allows action-specific positive lower bounds tending to zero; one uniform family need not reach every perfect equilibrium, and proximity to its sample at a fixed epsilon proves neither limiting membership nor nonmembership. State the actual threshold and equality case in both caption and readout. See the [GAME peer](verification/game-two-input-independent-peer.md).
 
