@@ -28,6 +28,8 @@ tools to reach for. Read the section for your field before writing a chapter.
 
 ## Mathematics (book-anchored and curated)
 
+- Integrate compact wave data on its actual support. Retain original affine deficits before rounding, split narrow spatial and retarded-time caps, and distinguish a true support cutoff from a rounded zero. Resolve carrier phase at the selected frequency and disclose interpolation of a coarser amplitude grid. See the [wave review](verification/wave6-pde-review.md).
+
 - Surface-area refinement needs control of tangent directions; shrinking inscribed triangles alone can give the wrong area. Keep chart singularities, covering multiplicity and global orientation separate, and count the actual displayed quotient mesh. Near a right angle, preserve the original degree complement before conversion. Match every legend key to drawn ink. See the [surface review](verification/wave6-vcalc-review.md).
 
 - Finite shattering witnesses need a separate universal obstruction for a global VC claim. Classify strict risk events from the original population parameters before rounding, and keep exact large-frequency phase residues behind sine labels. Distinguish an expected uniform gap from its confidence conversion and preserve measurability and unread-source qualifications. See the [learning review](verification/wave6-ml-review.md).
