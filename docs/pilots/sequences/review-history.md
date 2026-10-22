@@ -56,3 +56,19 @@ This research-fidelity pass can be retained as independent AI desk evidence for 
 I inspected the updated bound files and refreshed the whole-file SHA-256 table above. P01-L02 now accurately says that the first lesson's human-session requirements were removed; no waiver mechanism is implied. This wording correction does not change the follow-up's own open preparation gates. The source-registry change concerns the Tagore header/preface attribution clues, outside this history-only substantive review; history receipts and their scoped observations remain consistent with the original review. README now links the three delivered reports and states that changed bound files need rechecking. The history briefs' substantive evidence/tasks and the queue's history planning states remain unchanged.
 
 The bounded independent AI research-fidelity pass remains valid for these refreshed exact file hashes. No new source retrieval, specialist or human acceptance, community mandate, runtime lesson or release clearance is claimed. This recheck edits only this review file.
+
+## Shared-package preservation recheck after research expansion
+
+Date: 2026-10-22. Comparison baseline: `e53546d0`. I performed a narrow local preservation/binding check without web retrieval or new subject review. Both P01 brief files are byte-identical to that baseline; the first nine source records are structurally identical, including all reviewed history receipts; and both P01 queue objects are unchanged. The expanded shared package contains 16 follow-ups: eight `researched-with-open-gates` and eight `research-proposal`, with 17 source receipts. Every queue item still has null runtime ID, `authored:false`, `accepted:false` and no accepted-item prerequisite edges. The README preserves research versus authored/accepted status distinctions.
+
+Current exact file-byte SHA-256 bindings (superseding earlier shared-file hashes for preservation only):
+
+| File | SHA-256 |
+| --- | --- |
+| p01-02-perspectives.md | `e1bba720b4646d9c941c341b6e68776eeaadd3c60d38702e9bd84ac2118d4049` |
+| p01-03-material-evidence.md | `6168a16f585a96fddf1d70944c8b1393abb57ede7aa0b58939f019c7d84a8fb0` |
+| sources.json | `daae4724054279706470d673f09a5c89c946e95d5d7af7d5abf731c37541f027` |
+| queue.json | `12bf7a87d5f388e367f279591008ad3cdcb8a4335fbd20f5442dcff3ba6cd1ad` |
+| README.md | `12504b8214ba1110601e4ab3933ae333bd65a3f5fc9651adbff350d1f41bdb0d` |
+
+The prior history-only substantive desk-review scope and open gates remain unchanged. This recheck does not review or approve the newly researched domains, create lessons, assert specialist/human/community acceptance or grant release clearance. Only this review file is modified.

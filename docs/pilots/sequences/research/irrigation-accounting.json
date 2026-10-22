@@ -1,0 +1,45 @@
+{
+  "schemaVersion": 1,
+  "scope": "Original fictional worked examples for P05-L02 research. No field measurements, real recommendation, runtime lesson or agronomic validation.",
+  "units": "inches of water; capacity per depth is inches/inch",
+  "managementDepth": "36",
+  "assumedUniformAvailableWaterCapacityPerDepth": "0.09",
+  "expectedAvailableWaterCapacity": "3.24",
+  "assumptions": [
+    "Fixed uniform management zone; no capillary rise or changing root depth.",
+    "All rain in these exercises is effective; rain runoff is zero.",
+    "Irrigation efficiency converts gross application to water retained in the managed zone. The same loss is not added again to the net-input balance.",
+    "Within a day, inputs and estimated crop use are netted. Any remaining excess is removed immediately at the boundary, not simulated as transient drainage.",
+    "Available water is defined relative to the illustrative wilting-point baseline. A deficit above capacity invalidates the planned available-water model; do not silently clamp or continue its unstressed crop-use assumption.",
+    "The 0.25-inch crop-use estimate is borrowed from NDSU's North Dakota corn example at 85 degrees F in the ninth week after emergence. Every field, rainfall, irrigation, efficiency and initial-deficit value here is hypothetical."
+  ],
+  "cases": [
+    {
+      "id": "gross-versus-net",
+      "initialDeficit": "1.00",
+      "cropUse": "0.25",
+      "effectiveRain": "0.10",
+      "grossIrrigation": "0.50",
+      "applicationEfficiency": "0.80",
+      "expected": { "status": "within-assumed-range", "netIrrigation": "0.40", "applicationLoss": "0.10", "rawDeficit": "0.75", "excessRemoved": "0.00", "endingDeficit": "0.75", "doubleCountedLossError": "0.85" }
+    },
+    {
+      "id": "surplus-is-not-created-water",
+      "initialDeficit": "0.20",
+      "cropUse": "0.10",
+      "effectiveRain": "1.00",
+      "grossIrrigation": "0.00",
+      "applicationEfficiency": "0.80",
+      "expected": { "status": "within-assumed-range", "netIrrigation": "0.00", "applicationLoss": "0.00", "rawDeficit": "-0.70", "excessRemoved": "0.70", "endingDeficit": "0.00" }
+    },
+    {
+      "id": "available-water-range-exceeded",
+      "initialDeficit": "3.10",
+      "cropUse": "0.25",
+      "effectiveRain": "0.00",
+      "grossIrrigation": "0.00",
+      "applicationEfficiency": "0.80",
+      "expected": { "status": "outside-assumed-range", "netIrrigation": "0.00", "applicationLoss": "0.00", "rawDeficit": "3.35", "excessRemoved": null, "endingDeficit": null }
+    }
+  ]
+}

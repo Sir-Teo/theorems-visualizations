@@ -151,6 +151,137 @@
       "finding": "The father narrates direct, secondhand and attributed mental content. HTML header generally credits Tagore and C. F. Andrews; preface names several contributors without assigning this story. Catalog also says several hands; individual translator remains unconfirmed.",
       "limits": "English witness only; Bengali original unread. The digital text has band in the hand-impression passage; origin of anomaly is unverified.",
       "reuse": "Catalog states public domain in the USA. Attribution and print provenance must be resolved before authoring; no modern translation or media cleared."
+    },
+    {
+      "id": "seq-cicero-miller",
+      "title": "De Officiis, III.50–57",
+      "creator": "Marcus Tullius Cicero; English translator Walter Miller",
+      "edition": "1913 Heinemann/Macmillan; Gutenberg 47001 updated 24 October 2024",
+      "language": "en",
+      "urls": [
+        "https://www.gutenberg.org/ebooks/47001",
+        "https://www.gutenberg.org/cache/epub/47001/pg47001-images.html"
+      ],
+      "readAt": "2026-10-22",
+      "access": "body-read-scoped",
+      "readScope": "Catalog, title/transcriber note, book III chapters XII–XIII §§50–57 English text.",
+      "finding": "Reported Diogenes/Antipater debate followed by Cicero’s own resolution; apparent advantage/morality conflict.",
+      "limits": "Latin is present but not independently reviewed; no modern legal rule or exhaustive Stoic ethics claim.",
+      "reuse": "Catalog: public domain in USA. Selected historical translation/original analysis only; release terms remain scoped."
+    },
+    {
+      "id": "seq-sikh-faq",
+      "title": "FAQ: What is langar?",
+      "creator": "Sikh Coalition",
+      "edition": "Undated page retrieved 22 October 2026",
+      "language": "en",
+      "urls": [
+        "https://www.sikhcoalition.org/about-sikhs/faq/"
+      ],
+      "readAt": "2026-10-22",
+      "access": "body-read-scoped",
+      "readScope": "Named langar subsection; adjacent visitor/welcome context.",
+      "finding": "Institutional account connects communal service/eating with equality; floor sitting qualified by ability.",
+      "limits": "Public explanation, not observation of every gurdwara or project participant consent. Other FAQ claims not adopted.",
+      "reuse": "No broad licence established. Links/original commentary; exact quotation or media selection needs review."
+    },
+    {
+      "id": "seq-sgpc-reht",
+      "title": "The Code of Sikh Conduct and Conventions: English Version of the Sikh Reht Maryada",
+      "creator": "Dharam Parchar Committee, SGPC; English preface signed Kulraj Singh",
+      "edition": "Preface dated 31 August 1994; upload path 2025/06 does not establish edition date",
+      "language": "en",
+      "urls": [
+        "https://sgpc.net/wp-content/uploads/2025/06/Sikh-Rehat-Maryada-English-n.pdf"
+      ],
+      "readAt": "2026-10-22",
+      "access": "body-read-scoped",
+      "readScope": "Rendered cover/contents, preface p.6, article XXI p.49 and adjacent p.50; text layer effectively empty.",
+      "finding": "Service/participation provisions distinguished from same-plate clause.",
+      "limits": "English only; Punjabi uninspected. Current edition status and lived practice not established.",
+      "reuse": "Links/original bounded commentary only; no broad reproduction licence established.",
+      "downloadSha256": "aa9645db5b828549bd31eebe33dd84e9af3221d2327b4c36b2a08dbe63b618fc"
+    },
+    {
+      "id": "seq-umn-checkbook",
+      "title": "Irrigation scheduling checkbook method",
+      "creator": "Jerry Wright, University of Minnesota Extension",
+      "edition": "Undated current page; retrieved 22 October 2026",
+      "language": "en",
+      "urls": [
+        "https://extension.umn.edu/natural-resources/conservation/agricultural-soil-and-water/irrigation/irrigation-scheduling-checkbook-method"
+      ],
+      "readAt": "2026-10-22",
+      "access": "body-read-scoped",
+      "readScope": "Method requirements; soil water balance; excess water; field discrepancies; irrigation timing/amount; author credit.",
+      "finding": "Deficit accounting includes losses; estimation requires field reconciliation and excess water is not always instantly unavailable.",
+      "limits": "Not a crop-independent prescription; downloadable spreadsheet and cited underlying papers not executed/read.",
+      "reuse": "Original arithmetic and links only; website illustrations/tables not redistributed."
+    },
+    {
+      "id": "seq-ndsu-ae792",
+      "title": "Irrigation Scheduling by the Checkbook Method (AE792)",
+      "creator": "Thomas F. Scherer and Dean D. Steele, NDSU Extension",
+      "edition": "Reviewed February 2024",
+      "language": "en",
+      "urls": [
+        "https://www.ndsu.edu/agriculture/extension/publications/irrigation-scheduling-checkbook-method"
+      ],
+      "readAt": "2026-10-22",
+      "access": "body-read-scoped",
+      "readScope": "Definitions and §§soil water-holding capacity, root zone, crop use, pumping capacity, deficit/balance, trigger points and daily crop-use example; HTML tables 1–5.",
+      "finding": "North Dakota crop/stage context; management depth differs from full roots. Named corn example estimates 0.25 inches/day.",
+      "limits": "PDF crop-use tables 6–14, spreadsheet internals and field outcomes uninspected; chosen exercise inputs are fictional.",
+      "reuse": "Definitions/figure identify ASABE adaptation permissions belonging to source. No reuse of their assets/tables; original analysis only."
+    },
+    {
+      "id": "seq-fao-koraput",
+      "title": "Koraput Traditional Agriculture, India",
+      "creator": "FAO GIAHS",
+      "edition": "Institutional profile: GIAHS since 2012; retrieved 22 October 2026",
+      "language": "en",
+      "urls": [
+        "https://www.fao.org/giahs/giahs-around-the-world/india-koraput/en"
+      ],
+      "readAt": "2026-10-22",
+      "access": "body-read-scoped",
+      "readScope": "Profile sections, requesting agency and action-plan link.",
+      "finding": "Farming/forest context, biodiversity and livelihood dimensions; MSSRF identified as requesting agency.",
+      "limits": "Historical diversity counts are not a current census; institutional description not a community mandate. Medicinal claims not adopted.",
+      "reuse": "Link/original summary only; no photo, map or broad reuse permission assumed."
+    },
+    {
+      "id": "seq-koraput-plan",
+      "title": "Participatory Action Plan for Dynamic Conservation: Traditional Agriculture in Koraput, Orissa",
+      "creator": "M. S. Swaminathan Research Foundation; hosted by FAO",
+      "edition": "PDF undated in inspected title; linked by profile under 10 October 2012 highlight",
+      "language": "en",
+      "urls": [
+        "https://www.fao.org/fileadmin/templates/giahs/Action_plan_Koraput.pdf"
+      ],
+      "readAt": "2026-10-22",
+      "access": "body-read-scoped",
+      "readScope": "Title and selected pp.2–5,9–10 extracted text; definition-of-output table printed p.2 also visually inspected.",
+      "finding": "Defines programme outputs and benefit-sharing objectives; proposal is not completion evidence.",
+      "limits": "Not an independent confirmation of the related FAO/MSSRF accounts. Legal/policy and medicinal assertions not verified or adopted.",
+      "reuse": "Links/original summary only; no redistribution licence for report/images inferred.",
+      "downloadSha256": "5bdd12c8c5f1e393e8ef32102e5ffec2aa04e06621a284b99985ee5dbcca7737"
+    },
+    {
+      "id": "seq-mssrf-seeds",
+      "title": "The quiet power of seed keepers in Odisha’s community seed banks",
+      "creator": "Team DIVERSIFARM-India, MSSRF",
+      "edition": "Feature story, 19 May 2026",
+      "language": "en",
+      "urls": [
+        "https://www.mssrf.org/stories-of-change/seed-keepers-odishas-community-seed-banks"
+      ],
+      "readAt": "2026-10-22",
+      "access": "body-read-scoped",
+      "readScope": "Byline/date and full feature body including opening/closing location names.",
+      "finding": "Published farmer account mediated by institutional writer. Opening Nuaguda and closing Kumbharaguda conflict; location unresolved.",
+      "limits": "Original interview, language/translation and participant reuse terms uninspected. Reported benefits are not measured causal effects.",
+      "reuse": "Link/original bounded commentary; no photo, quotation, translation or practice-reproduction permission assumed."
     }
   ]
 }

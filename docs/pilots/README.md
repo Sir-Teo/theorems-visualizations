@@ -2,7 +2,7 @@
 
 **October 22, 2026 · U1 contract delivered; four locally reviewed pilots plus P07/P08 digital prototypes; full roadmap active.**
 
-These pilots test source comparison, close reading, argument, legal cases, measured data, physiological explanation, physical practice and performance. Each brief specifies an audience, concrete task, inspectable state, source boundaries, rights plan, accessible route, acceptance checks and a proposed three-lesson sequence. The [follow-up queue](sequences/README.md) now has four additional scoped research briefs with open preparation gates and twelve remaining proposals. These are not 24 authored or accepted lessons.
+These pilots test source comparison, close reading, argument, legal cases, measured data, physiological explanation, physical practice and performance. Each brief specifies an audience, concrete task, inspectable state, source boundaries, rights plan, accessible route, acceptance checks and a proposed three-lesson sequence. The [follow-up queue](sequences/README.md) now has eight additional independently AI-reviewed research briefs with 17 source receipts, open preparation gates and eight remaining proposals. These are not 24 authored or accepted lessons.
 
 | Pilot | First exploration | Current state / next gate |
 | --- | --- | --- |

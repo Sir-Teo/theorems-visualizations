@@ -71,3 +71,21 @@ The P2 narrative-layer finding is **resolved**: the Frankenstein brief now locat
 The queue is byte-identical to its initial binding. README now links the three delivered desk reports, requires recheck after bound-file changes and continues to distinguish research from authored/accepted lessons. No new authorial-intention, original-language, print-fidelity or rights-clearance claim was added. No further actionable literature research defect was found in this scope.
 
 **Current outcome: passed as scoped research briefs with open preparation gates.** This closes the desk-review repairs; it does not close exact-excerpt selection, Tagore print/translator attribution, final authored-task review, distribution terms or future required qualified/human observations. The briefs remain researched plans and do not acquire runtime identities, lesson counts, prerequisites or acceptance from this report. No professional, Bengali-language or human-observation approval is asserted. Only this review file was edited; all other files/worktrees were read only.
+
+## Preservation and shared-binding recheck after queue expansion
+
+2026-10-22. Same independent AI reviewer. This is a narrow local preservation/binding check, not a fresh subject or source review. No web fetch occurred.
+
+Against `e53546d0`, both P02 brief files are byte-identical; parsed comparisons confirm the first nine source records and both P02 queue objects are unchanged. The expanded registry has 17 receipts; the queue has 16 planning items split into eight researched-with-open-gates and eight research proposals. Every item retains null runtime ID, authored/accepted false and empty accepted-item prerequisites. README reports those counts, keeps research separate from authored/accepted previews and retains the existing access stops and qualified/human-review limitations. This check does not validate the new philosophy/religion or agriculture subject claims.
+
+Current complete-file SHA-256 bindings:
+
+| Path within `docs/pilots/sequences/` | SHA-256 |
+| --- | --- |
+| `p02-02-editions.md` | `3fb0641ae4bcefa400c8a0eddfe4f09b74a9c329bdeb23433b439ded6ca15263` |
+| `p02-03-narrative.md` | `cbf2326551d34c59bfd62ba7ec2faffa21bc31ba63db7c3f717993ed3a6abf14` |
+| `sources.json` | `daae4724054279706470d673f09a5c89c946e95d5d7af7d5abf731c37541f027` |
+| `queue.json` | `12bf7a87d5f388e367f279591008ad3cdcb8a4335fbd20f5442dcff3ba6cd1ad` |
+| `README.md` | `12504b8214ba1110601e4ab3933ae333bd65a3f5fc9651adbff350d1f41bdb0d` |
+
+**Outcome: preservation and shared-count/status bindings pass.** The prior bounded P02 research conclusion remains applicable to the unchanged literature objects; its preparation gates remain open. No new subject, original-language, professional or human-observation approval or lesson acceptance is issued. Earlier bindings and repair history are retained. Only this review file was edited.
