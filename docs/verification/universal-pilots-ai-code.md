@@ -57,3 +57,20 @@ Final engineering result: **passed for this bounded AI source/code inspection**,
 ## Final packaging audit
 
 The same independent engineering reviewer checked the packaged receipts after they were recorded: six total, three per pilot, with explicit AI roles and limits, existing report paths and current content/artifact digests. Both candidates remain `in-review` / `local-preview`. Simulated acceptance fails for exactly the missing accessibility and learning reviews. Builder `--check` passes and hashes remain unchanged. The manifest contains 53 files and the additional report-path allowlist is restricted to the three intended AI report names. No mismatch found; no browser launched, repository edits or additional full suite performed by the reviewer.
+
+## Independent 0.1.2 requirement-change recheck
+
+The owner supplied the user's later instruction, “just remove this check,” superseding the earlier proposal to leave human sessions open and the intermediate waiver proposal. Independently inspected the actual uncommitted implementation delta: no waiver mechanism exists. The global contract still mandates content and rights and continues to enforce every declared additional dimension. The pair removes accessibility/learning requirements while retaining history provenance and literature language; actual screen-reader and learner sessions are explicitly disclosed as not performed in both page and workshop index. Accepted UI wording becomes “Reviewed · local preview”; public-release rejection remains unchanged. Optional review-limit text is validated, escaped for HTML and included in the content digest.
+
+Revision 0.1.2 retains 0.1.1 and 0.1.0 in previousRevisions, supporting the existing earlier-note export without changing the storage implementation. Historical AI receipts remain present and are stale for the new revision until fresh receipts are added. Coverage validation permits an explicit reviewed-local authored state while retaining accepted=false for production coverage; that state names its reviewed revision and does not grant publication.
+
+Independently ran the exploration, integration and coverage offline suites: **45/45 passed**, zero failures/skips/cancellations. Builder `--check` passed. Read the updated UI revision-export regression without launching a browser. The new regression verifies mandatory content/rights, enforcement of explicitly declared accessibility/learning and limitation-text digest sensitivity.
+
+Verified final 0.1.2 hashes:
+
+| Pilot | Content digest | Artifact digest |
+| --- | --- | --- |
+| History | `f1ad96959e069d4f3896063e82bd8468eb3241749096e856a514631e721b72af` | `ffef0964100bbcdd7496cc798bea195a912d93375c4e2b892e4a656736e8dce4` |
+| Literature | `f19e81195af44e606595a8d44c7ad16487e29bddbb30ed510e240c0c28416f95` | `2e550a22fd30abaf6a6f5b4d0795701c0e42927d4a7df1743a55b1291cd537be` |
+
+**Bounded AI engineering review passes for this implementation delta; no actionable defect found.** No human observation, specialist credential or unrestricted rights clearance is inferred. Earlier report language describing human sessions as mandatory blockers applies to the superseded 0.1.1 requirements; under the user-authorized 0.1.2 contract those sessions are unperformed limitations, not acceptance requirements for this pair. Fresh exact-version independent AI receipts are still needed for all declared dimensions before changing this candidate from in-review to accepted. No production code edit, browser or other-chat action was performed by this reviewer.

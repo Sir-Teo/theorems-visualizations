@@ -1,10 +1,10 @@
 # Universal pilots: additive integration package
 
-**October 22, 2026 · local engineering integration complete; independent acceptance pending.**
+**October 22, 2026 · local integration and declared review scope complete.**
 
 The package is now applied on `codex/universal-pilots-integration` in the dedicated managed worktree. Read the [current checkpoint](../verification/universal-pilots-integration.md). The manifest contains 53 files, including the three independent AI reports; the master plan is reconciled separately with its exact accepted-base version archived.
 
-The [package manifest](universal-pilots.json) names every file to carry. Both pilots are revision 0.1.1, in review. The [author review](../verification/universal-pilots-review.md) is preserved; subsequent independent AI findings, repairs and six scoped receipts are recorded in the [current checkpoint](../verification/universal-pilots-integration.md). Professional specialist scope, actual screen-reader/learner observations and distribution review remain open. No overall acceptance is claimed.
+The [package manifest](universal-pilots.json) names every file to carry. Both pilots are revision 0.1.2, accepted for local preview under their declared bounded AI review scope. The [author review](../verification/universal-pilots-review.md) is preserved; subsequent independent AI findings, repairs and six scoped receipts are recorded in the [current checkpoint](../verification/universal-pilots-integration.md). The user removed the mandatory screen-reader and learner-session check. Neither session was performed; both are disclosed as limitations. Professional credentials and public-distribution clearance are not claimed.
 
 ## Rehearse without modifying an active checkout
 
@@ -39,8 +39,8 @@ Keep that allowlist boundary explicit. `noindex` is not privacy. A host that pub
 
 - History: retain the bounded AI content/provenance/reuse results; new claims beyond that corpus need appropriate further review.
 - Literature: retain the bounded AI English comparison and reuse results. Original-language specialist approval is not claimed; the Koto recheck timed out and its prior reading is not a new receipt.
-- Accessibility: complete actual screen-reader tasks and report observed behavior. Automated contrast, keyboard and text-size checks are partial evidence.
-- Learning: observe readers doing the tasks and transferring the distinction; do not infer learning from successful automated clicks.
+- Accessibility: automated contrast, keyboard and text-size checks remain. Actual screen-reader sessions were not performed and are optional follow-up for this pair after the user's removal of that gate.
+- Learning: learner sessions were not performed and are optional follow-up for this pair. Do not infer learning efficacy from automated clicks.
 - Rights/release: review the real distribution and any additional assets before publication.
 
-Both unaccepted slots remain occupied. Next action: use the prepared real-session protocol, repair observed barriers, and append exact-version receipts before acceptance. Carry the reviewed package at the normal integration boundary without writing over the active Wave chats.
+The first pair no longer occupies the unaccepted slots. Carry this reviewed local package at the normal integration boundary without writing over active Wave chats. Public loading and release remain separate U3 work; the next method pilots follow their own briefs.

@@ -2,7 +2,7 @@
 
 **Updated October 22, 2026.** Entry point for future universal-atlas work. Production waves and visual redesign retain their own handoffs and ledgers.
 
-The broader plan now has a versioned coverage registry, eight researched briefs, an additive schema/URL contract, and **two working local prototypes at 0.1.1, now in review with scoped independent AI receipts**. The [integration package](integration/universal-pilots.md) passed a rehearsal on the accepted Wave 6 checkpoint and compatibility checks on frozen expansion/redesign snapshots. This is an implementation foundation and a concrete queue, not a claim that all future disciplines, sources or review needs are solved.
+The broader plan now has a versioned coverage registry, eight researched briefs, an additive schema/URL contract, and **two working local prototypes at 0.1.2, accepted for local preview under their declared AI review scope**. The [integration package](integration/universal-pilots.md) passed a rehearsal on the accepted Wave 6 checkpoint and compatibility checks on frozen expansion/redesign snapshots. This is an implementation foundation and a concrete queue, not a claim that all future disciplines, sources or review needs are solved.
 
 ## Read these first
 
@@ -16,7 +16,7 @@ The broader plan now has a versioned coverage registry, eight researched briefs,
 
 ## Active integration
 
-Continue in `/Users/teodev/.codex/worktrees/universal-pilots-integration/theorems-visualizations`, branch `codex/universal-pilots-integration`, based on accepted checkpoint `facab15e297c645d4826935f2c011a4cf367ee88`. Read the [integration checkpoint](verification/universal-pilots-integration.md) for the current requirements audit and pending reviews. The old root checkout remains preserved; do not restart the integration there.
+Continue in `/Users/teodev/.codex/worktrees/universal-pilots-integration/theorems-visualizations`, branch `codex/universal-pilots-integration`, based on accepted checkpoint `facab15e297c645d4826935f2c011a4cf367ee88`. Read the [integration checkpoint](verification/universal-pilots-integration.md) for the completed integration audit and explicit review limitations. The old root checkout remains preserved; do not restart the integration there.
 
 ## What is ready now
 
@@ -25,16 +25,16 @@ Continue in `/Users/teodev/.codex/worktrees/universal-pilots-integration/theorem
 | Coverage | `docs/coverage/registry.json` and pinned inventories | 30 domains; 85 primary collection homes; eight cross-listings; 217 classification entries |
 | Research | `docs/pilots/*.md` and `docs/coverage/sources.json` | Eight bounded briefs; named access/rights/reviewer gates |
 | Data and review contract | `explorations/contract.mjs` | Versioned IDs, evidence, claim boundaries, passage hashes, review history and content/artifact review checks |
-| History prototype | `explorations/history.json` | In review; AI content/provenance/prototype-rights checks recorded; actual access/learner evidence pending |
-| Literature prototype | `explorations/literature.json` | In review; AI content/English-language/prototype-rights checks recorded; actual access/learner evidence pending |
+| History prototype | `explorations/history.json` | Reviewed for local preview; current AI content/provenance/prototype-rights receipts; human-session gate removed by user |
+| Literature prototype | `explorations/literature.json` | Reviewed for local preview; current AI content/English-language/prototype-rights receipts; human-session gate removed by user |
 | Preview build | `scripts/build-explorations.mjs`; `labs/atlas/` | Isolated static pages; production loader/catalog unchanged |
 | State and compatibility helpers | `explorations/route-state.mjs` | Tested legacy URL preservation, bounded public state and no inferred legacy acceptance |
-| Verification | Scoped Node/browser tests and verification receipt | Three independent AI reports and six scoped receipts; no professional, screen-reader or learner claim |
+| Verification | Scoped Node/browser tests and verification receipt | Three independent AI reports; six current receipts plus six historical; no professional, screen-reader or learner claim |
 | Integration preparation | `docs/integration/universal-pilots.json`; `scripts/check-exploration-integration.mjs` | Explicit additive paths; pinned snapshot rehearsal; differing files refused; master plan manually reconciled |
 
 **Preview locally:** run `PORT=8219 node scripts/serve.mjs` from this checkout if that port is free, then open `http://localhost:8219/labs/atlas/`. Use another free port if needed. Direct pages are `labs/atlas/x-history-0001/` and `labs/atlas/x-literature-0001/`. No public deployment has been performed.
 
-Both new-format draft slots are occupied. The user's instruction authorizes these prototypes without waiting for a reviewer appointment. It does not turn the author into an independent specialist reviewer. Do not silently weaken the two-draft limit to launch the remaining six.
+P01/P02 are accepted for local preview under the revised requirements. The user explicitly said “skip this” and “just remove this check” for the screen-reader/learner-session blocker. Those sessions are unperformed, visibly disclosed and no longer acceptance gates for this pair. No waiver system or fabricated review was added. The two-draft limit remains for future unaccepted work; both slots are available.
 
 ## Concrete queue and exit conditions
 
@@ -42,9 +42,9 @@ Both new-format draft slots are occupied. The user's instruction authorizes thes
 | --- | --- | --- |
 | Now · U1 review | Inspect the registry crosswalk and proposed stewardship | 79 review-needed classification entries retain explicit dispositions; no invented coverage percentages |
 | Delivered · U2 AI review | Three independent AI reviewers inspected history, literature/language and code | Two findings repaired and rechecked; six scoped receipts match current digests; professional or original-language expertise is not inferred |
-| Now · U2 access/learning | Screen-reader task review and formative reader observation | Both tasks can be completed using their promised alternatives; observed defects repaired; receipts identify scope |
+| Removed by user · P01/P02 human gate | Screen-reader and learner sessions are optional follow-up | Not performed; visible limitation, not a passing observation |
 | Next · U2 contracts | Finalize source/annotation payloads from actual review findings | Changes preserve static text, old state or an explicit migration, and exact-content review validity |
-| Next · U2 acceptance | Accept the first pair through the new-format contract | Latest receipt for every required dimension passes for the current revision and content/artifact digests; do not add them to frozen Wave 6 counts |
+| Delivered · U2 first-pair local acceptance | Exact 0.1.2 receipts pass for all declared dimensions | Integrated locally; unchanged passages and prior-note export; no production count or publication change |
 | Next · U2 methods | P03 argument, P05 measured data, P07 practice, P08 performance, in bounded batches | Close each brief's source/asset/reviewer gates; implement its method contract; at most two unaccepted drafts |
 | Gated · U2 professions | P04 law and P06 care | Qualified legal/clinical review and the specific temporal/physiological gates; no generic automated approval |
 | U3 integration | Add opt-in production loading and evidence/review UI | Integrate from latest accepted base; old `verify`, IDs, links, deps, embeds and saved states survive |

@@ -128,8 +128,8 @@ test('corrupt saved notes survive edits and failed erasure is never reported as 
 }));
 test('revision upgrades keep earlier notes exportable and reset only the current revision',async()=>run(async page=>{
   await page.goto(base+literaturePath);
-  const oldKey='atlas.exploration.v1.x-literature-0001.0.1.0';
-  await page.evaluate(key=>{localStorage.setItem(key,JSON.stringify({revision:'0.1.0',state:{lens:'order'},notes:'Earlier reading'}));localStorage.setItem('atlas.progress.test','existing atlas progress');},oldKey);
+  const oldKey='atlas.exploration.v1.x-literature-0001.0.1.1';
+  await page.evaluate(key=>{localStorage.setItem(key,JSON.stringify({revision:'0.1.1',state:{lens:'order'},notes:'Earlier reading'}));localStorage.setItem('atlas.progress.test','existing atlas progress');},oldKey);
   await page.reload();assert.equal(await page.locator('#notes').inputValue(),'');
   const pending=page.waitForEvent('download');await page.locator('#previous-notes').click();
   const downloaded=await pending, exported=JSON.parse(await readFile(await downloaded.path(),'utf8'));

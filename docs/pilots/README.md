@@ -1,13 +1,13 @@
 # Eight researched pilot briefs
 
-**October 22, 2026 · U1 contract delivered; P01/P02 prototypes authored; independent acceptance pending.**
+**October 22, 2026 · U1 contract delivered; P01/P02 locally reviewed and integrated.**
 
 These pilots test source comparison, close reading, argument, legal cases, measured data, physiological explanation, physical practice and performance. Each brief specifies an audience, concrete task, inspectable state, source boundaries, rights plan, accessible route, acceptance checks and a proposed three-lesson sequence. The follow-up lessons are proposals, not 24 completed research briefs.
 
 | Pilot | First exploration | Current state / next gate |
 | --- | --- | --- |
-| [P01 History](01-history.md) | Zimmermann telegram and its use in Wilson's speech | In review; scoped AI content/provenance/reuse checks complete; screen-reader and learner tasks next |
-| [P02 Literature](02-literature.md) | Bashō's old pond in Aston and Hearn | In review; scoped AI English comparison/reuse checks complete; screen-reader and learner tasks next |
+| [P01 History](01-history.md) | Zimmermann telegram and its use in Wilson's speech | Locally accepted 0.1.2 under declared AI review scope; human-session gate removed by user |
+| [P02 Literature](02-literature.md) | Bashō's old pond in Aston and Hearn | Locally accepted 0.1.2 under declared AI review scope; human-session gate removed by user |
 | [P03 Philosophy and religion](03-philosophy-religion.md) | Reciprocity when preferences differ | Review the situated argument and translation/locator differences |
 | [P04 Law](04-law.md) | Faulty kettle in England and Wales | Freeze a verified legal snapshot and have a qualified reviewer approve the branches |
 | [P05 Agriculture](05-agriculture.md) | Soil-water observations versus a synthetic storage model | Approve the retained data subset, units and exclusions |
@@ -34,7 +34,7 @@ These findings are incorporated into the brief requirements. They are not reason
 | 5. Prove the other methods | Relevant editors and reviewers | P03 argument; P05 observations; P07 practice; P08 performance. P04/P06 proceed only with qualified legal/clinical review |
 | 6. Extend after evidence | Coverage editor and integration owner | Research the proposed follow-ups, then build U3's 24-lesson sequences and three journeys; select actual accepted connection targets |
 
-The [schema/URL decision](../architecture/universal-schema-urls.md) is adopted for local prototypes. The design, selected-source preparation and implementation in steps 1–3 are delivered at that scope; scoped AI checks are complete, while actual screen-reader/learner evidence and final acceptance in step 4 remain open. No existing wave's acceptance rules are weakened. **At most two new-format explorations may wait for independent review.** Professional specialist and participant roles remain unassigned; AI reports do not imply their availability, consent or approval. No outreach or booking has been performed.
+The [schema/URL decision](../architecture/universal-schema-urls.md) is adopted for local prototypes. The design, selected-source preparation and implementation in steps 1–3 are delivered at that scope; P01/P02 scoped AI checks and local acceptance are complete after the user's explicit removal of their human-session gate. No existing wave's acceptance rules are weakened. **At most two new-format explorations may wait for independent review.** Professional specialist and participant roles remain unassigned; AI reports do not imply their availability, consent or approval. No outreach or booking has been performed.
 
 Before starting a lesson, record its exact sources/versions, assets/licences, audience, supported claim types, access alternatives and reviewer responsibilities. After review, record which checks were performed rather than replacing them with a single “verified” badge.
 
@@ -49,6 +49,6 @@ Validation is described in the [registry guide](../coverage/README.md). The [soi
 
 ## Current continuation
 
-Open the [two-pilot workshop](../../labs/atlas/index.html) through the local server. The [master-plan handoff](../master-plan-handoff.md) is the continuation entry point, with implementation status, exact checks, review gates and integration boundaries. Both unaccepted draft slots are occupied. See [source decisions](research/history-literature-resolution.md) and [verification](../verification/universal-pilots.md).
+Open the [two-pilot workshop](../../labs/atlas/index.html) through the local server. The [master-plan handoff](../master-plan-handoff.md) is the continuation entry point, with implementation status, exact checks, review gates and integration boundaries. Both unaccepted draft slots are now available; keep the two-draft limit for subsequent methods. See [source decisions](research/history-literature-resolution.md) and [verification](../verification/universal-pilots.md).
 
-P01/P02 are now revised to 0.1.1 after [author-led source/editorial/access review and repairs](../verification/universal-pilots-review.md). The [additive integration package](../integration/universal-pilots.md) has passed frozen-snapshot rehearsals. Three separate AI reviews and six scope-limited receipts are now recorded in the [current checkpoint](../verification/universal-pilots-integration.md). Source-registry reuse wording and review-digest binding defects were repaired and independently rechecked. Actual screen-reader/learner evidence and overall acceptance remain open.
+P01/P02 were revised to 0.1.1 after [author-led source/editorial/access review and repairs](../verification/universal-pilots-review.md). The [additive integration package](../integration/universal-pilots.md) has passed frozen-snapshot rehearsals. Three separate AI reviews and six scope-limited receipts are now recorded in the [current checkpoint](../verification/universal-pilots-integration.md). Source-registry reuse wording and review-digest binding defects were repaired and independently rechecked. P01/P02 now pass the revised declared requirements at 0.1.2. Human screen-reader/learner sessions were not performed; the user removed that gate and the limitation is visible. Public release remains separate.

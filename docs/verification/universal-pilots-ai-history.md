@@ -89,3 +89,19 @@ I reran `/tmp/atlas-ci-node22-20261020/node scripts/build-explorations.mjs --che
 - Artifact digest: `87d5558bfd38472fe904c3bc37d413a53458cc6ecd0af5933e9659e3d2282899`.
 
 The bounded **content / provenance / rights** AI review passes apply to these final hashes with the scopes and exclusions recorded above. H-R1 remains resolved. This is suitable for three receipts identifying `atlas-ai-history-review` as an independent AI reviewer, with the actual bounded role and the durable copied report path. **Accessibility and learning remain unobserved; independent overall acceptance and public release are not asserted.**
+
+## Revision 0.1.2 scoped recheck, 2026-10-22
+
+The integration owner relayed the user's explicit decision to remove the screen-reader and learner checks as acceptance requirements. This section supersedes earlier statements that those sessions must remain acceptance gates; it does not turn those unperformed sessions into passing observations.
+
+I inspected the current Git diff read-only and ran the current builder's `--check` successfully. I also compared the parsed current history JSON with `HEAD:explorations/history.json`: `sources`, `passages`, `claims`, `context`, `timeline`, `activity` and all historical `reviews` are exactly unchanged. The current declared dimensions are `content`, `provenance` and `rights`. The revision increments to 0.1.2; `previousRevisions` now includes 0.1.1 as well as 0.1.0 so earlier notes remain explicitly exportable. A reader-visible `reviewLimitations` message states that screen-reader and learner sessions have not been performed. No new source retrieval or browser session was needed or performed.
+
+The contract still enforces content/rights as minimum dimensions and enforces every declared dimension for accepted records; provenance remains explicitly required for this history pilot. The renderer escapes and shows the limitations, describes acceptance as reviewed for local preview, and keeps public release separate. Nothing in this delta supplies human observation, legal clearance or professional qualifications. Historical receipts remain intact and must not approve the new revision without a fresh exact-version receipt.
+
+Final candidate checked:
+
+- ID: `x-history-0001`; revision: `0.1.2`; status at recheck: `in-review`; publication: `local-preview`.
+- Content digest: `f1ad96959e069d4f3896063e82bd8468eb3241749096e856a514631e721b72af`.
+- Artifact digest: `ffef0964100bbcdd7496cc798bea195a912d93375c4e2b892e4a656736e8dce4`.
+
+**Final bounded AI conclusions for revision 0.1.2: content passed; provenance passed; rights passed.** These conclusions carry the same specific corpus, institutional text-checking, prototype-only reuse scope and limitations explained above. The revision/review-policy/display delta introduces no defect in those checked dimensions. H-R1 remains resolved. Fresh scoped receipts may identify `atlas-ai-history-review` as an independent AI reviewer and bind these exact hashes. Screen-reader and learner sessions remain explicitly unperformed, without passing receipts or efficacy claims. This review does not authorize public distribution or assert legal/professional clearance.

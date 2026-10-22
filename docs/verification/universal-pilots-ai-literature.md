@@ -74,3 +74,23 @@ Explicit bounded dimension conclusions:
 - **Rights: passed** for the selected historical text and documented text-only US local-prototype evidence and exclusions. This is not legal clearance or approval for public distribution, new assets or wider territories.
 
 It is honest to record these three narrowly scoped passes with this AI identity/role and this report as durable evidence, provided their limits remain visible. They do not support an unrestricted claim of professional specialist or legal approval. Accessibility and learning receipts must remain absent until the required actual observations exist. Both pilots remain drafts and unaccepted. No additional sources were retrieved, no browser was launched, and no repository file was modified by this recheck.
+
+## Final 0.1.2 recheck under the user-revised review requirements
+
+Date: 2026-10-22. Same separate AI reviewer, independence and bounded role. The integration owner reports the user's explicit removal of screen-reader and learner acceptance requirements. This recheck does not invent those observations or treat the removal as evidence of usability or learning outcomes.
+
+Inspected the current diff for the literature JSON, contract, renderer and builder. Selected passages, their hashes, activities, claims and source/rights decisions are unchanged from the reviewed 0.1.1 text. The changed fields are the revision, declared requirements (content/language/rights), an appended previous revision for explicit old-note export, and a review-limitations statement. Existing review history is retained. The contract still mandates content/rights and checks every declared dimension. The renderer visibly displays the unperformed-session limitation on both the individual page and workshop index, and describes accepted records as reviewed local previews. Nothing in this delta turns AI review into professional Japanese or legal credentials or into public-release permission.
+
+Read-only Node 22.23.3 builder `--check` succeeds and returns:
+
+- ID `x-literature-0001`, revision `0.1.2`, currently `in-review`.
+- Content digest `f19e81195af44e606595a8d44c7ad16487e29bddbb30ed510e240c0c28416f95`.
+- Artifact digest `2e550a22fd30abaf6a6f5b4d0795701c0e42927d4a7df1743a55b1291cd537be`.
+
+No actionable defect found in this delta. For this exact 0.1.2 candidate:
+
+- **Content: passed** within the selected text/edition/source-label and English close-reading task scope documented above.
+- **Language: passed** within English observations and handling of Japanese witness/interpretation boundaries. No fresh Koto retrieval, original-language verification or professional Japanese-specialist approval is asserted.
+- **Rights: passed** within documented selected-text evidence for a text-only US local prototype and its asset exclusions. No legal opinion or wider/public distribution clearance is asserted.
+
+Screen-reader and learner sessions remain **not performed**, now limitations rather than acceptance gates under the user's revised instruction. No observation-based accessibility or learning pass is issued. The Koto stop remains binding. No new source retrieval, browser use or repository edit occurred in this recheck. Earlier sections remain historical receipts; this section binds the conclusions to the current candidate and revised declared scope.

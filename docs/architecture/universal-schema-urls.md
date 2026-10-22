@@ -37,7 +37,8 @@ The [validator](../../explorations/contract.mjs) and [two real examples](../../e
 | `context[], timeline[]` | Necessary context; dates explicitly distinguish day, month, year and approximate precision |
 | `prerequisites[], relations[], relatedCollectionIds[]` | Logical dependencies, typed semantic connections and optional navigation are separate |
 | `activity` | A supported method-specific task, feedback/reading guide, transfer task and rubric |
-| `reviewRequirements[], reviews[]` | Required independent dimensions and append-only content/artifact receipts |
+| `reviewRequirements[], reviews[]` | Declared independent dimensions and append-only content/artifact receipts |
+| `reviewLimitations[]` | Optional reader-visible limitations bound into the reviewed content |
 | `extensions` | Namespaced future metadata; never executed or silently treated as a supported learning method |
 | `previousRevisions` | Optional distinct revision identifiers whose local notes can be explicitly exported; no automatic migration |
 
@@ -57,7 +58,7 @@ The prototype validator checks targets against an explicitly supplied known-item
 
 ## Lifecycle and review
 
-The author can create a draft, run checks and request review. This is not independent acceptance. Required dimensions include content, rights, accessibility and formative learning observation, plus provenance or language where needed.
+The author can create a draft, run checks and request review. This is not independent acceptance. Content and rights are mandatory. Every additional dimension listed in `reviewRequirements` also gates acceptance. At the user's explicit instruction on October 22, the P01/P02 screen-reader and learner-session gate was removed. History retains provenance; literature retains language. Their `reviewLimitations` disclose that human sessions were not performed. This changes the required scope, not the results of unperformed reviews.
 
 An independent review receipt names a reviewer and role, independence from the author, the dimension, result, date, evidence path, revision, `contentDigest` and `artifactDigest`. Acceptance requires the latest appended receipt for **every required dimension** to pass for the current revision and both current digests. The content digest includes reader-facing content, source/rights decisions, activity behavior and requirements; only lifecycle/publication labels and review records are excluded. The artifact digest also binds the contract, state helpers, renderer, browser code, stylesheet, preview builder and the resolved related-collection labels displayed by the renderer. Changing a displayed collection title invalidates the artifact review; changing an unrelated collection does not. The builder prints both digests; do not copy them from an older verification receipt.
 

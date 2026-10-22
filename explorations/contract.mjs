@@ -38,6 +38,7 @@ export function validateExploration(r, { domainIds, collectionIds, sourceIds, kn
   check(r.publication !== 'published', 'public release is reserved for a later publishing contract; this builder only produces previews');
   check(r.publication !== 'withdrawn' || r.status === 'withdrawn', 'withdrawn publication needs withdrawn lifecycle state');
   for (const k of ['title', 'subtitle', 'summary', 'audience', 'scope', 'author', 'updatedOn']) check(text(r[k]), 'missing ' + k);
+  if (r.reviewLimitations !== undefined) check(Array.isArray(r.reviewLimitations) && r.reviewLimitations.every(text), 'review limitations must be text');
   const refs = (xs, known, label, empty = false) => {
     check(Array.isArray(xs) && (empty || xs.length > 0), 'missing ' + label);
     if (!Array.isArray(xs)) return;
@@ -114,7 +115,7 @@ export function validateExploration(r, { domainIds, collectionIds, sourceIds, kn
   }
   const dimensions = ['content', 'provenance', 'language', 'rights', 'accessibility', 'learning'];
   refs(r.reviewRequirements, dimensions, 'review requirement');
-  for (const dimension of ['content', 'rights', 'accessibility', 'learning'])
+  for (const dimension of ['content', 'rights'])
     check(r.reviewRequirements.includes(dimension), 'mandatory review requirement missing: ' + dimension);
   for (const review of r.reviews) {
     if (!review || typeof review !== 'object' || Array.isArray(review)) { check(false, 'review must be an object'); continue; }

@@ -6,13 +6,15 @@ import { validateExploration, contentDigest, reviewArtifactDigest } from '../exp
 import { draftHref, proposedPublicHref, legacyHref, legacyEvidence, normalizeState, parseState, serializeState, assessHistory } from '../explorations/route-state.mjs';
 import { renderExploration, renderIndex } from '../explorations/render.mjs';
 import { loadRegistry } from '../scripts/lib.mjs';
-const { records } = await loadExplorations(), [h,l] = records;
+const { records: currentRecords } = await loadExplorations();
+const records = structuredClone(currentRecords).map(r => ({ ...r, status: 'draft', reviews: [] })), [h,l] = records;
 const runtime = await loadRegistry(), coverage = JSON.parse(await readFile(new URL('../docs/coverage/registry.json', import.meta.url)));
 const sources = JSON.parse(await readFile(new URL('../docs/coverage/sources.json', import.meta.url)));
 const ctx = { domainIds: coverage.domains.map(x => x.id), collectionIds: runtime.collections.map(x => x.id), sourceIds: sources.sources.filter(x => x.access.status !== 'blocked').map(x => x.id) };
 test('records validate and generated pages are reproducible', async () => {
-  for (const r of records) assert.deepEqual(validateExploration(r, ctx), []);
-  assert.equal((await buildExplorations({ checkOnly: true })).pages, 3);
+  const built = await buildExplorations({ checkOnly: true });
+  for (const r of currentRecords) assert.deepEqual(validateExploration(r, { ...ctx, artifactDigest: built.records.find(x => x.id === r.id).artifactDigest }), []);
+  assert.equal(built.pages, 3);
 });
 test('claim classification and supporting evidence are separate requirements', () => {
   const fixtures = [
@@ -39,6 +41,19 @@ test('blocked or invented source references cannot become evidence', () => {
 test('a draft cannot become accepted without every independent dimension', () => {
   const r=structuredClone(h);r.status='accepted';
   assert.match(validateExploration(r,ctx).join('\n'),/acceptance missing review/);
+});
+test('content and rights remain mandatory while every declared additional review still gates acceptance', () => {
+  for (const dimension of ['content','rights']) {
+    const r=structuredClone(h);r.reviewRequirements=r.reviewRequirements.filter(x=>x!==dimension);
+    assert.match(validateExploration(r,ctx).join('\n'),/mandatory review requirement missing/);
+  }
+  const r=structuredClone(h);r.reviewRequirements.push('accessibility','learning');r.status='accepted';
+  const errors=validateExploration(r,ctx).join('\n');
+  assert.match(errors,/acceptance missing review: accessibility/);
+  assert.match(errors,/acceptance missing review: learning/);
+  r.reviewLimitations=['Observation not performed'];const before=contentDigest(r);
+  r.reviewLimitations=['Observed'];assert.notEqual(contentDigest(r),before);
+  r.reviewLimitations={};assert.match(validateExploration(r,ctx).join('\n'),/review limitations must be text/);
 });
 test('content changes invalidate exact-version review receipts', () => {
   const r=structuredClone(l);
@@ -109,7 +124,7 @@ test('a public-release flag is rejected even with an accepted lifecycle label', 
 });
 test('renderer changes invalidate reviews even when the authored JSON is unchanged', () => {
   const r=structuredClone(l), old=reviewArtifactDigest(r,{'ui.mjs':'a'.repeat(64)});
-  r.reviews=[{dimension:'accessibility',result:'passed',reviewer:{id:'test-reviewer',role:'Fixture',independent:true},revision:r.revision,contentDigest:contentDigest(r),artifactDigest:old,evidencePath:'test-only',reviewedOn:'2026-10-22'}];
+  r.reviews=[{dimension:'content',result:'passed',reviewer:{id:'test-reviewer',role:'Fixture',independent:true},revision:r.revision,contentDigest:contentDigest(r),artifactDigest:old,evidencePath:'test-only',reviewedOn:'2026-10-22'}];
   assert.deepEqual(validateExploration(r,{...ctx,artifactDigest:old}),[]);
   const changed=reviewArtifactDigest(r,{'ui.mjs':'b'.repeat(64)});
   r.status='accepted';
@@ -120,7 +135,7 @@ test('superseded receipts remain recoverable while only latest exact-version rev
   const receipt=dimension=>({dimension,result:'passed',reviewer:{id:'independent-test-reviewer',role:'Fixture only',independent:true},revision:r.revision,contentDigest:contentDigest(r),artifactDigest:reviewArtifactDigest(r,code),evidencePath:'test-only',reviewedOn:'2026-10-22'});
   r.reviews=r.reviewRequirements.map(receipt);
   r.claims[0].qualification='A revised, explicitly bounded interpretation';
-  r.revision='0.1.1';
+  r.revision='0.2.0';
   r.reviews.push(...r.reviewRequirements.map(receipt));
   r.status='accepted';
   const context={...ctx,artifactDigest:reviewArtifactDigest(r,code)};

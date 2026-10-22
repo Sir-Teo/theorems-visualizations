@@ -42,15 +42,16 @@ function shell(title, body, depth, script = '') {
 <title>${esc(title)} · Ideas, Visualized</title><link rel="stylesheet" href="${prefix}explorations/style.css"></head>
 <body><a class="skip" href="#main">Skip to the exploration</a>
 <header class="site-header"><a href="${prefix}#/">Ideas, Visualized</a><span>Exploration workshop</span></header>
-${body}<footer><p>Drafts for review. Publication and independent acceptance are separate steps.</p><a href="${prefix}docs/master-plan-handoff.md">Editorial status and next work</a></footer>${script}</body></html>\n`;
+${body}<footer><p>Local previews. Review scope and public release are separate.</p><a href="${prefix}docs/master-plan-handoff.md">Editorial status and next work</a></footer>${script}</body></html>\n`;
 }
 export function renderExploration(r, collectionTitles = {}) {
   if (r.status === 'withdrawn') return shell('Withdrawn preview', `<main id="main" tabindex="-1"><h1>This preview has been withdrawn</h1><p>The identity is reserved. Editorial source files may still retain the former text; this local preview is not a public takedown system.</p><a href="../">Return to the workshop</a></main>`, 3);
   const a = r.activity, prefix = '../../../';
-  const status = { draft: 'Draft · independent review pending', 'in-review': 'Under independent review', accepted: 'Editorially accepted · unpublished preview' }[r.status];
+  const status = { draft: 'Draft · independent review pending', 'in-review': 'Under independent review', accepted: 'Reviewed · local preview' }[r.status];
   const body = `<main id="main" tabindex="-1"><nav aria-label="Workshop"><a href="../">← Both pilot explorations</a></nav>
     <section class="hero"><p class="eyebrow">${esc(status)}</p><h1>${esc(r.title)}</h1>
     <p class="subtitle">${esc(r.subtitle)}</p><p class="lede">${esc(r.summary)}</p>
+    ${(r.reviewLimitations || []).map(note => `<p class="muted">${esc(note)}</p>`).join('')}
     <p class="scope">${esc(r.scope)}</p><ol class="steps"><li>Read the sources</li><li>Compare the evidence</li><li>Explain a limitation</li></ol></section>
     <section aria-labelledby="source-heading"><div class="section-heading"><span>01</span><h2 id="source-heading">Read closely</h2></div>
     <div class="sources">${sourceCards(r)}</div></section>
@@ -76,6 +77,6 @@ ${r.timeline.length ? '<ol class="timeline">' + r.timeline.map(t => `<li><strong
   return shell(r.title, body, 3, `<script id="exploration-data" type="application/json">${json}</script><script type="module" src="../../../explorations/ui.mjs"></script>`);
 }
 export function renderIndex(records) {
-  return shell('Two ways to read evidence', `<main id="main" tabindex="-1"><section class="hero"><p class="eyebrow">New formats · two draft pilots</p><h1>Two ways to read evidence</h1><p class="lede">Explore what a document establishes and how a translation shapes a reading. These working drafts keep their sources and limits in view.</p></section>
-    <div class="pilot-grid">${records.map((r,i) => r.status === 'withdrawn' ? `<article class="source-card"><h2><a href="./${r.id}/">Withdrawn preview</a></h2><p>This identity remains reserved.</p></article>` : `<article class="source-card"><p class="eyebrow">0${i+1} · ${r.pilotId === 'P01' ? 'History' : 'Literature'}</p><h2><a href="./${r.id}/">${esc(r.title)} →</a></h2><p>${esc(r.summary)}</p><p class="muted">${r.status === 'accepted' ? 'Editorially accepted; local preview only.' : r.status === 'in-review' ? 'Independent review in progress; local preview only.' : 'Independent content, language where applicable, and accessibility review remain pending.'}</p></article>`).join('')}</div></main>`, 2);
+  return shell('Two ways to read evidence', `<main id="main" tabindex="-1"><section class="hero"><p class="eyebrow">New formats · two pilot explorations</p><h1>Two ways to read evidence</h1><p class="lede">Explore what a document establishes and how a translation shapes a reading. These local previews keep their sources and limits in view.</p></section>
+    <div class="pilot-grid">${records.map((r,i) => r.status === 'withdrawn' ? `<article class="source-card"><h2><a href="./${r.id}/">Withdrawn preview</a></h2><p>This identity remains reserved.</p></article>` : `<article class="source-card"><p class="eyebrow">0${i+1} · ${r.pilotId === 'P01' ? 'History' : 'Literature'}</p><h2><a href="./${r.id}/">${esc(r.title)} →</a></h2><p>${esc(r.summary)}</p><p class="muted">${r.status === 'accepted' ? 'Reviewed for local preview.' : r.status === 'in-review' ? 'Independent review in progress; local preview only.' : 'Declared independent reviews remain pending.'}</p>${(r.reviewLimitations || []).map(note => `<p class="muted">${esc(note)}</p>`).join('')}</article>`).join('')}</div></main>`, 2);
 }

@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
-  "revision": "0.1.1",
-  "status": "in-review",
+  "revision": "0.1.2",
+  "status": "accepted",
   "publication": "local-preview",
   "author": "Atlas authoring task",
   "updatedOn": "2026-10-22",
@@ -49,6 +49,48 @@
       "revision": "0.1.1",
       "contentDigest": "b562d61ebf5ca44e5e9981c44f24f2203b0b84ba1c5cd975d5a433d9e4084df0",
       "artifactDigest": "182f56098fe2684c55f6e35d1e9e40c982fb7ebf74fe8be6fa720be464a2b3b2"
+    },
+    {
+      "dimension": "content",
+      "result": "passed",
+      "reviewer": {
+        "id": "atlas-ai-literature-review",
+        "role": "Independent AI English text/comparison reviewer; Japanese witness-boundary consistency only, no fresh Koto or specialist verification; text-only US local prototype rights evidence, no legal/public-release clearance",
+        "independent": true
+      },
+      "evidencePath": "docs/verification/universal-pilots-ai-literature.md",
+      "reviewedOn": "2026-10-22",
+      "revision": "0.1.2",
+      "contentDigest": "f19e81195af44e606595a8d44c7ad16487e29bddbb30ed510e240c0c28416f95",
+      "artifactDigest": "2e550a22fd30abaf6a6f5b4d0795701c0e42927d4a7df1743a55b1291cd537be"
+    },
+    {
+      "dimension": "language",
+      "result": "passed",
+      "reviewer": {
+        "id": "atlas-ai-literature-review",
+        "role": "Independent AI English text/comparison reviewer; Japanese witness-boundary consistency only, no fresh Koto or specialist verification; text-only US local prototype rights evidence, no legal/public-release clearance",
+        "independent": true
+      },
+      "evidencePath": "docs/verification/universal-pilots-ai-literature.md",
+      "reviewedOn": "2026-10-22",
+      "revision": "0.1.2",
+      "contentDigest": "f19e81195af44e606595a8d44c7ad16487e29bddbb30ed510e240c0c28416f95",
+      "artifactDigest": "2e550a22fd30abaf6a6f5b4d0795701c0e42927d4a7df1743a55b1291cd537be"
+    },
+    {
+      "dimension": "rights",
+      "result": "passed",
+      "reviewer": {
+        "id": "atlas-ai-literature-review",
+        "role": "Independent AI English text/comparison reviewer; Japanese witness-boundary consistency only, no fresh Koto or specialist verification; text-only US local prototype rights evidence, no legal/public-release clearance",
+        "independent": true
+      },
+      "evidencePath": "docs/verification/universal-pilots-ai-literature.md",
+      "reviewedOn": "2026-10-22",
+      "revision": "0.1.2",
+      "contentDigest": "f19e81195af44e606595a8d44c7ad16487e29bddbb30ed510e240c0c28416f95",
+      "artifactDigest": "2e550a22fd30abaf6a6f5b4d0795701c0e42927d4a7df1743a55b1291cd537be"
     }
   ],
   "extensions": {},
@@ -78,9 +120,7 @@
   "reviewRequirements": [
     "content",
     "language",
-    "rights",
-    "accessibility",
-    "learning"
+    "rights"
   ],
   "sources": [
     {
@@ -246,6 +286,10 @@
     ]
   },
   "previousRevisions": [
-    "0.1.0"
+    "0.1.0",
+    "0.1.1"
+  ],
+  "reviewLimitations": [
+    "Screen-reader and learner sessions have not been performed."
   ]
 }

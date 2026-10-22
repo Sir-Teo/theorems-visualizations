@@ -37,7 +37,7 @@ Use this receipt checklist for each required dimension:
 - For learner observation, task, participant context, observed failure/success and resulting repairs; no invented efficacy claim.
 - For publication, actual distribution scope and asset-level rights, with withdrawal/update responsibilities.
 
-User-authorized separate AI reviewers may supply bounded source, English-language and prototype-reuse checks when their actual AI role, evidence, limits and independent conclusions are recorded. The current pair has three such receipts each; the engineering report is supplemental and supplies no accessibility or learning pass. See the [integration checkpoint](verification/universal-pilots-integration.md). Actual screen-reader and learner sessions remain required. Automated tests are author checks. They do not appoint a subject reviewer, prove screen-reader usability or replace formative learning observation. Do not create a passing receipt merely to satisfy a validator.
+User-authorized separate AI reviewers may supply bounded source, English-language and prototype-reuse checks when their actual AI role, evidence, limits and independent conclusions are recorded. The current pair has three such receipts each; the engineering report is supplemental and supplies no accessibility or learning pass. See the [integration checkpoint](verification/universal-pilots-integration.md). The user removed the mandatory screen-reader and learner-session gate for P01/P02. Those sessions remain unperformed and are disclosed as limitations. Other pilots declare appropriate review requirements in their briefs; medical/legal expertise requirements are unchanged. Automated tests are author checks. They do not appoint a subject reviewer, prove screen-reader usability or replace formative learning observation. Do not create a passing receipt merely to satisfy a validator.
 
 If a claim, source boundary, activity, rights decision, bound rendering code or displayed related-collection label changes, return the record to draft and obtain fresh reviews for the changed artifact. Historical receipts remain in the append-only array and do not block draft rendering. Only the latest appended receipt per required dimension can approve acceptance, and it must match the current revision and both digests. The latest changes-requested review blocks that dimension even if an earlier review passed. Do not reorder or erase superseded receipts.
 
@@ -53,7 +53,7 @@ node --test tests/explorations-integration.test.mjs
 
 Inspect desktop/phone pixels in both themes, native input, no-JavaScript reading, source links, saved-state restoration and local export/reset. Run additional checks only for changed behavior or unresolved risks.
 
-Keep at most two draft/in-review new-format explorations. Both slots are currently occupied. Improve or review them before creating a third. Prepare the next briefs and sources without accumulating unreviewed lesson drafts.
+Keep at most two draft/in-review new-format explorations. P01/P02 now pass their revised declared review requirements and no longer occupy those slots. Keep the same two-item limit for subsequent methods. Prepare the next briefs and sources without accumulating unreviewed lesson drafts.
 
 Integrate only from the latest accepted production base at the normal handoff boundary. Carry source files, builder, tests and generated previews together; never overwrite an active worktree or copy its entire old checkout into current progress. Public release needs a separate implemented contract and authorization.
 

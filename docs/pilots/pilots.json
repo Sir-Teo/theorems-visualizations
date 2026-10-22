@@ -29,7 +29,7 @@
       "contexts": [
         "United States, Germany and Mexico, 1917"
       ],
-      "status": "prototype",
+      "status": "reviewed-local",
       "authored": true,
       "accepted": false,
       "reviewers": [
@@ -50,16 +50,15 @@
         }
       ],
       "openGates": [
-        "Independent content/provenance review",
-        "Independent accessibility and screen-reader review",
-        "Formative learner observation",
-        "Release-specific territory and rights review before wider publication"
+        "Release-specific territory, asset and rights review before wider publication"
       ],
       "rightsStatus": "prototype-text-scoped",
-      "nextAction": "Scoped independent AI checks and repairs are recorded for 0.1.1. Complete actual screen-reader and formative learner sessions; retain specialist/release limits and exact current digests before acceptance. Use the dedicated additive integration branch without modifying active Wave chats.",
+      "nextAction": "Local integration and declared AI reviews complete for 0.1.2. The user removed the screen-reader/learner-session gate; no human sessions performed. Production publication is separate; proceed with the next bounded pilot method through its own brief.",
       "prototypePath": "labs/atlas/x-history-0001/index.html",
       "contentPath": "explorations/history.json",
-      "sourceResolutionPath": "docs/pilots/research/history-literature-resolution.md"
+      "sourceResolutionPath": "docs/pilots/research/history-literature-resolution.md",
+      "localReviewStatus": "accepted",
+      "reviewedRevision": "0.1.2"
     },
     {
       "id": "P02",
@@ -90,7 +89,7 @@
         "Edo Japan",
         "Historical English reception"
       ],
-      "status": "prototype",
+      "status": "reviewed-local",
       "authored": true,
       "accepted": false,
       "reviewers": [
@@ -111,16 +110,15 @@
         }
       ],
       "openGates": [
-        "Independent literary/language review",
-        "Independent accessibility and screen-reader review",
-        "Formative learner observation",
-        "Release-specific territory and rights review before wider publication"
+        "Release-specific territory, asset and rights review before wider publication"
       ],
       "rightsStatus": "prototype-text-scoped",
-      "nextAction": "Scoped independent AI checks and repairs are recorded for 0.1.1. Complete actual screen-reader and formative learner sessions; retain specialist/release limits and exact current digests before acceptance. Use the dedicated additive integration branch without modifying active Wave chats.",
+      "nextAction": "Local integration and declared AI reviews complete for 0.1.2. The user removed the screen-reader/learner-session gate; no human sessions performed. Production publication is separate; proceed with the next bounded pilot method through its own brief.",
       "prototypePath": "labs/atlas/x-literature-0001/index.html",
       "contentPath": "explorations/literature.json",
-      "sourceResolutionPath": "docs/pilots/research/history-literature-resolution.md"
+      "sourceResolutionPath": "docs/pilots/research/history-literature-resolution.md",
+      "localReviewStatus": "accepted",
+      "reviewedRevision": "0.1.2"
     },
     {
       "id": "P03",
