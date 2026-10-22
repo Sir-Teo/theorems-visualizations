@@ -2,7 +2,7 @@
 
 ## Scope and status
 
-All 11 frozen identities are authored with 11 distinct visualization functions. Chapter author checks pass; separate peer acceptance and the next combined full integration checkpoint remain outstanding. The latest full suite is GRAPH's 3,580-test checkpoint, which predates this chapter. The accepted export remains 36/1,057. Frozen identities, kinds, verification flags, preserved entries and source restrictions are unchanged.
+All 11 frozen identities are authored with 11 distinct visualization functions. Chapter author checks pass; separate peer acceptance remains outstanding. The subsequent combined COMB/NT integration checkpoint passes 3,616/3,616 tests in 280.408 seconds, zero failures/skips/cancellations. The accepted export remains 36/1,057. Frozen identities, kinds, verification flags, preserved entries and source restrictions are unchanged.
 
 ## Sources actually read
 
@@ -24,7 +24,7 @@ Boxed diagrams include zero-sided rectangles and q=1 is evaluated as a polynomia
 
 **17/17 focused groups** pass, zero failures/skips/cancellations, in **530.339 ms**. Independent references include unordered compositions, signed factor-subset enumeration, divisor-sum convolution for p(n) through 1000, weighted subset counts for Gaussian coefficients, and 3D order-ideal growth for plane partitions through volume 10. Tests exhaust Glaisher images/inverses through weight 24 and bases 2–6, Franklin through weight 35, all displayed box matchings, and all frozen identities/metadata.
 
-The final strict build passes **7,924 written / 5,650 planned ideas**, **539 written chapters**, **85 collections**, zero errors/warnings, and a **123,941-byte gzip home**. Full static checking passes **7,861 visualizations**, zero errors/warnings. A new full integration suite is deferred to the next combined batch; 3,580 remains the previous full checkpoint.
+The final strict build passes **7,924 written / 5,650 planned ideas**, **539 written chapters**, **85 collections**, zero errors/warnings, and a **123,941-byte gzip home**. Full static checking passes **7,861 visualizations**, zero errors/warnings. The subsequent combined COMB/NT full integration suite passes 3,616/3,616 in 280.408 seconds, zero failures/skips/cancellations (`/tmp/wave6-comb-nt-integration-final.log`); the earlier 3,580 checkpoint remains historical evidence.
 
 The complete final native sweep passes **44 distinct cases**, all 11 entries ×1200/320px ×light/dark, with **336 physical control actions** and **156 state replays**. It covers every mode and slider endpoint, actual Share/Create links, raw off-grid reflection values, tiny/halfway reflection boundaries, the zero-object second Rogers–Ramanujan class, and rejection of fractional integer states. Cold-load axes are explicitly checked against the current data window before forced repaint. Minimum glyph clearance is **3.091480px** and marker clearance **10.776772px**. All stages use 2D rendering; the plane stack uses a fixed projection and no 3D-camera acceptance is claimed.
 

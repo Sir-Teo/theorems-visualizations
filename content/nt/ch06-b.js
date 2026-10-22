@@ -1,0 +1,63 @@
+import * as V from './ch06.ui.shared.js';
+const mit21='https://ocw.mit.edu/courses/18-781-theory-of-numbers-spring-2012/13cf7a5b5cc750bac32299824469a8d2_MIT18_781S12_lec21.pdf';
+const ew='https://webspace.maths.qmul.ac.uk/f.vivaldi/teaching/ETAD/NotesI.pdf';
+export default {collection:'nt',chapter:6,items:[
+ {num:'6.9',kind:'Definition',name:'Pell’s equation',
+ statement:String.raw`For a positive integer $d$ that is not a square, Pell’s equation is
+$$x^2-dy^2=1,\qquad x,y\in\mathbb Z.$$
+Its fundamental positive solution has the least $x>0$ among solutions with $y>0$; equivalently it has the least positive $y$. The solutions with $y=0$ are $(\pm1,0)$. The parameter need not be squarefree.`,
+ idea:String.raw`The real equation is a hyperbola, but an integer point must satisfy an exact norm identity in $\mathbb Z[\sqrt d]$: $(x+y\sqrt d)(x-y\sqrt d)=1$. Multiplication preserves this norm. A positive nontrivial solution therefore produces increasingly large positive solutions by taking powers. Existence and minimality require the continued-fraction theorem that follows; a finite lattice search alone cannot establish either for an arbitrary $d$. If $d$ is a positive square, integer factorization of $(x-\sqrt d\,y)(x+\sqrt d\,y)=1$ leaves only the trivial solutions.`,
+ caption:String.raw`Search a bounded positive lattice window and compare it with the real hyperbola. A second panel shows exact fundamental-unit powers on a logarithmic scale, making solutions beyond the search window visible.`,deps:['nt-6.8'],refs:['Lee and Kumar, printed Lecture 21, pp.3–5, Pell–Brahmagupta equations'],links:{source:mit21},tags:['Pell equations','quadratic fields'],viz:V.pellCurve},
+ {num:'6.10',kind:'Theorem',name:'Pell’s equation is solved by the continued fraction of √d',
+ statement:String.raw`Let $d\ge2$ be nonsquare and let the periodic part of $\sqrt d$ have length $L$. Number convergents from index zero. The fundamental solution to $x^2-dy^2=1$ is $(p_{L-1},q_{L-1})$ if $L$ is even, and $(p_{2L-1},q_{2L-1})$ if $L$ is odd. In either case,
+$$p_{L-1}^2-dq_{L-1}^2=(-1)^L.$$
+For $d=61$, $L=11$ and the fundamental positive solution is $(1766319049,226153980)$.`,
+ idea:String.raw`Write complete quotients as $(P_n+\sqrt d)/Q_n$. Comparing coefficients of $1,\sqrt d$ in the convergent identity, and using the unit determinant, gives $p_n^2-dq_n^2=(-1)^{n+1}Q_{n+1}$. The reduced cycle for $\sqrt d+\lfloor\sqrt d\rfloor$ has $Q_j=1$ exactly at multiples of $L$: in a reduced state $Q=1$ forces $P=\lfloor\sqrt d\rfloor$, the unique returning state. Thus norm $\pm1$ occurs at indices $kL-1$, with sign $(-1)^{kL}$. Every positive norm $\pm1$ solution satisfies
+$$\left|\sqrt d-\frac xy\right|=\frac1{y^2(\sqrt d+x/y)}<\frac1{2y^2},$$
+so Legendre’s criterion makes it a convergent. Increasing denominators then establish the asserted minimality, not just existence of one solution.`,
+ caption:String.raw`Inspect exact convergent norms through the first +1. The parity of the period decides whether one or two periods are required. The selected table keeps the signed norm while the plot shows its magnitude.`,deps:['nt-6.7','nt-6.8','nt-6.9'],refs:['Lee and Kumar, printed Lecture 21, Theorems 73,75,76 and Corollary 74, pp.2–5'],links:{source:mit21},tags:['Pell equations','continued fractions'],viz:V.pellConvergents},
+ {num:'6.11',kind:'Theorem',name:'All Pell solutions are powers of the fundamental one',
+ statement:String.raw`Let $u=x_1+y_1\sqrt d>1$ correspond to the fundamental positive solution of $x^2-dy^2=1$. Every solution with $x,y>0$ is uniquely
+$$x_n+y_n\sqrt d=u^n,\qquad n\ge1.$$
+Their exact recurrence is
+$$\begin{aligned}x_{n+1}&=x_1x_n+dy_1y_n,\\y_{n+1}&=y_1x_n+x_1y_n.\end{aligned}$$
+Changing the signs of $x$ and $y$, together with $(\pm1,0)$, gives all integer solutions.`,
+ idea:String.raw`The norm is multiplicative and $u^{-1}=x_1-y_1\sqrt d$ still has integer coefficients. For any positive solution $v>1$, choose $n\ge0$ with $1\le vu^{-n}<u$. Write $w=vu^{-n}=a+b\sqrt d$; its conjugate is $w^{-1}$, so $a=(w+w^{-1})/2>0$ and $b=(w-w^{-1})/(2\sqrt d)\ge0$. If $w>1$, this is a smaller positive solution than $u$, contradicting minimality. Therefore $w=1$ and $v=u^n$. Uniqueness follows from $u>1$. This reduction supplies the completeness proof behind the multiplication picture.`,
+ caption:String.raw`Generate successive solutions with exact integer multiplication. Logarithmic curves show coordinate growth, while the certificate reports the exact norm and number of digits even when the full coordinates exceed the panel width.`,deps:['nt-6.10'],refs:['Lee and Kumar, printed Lecture 21, Theorem 77, p.5 (statement); norm-reduction proof supplied here'],links:{source:mit21},tags:['Pell equations','units'],viz:V.pellPowers},
+ {num:'6.12',kind:'Theorem',name:'The negative Pell equation and odd periods',
+ statement:String.raw`For a positive nonsquare integer $d$, the equation
+$$x^2-dy^2=-1$$
+has an integer solution if and only if the period length $L$ of $\sqrt d$ is odd. In that case its least positive solution is $(p_{L-1},q_{L-1})$. If $v=x_-+y_-\sqrt d$ is this norm $-1$ unit, all positive norm $-1$ solutions are $v^{2j+1}$ for $j\ge0$, and the fundamental norm $+1$ unit is $v^2$.`,
+ idea:String.raw`Every positive norm $-1$ solution is a convergent by the approximation bound in 6.10. The norm at a possible index $kL-1$ is $(-1)^{kL}$, which is negative exactly when both $L$ and $k$ are odd. This proves necessity, sufficiency and the least solution. The least positive norm $+1$ unit is $v^2$: a smaller such unit $1<u<v^2$ would make either $u/v$ or $v/u$ a norm $-1$ unit strictly between $1$ and $v$, contradicting minimality. For any norm $-1$ unit $w\ge v$, the quotient $w/v$ is an integer-coefficient norm $+1$ unit at least one. By 6.11 it is a power of $v^2$, proving the odd-power description.`,
+ caption:String.raw`Classify every radicand up to the selected bound by the exact period length. Odd and even periods have different colors, squares are marked as excluded, and the selected nonsquare has an exact negative-norm certificate or a parity obstruction.`,deps:['nt-6.10','nt-6.11'],refs:['Lee and Kumar, printed Lecture 21, Theorem 76, pp.4–5; unit classification as in 6.11'],links:{source:mit21},tags:['Pell equations','period parity'],viz:V.negative},
+ {num:'6.13',kind:'Theorem',name:'Euler’s continued fraction for e',
+ statement:String.raw`Euler’s number has the simple continued fraction
+$$e=[2;1,2,1,1,4,1,1,6,1,\ldots].$$
+Equivalently, for $m\ge1$, the digit at index $3m-1$ is $2m$ and all other positive-index digits are one. This is an exact infinite expansion, not a pattern inferred from finitely many decimal digits.`,
+ idea:String.raw`Cohn’s proof uses the equivalent expansion $[1;0,1,1,2,1,1,4,\ldots]$, shifting the standard convergent indices by two. Put
+$$A_n=\frac1{n!}\int_0^1x^n(x-1)^ne^x\,dx$$
+and define $B_n,C_n$ by multiplying the integrand by $x$ and $x-1$, respectively. Integration by parts gives $A_n=-B_{n-1}-C_{n-1}$, $B_n=-2nA_n+C_{n-1}$, and $C_n=B_n-A_n$. Starting from $(A_0,B_0,C_0)=(e-1,1,2-e)$, these are exactly the proposed digit recurrences for the signed errors $q_je-p_j$ in the shifted expansion. The bounds $|A_n|,|B_n|,|C_n|\le e/(4^nn!)$ make those errors tend to zero, proving the expansion. Independently, factorial partial sums give rational lower and upper bounds for e; common endpoint digits certify every displayed finite prefix.`,
+ caption:String.raw`Display Euler’s digits and certify them against an independent factorial-series interval. Convergent errors use exact rational enclosures, so the pattern remains meaningful beyond the precision of the built-in decimal value of e.`,deps:['nt-6.4','nt-6.5','nt-6.6','pma-3.30','pma-6.22'],refs:['Henry Cohn, A Short Proof of the Simple Continued Fraction Expansion of e, American Mathematical Monthly 113 (2006), pp.57–62; author preprint v3, 25 February 2006'],links:{source:'https://arxiv.org/pdf/math/0601660'},tags:['continued fractions','Euler number'],viz:V.ePattern},
+ {num:'6.14',kind:'Theorem',name:'Gauss–Kuzmin distribution of partial quotients',
+ statement:String.raw`Let $T(x)=1/x-\lfloor1/x\rfloor$ on irrational $x\in(0,1)$ and $a_j(x)=\lfloor1/T^{j-1}x\rfloor$. Its invariant ergodic probability measure is
+$$d\mu(x)=\frac{dx}{(1+x)\log2}.$$
+For a uniformly distributed initial $x$, the distribution of $T^nx$ converges to $\mu$. Hence, for each $k\ge1$,
+$$\lim_{n\to\infty}\Pr(a_{n+1}=k)=\pi_k,$$
+$$\pi_k=\log_2\!\left(1+\frac1{k(k+2)}\right).$$
+For Lebesgue-almost every individual $x$, the frequency of digit $k$ has the same limit. The ensemble distribution limit and the almost-sure time-frequency limit are different assertions.`,
+ idea:String.raw`Inverse branches $x\mapsto1/(k+x)$ telescope to preserve the stated density. For the ensemble assertion let $F_n(t)=\Pr(T^nx\le t)$ and $g_n=(1+t)F'_n(t)$. Then $g_{n+1}(t)=\sum_{k\ge1}P_k(t)g_n(1/(k+t))$, where $P_k(t)=(1+t)/((k+t)(k+t+1))$. Differentiating after telescoping bounds $\|g'_{n+1}\|_\infty$ by $\|g'_n\|_\infty$ times the sum of
+$$\begin{aligned}A(t)&=\sum_{k\ge1}\frac{k}{(k+t)(k+t+1)^3},\\B(t)&=\sum_{k\ge1}\frac{P_k(t)}{(k+t)^2}.\end{aligned}$$
+Here $A\le1/4$: bound by $\sum_{j\ge2}j^{-3}\le1/8+\int_2^\infty u^{-3}du$. The first term of $B$ is at most $1/2$, and its remaining terms are bounded by $2\sum_{k\ge2}k^{-4}\le5/24$. Thus $\|g'_n\|_\infty\le(23/24)^n$. Since $\int_0^1g_n(t)/(1+t)\,dt=1$, its shrinking oscillation forces $g_n\to1/\log2$, proving uniform distribution convergence. This elementary bound does not claim the optimal rate. For the individual assertion, inverse branches on continued-fraction cylinders have uniformly bounded distortion (their derivative is proportional to $1/(q_n+q_{n-1}t)^2$). The shrinking cylinders and the density theorem then force any invariant set to have measure zero or one, giving ergodicity. Birkhoff applied to the digit interval $(1/(k+1),1/k)$ yields its displayed measure and the frequency limit.`,
+ caption:String.raw`Compare a reproducible finite ensemble of certified binary intervals with the Gauss law. At iteration zero, the uniform first-digit law differs from the limiting law. A final overflow bin keeps all probability mass, and the sample is explicitly not an infinite random-real experiment.`,deps:['nt-6.6','prob-6.1.4a','prob-6.2.1'],refs:['Einsiedler and Ward, supplied four-chapter notes (21 June 2010), §3.2, Theorem 3.7 and Corollary 3.8, pp.76–86','Colţescu and Lascu, On the Szüsz’s Solution to Gauss’ Problem (21 October 2010), pp.4–5, transfer recurrence; elementary 23/24 bound derived here'],links:{source:ew},tags:['continued fractions','ergodic theory'],viz:V.gauss},
+ {num:'6.15',kind:'Theorem',name:'Khinchin’s and Lévy’s constants',
+ statement:String.raw`For Lebesgue-almost every real irrational $x=[a_0;a_1,a_2,\ldots]$, as $n\to\infty$,
+$$(a_1\cdots a_n)^{1/n}\to K\approx2.68545,$$
+$$q_n^{1/n}\to L\approx3.27582.$$
+The constants are defined by
+$$\begin{aligned}\log K&=\sum_{k\ge1}(\log k)\,\mu(a_1=k),\\\log L&=\frac{\pi^2}{12\log2}.\end{aligned}$$
+The initial integer part $a_0$ is omitted. These are almost-everywhere statements, not assertions about every irrational or a theorem establishing typicality of a named constant such as π.`,
+ idea:String.raw`The function $\log a_1$ is integrable for the Gauss measure because its digit masses are $O(k^{-2})$. Birkhoff gives the first limit. For the second, put $x_j=T^jx$ after removing the integer part. The exact convergent identity gives
+$$\prod_{j=0}^{n-1}x_j=\frac1{q_n+q_{n-1}x_n}.$$
+Consequently $\log q_n$ differs from $\sum_{j=0}^{n-1}-\log x_j$ by at most $\log2$. Birkhoff reduces the limit to $\int_0^1-\log t\,dt/((1+t)\log2)=\pi^2/(12\log2)$, evaluated by the alternating reciprocal-square series. For the displayed K bracket, the omitted tail beyond M is at most $(\log M+1)/(M\log2)$. As exceptions, $\sqrt2$ has limits $2$ and $1+\sqrt2$. Euler’s digit pattern makes the mean log digit for e diverge; $q_n\ge\prod_{j=1}^na_j$ then makes its denominator-growth statistic diverge too.`,
+ caption:String.raw`Follow the two running logarithmic statistics for a certified finite prefix or for the exact digits of √2 and e. Reference lines show the almost-everywhere constants; the K reference is an explicit convergent-series bracket, and exceptional sequences remain visible.`,deps:['nt-6.13','nt-6.14','prob-6.2.1'],refs:['Einsiedler and Ward, supplied four-chapter notes (21 June 2010), Corollary 3.8 and proof, printed pp.82–86; product-identity proof and explicit tail bound supplied here'],links:{source:ew},tags:['continued fractions','metric number theory'],viz:V.constants},
+]};

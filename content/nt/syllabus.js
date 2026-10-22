@@ -461,36 +461,202 @@ export default {
       title: 'Farey fractions, continued fractions and Pell’s equation',
       summary: String.raw`Fractions between 0 and 1 arranged by size and denominator have a rigid structure, visible in Farey sequences, Ford circles and the Stern–Brocot tree. Continued fractions encode a number by the steps of Euclid’s algorithm; their convergents are the best rational approximations, and they are eventually periodic exactly for quadratic irrationals. That periodicity solves Pell’s equation x² − dy² = 1, and the statistics of partial quotients of a typical number follow the Gauss–Kuzmin law.`,
       items: [
-        { num: '6.1', kind: 'Definition', name: 'Farey sequences and the mediant property', deps: ['nt-1.4'], refs: ['Hardy–Wright §3.1'],
-          pic: 'Grow the Farey sequence of order n by inserting mediants; neighbours a/b < c/d always satisfy bc − ad = 1, checked for every adjacent pair.' },
-        { num: '6.2', kind: 'Definition', name: 'Ford circles', deps: ['nt-6.1'], refs: ['Hardy–Wright ch. 3'],
-          pic: 'Place a circle of diameter 1/q² tangent to the line at each fraction p/q; circles never overlap, and neighbouring Farey fractions give tangent circles.' },
-        { num: '6.3', kind: 'Definition', name: 'Stern–Brocot tree', deps: ['nt-6.1'], refs: ['Hardy–Wright ch. 3'],
-          pic: 'Descend the Stern–Brocot tree toward a target number by L/R moves; each rational appears exactly once, and the run lengths of the path are the continued fraction digits.' },
-        { num: '6.4', kind: 'Definition', name: 'Simple continued fractions and convergents', deps: ['nt-1.3'], refs: ['Hardy–Wright §10.1', 'Hardy–Wright §10.6'],
-          pic: 'Type a rational or a real number; the integer part is split off and the remainder inverted repeatedly, and the resulting partial quotients match the quotients of Euclid’s algorithm.' },
-        { num: '6.5', kind: 'Theorem', name: 'Recurrences for convergents', deps: ['nt-6.4', 'nt-1.4'], refs: ['Hardy–Wright §10.2'],
-          pic: 'A table builds pₙ and qₙ by the recurrences pₙ = aₙpₙ₋₁ + pₙ₋₂; the determinant pₙqₙ₋₁ − pₙ₋₁qₙ alternates ±1 in every row.' },
-        { num: '6.6', kind: 'Theorem', name: 'Infinite continued fractions converge', deps: ['nt-6.5', 'pma-3.14'], refs: ['Hardy–Wright §10.8', 'Hardy–Wright §10.9'],
-          pic: 'Plot convergents of √2, e or π on a number line; they alternate around the target with errors below 1/(qₙqₙ₊₁), shrinking geometrically.' },
-        { num: '6.7', kind: 'Theorem', name: 'Convergents are the best approximations', deps: ['nt-6.6'], refs: ['Hardy–Wright §10.15'],
-          pic: 'For each denominator q up to 1000, the best fraction p/q for a chosen α is found by brute force; record-setting approximations are exactly the convergents (like 355/113 for π).' },
-        { num: '6.8', kind: 'Theorem', name: 'Lagrange: periodic continued fractions are quadratic irrationals', deps: ['nt-6.6'], refs: ['Hardy–Wright §10.12'],
-          pic: 'Enter √d or (a + √d)/b; the expansion is computed in exact arithmetic, the repeating block is boxed, and a purely periodic expansion is folded back into its quadratic equation.' },
-        { num: '6.9', kind: 'Definition', name: 'Pell’s equation', deps: ['nt-6.8'], refs: ['Ireland–Rosen ch. 17'],
-          pic: 'Draw the hyperbola x² − dy² = 1 over the integer grid; lattice points on it are rare and spread out exponentially, as a log-scale view shows.' },
-        { num: '6.10', kind: 'Theorem', name: 'Pell’s equation is solved by the continued fraction of √d', deps: ['nt-6.8', 'nt-6.9'], refs: ['Ireland–Rosen ch. 17', 'Hardy–Wright §14.5'],
-          pic: 'Expand √d up to the end of its first period; the convergent there solves x² − dy² = ±1, even for d = 61 where the smallest solution has ten digits.' },
-        { num: '6.11', kind: 'Theorem', name: 'All Pell solutions are powers of the fundamental one', deps: ['nt-6.10'], refs: ['Ireland–Rosen ch. 17'],
-          pic: 'Multiply (x₁ + y₁√d) by itself repeatedly; each power is a new solution, and a search confirms there are no others in between.' },
-        { num: '6.12', kind: 'Theorem', name: 'The negative Pell equation and odd periods', deps: ['nt-6.10'], refs: ['Ireland–Rosen ch. 17'],
-          pic: 'Tabulate d up to 1000 by the parity of the period of √d; x² − dy² = −1 is solvable exactly in the odd-period rows.' },
-        { num: '6.13', kind: 'Theorem', name: 'Euler’s continued fraction for e', deps: ['nt-6.4', 'pma-3.30'], refs: ['Hardy–Wright ch. 10'],
-          pic: 'The partial quotients of e are computed to high precision and display the pattern [2; 1, 2, 1, 1, 4, 1, 1, 6, …], while those of π show no pattern.' },
-        { num: '6.14', kind: 'Theorem', name: 'Gauss–Kuzmin distribution of partial quotients', deps: ['nt-6.6'], refs: ['Hardy–Wright ch. 10'],
-          pic: 'Pick random reals and tally their partial quotients; the frequencies of 1, 2, 3, … converge to log₂(1 + 1/(k(k + 2))), with about 41.5% ones.' },
-        { num: '6.15', kind: 'Theorem', name: 'Khinchin’s and Lévy’s constants', deps: ['nt-6.14'], refs: ['Hardy–Wright ch. 10'],
-          pic: 'For a random real, the geometric mean of its partial quotients approaches 2.685… and qₙ^(1/n) approaches e^(π²/(12 ln 2)), while e and √2 visibly miss both limits.' },
+        {
+          "num": "6.1",
+          "kind": "Definition",
+          "name": "Farey sequences and the mediant property",
+          "deps": [
+            "nt-1.4"
+          ],
+          "refs": [
+            "Hatcher, Topology of Numbers, §§1.1–1.2, printed pp.20–31"
+          ],
+          "pic": "Select consecutive fractions in an exact Farey list. The plot separates them by denominator, and the table displays the first fraction that can enter their gap. The determinant and denominator sum certify adjacency."
+        },
+        {
+          "num": "6.2",
+          "kind": "Definition",
+          "name": "Ford circles",
+          "deps": [
+            "nt-6.1"
+          ],
+          "refs": [
+            "Hatcher, Topology of Numbers, §1.2, printed pp.32–34"
+          ],
+          "pic": "Inspect Ford circles at their true radii with equal horizontal and vertical scales. A second panel enlarges a selected tangent pair. The determinant certifies tangency even when a circle becomes too small to distinguish in pixels."
+        },
+        {
+          "num": "6.3",
+          "kind": "Definition",
+          "name": "Stern–Brocot tree",
+          "deps": [
+            "nt-6.1",
+            "nt-1.3"
+          ],
+          "refs": [
+            "Hatcher, Topology of Numbers, §1.1, Propositions 1.1 and 1.3, printed pp.20–27; Euclidean path argument"
+          ],
+          "pic": "Search for a positive rational using exact mediants. Step through the current brackets and see every tested mediant along the path. The final-run correction distinguishes continued-fraction digits from literal tree run lengths."
+        },
+        {
+          "num": "6.4",
+          "kind": "Definition",
+          "name": "Simple continued fractions and convergents",
+          "deps": [
+            "nt-1.3"
+          ],
+          "refs": [
+            "Lee and Kumar, MIT 18.781 (Spring 2012), printed Lecture 18, pp.1–2"
+          ],
+          "pic": "Choose an integer numerator, including negative values, and a positive denominator. The table shows every exact Euclidean division and its partial quotient; it stops at an actual zero remainder."
+        },
+        {
+          "num": "6.5",
+          "kind": "Theorem",
+          "name": "Recurrences for convergents",
+          "deps": [
+            "nt-6.4",
+            "nt-1.4"
+          ],
+          "refs": [
+            "Lee and Kumar, printed Lecture 18, Theorems 59–60, pp.2–3"
+          ],
+          "pic": "Build a finite expansion with a chosen integer part and repeated positive tail digit. Inspect the recurrence rows, alternating determinant and logarithmic denominator growth. Large integers are abbreviated for display only."
+        },
+        {
+          "num": "6.6",
+          "kind": "Theorem",
+          "name": "Infinite continued fractions converge",
+          "deps": [
+            "nt-6.5",
+            "pma-3.14"
+          ],
+          "refs": [
+            "Lee and Kumar, printed Lecture 18, Theorem 63 and convergence argument, pp.4–5; printed Lecture 19, p.1"
+          ],
+          "pic": "Compare convergent errors with the neighboring-denominator bound for square roots and e. Stable exact norm identities or independent rational enclosures keep the logarithmic errors meaningful after ordinary decimal subtraction would round to zero."
+        },
+        {
+          "num": "6.7",
+          "kind": "Theorem",
+          "name": "Convergents are the best approximations",
+          "deps": [
+            "nt-6.5",
+            "nt-6.6"
+          ],
+          "refs": [
+            "Einsiedler and Ward, Ergodic Theory with a view towards Number Theory, supplied four-chapter notes (21 June 2010), Proposition 3.3, pp.73–75 and Exercise 3.1.4, p.76; direct consecutive-basis proof"
+          ],
+          "pic": "For every denominator up to the selected bound, compute the nearest numerator and compare errors exactly in the quadratic field. Switch between the two error measures: first-kind records can appear between convergents."
+        },
+        {
+          "num": "6.8",
+          "kind": "Theorem",
+          "name": "Lagrange: periodic continued fractions are quadratic irrationals",
+          "deps": [
+            "nt-6.6"
+          ],
+          "refs": [
+            "Lee and Kumar, printed Lecture 19, Theorem 70, pp.4–5; printed Lecture 20, pp.1–4"
+          ],
+          "pic": "Choose (a+√d)/b. The program normalizes its quadratic state and detects an exact repeated integer pair, including any preperiod. Squares are explicitly excluded; no cycle is inferred from rounded decimal tails."
+        },
+        {
+          "num": "6.9",
+          "kind": "Definition",
+          "name": "Pell’s equation",
+          "deps": [
+            "nt-6.8"
+          ],
+          "refs": [
+            "Lee and Kumar, printed Lecture 21, pp.3–5, Pell–Brahmagupta equations"
+          ],
+          "pic": "Search a bounded positive lattice window and compare it with the real hyperbola. A second panel shows exact fundamental-unit powers on a logarithmic scale, making solutions beyond the search window visible."
+        },
+        {
+          "num": "6.10",
+          "kind": "Theorem",
+          "name": "Pell’s equation is solved by the continued fraction of √d",
+          "deps": [
+            "nt-6.7",
+            "nt-6.8",
+            "nt-6.9"
+          ],
+          "refs": [
+            "Lee and Kumar, printed Lecture 21, Theorems 73,75,76 and Corollary 74, pp.2–5"
+          ],
+          "pic": "Inspect exact convergent norms through the first +1. The parity of the period decides whether one or two periods are required. The selected table keeps the signed norm while the plot shows its magnitude."
+        },
+        {
+          "num": "6.11",
+          "kind": "Theorem",
+          "name": "All Pell solutions are powers of the fundamental one",
+          "deps": [
+            "nt-6.10"
+          ],
+          "refs": [
+            "Lee and Kumar, printed Lecture 21, Theorem 77, p.5 (statement); norm-reduction proof supplied here"
+          ],
+          "pic": "Generate successive solutions with exact integer multiplication. Logarithmic curves show coordinate growth, while the certificate reports the exact norm and number of digits even when the full coordinates exceed the panel width."
+        },
+        {
+          "num": "6.12",
+          "kind": "Theorem",
+          "name": "The negative Pell equation and odd periods",
+          "deps": [
+            "nt-6.10",
+            "nt-6.11"
+          ],
+          "refs": [
+            "Lee and Kumar, printed Lecture 21, Theorem 76, pp.4–5; unit classification as in 6.11"
+          ],
+          "pic": "Classify every radicand up to the selected bound by the exact period length. Odd and even periods have different colors, squares are marked as excluded, and the selected nonsquare has an exact negative-norm certificate or a parity obstruction."
+        },
+        {
+          "num": "6.13",
+          "kind": "Theorem",
+          "name": "Euler’s continued fraction for e",
+          "deps": [
+            "nt-6.4",
+            "nt-6.5",
+            "nt-6.6",
+            "pma-3.30",
+            "pma-6.22"
+          ],
+          "refs": [
+            "Henry Cohn, A Short Proof of the Simple Continued Fraction Expansion of e, American Mathematical Monthly 113 (2006), pp.57–62; author preprint v3, 25 February 2006"
+          ],
+          "pic": "Display Euler’s digits and certify them against an independent factorial-series interval. Convergent errors use exact rational enclosures, so the pattern remains meaningful beyond the precision of the built-in decimal value of e."
+        },
+        {
+          "num": "6.14",
+          "kind": "Theorem",
+          "name": "Gauss–Kuzmin distribution of partial quotients",
+          "deps": [
+            "nt-6.6",
+            "prob-6.1.4a",
+            "prob-6.2.1"
+          ],
+          "refs": [
+            "Einsiedler and Ward, supplied four-chapter notes (21 June 2010), §3.2, Theorem 3.7 and Corollary 3.8, pp.76–86",
+            "Colţescu and Lascu, On the Szüsz’s Solution to Gauss’ Problem (21 October 2010), pp.4–5, transfer recurrence; elementary 23/24 bound derived here"
+          ],
+          "pic": "Compare a reproducible finite ensemble of certified binary intervals with the Gauss law. At iteration zero, the uniform first-digit law differs from the limiting law. A final overflow bin keeps all probability mass, and the sample is explicitly not an infinite random-real experiment."
+        },
+        {
+          "num": "6.15",
+          "kind": "Theorem",
+          "name": "Khinchin’s and Lévy’s constants",
+          "deps": [
+            "nt-6.13",
+            "nt-6.14",
+            "prob-6.2.1"
+          ],
+          "refs": [
+            "Einsiedler and Ward, supplied four-chapter notes (21 June 2010), Corollary 3.8 and proof, printed pp.82–86; product-identity proof and explicit tail bound supplied here"
+          ],
+          "pic": "Follow the two running logarithmic statistics for a certified finite prefix or for the exact digits of √2 and e. Reference lines show the almost-everywhere constants; the K reference is an explicit convergent-series bracket, and exceptional sequences remain visible."
+        }
       ],
     },
     // ───────────────────────────────────────────────────────────── 7
