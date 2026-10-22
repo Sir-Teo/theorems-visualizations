@@ -263,6 +263,8 @@ an eigen-direction, an orthonormal frame, an ellipse's axes) with live numbers.
 
 - For sampled historical lists, distinguish a local typical-spacing heuristic, expected bin counts and a finite fitted regression slope. Equal numbers per logarithmic interval do not force collinearity or a slope of one. Keep that qualification consistent in statement, proof, caption and both readout modes. See the [four-consumer BIGHIST peer](verification/bighist-four-consumer-independent-peer.md).
 
+- Distinguish historical catalog witnesses from production data, lens magnification from numerical aperture, and incoherent intensity from wave amplitude. Modern glass constants do not reproduce historical instruments. Preserve original pressure and energy factors until final rounding, and make single-line saved text agree exactly with the native input. See the [technology review](verification/wave5-tech-review.md).
+
 - **Deps** in the history of technology are *enabling* dependencies: what an invention needed to
   exist (the printing press needs movable type, ink, paper and the screw press), plus the
   physics that explains how it works. Give `credit` with inventor and approximate date.
