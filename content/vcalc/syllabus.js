@@ -203,7 +203,7 @@ export default {
           pic: 'Slide a normal arrow once around the centre line of a Möbius strip with an adjustable number of half-twists; with an odd number it comes back reversed.' },
         { num: '6.9', kind: 'Definition', name: 'Flux of a vector field through a surface', deps: ['vcalc-6.7', 'vcalc-3.1', 'pma-10.49'], refs: ['Marsden–Tromba §7.6', 'Schey ch. II'],
           pic: 'Tilt and stretch a net in a steady flow; F·n is coloured on the net, and the flux readout is largest when the net faces the flow and zero when it lies along it.' },
-        { num: '6.10', kind: 'Theorem', name: 'Gauss–Bonnet theorem (for surfaces)', deps: ['vcalc-6.6', 'vcalc-1.9'], refs: ['Marsden–Tromba §7.7'],
+        { num: '6.10', kind: 'Theorem', name: 'Gauss–Bonnet theorem (for surfaces)', deps: ['vcalc-6.6'], see: ['vcalc-1.9'], refs: ['Marsden–Tromba §7.7'],
           pic: 'Deform a closed surface by dragging control points; the integral of Gaussian curvature stays fixed at 4π for a sphere-like surface and 0 for a torus-like one, while the curvature map changes everywhere.' },
       ],
     },
