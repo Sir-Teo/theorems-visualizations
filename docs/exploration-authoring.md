@@ -1,0 +1,60 @@
+# Authoring and reviewing new exploration methods
+
+Read [the master-plan handoff](master-plan-handoff.md) first. This guide supplements [AUTHORING.md](../AUTHORING.md) for the new exploration namespace. It does not change frozen waves, numeric visualization contracts or existing content acceptance.
+
+## Start with the reader task
+
+Choose one bounded question, audience and method. State what the learner should be able to explain or do and what the exploration cannot establish. Use the coverage registry to locate a genuine gap; do not turn every classification term into a lesson.
+
+Research the exact text, data, object or practice. Record the edition/version, language, locator, access status, source limits, rights and qualified review needs. Discovery metadata is not a read receipt. An access stop is preserved; do not recover a denied body through a mirror.
+
+Before authoring a new method, specify its payload and reader states and add meaningful validation. The current renderer supports source comparison and annotation. Unsupported methods must fail explicitly rather than render a generic numeric control.
+
+## Use canonical data
+
+Edit `explorations/*.json`, the [manifest](../explorations/manifest.json) and supporting method code. Do not hand-edit generated `labs/atlas/*/index.html`.
+
+Use stable source/passage IDs. Mark quotation, paraphrase and original explanation distinctly. Recalculate a passage digest only after checking the altered text against its selected source. Record what formatting changed. Keep source editions and contemporary hosting assets separate in rights decisions.
+
+A candidate collection, external resource or cross-listing is not another authored idea. Use justified collection routes until exact accepted-item links are reviewed. Keep semantic relations outside the prerequisite graph.
+
+## Preserve privacy and access
+
+Render meaningful text before JavaScript runs. Controls need keyboard operation, visible focus and a single-pointer alternative to dragging. Use language tags, labels, non-color distinctions and equivalent descriptions. Media must be optional when the learning task permits; where the perceptual task itself cannot be equivalent, state the alternative's limits.
+
+Keep private notes out of URL parameters and public analytics. Scope saved progress by schema, identity and revision. Never overwrite legacy atlas progress keys or silently migrate older notes. Test blocked storage and malformed saved links.
+
+When incrementing a content revision, list known `previousRevisions` so readers can explicitly export earlier notes. Do not silently import them as current answers. Unreadable current notes must remain untouched and exportable; reset must report whether stored erasure actually succeeded. Plain page anchors must not be parsed as activity state.
+
+## Review an exact version
+
+Use this receipt checklist for each required dimension:
+
+- Canonical ID, revision and current `contentDigest` and `artifactDigest`, taken from the preview builder's output.
+- Reviewer identity, relevant role/context and independence from the author.
+- Dimension reviewed and concrete observations: sources, content/model, language, rights, accessibility or learning.
+- Evidence path, date, pass or changes requested, unresolved limitations and reproducible steps.
+- For learner observation, task, participant context, observed failure/success and resulting repairs; no invented efficacy claim.
+- For publication, actual distribution scope and asset-level rights, with withdrawal/update responsibilities.
+
+Automated tests are author checks. They do not appoint a subject reviewer, prove screen-reader usability or replace formative learning observation. Do not create a passing receipt merely to satisfy a validator.
+
+If a claim, source boundary, activity, rights decision or bound rendering code changes, return the record to draft and obtain fresh reviews for the changed artifact. Historical receipts remain in the append-only array and do not block draft rendering. Only the latest appended receipt per required dimension can approve acceptance, and it must match the current revision and both digests. The latest changes-requested review blocks that dimension even if an earlier review passed. Do not reorder or erase superseded receipts.
+
+## Validate and hand off
+
+```sh
+node scripts/validate-coverage.mjs
+node scripts/build-explorations.mjs
+node scripts/build-explorations.mjs --check
+node --test tests/coverage-registry.test.mjs tests/explorations.test.mjs tests/explorations-ui.test.mjs
+node --test tests/explorations-integration.test.mjs
+```
+
+Inspect desktop/phone pixels in both themes, native input, no-JavaScript reading, source links, saved-state restoration and local export/reset. Run additional checks only for changed behavior or unresolved risks.
+
+Keep at most two draft/in-review new-format explorations. Both slots are currently occupied. Improve or review them before creating a third. Prepare the next briefs and sources without accumulating unreviewed lesson drafts.
+
+Integrate only from the latest accepted production base at the normal handoff boundary. Carry source files, builder, tests and generated previews together; never overwrite an active worktree or copy its entire old checkout into current progress. Public release needs a separate implemented contract and authorization.
+
+Use the [integration package](integration/universal-pilots.md) for a pinned, temporary-snapshot rehearsal. It refuses differing destination files and deliberately excludes automatic replacement of the master plan or production files.

@@ -1,0 +1,5074 @@
+{
+  "schemaVersion": 1,
+  "registryVersion": "0.2.0",
+  "updatedOn": "2026-10-22",
+  "purpose": "Planning coverage and gap discovery; not a runtime manifest or a content acceptance ledger.",
+  "baseline": {
+    "collectionCount": 85,
+    "fieldCount": 13,
+    "domainCount": 30,
+    "pilotCount": 8
+  },
+  "countingPolicy": "Each existing collection has exactly one primary home. Cross-listings are additional views, never additional canonical collections or authored items. No percentage of all human knowledge.",
+  "domains": [
+    {
+      "id": "D01",
+      "title": "Mathematics",
+      "aliases": [
+        "arithmetical reasoning",
+        "geometry",
+        "proof"
+      ],
+      "scope": "Mathematics; includes the candidate gaps below.",
+      "exclusions": [
+        "Applied domain validity belongs to that domain; a proof alone does not establish it."
+      ],
+      "essentialQuestions": [
+        "What makes a claim follow from stated assumptions?"
+      ],
+      "methods": [
+        "proof",
+        "model"
+      ],
+      "explorationIdeas": [
+        "Construct and disprove; compare proofs; translate an everyday problem into a model"
+      ],
+      "gaps": [
+        {
+          "id": "D01-G01",
+          "type": "subject",
+          "description": "Arithmetic, elementary geometry/algebra, mathematical modeling and history as accessible entry routes; deeper specialties remain versioned",
+          "status": "open"
+        }
+      ],
+      "candidateCollections": [
+        {
+          "id": "D01-C01",
+          "title": "Foundations and mathematical modeling",
+          "status": "proposal",
+          "runtimeCollectionId": null
+        }
+      ],
+      "sourceIds": [
+        "isced2013",
+        "ford2015",
+        "loc-outline"
+      ],
+      "bibliographyStatus": "Classification/discovery seeds only; topic bibliography requires a bounded syllabus audit.",
+      "coverage": {
+        "orientation": "planned",
+        "introductory": "not-assessed",
+        "advanced": "not-assessed",
+        "productionAcceptance": "not-tracked-here"
+      },
+      "representationGaps": {
+        "place": "Regional and community coverage not yet audited.",
+        "language": "Source-language and translation coverage not yet audited.",
+        "practice": "Local, Indigenous, domestic and embodied perspectives require situated sources and permissions, where relevant."
+      },
+      "stewardship": {
+        "maintainerRole": "Mathematics coverage editor",
+        "assignee": null,
+        "reviewerRoles": [
+          "Mathematics subject reviewer",
+          "Accessibility reviewer"
+        ],
+        "reviewStatus": "unreviewed",
+        "lastDeskReview": "2026-10-22",
+        "nextReviewTrigger": "Before freezing a syllabus, publishing a domain overview, or changing this inventory."
+      },
+      "pilotIds": []
+    },
+    {
+      "id": "D02",
+      "title": "Statistics, data and research methods",
+      "aliases": [
+        "measurement",
+        "inference",
+        "research methods"
+      ],
+      "scope": "Statistics, data and research methods; includes the candidate gaps below.",
+      "exclusions": [
+        "Do not treat qualitative inquiry as failed quantification or model fit as causality."
+      ],
+      "essentialQuestions": [
+        "What can this evidence justify, and what could bias the inference?"
+      ],
+      "methods": [
+        "experiment",
+        "observation",
+        "argument"
+      ],
+      "explorationIdeas": [
+        "Analyze actual datasets; alter sampling/design; compare evidence and uncertainty"
+      ],
+      "gaps": [
+        {
+          "id": "D02-G01",
+          "type": "subject",
+          "description": "Measurement, surveys, experimental design, qualitative/mixed methods, data stewardship, reproducibility",
+          "status": "open"
+        }
+      ],
+      "candidateCollections": [
+        {
+          "id": "D02-C01",
+          "title": "Measurement and research design",
+          "status": "proposal",
+          "runtimeCollectionId": null
+        }
+      ],
+      "sourceIds": [
+        "isced2013",
+        "ford2015",
+        "loc-outline",
+        "fao-soil",
+        "ars-reesh",
+        "reesh-data"
+      ],
+      "bibliographyStatus": "Classification/discovery seeds plus the bounded pilot sources; a whole-domain syllabus audit is still required.",
+      "coverage": {
+        "orientation": "planned",
+        "introductory": "not-assessed",
+        "advanced": "not-assessed",
+        "productionAcceptance": "not-tracked-here"
+      },
+      "representationGaps": {
+        "place": "Regional and community coverage not yet audited.",
+        "language": "Source-language and translation coverage not yet audited.",
+        "practice": "Local, Indigenous, domestic and embodied perspectives require situated sources and permissions, where relevant."
+      },
+      "stewardship": {
+        "maintainerRole": "Statistics, data and research methods coverage editor",
+        "assignee": null,
+        "reviewerRoles": [
+          "Statistics, data and research methods subject reviewer",
+          "Accessibility reviewer"
+        ],
+        "reviewStatus": "unreviewed",
+        "lastDeskReview": "2026-10-22",
+        "nextReviewTrigger": "Before freezing a syllabus, publishing a domain overview, or changing this inventory."
+      },
+      "pilotIds": [
+        "P05"
+      ]
+    },
+    {
+      "id": "D03",
+      "title": "Computing and information systems",
+      "aliases": [
+        "computer science",
+        "informatics",
+        "software"
+      ],
+      "scope": "Computing and information systems; includes the candidate gaps below.",
+      "exclusions": [
+        "Computing applications do not replace their legal, social or scientific contexts."
+      ],
+      "essentialQuestions": [
+        "How do representations and systems produce behavior?"
+      ],
+      "methods": [
+        "trace",
+        "design",
+        "practice"
+      ],
+      "explorationIdeas": [
+        "Trace execution/packets; debug; inspect query plans; build and test small systems"
+      ],
+      "gaps": [
+        {
+          "id": "D03-G01",
+          "type": "subject",
+          "description": "Programming practice, architecture, operating systems, networks, databases, software engineering, security, HCI, AI systems",
+          "status": "open"
+        }
+      ],
+      "candidateCollections": [
+        {
+          "id": "D03-C01",
+          "title": "Programming and systems foundations",
+          "status": "proposal",
+          "runtimeCollectionId": null
+        }
+      ],
+      "sourceIds": [
+        "isced2013",
+        "ford2015",
+        "loc-outline"
+      ],
+      "bibliographyStatus": "Classification/discovery seeds only; topic bibliography requires a bounded syllabus audit.",
+      "coverage": {
+        "orientation": "planned",
+        "introductory": "not-assessed",
+        "advanced": "not-assessed",
+        "productionAcceptance": "not-tracked-here"
+      },
+      "representationGaps": {
+        "place": "Regional and community coverage not yet audited.",
+        "language": "Source-language and translation coverage not yet audited.",
+        "practice": "Local, Indigenous, domestic and embodied perspectives require situated sources and permissions, where relevant."
+      },
+      "stewardship": {
+        "maintainerRole": "Computing and information systems coverage editor",
+        "assignee": null,
+        "reviewerRoles": [
+          "Computing and information systems subject reviewer",
+          "Accessibility reviewer"
+        ],
+        "reviewStatus": "unreviewed",
+        "lastDeskReview": "2026-10-22",
+        "nextReviewTrigger": "Before freezing a syllabus, publishing a domain overview, or changing this inventory."
+      },
+      "pilotIds": []
+    },
+    {
+      "id": "D04",
+      "title": "Physics, astronomy and space",
+      "aliases": [
+        "astronomy",
+        "space science",
+        "physical science"
+      ],
+      "scope": "Physics, astronomy and space; includes the candidate gaps below.",
+      "exclusions": [
+        "Instrument and idealization limits must accompany mathematical derivations."
+      ],
+      "essentialQuestions": [
+        "Which observations distinguish competing physical models?"
+      ],
+      "methods": [
+        "experiment",
+        "observation",
+        "model"
+      ],
+      "explorationIdeas": [
+        "Compare observations and models; reconstruct experiments; track instrument limits"
+      ],
+      "gaps": [
+        {
+          "id": "D04-G01",
+          "type": "subject",
+          "description": "Experimental measurement, nuclear/particle/plasma physics, cosmology, planetary science, space observation",
+          "status": "open"
+        }
+      ],
+      "candidateCollections": [
+        {
+          "id": "D04-C01",
+          "title": "Measurement and physical models",
+          "status": "proposal",
+          "runtimeCollectionId": null
+        }
+      ],
+      "sourceIds": [
+        "isced2013",
+        "ford2015",
+        "loc-outline"
+      ],
+      "bibliographyStatus": "Classification/discovery seeds only; topic bibliography requires a bounded syllabus audit.",
+      "coverage": {
+        "orientation": "planned",
+        "introductory": "not-assessed",
+        "advanced": "not-assessed",
+        "productionAcceptance": "not-tracked-here"
+      },
+      "representationGaps": {
+        "place": "Regional and community coverage not yet audited.",
+        "language": "Source-language and translation coverage not yet audited.",
+        "practice": "Local, Indigenous, domestic and embodied perspectives require situated sources and permissions, where relevant."
+      },
+      "stewardship": {
+        "maintainerRole": "Physics, astronomy and space coverage editor",
+        "assignee": null,
+        "reviewerRoles": [
+          "Physics, astronomy and space subject reviewer",
+          "Accessibility reviewer"
+        ],
+        "reviewStatus": "unreviewed",
+        "lastDeskReview": "2026-10-22",
+        "nextReviewTrigger": "Before freezing a syllabus, publishing a domain overview, or changing this inventory."
+      },
+      "pilotIds": []
+    },
+    {
+      "id": "D05",
+      "title": "Chemistry and materials",
+      "aliases": [
+        "chemistry",
+        "materials science"
+      ],
+      "scope": "Chemistry and materials; includes the candidate gaps below.",
+      "exclusions": [
+        "Material models do not authorize unsupervised laboratory procedures."
+      ],
+      "essentialQuestions": [
+        "How does composition and structure affect properties and transformations?"
+      ],
+      "methods": [
+        "experiment",
+        "observation",
+        "design"
+      ],
+      "explorationIdeas": [
+        "Inspect structure and spectra; infer composition; compare reaction mechanisms and material processing"
+      ],
+      "gaps": [
+        {
+          "id": "D05-G01",
+          "type": "subject",
+          "description": "Organic, inorganic, analytical and environmental chemistry; polymers, electrochemistry, laboratory methods",
+          "status": "open"
+        }
+      ],
+      "candidateCollections": [
+        {
+          "id": "D05-C01",
+          "title": "Structure, analysis and materials",
+          "status": "proposal",
+          "runtimeCollectionId": null
+        }
+      ],
+      "sourceIds": [
+        "isced2013",
+        "ford2015",
+        "loc-outline"
+      ],
+      "bibliographyStatus": "Classification/discovery seeds only; topic bibliography requires a bounded syllabus audit.",
+      "coverage": {
+        "orientation": "planned",
+        "introductory": "not-assessed",
+        "advanced": "not-assessed",
+        "productionAcceptance": "not-tracked-here"
+      },
+      "representationGaps": {
+        "place": "Regional and community coverage not yet audited.",
+        "language": "Source-language and translation coverage not yet audited.",
+        "practice": "Local, Indigenous, domestic and embodied perspectives require situated sources and permissions, where relevant."
+      },
+      "stewardship": {
+        "maintainerRole": "Chemistry and materials coverage editor",
+        "assignee": null,
+        "reviewerRoles": [
+          "Chemistry and materials subject reviewer",
+          "Accessibility reviewer"
+        ],
+        "reviewStatus": "unreviewed",
+        "lastDeskReview": "2026-10-22",
+        "nextReviewTrigger": "Before freezing a syllabus, publishing a domain overview, or changing this inventory."
+      },
+      "pilotIds": []
+    },
+    {
+      "id": "D06",
+      "title": "Earth, climate, oceans and geography",
+      "aliases": [
+        "geography",
+        "Earth science",
+        "oceans"
+      ],
+      "scope": "Earth, climate, oceans and geography; includes the candidate gaps below.",
+      "exclusions": [
+        "Human geography also needs social evidence beyond physical maps."
+      ],
+      "essentialQuestions": [
+        "How do place, scale and time change our account of Earth systems?"
+      ],
+      "methods": [
+        "observation",
+        "map",
+        "model"
+      ],
+      "explorationIdeas": [
+        "Read field evidence; overlay maps; compare scales and uncertain reconstructions"
+      ],
+      "gaps": [
+        {
+          "id": "D06-G01",
+          "type": "subject",
+          "description": "Hydrology, soils, geochemistry, ocean observation, remote sensing, hazards, human geography",
+          "status": "open"
+        }
+      ],
+      "candidateCollections": [
+        {
+          "id": "D06-C01",
+          "title": "Water, land and geographical evidence",
+          "status": "proposal",
+          "runtimeCollectionId": null
+        }
+      ],
+      "sourceIds": [
+        "isced2013",
+        "ford2015",
+        "loc-outline",
+        "fao-soil",
+        "ars-reesh",
+        "reesh-data"
+      ],
+      "bibliographyStatus": "Classification/discovery seeds plus the bounded pilot sources; a whole-domain syllabus audit is still required.",
+      "coverage": {
+        "orientation": "planned",
+        "introductory": "not-assessed",
+        "advanced": "not-assessed",
+        "productionAcceptance": "not-tracked-here"
+      },
+      "representationGaps": {
+        "place": "Regional and community coverage not yet audited.",
+        "language": "Source-language and translation coverage not yet audited.",
+        "practice": "Local, Indigenous, domestic and embodied perspectives require situated sources and permissions, where relevant."
+      },
+      "stewardship": {
+        "maintainerRole": "Earth, climate, oceans and geography coverage editor",
+        "assignee": null,
+        "reviewerRoles": [
+          "Earth, climate, oceans and geography subject reviewer",
+          "Accessibility reviewer"
+        ],
+        "reviewStatus": "unreviewed",
+        "lastDeskReview": "2026-10-22",
+        "nextReviewTrigger": "Before freezing a syllabus, publishing a domain overview, or changing this inventory."
+      },
+      "pilotIds": [
+        "P05"
+      ]
+    },
+    {
+      "id": "D07",
+      "title": "Life sciences and organisms",
+      "aliases": [
+        "biology",
+        "organisms",
+        "life science"
+      ],
+      "scope": "Life sciences and organisms; includes the candidate gaps below.",
+      "exclusions": [
+        "Human treatment belongs to care and clinical review, not general biology alone."
+      ],
+      "essentialQuestions": [
+        "How do living systems develop, function and evolve?"
+      ],
+      "methods": [
+        "observation",
+        "experiment",
+        "model"
+      ],
+      "explorationIdeas": [
+        "Trace cell processes; compare specimens/lineages; interpret experimental images and assays"
+      ],
+      "gaps": [
+        {
+          "id": "D07-G01",
+          "type": "subject",
+          "description": "Cell/molecular biology, biochemistry, microbiology, immunology, development, botany, zoology, taxonomy",
+          "status": "open"
+        }
+      ],
+      "candidateCollections": [
+        {
+          "id": "D07-C01",
+          "title": "Cells, organisms and biological evidence",
+          "status": "proposal",
+          "runtimeCollectionId": null
+        }
+      ],
+      "sourceIds": [
+        "isced2013",
+        "ford2015",
+        "loc-outline",
+        "mesh",
+        "nhlbi-breathing",
+        "openstax-breathing",
+        "openstax-respiration"
+      ],
+      "bibliographyStatus": "Classification/discovery seeds plus the bounded pilot sources; a whole-domain syllabus audit is still required.",
+      "coverage": {
+        "orientation": "planned",
+        "introductory": "not-assessed",
+        "advanced": "not-assessed",
+        "productionAcceptance": "not-tracked-here"
+      },
+      "representationGaps": {
+        "place": "Regional and community coverage not yet audited.",
+        "language": "Source-language and translation coverage not yet audited.",
+        "practice": "Local, Indigenous, domestic and embodied perspectives require situated sources and permissions, where relevant."
+      },
+      "stewardship": {
+        "maintainerRole": "Life sciences and organisms coverage editor",
+        "assignee": null,
+        "reviewerRoles": [
+          "Life sciences and organisms subject reviewer",
+          "Accessibility reviewer"
+        ],
+        "reviewStatus": "unreviewed",
+        "lastDeskReview": "2026-10-22",
+        "nextReviewTrigger": "Before freezing a syllabus, publishing a domain overview, or changing this inventory."
+      },
+      "pilotIds": [
+        "P06"
+      ]
+    },
+    {
+      "id": "D08",
+      "title": "Ecology, conservation and environmental practice",
+      "aliases": [
+        "environment",
+        "conservation",
+        "ecology"
+      ],
+      "scope": "Ecology, conservation and environmental practice; includes the candidate gaps below.",
+      "exclusions": [
+        "Species counts alone do not settle conservation values or rights."
+      ],
+      "essentialQuestions": [
+        "How can ecological evidence inform choices under competing objectives?"
+      ],
+      "methods": [
+        "observation",
+        "case",
+        "design"
+      ],
+      "explorationIdeas": [
+        "Read field surveys; compare interventions, uncertainty and stakeholder objectives"
+      ],
+      "gaps": [
+        {
+          "id": "D08-G01",
+          "type": "subject",
+          "description": "Biodiversity, restoration, conservation biology, environmental assessment, pollution, resource management",
+          "status": "open"
+        }
+      ],
+      "candidateCollections": [
+        {
+          "id": "D08-C01",
+          "title": "Field ecology and conservation practice",
+          "status": "proposal",
+          "runtimeCollectionId": null
+        }
+      ],
+      "sourceIds": [
+        "isced2013",
+        "ford2015",
+        "loc-outline"
+      ],
+      "bibliographyStatus": "Classification/discovery seeds only; topic bibliography requires a bounded syllabus audit.",
+      "coverage": {
+        "orientation": "planned",
+        "introductory": "not-assessed",
+        "advanced": "not-assessed",
+        "productionAcceptance": "not-tracked-here"
+      },
+      "representationGaps": {
+        "place": "Regional and community coverage not yet audited.",
+        "language": "Source-language and translation coverage not yet audited.",
+        "practice": "Local, Indigenous, domestic and embodied perspectives require situated sources and permissions, where relevant."
+      },
+      "stewardship": {
+        "maintainerRole": "Ecology, conservation and environmental practice coverage editor",
+        "assignee": null,
+        "reviewerRoles": [
+          "Ecology, conservation and environmental practice subject reviewer",
+          "Accessibility reviewer"
+        ],
+        "reviewStatus": "unreviewed",
+        "lastDeskReview": "2026-10-22",
+        "nextReviewTrigger": "Before freezing a syllabus, publishing a domain overview, or changing this inventory."
+      },
+      "pilotIds": []
+    },
+    {
+      "id": "D09",
+      "title": "Health, medicine, care and wellbeing",
+      "aliases": [
+        "medicine",
+        "nursing",
+        "wellbeing"
+      ],
+      "scope": "Health, medicine, care and wellbeing; includes the candidate gaps below.",
+      "exclusions": [
+        "Simulation does not confer clinical competence or personalized diagnosis."
+      ],
+      "essentialQuestions": [
+        "What can an observation tell us about a body, and what remains unknown?"
+      ],
+      "methods": [
+        "observation",
+        "case",
+        "practice"
+      ],
+      "explorationIdeas": [
+        "Inspect anatomy; interpret evidence; use bounded cases and supervised observation rubrics"
+      ],
+      "gaps": [
+        {
+          "id": "D09-G01",
+          "type": "subject",
+          "description": "Anatomy, pathology, clinical reasoning, nursing, rehabilitation, dentistry, mental health, disability, nutrition, social care",
+          "status": "open"
+        }
+      ],
+      "candidateCollections": [
+        {
+          "id": "D09-C01",
+          "title": "Anatomy, observation and care",
+          "status": "proposal",
+          "runtimeCollectionId": null
+        }
+      ],
+      "sourceIds": [
+        "isced2013",
+        "ford2015",
+        "loc-outline",
+        "mesh",
+        "nhlbi-breathing",
+        "openstax-breathing",
+        "openstax-respiration"
+      ],
+      "bibliographyStatus": "Classification/discovery seeds plus the bounded pilot sources; a whole-domain syllabus audit is still required.",
+      "coverage": {
+        "orientation": "planned",
+        "introductory": "not-assessed",
+        "advanced": "not-assessed",
+        "productionAcceptance": "not-tracked-here"
+      },
+      "representationGaps": {
+        "place": "Regional and community coverage not yet audited.",
+        "language": "Source-language and translation coverage not yet audited.",
+        "practice": "Local, Indigenous, domestic and embodied perspectives require situated sources and permissions, where relevant."
+      },
+      "stewardship": {
+        "maintainerRole": "Health, medicine, care and wellbeing coverage editor",
+        "assignee": null,
+        "reviewerRoles": [
+          "Health, medicine, care and wellbeing subject reviewer",
+          "Accessibility reviewer"
+        ],
+        "reviewStatus": "unreviewed",
+        "lastDeskReview": "2026-10-22",
+        "nextReviewTrigger": "Before freezing a syllabus, publishing a domain overview, or changing this inventory."
+      },
+      "pilotIds": [
+        "P06"
+      ]
+    },
+    {
+      "id": "D10",
+      "title": "Agriculture, food, forestry, fisheries and veterinary knowledge",
+      "aliases": [
+        "agronomy",
+        "food",
+        "forestry",
+        "veterinary"
+      ],
+      "scope": "Agriculture, food, forestry, fisheries and veterinary knowledge; includes the candidate gaps below.",
+      "exclusions": [
+        "One site cannot stand for all farming systems or prescribe a local intervention."
+      ],
+      "essentialQuestions": [
+        "How do soil, organisms, climate and livelihoods shape food production?"
+      ],
+      "methods": [
+        "observation",
+        "practice",
+        "model"
+      ],
+      "explorationIdeas": [
+        "Compare soil/crop observations; trace food systems; plan practices for specified local conditions"
+      ],
+      "gaps": [
+        {
+          "id": "D10-G01",
+          "type": "subject",
+          "description": "Agronomy, horticulture, animal/plant health, forestry, aquaculture, food science, agricultural livelihoods",
+          "status": "open"
+        }
+      ],
+      "candidateCollections": [
+        {
+          "id": "D10-C01",
+          "title": "Soil, food and agricultural practice",
+          "status": "proposal",
+          "runtimeCollectionId": null
+        }
+      ],
+      "sourceIds": [
+        "isced2013",
+        "ford2015",
+        "loc-outline",
+        "agrovoc",
+        "fao-soil",
+        "ars-reesh",
+        "reesh-data"
+      ],
+      "bibliographyStatus": "Classification/discovery seeds plus the bounded pilot sources; a whole-domain syllabus audit is still required.",
+      "coverage": {
+        "orientation": "planned",
+        "introductory": "not-assessed",
+        "advanced": "not-assessed",
+        "productionAcceptance": "not-tracked-here"
+      },
+      "representationGaps": {
+        "place": "Regional and community coverage not yet audited.",
+        "language": "Source-language and translation coverage not yet audited.",
+        "practice": "Local, Indigenous, domestic and embodied perspectives require situated sources and permissions, where relevant."
+      },
+      "stewardship": {
+        "maintainerRole": "Agriculture, food, forestry, fisheries and veterinary knowledge coverage editor",
+        "assignee": null,
+        "reviewerRoles": [
+          "Agriculture, food, forestry, fisheries and veterinary knowledge subject reviewer",
+          "Accessibility reviewer"
+        ],
+        "reviewStatus": "unreviewed",
+        "lastDeskReview": "2026-10-22",
+        "nextReviewTrigger": "Before freezing a syllabus, publishing a domain overview, or changing this inventory."
+      },
+      "pilotIds": [
+        "P05"
+      ]
+    },
+    {
+      "id": "D11",
+      "title": "Engineering, manufacturing and technical systems",
+      "aliases": [
+        "engineering",
+        "technical systems"
+      ],
+      "scope": "Engineering, manufacturing and technical systems; includes the candidate gaps below.",
+      "exclusions": [
+        "A design model is not a certified installation or safety approval."
+      ],
+      "essentialQuestions": [
+        "How can a system meet requirements while anticipating failure?"
+      ],
+      "methods": [
+        "design",
+        "trace",
+        "practice"
+      ],
+      "explorationIdeas": [
+        "Design under constraints; inspect failures; compare processes; perform bounded diagnostic exercises"
+      ],
+      "gaps": [
+        {
+          "id": "D11-G01",
+          "type": "subject",
+          "description": "Civil, chemical, environmental, industrial and marine engineering; manufacturing, metrology, maintenance, reliability",
+          "status": "open"
+        }
+      ],
+      "candidateCollections": [
+        {
+          "id": "D11-C01",
+          "title": "Design, manufacture and maintenance",
+          "status": "proposal",
+          "runtimeCollectionId": null
+        }
+      ],
+      "sourceIds": [
+        "isced2013",
+        "ford2015",
+        "loc-outline"
+      ],
+      "bibliographyStatus": "Classification/discovery seeds only; topic bibliography requires a bounded syllabus audit.",
+      "coverage": {
+        "orientation": "planned",
+        "introductory": "not-assessed",
+        "advanced": "not-assessed",
+        "productionAcceptance": "not-tracked-here"
+      },
+      "representationGaps": {
+        "place": "Regional and community coverage not yet audited.",
+        "language": "Source-language and translation coverage not yet audited.",
+        "practice": "Local, Indigenous, domestic and embodied perspectives require situated sources and permissions, where relevant."
+      },
+      "stewardship": {
+        "maintainerRole": "Engineering, manufacturing and technical systems coverage editor",
+        "assignee": null,
+        "reviewerRoles": [
+          "Engineering, manufacturing and technical systems subject reviewer",
+          "Accessibility reviewer"
+        ],
+        "reviewStatus": "unreviewed",
+        "lastDeskReview": "2026-10-22",
+        "nextReviewTrigger": "Before freezing a syllabus, publishing a domain overview, or changing this inventory."
+      },
+      "pilotIds": []
+    },
+    {
+      "id": "D12",
+      "title": "Built environments, architecture and planning",
+      "aliases": [
+        "architecture",
+        "planning",
+        "built environment"
+      ],
+      "scope": "Built environments, architecture and planning; includes the candidate gaps below.",
+      "exclusions": [
+        "Structural adequacy does not resolve access, heritage or land-use conflicts."
+      ],
+      "essentialQuestions": [
+        "How do buildings and settlements serve people in particular places?"
+      ],
+      "methods": [
+        "map",
+        "design",
+        "source-comparison"
+      ],
+      "explorationIdeas": [
+        "Read plans and sections; compare designs, users, materials, sites and historical contexts"
+      ],
+      "gaps": [
+        {
+          "id": "D12-G01",
+          "type": "subject",
+          "description": "Urban/regional planning, landscape, construction, housing, building services, transport, heritage conservation",
+          "status": "open"
+        }
+      ],
+      "candidateCollections": [
+        {
+          "id": "D12-C01",
+          "title": "Reading buildings and urban places",
+          "status": "proposal",
+          "runtimeCollectionId": null
+        }
+      ],
+      "sourceIds": [
+        "isced2013",
+        "ford2015",
+        "loc-outline",
+        "getty"
+      ],
+      "bibliographyStatus": "Classification/discovery seeds only; topic bibliography requires a bounded syllabus audit.",
+      "coverage": {
+        "orientation": "planned",
+        "introductory": "not-assessed",
+        "advanced": "not-assessed",
+        "productionAcceptance": "not-tracked-here"
+      },
+      "representationGaps": {
+        "place": "Regional and community coverage not yet audited.",
+        "language": "Source-language and translation coverage not yet audited.",
+        "practice": "Local, Indigenous, domestic and embodied perspectives require situated sources and permissions, where relevant."
+      },
+      "stewardship": {
+        "maintainerRole": "Built environments, architecture and planning coverage editor",
+        "assignee": null,
+        "reviewerRoles": [
+          "Built environments, architecture and planning subject reviewer",
+          "Accessibility reviewer"
+        ],
+        "reviewStatus": "unreviewed",
+        "lastDeskReview": "2026-10-22",
+        "nextReviewTrigger": "Before freezing a syllabus, publishing a domain overview, or changing this inventory."
+      },
+      "pilotIds": []
+    },
+    {
+      "id": "D13",
+      "title": "Economics and finance",
+      "aliases": [
+        "economics",
+        "finance",
+        "political economy"
+      ],
+      "scope": "Economics and finance; includes the candidate gaps below.",
+      "exclusions": [
+        "Model predictions and financial advice are distinct; schools and context remain visible."
+      ],
+      "essentialQuestions": [
+        "How do institutions and incentives affect production and distribution?"
+      ],
+      "methods": [
+        "model",
+        "observation",
+        "argument"
+      ],
+      "explorationIdeas": [
+        "Compare observed institutions and model predictions; examine distribution and assumptions"
+      ],
+      "gaps": [
+        {
+          "id": "D13-G01",
+          "type": "subject",
+          "description": "Economic history, development, labor, public/institutional economics, household finance, competing schools and methods",
+          "status": "open"
+        }
+      ],
+      "candidateCollections": [
+        {
+          "id": "D13-C01",
+          "title": "Institutions, measurement and economic choices",
+          "status": "proposal",
+          "runtimeCollectionId": null
+        }
+      ],
+      "sourceIds": [
+        "isced2013",
+        "ford2015",
+        "loc-outline"
+      ],
+      "bibliographyStatus": "Classification/discovery seeds only; topic bibliography requires a bounded syllabus audit.",
+      "coverage": {
+        "orientation": "planned",
+        "introductory": "not-assessed",
+        "advanced": "not-assessed",
+        "productionAcceptance": "not-tracked-here"
+      },
+      "representationGaps": {
+        "place": "Regional and community coverage not yet audited.",
+        "language": "Source-language and translation coverage not yet audited.",
+        "practice": "Local, Indigenous, domestic and embodied perspectives require situated sources and permissions, where relevant."
+      },
+      "stewardship": {
+        "maintainerRole": "Economics and finance coverage editor",
+        "assignee": null,
+        "reviewerRoles": [
+          "Economics and finance subject reviewer",
+          "Accessibility reviewer"
+        ],
+        "reviewStatus": "unreviewed",
+        "lastDeskReview": "2026-10-22",
+        "nextReviewTrigger": "Before freezing a syllabus, publishing a domain overview, or changing this inventory."
+      },
+      "pilotIds": []
+    },
+    {
+      "id": "D14",
+      "title": "Business, accounting and organizations",
+      "aliases": [
+        "business",
+        "accounting",
+        "management"
+      ],
+      "scope": "Business, accounting and organizations; includes the candidate gaps below.",
+      "exclusions": [
+        "Accounting rules vary by jurisdiction and date; business frameworks are not universal laws."
+      ],
+      "essentialQuestions": [
+        "How do organizations account for resources and make decisions?"
+      ],
+      "methods": [
+        "case",
+        "trace",
+        "design"
+      ],
+      "explorationIdeas": [
+        "Trace transactions; reconcile statements; compare decisions and operational trade-offs"
+      ],
+      "gaps": [
+        {
+          "id": "D14-G01",
+          "type": "subject",
+          "description": "Accounting, management, entrepreneurship, operations, logistics, marketing, organizational behavior",
+          "status": "open"
+        }
+      ],
+      "candidateCollections": [
+        {
+          "id": "D14-C01",
+          "title": "Transactions and organizational decisions",
+          "status": "proposal",
+          "runtimeCollectionId": null
+        }
+      ],
+      "sourceIds": [
+        "isced2013",
+        "ford2015",
+        "loc-outline",
+        "cra9",
+        "cra19",
+        "cra20",
+        "cra22",
+        "govuk-refunds",
+        "ogl"
+      ],
+      "bibliographyStatus": "Classification/discovery seeds plus the bounded pilot sources; a whole-domain syllabus audit is still required.",
+      "coverage": {
+        "orientation": "planned",
+        "introductory": "not-assessed",
+        "advanced": "not-assessed",
+        "productionAcceptance": "not-tracked-here"
+      },
+      "representationGaps": {
+        "place": "Regional and community coverage not yet audited.",
+        "language": "Source-language and translation coverage not yet audited.",
+        "practice": "Local, Indigenous, domestic and embodied perspectives require situated sources and permissions, where relevant."
+      },
+      "stewardship": {
+        "maintainerRole": "Business, accounting and organizations coverage editor",
+        "assignee": null,
+        "reviewerRoles": [
+          "Business, accounting and organizations subject reviewer",
+          "Accessibility reviewer"
+        ],
+        "reviewStatus": "unreviewed",
+        "lastDeskReview": "2026-10-22",
+        "nextReviewTrigger": "Before freezing a syllabus, publishing a domain overview, or changing this inventory."
+      },
+      "pilotIds": [
+        "P04"
+      ]
+    },
+    {
+      "id": "D15",
+      "title": "Politics, governance and public affairs",
+      "aliases": [
+        "politics",
+        "public administration"
+      ],
+      "scope": "Politics, governance and public affairs; includes the candidate gaps below.",
+      "exclusions": [
+        "Formal rules do not fully describe political practice; law has separate authority checks."
+      ],
+      "essentialQuestions": [
+        "How are collective decisions authorized, contested and implemented?"
+      ],
+      "methods": [
+        "case",
+        "source-comparison",
+        "argument"
+      ],
+      "explorationIdeas": [
+        "Trace institutions; compare cases and sources; distinguish models, rules and actual practice"
+      ],
+      "gaps": [
+        {
+          "id": "D15-G01",
+          "type": "subject",
+          "description": "Comparative institutions, public administration/policy, international relations, peace/conflict, security and military history",
+          "status": "open"
+        }
+      ],
+      "candidateCollections": [
+        {
+          "id": "D15-C01",
+          "title": "Institutions, governance and public decisions",
+          "status": "proposal",
+          "runtimeCollectionId": null
+        }
+      ],
+      "sourceIds": [
+        "isced2013",
+        "ford2015",
+        "loc-outline",
+        "telegram",
+        "wilson1917",
+        "archive-analysis",
+        "nara-reuse"
+      ],
+      "bibliographyStatus": "Classification/discovery seeds plus the bounded pilot sources; a whole-domain syllabus audit is still required.",
+      "coverage": {
+        "orientation": "planned",
+        "introductory": "not-assessed",
+        "advanced": "not-assessed",
+        "productionAcceptance": "not-tracked-here"
+      },
+      "representationGaps": {
+        "place": "Regional and community coverage not yet audited.",
+        "language": "Source-language and translation coverage not yet audited.",
+        "practice": "Local, Indigenous, domestic and embodied perspectives require situated sources and permissions, where relevant."
+      },
+      "stewardship": {
+        "maintainerRole": "Politics, governance and public affairs coverage editor",
+        "assignee": null,
+        "reviewerRoles": [
+          "Politics, governance and public affairs subject reviewer",
+          "Accessibility reviewer"
+        ],
+        "reviewStatus": "unreviewed",
+        "lastDeskReview": "2026-10-22",
+        "nextReviewTrigger": "Before freezing a syllabus, publishing a domain overview, or changing this inventory."
+      },
+      "pilotIds": [
+        "P01"
+      ]
+    },
+    {
+      "id": "D16",
+      "title": "Law, justice and legal institutions",
+      "aliases": [
+        "law",
+        "justice",
+        "legal institutions"
+      ],
+      "scope": "Law, justice and legal institutions; includes the candidate gaps below.",
+      "exclusions": [
+        "No timeless universal law or personalized legal determination."
+      ],
+      "essentialQuestions": [
+        "Which authority applies to these facts in this place and time?"
+      ],
+      "methods": [
+        "case",
+        "argument",
+        "source-comparison"
+      ],
+      "explorationIdeas": [
+        "Explore dated, jurisdiction-specific cases; trace authority and competing arguments"
+      ],
+      "gaps": [
+        {
+          "id": "D16-G01",
+          "type": "subject",
+          "description": "Legal methods, constitutional/public/private law, international and comparative law, procedure, access to justice",
+          "status": "open"
+        }
+      ],
+      "candidateCollections": [
+        {
+          "id": "D16-C01",
+          "title": "Legal reasoning through bounded cases",
+          "status": "proposal",
+          "runtimeCollectionId": null
+        }
+      ],
+      "sourceIds": [
+        "isced2013",
+        "ford2015",
+        "loc-outline",
+        "cra9",
+        "cra19",
+        "cra20",
+        "cra22",
+        "govuk-refunds",
+        "ogl"
+      ],
+      "bibliographyStatus": "Classification/discovery seeds plus the bounded pilot sources; a whole-domain syllabus audit is still required.",
+      "coverage": {
+        "orientation": "planned",
+        "introductory": "not-assessed",
+        "advanced": "not-assessed",
+        "productionAcceptance": "not-tracked-here"
+      },
+      "representationGaps": {
+        "place": "Regional and community coverage not yet audited.",
+        "language": "Source-language and translation coverage not yet audited.",
+        "practice": "Local, Indigenous, domestic and embodied perspectives require situated sources and permissions, where relevant."
+      },
+      "stewardship": {
+        "maintainerRole": "Law, justice and legal institutions coverage editor",
+        "assignee": null,
+        "reviewerRoles": [
+          "Law, justice and legal institutions subject reviewer",
+          "Accessibility reviewer"
+        ],
+        "reviewStatus": "unreviewed",
+        "lastDeskReview": "2026-10-22",
+        "nextReviewTrigger": "Before freezing a syllabus, publishing a domain overview, or changing this inventory."
+      },
+      "pilotIds": [
+        "P04"
+      ]
+    },
+    {
+      "id": "D17",
+      "title": "Sociology, anthropology and cultural life",
+      "aliases": [
+        "sociology",
+        "anthropology",
+        "cultural studies"
+      ],
+      "scope": "Sociology, anthropology and cultural life; includes the candidate gaps below.",
+      "exclusions": [
+        "A community account is situated; it cannot represent all members or cultures."
+      ],
+      "essentialQuestions": [
+        "How do people make social lives, categories and institutions?"
+      ],
+      "methods": [
+        "observation",
+        "source-comparison",
+        "argument"
+      ],
+      "explorationIdeas": [
+        "Compare contextualized accounts; inspect methods and categories; examine networks alongside lived accounts"
+      ],
+      "gaps": [
+        {
+          "id": "D17-G01",
+          "type": "subject",
+          "description": "Social institutions, ethnography, kinship, migration, inequality, gender, work, material culture, area studies",
+          "status": "open"
+        }
+      ],
+      "candidateCollections": [
+        {
+          "id": "D17-C01",
+          "title": "Ethnography and social institutions",
+          "status": "proposal",
+          "runtimeCollectionId": null
+        }
+      ],
+      "sourceIds": [
+        "isced2013",
+        "ford2015",
+        "loc-outline",
+        "ich-domains"
+      ],
+      "bibliographyStatus": "Classification/discovery seeds only; topic bibliography requires a bounded syllabus audit.",
+      "coverage": {
+        "orientation": "planned",
+        "introductory": "not-assessed",
+        "advanced": "not-assessed",
+        "productionAcceptance": "not-tracked-here"
+      },
+      "representationGaps": {
+        "place": "Regional and community coverage not yet audited.",
+        "language": "Source-language and translation coverage not yet audited.",
+        "practice": "Local, Indigenous, domestic and embodied perspectives require situated sources and permissions, where relevant."
+      },
+      "stewardship": {
+        "maintainerRole": "Sociology, anthropology and cultural life coverage editor",
+        "assignee": null,
+        "reviewerRoles": [
+          "Sociology, anthropology and cultural life subject reviewer",
+          "Accessibility reviewer"
+        ],
+        "reviewStatus": "unreviewed",
+        "lastDeskReview": "2026-10-22",
+        "nextReviewTrigger": "Before freezing a syllabus, publishing a domain overview, or changing this inventory."
+      },
+      "pilotIds": []
+    },
+    {
+      "id": "D18",
+      "title": "Psychology, mind and human development",
+      "aliases": [
+        "psychology",
+        "mind",
+        "development"
+      ],
+      "scope": "Psychology, mind and human development; includes the candidate gaps below.",
+      "exclusions": [
+        "Laboratory effects are not individual diagnoses or universal human traits."
+      ],
+      "essentialQuestions": [
+        "How can we study mind and development without exceeding the evidence?"
+      ],
+      "methods": [
+        "experiment",
+        "observation",
+        "model"
+      ],
+      "explorationIdeas": [
+        "Reconstruct experiments; compare explanations, replication evidence and measurement limits"
+      ],
+      "gaps": [
+        {
+          "id": "D18-G01",
+          "type": "subject",
+          "description": "Cognitive, social, developmental and clinical psychology; emotion, personality, lifespan development",
+          "status": "open"
+        }
+      ],
+      "candidateCollections": [
+        {
+          "id": "D18-C01",
+          "title": "Behavior, development and measurement",
+          "status": "proposal",
+          "runtimeCollectionId": null
+        }
+      ],
+      "sourceIds": [
+        "isced2013",
+        "ford2015",
+        "loc-outline"
+      ],
+      "bibliographyStatus": "Classification/discovery seeds only; topic bibliography requires a bounded syllabus audit.",
+      "coverage": {
+        "orientation": "planned",
+        "introductory": "not-assessed",
+        "advanced": "not-assessed",
+        "productionAcceptance": "not-tracked-here"
+      },
+      "representationGaps": {
+        "place": "Regional and community coverage not yet audited.",
+        "language": "Source-language and translation coverage not yet audited.",
+        "practice": "Local, Indigenous, domestic and embodied perspectives require situated sources and permissions, where relevant."
+      },
+      "stewardship": {
+        "maintainerRole": "Psychology, mind and human development coverage editor",
+        "assignee": null,
+        "reviewerRoles": [
+          "Psychology, mind and human development subject reviewer",
+          "Accessibility reviewer"
+        ],
+        "reviewStatus": "unreviewed",
+        "lastDeskReview": "2026-10-22",
+        "nextReviewTrigger": "Before freezing a syllabus, publishing a domain overview, or changing this inventory."
+      },
+      "pilotIds": []
+    },
+    {
+      "id": "D19",
+      "title": "Education and learning",
+      "aliases": [
+        "education",
+        "pedagogy",
+        "learning"
+      ],
+      "scope": "Education and learning; includes the candidate gaps below.",
+      "exclusions": [
+        "Task completion alone is not durable mastery or demonstrated efficacy."
+      ],
+      "essentialQuestions": [
+        "What helps someone learn, and how would we know?"
+      ],
+      "methods": [
+        "design",
+        "observation",
+        "case"
+      ],
+      "explorationIdeas": [
+        "Compare explanations; design tasks; inspect learner errors and assessment validity"
+      ],
+      "gaps": [
+        {
+          "id": "D19-G01",
+          "type": "subject",
+          "description": "Pedagogy, curriculum, literacy/numeracy, assessment, special/inclusive education, adult learning, educational institutions",
+          "status": "open"
+        }
+      ],
+      "candidateCollections": [
+        {
+          "id": "D19-C01",
+          "title": "Learning tasks and assessment",
+          "status": "proposal",
+          "runtimeCollectionId": null
+        }
+      ],
+      "sourceIds": [
+        "isced2013",
+        "ford2015",
+        "loc-outline"
+      ],
+      "bibliographyStatus": "Classification/discovery seeds only; topic bibliography requires a bounded syllabus audit.",
+      "coverage": {
+        "orientation": "planned",
+        "introductory": "not-assessed",
+        "advanced": "not-assessed",
+        "productionAcceptance": "not-tracked-here"
+      },
+      "representationGaps": {
+        "place": "Regional and community coverage not yet audited.",
+        "language": "Source-language and translation coverage not yet audited.",
+        "practice": "Local, Indigenous, domestic and embodied perspectives require situated sources and permissions, where relevant."
+      },
+      "stewardship": {
+        "maintainerRole": "Education and learning coverage editor",
+        "assignee": null,
+        "reviewerRoles": [
+          "Education and learning subject reviewer",
+          "Accessibility reviewer"
+        ],
+        "reviewStatus": "unreviewed",
+        "lastDeskReview": "2026-10-22",
+        "nextReviewTrigger": "Before freezing a syllabus, publishing a domain overview, or changing this inventory."
+      },
+      "pilotIds": []
+    },
+    {
+      "id": "D20",
+      "title": "History, archaeology and historical methods",
+      "aliases": [
+        "history",
+        "archaeology",
+        "historiography"
+      ],
+      "scope": "History, archaeology and historical methods; includes the candidate gaps below.",
+      "exclusions": [
+        "A chronology or one surviving account is not a complete explanation of an event."
+      ],
+      "essentialQuestions": [
+        "What can surviving traces tell us about the past?"
+      ],
+      "methods": [
+        "source-comparison",
+        "map",
+        "argument"
+      ],
+      "explorationIdeas": [
+        "Compare sources/artifacts; reconstruct chronologies; expose inference and preservation gaps"
+      ],
+      "gaps": [
+        {
+          "id": "D20-G01",
+          "type": "subject",
+          "description": "Regional/world histories, archaeology, historiography, oral history, paleography, archival methods, histories of everyday life",
+          "status": "open"
+        }
+      ],
+      "candidateCollections": [
+        {
+          "id": "D20-C01",
+          "title": "Historical evidence and interpretation",
+          "status": "proposal",
+          "runtimeCollectionId": null
+        }
+      ],
+      "sourceIds": [
+        "isced2013",
+        "ford2015",
+        "loc-outline",
+        "getty",
+        "telegram",
+        "wilson1917",
+        "archive-analysis",
+        "nara-reuse"
+      ],
+      "bibliographyStatus": "Classification/discovery seeds plus the bounded pilot sources; a whole-domain syllabus audit is still required.",
+      "coverage": {
+        "orientation": "planned",
+        "introductory": "not-assessed",
+        "advanced": "not-assessed",
+        "productionAcceptance": "not-tracked-here"
+      },
+      "representationGaps": {
+        "place": "Regional and community coverage not yet audited.",
+        "language": "Source-language and translation coverage not yet audited.",
+        "practice": "Local, Indigenous, domestic and embodied perspectives require situated sources and permissions, where relevant."
+      },
+      "stewardship": {
+        "maintainerRole": "History, archaeology and historical methods coverage editor",
+        "assignee": null,
+        "reviewerRoles": [
+          "History, archaeology and historical methods subject reviewer",
+          "Accessibility reviewer"
+        ],
+        "reviewStatus": "unreviewed",
+        "lastDeskReview": "2026-10-22",
+        "nextReviewTrigger": "Before freezing a syllabus, publishing a domain overview, or changing this inventory."
+      },
+      "pilotIds": [
+        "P01"
+      ]
+    },
+    {
+      "id": "D21",
+      "title": "Philosophy, ethics and intellectual traditions",
+      "aliases": [
+        "philosophy",
+        "ethics",
+        "intellectual traditions"
+      ],
+      "scope": "Philosophy, ethics and intellectual traditions; includes the candidate gaps below.",
+      "exclusions": [
+        "Normative and conceptual claims are not settled by an animation or popularity."
+      ],
+      "essentialQuestions": [
+        "Which premises and objections shape a defensible position?"
+      ],
+      "methods": [
+        "argument",
+        "source-comparison"
+      ],
+      "explorationIdeas": [
+        "Reconstruct arguments; test objections; distinguish conceptual, empirical and normative premises"
+      ],
+      "gaps": [
+        {
+          "id": "D21-G01",
+          "type": "subject",
+          "description": "Epistemology, metaphysics, ethics, aesthetics, political philosophy, traditions across regions and eras",
+          "status": "open"
+        }
+      ],
+      "candidateCollections": [
+        {
+          "id": "D21-C01",
+          "title": "Arguments, obligations and objections",
+          "status": "proposal",
+          "runtimeCollectionId": null
+        }
+      ],
+      "sourceIds": [
+        "isced2013",
+        "ford2015",
+        "loc-outline",
+        "legge-analects",
+        "web-matthew"
+      ],
+      "bibliographyStatus": "Classification/discovery seeds plus the bounded pilot sources; a whole-domain syllabus audit is still required.",
+      "coverage": {
+        "orientation": "planned",
+        "introductory": "not-assessed",
+        "advanced": "not-assessed",
+        "productionAcceptance": "not-tracked-here"
+      },
+      "representationGaps": {
+        "place": "Regional and community coverage not yet audited.",
+        "language": "Source-language and translation coverage not yet audited.",
+        "practice": "Local, Indigenous, domestic and embodied perspectives require situated sources and permissions, where relevant."
+      },
+      "stewardship": {
+        "maintainerRole": "Philosophy, ethics and intellectual traditions coverage editor",
+        "assignee": null,
+        "reviewerRoles": [
+          "Philosophy, ethics and intellectual traditions subject reviewer",
+          "Accessibility reviewer"
+        ],
+        "reviewStatus": "unreviewed",
+        "lastDeskReview": "2026-10-22",
+        "nextReviewTrigger": "Before freezing a syllabus, publishing a domain overview, or changing this inventory."
+      },
+      "pilotIds": [
+        "P03"
+      ]
+    },
+    {
+      "id": "D22",
+      "title": "Religion, belief and worldview traditions",
+      "aliases": [
+        "religious studies",
+        "theology",
+        "worldviews"
+      ],
+      "scope": "Religion, belief and worldview traditions; includes the candidate gaps below.",
+      "exclusions": [
+        "Describing a belief does not endorse its truth or define all adherents."
+      ],
+      "essentialQuestions": [
+        "How are texts and practices understood within particular traditions?"
+      ],
+      "methods": [
+        "source-comparison",
+        "argument",
+        "observation"
+      ],
+      "explorationIdeas": [
+        "Annotate situated texts and practices; compare interpretations without treating beliefs as universal facts"
+      ],
+      "gaps": [
+        {
+          "id": "D22-G01",
+          "type": "subject",
+          "description": "Religious studies, theology in context, scriptures/commentaries, ritual, secular worldviews, historical comparison",
+          "status": "open"
+        }
+      ],
+      "candidateCollections": [
+        {
+          "id": "D22-C01",
+          "title": "Situated texts, rituals and worldviews",
+          "status": "proposal",
+          "runtimeCollectionId": null
+        }
+      ],
+      "sourceIds": [
+        "isced2013",
+        "ford2015",
+        "loc-outline",
+        "ich-domains",
+        "legge-analects",
+        "web-matthew"
+      ],
+      "bibliographyStatus": "Classification/discovery seeds plus the bounded pilot sources; a whole-domain syllabus audit is still required.",
+      "coverage": {
+        "orientation": "planned",
+        "introductory": "not-assessed",
+        "advanced": "not-assessed",
+        "productionAcceptance": "not-tracked-here"
+      },
+      "representationGaps": {
+        "place": "Regional and community coverage not yet audited.",
+        "language": "Source-language and translation coverage not yet audited.",
+        "practice": "Local, Indigenous, domestic and embodied perspectives require situated sources and permissions, where relevant."
+      },
+      "stewardship": {
+        "maintainerRole": "Religion, belief and worldview traditions coverage editor",
+        "assignee": null,
+        "reviewerRoles": [
+          "Religion, belief and worldview traditions subject reviewer",
+          "Accessibility reviewer"
+        ],
+        "reviewStatus": "unreviewed",
+        "lastDeskReview": "2026-10-22",
+        "nextReviewTrigger": "Before freezing a syllabus, publishing a domain overview, or changing this inventory."
+      },
+      "pilotIds": [
+        "P03"
+      ]
+    },
+    {
+      "id": "D23",
+      "title": "Languages, linguistics and communication",
+      "aliases": [
+        "linguistics",
+        "languages",
+        "communication"
+      ],
+      "scope": "Languages, linguistics and communication; includes the candidate gaps below.",
+      "exclusions": [
+        "Translation does not erase language, dialect, register or sign-language differences."
+      ],
+      "essentialQuestions": [
+        "How do language choices shape meaning in context?"
+      ],
+      "methods": [
+        "annotation",
+        "source-comparison",
+        "practice"
+      ],
+      "explorationIdeas": [
+        "Align utterances/texts; compare grammatical choices; practice with contextual feedback"
+      ],
+      "gaps": [
+        {
+          "id": "D23-G01",
+          "type": "subject",
+          "description": "Language families, descriptive linguistics, sociolinguistics, sign languages, language learning, translation, rhetoric",
+          "status": "open"
+        }
+      ],
+      "candidateCollections": [
+        {
+          "id": "D23-C01",
+          "title": "Language, meaning and translation",
+          "status": "proposal",
+          "runtimeCollectionId": null
+        }
+      ],
+      "sourceIds": [
+        "isced2013",
+        "ford2015",
+        "loc-outline",
+        "aston-pond",
+        "hearn-pond",
+        "ndl-pond",
+        "koto-basho",
+        "gutenberg42735",
+        "copyright-basics"
+      ],
+      "bibliographyStatus": "Classification/discovery seeds plus the bounded pilot sources; a whole-domain syllabus audit is still required.",
+      "coverage": {
+        "orientation": "planned",
+        "introductory": "not-assessed",
+        "advanced": "not-assessed",
+        "productionAcceptance": "not-tracked-here"
+      },
+      "representationGaps": {
+        "place": "Regional and community coverage not yet audited.",
+        "language": "Source-language and translation coverage not yet audited.",
+        "practice": "Local, Indigenous, domestic and embodied perspectives require situated sources and permissions, where relevant."
+      },
+      "stewardship": {
+        "maintainerRole": "Languages, linguistics and communication coverage editor",
+        "assignee": null,
+        "reviewerRoles": [
+          "Languages, linguistics and communication subject reviewer",
+          "Accessibility reviewer"
+        ],
+        "reviewStatus": "unreviewed",
+        "lastDeskReview": "2026-10-22",
+        "nextReviewTrigger": "Before freezing a syllabus, publishing a domain overview, or changing this inventory."
+      },
+      "pilotIds": [
+        "P02"
+      ]
+    },
+    {
+      "id": "D24",
+      "title": "Literature, philology and storytelling",
+      "aliases": [
+        "literature",
+        "philology",
+        "storytelling"
+      ],
+      "scope": "Literature, philology and storytelling; includes the candidate gaps below.",
+      "exclusions": [
+        "Interpretation needs evidence but may admit several defensible answers."
+      ],
+      "essentialQuestions": [
+        "How does a reading account for the words and their form?"
+      ],
+      "methods": [
+        "annotation",
+        "source-comparison",
+        "argument"
+      ],
+      "explorationIdeas": [
+        "Close-read passages; compare variants/translations; inspect voice, form and competing readings"
+      ],
+      "gaps": [
+        {
+          "id": "D24-G01",
+          "type": "subject",
+          "description": "Poetry, drama, prose, oral literature, literary history/criticism, textual scholarship, narrative traditions",
+          "status": "open"
+        }
+      ],
+      "candidateCollections": [
+        {
+          "id": "D24-C01",
+          "title": "Close reading across versions",
+          "status": "proposal",
+          "runtimeCollectionId": null
+        }
+      ],
+      "sourceIds": [
+        "isced2013",
+        "ford2015",
+        "loc-outline",
+        "ich-domains",
+        "aston-pond",
+        "hearn-pond",
+        "ndl-pond",
+        "koto-basho",
+        "gutenberg42735",
+        "copyright-basics"
+      ],
+      "bibliographyStatus": "Classification/discovery seeds plus the bounded pilot sources; a whole-domain syllabus audit is still required.",
+      "coverage": {
+        "orientation": "planned",
+        "introductory": "not-assessed",
+        "advanced": "not-assessed",
+        "productionAcceptance": "not-tracked-here"
+      },
+      "representationGaps": {
+        "place": "Regional and community coverage not yet audited.",
+        "language": "Source-language and translation coverage not yet audited.",
+        "practice": "Local, Indigenous, domestic and embodied perspectives require situated sources and permissions, where relevant."
+      },
+      "stewardship": {
+        "maintainerRole": "Literature, philology and storytelling coverage editor",
+        "assignee": null,
+        "reviewerRoles": [
+          "Literature, philology and storytelling subject reviewer",
+          "Accessibility reviewer"
+        ],
+        "reviewStatus": "unreviewed",
+        "lastDeskReview": "2026-10-22",
+        "nextReviewTrigger": "Before freezing a syllabus, publishing a domain overview, or changing this inventory."
+      },
+      "pilotIds": [
+        "P02"
+      ]
+    },
+    {
+      "id": "D25",
+      "title": "Visual arts, design and cultural heritage",
+      "aliases": [
+        "art",
+        "design",
+        "heritage"
+      ],
+      "scope": "Visual arts, design and cultural heritage; includes the candidate gaps below.",
+      "exclusions": [
+        "Reproduction access does not settle ownership, provenance or cultural permissions."
+      ],
+      "essentialQuestions": [
+        "How do form, material and context shape an artwork or object?"
+      ],
+      "methods": [
+        "annotation",
+        "design",
+        "source-comparison"
+      ],
+      "explorationIdeas": [
+        "Annotate works; compare materials/context; make compositions; inspect restoration evidence"
+      ],
+      "gaps": [
+        {
+          "id": "D25-G01",
+          "type": "subject",
+          "description": "Art history, drawing, painting, sculpture, photography, graphic/interaction design, museums, conservation",
+          "status": "open"
+        }
+      ],
+      "candidateCollections": [
+        {
+          "id": "D25-C01",
+          "title": "Objects, images and visual interpretation",
+          "status": "proposal",
+          "runtimeCollectionId": null
+        }
+      ],
+      "sourceIds": [
+        "isced2013",
+        "ford2015",
+        "loc-outline",
+        "getty",
+        "textile-techniques"
+      ],
+      "bibliographyStatus": "Classification/discovery seeds plus the bounded pilot sources; a whole-domain syllabus audit is still required.",
+      "coverage": {
+        "orientation": "planned",
+        "introductory": "not-assessed",
+        "advanced": "not-assessed",
+        "productionAcceptance": "not-tracked-here"
+      },
+      "representationGaps": {
+        "place": "Regional and community coverage not yet audited.",
+        "language": "Source-language and translation coverage not yet audited.",
+        "practice": "Local, Indigenous, domestic and embodied perspectives require situated sources and permissions, where relevant."
+      },
+      "stewardship": {
+        "maintainerRole": "Visual arts, design and cultural heritage coverage editor",
+        "assignee": null,
+        "reviewerRoles": [
+          "Visual arts, design and cultural heritage subject reviewer",
+          "Accessibility reviewer"
+        ],
+        "reviewStatus": "unreviewed",
+        "lastDeskReview": "2026-10-22",
+        "nextReviewTrigger": "Before freezing a syllabus, publishing a domain overview, or changing this inventory."
+      },
+      "pilotIds": [
+        "P07"
+      ]
+    },
+    {
+      "id": "D26",
+      "title": "Music and sound",
+      "aliases": [
+        "music",
+        "sound",
+        "composition"
+      ],
+      "scope": "Music and sound; includes the candidate gaps below.",
+      "exclusions": [
+        "Acoustic models do not exhaust cultural or performative knowledge."
+      ],
+      "essentialQuestions": [
+        "What choices make a phrase sound different, and why?"
+      ],
+      "methods": [
+        "performance",
+        "annotation",
+        "design"
+      ],
+      "explorationIdeas": [
+        "Compare interpretations and sound traditions; compose; align score, gesture and audio"
+      ],
+      "gaps": [
+        {
+          "id": "D26-G01",
+          "type": "subject",
+          "description": "Performance, composition, ethnomusicology, music history, recording, instrument making and listening practices",
+          "status": "open"
+        }
+      ],
+      "candidateCollections": [
+        {
+          "id": "D26-C01",
+          "title": "Listening, creating and interpreting",
+          "status": "proposal",
+          "runtimeCollectionId": null
+        }
+      ],
+      "sourceIds": [
+        "isced2013",
+        "ford2015",
+        "loc-outline",
+        "ich-domains",
+        "carnegie-expression"
+      ],
+      "bibliographyStatus": "Classification/discovery seeds plus the bounded pilot sources; a whole-domain syllabus audit is still required.",
+      "coverage": {
+        "orientation": "planned",
+        "introductory": "not-assessed",
+        "advanced": "not-assessed",
+        "productionAcceptance": "not-tracked-here"
+      },
+      "representationGaps": {
+        "place": "Regional and community coverage not yet audited.",
+        "language": "Source-language and translation coverage not yet audited.",
+        "practice": "Local, Indigenous, domestic and embodied perspectives require situated sources and permissions, where relevant."
+      },
+      "stewardship": {
+        "maintainerRole": "Music and sound coverage editor",
+        "assignee": null,
+        "reviewerRoles": [
+          "Music and sound subject reviewer",
+          "Accessibility reviewer"
+        ],
+        "reviewStatus": "unreviewed",
+        "lastDeskReview": "2026-10-22",
+        "nextReviewTrigger": "Before freezing a syllabus, publishing a domain overview, or changing this inventory."
+      },
+      "pilotIds": [
+        "P08"
+      ]
+    },
+    {
+      "id": "D27",
+      "title": "Theatre, dance, film and performance",
+      "aliases": [
+        "theatre",
+        "dance",
+        "film",
+        "performance"
+      ],
+      "scope": "Theatre, dance, film and performance; includes the candidate gaps below.",
+      "exclusions": [
+        "Score/event correctness is not full performance quality or embodied skill."
+      ],
+      "essentialQuestions": [
+        "How do movement, staging and editing create meaning?"
+      ],
+      "methods": [
+        "performance",
+        "annotation",
+        "practice"
+      ],
+      "explorationIdeas": [
+        "Compare staging/editing; annotate movement/timing; rehearse with explicit observation criteria"
+      ],
+      "gaps": [
+        {
+          "id": "D27-G01",
+          "type": "subject",
+          "description": "Acting, choreography, dramaturgy, cinema, stagecraft, performance history and traditions",
+          "status": "open"
+        }
+      ],
+      "candidateCollections": [
+        {
+          "id": "D27-C01",
+          "title": "Performance choices and situated rehearsal",
+          "status": "proposal",
+          "runtimeCollectionId": null
+        }
+      ],
+      "sourceIds": [
+        "isced2013",
+        "ford2015",
+        "loc-outline",
+        "ich-domains",
+        "carnegie-expression"
+      ],
+      "bibliographyStatus": "Classification/discovery seeds plus the bounded pilot sources; a whole-domain syllabus audit is still required.",
+      "coverage": {
+        "orientation": "planned",
+        "introductory": "not-assessed",
+        "advanced": "not-assessed",
+        "productionAcceptance": "not-tracked-here"
+      },
+      "representationGaps": {
+        "place": "Regional and community coverage not yet audited.",
+        "language": "Source-language and translation coverage not yet audited.",
+        "practice": "Local, Indigenous, domestic and embodied perspectives require situated sources and permissions, where relevant."
+      },
+      "stewardship": {
+        "maintainerRole": "Theatre, dance, film and performance coverage editor",
+        "assignee": null,
+        "reviewerRoles": [
+          "Theatre, dance, film and performance subject reviewer",
+          "Accessibility reviewer"
+        ],
+        "reviewStatus": "unreviewed",
+        "lastDeskReview": "2026-10-22",
+        "nextReviewTrigger": "Before freezing a syllabus, publishing a domain overview, or changing this inventory."
+      },
+      "pilotIds": [
+        "P08"
+      ]
+    },
+    {
+      "id": "D28",
+      "title": "Media, journalism, information and archives",
+      "aliases": [
+        "journalism",
+        "archives",
+        "information studies"
+      ],
+      "scope": "Media, journalism, information and archives; includes the candidate gaps below.",
+      "exclusions": [
+        "A catalog or search index is not evidence of truth or complete representation."
+      ],
+      "essentialQuestions": [
+        "How do records and editorial choices shape what can be known?"
+      ],
+      "methods": [
+        "source-comparison",
+        "trace",
+        "case"
+      ],
+      "explorationIdeas": [
+        "Trace a claim to evidence; compare editorial choices; examine classification and preservation"
+      ],
+      "gaps": [
+        {
+          "id": "D28-G01",
+          "type": "subject",
+          "description": "Journalism, media studies, publishing, library/information science, records, archives, information literacy",
+          "status": "open"
+        }
+      ],
+      "candidateCollections": [
+        {
+          "id": "D28-C01",
+          "title": "Claims, records and information literacy",
+          "status": "proposal",
+          "runtimeCollectionId": null
+        }
+      ],
+      "sourceIds": [
+        "isced2013",
+        "ford2015",
+        "loc-outline",
+        "telegram",
+        "wilson1917",
+        "archive-analysis",
+        "nara-reuse"
+      ],
+      "bibliographyStatus": "Classification/discovery seeds plus the bounded pilot sources; a whole-domain syllabus audit is still required.",
+      "coverage": {
+        "orientation": "planned",
+        "introductory": "not-assessed",
+        "advanced": "not-assessed",
+        "productionAcceptance": "not-tracked-here"
+      },
+      "representationGaps": {
+        "place": "Regional and community coverage not yet audited.",
+        "language": "Source-language and translation coverage not yet audited.",
+        "practice": "Local, Indigenous, domestic and embodied perspectives require situated sources and permissions, where relevant."
+      },
+      "stewardship": {
+        "maintainerRole": "Media, journalism, information and archives coverage editor",
+        "assignee": null,
+        "reviewerRoles": [
+          "Media, journalism, information and archives subject reviewer",
+          "Accessibility reviewer"
+        ],
+        "reviewStatus": "unreviewed",
+        "lastDeskReview": "2026-10-22",
+        "nextReviewTrigger": "Before freezing a syllabus, publishing a domain overview, or changing this inventory."
+      },
+      "pilotIds": [
+        "P01"
+      ]
+    },
+    {
+      "id": "D29",
+      "title": "Crafts, trades and everyday practical knowledge",
+      "aliases": [
+        "crafts",
+        "trades",
+        "domestic knowledge"
+      ],
+      "scope": "Crafts, trades and everyday practical knowledge; includes the candidate gaps below.",
+      "exclusions": [
+        "A simulated task does not certify dexterity or permission to reproduce restricted traditions."
+      ],
+      "essentialQuestions": [
+        "What can be learned only by making, maintaining or caring in context?"
+      ],
+      "methods": [
+        "practice",
+        "design",
+        "observation"
+      ],
+      "explorationIdeas": [
+        "Inspect original/licensed demonstrations; sequence tasks; diagnose mistakes; practice physically"
+      ],
+      "gaps": [
+        {
+          "id": "D29-G01",
+          "type": "subject",
+          "description": "Textiles, woodworking, ceramics, repair, cooking, domestic work, navigation, personal/community care practices",
+          "status": "open"
+        }
+      ],
+      "candidateCollections": [
+        {
+          "id": "D29-C01",
+          "title": "Making, repair and everyday practice",
+          "status": "proposal",
+          "runtimeCollectionId": null
+        }
+      ],
+      "sourceIds": [
+        "isced2013",
+        "ford2015",
+        "loc-outline",
+        "ich-domains",
+        "textile-techniques"
+      ],
+      "bibliographyStatus": "Classification/discovery seeds plus the bounded pilot sources; a whole-domain syllabus audit is still required.",
+      "coverage": {
+        "orientation": "planned",
+        "introductory": "not-assessed",
+        "advanced": "not-assessed",
+        "productionAcceptance": "not-tracked-here"
+      },
+      "representationGaps": {
+        "place": "Regional and community coverage not yet audited.",
+        "language": "Source-language and translation coverage not yet audited.",
+        "practice": "Local, Indigenous, domestic and embodied perspectives require situated sources and permissions, where relevant."
+      },
+      "stewardship": {
+        "maintainerRole": "Crafts, trades and everyday practical knowledge coverage editor",
+        "assignee": null,
+        "reviewerRoles": [
+          "Crafts, trades and everyday practical knowledge subject reviewer",
+          "Accessibility reviewer"
+        ],
+        "reviewStatus": "unreviewed",
+        "lastDeskReview": "2026-10-22",
+        "nextReviewTrigger": "Before freezing a syllabus, publishing a domain overview, or changing this inventory."
+      },
+      "pilotIds": [
+        "P07"
+      ]
+    },
+    {
+      "id": "D30",
+      "title": "Sport, movement, play and recreation",
+      "aliases": [
+        "sport",
+        "play",
+        "leisure"
+      ],
+      "scope": "Sport, movement, play and recreation; includes the candidate gaps below.",
+      "exclusions": [
+        "A generic practice model is not individual exercise or injury advice."
+      ],
+      "essentialQuestions": [
+        "How do rules, bodies, environments and goals shape play and movement?"
+      ],
+      "methods": [
+        "practice",
+        "observation",
+        "case"
+      ],
+      "explorationIdeas": [
+        "Analyze movement and tactics; compare rules; use practice logs and contextual feedback"
+      ],
+      "gaps": [
+        {
+          "id": "D30-G01",
+          "type": "subject",
+          "description": "Exercise/movement, sport skills/rules/history, games, outdoor recreation, tourism and leisure practices",
+          "status": "open"
+        }
+      ],
+      "candidateCollections": [
+        {
+          "id": "D30-C01",
+          "title": "Movement, games and recreation",
+          "status": "proposal",
+          "runtimeCollectionId": null
+        }
+      ],
+      "sourceIds": [
+        "isced2013",
+        "ford2015",
+        "loc-outline"
+      ],
+      "bibliographyStatus": "Classification/discovery seeds only; topic bibliography requires a bounded syllabus audit.",
+      "coverage": {
+        "orientation": "planned",
+        "introductory": "not-assessed",
+        "advanced": "not-assessed",
+        "productionAcceptance": "not-tracked-here"
+      },
+      "representationGaps": {
+        "place": "Regional and community coverage not yet audited.",
+        "language": "Source-language and translation coverage not yet audited.",
+        "practice": "Local, Indigenous, domestic and embodied perspectives require situated sources and permissions, where relevant."
+      },
+      "stewardship": {
+        "maintainerRole": "Sport, movement, play and recreation coverage editor",
+        "assignee": null,
+        "reviewerRoles": [
+          "Sport, movement, play and recreation subject reviewer",
+          "Accessibility reviewer"
+        ],
+        "reviewStatus": "unreviewed",
+        "lastDeskReview": "2026-10-22",
+        "nextReviewTrigger": "Before freezing a syllabus, publishing a domain overview, or changing this inventory."
+      },
+      "pilotIds": []
+    }
+  ],
+  "collectionMappings": [
+    {
+      "collectionId": "pma",
+      "domainId": "D01",
+      "relationship": "primary",
+      "rationale": "Primary planning home from the version 0.1 coverage map; not an acceptance claim."
+    },
+    {
+      "collectionId": "rca",
+      "domainId": "D01",
+      "relationship": "primary",
+      "rationale": "Primary planning home from the version 0.1 coverage map; not an acceptance claim."
+    },
+    {
+      "collectionId": "fa",
+      "domainId": "D01",
+      "relationship": "primary",
+      "rationale": "Primary planning home from the version 0.1 coverage map; not an acceptance claim."
+    },
+    {
+      "collectionId": "ode",
+      "domainId": "D01",
+      "relationship": "primary",
+      "rationale": "Primary planning home from the version 0.1 coverage map; not an acceptance claim."
+    },
+    {
+      "collectionId": "pde",
+      "domainId": "D01",
+      "relationship": "primary",
+      "rationale": "Primary planning home from the version 0.1 coverage map; not an acceptance claim."
+    },
+    {
+      "collectionId": "vcalc",
+      "domainId": "D01",
+      "relationship": "primary",
+      "rationale": "Primary planning home from the version 0.1 coverage map; not an acceptance claim."
+    },
+    {
+      "collectionId": "ladr",
+      "domainId": "D01",
+      "relationship": "primary",
+      "rationale": "Primary planning home from the version 0.1 coverage map; not an acceptance claim."
+    },
+    {
+      "collectionId": "alg",
+      "domainId": "D01",
+      "relationship": "primary",
+      "rationale": "Primary planning home from the version 0.1 coverage map; not an acceptance claim."
+    },
+    {
+      "collectionId": "rep",
+      "domainId": "D01",
+      "relationship": "primary",
+      "rationale": "Primary planning home from the version 0.1 coverage map; not an acceptance claim."
+    },
+    {
+      "collectionId": "top",
+      "domainId": "D01",
+      "relationship": "primary",
+      "rationale": "Primary planning home from the version 0.1 coverage map; not an acceptance claim."
+    },
+    {
+      "collectionId": "dg",
+      "domainId": "D01",
+      "relationship": "primary",
+      "rationale": "Primary planning home from the version 0.1 coverage map; not an acceptance claim."
+    },
+    {
+      "collectionId": "mfd",
+      "domainId": "D01",
+      "relationship": "primary",
+      "rationale": "Primary planning home from the version 0.1 coverage map; not an acceptance claim."
+    },
+    {
+      "collectionId": "prob",
+      "domainId": "D01",
+      "relationship": "primary",
+      "rationale": "Primary planning home from the version 0.1 coverage map; not an acceptance claim."
+    },
+    {
+      "collectionId": "stoch",
+      "domainId": "D01",
+      "relationship": "primary",
+      "rationale": "Primary planning home from the version 0.1 coverage map; not an acceptance claim."
+    },
+    {
+      "collectionId": "graph",
+      "domainId": "D01",
+      "relationship": "primary",
+      "rationale": "Primary planning home from the version 0.1 coverage map; not an acceptance claim."
+    },
+    {
+      "collectionId": "comb",
+      "domainId": "D01",
+      "relationship": "primary",
+      "rationale": "Primary planning home from the version 0.1 coverage map; not an acceptance claim."
+    },
+    {
+      "collectionId": "nt",
+      "domainId": "D01",
+      "relationship": "primary",
+      "rationale": "Primary planning home from the version 0.1 coverage map; not an acceptance claim."
+    },
+    {
+      "collectionId": "logic",
+      "domainId": "D01",
+      "relationship": "primary",
+      "rationale": "Primary planning home from the version 0.1 coverage map; not an acceptance claim."
+    },
+    {
+      "collectionId": "num",
+      "domainId": "D01",
+      "relationship": "primary",
+      "rationale": "Primary planning home from the version 0.1 coverage map; not an acceptance claim."
+    },
+    {
+      "collectionId": "nla",
+      "domainId": "D01",
+      "relationship": "primary",
+      "rationale": "Primary planning home from the version 0.1 coverage map; not an acceptance claim."
+    },
+    {
+      "collectionId": "opt",
+      "domainId": "D01",
+      "relationship": "primary",
+      "rationale": "Primary planning home from the version 0.1 coverage map; not an acceptance claim."
+    },
+    {
+      "collectionId": "stat",
+      "domainId": "D02",
+      "relationship": "primary",
+      "rationale": "Primary planning home from the version 0.1 coverage map; not an acceptance claim."
+    },
+    {
+      "collectionId": "ml",
+      "domainId": "D02",
+      "relationship": "primary",
+      "rationale": "Primary planning home from the version 0.1 coverage map; not an acceptance claim."
+    },
+    {
+      "collectionId": "deep",
+      "domainId": "D02",
+      "relationship": "primary",
+      "rationale": "Primary planning home from the version 0.1 coverage map; not an acceptance claim."
+    },
+    {
+      "collectionId": "causal",
+      "domainId": "D02",
+      "relationship": "primary",
+      "rationale": "Primary planning home from the version 0.1 coverage map; not an acceptance claim."
+    },
+    {
+      "collectionId": "algo",
+      "domainId": "D03",
+      "relationship": "primary",
+      "rationale": "Primary planning home from the version 0.1 coverage map; not an acceptance claim."
+    },
+    {
+      "collectionId": "toc",
+      "domainId": "D03",
+      "relationship": "primary",
+      "rationale": "Primary planning home from the version 0.1 coverage map; not an acceptance claim."
+    },
+    {
+      "collectionId": "cplx",
+      "domainId": "D03",
+      "relationship": "primary",
+      "rationale": "Primary planning home from the version 0.1 coverage map; not an acceptance claim."
+    },
+    {
+      "collectionId": "info",
+      "domainId": "D03",
+      "relationship": "primary",
+      "rationale": "Primary planning home from the version 0.1 coverage map; not an acceptance claim."
+    },
+    {
+      "collectionId": "crypto",
+      "domainId": "D03",
+      "relationship": "primary",
+      "rationale": "Primary planning home from the version 0.1 coverage map; not an acceptance claim."
+    },
+    {
+      "collectionId": "dist",
+      "domainId": "D03",
+      "relationship": "primary",
+      "rationale": "Primary planning home from the version 0.1 coverage map; not an acceptance claim."
+    },
+    {
+      "collectionId": "pl",
+      "domainId": "D03",
+      "relationship": "primary",
+      "rationale": "Primary planning home from the version 0.1 coverage map; not an acceptance claim."
+    },
+    {
+      "collectionId": "cg",
+      "domainId": "D03",
+      "relationship": "primary",
+      "rationale": "Primary planning home from the version 0.1 coverage map; not an acceptance claim."
+    },
+    {
+      "collectionId": "mech",
+      "domainId": "D04",
+      "relationship": "primary",
+      "rationale": "Primary planning home from the version 0.1 coverage map; not an acceptance claim."
+    },
+    {
+      "collectionId": "em",
+      "domainId": "D04",
+      "relationship": "primary",
+      "rationale": "Primary planning home from the version 0.1 coverage map; not an acceptance claim."
+    },
+    {
+      "collectionId": "waves",
+      "domainId": "D04",
+      "relationship": "primary",
+      "rationale": "Primary planning home from the version 0.1 coverage map; not an acceptance claim."
+    },
+    {
+      "collectionId": "thermo",
+      "domainId": "D04",
+      "relationship": "primary",
+      "rationale": "Primary planning home from the version 0.1 coverage map; not an acceptance claim."
+    },
+    {
+      "collectionId": "qm",
+      "domainId": "D04",
+      "relationship": "primary",
+      "rationale": "Primary planning home from the version 0.1 coverage map; not an acceptance claim."
+    },
+    {
+      "collectionId": "cm",
+      "domainId": "D04",
+      "relationship": "primary",
+      "rationale": "Primary planning home from the version 0.1 coverage map; not an acceptance claim."
+    },
+    {
+      "collectionId": "qinfo",
+      "domainId": "D04",
+      "relationship": "primary",
+      "rationale": "Primary planning home from the version 0.1 coverage map; not an acceptance claim."
+    },
+    {
+      "collectionId": "rel",
+      "domainId": "D04",
+      "relationship": "primary",
+      "rationale": "Primary planning home from the version 0.1 coverage map; not an acceptance claim."
+    },
+    {
+      "collectionId": "astro",
+      "domainId": "D04",
+      "relationship": "primary",
+      "rationale": "Primary planning home from the version 0.1 coverage map; not an acceptance claim."
+    },
+    {
+      "collectionId": "fluid",
+      "domainId": "D04",
+      "relationship": "primary",
+      "rationale": "Primary planning home from the version 0.1 coverage map; not an acceptance claim."
+    },
+    {
+      "collectionId": "pchem",
+      "domainId": "D05",
+      "relationship": "primary",
+      "rationale": "Primary planning home from the version 0.1 coverage map; not an acceptance claim."
+    },
+    {
+      "collectionId": "kin",
+      "domainId": "D05",
+      "relationship": "primary",
+      "rationale": "Primary planning home from the version 0.1 coverage map; not an acceptance claim."
+    },
+    {
+      "collectionId": "qchem",
+      "domainId": "D05",
+      "relationship": "primary",
+      "rationale": "Primary planning home from the version 0.1 coverage map; not an acceptance claim."
+    },
+    {
+      "collectionId": "xtal",
+      "domainId": "D05",
+      "relationship": "primary",
+      "rationale": "Primary planning home from the version 0.1 coverage map; not an acceptance claim."
+    },
+    {
+      "collectionId": "mat",
+      "domainId": "D05",
+      "relationship": "primary",
+      "rationale": "Primary planning home from the version 0.1 coverage map; not an acceptance claim."
+    },
+    {
+      "collectionId": "geol",
+      "domainId": "D06",
+      "relationship": "primary",
+      "rationale": "Primary planning home from the version 0.1 coverage map; not an acceptance claim."
+    },
+    {
+      "collectionId": "geo",
+      "domainId": "D06",
+      "relationship": "primary",
+      "rationale": "Primary planning home from the version 0.1 coverage map; not an acceptance claim."
+    },
+    {
+      "collectionId": "climate",
+      "domainId": "D06",
+      "relationship": "primary",
+      "rationale": "Primary planning home from the version 0.1 coverage map; not an acceptance claim."
+    },
+    {
+      "collectionId": "geog",
+      "domainId": "D06",
+      "relationship": "primary",
+      "rationale": "Primary planning home from the version 0.1 coverage map; not an acceptance claim."
+    },
+    {
+      "collectionId": "popgen",
+      "domainId": "D07",
+      "relationship": "primary",
+      "rationale": "Primary planning home from the version 0.1 coverage map; not an acceptance claim."
+    },
+    {
+      "collectionId": "mathbio",
+      "domainId": "D07",
+      "relationship": "primary",
+      "rationale": "Primary planning home from the version 0.1 coverage map; not an acceptance claim."
+    },
+    {
+      "collectionId": "bioinf",
+      "domainId": "D07",
+      "relationship": "primary",
+      "rationale": "Primary planning home from the version 0.1 coverage map; not an acceptance claim."
+    },
+    {
+      "collectionId": "sysbio",
+      "domainId": "D07",
+      "relationship": "primary",
+      "rationale": "Primary planning home from the version 0.1 coverage map; not an acceptance claim."
+    },
+    {
+      "collectionId": "ecol",
+      "domainId": "D08",
+      "relationship": "primary",
+      "rationale": "Primary planning home from the version 0.1 coverage map; not an acceptance claim."
+    },
+    {
+      "collectionId": "physio",
+      "domainId": "D09",
+      "relationship": "primary",
+      "rationale": "Primary planning home from the version 0.1 coverage map; not an acceptance claim."
+    },
+    {
+      "collectionId": "pharm",
+      "domainId": "D09",
+      "relationship": "primary",
+      "rationale": "Primary planning home from the version 0.1 coverage map; not an acceptance claim."
+    },
+    {
+      "collectionId": "epi",
+      "domainId": "D09",
+      "relationship": "primary",
+      "rationale": "Primary planning home from the version 0.1 coverage map; not an acceptance claim."
+    },
+    {
+      "collectionId": "imaging",
+      "domainId": "D09",
+      "relationship": "primary",
+      "rationale": "Primary planning home from the version 0.1 coverage map; not an acceptance claim."
+    },
+    {
+      "collectionId": "sig",
+      "domainId": "D11",
+      "relationship": "primary",
+      "rationale": "Primary planning home from the version 0.1 coverage map; not an acceptance claim."
+    },
+    {
+      "collectionId": "ctrl",
+      "domainId": "D11",
+      "relationship": "primary",
+      "rationale": "Primary planning home from the version 0.1 coverage map; not an acceptance claim."
+    },
+    {
+      "collectionId": "circ",
+      "domainId": "D11",
+      "relationship": "primary",
+      "rationale": "Primary planning home from the version 0.1 coverage map; not an acceptance claim."
+    },
+    {
+      "collectionId": "energy",
+      "domainId": "D11",
+      "relationship": "primary",
+      "rationale": "Primary planning home from the version 0.1 coverage map; not an acceptance claim."
+    },
+    {
+      "collectionId": "solid",
+      "domainId": "D11",
+      "relationship": "primary",
+      "rationale": "Primary planning home from the version 0.1 coverage map; not an acceptance claim."
+    },
+    {
+      "collectionId": "robot",
+      "domainId": "D11",
+      "relationship": "primary",
+      "rationale": "Primary planning home from the version 0.1 coverage map; not an acceptance claim."
+    },
+    {
+      "collectionId": "aero",
+      "domainId": "D11",
+      "relationship": "primary",
+      "rationale": "Primary planning home from the version 0.1 coverage map; not an acceptance claim."
+    },
+    {
+      "collectionId": "arch",
+      "domainId": "D12",
+      "relationship": "primary",
+      "rationale": "Primary planning home from the version 0.1 coverage map; not an acceptance claim."
+    },
+    {
+      "collectionId": "micro",
+      "domainId": "D13",
+      "relationship": "primary",
+      "rationale": "Primary planning home from the version 0.1 coverage map; not an acceptance claim."
+    },
+    {
+      "collectionId": "macro",
+      "domainId": "D13",
+      "relationship": "primary",
+      "rationale": "Primary planning home from the version 0.1 coverage map; not an acceptance claim."
+    },
+    {
+      "collectionId": "fin",
+      "domainId": "D13",
+      "relationship": "primary",
+      "rationale": "Primary planning home from the version 0.1 coverage map; not an acceptance claim."
+    },
+    {
+      "collectionId": "game",
+      "domainId": "D13",
+      "relationship": "primary",
+      "rationale": "Primary planning home from the version 0.1 coverage map; not an acceptance claim."
+    },
+    {
+      "collectionId": "behav",
+      "domainId": "D13",
+      "relationship": "primary",
+      "rationale": "Primary planning home from the version 0.1 coverage map; not an acceptance claim."
+    },
+    {
+      "collectionId": "polsci",
+      "domainId": "D15",
+      "relationship": "primary",
+      "rationale": "Primary planning home from the version 0.1 coverage map; not an acceptance claim."
+    },
+    {
+      "collectionId": "soc",
+      "domainId": "D17",
+      "relationship": "primary",
+      "rationale": "Primary planning home from the version 0.1 coverage map; not an acceptance claim."
+    },
+    {
+      "collectionId": "demo",
+      "domainId": "D17",
+      "relationship": "primary",
+      "rationale": "Primary planning home from the version 0.1 coverage map; not an acceptance claim."
+    },
+    {
+      "collectionId": "psych",
+      "domainId": "D18",
+      "relationship": "primary",
+      "rationale": "Primary planning home from the version 0.1 coverage map; not an acceptance claim."
+    },
+    {
+      "collectionId": "neuro",
+      "domainId": "D18",
+      "relationship": "primary",
+      "rationale": "Primary planning home from the version 0.1 coverage map; not an acceptance claim."
+    },
+    {
+      "collectionId": "tech",
+      "domainId": "D20",
+      "relationship": "primary",
+      "rationale": "Primary planning home from the version 0.1 coverage map; not an acceptance claim."
+    },
+    {
+      "collectionId": "bighist",
+      "domainId": "D20",
+      "relationship": "primary",
+      "rationale": "Primary planning home from the version 0.1 coverage map; not an acceptance claim."
+    },
+    {
+      "collectionId": "phil",
+      "domainId": "D21",
+      "relationship": "primary",
+      "rationale": "Primary planning home from the version 0.1 coverage map; not an acceptance claim."
+    },
+    {
+      "collectionId": "ling",
+      "domainId": "D23",
+      "relationship": "primary",
+      "rationale": "Primary planning home from the version 0.1 coverage map; not an acceptance claim."
+    },
+    {
+      "collectionId": "art",
+      "domainId": "D25",
+      "relationship": "primary",
+      "rationale": "Primary planning home from the version 0.1 coverage map; not an acceptance claim."
+    },
+    {
+      "collectionId": "music",
+      "domainId": "D26",
+      "relationship": "primary",
+      "rationale": "Primary planning home from the version 0.1 coverage map; not an acceptance claim."
+    },
+    {
+      "collectionId": "neuro",
+      "domainId": "D07",
+      "relationship": "cross-listed",
+      "rationale": "Neural systems also belong to life sciences."
+    },
+    {
+      "collectionId": "geog",
+      "domainId": "D17",
+      "relationship": "cross-listed",
+      "rationale": "Human geographical questions need social context."
+    },
+    {
+      "collectionId": "mathbio",
+      "domainId": "D01",
+      "relationship": "cross-listed",
+      "rationale": "Mathematical modeling route into biology."
+    },
+    {
+      "collectionId": "causal",
+      "domainId": "D09",
+      "relationship": "cross-listed",
+      "rationale": "Methods route for health evidence; not clinical coverage."
+    },
+    {
+      "collectionId": "arch",
+      "domainId": "D11",
+      "relationship": "cross-listed",
+      "rationale": "Structural design overlaps engineering."
+    },
+    {
+      "collectionId": "music",
+      "domainId": "D04",
+      "relationship": "cross-listed",
+      "rationale": "Acoustics is a physical entry route, not full music coverage."
+    },
+    {
+      "collectionId": "phil",
+      "domainId": "D22",
+      "relationship": "cross-listed",
+      "rationale": "Comparative traditions can connect philosophy and religious studies; the current collection is only a foothold."
+    },
+    {
+      "collectionId": "art",
+      "domainId": "D29",
+      "relationship": "cross-listed",
+      "rationale": "Materials and making can connect visual art to craft; not proof of practical instruction."
+    }
+  ],
+  "crosswalks": [
+    {
+      "schemeId": "isced-f",
+      "code": "0000",
+      "disposition": "review",
+      "domainIds": [
+        "D01",
+        "D19",
+        "D23",
+        "D28"
+      ],
+      "rationale": "Residual, unspecified or interdisciplinary code. Broad candidate homes only; scope review required."
+    },
+    {
+      "schemeId": "isced-f",
+      "code": "0011",
+      "disposition": "mapped",
+      "domainIds": [
+        "D19"
+      ],
+      "rationale": "Editorial subject mapping; no claim of taught or accepted coverage."
+    },
+    {
+      "schemeId": "isced-f",
+      "code": "0021",
+      "disposition": "mapped",
+      "domainIds": [
+        "D01",
+        "D19",
+        "D23"
+      ],
+      "rationale": "Editorial subject mapping; no claim of taught or accepted coverage."
+    },
+    {
+      "schemeId": "isced-f",
+      "code": "0031",
+      "disposition": "mapped",
+      "domainIds": [
+        "D19",
+        "D29"
+      ],
+      "rationale": "Editorial subject mapping; no claim of taught or accepted coverage."
+    },
+    {
+      "schemeId": "isced-f",
+      "code": "0099",
+      "disposition": "review",
+      "domainIds": [
+        "D01",
+        "D19",
+        "D23",
+        "D28"
+      ],
+      "rationale": "Residual, unspecified or interdisciplinary code. Broad candidate homes only; scope review required."
+    },
+    {
+      "schemeId": "isced-f",
+      "code": "0110",
+      "disposition": "review",
+      "domainIds": [
+        "D19"
+      ],
+      "rationale": "Residual, unspecified or interdisciplinary code. Broad candidate homes only; scope review required."
+    },
+    {
+      "schemeId": "isced-f",
+      "code": "0111",
+      "disposition": "mapped",
+      "domainIds": [
+        "D19"
+      ],
+      "rationale": "Editorial subject mapping; no claim of taught or accepted coverage."
+    },
+    {
+      "schemeId": "isced-f",
+      "code": "0112",
+      "disposition": "mapped",
+      "domainIds": [
+        "D19"
+      ],
+      "rationale": "Editorial subject mapping; no claim of taught or accepted coverage."
+    },
+    {
+      "schemeId": "isced-f",
+      "code": "0113",
+      "disposition": "mapped",
+      "domainIds": [
+        "D19"
+      ],
+      "rationale": "Editorial subject mapping; no claim of taught or accepted coverage."
+    },
+    {
+      "schemeId": "isced-f",
+      "code": "0114",
+      "disposition": "mapped",
+      "domainIds": [
+        "D19"
+      ],
+      "rationale": "Editorial subject mapping; no claim of taught or accepted coverage."
+    },
+    {
+      "schemeId": "isced-f",
+      "code": "0119",
+      "disposition": "review",
+      "domainIds": [
+        "D19"
+      ],
+      "rationale": "Residual, unspecified or interdisciplinary code. Broad candidate homes only; scope review required."
+    },
+    {
+      "schemeId": "isced-f",
+      "code": "0188",
+      "disposition": "review",
+      "domainIds": [
+        "D19"
+      ],
+      "rationale": "Residual, unspecified or interdisciplinary code. Broad candidate homes only; scope review required."
+    },
+    {
+      "schemeId": "isced-f",
+      "code": "0200",
+      "disposition": "review",
+      "domainIds": [
+        "D20",
+        "D21",
+        "D22",
+        "D23",
+        "D24",
+        "D25",
+        "D26",
+        "D27"
+      ],
+      "rationale": "Residual, unspecified or interdisciplinary code. Broad candidate homes only; scope review required."
+    },
+    {
+      "schemeId": "isced-f",
+      "code": "0210",
+      "disposition": "review",
+      "domainIds": [
+        "D20",
+        "D21",
+        "D22",
+        "D23",
+        "D24",
+        "D25",
+        "D26",
+        "D27"
+      ],
+      "rationale": "Residual, unspecified or interdisciplinary code. Broad candidate homes only; scope review required."
+    },
+    {
+      "schemeId": "isced-f",
+      "code": "0211",
+      "disposition": "mapped",
+      "domainIds": [
+        "D25",
+        "D27",
+        "D28"
+      ],
+      "rationale": "Editorial subject mapping; no claim of taught or accepted coverage."
+    },
+    {
+      "schemeId": "isced-f",
+      "code": "0212",
+      "disposition": "mapped",
+      "domainIds": [
+        "D25"
+      ],
+      "rationale": "Editorial subject mapping; no claim of taught or accepted coverage."
+    },
+    {
+      "schemeId": "isced-f",
+      "code": "0213",
+      "disposition": "mapped",
+      "domainIds": [
+        "D25"
+      ],
+      "rationale": "Editorial subject mapping; no claim of taught or accepted coverage."
+    },
+    {
+      "schemeId": "isced-f",
+      "code": "0214",
+      "disposition": "mapped",
+      "domainIds": [
+        "D25",
+        "D29"
+      ],
+      "rationale": "Editorial subject mapping; no claim of taught or accepted coverage."
+    },
+    {
+      "schemeId": "isced-f",
+      "code": "0215",
+      "disposition": "mapped",
+      "domainIds": [
+        "D26",
+        "D27"
+      ],
+      "rationale": "Editorial subject mapping; no claim of taught or accepted coverage."
+    },
+    {
+      "schemeId": "isced-f",
+      "code": "0219",
+      "disposition": "review",
+      "domainIds": [
+        "D20",
+        "D21",
+        "D22",
+        "D23",
+        "D24",
+        "D25",
+        "D26",
+        "D27"
+      ],
+      "rationale": "Residual, unspecified or interdisciplinary code. Broad candidate homes only; scope review required."
+    },
+    {
+      "schemeId": "isced-f",
+      "code": "0220",
+      "disposition": "review",
+      "domainIds": [
+        "D20",
+        "D21",
+        "D22",
+        "D23",
+        "D24",
+        "D25",
+        "D26",
+        "D27"
+      ],
+      "rationale": "Residual, unspecified or interdisciplinary code. Broad candidate homes only; scope review required."
+    },
+    {
+      "schemeId": "isced-f",
+      "code": "0221",
+      "disposition": "mapped",
+      "domainIds": [
+        "D22"
+      ],
+      "rationale": "Editorial subject mapping; no claim of taught or accepted coverage."
+    },
+    {
+      "schemeId": "isced-f",
+      "code": "0222",
+      "disposition": "mapped",
+      "domainIds": [
+        "D20"
+      ],
+      "rationale": "Editorial subject mapping; no claim of taught or accepted coverage."
+    },
+    {
+      "schemeId": "isced-f",
+      "code": "0223",
+      "disposition": "mapped",
+      "domainIds": [
+        "D21"
+      ],
+      "rationale": "Editorial subject mapping; no claim of taught or accepted coverage."
+    },
+    {
+      "schemeId": "isced-f",
+      "code": "0229",
+      "disposition": "review",
+      "domainIds": [
+        "D20",
+        "D21",
+        "D22",
+        "D23",
+        "D24",
+        "D25",
+        "D26",
+        "D27"
+      ],
+      "rationale": "Residual, unspecified or interdisciplinary code. Broad candidate homes only; scope review required."
+    },
+    {
+      "schemeId": "isced-f",
+      "code": "0230",
+      "disposition": "review",
+      "domainIds": [
+        "D20",
+        "D21",
+        "D22",
+        "D23",
+        "D24",
+        "D25",
+        "D26",
+        "D27"
+      ],
+      "rationale": "Residual, unspecified or interdisciplinary code. Broad candidate homes only; scope review required."
+    },
+    {
+      "schemeId": "isced-f",
+      "code": "0231",
+      "disposition": "mapped",
+      "domainIds": [
+        "D23"
+      ],
+      "rationale": "Editorial subject mapping; no claim of taught or accepted coverage."
+    },
+    {
+      "schemeId": "isced-f",
+      "code": "0232",
+      "disposition": "mapped",
+      "domainIds": [
+        "D23",
+        "D24"
+      ],
+      "rationale": "Editorial subject mapping; no claim of taught or accepted coverage."
+    },
+    {
+      "schemeId": "isced-f",
+      "code": "0239",
+      "disposition": "review",
+      "domainIds": [
+        "D20",
+        "D21",
+        "D22",
+        "D23",
+        "D24",
+        "D25",
+        "D26",
+        "D27"
+      ],
+      "rationale": "Residual, unspecified or interdisciplinary code. Broad candidate homes only; scope review required."
+    },
+    {
+      "schemeId": "isced-f",
+      "code": "0288",
+      "disposition": "review",
+      "domainIds": [
+        "D20",
+        "D21",
+        "D22",
+        "D23",
+        "D24",
+        "D25",
+        "D26",
+        "D27"
+      ],
+      "rationale": "Residual, unspecified or interdisciplinary code. Broad candidate homes only; scope review required."
+    },
+    {
+      "schemeId": "isced-f",
+      "code": "0299",
+      "disposition": "review",
+      "domainIds": [
+        "D20",
+        "D21",
+        "D22",
+        "D23",
+        "D24",
+        "D25",
+        "D26",
+        "D27"
+      ],
+      "rationale": "Residual, unspecified or interdisciplinary code. Broad candidate homes only; scope review required."
+    },
+    {
+      "schemeId": "isced-f",
+      "code": "0300",
+      "disposition": "review",
+      "domainIds": [
+        "D13",
+        "D15",
+        "D17",
+        "D18",
+        "D23",
+        "D28"
+      ],
+      "rationale": "Residual, unspecified or interdisciplinary code. Broad candidate homes only; scope review required."
+    },
+    {
+      "schemeId": "isced-f",
+      "code": "0310",
+      "disposition": "review",
+      "domainIds": [
+        "D13",
+        "D15",
+        "D17",
+        "D18",
+        "D23",
+        "D28"
+      ],
+      "rationale": "Residual, unspecified or interdisciplinary code. Broad candidate homes only; scope review required."
+    },
+    {
+      "schemeId": "isced-f",
+      "code": "0311",
+      "disposition": "mapped",
+      "domainIds": [
+        "D13"
+      ],
+      "rationale": "Editorial subject mapping; no claim of taught or accepted coverage."
+    },
+    {
+      "schemeId": "isced-f",
+      "code": "0312",
+      "disposition": "mapped",
+      "domainIds": [
+        "D15"
+      ],
+      "rationale": "Editorial subject mapping; no claim of taught or accepted coverage."
+    },
+    {
+      "schemeId": "isced-f",
+      "code": "0313",
+      "disposition": "mapped",
+      "domainIds": [
+        "D18"
+      ],
+      "rationale": "Editorial subject mapping; no claim of taught or accepted coverage."
+    },
+    {
+      "schemeId": "isced-f",
+      "code": "0314",
+      "disposition": "mapped",
+      "domainIds": [
+        "D17"
+      ],
+      "rationale": "Editorial subject mapping; no claim of taught or accepted coverage."
+    },
+    {
+      "schemeId": "isced-f",
+      "code": "0319",
+      "disposition": "review",
+      "domainIds": [
+        "D13",
+        "D15",
+        "D17",
+        "D18",
+        "D23",
+        "D28"
+      ],
+      "rationale": "Residual, unspecified or interdisciplinary code. Broad candidate homes only; scope review required."
+    },
+    {
+      "schemeId": "isced-f",
+      "code": "0320",
+      "disposition": "review",
+      "domainIds": [
+        "D13",
+        "D15",
+        "D17",
+        "D18",
+        "D23",
+        "D28"
+      ],
+      "rationale": "Residual, unspecified or interdisciplinary code. Broad candidate homes only; scope review required."
+    },
+    {
+      "schemeId": "isced-f",
+      "code": "0321",
+      "disposition": "mapped",
+      "domainIds": [
+        "D28"
+      ],
+      "rationale": "Editorial subject mapping; no claim of taught or accepted coverage."
+    },
+    {
+      "schemeId": "isced-f",
+      "code": "0322",
+      "disposition": "mapped",
+      "domainIds": [
+        "D28"
+      ],
+      "rationale": "Editorial subject mapping; no claim of taught or accepted coverage."
+    },
+    {
+      "schemeId": "isced-f",
+      "code": "0329",
+      "disposition": "review",
+      "domainIds": [
+        "D13",
+        "D15",
+        "D17",
+        "D18",
+        "D23",
+        "D28"
+      ],
+      "rationale": "Residual, unspecified or interdisciplinary code. Broad candidate homes only; scope review required."
+    },
+    {
+      "schemeId": "isced-f",
+      "code": "0388",
+      "disposition": "review",
+      "domainIds": [
+        "D13",
+        "D15",
+        "D17",
+        "D18",
+        "D23",
+        "D28"
+      ],
+      "rationale": "Residual, unspecified or interdisciplinary code. Broad candidate homes only; scope review required."
+    },
+    {
+      "schemeId": "isced-f",
+      "code": "0399",
+      "disposition": "review",
+      "domainIds": [
+        "D13",
+        "D15",
+        "D17",
+        "D18",
+        "D23",
+        "D28"
+      ],
+      "rationale": "Residual, unspecified or interdisciplinary code. Broad candidate homes only; scope review required."
+    },
+    {
+      "schemeId": "isced-f",
+      "code": "0400",
+      "disposition": "review",
+      "domainIds": [
+        "D13",
+        "D14",
+        "D16"
+      ],
+      "rationale": "Residual, unspecified or interdisciplinary code. Broad candidate homes only; scope review required."
+    },
+    {
+      "schemeId": "isced-f",
+      "code": "0410",
+      "disposition": "review",
+      "domainIds": [
+        "D13",
+        "D14",
+        "D16"
+      ],
+      "rationale": "Residual, unspecified or interdisciplinary code. Broad candidate homes only; scope review required."
+    },
+    {
+      "schemeId": "isced-f",
+      "code": "0411",
+      "disposition": "mapped",
+      "domainIds": [
+        "D14"
+      ],
+      "rationale": "Editorial subject mapping; no claim of taught or accepted coverage."
+    },
+    {
+      "schemeId": "isced-f",
+      "code": "0412",
+      "disposition": "mapped",
+      "domainIds": [
+        "D13",
+        "D14"
+      ],
+      "rationale": "Editorial subject mapping; no claim of taught or accepted coverage."
+    },
+    {
+      "schemeId": "isced-f",
+      "code": "0413",
+      "disposition": "mapped",
+      "domainIds": [
+        "D14"
+      ],
+      "rationale": "Editorial subject mapping; no claim of taught or accepted coverage."
+    },
+    {
+      "schemeId": "isced-f",
+      "code": "0414",
+      "disposition": "mapped",
+      "domainIds": [
+        "D14",
+        "D28"
+      ],
+      "rationale": "Editorial subject mapping; no claim of taught or accepted coverage."
+    },
+    {
+      "schemeId": "isced-f",
+      "code": "0415",
+      "disposition": "mapped",
+      "domainIds": [
+        "D14",
+        "D29"
+      ],
+      "rationale": "Editorial subject mapping; no claim of taught or accepted coverage."
+    },
+    {
+      "schemeId": "isced-f",
+      "code": "0416",
+      "disposition": "mapped",
+      "domainIds": [
+        "D14"
+      ],
+      "rationale": "Editorial subject mapping; no claim of taught or accepted coverage."
+    },
+    {
+      "schemeId": "isced-f",
+      "code": "0417",
+      "disposition": "mapped",
+      "domainIds": [
+        "D14",
+        "D29"
+      ],
+      "rationale": "Editorial subject mapping; no claim of taught or accepted coverage."
+    },
+    {
+      "schemeId": "isced-f",
+      "code": "0419",
+      "disposition": "review",
+      "domainIds": [
+        "D13",
+        "D14",
+        "D16"
+      ],
+      "rationale": "Residual, unspecified or interdisciplinary code. Broad candidate homes only; scope review required."
+    },
+    {
+      "schemeId": "isced-f",
+      "code": "0421",
+      "disposition": "mapped",
+      "domainIds": [
+        "D16"
+      ],
+      "rationale": "Editorial subject mapping; no claim of taught or accepted coverage."
+    },
+    {
+      "schemeId": "isced-f",
+      "code": "0488",
+      "disposition": "review",
+      "domainIds": [
+        "D13",
+        "D14",
+        "D16"
+      ],
+      "rationale": "Residual, unspecified or interdisciplinary code. Broad candidate homes only; scope review required."
+    },
+    {
+      "schemeId": "isced-f",
+      "code": "0499",
+      "disposition": "review",
+      "domainIds": [
+        "D13",
+        "D14",
+        "D16"
+      ],
+      "rationale": "Residual, unspecified or interdisciplinary code. Broad candidate homes only; scope review required."
+    },
+    {
+      "schemeId": "isced-f",
+      "code": "0500",
+      "disposition": "review",
+      "domainIds": [
+        "D01",
+        "D02",
+        "D04",
+        "D05",
+        "D06",
+        "D07",
+        "D08"
+      ],
+      "rationale": "Residual, unspecified or interdisciplinary code. Broad candidate homes only; scope review required."
+    },
+    {
+      "schemeId": "isced-f",
+      "code": "0510",
+      "disposition": "review",
+      "domainIds": [
+        "D01",
+        "D02",
+        "D04",
+        "D05",
+        "D06",
+        "D07",
+        "D08"
+      ],
+      "rationale": "Residual, unspecified or interdisciplinary code. Broad candidate homes only; scope review required."
+    },
+    {
+      "schemeId": "isced-f",
+      "code": "0511",
+      "disposition": "mapped",
+      "domainIds": [
+        "D07"
+      ],
+      "rationale": "Editorial subject mapping; no claim of taught or accepted coverage."
+    },
+    {
+      "schemeId": "isced-f",
+      "code": "0512",
+      "disposition": "mapped",
+      "domainIds": [
+        "D05",
+        "D07"
+      ],
+      "rationale": "Editorial subject mapping; no claim of taught or accepted coverage."
+    },
+    {
+      "schemeId": "isced-f",
+      "code": "0519",
+      "disposition": "review",
+      "domainIds": [
+        "D01",
+        "D02",
+        "D04",
+        "D05",
+        "D06",
+        "D07",
+        "D08"
+      ],
+      "rationale": "Residual, unspecified or interdisciplinary code. Broad candidate homes only; scope review required."
+    },
+    {
+      "schemeId": "isced-f",
+      "code": "0520",
+      "disposition": "review",
+      "domainIds": [
+        "D01",
+        "D02",
+        "D04",
+        "D05",
+        "D06",
+        "D07",
+        "D08"
+      ],
+      "rationale": "Residual, unspecified or interdisciplinary code. Broad candidate homes only; scope review required."
+    },
+    {
+      "schemeId": "isced-f",
+      "code": "0521",
+      "disposition": "mapped",
+      "domainIds": [
+        "D06",
+        "D08"
+      ],
+      "rationale": "Editorial subject mapping; no claim of taught or accepted coverage."
+    },
+    {
+      "schemeId": "isced-f",
+      "code": "0522",
+      "disposition": "mapped",
+      "domainIds": [
+        "D08"
+      ],
+      "rationale": "Editorial subject mapping; no claim of taught or accepted coverage."
+    },
+    {
+      "schemeId": "isced-f",
+      "code": "0529",
+      "disposition": "review",
+      "domainIds": [
+        "D01",
+        "D02",
+        "D04",
+        "D05",
+        "D06",
+        "D07",
+        "D08"
+      ],
+      "rationale": "Residual, unspecified or interdisciplinary code. Broad candidate homes only; scope review required."
+    },
+    {
+      "schemeId": "isced-f",
+      "code": "0530",
+      "disposition": "review",
+      "domainIds": [
+        "D01",
+        "D02",
+        "D04",
+        "D05",
+        "D06",
+        "D07",
+        "D08"
+      ],
+      "rationale": "Residual, unspecified or interdisciplinary code. Broad candidate homes only; scope review required."
+    },
+    {
+      "schemeId": "isced-f",
+      "code": "0531",
+      "disposition": "mapped",
+      "domainIds": [
+        "D05"
+      ],
+      "rationale": "Editorial subject mapping; no claim of taught or accepted coverage."
+    },
+    {
+      "schemeId": "isced-f",
+      "code": "0532",
+      "disposition": "mapped",
+      "domainIds": [
+        "D06"
+      ],
+      "rationale": "Editorial subject mapping; no claim of taught or accepted coverage."
+    },
+    {
+      "schemeId": "isced-f",
+      "code": "0533",
+      "disposition": "mapped",
+      "domainIds": [
+        "D04"
+      ],
+      "rationale": "Editorial subject mapping; no claim of taught or accepted coverage."
+    },
+    {
+      "schemeId": "isced-f",
+      "code": "0539",
+      "disposition": "review",
+      "domainIds": [
+        "D01",
+        "D02",
+        "D04",
+        "D05",
+        "D06",
+        "D07",
+        "D08"
+      ],
+      "rationale": "Residual, unspecified or interdisciplinary code. Broad candidate homes only; scope review required."
+    },
+    {
+      "schemeId": "isced-f",
+      "code": "0540",
+      "disposition": "review",
+      "domainIds": [
+        "D01",
+        "D02",
+        "D04",
+        "D05",
+        "D06",
+        "D07",
+        "D08"
+      ],
+      "rationale": "Residual, unspecified or interdisciplinary code. Broad candidate homes only; scope review required."
+    },
+    {
+      "schemeId": "isced-f",
+      "code": "0541",
+      "disposition": "mapped",
+      "domainIds": [
+        "D01"
+      ],
+      "rationale": "Editorial subject mapping; no claim of taught or accepted coverage."
+    },
+    {
+      "schemeId": "isced-f",
+      "code": "0542",
+      "disposition": "mapped",
+      "domainIds": [
+        "D02"
+      ],
+      "rationale": "Editorial subject mapping; no claim of taught or accepted coverage."
+    },
+    {
+      "schemeId": "isced-f",
+      "code": "0588",
+      "disposition": "review",
+      "domainIds": [
+        "D01",
+        "D02",
+        "D04",
+        "D05",
+        "D06",
+        "D07",
+        "D08"
+      ],
+      "rationale": "Residual, unspecified or interdisciplinary code. Broad candidate homes only; scope review required."
+    },
+    {
+      "schemeId": "isced-f",
+      "code": "0599",
+      "disposition": "review",
+      "domainIds": [
+        "D01",
+        "D02",
+        "D04",
+        "D05",
+        "D06",
+        "D07",
+        "D08"
+      ],
+      "rationale": "Residual, unspecified or interdisciplinary code. Broad candidate homes only; scope review required."
+    },
+    {
+      "schemeId": "isced-f",
+      "code": "0610",
+      "disposition": "review",
+      "domainIds": [
+        "D03"
+      ],
+      "rationale": "Residual, unspecified or interdisciplinary code. Broad candidate homes only; scope review required."
+    },
+    {
+      "schemeId": "isced-f",
+      "code": "0611",
+      "disposition": "mapped",
+      "domainIds": [
+        "D03",
+        "D19"
+      ],
+      "rationale": "Editorial subject mapping; no claim of taught or accepted coverage."
+    },
+    {
+      "schemeId": "isced-f",
+      "code": "0612",
+      "disposition": "mapped",
+      "domainIds": [
+        "D03"
+      ],
+      "rationale": "Editorial subject mapping; no claim of taught or accepted coverage."
+    },
+    {
+      "schemeId": "isced-f",
+      "code": "0613",
+      "disposition": "mapped",
+      "domainIds": [
+        "D03"
+      ],
+      "rationale": "Editorial subject mapping; no claim of taught or accepted coverage."
+    },
+    {
+      "schemeId": "isced-f",
+      "code": "0619",
+      "disposition": "review",
+      "domainIds": [
+        "D03"
+      ],
+      "rationale": "Residual, unspecified or interdisciplinary code. Broad candidate homes only; scope review required."
+    },
+    {
+      "schemeId": "isced-f",
+      "code": "0688",
+      "disposition": "review",
+      "domainIds": [
+        "D03"
+      ],
+      "rationale": "Residual, unspecified or interdisciplinary code. Broad candidate homes only; scope review required."
+    },
+    {
+      "schemeId": "isced-f",
+      "code": "0700",
+      "disposition": "review",
+      "domainIds": [
+        "D05",
+        "D11",
+        "D12",
+        "D29"
+      ],
+      "rationale": "Residual, unspecified or interdisciplinary code. Broad candidate homes only; scope review required."
+    },
+    {
+      "schemeId": "isced-f",
+      "code": "0710",
+      "disposition": "review",
+      "domainIds": [
+        "D05",
+        "D11",
+        "D12",
+        "D29"
+      ],
+      "rationale": "Residual, unspecified or interdisciplinary code. Broad candidate homes only; scope review required."
+    },
+    {
+      "schemeId": "isced-f",
+      "code": "0711",
+      "disposition": "mapped",
+      "domainIds": [
+        "D05",
+        "D11"
+      ],
+      "rationale": "Editorial subject mapping; no claim of taught or accepted coverage."
+    },
+    {
+      "schemeId": "isced-f",
+      "code": "0712",
+      "disposition": "mapped",
+      "domainIds": [
+        "D08",
+        "D11"
+      ],
+      "rationale": "Editorial subject mapping; no claim of taught or accepted coverage."
+    },
+    {
+      "schemeId": "isced-f",
+      "code": "0713",
+      "disposition": "mapped",
+      "domainIds": [
+        "D11"
+      ],
+      "rationale": "Editorial subject mapping; no claim of taught or accepted coverage."
+    },
+    {
+      "schemeId": "isced-f",
+      "code": "0714",
+      "disposition": "mapped",
+      "domainIds": [
+        "D03",
+        "D11"
+      ],
+      "rationale": "Editorial subject mapping; no claim of taught or accepted coverage."
+    },
+    {
+      "schemeId": "isced-f",
+      "code": "0715",
+      "disposition": "mapped",
+      "domainIds": [
+        "D11",
+        "D29"
+      ],
+      "rationale": "Editorial subject mapping; no claim of taught or accepted coverage."
+    },
+    {
+      "schemeId": "isced-f",
+      "code": "0716",
+      "disposition": "mapped",
+      "domainIds": [
+        "D11",
+        "D29"
+      ],
+      "rationale": "Editorial subject mapping; no claim of taught or accepted coverage."
+    },
+    {
+      "schemeId": "isced-f",
+      "code": "0719",
+      "disposition": "review",
+      "domainIds": [
+        "D05",
+        "D11",
+        "D12",
+        "D29"
+      ],
+      "rationale": "Residual, unspecified or interdisciplinary code. Broad candidate homes only; scope review required."
+    },
+    {
+      "schemeId": "isced-f",
+      "code": "0720",
+      "disposition": "review",
+      "domainIds": [
+        "D05",
+        "D11",
+        "D12",
+        "D29"
+      ],
+      "rationale": "Residual, unspecified or interdisciplinary code. Broad candidate homes only; scope review required."
+    },
+    {
+      "schemeId": "isced-f",
+      "code": "0721",
+      "disposition": "mapped",
+      "domainIds": [
+        "D10",
+        "D11"
+      ],
+      "rationale": "Editorial subject mapping; no claim of taught or accepted coverage."
+    },
+    {
+      "schemeId": "isced-f",
+      "code": "0722",
+      "disposition": "mapped",
+      "domainIds": [
+        "D05",
+        "D11",
+        "D29"
+      ],
+      "rationale": "Editorial subject mapping; no claim of taught or accepted coverage."
+    },
+    {
+      "schemeId": "isced-f",
+      "code": "0723",
+      "disposition": "mapped",
+      "domainIds": [
+        "D11",
+        "D25",
+        "D29"
+      ],
+      "rationale": "Editorial subject mapping; no claim of taught or accepted coverage."
+    },
+    {
+      "schemeId": "isced-f",
+      "code": "0724",
+      "disposition": "mapped",
+      "domainIds": [
+        "D06",
+        "D11"
+      ],
+      "rationale": "Editorial subject mapping; no claim of taught or accepted coverage."
+    },
+    {
+      "schemeId": "isced-f",
+      "code": "0729",
+      "disposition": "review",
+      "domainIds": [
+        "D05",
+        "D11",
+        "D12",
+        "D29"
+      ],
+      "rationale": "Residual, unspecified or interdisciplinary code. Broad candidate homes only; scope review required."
+    },
+    {
+      "schemeId": "isced-f",
+      "code": "0730",
+      "disposition": "review",
+      "domainIds": [
+        "D05",
+        "D11",
+        "D12",
+        "D29"
+      ],
+      "rationale": "Residual, unspecified or interdisciplinary code. Broad candidate homes only; scope review required."
+    },
+    {
+      "schemeId": "isced-f",
+      "code": "0731",
+      "disposition": "mapped",
+      "domainIds": [
+        "D12"
+      ],
+      "rationale": "Editorial subject mapping; no claim of taught or accepted coverage."
+    },
+    {
+      "schemeId": "isced-f",
+      "code": "0732",
+      "disposition": "mapped",
+      "domainIds": [
+        "D11",
+        "D12"
+      ],
+      "rationale": "Editorial subject mapping; no claim of taught or accepted coverage."
+    },
+    {
+      "schemeId": "isced-f",
+      "code": "0788",
+      "disposition": "review",
+      "domainIds": [
+        "D05",
+        "D11",
+        "D12",
+        "D29"
+      ],
+      "rationale": "Residual, unspecified or interdisciplinary code. Broad candidate homes only; scope review required."
+    },
+    {
+      "schemeId": "isced-f",
+      "code": "0799",
+      "disposition": "review",
+      "domainIds": [
+        "D05",
+        "D11",
+        "D12",
+        "D29"
+      ],
+      "rationale": "Residual, unspecified or interdisciplinary code. Broad candidate homes only; scope review required."
+    },
+    {
+      "schemeId": "isced-f",
+      "code": "0800",
+      "disposition": "review",
+      "domainIds": [
+        "D10"
+      ],
+      "rationale": "Residual, unspecified or interdisciplinary code. Broad candidate homes only; scope review required."
+    },
+    {
+      "schemeId": "isced-f",
+      "code": "0810",
+      "disposition": "review",
+      "domainIds": [
+        "D10"
+      ],
+      "rationale": "Residual, unspecified or interdisciplinary code. Broad candidate homes only; scope review required."
+    },
+    {
+      "schemeId": "isced-f",
+      "code": "0811",
+      "disposition": "mapped",
+      "domainIds": [
+        "D10"
+      ],
+      "rationale": "Editorial subject mapping; no claim of taught or accepted coverage."
+    },
+    {
+      "schemeId": "isced-f",
+      "code": "0812",
+      "disposition": "mapped",
+      "domainIds": [
+        "D10"
+      ],
+      "rationale": "Editorial subject mapping; no claim of taught or accepted coverage."
+    },
+    {
+      "schemeId": "isced-f",
+      "code": "0819",
+      "disposition": "review",
+      "domainIds": [
+        "D10"
+      ],
+      "rationale": "Residual, unspecified or interdisciplinary code. Broad candidate homes only; scope review required."
+    },
+    {
+      "schemeId": "isced-f",
+      "code": "0821",
+      "disposition": "mapped",
+      "domainIds": [
+        "D10"
+      ],
+      "rationale": "Editorial subject mapping; no claim of taught or accepted coverage."
+    },
+    {
+      "schemeId": "isced-f",
+      "code": "0831",
+      "disposition": "mapped",
+      "domainIds": [
+        "D10"
+      ],
+      "rationale": "Editorial subject mapping; no claim of taught or accepted coverage."
+    },
+    {
+      "schemeId": "isced-f",
+      "code": "0841",
+      "disposition": "mapped",
+      "domainIds": [
+        "D10"
+      ],
+      "rationale": "Editorial subject mapping; no claim of taught or accepted coverage."
+    },
+    {
+      "schemeId": "isced-f",
+      "code": "0888",
+      "disposition": "review",
+      "domainIds": [
+        "D10"
+      ],
+      "rationale": "Residual, unspecified or interdisciplinary code. Broad candidate homes only; scope review required."
+    },
+    {
+      "schemeId": "isced-f",
+      "code": "0899",
+      "disposition": "review",
+      "domainIds": [
+        "D10"
+      ],
+      "rationale": "Residual, unspecified or interdisciplinary code. Broad candidate homes only; scope review required."
+    },
+    {
+      "schemeId": "isced-f",
+      "code": "0900",
+      "disposition": "review",
+      "domainIds": [
+        "D09",
+        "D17",
+        "D29"
+      ],
+      "rationale": "Residual, unspecified or interdisciplinary code. Broad candidate homes only; scope review required."
+    },
+    {
+      "schemeId": "isced-f",
+      "code": "0910",
+      "disposition": "review",
+      "domainIds": [
+        "D09",
+        "D17",
+        "D29"
+      ],
+      "rationale": "Residual, unspecified or interdisciplinary code. Broad candidate homes only; scope review required."
+    },
+    {
+      "schemeId": "isced-f",
+      "code": "0911",
+      "disposition": "mapped",
+      "domainIds": [
+        "D09"
+      ],
+      "rationale": "Editorial subject mapping; no claim of taught or accepted coverage."
+    },
+    {
+      "schemeId": "isced-f",
+      "code": "0912",
+      "disposition": "mapped",
+      "domainIds": [
+        "D09"
+      ],
+      "rationale": "Editorial subject mapping; no claim of taught or accepted coverage."
+    },
+    {
+      "schemeId": "isced-f",
+      "code": "0913",
+      "disposition": "mapped",
+      "domainIds": [
+        "D09"
+      ],
+      "rationale": "Editorial subject mapping; no claim of taught or accepted coverage."
+    },
+    {
+      "schemeId": "isced-f",
+      "code": "0914",
+      "disposition": "mapped",
+      "domainIds": [
+        "D09",
+        "D11"
+      ],
+      "rationale": "Editorial subject mapping; no claim of taught or accepted coverage."
+    },
+    {
+      "schemeId": "isced-f",
+      "code": "0915",
+      "disposition": "mapped",
+      "domainIds": [
+        "D09"
+      ],
+      "rationale": "Editorial subject mapping; no claim of taught or accepted coverage."
+    },
+    {
+      "schemeId": "isced-f",
+      "code": "0916",
+      "disposition": "mapped",
+      "domainIds": [
+        "D09"
+      ],
+      "rationale": "Editorial subject mapping; no claim of taught or accepted coverage."
+    },
+    {
+      "schemeId": "isced-f",
+      "code": "0917",
+      "disposition": "mapped",
+      "domainIds": [
+        "D09",
+        "D17"
+      ],
+      "rationale": "Editorial subject mapping; no claim of taught or accepted coverage."
+    },
+    {
+      "schemeId": "isced-f",
+      "code": "0919",
+      "disposition": "review",
+      "domainIds": [
+        "D09",
+        "D17",
+        "D29"
+      ],
+      "rationale": "Residual, unspecified or interdisciplinary code. Broad candidate homes only; scope review required."
+    },
+    {
+      "schemeId": "isced-f",
+      "code": "0920",
+      "disposition": "review",
+      "domainIds": [
+        "D09",
+        "D17",
+        "D29"
+      ],
+      "rationale": "Residual, unspecified or interdisciplinary code. Broad candidate homes only; scope review required."
+    },
+    {
+      "schemeId": "isced-f",
+      "code": "0921",
+      "disposition": "mapped",
+      "domainIds": [
+        "D09",
+        "D29"
+      ],
+      "rationale": "Editorial subject mapping; no claim of taught or accepted coverage."
+    },
+    {
+      "schemeId": "isced-f",
+      "code": "0922",
+      "disposition": "mapped",
+      "domainIds": [
+        "D09",
+        "D19",
+        "D29"
+      ],
+      "rationale": "Editorial subject mapping; no claim of taught or accepted coverage."
+    },
+    {
+      "schemeId": "isced-f",
+      "code": "0923",
+      "disposition": "mapped",
+      "domainIds": [
+        "D09",
+        "D17"
+      ],
+      "rationale": "Editorial subject mapping; no claim of taught or accepted coverage."
+    },
+    {
+      "schemeId": "isced-f",
+      "code": "0929",
+      "disposition": "review",
+      "domainIds": [
+        "D09",
+        "D17",
+        "D29"
+      ],
+      "rationale": "Residual, unspecified or interdisciplinary code. Broad candidate homes only; scope review required."
+    },
+    {
+      "schemeId": "isced-f",
+      "code": "0988",
+      "disposition": "review",
+      "domainIds": [
+        "D09",
+        "D17",
+        "D29"
+      ],
+      "rationale": "Residual, unspecified or interdisciplinary code. Broad candidate homes only; scope review required."
+    },
+    {
+      "schemeId": "isced-f",
+      "code": "0999",
+      "disposition": "review",
+      "domainIds": [
+        "D09",
+        "D17",
+        "D29"
+      ],
+      "rationale": "Residual, unspecified or interdisciplinary code. Broad candidate homes only; scope review required."
+    },
+    {
+      "schemeId": "isced-f",
+      "code": "1000",
+      "disposition": "review",
+      "domainIds": [
+        "D11",
+        "D14",
+        "D15",
+        "D29",
+        "D30"
+      ],
+      "rationale": "Residual, unspecified or interdisciplinary code. Broad candidate homes only; scope review required."
+    },
+    {
+      "schemeId": "isced-f",
+      "code": "1010",
+      "disposition": "review",
+      "domainIds": [
+        "D11",
+        "D14",
+        "D15",
+        "D29",
+        "D30"
+      ],
+      "rationale": "Residual, unspecified or interdisciplinary code. Broad candidate homes only; scope review required."
+    },
+    {
+      "schemeId": "isced-f",
+      "code": "1011",
+      "disposition": "mapped",
+      "domainIds": [
+        "D29"
+      ],
+      "rationale": "Editorial subject mapping; no claim of taught or accepted coverage."
+    },
+    {
+      "schemeId": "isced-f",
+      "code": "1012",
+      "disposition": "mapped",
+      "domainIds": [
+        "D14",
+        "D29"
+      ],
+      "rationale": "Editorial subject mapping; no claim of taught or accepted coverage."
+    },
+    {
+      "schemeId": "isced-f",
+      "code": "1013",
+      "disposition": "mapped",
+      "domainIds": [
+        "D10",
+        "D14",
+        "D29"
+      ],
+      "rationale": "Editorial subject mapping; no claim of taught or accepted coverage."
+    },
+    {
+      "schemeId": "isced-f",
+      "code": "1014",
+      "disposition": "mapped",
+      "domainIds": [
+        "D30"
+      ],
+      "rationale": "Editorial subject mapping; no claim of taught or accepted coverage."
+    },
+    {
+      "schemeId": "isced-f",
+      "code": "1015",
+      "disposition": "mapped",
+      "domainIds": [
+        "D14",
+        "D30"
+      ],
+      "rationale": "Editorial subject mapping; no claim of taught or accepted coverage."
+    },
+    {
+      "schemeId": "isced-f",
+      "code": "1019",
+      "disposition": "review",
+      "domainIds": [
+        "D11",
+        "D14",
+        "D15",
+        "D29",
+        "D30"
+      ],
+      "rationale": "Residual, unspecified or interdisciplinary code. Broad candidate homes only; scope review required."
+    },
+    {
+      "schemeId": "isced-f",
+      "code": "1020",
+      "disposition": "review",
+      "domainIds": [
+        "D11",
+        "D14",
+        "D15",
+        "D29",
+        "D30"
+      ],
+      "rationale": "Residual, unspecified or interdisciplinary code. Broad candidate homes only; scope review required."
+    },
+    {
+      "schemeId": "isced-f",
+      "code": "1021",
+      "disposition": "mapped",
+      "domainIds": [
+        "D08",
+        "D09"
+      ],
+      "rationale": "Editorial subject mapping; no claim of taught or accepted coverage."
+    },
+    {
+      "schemeId": "isced-f",
+      "code": "1022",
+      "disposition": "mapped",
+      "domainIds": [
+        "D09",
+        "D11"
+      ],
+      "rationale": "Editorial subject mapping; no claim of taught or accepted coverage."
+    },
+    {
+      "schemeId": "isced-f",
+      "code": "1029",
+      "disposition": "review",
+      "domainIds": [
+        "D11",
+        "D14",
+        "D15",
+        "D29",
+        "D30"
+      ],
+      "rationale": "Residual, unspecified or interdisciplinary code. Broad candidate homes only; scope review required."
+    },
+    {
+      "schemeId": "isced-f",
+      "code": "1030",
+      "disposition": "review",
+      "domainIds": [
+        "D11",
+        "D14",
+        "D15",
+        "D29",
+        "D30"
+      ],
+      "rationale": "Residual, unspecified or interdisciplinary code. Broad candidate homes only; scope review required."
+    },
+    {
+      "schemeId": "isced-f",
+      "code": "1031",
+      "disposition": "mapped",
+      "domainIds": [
+        "D11",
+        "D15",
+        "D20"
+      ],
+      "rationale": "Editorial subject mapping; no claim of taught or accepted coverage."
+    },
+    {
+      "schemeId": "isced-f",
+      "code": "1032",
+      "disposition": "mapped",
+      "domainIds": [
+        "D15",
+        "D16"
+      ],
+      "rationale": "Editorial subject mapping; no claim of taught or accepted coverage."
+    },
+    {
+      "schemeId": "isced-f",
+      "code": "1039",
+      "disposition": "review",
+      "domainIds": [
+        "D11",
+        "D14",
+        "D15",
+        "D29",
+        "D30"
+      ],
+      "rationale": "Residual, unspecified or interdisciplinary code. Broad candidate homes only; scope review required."
+    },
+    {
+      "schemeId": "isced-f",
+      "code": "1041",
+      "disposition": "mapped",
+      "domainIds": [
+        "D11",
+        "D14"
+      ],
+      "rationale": "Editorial subject mapping; no claim of taught or accepted coverage."
+    },
+    {
+      "schemeId": "isced-f",
+      "code": "1088",
+      "disposition": "review",
+      "domainIds": [
+        "D11",
+        "D14",
+        "D15",
+        "D29",
+        "D30"
+      ],
+      "rationale": "Residual, unspecified or interdisciplinary code. Broad candidate homes only; scope review required."
+    },
+    {
+      "schemeId": "isced-f",
+      "code": "1099",
+      "disposition": "review",
+      "domainIds": [
+        "D11",
+        "D14",
+        "D15",
+        "D29",
+        "D30"
+      ],
+      "rationale": "Residual, unspecified or interdisciplinary code. Broad candidate homes only; scope review required."
+    },
+    {
+      "schemeId": "isced-f",
+      "code": "9999",
+      "disposition": "excluded",
+      "domainIds": [],
+      "rationale": "Administrative unknown-field code, not a knowledge domain."
+    },
+    {
+      "schemeId": "ford",
+      "code": "1.1",
+      "disposition": "mapped",
+      "domainIds": [
+        "D01",
+        "D02"
+      ],
+      "rationale": "Editorial mapping of a research field; no educational completeness inference."
+    },
+    {
+      "schemeId": "ford",
+      "code": "1.2",
+      "disposition": "mapped",
+      "domainIds": [
+        "D03",
+        "D28"
+      ],
+      "rationale": "Editorial mapping of a research field; no educational completeness inference."
+    },
+    {
+      "schemeId": "ford",
+      "code": "1.3",
+      "disposition": "mapped",
+      "domainIds": [
+        "D04"
+      ],
+      "rationale": "Editorial mapping of a research field; no educational completeness inference."
+    },
+    {
+      "schemeId": "ford",
+      "code": "1.4",
+      "disposition": "mapped",
+      "domainIds": [
+        "D05"
+      ],
+      "rationale": "Editorial mapping of a research field; no educational completeness inference."
+    },
+    {
+      "schemeId": "ford",
+      "code": "1.5",
+      "disposition": "mapped",
+      "domainIds": [
+        "D06",
+        "D08"
+      ],
+      "rationale": "Editorial mapping of a research field; no educational completeness inference."
+    },
+    {
+      "schemeId": "ford",
+      "code": "1.6",
+      "disposition": "mapped",
+      "domainIds": [
+        "D07",
+        "D08"
+      ],
+      "rationale": "Editorial mapping of a research field; no educational completeness inference."
+    },
+    {
+      "schemeId": "ford",
+      "code": "1.7",
+      "disposition": "review",
+      "domainIds": [
+        "D04",
+        "D05",
+        "D06",
+        "D07",
+        "D08"
+      ],
+      "rationale": "Residual field: candidate homes require topic-level review."
+    },
+    {
+      "schemeId": "ford",
+      "code": "2.1",
+      "disposition": "mapped",
+      "domainIds": [
+        "D11",
+        "D12"
+      ],
+      "rationale": "Editorial mapping of a research field; no educational completeness inference."
+    },
+    {
+      "schemeId": "ford",
+      "code": "2.2",
+      "disposition": "mapped",
+      "domainIds": [
+        "D03",
+        "D11"
+      ],
+      "rationale": "Editorial mapping of a research field; no educational completeness inference."
+    },
+    {
+      "schemeId": "ford",
+      "code": "2.3",
+      "disposition": "mapped",
+      "domainIds": [
+        "D11"
+      ],
+      "rationale": "Editorial mapping of a research field; no educational completeness inference."
+    },
+    {
+      "schemeId": "ford",
+      "code": "2.4",
+      "disposition": "mapped",
+      "domainIds": [
+        "D05",
+        "D11"
+      ],
+      "rationale": "Editorial mapping of a research field; no educational completeness inference."
+    },
+    {
+      "schemeId": "ford",
+      "code": "2.5",
+      "disposition": "mapped",
+      "domainIds": [
+        "D05",
+        "D11"
+      ],
+      "rationale": "Editorial mapping of a research field; no educational completeness inference."
+    },
+    {
+      "schemeId": "ford",
+      "code": "2.6",
+      "disposition": "mapped",
+      "domainIds": [
+        "D09",
+        "D11"
+      ],
+      "rationale": "Editorial mapping of a research field; no educational completeness inference."
+    },
+    {
+      "schemeId": "ford",
+      "code": "2.7",
+      "disposition": "mapped",
+      "domainIds": [
+        "D08",
+        "D11"
+      ],
+      "rationale": "Editorial mapping of a research field; no educational completeness inference."
+    },
+    {
+      "schemeId": "ford",
+      "code": "2.8",
+      "disposition": "mapped",
+      "domainIds": [
+        "D07",
+        "D08",
+        "D11"
+      ],
+      "rationale": "Editorial mapping of a research field; no educational completeness inference."
+    },
+    {
+      "schemeId": "ford",
+      "code": "2.9",
+      "disposition": "mapped",
+      "domainIds": [
+        "D07",
+        "D11"
+      ],
+      "rationale": "Editorial mapping of a research field; no educational completeness inference."
+    },
+    {
+      "schemeId": "ford",
+      "code": "2.10",
+      "disposition": "mapped",
+      "domainIds": [
+        "D04",
+        "D05",
+        "D11"
+      ],
+      "rationale": "Editorial mapping of a research field; no educational completeness inference."
+    },
+    {
+      "schemeId": "ford",
+      "code": "2.11",
+      "disposition": "review",
+      "domainIds": [
+        "D11"
+      ],
+      "rationale": "Residual field: candidate homes require topic-level review."
+    },
+    {
+      "schemeId": "ford",
+      "code": "3.1",
+      "disposition": "mapped",
+      "domainIds": [
+        "D07",
+        "D09"
+      ],
+      "rationale": "Editorial mapping of a research field; no educational completeness inference."
+    },
+    {
+      "schemeId": "ford",
+      "code": "3.2",
+      "disposition": "mapped",
+      "domainIds": [
+        "D09"
+      ],
+      "rationale": "Editorial mapping of a research field; no educational completeness inference."
+    },
+    {
+      "schemeId": "ford",
+      "code": "3.3",
+      "disposition": "mapped",
+      "domainIds": [
+        "D09"
+      ],
+      "rationale": "Editorial mapping of a research field; no educational completeness inference."
+    },
+    {
+      "schemeId": "ford",
+      "code": "3.4",
+      "disposition": "mapped",
+      "domainIds": [
+        "D07",
+        "D09"
+      ],
+      "rationale": "Editorial mapping of a research field; no educational completeness inference."
+    },
+    {
+      "schemeId": "ford",
+      "code": "3.5",
+      "disposition": "review",
+      "domainIds": [
+        "D09"
+      ],
+      "rationale": "Residual field: candidate homes require topic-level review."
+    },
+    {
+      "schemeId": "ford",
+      "code": "4.1",
+      "disposition": "mapped",
+      "domainIds": [
+        "D10"
+      ],
+      "rationale": "Editorial mapping of a research field; no educational completeness inference."
+    },
+    {
+      "schemeId": "ford",
+      "code": "4.2",
+      "disposition": "mapped",
+      "domainIds": [
+        "D10"
+      ],
+      "rationale": "Editorial mapping of a research field; no educational completeness inference."
+    },
+    {
+      "schemeId": "ford",
+      "code": "4.3",
+      "disposition": "mapped",
+      "domainIds": [
+        "D10"
+      ],
+      "rationale": "Editorial mapping of a research field; no educational completeness inference."
+    },
+    {
+      "schemeId": "ford",
+      "code": "4.4",
+      "disposition": "mapped",
+      "domainIds": [
+        "D07",
+        "D10"
+      ],
+      "rationale": "Editorial mapping of a research field; no educational completeness inference."
+    },
+    {
+      "schemeId": "ford",
+      "code": "4.5",
+      "disposition": "review",
+      "domainIds": [
+        "D10"
+      ],
+      "rationale": "Residual field: candidate homes require topic-level review."
+    },
+    {
+      "schemeId": "ford",
+      "code": "5.1",
+      "disposition": "mapped",
+      "domainIds": [
+        "D18"
+      ],
+      "rationale": "Editorial mapping of a research field; no educational completeness inference."
+    },
+    {
+      "schemeId": "ford",
+      "code": "5.2",
+      "disposition": "mapped",
+      "domainIds": [
+        "D13",
+        "D14"
+      ],
+      "rationale": "Editorial mapping of a research field; no educational completeness inference."
+    },
+    {
+      "schemeId": "ford",
+      "code": "5.3",
+      "disposition": "mapped",
+      "domainIds": [
+        "D19"
+      ],
+      "rationale": "Editorial mapping of a research field; no educational completeness inference."
+    },
+    {
+      "schemeId": "ford",
+      "code": "5.4",
+      "disposition": "mapped",
+      "domainIds": [
+        "D17"
+      ],
+      "rationale": "Editorial mapping of a research field; no educational completeness inference."
+    },
+    {
+      "schemeId": "ford",
+      "code": "5.5",
+      "disposition": "mapped",
+      "domainIds": [
+        "D16"
+      ],
+      "rationale": "Editorial mapping of a research field; no educational completeness inference."
+    },
+    {
+      "schemeId": "ford",
+      "code": "5.6",
+      "disposition": "mapped",
+      "domainIds": [
+        "D15"
+      ],
+      "rationale": "Editorial mapping of a research field; no educational completeness inference."
+    },
+    {
+      "schemeId": "ford",
+      "code": "5.7",
+      "disposition": "mapped",
+      "domainIds": [
+        "D06",
+        "D13",
+        "D17"
+      ],
+      "rationale": "Editorial mapping of a research field; no educational completeness inference."
+    },
+    {
+      "schemeId": "ford",
+      "code": "5.8",
+      "disposition": "mapped",
+      "domainIds": [
+        "D23",
+        "D28"
+      ],
+      "rationale": "Editorial mapping of a research field; no educational completeness inference."
+    },
+    {
+      "schemeId": "ford",
+      "code": "5.9",
+      "disposition": "review",
+      "domainIds": [
+        "D13",
+        "D14",
+        "D15",
+        "D16",
+        "D17",
+        "D18",
+        "D19",
+        "D28"
+      ],
+      "rationale": "Residual field: candidate homes require topic-level review."
+    },
+    {
+      "schemeId": "ford",
+      "code": "6.1",
+      "disposition": "mapped",
+      "domainIds": [
+        "D20"
+      ],
+      "rationale": "Editorial mapping of a research field; no educational completeness inference."
+    },
+    {
+      "schemeId": "ford",
+      "code": "6.2",
+      "disposition": "mapped",
+      "domainIds": [
+        "D23",
+        "D24"
+      ],
+      "rationale": "Editorial mapping of a research field; no educational completeness inference."
+    },
+    {
+      "schemeId": "ford",
+      "code": "6.3",
+      "disposition": "mapped",
+      "domainIds": [
+        "D21",
+        "D22"
+      ],
+      "rationale": "Editorial mapping of a research field; no educational completeness inference."
+    },
+    {
+      "schemeId": "ford",
+      "code": "6.4",
+      "disposition": "mapped",
+      "domainIds": [
+        "D12",
+        "D25",
+        "D26",
+        "D27"
+      ],
+      "rationale": "Editorial mapping of a research field; no educational completeness inference."
+    },
+    {
+      "schemeId": "ford",
+      "code": "6.5",
+      "disposition": "review",
+      "domainIds": [
+        "D20",
+        "D21",
+        "D22",
+        "D23",
+        "D24",
+        "D25",
+        "D26",
+        "D27"
+      ],
+      "rationale": "Residual field: candidate homes require topic-level review."
+    },
+    {
+      "schemeId": "lcc",
+      "code": "A",
+      "disposition": "mapped",
+      "domainIds": [
+        "D19",
+        "D28"
+      ],
+      "rationale": "Main-class routing only, based on indexed outline; detailed schedules and omissions remain unaudited."
+    },
+    {
+      "schemeId": "lcc",
+      "code": "B",
+      "disposition": "mapped",
+      "domainIds": [
+        "D18",
+        "D21",
+        "D22"
+      ],
+      "rationale": "Main-class routing only, based on indexed outline; detailed schedules and omissions remain unaudited."
+    },
+    {
+      "schemeId": "lcc",
+      "code": "C",
+      "disposition": "mapped",
+      "domainIds": [
+        "D20"
+      ],
+      "rationale": "Main-class routing only, based on indexed outline; detailed schedules and omissions remain unaudited."
+    },
+    {
+      "schemeId": "lcc",
+      "code": "D",
+      "disposition": "mapped",
+      "domainIds": [
+        "D20"
+      ],
+      "rationale": "Main-class routing only, based on indexed outline; detailed schedules and omissions remain unaudited."
+    },
+    {
+      "schemeId": "lcc",
+      "code": "E",
+      "disposition": "mapped",
+      "domainIds": [
+        "D20"
+      ],
+      "rationale": "Main-class routing only, based on indexed outline; detailed schedules and omissions remain unaudited."
+    },
+    {
+      "schemeId": "lcc",
+      "code": "F",
+      "disposition": "mapped",
+      "domainIds": [
+        "D20"
+      ],
+      "rationale": "Main-class routing only, based on indexed outline; detailed schedules and omissions remain unaudited."
+    },
+    {
+      "schemeId": "lcc",
+      "code": "G",
+      "disposition": "mapped",
+      "domainIds": [
+        "D06",
+        "D17",
+        "D30"
+      ],
+      "rationale": "Main-class routing only, based on indexed outline; detailed schedules and omissions remain unaudited."
+    },
+    {
+      "schemeId": "lcc",
+      "code": "H",
+      "disposition": "mapped",
+      "domainIds": [
+        "D13",
+        "D14",
+        "D17"
+      ],
+      "rationale": "Main-class routing only, based on indexed outline; detailed schedules and omissions remain unaudited."
+    },
+    {
+      "schemeId": "lcc",
+      "code": "J",
+      "disposition": "mapped",
+      "domainIds": [
+        "D15"
+      ],
+      "rationale": "Main-class routing only, based on indexed outline; detailed schedules and omissions remain unaudited."
+    },
+    {
+      "schemeId": "lcc",
+      "code": "K",
+      "disposition": "mapped",
+      "domainIds": [
+        "D16"
+      ],
+      "rationale": "Main-class routing only, based on indexed outline; detailed schedules and omissions remain unaudited."
+    },
+    {
+      "schemeId": "lcc",
+      "code": "L",
+      "disposition": "mapped",
+      "domainIds": [
+        "D19"
+      ],
+      "rationale": "Main-class routing only, based on indexed outline; detailed schedules and omissions remain unaudited."
+    },
+    {
+      "schemeId": "lcc",
+      "code": "M",
+      "disposition": "mapped",
+      "domainIds": [
+        "D26"
+      ],
+      "rationale": "Main-class routing only, based on indexed outline; detailed schedules and omissions remain unaudited."
+    },
+    {
+      "schemeId": "lcc",
+      "code": "N",
+      "disposition": "mapped",
+      "domainIds": [
+        "D12",
+        "D25"
+      ],
+      "rationale": "Main-class routing only, based on indexed outline; detailed schedules and omissions remain unaudited."
+    },
+    {
+      "schemeId": "lcc",
+      "code": "P",
+      "disposition": "mapped",
+      "domainIds": [
+        "D23",
+        "D24",
+        "D27"
+      ],
+      "rationale": "Main-class routing only, based on indexed outline; detailed schedules and omissions remain unaudited."
+    },
+    {
+      "schemeId": "lcc",
+      "code": "Q",
+      "disposition": "mapped",
+      "domainIds": [
+        "D01",
+        "D02",
+        "D03",
+        "D04",
+        "D05",
+        "D06",
+        "D07",
+        "D08"
+      ],
+      "rationale": "Main-class routing only, based on indexed outline; detailed schedules and omissions remain unaudited."
+    },
+    {
+      "schemeId": "lcc",
+      "code": "R",
+      "disposition": "mapped",
+      "domainIds": [
+        "D09"
+      ],
+      "rationale": "Main-class routing only, based on indexed outline; detailed schedules and omissions remain unaudited."
+    },
+    {
+      "schemeId": "lcc",
+      "code": "S",
+      "disposition": "mapped",
+      "domainIds": [
+        "D10"
+      ],
+      "rationale": "Main-class routing only, based on indexed outline; detailed schedules and omissions remain unaudited."
+    },
+    {
+      "schemeId": "lcc",
+      "code": "T",
+      "disposition": "mapped",
+      "domainIds": [
+        "D03",
+        "D11",
+        "D12",
+        "D29"
+      ],
+      "rationale": "Main-class routing only, based on indexed outline; detailed schedules and omissions remain unaudited."
+    },
+    {
+      "schemeId": "lcc",
+      "code": "U",
+      "disposition": "mapped",
+      "domainIds": [
+        "D11",
+        "D15",
+        "D20"
+      ],
+      "rationale": "Main-class routing only, based on indexed outline; detailed schedules and omissions remain unaudited."
+    },
+    {
+      "schemeId": "lcc",
+      "code": "V",
+      "disposition": "mapped",
+      "domainIds": [
+        "D11",
+        "D15",
+        "D20"
+      ],
+      "rationale": "Main-class routing only, based on indexed outline; detailed schedules and omissions remain unaudited."
+    },
+    {
+      "schemeId": "lcc",
+      "code": "Z",
+      "disposition": "mapped",
+      "domainIds": [
+        "D28"
+      ],
+      "rationale": "Main-class routing only, based on indexed outline; detailed schedules and omissions remain unaudited."
+    },
+    {
+      "schemeId": "ich",
+      "code": "oral-traditions",
+      "disposition": "review",
+      "domainIds": [
+        "D17",
+        "D20",
+        "D22",
+        "D23",
+        "D24"
+      ],
+      "rationale": "Provisional broad routing from indexed overview; body access stopped. Local communities define context and permissions."
+    },
+    {
+      "schemeId": "ich",
+      "code": "performing-arts",
+      "disposition": "review",
+      "domainIds": [
+        "D26",
+        "D27"
+      ],
+      "rationale": "Provisional broad routing from indexed overview; body access stopped. Local communities define context and permissions."
+    },
+    {
+      "schemeId": "ich",
+      "code": "social-practices",
+      "disposition": "review",
+      "domainIds": [
+        "D17",
+        "D22",
+        "D29"
+      ],
+      "rationale": "Provisional broad routing from indexed overview; body access stopped. Local communities define context and permissions."
+    },
+    {
+      "schemeId": "ich",
+      "code": "nature-knowledge",
+      "disposition": "review",
+      "domainIds": [
+        "D06",
+        "D07",
+        "D08",
+        "D09",
+        "D10"
+      ],
+      "rationale": "Provisional broad routing from indexed overview; body access stopped. Local communities define context and permissions."
+    },
+    {
+      "schemeId": "ich",
+      "code": "craftsmanship",
+      "disposition": "review",
+      "domainIds": [
+        "D25",
+        "D29"
+      ],
+      "rationale": "Provisional broad routing from indexed overview; body access stopped. Local communities define context and permissions."
+    }
+  ]
+}

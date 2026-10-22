@@ -1,0 +1,755 @@
+{
+  "schemaVersion": 1,
+  "reviewedOn": "2026-10-22",
+  "sources": [
+    {
+      "id": "isced2013",
+      "title": "UNESCO-UIS, ISCED-F 2013 Detailed field descriptions (2015)",
+      "url": "https://www.ksh.hu/docs/osztalyozasok/keor/isced-f_2013_eng.pdf",
+      "locator": "Appendix I, printed pp. 54–58; ISBN 978-92-9189-179-5",
+      "access": {
+        "status": "table-read",
+        "checkedOn": "2026-10-22",
+        "scope": "Named passage or section only; not a whole-work verification."
+      },
+      "rights": {
+        "plan": "CC BY-SA 3.0 IGO stated on publication p. 2. Registry retains factual code identifiers and original mappings; publication is attributed, not redistributed."
+      },
+      "findings": [
+        "All five Appendix I table pages visually checked after text extraction. Scope is the 149 possible four-digit codes printed there, including residual codes and 9999.",
+        "The Finnish reference has duplicate 0731 and 0910 labels, omitting 0730 and 0920; it also includes 0549 and 0739 absent from this edition. Do not silently merge code sets."
+      ],
+      "sha256": "b320b3006ff82ef7f7d3c9182a3c380bbab50db3e59b725b3c5467f5a764d44f",
+      "publisher": "UNESCO Institute for Statistics; hosted by Hungarian Central Statistical Office"
+    },
+    {
+      "id": "isced-finnish",
+      "title": "Finnish National Agency for Education, ISCED reference table",
+      "url": "https://www.oph.fi/sites/default/files/documents/isced-codes_0.pdf",
+      "locator": "Five-page table, especially pp. 4–5",
+      "access": {
+        "status": "table-read",
+        "checkedOn": "2026-10-22",
+        "scope": "Named passage or section only; not a whole-work verification."
+      },
+      "rights": {
+        "plan": "Reference and original paraphrase only; assets require a separate rights check."
+      },
+      "findings": [
+        "Rejected as the canonical inventory because its printed codes differ from the UNESCO edition; preserve this discrepancy."
+      ],
+      "sha256": "c06e3c41e57222b76a995a0e389d49e1cd38a7a8e5247dced93c7e4155d993dd"
+    },
+    {
+      "id": "ford2015",
+      "title": "OECD, Frascati Manual 2015",
+      "url": "https://www.oecd.org/content/dam/oecd/en/publications/reports/2015/10/frascati-manual-2015_g1g57dcb/9789264239012-en.pdf",
+      "locator": "Table 2.2, printed p. 59, 42 second-level FORD codes",
+      "access": {
+        "status": "table-read",
+        "checkedOn": "2026-10-22",
+        "scope": "Named passage or section only; not a whole-work verification."
+      },
+      "rights": {
+        "plan": "Reference and original paraphrase only; assets require a separate rights check."
+      },
+      "findings": [
+        "Table text was read through web retrieval. A later PDF download returned 403; no pixel or downloaded-file verification is claimed."
+      ],
+      "stop": {
+        "reason": "Later HTTP 403 on PDF download",
+        "action": "Do not retry or recover the denied body through mirrors. Earlier table-text receipt only."
+      }
+    },
+    {
+      "id": "loc-outline",
+      "title": "Library of Congress Classification outline",
+      "url": "https://www.loc.gov/catdir/cpso/lcco/lccowp.html",
+      "locator": "21 main classes, not subclasses or schedules",
+      "access": {
+        "status": "indexed-only",
+        "checkedOn": "2026-10-22",
+        "scope": "Named passage or section only; not a whole-work verification."
+      },
+      "rights": {
+        "plan": "Reference and original paraphrase only; assets require a separate rights check."
+      },
+      "findings": [
+        "Indexed outline used in U0. Full schedule and detailed-code coverage are not claimed."
+      ]
+    },
+    {
+      "id": "ich-domains",
+      "title": "UNESCO, Intangible Cultural Heritage domains",
+      "url": "https://ich.unesco.org/en/intangible-heritage-domains-00052",
+      "locator": "Five broad domains; local slugs are not UNESCO codes",
+      "access": {
+        "status": "indexed-only",
+        "checkedOn": "2026-10-22",
+        "scope": "Named passage or section only; not a whole-work verification."
+      },
+      "rights": {
+        "plan": "Reference and original paraphrase only; assets require a separate rights check."
+      },
+      "findings": [
+        "Indexed descriptions used in U0; later CAPTCHA stopped body access. Practices may overlap domains and require community context."
+      ],
+      "stop": {
+        "reason": "CAPTCHA on body access",
+        "action": "No retry or alternate copy of the blocked body."
+      }
+    },
+    {
+      "id": "agrovoc",
+      "title": "FAO AGROVOC",
+      "url": "https://www.fao.org/agrovoc/",
+      "locator": "Vocabulary overview",
+      "access": {
+        "status": "body-read",
+        "checkedOn": "2026-10-22",
+        "scope": "Named passage or section only; not a whole-work verification."
+      },
+      "rights": {
+        "plan": "Reference and original paraphrase only; assets require a separate rights check."
+      },
+      "findings": [
+        "Discovery vocabulary for agriculture and related practices; not evidence for a lesson claim."
+      ]
+    },
+    {
+      "id": "mesh",
+      "title": "NLM MeSH introduction",
+      "url": "https://www.nlm.nih.gov/mesh/introduction.html",
+      "locator": "Vocabulary overview",
+      "access": {
+        "status": "body-read",
+        "checkedOn": "2026-10-22",
+        "scope": "Named passage or section only; not a whole-work verification."
+      },
+      "rights": {
+        "plan": "Reference and original paraphrase only; assets require a separate rights check."
+      },
+      "findings": [
+        "Biomedical topic discovery; not clinical guidance or permission to reproduce all assets."
+      ]
+    },
+    {
+      "id": "getty",
+      "title": "Getty vocabularies",
+      "url": "https://www.getty.edu/research-conservation/tools-databases/vocabularies/",
+      "locator": "Vocabulary overview",
+      "access": {
+        "status": "body-read",
+        "checkedOn": "2026-10-22",
+        "scope": "Named passage or section only; not a whole-work verification."
+      },
+      "rights": {
+        "plan": "Reference and original paraphrase only; assets require a separate rights check."
+      },
+      "findings": [
+        "Names, objects, materials and places for discovery; individual record terms and media rights still need checking."
+      ]
+    },
+    {
+      "id": "telegram",
+      "title": "National Archives, Zimmermann Telegram",
+      "url": "https://www.archives.gov/milestone-documents/zimmermann-telegram",
+      "locator": "Transcript; RG 59, decimal files 862.20212/82A and /69",
+      "access": {
+        "status": "body-read",
+        "checkedOn": "2026-10-22",
+        "scope": "Named passage or section only; not a whole-work verification."
+      },
+      "rights": {
+        "plan": "Reference and original paraphrase only; assets require a separate rights check."
+      },
+      "findings": [
+        "Conditional alliance proposal. It does not establish Mexican acceptance. Transcript read; scan pixels not inspected."
+      ]
+    },
+    {
+      "id": "wilson1917",
+      "title": "National Archives, Wilson war address",
+      "url": "https://www.archives.gov/milestone-documents/address-to-congress-declaration-of-war-against-germany",
+      "locator": "Address to Congress, April 2, 1917; passage about the intercepted Mexico note; RG 46",
+      "access": {
+        "status": "body-read",
+        "checkedOn": "2026-10-22",
+        "scope": "Named passage or section only; not a whole-work verification."
+      },
+      "rights": {
+        "plan": "Reference and original paraphrase only; assets require a separate rights check."
+      },
+      "findings": [
+        "Rhetorical use of the telegram is not independent corroboration of it."
+      ]
+    },
+    {
+      "id": "archive-analysis",
+      "title": "National Archives, document analysis worksheets",
+      "url": "https://www.archives.gov/education/lessons/worksheets",
+      "locator": "Teaching workflow overview",
+      "access": {
+        "status": "body-read",
+        "checkedOn": "2026-10-22",
+        "scope": "Named passage or section only; not a whole-work verification."
+      },
+      "rights": {
+        "plan": "Reference and original paraphrase only; assets require a separate rights check."
+      },
+      "findings": []
+    },
+    {
+      "id": "aston-pond",
+      "title": "Basho, An Ancient Pond, translation by W. G. Aston",
+      "url": "https://poets.org/poem/ancient-pond/embed",
+      "locator": "Three-line poem; source credited to A History of Japanese Literature (1899)",
+      "access": {
+        "status": "body-read",
+        "checkedOn": "2026-10-22",
+        "scope": "Named passage or section only; not a whole-work verification."
+      },
+      "rights": {
+        "plan": "Page explicitly labels the poem public domain; retain translator and edition. No surrounding site assets copied."
+      },
+      "findings": []
+    },
+    {
+      "id": "hearn-pond",
+      "title": "Lafcadio Hearn, Exotics and Retrospectives",
+      "url": "https://www.gutenberg.org/files/42735/42735-h/42735-h.htm",
+      "locator": "Frogs, printed p. 164, digitized 1914 edition, copyright 1898",
+      "access": {
+        "status": "body-read",
+        "checkedOn": "2026-10-22",
+        "scope": "Named passage or section only; not a whole-work verification."
+      },
+      "rights": {
+        "plan": "Project Gutenberg catalog for ebook 42735 states public domain in the USA. Distribution outside the USA needs a territory check."
+      },
+      "findings": [
+        "Selected wording uses “jumping”, not the “jumped” found in some secondary quotations. Historical claims in the surrounding essay are not adopted as fact."
+      ]
+    },
+    {
+      "id": "ndl-pond",
+      "title": "National Diet Library Collaborative Reference Database",
+      "url": "https://crd.ndl.go.jp/reference/entry/index.php?id=1000333958&page=ref_view",
+      "locator": "Record 1000333958; question quotes Japanese poem; created 2023-05-02, updated 2023-06-23",
+      "access": {
+        "status": "body-read",
+        "checkedOn": "2026-10-22",
+        "scope": "Named passage or section only; not a whole-work verification."
+      },
+      "rights": {
+        "plan": "Reference and original paraphrase only; assets require a separate rights check."
+      },
+      "findings": [
+        "Japanese text and bibliographic note read. This is not an original seventeenth-century textual witness. Modern Harry Behn translation mentioned there is not selected for reproduction."
+      ]
+    },
+    {
+      "id": "legge-analects",
+      "title": "Confucius, Analects, James Legge translation",
+      "url": "https://www.gutenberg.org/cache/epub/3330/pg3330-images.html",
+      "locator": "Book XV, CHAP. XXIII, reciprocity passage; ebook 3330",
+      "access": {
+        "status": "body-read",
+        "checkedOn": "2026-10-22",
+        "scope": "Named passage or section only; not a whole-work verification."
+      },
+      "rights": {
+        "plan": "Catalog states public domain in the USA; preserve translator and edition and check other distribution territories."
+      },
+      "findings": [
+        "This edition numbers the selected passage XXIII. Do not silently use a modern 15.24 locator without an edition crosswalk. English translation read, not the Chinese original."
+      ]
+    },
+    {
+      "id": "web-matthew",
+      "title": "World English Bible Classic, Matthew",
+      "url": "https://ebible.org/eng-web/MAT07.htm",
+      "locator": "Matthew 7:7–12, especially 7:12",
+      "access": {
+        "status": "body-read",
+        "checkedOn": "2026-10-22",
+        "scope": "Named passage or section only; not a whole-work verification."
+      },
+      "rights": {
+        "plan": "Classic page footer marks text public domain; keep the edition name and do not present an alteration as verbatim scripture."
+      },
+      "findings": [
+        "Read the surrounding passage as well as verse 12. Greek source text was not inspected."
+      ]
+    },
+    {
+      "id": "cra9",
+      "title": "Consumer Rights Act 2015, section 9",
+      "url": "https://www.legislation.gov.uk/ukpga/2015/15/section/9",
+      "locator": "quality and disclosed-fault exceptions",
+      "access": {
+        "status": "body-read",
+        "checkedOn": "2026-10-22",
+        "scope": "Named passage or section only; not a whole-work verification."
+      },
+      "rights": {
+        "plan": "Link and original explanation; official text reuse subject to applicable Open Government Licence terms and exceptions."
+      },
+      "findings": []
+    },
+    {
+      "id": "cra19",
+      "title": "Consumer Rights Act 2015, section 19",
+      "url": "https://www.legislation.gov.uk/ukpga/2015/15/section/19",
+      "locator": "remedies and relationship to conformity",
+      "access": {
+        "status": "body-read",
+        "checkedOn": "2026-10-22",
+        "scope": "Named passage or section only; not a whole-work verification."
+      },
+      "rights": {
+        "plan": "Link and original explanation; official text reuse subject to applicable Open Government Licence terms and exceptions."
+      },
+      "findings": []
+    },
+    {
+      "id": "cra20",
+      "title": "Consumer Rights Act 2015, section 20",
+      "url": "https://www.legislation.gov.uk/ukpga/2015/15/section/20",
+      "locator": "clear rejection and refund obligations",
+      "access": {
+        "status": "body-read",
+        "checkedOn": "2026-10-22",
+        "scope": "Named passage or section only; not a whole-work verification."
+      },
+      "rights": {
+        "plan": "Link and original explanation; official text reuse subject to applicable Open Government Licence terms and exceptions."
+      },
+      "findings": []
+    },
+    {
+      "id": "cra22",
+      "title": "Consumer Rights Act 2015, section 22",
+      "url": "https://www.legislation.gov.uk/ukpga/2015/15/section/22",
+      "locator": "subsections 3–8: start, exceptions, repair waiting period",
+      "access": {
+        "status": "body-read",
+        "checkedOn": "2026-10-22",
+        "scope": "Named passage or section only; not a whole-work verification."
+      },
+      "rights": {
+        "plan": "Link and original explanation; official text reuse subject to applicable Open Government Licence terms and exceptions."
+      },
+      "findings": [
+        "Read on 2026-10-22. Section 22 page reports changes known in force through 2026-10-21, with future/outstanding-change notices. Review commencement and amendments before authoring."
+      ]
+    },
+    {
+      "id": "govuk-refunds",
+      "title": "GOV.UK, Accepting returns and giving refunds",
+      "url": "https://www.gov.uk/accepting-returns-and-giving-refunds",
+      "locator": "Faults, change of mind, online sales and proof of purchase",
+      "access": {
+        "status": "body-read",
+        "checkedOn": "2026-10-22",
+        "scope": "Named passage or section only; not a whole-work verification."
+      },
+      "rights": {
+        "plan": "Reference and original paraphrase only; assets require a separate rights check."
+      },
+      "findings": [
+        "Guidance is a discovery/explanation aid; statute controls the bounded case."
+      ]
+    },
+    {
+      "id": "ogl",
+      "title": "The National Archives, Open Government Licence v3.0",
+      "url": "https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/",
+      "locator": "Reuse terms and exclusions",
+      "access": {
+        "status": "body-read",
+        "checkedOn": "2026-10-22",
+        "scope": "Named passage or section only; not a whole-work verification."
+      },
+      "rights": {
+        "plan": "Reference and original paraphrase only; assets require a separate rights check."
+      },
+      "findings": []
+    },
+    {
+      "id": "fao-soil",
+      "title": "FAO, Irrigation Water Management: Introduction to Irrigation",
+      "url": "https://www.fao.org/4/r4082e/r4082e03.htm",
+      "locator": "Chapter 2, sections 2.3–2.4: soil water and available water",
+      "access": {
+        "status": "body-read",
+        "checkedOn": "2026-10-22",
+        "scope": "Named passage or section only; not a whole-work verification."
+      },
+      "rights": {
+        "plan": "Reference and original paraphrase only; assets require a separate rights check."
+      },
+      "findings": [
+        "Conceptual background, not measurements from the selected US-DFC site."
+      ]
+    },
+    {
+      "id": "ars-reesh",
+      "title": "USDA ARS, ReESH_US-DFC publication record",
+      "url": "https://www.ars.usda.gov/research/publications/publication/?seqNo115=431880",
+      "locator": "Publication record and dataset DOI 10.5281/zenodo.18273606",
+      "access": {
+        "status": "metadata-read",
+        "checkedOn": "2026-10-22",
+        "scope": "Named passage or section only; not a whole-work verification."
+      },
+      "rights": {
+        "plan": "Reference and original paraphrase only; assets require a separate rights check."
+      },
+      "findings": [
+        "Metadata links the research-center site to the dataset; data files were separately read."
+      ]
+    },
+    {
+      "id": "reesh-data",
+      "title": "Desai et al., ReESH_US-DFC dataset",
+      "url": "https://zenodo.org/api/records/18273606",
+      "locator": "Versioned record 18273606; two CSV files, sampling 2025-05-29",
+      "access": {
+        "status": "file-read",
+        "checkedOn": "2026-10-22",
+        "scope": "Named passage or section only; not a whole-work verification."
+      },
+      "rights": {
+        "plan": "Record declares CC BY 4.0. Attribute authors, title, DOI, version and transformations."
+      },
+      "findings": [
+        "12 soil samples and 1,106 retention measurements; no orphan sample IDs or exact duplicate retention rows in inspected snapshot.",
+        "Vol_Water is percent; MPa_Abs contains positive magnitudes while documentation describes negative water potential. Preserve magnitude labeling.",
+        "Bulk_Den_g_m3 metadata says g m^-3 but values are 0.85856–1.69115. Unit conflict is unresolved; do not silently relabel or use it.",
+        "10/12 conductivity records have caution flag 1. That flag is defined for conductivity, not a blanket rejection of retention measurements."
+      ],
+      "files": [
+        {
+          "name": "US_DFC_SoilCharacteristics.csv",
+          "sha256": "6a7d182505f3eafb1854ecccb229aca15ddc8754c8830b9880f73afee49647d4",
+          "md5": "db214a1990be88e0a58beb463c6f3cf0",
+          "url": "https://zenodo.org/api/records/18273606/files/US_DFC_SoilCharacteristics.csv/content"
+        },
+        {
+          "name": "US_DFC_SoilWaterRetentionCurves.csv",
+          "sha256": "41308fba78d50d96152f40b85af43f45a9aed4d53e23568db483889c8ed744b1",
+          "md5": "561f270b6fd8cb1e77db0e11f31988a4",
+          "url": "https://zenodo.org/api/records/18273606/files/US_DFC_SoilWaterRetentionCurves.csv/content"
+        }
+      ]
+    },
+    {
+      "id": "nhlbi-breathing",
+      "title": "NHLBI, How the Lungs Work: What Breathing Does for the Body",
+      "url": "https://www.nhlbi.nih.gov/health/lungs/breathing-benefits",
+      "locator": "Breathing in and out",
+      "access": {
+        "status": "body-read",
+        "checkedOn": "2026-10-22",
+        "scope": "Named passage or section only; not a whole-work verification."
+      },
+      "rights": {
+        "plan": "Use physiological facts and original diagrams. Embedded Nucleus Medical Media video is all rights reserved; do not copy it."
+      },
+      "findings": [
+        "Diaphragm contraction during inhalation agrees with OpenStax anatomy."
+      ]
+    },
+    {
+      "id": "openstax-breathing",
+      "title": "OpenStax, Anatomy and Physiology 2e",
+      "url": "https://openstax.org/books/anatomy-and-physiology-2e/pages/22-3-the-process-of-breathing",
+      "locator": "22.3, pulmonary ventilation and muscles of breathing",
+      "access": {
+        "status": "body-read",
+        "checkedOn": "2026-10-22",
+        "scope": "Named passage or section only; not a whole-work verification."
+      },
+      "rights": {
+        "plan": "Current page footer displays CC BY-NC-SA terms. Link/reference only for this pilot; original explanation and diagrams, no adapted assets without a separate licence review."
+      },
+      "findings": []
+    },
+    {
+      "id": "openstax-respiration",
+      "title": "OpenStax, Clinical Nursing Skills",
+      "url": "https://openstax.org/books/clinical-nursing-skills/pages/15-6-respiration",
+      "locator": "15.6, respiration observation; introductory mechanism paragraph",
+      "access": {
+        "status": "body-read",
+        "checkedOn": "2026-10-22",
+        "scope": "Named passage or section only; not a whole-work verification."
+      },
+      "rights": {
+        "plan": "Current footer displays CC BY-NC-SA; no copied curriculum or media planned."
+      },
+      "findings": [
+        "Opening paragraph reverses diaphragm contraction/relaxation relative to NHLBI and Anatomy and Physiology 2e. Exclude it as support for mechanics; clinician review must adjudicate observation instructions."
+      ],
+      "excludedClaims": [
+        "mechanics of diaphragm contraction and relaxation"
+      ]
+    },
+    {
+      "id": "textile-techniques",
+      "title": "Hellenic Centre for Research and Conservation of Archaeological Textiles, Production techniques",
+      "url": "https://artextiles.org/en/node/185",
+      "locator": "Weaving, plain-weave construction",
+      "access": {
+        "status": "body-read",
+        "checkedOn": "2026-10-22",
+        "scope": "Named passage or section only; not a whole-work verification."
+      },
+      "rights": {
+        "plan": "Reference technical description only. Website photographs and diagrams are not licensed for reuse by this receipt."
+      },
+      "findings": [
+        "Alternating warp/weft construction supports a generic paper exercise; no claim of a unique cultural origin."
+      ]
+    },
+    {
+      "id": "carnegie-expression",
+      "title": "Carnegie Hall, Explore Expressive Qualities in Music and Movement",
+      "url": "https://www.carnegiehall.org/Education/Programs/Link-Up/New-York-City/Explore-Expressive-Qualities-in-Music-and-Movement",
+      "locator": "Tempo, dynamics, articulation and movement comparisons",
+      "access": {
+        "status": "body-read",
+        "checkedOn": "2026-10-22",
+        "scope": "Named passage or section only; not a whole-work verification."
+      },
+      "rights": {
+        "plan": "Reference teaching approach only; do not copy recordings, scores or assume a worksheet licence covers all website media."
+      },
+      "findings": [
+        "Supports comparison of expressive choices, not a universal mapping from musical parameters to emotion."
+      ]
+    },
+    {
+      "id": "wcag-keyboard",
+      "title": "W3C, Understanding Keyboard",
+      "url": "https://www.w3.org/WAI/WCAG22/Understanding/keyboard.html",
+      "locator": "Relevant WCAG 2.2 success-criterion guidance",
+      "access": {
+        "status": "body-read",
+        "checkedOn": "2026-10-22",
+        "scope": "Named passage or section only; not a whole-work verification."
+      },
+      "rights": {
+        "plan": "Reference and original paraphrase only; assets require a separate rights check."
+      },
+      "findings": []
+    },
+    {
+      "id": "wcag-dragging",
+      "title": "W3C, Understanding Dragging Movements",
+      "url": "https://www.w3.org/WAI/WCAG22/Understanding/dragging-movements.html",
+      "locator": "Relevant WCAG 2.2 success-criterion guidance",
+      "access": {
+        "status": "body-read",
+        "checkedOn": "2026-10-22",
+        "scope": "Named passage or section only; not a whole-work verification."
+      },
+      "rights": {
+        "plan": "Reference and original paraphrase only; assets require a separate rights check."
+      },
+      "findings": []
+    },
+    {
+      "id": "wcag-nontext",
+      "title": "W3C, Understanding Non-text Content",
+      "url": "https://www.w3.org/WAI/WCAG22/Understanding/non-text-content.html",
+      "locator": "Relevant WCAG 2.2 success-criterion guidance",
+      "access": {
+        "status": "body-read",
+        "checkedOn": "2026-10-22",
+        "scope": "Named passage or section only; not a whole-work verification."
+      },
+      "rights": {
+        "plan": "Reference and original paraphrase only; assets require a separate rights check."
+      },
+      "findings": []
+    },
+    {
+      "id": "stop-ctext",
+      "title": "Chinese Text Project candidate",
+      "url": "https://ctext.org/analects/wei-ling-gong",
+      "locator": "Rejected candidate; no support for a pilot claim",
+      "access": {
+        "status": "blocked",
+        "checkedOn": "2026-10-22",
+        "scope": "Named passage or section only; not a whole-work verification."
+      },
+      "rights": {
+        "plan": "Reference and original paraphrase only; assets require a separate rights check."
+      },
+      "findings": [
+        "HTTP 403; no Chinese body read"
+      ],
+      "stop": {
+        "reason": "HTTP 403; no Chinese body read",
+        "action": "No retry, alternate-host recovery, or claim of body verification."
+      }
+    },
+    {
+      "id": "stop-ncbi",
+      "title": "NCBI Nursing Skills candidate",
+      "url": "https://www.ncbi.nlm.nih.gov/books/NBK593192/",
+      "locator": "Rejected candidate; no support for a pilot claim",
+      "access": {
+        "status": "blocked",
+        "checkedOn": "2026-10-22",
+        "scope": "Named passage or section only; not a whole-work verification."
+      },
+      "rights": {
+        "plan": "Reference and original paraphrase only; assets require a separate rights check."
+      },
+      "findings": [
+        "CAPTCHA; no chapter body read"
+      ],
+      "stop": {
+        "reason": "CAPTCHA; no chapter body read",
+        "action": "No retry, alternate-host recovery, or claim of body verification."
+      }
+    },
+    {
+      "id": "stop-founders",
+      "title": "Founders Online candidate",
+      "url": "https://founders.archives.gov/",
+      "locator": "Rejected candidate; no support for a pilot claim",
+      "access": {
+        "status": "blocked",
+        "checkedOn": "2026-10-22",
+        "scope": "Named passage or section only; not a whole-work verification."
+      },
+      "rights": {
+        "plan": "Reference and original paraphrase only; assets require a separate rights check."
+      },
+      "findings": [
+        "Non-retryable robots restriction; abandoned Boston Massacre topic"
+      ],
+      "stop": {
+        "reason": "Non-retryable robots restriction; abandoned Boston Massacre topic",
+        "action": "No retry, alternate-host recovery, or claim of body verification."
+      }
+    },
+    {
+      "id": "stop-loc-image",
+      "title": "LOC Boston Massacre image candidate",
+      "url": "https://www.loc.gov/pictures/item/2008680173/",
+      "locator": "Rejected candidate; no support for a pilot claim",
+      "access": {
+        "status": "blocked",
+        "checkedOn": "2026-10-22",
+        "scope": "Named passage or section only; not a whole-work verification."
+      },
+      "rights": {
+        "plan": "Reference and original paraphrase only; assets require a separate rights check."
+      },
+      "findings": [
+        "Indexed metadata only, later HTTP 403; not selected"
+      ],
+      "stop": {
+        "reason": "Indexed metadata only, later HTTP 403; not selected",
+        "action": "No retry, alternate-host recovery, or claim of body verification."
+      }
+    },
+    {
+      "id": "stop-mhs",
+      "title": "Massachusetts Historical Society candidate",
+      "url": "https://www.masshist.org/database/3038",
+      "locator": "Rejected candidate; no support for a pilot claim",
+      "access": {
+        "status": "blocked",
+        "checkedOn": "2026-10-22",
+        "scope": "Named passage or section only; not a whole-work verification."
+      },
+      "rights": {
+        "plan": "Reference and original paraphrase only; assets require a separate rights check."
+      },
+      "findings": [
+        "HTTP 502; abandoned candidate, no verified body"
+      ],
+      "stop": {
+        "reason": "HTTP 502; abandoned candidate, no verified body",
+        "action": "No retry, alternate-host recovery, or claim of body verification."
+      }
+    },
+    {
+      "id": "koto-basho",
+      "title": "Koto City: Basho Memorial Museum old-pond exhibition",
+      "url": "https://www.city.koto.lg.jp/kuse/koho/houdou/r08/r0810/r081002furuike.html",
+      "locator": "October 2, 2026 press release, page 40001, first paragraph",
+      "access": {
+        "status": "body-read",
+        "checkedOn": "2026-10-22",
+        "scope": "Named section only."
+      },
+      "rights": {
+        "plan": "Only the underlying public-domain Basho poem is used; municipal commentary, images and design are excluded."
+      },
+      "findings": [
+        "Display text is 古池や蛙飛こむ水のおと. Chosen as a modern institutional display witness, not an inspected 1686 manuscript. No unverified Japanese grammatical claims are authored."
+      ],
+      "reviewRechecks": [
+        {
+          "date": "2026-10-22",
+          "phase": "pilot-0.1.1-review",
+          "result": "timeout",
+          "scope": "No fresh source body verified. Prior body-read receipt and selected-text hash retained.",
+          "action": "No further retrieval or alternate-host recovery; independent language review remains open."
+        }
+      ]
+    },
+    {
+      "id": "nara-reuse",
+      "title": "National Archives FAQ: Copyright",
+      "url": "https://www.archives.gov/faqs",
+      "locator": "Copyright section: government records, exceptions and object restrictions",
+      "access": {
+        "status": "body-read",
+        "checkedOn": "2026-10-22",
+        "scope": "Named section only."
+      },
+      "rights": {
+        "plan": "Policy reference only. It is not a blanket clearance for every hosted image or foreign-origin text."
+      },
+      "findings": []
+    },
+    {
+      "id": "gutenberg42735",
+      "title": "Project Gutenberg catalog for Exotics and Retrospectives",
+      "url": "https://www.gutenberg.org/ebooks/42735",
+      "locator": "Copyright field for ebook 42735",
+      "access": {
+        "status": "body-read",
+        "checkedOn": "2026-10-22",
+        "scope": "Named section only."
+      },
+      "rights": {
+        "plan": "Catalog explicitly marks public domain in the USA. Reuse of the selected historical text is scoped to the US prototype."
+      },
+      "findings": []
+    },
+    {
+      "id": "copyright-basics",
+      "title": "US Copyright Office: What is Copyright?",
+      "url": "https://www.copyright.gov/what-is-copyright/",
+      "locator": "Originality, protected expression, public-domain explanation",
+      "access": {
+        "status": "body-read",
+        "checkedOn": "2026-10-22",
+        "scope": "Named section only."
+      },
+      "rights": {
+        "plan": "Primary reference for the bounded reuse plan; no global legal clearance is inferred."
+      },
+      "findings": []
+    }
+  ]
+}

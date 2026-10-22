@@ -1,0 +1,205 @@
+{
+  "schemaVersion": 1,
+  "revision": "0.1.1",
+  "status": "draft",
+  "publication": "local-preview",
+  "author": "Atlas authoring task",
+  "updatedOn": "2026-10-22",
+  "prerequisites": [],
+  "relations": [],
+  "reviews": [],
+  "extensions": {},
+  "id": "x-history-0001",
+  "pilotId": "P01",
+  "title": "What can two documents establish?",
+  "subtitle": "The Zimmermann telegram and Wilson’s use of it",
+  "summary": "Compare a conditional diplomatic proposal with a public argument. Decide what the documents say, what you infer, and what this pair cannot establish.",
+  "domainIds": [
+    "D20",
+    "D28",
+    "D15"
+  ],
+  "knowledgeModes": [
+    "historical",
+    "interpretive"
+  ],
+  "methods": [
+    "source-comparison"
+  ],
+  "audience": "General readers; no prior history course required.",
+  "relatedCollectionIds": [
+    "tech",
+    "bighist",
+    "polsci"
+  ],
+  "scope": "United States–Germany–Mexico, 1917. A small source pair, not a complete explanation of US entry into the war.",
+  "reviewRequirements": [
+    "content",
+    "provenance",
+    "rights",
+    "accessibility",
+    "learning"
+  ],
+  "sources": [
+    {
+      "id": "telegram",
+      "title": "Decoded Zimmermann telegram",
+      "url": "https://www.archives.gov/milestone-documents/zimmermann-telegram",
+      "locator": "Transcript, opening paragraph; RG 59, 862.20212/82A and /69",
+      "creator": "Arthur Zimmermann; displayed in the archive’s English decoded-message transcript",
+      "date": "January 1917 (month precision)",
+      "language": "en",
+      "rights": {
+        "decision": "usable-for-prototype",
+        "basis": "Two short attributed phrases (15 words total) for close critical comparison; original surrounding paraphrase. No full translation or scan reproduced.",
+        "scope": "US local prototype; wider distribution requires release-specific review.",
+        "excludedAssets": [
+          "Facsimile images",
+          "Website design and editorial copy",
+          "Audio and video"
+        ]
+      }
+    },
+    {
+      "id": "wilson1917",
+      "title": "Wilson’s address to Congress",
+      "url": "https://www.archives.gov/milestone-documents/address-to-congress-declaration-of-war-against-germany",
+      "locator": "Transcript, paragraph beginning “But they have played their part”; RG 46",
+      "creator": "Woodrow Wilson",
+      "date": "April 2, 1917",
+      "language": "en",
+      "rights": {
+        "decision": "usable-for-prototype",
+        "basis": "Short attributed quotation from an official presidential address; US government text. No facsimile or modern editorial copy reproduced.",
+        "scope": "US local prototype; wider distribution requires release-specific review.",
+        "excludedAssets": [
+          "Facsimile images",
+          "Website design and editorial copy",
+          "Audio and video"
+        ]
+      }
+    }
+  ],
+  "passages": [
+    {
+      "id": "conditional",
+      "sourceId": "telegram",
+      "title": "A condition, not an accomplished alliance",
+      "text": "In the event of this not succeeding",
+      "context": "The preceding sentence states an aim to keep the United States neutral. The proposal is introduced as conditional on that aim failing. The diplomatic recipient is being instructed; this is not a reply from Mexico.",
+      "language": "en",
+      "form": "quotation",
+      "sha256": "2f1b572c83e42e4e34ee7770c896e38724630ab959f2e5ef546cadae1a87a49e"
+    },
+    {
+      "id": "proposal",
+      "sourceId": "telegram",
+      "title": "Terms proposed",
+      "text": "make war together, make peace together",
+      "context": "The message proposes cooperation and support. A proposal is evidence of what the sender offers, not evidence that the recipient accepts.",
+      "language": "en",
+      "form": "quotation",
+      "sha256": "60e17afb9522cbed7ebedc201d2900b775f3ea366d57fb9a01a3078852b689ab"
+    },
+    {
+      "id": "speech",
+      "sourceId": "wilson1917",
+      "title": "A public argument",
+      "text": "That it means to stir up enemies against us at our very doors",
+      "context": "Wilson immediately identifies the intercepted note to the German minister in Mexico City as evidence. This passage addresses Congress and argues that the German government threatens US security.",
+      "language": "en",
+      "form": "quotation",
+      "sha256": "e2ba7d06c2d29a0940b340af69f83d45c19da1ff78c3a384dc66280f9f988bbf"
+    }
+  ],
+  "claims": [
+    {
+      "id": "h-scope",
+      "kind": "historical",
+      "text": "The telegram introduces a conditional proposal.",
+      "passageIds": [
+        "conditional",
+        "proposal"
+      ],
+      "qualification": "A proposal does not establish acceptance."
+    },
+    {
+      "id": "h-rhetoric",
+      "kind": "interpretive",
+      "text": "Wilson uses the intercepted message in a public security argument.",
+      "passageIds": [
+        "speech"
+      ],
+      "qualification": "An interpretation of the speech’s use of evidence, not proof of the speech’s effect on every listener."
+    }
+  ],
+  "context": [
+    "The decoded message is presented in English by the National Archives. Its German original and the entire interception/decoding chain are not part of this exercise.",
+    "The speech refers to the intercepted message. It is dependent evidence for the message, while being direct evidence of Wilson’s public argument.",
+    "Neither source supplies Mexico’s reply. Neither isolates the telegram from the other causes of the US war decision."
+  ],
+  "timeline": [
+    {
+      "date": "January 1917",
+      "precision": "month",
+      "event": "Diplomatic message",
+      "sourceId": "telegram"
+    },
+    {
+      "date": "April 2, 1917",
+      "precision": "day",
+      "event": "Address to Congress",
+      "sourceId": "wilson1917"
+    }
+  ],
+  "activity": {
+    "type": "source-comparison",
+    "prompts": [
+      {
+        "id": "conditional-offer",
+        "claim": "The message makes the proposed cooperation conditional.",
+        "answer": "direct",
+        "evidenceIds": [
+          "conditional"
+        ],
+        "feedback": "The quoted conditional phrase directly supports this classification. The editorial context explains what the condition refers to. An offer under a condition does not establish a completed agreement."
+      },
+      {
+        "id": "accepted-alliance",
+        "claim": "Mexico accepted the proposed alliance.",
+        "answer": "unsupported",
+        "evidenceIds": [
+          "none"
+        ],
+        "feedback": "Neither selected document supplies a Mexican acceptance. Missing evidence does not prove rejection either."
+      },
+      {
+        "id": "public-framing",
+        "claim": "The border-threat wording could help frame war as a response to danger.",
+        "answer": "inference",
+        "evidenceIds": [
+          "speech"
+        ],
+        "feedback": "This is a defensible interpretation of the rhetoric. The wording alone does not measure its effect on Congress or the public."
+      },
+      {
+        "id": "single-cause",
+        "claim": "The telegram alone caused the US declaration of war.",
+        "answer": "unsupported",
+        "evidenceIds": [
+          "none"
+        ],
+        "feedback": "This pair cannot isolate a single cause. A speech’s use of one document is not a controlled account of all causes."
+      }
+    ],
+    "transfer": "A later newspaper repeats the telegram. Does that automatically give you an independent confirmation? Explain what you would need to know about its source.",
+    "rubric": [
+      "Distinguish a record from an independent source of its information.",
+      "Name one missing perspective or link in provenance.",
+      "Attach the limitation to a specific claim."
+    ]
+  },
+  "previousRevisions": [
+    "0.1.0"
+  ]
+}

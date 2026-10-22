@@ -1,648 +1,303 @@
-# Master plan: from *Rudin, visualized* to an atlas of human knowledge
+# Master plan: an explorable atlas of human knowledge
 
-> **Status:** in progress (Wave 5 authoring under way) · **Scope:** the whole project ·
-> AUTHORING.md stays the rulebook for writing items and gets field-specific extensions (§7).
->
-> **Revision 2.** The scope widened from STEM theorems to *the breadth of human knowledge*:
-> six more fields (Earth & environment, medicine, economics, social sciences, arts, humanities),
-> item kinds beyond theorems (concepts, phenomena, methods, paradoxes, inventions, events), and
-> the working name *Ideas, Visualized*. The §11 decisions have been made (see there).
+> **Revision 3 · 2026-10-22.** Working name: *Ideas, Visualized*.
+> This revision expands the scope and roadmap. It preserves accepted content, stable IDs, frozen wave assignments, source restrictions, and current production requirements.
+> The preceding plan is preserved verbatim in [the Revision 2 archive](MASTER_PLAN_V2_ARCHIVE.md); its progress figures and future instructions are historical.
+> The accepted base’s plan is separately preserved verbatim in [the integration baseline archive](docs/integration/universal-pilots-baseline-plan.md). This branch adds the pilot package to accepted source `facab15e297c645d4826935f2c011a4cf367ee88`; ongoing expansion and redesign stay in their owning worktrees.
+> **Future universal-atlas work starts with [the continuation handoff](docs/master-plan-handoff.md).** It distinguishes implemented prototypes, production integration and remaining review gates.
 
-## 0. The one-paragraph version
+## 0. The mission
 
-Today the site covers one subfield, analysis: 1,062 results from Rudin's three books, each with
-an interactive picture, all wired into one dependency graph. The goal is the same treatment for
-**the load-bearing ideas of human knowledge**. That means theorems and laws, but also models,
-mechanisms, phenomena, methods, paradoxes and inventions, across 13 fields: mathematics,
-statistics, computer science, physics, chemistry, Earth & environment, biology, medicine,
-engineering, economics, the social sciences, the arts, and the humanities. That comes to **85
-collections and roughly 12,500 ideas**, still in **one graph**. A reader can follow a single
-chain from the completeness of ℝ through the spectral theorem to the hydrogen spectrum, from
-Fourier series to the sampling theorem to MRI, from the harmonic series to equal temperament, or
-from simple machines to the printing press to the internet. We get there in four steps. First,
-generalise the engine so that adding a field means adding a folder, with no code edits (Phase 0).
-Next, test the new schema on five pilots from five different fields (Phase 1). Then sketch the whole atlas as a graph of planned results before
-writing any of them (Phase 2). Finally, fill that skeleton in four breadth-first waves (Phases
-3–6). Alongside the waves, build the connective tissue that only an atlas can offer: cross-field
-*bridges*, prerequisite paths, a zoomable map, and proof steppers (Phase 7).
+Build a living, explorable atlas of human knowledge: **what people know, how they know it, how they use it, how ideas connect, and where uncertainty and disagreement remain—across disciplines, cultures, places, and time.**
 
----
+“All human knowledge” is the organizing ambition. It is not a finite item count or a promise that a single canon represents everyone. The atlas must accommodate formal results, empirical findings, historical evidence, interpretations, values, creative works, technologies, institutions, and practical know-how. New subjects and overlooked traditions must be addable without rebuilding the product.
 
-## 1. Where we are
+The existing mathematical and scientific atlas is the foundation. Its 85 collections retain their identity, depth, URLs, and production history. Expansion adds missing territory and ways to investigate it. Readers should be able to prove, experiment, compare sources, interpret, listen, make, and practice.
 
-### Progress (updated as work lands)
+| Layer | Reader experience | Completeness promise |
+| --- | --- | --- |
+| Orientation | Domain maps, essential questions, methods, timelines, vocabulary, and routes into unfamiliar subjects | Coverage of a versioned domain inventory, with gaps visible |
+| Authored exploration | Sourced explanations, interactive investigations, cases, and guided practice | Acceptance of the published syllabus for a collection or release |
+| Reference and discovery | Routes to books, papers, archives, datasets, objects, recordings, and specialist collections | Maintained access to deeper knowledge; external links do not count as authored lessons |
 
-| phase | state |
-|---|---|
-| 0 · Engine | done: registry and schema v2, catalog split (index + lazy planned + per-collection shards), routes, field pages, OKLCH colours, map v2 with field regions and LOD, treemap overview, timeline, bridges, prerequisite planner, runtime numerics (incl. complex linear algebra, generalized eigenproblems, split-step Schrödinger, Nelder–Mead, safe formula parser) and 17 kits (incl. scene3, circuit, quantum, icons), CI, smoke and unit tests |
-| 1 · Pilots | LADR complete (ch. 1–9, 365 items); mechanics ch. 1–11 (ch. 12 in production); algorithms ch. 1–7; microeconomics ch. 1–6; music ch. 1–4 |
-| 2 · Skeleton | done for all 85 collections (≈ 11,700 planned items from real tables of contents and syllabi, sources in each file header); cross-listings reconcile duplicates (`scripts/crosslist.mjs`, `scripts/dupes.mjs`) |
-| 3 · Wave A (first chapters) | written: stat (1–3), qm (1–3), thermo (1–2), psych (1–2), behav (1–2), neuro (1–2), sig (1–2), epi (1–2), phil (1–2), astro (1–2), climate, popgen, game, info, nt, macro, pchem, toc, em, ling, ode, ecol, ctrl, art, comb, waves, geol, physio, demo, soc, fin, rel, polsci, prob, top, geog, alg, logic, graph, tech, bighist · in production: deep, polsci 2, arch, and more (about 20 chapters at a time) |
-| Wave 1 (breadth first) | **COMPLETE (2026-10-16): all collections have their opening chapter; fact-check clusters A–G done; 3,737 items, 272 smoke routes, 0 errors.** Definition was: every one of the 81 collections has at least its opening chapter written, interactive and checked, plus the landmark papers whose chapters exist; then a fact-check pass, runtime promotions (v.nn, stereo sound, Wigner/Husimi, frame solver) and a final verification. Deeper chapters resume in wave 2. |
-| Wave 2 (second chapters) | **COMPLETE (2026-10-16): every collection has chapters 1 and 2 (gaps filled: fluid 1, mathbio 1, stoch 1); fact-check clusters A–F done.** 56 chapters, about 680 items, each run headless in light, dark and mode variants with 0 quality warnings; 4,446 items in 300 chapters, 272 smoke routes, 0 errors. The fact-check corrected real errors (a wrong Vasicek sign, a wrong reflection formula in the wave equation, one wrong Karp-tree edge, a mixed-up Tyndall table, a haemoglobin extinction table, Rb-87 decay-constant credit, Buri effective size) and retuned the climate column to 2.6 K per doubling at fixed relative humidity (paper: 2.36 K). Still unverifiable and flagged `verify: true`: Palacios-Huerta penalty-kick table (game 2.8), snakes-and-ladders layout (stoch 2.6), Ashcroft–Mermin Hall and Lorenz tables (cm 2.5, 2.6), von Klitzing accuracy (cm 2.14), Buri details, textbook chapter pointers in `refs`. Open syllabus corrections: popgen ch2 dropped four unrelated `stoch-14.*` deps. |
-| Wave 3 (third chapters) | **COMPLETE (first pass):** the next unwritten chapter of every collection is written (5,515 items in 368 chapters; build, static check and 272-route smoke test all clean). Authors verified credits and constants while writing; unconfirmable claims are softened and flagged `verify: true`. **Verification follow-up (2026-10-16):** listed dependency/syllabus fixes reconciled; tech 4.1 now solves the thrust constraints and agrees with 0.10748 in the mean-radius convention; Buri series I/II mismatch corrected. Audio-generation and sampled pointer checks pass. **Still open:** full source review, automated audio checks and broader agent visual inspection; other flagged claims (the modern MRW/PWT inputs are now checked). Hall/Lorenz tables and transport model, game 2.8 sample and stoch 2.6 layout have been checked and corrected. See [verification report](docs/verification/waves-3-4.md). |
-| Wave 4 (next chapter of each collection) | **COMPLETE (first pass):** the next unwritten chapter of every collection is written (6,684 items in 450 chapters; build, static check and 272-route smoke test clean). Same verification rule as wave 3; any item with an unconfirmed credit or constant should carry `verify: true`, the omitted uncertainty flags in climate 4, macro 4, circ 4 and energy 4 have now received a flagging pass (2026-10-16). About 6,890 planned items remain in later chapters (wave 5 = next unwritten chapter of each of the 80 collections). **Verification follow-up (2026-10-16):** ecology pictures, spin-down explanation/circulation, Ackeret primary reference and imaging Poisson dependency fixed; conditional climate-sensitivity probabilities and Malthusian balanced-growth claims corrected; solar-cell letter and temperature coefficient checked; AK paths now exact; 85 sound actions across 51 items and nine pointer/keyboard scenarios pass. **Still open:** 5 flagged source reviews in the chapter files touched during waves 3–4 (833 initially;1 added uncertainties remain,829 original flags resolved), and broader agent visual inspection. Automated audio coverage now passes 53 items and 95 actions; see [audio follow-up](docs/verification/audio-input-followup.md). The modern MRW/PWT sample is now source-checked, 72 shared return averages corrected, and growth regressions independently reproduced. A further growth/development source audit resolves four items, corrects growth-accounting source data and averaging, and verifies the institutions replication (2026-10-17). The eight queued ODE reviews are now resolved against Teschl, with mathematical and visualization corrections plus exact-solution and browser regressions; see [ODE audit](docs/verification/ode-followup.md). Seven PDE separation/Fourier reviews are also resolved, with zero-mode, normalization, energy and historical-source corrections; see [PDE audit](docs/verification/pde-fourier-followup.md). The final two queued PDE heat reviews are resolved, correcting a false fixed-time growth claim and invalid numerical bounds, with independent arbitrary-precision evidence; see [heat audit](docs/verification/pde-heat-followup.md). The Gaussian and Lebesgue reviews are resolved, with corrected finite-measure hypotheses, analytic Darboux bounds and independent high-precision references; see [integration audit](docs/verification/vcalc-integrals-followup.md). The final two queued vector-calculus geometry reviews are resolved, with corrected Jacobian/centroid hypotheses, independent reference integrals and polygon-union volumes; see [geometry audit](docs/verification/vcalc-geometry-followup.md). The five queued algebra reviews are resolved against the pinned 2023 Judson edition, with source-based frequency data, exact Hill/RSA examples and corrected raw-RSA security demonstrations; see [algebra audit](docs/verification/algebra-followup.md). Eight representation-theory character reviews are resolved against Serre and Etingof, correcting zero-representation scope, inconclusive averaging, the conjugation preset and coefficient extents; see [character audit](docs/verification/representation-characters-followup.md). Three further representation-theory reviews resolve orbit counting, abelian characters and Frobenius–Schur indicators, with corrected dual-space reasoning, a C4 form-solver defect and a neighboring exterior-power formula; see [counting/type audit](docs/verification/representation-counting-followup.md). The two molecular-symmetry reviews are resolved against Dresselhaus and NIST geometry data, with corrected rigid-motion removal, ammonia geometry and operator-multiplet interpretation; see [molecular audit](docs/verification/representation-molecular-followup.md). The final representation-theory flag is resolved against both 1896 Frobenius originals, distinguishing the character construction from the companion determinant theorem and checking exact determinants; see [original-paper audit](docs/verification/representation-frobenius-followup.md). Four topology reviews resolve covers, total disconnectedness, uncountability and compactification against the specified Munkres edition, with corrected Cantor candidates, uniqueness and sequence visibility; see [topology foundations audit](docs/verification/topology-foundations-followup.md). Two further topology reviews correct the false open-disc boundary maximum, sampled continuity guarantees and clipped function/radius plots, supported by analytic bounds and 80-digit independent references; see [function audit](docs/verification/topology-functions-followup.md). The final two topology flags are resolved with analytic cover bounds, complete compactness counterexamples and honest finite-prefix illustrations; see [cover/equivalence audit](docs/verification/topology-covers-followup.md). The three manifold reviews are resolved with exact torus critical data, corrected Morse scope and explicit zero-time Lie derivatives, supported by independent flow calculations; see [manifold audit](docs/verification/manifolds-followup.md). The Fáry–Milnor review corrects the height-maxima proof and verifies three curve families against independent high-precision quadrature; see [knot audit](docs/verification/knot-curvature-followup.md). The final two differential-geometry reviews correct singular quadric rendering, boundary/transverse-ray conditions and false Klein-bottle parity claims; see [surface audit](docs/verification/dg-surfaces-followup.md). Five conditional-probability and martingale reviews are resolved with corrected finite-versus-exact claims, valid null-slice examples, independent Gaussian integrals and light/dark inputs; see [probability foundations audit](docs/verification/probability-foundations-followup.md). The parallel probability round resolves 23 more flags, with exact upcrossing/offspring calculations, corrected Doob and UI proofs, valid exchangeability and stopped-walk comparisons, and discrete arcsine checks; see [stopping audit](docs/verification/probability-stopping-followup.md), [convergence audit](docs/verification/probability-convergence-followup.md) and [exchangeability audit](docs/verification/probability-exchangeability-followup.md). All remaining 31 probability reviews are resolved, closing that collection’s queue with corrections to service-start queueing, recurrence/coupling proofs, stationary/censored-return examples and Durrett’s actual Harris split construction; see [Markov foundations](docs/verification/probability-markov-foundations-followup.md), [recurrence](docs/verification/probability-recurrence-followup.md), [stationary measures](docs/verification/probability-stationary-followup.md), [Harris chains](docs/verification/probability-harris-followup.md) and [birth/death analytical follow-up](docs/verification/probability-birth-death-followup.md). The next parallel round resolves all 46 graph flags, all five stochastic-process flags, all three combinatorics flags and four number-theory flags, correcting source hypotheses/proofs, finite certificates, censoring, periodicity and visible bounds; the combined suite has 261 passing tests and this round has 126 passing light/dark input groups. See [graph/coloring audits](docs/verification/graph-coloring-applications-followup.md), [stochastic sources](docs/verification/stochastic-processes-followup.md), [combinatorics](docs/verification/combinatorics-sources-followup.md) and [residues/reciprocity](docs/verification/number-theory-residues-followup.md). Ten more original flags are resolved in the [Gauss audit](docs/verification/number-theory-gauss-followup.md) and [numerical interpolation/minimax audit](docs/verification/numerical-sources-followup.md), closing the number-theory source queue with 14 independently rerun math groups and 20 light/dark input groups. Five logic reviews are also resolved with eleven independently rerun mathematical tests and fourteen light/dark input groups; the historical Gödel-paper review remains flagged for primary-text access. See [logic audit](docs/verification/logic-sources-followup.md). Two further LU/growth reviews correct missing nonsingularity, false intermediate factors, zero-pivot success and the original paper’s normalization; see [LU/growth audit](docs/verification/lu-growth-followup.md). Four factorization reviews and seven orthogonal/rational approximation reviews are also resolved, closing the numerical-analysis queue. This continuation resolves 28 original source flags, with 308 combined passing tests and 64 light/dark input groups. The 1947 inversion-paper and Gödel historical source flags remain pending. See [factorization audit](docs/verification/nla-factorization-followup.md) and [orthogonal/rational audit](docs/verification/numerical-orthogonal-rational-followup.md). A further 21 reviews resolve all optimization, statistics and machine-learning source flags and three information-theory flags, correcting certified optima, inference calibration, finite risk laws, randomized testing and exact prefix intervals. See [optimization](docs/verification/optimization-sources-followup.md), [inference](docs/verification/stat-inference-followup.md), [ML foundations](docs/verification/ml-foundations-followup.md), [Stein lemma](docs/verification/info-stein-followup.md) and [source coding](docs/verification/info-coding-followup.md). This batch has 343 combined passing tests, 42 light/dark interaction groups and 31 clean routes; deep learning, cryptography and the last information-theory review continue in parallel. Seven further reviews close the deep-learning and information-theory source queues and resolve two greedy-algorithm reviews; see [deep learning](docs/verification/deep-sources-followup.md), [prefix complexity](docs/verification/info-complexity-followup.md) and [greedy algorithms](docs/verification/algo-greedy-followup.md). At that checkpoint the combined suite had 372 passing tests; these seven reviews add 18 light/dark groups and the expanded route sweep passes 41 routes. A further parallel round resolves 21 original flags, closing the algorithm and cryptography source queues and correcting four causal-graph entries. Exact irrational-flow arithmetic, original 1956 planar-flow history, cipher reductions/controls, honest simplex termination, and collider/SCM/zero-event claims are checked; see [flow](docs/verification/flow-paths-followup.md), [cryptography](docs/verification/crypto-sources-followup.md), [LP](docs/verification/algo-lp-sources-followup.md) and [causal graphs](docs/verification/causal-graphs-followup.md). The combined suite passes 408 tests; this round adds 44 light/dark input groups and 67 routes pass. Causal interventions, automata and complexity reviews continue in parallel. The following 20 reviews close causal inference, complexity theory and distributed computing, with corrected positivity/identification and observational claims, original circuit proofs and actual gate counts, and faithful concurrency atomicity/liveness. See [causal interventions](docs/verification/causal-interventions-followup.md), [circuit complexity](docs/verification/cplx-circuits-followup.md) and [concurrency](docs/verification/distributed-concurrency-followup.md). The combined suite passes 440 tests; this round adds 42 light/dark groups and 91 routes pass. Automata, programming-language and computational-geometry reviews continue in parallel. A further 19 reviews close the automata and programming-language source queues and resolve four electrostatic-boundary reviews. Corrected finite versus universal claims, genuine normalization status, fixed-charge curves and image boundary conditions have 23 new independent math groups and 38 light/dark interaction groups. See [automata](docs/verification/toc-automata-followup.md), [programming languages](docs/verification/pl-reduction-followup.md) and [electrostatic images](docs/verification/em-electrostatics-followup.md). A further 32 original reviews close computational geometry, electromagnetism and waves, and resolve two angular-momentum and seven canonical-ensemble entries. Source-backed corrections cover geometry degeneracies, optical boundary/energy conventions, continuum conductor energy, rotation axes, complete real-harmonic projections and finite-bath tails. See [geometry](docs/verification/cg-geometry-followup.md), [wave interfaces](docs/verification/waves-interfaces-followup.md), [electromagnetic sources](docs/verification/em-boundary-sources-followup.md), [angular momentum](docs/verification/qm-angular-followup.md) and [canonical ensembles](docs/verification/thermo-canonical-followup.md). The combined suite passes 515 tests, this round adds 72 light/dark interaction/animation groups, and 156 routes pass. A further 28 original reviews close quantum mechanics, quantum information, relativity and thermodynamics, with corrected interference/CG conventions, explicit quantum-gate costs, source-faithful repeater/oracle/Trotter behavior, original Einstein/Compton/muon evidence and finite thermodynamic limits. See [spin coupling](docs/verification/qm-spin-coupling-followup.md), [gate universality](docs/verification/qinfo-gate-universality-followup.md), [quantum algorithms](docs/verification/qinfo-algorithm-sources-followup.md), [relativity](docs/verification/rel-source-audit-followup.md) and [thermodynamic limits](docs/verification/thermo-limits-followup.md). The combined suite passes 560 tests, this follow-up adds 62 light/dark input/animation groups, and 191 routes pass. The first two condensed-matter reviews also close with exact modulus/shell accounting and source-backed phonon dispersion; see [lattice audit](docs/verification/cm-source-audit-lattice-followup.md). That checkpoint passes 563 tests and 194 routes. A further18 original reviews correct chemical work/entropy and JANAF interpolation, phonon/polaron limits, tidal/escape conventions and rotating/unsteady fluid models; see [chemical potentials](docs/verification/pchem-source-audit-potentials-followup.md), [calorimetry](docs/verification/pchem-source-audit-calorimetry-followup.md), [phonons/polarons](docs/verification/cm-source-audit-phonons-followup.md), [tides/escape](docs/verification/astro-source-audit-tides-followup.md) and [fluid rotation/Bernoulli](docs/verification/fluid-rotation-bernoulli-followup.md). That subset passes600 tests and216 routes. Twelve further reviews correct finite-packet entropy and Pauling counting, optical/carrier/impurity models, the ring-confinement explanation and photometric conventions; see [entropy](docs/verification/pchem-source-audit-entropy-followup.md), [semiconductor carriers](docs/verification/cm-source-audit-carriers-followup.md), [rings](docs/verification/astro-source-audit-rings-followup.md) and [photometry](docs/verification/astro-source-audit-photometry-followup.md). This continuation closes30 original reviews with62 new mathematical groups and63 light/dark input/animation groups. That checkpoint passes625 tests and230 routes, with zero strict-build/static errors or warnings. A further30 original reviews close the physical-chemistry, astronomy, condensed-matter and crystallography source queues, with corrected potential-flow forces, phase/Kelvin models, stellar populations, semiconductor devices and crystal tensors/indices; see [fluid forces](docs/verification/fluid-forces-followup.md), [coexistence](docs/verification/pchem-source-audit-coexistence-followup.md), [stellar models](docs/verification/astro-source-audit-stellar-models-followup.md), [devices](docs/verification/cm-source-audit-devices-followup.md) and [crystal symmetry](docs/verification/xtal-source-audit-followup.md). This continuation adds56 mathematical groups and62 native light/dark groups;681 tests and263 routes pass. The following18 reviews close the fluid source queue and correct six reaction mechanisms, three variational models and five elastic/dislocation entries; see [fluid boundaries/inertia](docs/verification/fluid-boundaries-inertia-followup.md), [kinetics](docs/verification/kin-source-audit-mechanisms-followup.md), [variational methods](docs/verification/qchem-source-audit-variational-followup.md), [slip](docs/verification/mat-elastic-slip-followup.md) and [twinning/partials](docs/verification/mat-dislocation-microstructure-followup.md). The complete48-review continuation adds93 mathematical and98 native light/dark groups. That checkpoint:718 tests,285 routes, zero strict-build/static errors/warnings and a reconciled source ledger. Ten further original reviews close kinetics and correct molecular force/virial identities, finite dislocation hardening and tensile fitting; see [transition-state originals](docs/verification/kin-source-audit-transition-followup.md), [molecular identities](docs/verification/qchem-source-audit-identities-followup.md), [hardening](docs/verification/mat-hardening-followup.md) and [tensile fits](docs/verification/mat-tensile-fit-followup.md). This complete58-review continuation adds117 mathematical and118 native light/dark groups. That checkpoint:742 tests,296 routes, zero strict-build/static errors/warnings and a reconciled ledger. Four further dispersion/pair-potential and grain-strength reviews correct the London coefficient and attractive-tail integral, and certify pile-up roots/counts; see [dispersion](docs/verification/qchem-source-audit-dispersion-followup.md) and [grain strength](docs/verification/mat-grain-strength-followup.md). This complete62-review continuation adds129 mathematical and126 native light/dark groups. That checkpoint:754 tests,300 routes, zero strict-build/static errors/warnings and a reconciled ledger. A further23 source reviews resolve17 original and6 added flags, with corrections to Stark/degenerate theory, finite materials/hardness protocols, cyclone/Ekman transport, radiative climate, azimuthal projections and cooling lithosphere. The geophysical-fluid source queue closes; named Taylor/Mendeleev originals retain their uncertainty after supported partial corrections. See [cooling lithosphere](docs/verification/geol-cooling-followup.md), [radiative climate](docs/verification/climate-source-audit-radiative-followup.md), [azimuthal projections](docs/verification/geog-source-audit-azimuthal-followup.md) and the full report for all source evidence. This complete continuation resolves79 original and6 added flags, adds196 mathematical and180 native light/dark groups, and passes821 tests/331 routes with zero strict-build/static errors/warnings and a reconciled ledger. Seven further original reviews close geography and correct volcanic/droplet forcing, including the formerly biased equal-area global sample and false arbitrary-start Newton convergence. See [world maps](docs/verification/geog-source-audit-world-followup.md) and [volcanic/droplet forcing](docs/verification/climate-source-audit-forcing-followup.md). That checkpoint:838 tests/341 routes, zero strict-build/static errors/warnings and a reconciled ledger. This continuation resolves86 original and6 added flags with213 mathematical and196 native groups. Fifteen further source reviews close climate and correct continental heat-flow columns, normalized climate inference/polar stability, selection, original Kimura arithmetic, molecular-clock/diversity interpretation and original ecological experiments. See [continental columns](docs/verification/geol-continental-followup.md), [inference/polar response](docs/verification/climate-source-audit-inference-followup.md), [selection](docs/verification/popgen-selection-followup.md), [clock/diversity](docs/verification/popgen-clock-diversity-followup.md), [ecological originals](docs/verification/ecol-source-audit-historical-followup.md) and [plankton](docs/verification/ecol-source-audit-plankton-followup.md). Latest validation:879 tests/361 routes, zero strict-build/static errors/warnings and a reconciled ledger. This continuation resolves100 original and7 added flags with254 mathematical and230 native groups. Ten further original reviews close population genetics and correct age structure, actual genetic evidence, ecological feasibility and trait dynamics; see [age structure](docs/verification/mathbio-source-audit-age-followup.md), [moth counts](docs/verification/popgen-moth-followup.md), [resistance](docs/verification/popgen-resistance-followup.md) and [limiting similarity](docs/verification/ecol-source-audit-packing-followup.md). Latest validation:915 tests/372 routes, zero strict-build/static errors/warnings and a reconciled ledger. This continuation resolves110 original and7 added flags with290 mathematical and252 native groups. Six further original reviews correct spherical plate motion, the complete Vine–Matthews original, ecological lottery/forest dynamics and hybrid neural reset events. See [plate kinematics](docs/verification/geol-kinematics-followup.md), [magnetic original](docs/verification/geol-magnetic-original-followup.md), [forest](docs/verification/ecol-source-audit-forest-followup.md) and [neural events](docs/verification/neuro-izhikevich-followup.md). Melting corrections retain their unresolved coefficient flag. Latest validation:945 tests/382 routes, zero strict-build/static errors/warnings and a reconciled ledger. This continuation resolves116 original and7 added flags with320 mathematical and268 native groups. Eleven further original reviews close ecology and correct historical magnetic chronology, mantle numerical transport, resource geometry, local/global neuronal bifurcations and four swapped original feed-forward-loop labels. See [chronology](docs/verification/geol-magnetic-chronology-followup.md), [convection](docs/verification/geol-source-audit-convection-followup.md), [resources](docs/verification/ecol-source-audit-resources-followup.md), [Hopf](docs/verification/neuro-hopf-followup.md), [SNIC/ML](docs/verification/neuro-morris-lecar-followup.md) and [gene-network labels](docs/verification/sysbio-source-audit-ffl-followup.md). Latest validation:984 tests/394 routes, zero strict-build/static errors/warnings and a reconciled ledger. This continuation resolves127 original and7 added flags with359 mathematical and290 native groups. Seven further original reviews correct predator originals, gene timing and bursting; see [predator/Hopf](docs/verification/mathbio-source-audit-predator-followup.md), [arabinose](docs/verification/sysbio-source-audit-arabinose-followup.md), [bursting](docs/verification/neuro-bursting-followup.md) and [gene programs](docs/verification/sysbio-source-audit-programs-followup.md). Latest validation:1007 tests/402 routes, zero strict-build/static errors/warnings and a reconciled ledger. This continuation resolves134 original and7 added flags with382 mathematical and304 native groups. Eleven further original reviews close the systems-biology source queue and correct Lotka/Volterra, finite HH/Connor–Stevens models, lac/lambda/toggle switches and original Wegener/Bullard/paleomagnetic geometry. See [drift originals](docs/verification/geol-drift-original-followup.md), [paleomagnetism](docs/verification/geol-paleomag-followup.md), [predator laws](docs/verification/mathbio-source-audit-lotka-followup.md) and [toggle original](docs/verification/sysbio-source-audit-toggle-followup.md). Latest full checkpoint:1045tests/415routes, zero strict-build/static errors/warnings and a reconciled ledger. This continuation resolves145 original and7 added flags with420 mathematical and326 native groups. Eleven further original reviews correct channel transitions, passive networks, true compartment input/conduction, original competition proofs and exact hotspot drilling data. See [competition](docs/verification/mathbio-source-audit-competition-followup.md), [networks](docs/verification/circ-source-audit-networks-followup.md), [conduction](docs/verification/neuro-conduction-followup.md) and [hotspot sources](docs/verification/geol-hotspot-followup.md). Kolmogorov1936 receives a supported partial correction with its original flag retained. This continuation resolves156 original and7 added flags with461 mathematical and350 native groups. Latest full checkpoint1086tests/431routes, zero strict-build/static errors/warnings and a reconciled ledger. Five further original flags and one added uncertainty close bioinformatics and correct transistor models; see [BLAST/Markov](docs/verification/bioinf-source-audit-followup.md) and [device models](docs/verification/circ-source-audit-devices-followup.md). This continuation resolves161 original and8 added flags with475 mathematical and362 native groups. Latest full checkpoint1100tests/440routes, zero strict-build/static errors/warnings and a reconciled ledger. The final [myelin audit](docs/verification/neuro-myelin-followup.md) closes neuroscience with six further independent mathematical and two native groups, correcting hidden leak retuning, physical input and similarity/censoring claims. This continuation resolves162 original and8 added flags with481 mathematical and364 native groups. Last completed full checkpoint1100tests/440routes; six additional myelin groups pass separately. Remaining reviews continue with three agents and root. Automated audio and agent visual checks continue. Linguistics corpus trimming remains optional. See [verification report and full queue](docs/verification/waves-3-4.md). |
-| Wave 5 (next unfinished chapter per collection) | **COMPLETE:** all1,031 new items in80 frozen chapters are independently accepted and integrated locally. Snapshot `fdcb3fd5` passes3,413 tests, strict build/static checks,48 final mobile production cases/32 routes and all64non-math published cross-field targets. Source flags/restrictions remain; map performance is deferred. The continuous goal proceeds to Wave6. |
-| Wave 6 (next unfinished chapter per collection) | **IN PROGRESS:**26newitems/two of80frozenchapters independently accepted and integrated locally at `3adf7f9e`;1,031newitems remain.3,436tests, strict build/static,52mobile production cases/32routes and all64non-math published cross-field targets pass. ODE6/PDE6 continue in review; source restrictions and deferred map performance remain. Local commits only. |
-| Papers | 450 landmark papers across all 13 fields in the syllabi, every citation checked (Crossref, archive.org, PubMed…), each linked to the ideas it introduced; `#/papers` with live filter, era grouping and timeline; "First published in" on idea pages; 72 papers written as interactive items so far (reproducing the original numbers), more as their chapters land |
-| Search | one index over written and planned ideas, papers (title, authors, year), fields, collections, chapters, bridges; operators (kind:, field:, col:, year:, by:, is:), facets, typo tolerance; results on the map and timeline |
-| 7 · Connective tissue | **15 curated bridges** with 170 steps through 167 unique written ideas across 12 fields; all 41 planned-only steps in the previous walks replaced with available explanations. New walks: duality, stability, harmonic functions, causality, feedback, inverse problems and map distortion. Every bridge now has a shared interactive canonical model with explicit context limits;16independent mathematical groups and60native theme/viewport cases pass, including delayed-load navigation. Shareable visualization states and embeds are implemented. See [bridge audit](docs/verification/bridges-expansion.md) and [interactive pictures](docs/verification/bridge-pictures-followup.md). Wave5 adds the independently checked LaSalle step to the stability walk; see [connective follow-up](docs/verification/wave5-connective.md). |
+Do not publish a percentage of “all human knowledge.” Publish coverage against named inventories, methods, places, languages, and learning goals.
 
-### Immediate next steps
+## 1. Where we are, and what must survive
 
-**Current priority — content waves (user direction, 2026-10-20).** Start Wave 5 and continue later breadth-first waves autonomously. Map performance is removed from the wave gates and deferred to a separate renderer workstream. The experimental timing harness is retired; its failed evidence is preserved and remains failed. Do not resume renderer benchmarks, matrix expansion or private lifecycle experiments as prerequisites to content authoring, and do not adopt experimental renderer code.
+### 1.1 Evidence baseline
 
-- Wave 5 selects the next chapter in each of 80 unfinished collections: 1,031 new items, preserving two already written items. [Inventory](docs/wave-five.md), [compact execution handoff](docs/wave-continuation.md).
-- Latest local production checkpoint `fdcb3fd5` passes all3,413 tests on Node22.23.3, strict build/static checks with zero errors/warnings, and123,724-byte gzip home JSON. It contains all80 independently accepted Wave5 chapters. The final generated-source gate covers24 newly accepted items/48 mobile item/theme cases, each with a physical edit and actual Share replay; all32routes and three home New links pass. All64non-math collections meet the published cross-field count target with the restricted old edge excluded. Use focused checks during authoring and one full-suite checkpoint per meaningful accepted batch. All review/integration browsers/servers are closed. Local commits only.
-- The accepted prerequisite count gate is complete: all 64 non-math collections have at least 25 written cross-field inputs, with zero shortfall/unknowns. Preserve proof-use quality and update touched bridges. [Accepted inventory](docs/verification/prerequisite-gate-complete.md).
-- Five earlier source flags remain, with 146 independently accepted source entries. Preserve flags and source-access limits; do not treat unavailable originals as accepted. The frozen BIGHIST3.5 review and `bighist-3.5 → pma-8.6` edge remain unaccepted and must not be retried or routed around. These tracked uncertainties do not authorize unsupported new chapter claims.
-- Current authoring progress and serial integration evidence are in the [production record](docs/verification/wave5-production.md); preserve the original Wave 5 chapter assignments when refreshing counts.
-- Author, independently review, test native interactions/pixels, reconcile and commit each chapter. Apply the remaining §7.3 content gates before advancing a completed wave. Begin with independent chapters whose external prerequisites are already written. Keep global integration serial and chapter ownership disjoint.
+**Snapshot: 2026-10-22, checked against expansion HEAD `04120914` and redesign HEAD `2efc5984`.** Other work is active; later chapter ledgers supersede this snapshot. Written, author-verified, independently accepted, and redesigned are different states.
 
-[Deferred map work and preserved failure](docs/verification/map-performance-deferred.md), [checkpoint](docs/verification/checkpoint-5eb8fb42-node22.md), [coordination ledger](docs/verification/coordination.json).
+| Track | Recorded state | Consequence |
+| --- | --- | --- |
+| Wave 5 | Complete: 1,031 new ideas / 80 frozen chapters. Completion `1f6ddc37`; accepted source `fdcb3fd55a5d6a036f0d57443d3b5259d007825d` | Preserve; never restart from an older checkout |
+| Wave 6 accepted | 36 / 1,057 new ideas: ML 6 (16), VCALC 6 (10), PDE 6 (10). Accepted source `facab15e297c645d4826935f2c011a4cf367ee88`; continuation base `f0a324f9` | 1,021 frozen new ideas still require acceptance; 80 chapter assignments and two preserved entries stay fixed |
+| Accepted atlas | 7,751 written / 5,823 planned ideas, 531 written chapters, 85 collections, 13 fields | This 13,574-item inventory is the existing syllabus, not the boundary of knowledge |
+| Accepted integration | Recorded 3,457 passing tests, strict build/static clean; 123,750-byte gzipped home JSON; 15 bridges / 182 steps / 179 unique written ideas / no unresolved steps | Historical evidence for that source, not current drafts |
+| Active expansion | 102 frozen new ideas present: 36 accepted + 66 author-verified awaiting peer acceptance: REP 6 (12), TOP 6 (17), DG 6 (17), MFD 6 (20). PROB 7 in progress | Do not count the 66 as accepted or count unfinished PROB work. The 3,497-test integration checkpoint predates MFD |
+| Preserved shipping drafts | ODE 6 (17) and ALG 9 (17), unaccepted | Preserve and reconcile through their review pipeline; do not duplicate authorship |
+| Visual redesign | 55 verified / 1,101 scoped items; 1,046 pending | Scope includes Wave 5, 36 accepted Wave 6 items, and 34 shipping drafts. The 66 newer expansion items are outside its denominator |
+| Flagship proof curation | 2 / 100 accepted | Separate from the historical 102-player control audit and visual redesign |
+| Full-map performance | 60 fps target unmet and deferred by user direction | Not a content-wave gate; do not restart renderer/timing work through this revision |
 
-The completed checkpoint through `1cf1a67` passes **1,634 tests**, including all six UI tests, and a **114-route changed-page sweep**. Strict build and full static report 0 errors/0 warnings; home JSON112,815bytes gzip. The exact accepted snapshot includes the just-intonation/meantone and whole-plane retinal/Mach-band audits, excludes ongoing wolf/pooling/small-world drafts, and reconciles139pending source reviews,701original resolved and7added uncertainties. Cross-field published shortfall remains855, with53of64non-math collections and28whole syllabi below target. Flagship curation stays2/100 and the full-map60fps gate remains open. See [checkpoint evidence](docs/verification/checkpoint-1cf1a67.md).
+All 64 existing non-math collections meet the historical 25 published cross-field-edge target at the accepted baseline. This measures recorded links, not their semantic or source quality.
 
-### Where we started
+### 1.2 Operational sources of truth
 
+The chat checkout may be older than the accepted atlas. The active content worktree is:
 
-| | |
-|---|---|
-| Content | 3 collections (PMA 364, RCA 388, FA 310 items) · 45 chapters · 181 content modules · ~77k lines |
-| Item kinds | 661 theorems, 56 corollaries, 35 lemmas, 24 propositions, 286 definitions; every non-definition has a `viz` |
-| Engine | static SPA (`index.html`, `assets/js/app.js`, `graph.js`), viz runtime (`viz/core.js` 2D/3D stages, controls, TeX; `viz/math.js` numerics), build to `data/catalog.json` (737 KB), headless checker with screenshots |
-| Pace | the full trilogy was produced in ~3 days of agent-driven work (Oct 12–14), then a numbering-verification pass |
+`/Users/teodev/.codex/worktrees/wave-six-expansion/theorems-visualizations`
 
-**What is hard-wired to "three Rudin books"** (Phase 0 removes all of it):
+Read its `docs/wave-continuation.md`, `docs/wave-6-plan.json`, `docs/wave-6.md`, and `docs/verification/wave6-production.md` for execution. Shipping drafts remain in `/Users/teodev/.codex/worktrees/wave-five-shipping/theorems-visualizations`. The redesign ledger is `docs/verification/wave5-visual-redesign.md` in `/Users/teodev/.codex/worktrees/wave-visual-redesign/theorems-visualizations`.
 
-- `scripts/lib.mjs:7` `BOOKS`, `:12` `KINDS`, `:13` `ID_RE = /^(pma|rca|fa)-…/`, `:14` `NUM_RE` (two-level only)
-- `scripts/build.mjs:52` hand-written map `ROWS`; a single monolithic catalog
-- `assets/js/app.js`: `BOOK_INFO`, `BOOK_SHORT`, `bookIdx`, `chapterLabel` (the RCA Prologue special case), search tokens `pma|rca|fa`, homepage copy
-- `assets/js/graph.js`: `BOOK_VAR`, `BOOK_SHORT`, `renderFlow` defaulting to three columns, map filter checkboxes, per-book edge colours
-- `assets/css/style.css:37–39, 151–153`: `--c-pma/rca/fa` and `[data-book=…]` rules
-- `index.html`: brand, `<title>`, meta description, nav links, footer
-- `scripts/check.mjs:33` `findBrowser` knows only macOS paths, not `PLAYWRIGHT_BROWSERS_PATH` or Linux
+These are current workspace locations, not permanent architecture. Commits and repository-relative ledgers are durable references. U0's plan and two companions were synchronized to the chat and active expansion worktrees; archives preserve each checkout's own old plan. The subsequent U1 registry and pilot-research delivery is isolated to the chat checkout. It is not copied into either active worktree while those chats continue; reconcile it at the normal integration boundary. The redesign checkout remains under its existing task.
 
-**Lessons from the trilogy build that shape this plan**
+### 1.3 Preservation contract
 
-1. **Agents can produce at volume; verification is the bottleneck.** Seven of the last twenty
-   commits are renumbering fixes ("checked against Google Books snippets"). New collections
-   should prefer sources whose numbering we can actually check (open-access texts) or our own
-   numbering.
-2. **Unknown-id dependencies were tolerated and reconciled later.** That works for three books
-   but not for fifty-nine. We need the planned ids to exist *before* authors cite them, hence the
-   skeleton phase.
-3. **The quality bar (AUTHORING §2) is what makes the site worth visiting.** Scaling 10× must
-   not dilute it. Hence pilots before mass production, plus automated and reviewer gates.
+1. Keep every existing collection/item ID, numbering, citation, accepted manifest, and legacy URL. Use aliases and cross-listing for new navigation.
+2. Keep Wave 6 frozen, including FLUID 6.14 and FIN 7.10. Universal expansion gets a separate inventory; never insert new collections into a frozen wave.
+3. Continue authorized waves through their existing gates. Wave 6 does not wait for the universal platform.
+4. Preserve uncertainty flags and source-access stops. The five residual flags in one historical audit are not the whole atlas's unresolved inventory. The BIGHIST 3.5 review stop and excluded BIGHIST 3.5 → PMA 8.6 edge remain binding; this revision does not reopen them.
+5. Integrate visual changes against exact accepted content versions. Visual review cannot accept an unreviewed draft; content review cannot imply redesign completion.
+6. Preserve unrelated dirty files and ongoing worktrees. Subsequent integration uses reviewable local commits; no PR, push, merge, or deployment is authorized here.
+7. Treat the archive as historical evidence. Current handoffs and explicit user directions govern execution where old instructions conflict.
 
----
+## 2. Principles
 
-## 2. Vision and principles
+**Breadth with depth.** Keep advanced mathematics while creating entrances to subjects with no adequate coverage. Orientation, introductory explanation, advanced treatment, and practice are distinct levels.
 
-**Product.** *Ideas, Visualized*: an atlas of the load-bearing ideas of human knowledge. Each
-idea gets a faithful statement, an interactive picture you can push on, the reason it is true or
-the way it works, and its place in a single cross-field dependency graph. The Rudin trilogy becomes the **Analysis** shelf of the
-Mathematics field and keeps its identity and URLs.
+**Methods fit the subject.** Proof establishes mathematical implication; experiment supports an empirical claim within limits; a source supplies historical evidence; interpretation offers a reasoned reading. A demonstration supports skill development without certifying mastery.
 
-Principles:
+**Evidence is visible.** Separate source statements, reconstruction, observation, model output, uncertainty, and interpretation. A simulation is not an observation, and a debated account is not a settled fact.
 
-1. **One graph.** Deps cross collection and field boundaries whenever a derivation really uses
-   another result: Gauss's law ← divergence theorem; uncertainty principle ← Cauchy–Schwarz and
-   the Fourier transform; Nyquist stability criterion ← argument principle (RCA 10). The
-   cross-field edges are the product.
-2. **Every result is testable on screen.** The AUTHORING §2 bar applies in every field. Each
-   field translates "break a hypothesis" in its own way: in physics you leave the regime of
-   validity, in CS you feed the adversarial input, in statistics you violate an assumption and
-   watch coverage collapse, in engineering you push a gain past the stability boundary.
-3. **Honest computation.** Simulations use integrators that respect the physics (symplectic for
-   Hamiltonian systems), probability is shown with seeded samples next to the exact law, and
-   algorithms really run on the reader's input.
-4. **Measurable completeness.** Every collection has a published syllabus, so "done" is a
-   number, not a feeling.
-5. **Stable ids forever.** `pma-4.19` never changes. Curated collections never renumber, they
-   only append.
-6. **Static, fast, offline-friendly.** No server and no build step in the browser. The atlas
-   must stay snappy at 10k nodes.
+**Global coverage is structural.** Region, period, language, tradition, and community are facets throughout the atlas, not a single “world cultures” shelf. Include exchange, unequal preservation, translation, and attribution. Compare supported interpretations without assigning unsupported empirical claims equal evidential weight.
 
----
+**Interaction serves understanding.** Every authored exploration gives the reader an action: manipulate, predict, inspect, compare, explain, compose, or practice. An arbitrary slider does not satisfy this requirement.
+
+**Multiple entrances.** Beginners need not traverse the full formal prerequisite closure to understand an intuition. Different routes make different, explicit promises.
+
+**Accessible and durable.** Retain static deployment, progressive loading, offline-friendly core lessons, semantic text, keyboard operation, and reproducible states. Optional media and external collections fail gracefully.
+
+**Versioned coverage.** Each syllabus/inventory declares scope, sources, omissions, review date, and maintainer. Completion applies to that version, never to a discipline forever.
 
 ## 3. Information architecture
 
-```
-Field (13)         Mathematics · Statistics & Data Science · Computer Science · Physics & Astronomy
-                   · Chemistry & Materials · Earth & Environment · Biology · Medicine & Health
-                   · Engineering · Economics & Finance · Social & Behavioral Sciences
-                   · Arts, Music & Design · Humanities
-  └ Area           e.g. Mathematics → Analysis · Algebra · Geometry & Topology · Probability
-                   · Discrete · Logic · Applied & Computational
-      └ Collection e.g. pma, rca, fa · ladr · mech · algo      (a "book" generalised)
-          └ Chapter
-              └ Item  <collection>-<num>, e.g. pma-4.19, mech-5.3, algo-12.4, prob-2.4.1
-```
-
-**Two kinds of collection**
-
-| type | numbering | completeness promise | when to use |
-|---|---|---|---|
-| **book-anchored** | follows the book (`prob-2.4.1` = Durrett Thm 2.4.1) | every numbered theorem/lemma/corollary/proposition + key definitions | a canonical, theorem-numbered text exists, **preferably open access** so numbers can be verified |
-| **curated course** | our own syllabus, `chapter.n`, append-only | every result in the published syllabus | everywhere else, especially physics, chemistry, biology and engineering, where texts number equations, not results. Each item carries `refs` to 1–3 standard texts |
-
-**Routes** (old ones redirect):
-
-| route | page |
-|---|---|
-| `#/` | atlas home: field cards, cross-field flow, the longest chain in STEM, load-bearing results, featured bridges |
-| `#/f/<field>` | field page: areas, collections, the flow between collections |
-| `#/c/<col>` · `#/c/<col>/<ch>` | collection and chapter (replaces `#/book/…`, which redirects) |
-| `#/t/<id>` | a result (unchanged) |
-| `#/map` | atlas map with semantic zoom (field, then collection, chapter, result) |
-| `#/bridge/<slug>` | a cross-field narrative (§8) |
-| `#/path/<id>` | "everything you need for X": prerequisite planner (§8) |
-| `#/status` | coverage dashboard: planned / written / reviewed / verified per collection |
-
----
-
-## 4. Phase 0: the atlas engine (generalise, no new content)
-
-**Acceptance test:** add a dummy collection `content/zzz/` with a `collection.js` and one
-chapter. It shows up on the home page, field page, map, search and status with **zero code
-edits**. The Rudin content renders exactly as before (same 1,062 items, same screenshots).
-
-### 4.1 Registry, schema v2
-
-```
-content/fields.js            fields → areas: id, title, hue, blurb, order
-content/<col>/collection.js  collection metadata (below)
-content/<col>/syllabus.js    planned inventory (Phase 2), optional
-content/<col>/chNN*.js       chapters, as today
-content/bridges/<slug>.js    cross-field narratives (Phase 7)
-```
-
-```js
-// content/mech/collection.js
-export default {
-  id: 'mech', short: 'MECH', title: 'Classical Mechanics',
-  field: 'physics', area: 'mechanics', order: 10,
-  source: { type: 'course', refs: ['Taylor, Classical Mechanics (2005)', 'Goldstein, Poole & Safko 3e', 'Arnold, Mathematical Methods of Classical Mechanics', 'Tong, Lectures on Classical Dynamics'] },
-  // book-anchored: source: { type: 'book', author, title, edition, license, url }
-  blurb: String.raw`…`,
-  chapterLabels: {},            // e.g. rca: { 0: 'Prologue' }
-  mapRows: null,                // optional split of a long collection into map rows, e.g. rca: [[0,9],[10,20]]
-};
-```
-
-Item schema changes (all optional except `kind`):
-
-| field | change |
-|---|---|
-| `kind` | add **Law, Principle, Postulate, Algorithm, Model, Concept, Phenomenon, Method, Paradox, Hypothesis, Invention, Event** to Theorem/Lemma/Corollary/Proposition/Definition |
-| `num` | allow three-level (`2.4.1`) and lettered appendices (`A.3`): `^([A-Z]\|\d{1,2})(\.\d{1,3}){1,2}[a-z]?$` |
-| `refs` | pointers into standard texts: `['Griffiths 4e §2.2.1', 'Feynman II-4']` |
-| `scope` | regime of validity for laws and models ("non-relativistic, point masses"), rendered as a box |
-| `credit` | discoverer and year ("Noether, 1918") |
-| `links` | `{ wikipedia, mathlib, nlab }`: external cross-references; Mathlib names checked by script (stretch) |
-
-Chapter files rename the key `book:` to `collection:` in one mechanical commit; ids are untouched.
-
-### 4.2 Build and data
-
-- `scripts/lib.mjs` loads the registry and derives `ID_RE` from it. Collection ids match
-  `^[a-z][a-z0-9]{1,7}$`.
-- **Split the catalog.** `data/index.json` holds the registry, chapters and light item records
-  (id, num, kind, name, deps, see, x/y, stats, flags). `data/col/<id>.json` holds statements and
-  tags, lazy-loaded for tooltips, search and pages. Budget: index ≤ 300 KB gzipped at 10k items.
-- **Home transfer gate complete (2026-10-19).** `data/home.json` supplies all home summaries
-  in 112,823 gzip bytes, with a build-enforced 300,000-byte ceiling. Native HTTP checks cover
-  idle time, scrolling and empty search focus. The full index and search details load on demand;
-  the separate standalone index-size target remains open. See [budget audit](docs/verification/home-json-budget-followup.md).
-- Map layout generalised from the hard-coded `ROWS` (§4.4).
-- Collection colours come from the registry. Each field has a hue family; its collections are
-  OKLCH shades within it, with light and dark variants, emitted as CSS custom properties.
-  `[data-book]` becomes `[data-col]`, with the colour set inline or in a generated stylesheet.
-- Coverage statistics for `#/status` (planned/written/reviewed/verify-flagged).
-
-### 4.3 App
-
-- Nav: a **Fields** menu, plus Map, Bridges, About. The brand changes to *Theorems, Visualized*
-  and the Analysis shelf keeps "Rudin" in its copy.
-- Home: field cards with progress bars; a cross-field flow (fields as columns, chapters on
-  hover); the longest chain across the atlas; load-bearing results per field; "new this week".
-- Search: field and collection filters (`qm`, `physics:`), LaTeX-insensitive name matching,
-  "uses:pma-4.19" queries.
-- Theorem page: `refs`, `scope`, `credit` and `links` blocks. "Across the books" becomes
-  **Across fields**.
-
-### 4.4 Map v2 (semantic zoom)
-
-The geographic-atlas metaphor: **fields are continents, collections countries, chapters
-provinces, results towns.** Collections are placed by a layered layout of the
-collection-to-collection dependency graph, with foundations on the left and applications on the
-right, grouped into field regions. Inside a collection, the existing per-chapter column/barycentre
-layout is reused. Rendering uses Canvas2D with level of detail: zoomed out, collections are blobs
-with bundled edges; zoomed in, individual nodes and edges are culled to the viewport. If 10k nodes
-and ~30k edges can't hold 60 fps, move to WebGL. Phase 2's ghost nodes give a full-size stress
-test before the content exists.
-
-### 4.5 Viz runtime: first additions (cheap, widely needed)
-
-- Stage: `xlog`/`ylog` axes, polar axes, a colour-bar legend for `heat`, a histogram helper.
-- `v.M`: FFT (1D/2D, complex and real); n×n linear algebra (LU with pivoting, QR, Jacobi
-  symmetric eigen, QR-iteration eigen with complex eigenvalues, n×n SVD, least squares, matrix
-  exponential); probability distributions (pdf/cdf/quantile/sample for normal, binomial,
-  Poisson, exponential, gamma, beta, χ², t).
-- Field kits come later and just in time (§6).
-
-### 4.6 Tooling and CI
-
-- `check.mjs`: targets by field and collection (`physics`, `mech/5`); `findBrowser` honours
-  `PLAYWRIGHT_BROWSERS_PATH` and Linux paths; a `--changed` mode (git-diff based).
-- New automatic gates in the harness: at least one control or handle (interactivity), a readout
-  present, redraw time budget, no console errors, nothing drawn outside the canvas.
-- `scripts/smoke.mjs`: every route renders without console errors (home, field, collection,
-  chapter, theorem, map, status, bridge).
-- A PR workflow running `build --strict`, `check --static`, smoke tests, and a headless run of
-  changed chapters. Pages deploy stays on `main`.
-
----
-
-## 5. The atlas: fields, collections, and what we visualize
-
-Estimates are planning numbers. Anchors marked † are open-access or freely available, which
-makes numbering verifiable; licences get confirmed before we commit to an anchor. **B** = book-anchored, **C** = curated
-course with refs.
-
-### 5.1 Mathematics (21 collections, ≈ 4,560 items; `game` moved to economics)
-
-| id | collection | type · anchor / refs | est. | flagship visualizations | key cross-links |
-|---|---|---|---|---|---|
-| `pma` `rca` `fa` | Analysis (Rudin trilogy) | B · existing | 1,062 | (done) | everything |
-| `ladr` | Linear algebra | B · Axler, *Linear Algebra Done Right* 4e† | 300 | span/dimension by dragging vectors; eigenvectors as invariant directions of a draggable map; Gram–Schmidt step by step; spectral theorem as ellipse axes; SVD as rotate-stretch-rotate; Jordan chains | FA 12, RCA 4, `qm`, `stat`, `mech` normal modes |
-| `alg` | Abstract algebra | B · Judson, *Abstract Algebra: Theory and Applications*† | 250 | dihedral groups acting live; Cayley graphs; cosets colour the group (Lagrange); Sylow counting; Galois correspondence flipping the lattice; RSA from Euler's theorem | `nt`, `crypto`, `rep`, `xtal` |
-| `rep` | Representation theory | C · Fulton–Harris, Serre | 100 | character tables; orthogonality as dot products; irreps of Dₙ on functions on a polygon; Fourier analysis on finite groups | `alg`, RCA 9, `qchem` symmetry |
-| `top` | Topology | C · Munkres, Hatcher | 300 | gluing squares into torus, Klein bottle and ℝP²; cover games for compactness; Urysohn functions; loops deforming in π₁; path lifting in covering spaces; Brouwer via no-retraction | PMA 2, RCA 2, FA 1, `dg` |
-| `dg` | Differential geometry of curves & surfaces | C · do Carmo, Pressley | 180 | Frenet frame riding a space curve; Gauss map; principal curvatures; Theorema Egregium (bend the surface, K stays); geodesics; Gauss–Bonnet angle sums | `mech`, `rel`, `mfd` |
-| `mfd` | Manifolds & Riemannian geometry | C · Lee (smooth, Riemannian) | 150 | flows of vector fields; Lie bracket as an unclosed parallelogram; forms and Stokes; de Rham on the punctured plane; curvature; Hopf–Rinow | PMA 10, `rel`, `mech` (symplectic) |
-| `vcalc` | Vector calculus | C · Marsden–Tromba, Schey *div grad curl* | 100 | div and curl as flux and circulation densities; live flux counters for Green, Stokes and divergence; path independence; Helmholtz decomposition | PMA 10, `em`, `fluid` |
-| `ode` | ODEs & dynamical systems | B · Teschl, *ODEs and Dynamical Systems*† (or C: Hirsch–Smale–Devaney, Strogatz) | 220 | Picard iterates converging; Grönwall envelopes; phase portraits and Hartman–Grobman; Poincaré–Bendixson limit cycles; bifurcation diagrams; Lyapunov functions; Lorenz chaos | PMA 9 contraction, `mech`, `ctrl`, `mathbio`, `kin` |
-| `pde` | Partial differential equations | C · Evans, Strauss | 180 | heat smoothing and the maximum principle; d'Alembert and domains of dependence; mean-value property; separation of variables; characteristics; CFL condition | PMA 8, RCA 9, FA 7–8, `em`, `fluid`, `qm` |
-| `prob` | Probability | B · Durrett, *Probability: Theory and Examples* 5e† | 350 | running means (LLN); histograms converging to the bell curve (CLT); Borel–Cantelli; characteristic functions; random-walk recurrence in d = 1, 2, 3; martingale convergence; building Brownian motion | RCA 1–8 (deep), `stat`, `thermo`, `stoch` |
-| `stoch` | Stochastic processes | C · Norris, Levin–Peres–Wilmer† | 200 | Markov chains mixing (TV-distance curves); Perron–Frobenius; coupling; hitting times; Poisson processes; queues and Little's law; Itô (pathwise) | `prob`, `algo`, `mathbio`, `kin` |
-| `graph` | Graph theory | B · Diestel, *Graph Theory*† | 250 | Euler tours; Menger/max-flow on editable graphs; Hall's theorem via augmenting paths; planarity and Kuratowski; a playable R(3,3)=6; Turán graphs; giant component in random graphs | `algo`, `comb`, `circ`, `bioinf` |
-| `comb` | Combinatorics | C · Stanley EC1, Aigner, Alon–Spencer | 180 | animated bijections; Catalan families; inclusion–exclusion; Pólya counting with necklaces; probabilistic method; Sperner/LYM | `graph`, `prob` |
-| `nt` | Number theory | C · Hardy–Wright, Ireland–Rosen, Apostol | 200 | Euclid's algorithm as rectangle tiling; quadratic reciprocity by lattice points; Pell equations and continued fractions; Gauss circle problem; prime number theorem and zeta zeros | FA 9 (PNT), RCA 10, `alg`, `crypto` |
-| `logic` | Logic & foundations | C · Enderton, Smullyan, Kunen | 120 | Cantor diagonal; ordinals as nested pictures; truth tables and completeness; compactness; a Gödel-numbering machine; Löwenheim–Skolem; Zorn/choice | `toc`, `pl`, RCA (maximality) |
-| `num` | Numerical analysis | C · Süli–Mayers, Trefethen *ATAP* | 150 | Runge vs Chebyshev nodes; Newton basins; quadrature error rates on log–log axes; stability regions of ODE solvers; floating-point traps | PMA 7 (Weierstrass), `ode`, `nla` |
-| `nla` | Numerical linear algebra | C · Trefethen–Bau | 120 | Householder QR step by step; conditioning as ellipse distortion; power iteration; CG convergence; SVD image compression | `ladr`, `ml`, `opt` |
-| `opt` | Optimization | C · Boyd–Vandenberghe†, Nocedal–Wright | 150 | separating hyperplanes; gradient-descent trajectories and rates; KKT geometry; LP duality; simplex walking vertices; interior-point central path | FA 3 (Hahn–Banach), `ml`, `ctrl`, `game` |
-| `game` | Game theory & social choice | C · Osborne, Maschler–Solan–Zamir | 80 | minimax via separation; Nash via Brouwer; Gale–Shapley stable matching; Shapley value; Arrow's impossibility; VCG mechanisms | `opt`, `top`, `graph` |
-
-### 5.2 Statistics & data science (4 collections, ≈ 580)
-
-| id | collection | type · refs | est. | flagship visualizations | cross-links |
-|---|---|---|---|---|---|
-| `stat` | Statistical inference | C · Casella–Berger, Wasserman | 200 | Cramér–Rao bound against estimator spread; Neyman–Pearson and ROC curves; CI coverage accumulating over 1,000 repeats; bootstrap; conjugate Bayesian updating; regression as projection | `prob`, `ladr`, `ml` |
-| `ml` | Learning theory | B · Shalev-Shwartz & Ben-David† | 200 | VC shattering game; PAC sample complexity; no-free-lunch; perceptron convergence; SVM margins; kernels; boosting; SGD rates | `opt`, `stat`, `prob` |
-| `deep` | Deep learning theory | C · Goodfellow et al., Prince *UDL*† | 100 | universal approximation by summed sigmoids; backprop as the chain rule on a graph; vanishing gradients; double descent; attention as soft lookup; convolution equivariance | `ml`, `opt`, `ladr` |
-| `causal` | Causal inference | C · Pearl, Hernán–Robins† | 80 | d-separation on editable DAGs; back-door adjustment; Simpson's paradox; instruments; randomization | `stat`, `graph` |
-
-### 5.3 Computer science (8 collections, ≈ 1,260)
-
-| id | collection | type · refs | est. | flagship visualizations | cross-links |
-|---|---|---|---|---|---|
-| `algo` | Algorithms | C · CLRS 4e, Erickson† (CC BY), Kleinberg–Tardos | 300 | sorting with comparison counters against the decision-tree lower bound; recursion trees (master theorem); Dijkstra/Bellman–Ford/A*; MST cut property; max-flow min-cut; DP tables filling; potential-function amortization; FFT butterflies | `graph`, `opt`, `cplx`, RCA 9 |
-| `toc` | Theory of computation | C · Sipser | 200 | DFA ↔ NFA ↔ regex conversions; pumping-lemma game; Myhill–Nerode classes; CFG parse trees; Turing machines running; undecidability diagonal; Rice; Cook–Levin | `logic`, `cplx` |
-| `cplx` | Computational complexity | C · Arora–Barak† (draft) | 150 | reduction chains (3SAT → CLIQUE → …); hierarchy theorems; randomized classes; interactive proofs; PCP and hardness of approximation | `toc`, `algo`, `crypto` |
-| `info` | Information & coding theory | C · Cover–Thomas, MacKay† | 180 | entropy and Huffman trees; Kraft inequality; typical sets (AEP); capacity; noisy-channel coding by simulation; Hamming codes and syndromes; rate–distortion | `prob`, `thermo`, `sig` |
-| `crypto` | Cryptography | C · Katz–Lindell, Boneh–Shoup† | 150 | one-time pad perfect secrecy; Diffie–Hellman; RSA; elliptic-curve chord-and-tangent law; birthday bound; zero-knowledge 3-colouring; LWE lattices | `nt`, `alg`, `cplx` |
-| `dist` | Distributed computing | C · Lynch, Attiya–Welch | 80 | Lamport and vector clocks; FLP bivalence; Paxos/Raft invariants step by step; Byzantine 3f+1; gossip spread | `graph`, `prob` |
-| `pl` | Programming languages & types | C · Pierce *TAPL* | 100 | λ-reduction graphs; Church–Rosser diamonds; progress and preservation; Curry–Howard proof trees ↔ programs; Hindley–Milner unification | `logic`, `toc` |
-| `cg` | Geometry & graphics | C · de Berg et al., Pharr–Jakob–Humphreys† | 100 | de Casteljau/Bézier; Voronoi/Delaunay empty circles; convex hull algorithms; aliasing; Monte Carlo rendering equation; quaternion rotations | `algo`, `sig`, `ladr` |
-
-### 5.4 Physics & astronomy (10 collections, ≈ 1,580; `geo` moved to Earth & environment)
-
-| id | collection | type · refs | est. | flagship visualizations | cross-links |
-|---|---|---|---|---|---|
-| `mech` | Classical mechanics | C · Taylor, Goldstein, Arnold, Tong† | 220 | Kepler orbits and the effective potential; Euler–Lagrange; Noether (drag a symmetry, watch the conserved quantity); normal modes; tumbling about the intermediate axis; Liouville (phase-space area conserved); Poincaré sections; double-pendulum chaos | `ode`, `ladr`, `vcalc`, `mfd` |
-| `em` | Electromagnetism | C · Griffiths, Purcell, Feynman II† | 220 | field lines by superposition; Gauss's law with draggable surfaces; Laplace and the method of images; multipoles; Biot–Savart; Faraday induction; Maxwell to EM waves; Poynting theorem; radiation | `vcalc`, `pde`, RCA 11, `rel` |
-| `waves` | Waves & optics | C · Hecht, Crawford | 120 | beats; standing waves; dispersion and group velocity; double slit; gratings; Fraunhofer diffraction as a Fourier transform; Snell from Fermat; polarization | `em`, `sig`, RCA 9 |
-| `thermo` | Thermodynamics & statistical mechanics | C · Schroeder, Callen, Kardar, Tong† | 200 | Carnot cycles on PV diagrams; Boltzmann distribution from counting; equipartition; a kinetic-theory gas; Maxwell–Boltzmann speeds; Ising model by Metropolis with a phase transition; Planck's law; Legendre transforms | `prob`, `info`, `opt`, `pchem` |
-| `qm` | Quantum mechanics | C · Griffiths, Sakurai, Hall | 250 | wave packets and dispersion; uncertainty as a Fourier pair; box and oscillator eigenstates; tunnelling; hydrogen orbitals; Bloch sphere; sequential Stern–Gerlach; perturbation theory; variational principle; Bell inequalities | `ladr`, FA 12–13, RCA 9, `waves` |
-| `rel` | Special & general relativity | C · Taylor–Wheeler, Schutz, Carroll† | 150 | Minkowski diagrams with draggable boosts; twin paradox; four-momentum collisions; equivalence principle; Schwarzschild orbits and perihelion precession; light bending; GPS clocks; gravitational waves | `mech`, `em`, `dg`, `mfd` |
-| `astro` | Astrophysics & celestial mechanics | C · Carroll–Ostlie, Murray–Dermott | 100 | Lagrange points; virial theorem; Jeans instability; hydrostatic equilibrium; Chandrasekhar limit; Saha equation; Friedmann expansion; Roche limit | `mech`, `thermo`, `rel` |
-| `fluid` | Fluid dynamics | C · Acheson, Kundu | 120 | Bernoulli; Kelvin circulation; potential flow by conformal maps; Joukowski airfoil and Kutta–Joukowski lift; Reynolds number and Stokes flow; boundary layers; Kelvin–Helmholtz | `vcalc`, `pde`, **RCA 14 (conformal mapping)** |
-| `cm` | Condensed matter | C · Ashcroft–Mermin, Kittel | 100 | reciprocal lattices; Bloch's theorem; tight-binding bands; Fermi surfaces; phonon dispersion; Drude model | `qm`, `xtal`, `ladr` |
-| `qinfo` | Quantum information | C · Nielsen–Chuang | 100 | gates as Bloch-sphere rotations; CHSH violation; no-cloning; teleportation circuit; Deutsch–Jozsa; Grover as a rotation; Shor's period finding; bit-flip code | `qm`, `ladr`, `cplx`, `nt` |
-| `geo` | Earth & climate physics | C · Vallis, Pierrehumbert | 80 | Coriolis and inertial circles; geostrophic balance; Ekman spiral; greenhouse layer model; Milankovitch cycles; Lorenz-63 | `fluid`, `thermo`, `ode` |
-
-### 5.5 Chemistry (4 collections, ≈ 480)
-
-| id | collection | type · refs | est. | flagship visualizations | cross-links |
-|---|---|---|---|---|---|
-| `pchem` | Physical chemistry: thermodynamics & equilibrium | C · Atkins, McQuarrie–Simon | 180 | van der Waals isotherms and the critical point; phase diagrams and Clausius–Clapeyron; ΔG and K; Le Chatelier; Raoult/Henry; Nernst equation; Gibbs phase rule | `thermo`, `kin` |
-| `kin` | Chemical kinetics | C · Houston, Steinfeld | 100 | integrated rate laws; Arrhenius and Eyring; steady-state approximation; Lindemann; Michaelis–Menten; Brusselator/BZ oscillations; Gillespie vs mass-action | `ode`, `stoch`, `sysbio` |
-| `qchem` | Quantum chemistry & spectroscopy | C · Szabo–Ostlund, McQuarrie | 120 | LCAO and H₂⁺ bonding/antibonding; Hückel π systems as eigenproblems; particle-in-a-box dyes; selection rules; rotational–vibrational spectra; Franck–Condon | `qm`, `ladr`, `rep` |
-| `xtal` | Crystallography | C · Hammond, Giacovazzo | 80 | Bravais lattices; point and space groups; Miller indices; Bragg's law; Ewald sphere; diffraction as a Fourier transform; systematic absences; Penrose tilings | `alg`, `rep`, `waves`, `cm` |
-
-### 5.6 Biology (5 collections, ≈ 530)
-
-| id | collection | type · refs | est. | flagship visualizations | cross-links |
-|---|---|---|---|---|---|
-| `popgen` | Population genetics & evolution | C · Gillespie, Nielsen–Slatkin, Ewens | 120 | de Finetti diagram (Hardy–Weinberg); Wright–Fisher drift; Kimura fixation probability; Fisher's fundamental theorem; Price equation; coalescent trees; F_ST | `prob`, `stoch`, `ode` |
-| `mathbio` | Mathematical biology | C · Murray, Edelstein-Keshet | 150 | Lotka–Volterra conserved quantity; competitive exclusion; SIR and the R₀ = 1 threshold; Turing patterns; Leslie matrices (Perron–Frobenius); Fisher–KPP waves; logistic-map period doubling | `ode`, `pde`, `ladr`, `stoch` |
-| `neuro` | Computational neuroscience | C · Dayan–Abbott | 80 | Hodgkin–Huxley spikes; FitzHugh–Nagumo phase plane; cable equation; integrate-and-fire f–I curves; Oja's rule finds the principal component; Hopfield energy descent | `ode`, `pde`, `deep`, `ladr` |
-| `bioinf` | Bioinformatics algorithms | C · Durbin et al., Compeau–Pevzner | 100 | Needleman–Wunsch/Smith–Waterman tables; Karlin–Altschul statistics; Viterbi gene finding; neighbour-joining and Felsenstein pruning; de Bruijn assembly as Euler paths; BWT | `algo`, `graph`, `stoch` |
-| `sysbio` | Systems biology | C · Alon | 80 | Hill functions; toggle-switch bistability; repressilator; feed-forward loops; perfect adaptation via integral feedback; expression noise | `ode`, `kin`, `ctrl` |
-
-### 5.7 Engineering (5 collections, ≈ 630)
-
-| id | collection | type · refs | est. | flagship visualizations | cross-links |
-|---|---|---|---|---|---|
-| `sig` | Signals & systems | C · Oppenheim–Willsky, Lathi | 180 | convolution by dragging the flipped kernel; sampling theorem and aliasing; DFT/FFT; Laplace and Z-transform pole–zero plots; Butterworth filters; windowing; Parseval; modulation | PMA 8, RCA 9, **FA 6–7 (distributions)**, `ctrl`, `info` |
-| `ctrl` | Control theory | C · Åström–Murray†, Franklin–Powell | 150 | PID tuning on a live plant; root locus; Bode plots and the **Nyquist criterion from the argument principle**; Routh–Hurwitz; controllability (Kalman rank); pole placement; LQR; Kalman filter | `ode`, `ladr`, RCA 10, `sig` |
-| `circ` | Circuits | C · Agarwal–Lang, Horowitz–Hill | 100 | Kirchhoff's laws solved live on an editable circuit; Thévenin/Norton; maximum power transfer; RLC transients and resonance; phasors; Tellegen's theorem; matrix-tree theorem | `graph`, `ode`, `sig` |
-| `solid` | Solid mechanics & structures | C · Gere, Timoshenko | 120 | Mohr's circle as an eigenproblem; beam bending; Euler buckling; torsion; Castigliano; trusses by joints; Griffith fracture; FEM in one dimension | `ladr`, `pde`, `mech` |
-| `robot` | Robotics | C · Lynch–Park, *Modern Robotics*† | 80 | SE(3) transforms; forward and inverse kinematics; Jacobian singularities; manipulability ellipsoids (SVD); configuration space and RRT | `ladr`, `mfd`, `ctrl` |
-
-### 5.8 Earth & environment (4 collections, ≈ 360)
-
-| id | collection | refs | est. | flagship visualizations |
-|---|---|---|---|---|
-| `geol` | Geology & geophysics | Turcotte–Schubert; Stein–Wysession | 100 | plates rotating about Euler poles on a globe; isostasy; radiometric decay chains and isochrons; seismic rays bending through the layered Earth; Gutenberg–Richter statistics; magnetic stripes from reversals |
-| `geo` | Atmosphere & ocean dynamics (moved from physics) | Vallis; Pierrehumbert | 80 | Coriolis and inertial circles; geostrophic balance; the Ekman spiral; Rossby waves; Lorenz-63 |
-| `climate` | Climate science | Pierrehumbert; Archer; IPCC AR6 WG1 | 100 | energy-balance models with ice–albedo bistability (snowball Earth); the greenhouse layer model; forcing and feedback sliders; Milankovitch cycles; a carbon-cycle box model |
-| `geog` | Geography & cartography | Snyder (USGS); Haggett | 80 | map projections with Tissot ellipses (← Theorema Egregium: no flat map is perfect); great circles vs rhumb lines; central places as hexagons; gravity models; Zipf's law of cities |
-
-### 5.9 Medicine & health (4 collections, ≈ 360)
-
-| id | collection | refs | est. | flagship visualizations |
-|---|---|---|---|---|
-| `physio` | Human physiology | Guyton–Hall; Keener–Sneyd | 120 | pressure–volume loops of the heart (Frank–Starling); Poiseuille flow in vessels; the oxygen–hemoglobin curve and its shifts; the Windkessel model; Nernst/GHK membrane potentials; glucose–insulin feedback |
-| `pharm` | Pharmacology | Rowland–Tozer; Goodman & Gilman | 80 | one- and two-compartment kinetics; repeated dosing and accumulation to steady state; dose–response curves and the therapeutic window; receptor occupancy |
-| `epi` | Epidemiology & evidence | Rothman; Gordis | 100 | base rates and the positive predictive value of a test; ROC curves; confounding and Simpson's paradox; Kaplan–Meier curves; herd immunity threshold 1 − 1/R₀ |
-| `imaging` | Medical imaging | Prince–Links; Kak–Slaney | 60 | CT reconstruction: sinograms, back-projection and filtered back-projection (← Fourier slice theorem); MRI k-space; ultrasound Doppler |
-
-### 5.10 Economics & finance (5 collections, ≈ 550)
-
-| id | collection | refs | est. | flagship visualizations |
-|---|---|---|---|---|
-| `micro` | Microeconomics | Varian; Mankiw; CORE Econ | 160 | draggable supply and demand with taxes, price controls and shaded deadweight loss; indifference maps and pivoting budget lines; income and substitution effects; the Edgeworth box and the welfare theorems; Cournot/Bertrand; the market for lemons |
-| `macro` | Macroeconomics | Mankiw; Romer; CORE Econ | 120 | the Solow model converging to steady state; the Keynesian multiplier; IS–LM and AD–AS shifts; the Taylor rule; the quantity theory |
-| `fin` | Finance | Luenberger; Hull | 120 | compounding and present value; the efficient frontier and CAPM line; option payoffs and put–call parity; binomial trees converging to Black–Scholes (← heat equation); the Kelly criterion |
-| `behav` | Behavioral economics & decisions | Kahneman; Wilkinson–Klaes | 80 | the St Petersburg paradox; risk aversion as concavity (Jensen); prospect-theory value and weighting functions; Allais; hyperbolic vs exponential discounting |
-| `game` | Game theory & social choice (moved from math) | Osborne; Maschler–Solan–Zamir | 80 | as in §5.1 |
-
-### 5.11 Social & behavioral sciences (4 collections, ≈ 430)
-
-| id | collection | refs | est. | flagship visualizations |
-|---|---|---|---|---|
-| `psych` | Psychology & perception | Gescheider; Macmillan–Creelman; Goldstein | 150 | Weber–Fechner and Stevens laws you can test on yourself; signal detection (d′, criteria, ROC); Hick's and Fitts's laws with live timing; the Ebbinghaus forgetting curve and spacing; Rescorla–Wagner learning; illusions and lateral inhibition (Mach bands) |
-| `soc` | Networks & collective behavior | Easley–Kleinberg; Schelling; Newman | 100 | Schelling segregation from mild preferences; Granovetter thresholds and cascades; small worlds (Watts–Strogatz); preferential attachment and power laws; the Bass diffusion model |
-| `polsci` | Political science & social choice | Taylor–Pacelli; Saari | 100 | one electorate, five voting methods, five winners; Condorcet cycles; Arrow; the median voter; apportionment paradoxes; gerrymandering and the efficiency gap; Banzhaf power |
-| `demo` | Demography | Preston–Heuveline–Guillot; Keyfitz–Caswell | 80 | life tables and life expectancy; population pyramids and momentum; stable populations (← Perron–Frobenius); the demographic transition |
-
-### 5.12 Arts, music & design (3 collections, ≈ 350)
-
-| id | collection | refs | est. | flagship visualizations |
-|---|---|---|---|---|
-| `music` | Music theory & acoustics | Benson; Tymoczko; Sethares; Loy | 150 | standing waves and the harmonic series, with sound; beats and roughness; dissonance curves that change with timbre; Pythagorean and syntonic commas; 12-EDO from continued fractions of log₂(3/2); the pitch-class clock and maximal evenness; the Tonnetz; Euclidean rhythms |
-| `art` | Visual art & colour | Kemp; Livingstone; Fairchild; Conway et al. | 120 | linear perspective with draggable vanishing points; anamorphosis; additive vs subtractive colour; CIE chromaticity; simultaneous contrast; the 17 wallpaper groups; halftoning and dithering |
-| `arch` | Architecture & structural form | Allen–Zalewski; Heyman | 80 | the hanging chain inverted into an arch (Hooke, Gaudí); thrust lines in masonry; domes; trusses; Sabine reverberation |
-
-### 5.13 Humanities (4 collections, ≈ 470)
-
-| id | collection | refs | est. | flagship visualizations |
-|---|---|---|---|---|
-| `ling` | Linguistics | Fromkin et al.; Ladefoged; Jurafsky–Martin | 120 | the vowel space from formants; Zipf's and Heaps' laws on real text; syntax trees and recursion; Grimm's law as sound change; language family trees (← phylogenetics) |
-| `phil` | Philosophy & reasoning | Sainsbury; Resnik; SEP | 120 | Zeno's paradoxes and convergent series (← PMA 3); the sorites and fuzzy boundaries; Newcomb and the two envelopes; Bayesian confirmation and the raven paradox; Sleeping Beauty; the veil of ignorance as maximin |
-| `tech` | History of technology | Cardwell; Usher; Mokyr | 150 | **the tech tree as a dependency graph**: simple machines → water wheel → clockwork escapement → printing press → steam engine (Watt's governor) → telegraph → radio → transistor → laser → GPS (trilateration) → internet (packet routing); each invention shown working, with deps into the physics that explains it |
-| `bighist` | Big history & quantitative history | Christian; Clark; Turchin–Nefedov | 80 | deep time on a log axis; farming spreading as a wave of advance (← Fisher–KPP); the Malthusian trap and the escape from it; plague as SIR; secular cycles |
-
-Also added: `mat` Materials science (chemistry, ≈ 100), `ecol` Ecology (biology, ≈ 100),
-`aero` Aerospace engineering and `energy` Energy systems (engineering, ≈ 80 each).
-
-**Totals:** 85 collections (3 existing + 82 new) across 13 fields · ≈ 11,400 new items · **≈ 12,500 overall**.
-
----
-
-## 6. Viz kits (runtime extensions, built just in time)
-
-Content never imports anything; kits hang off `v` (`v.graph(...)`, `v.steps(...)`) and are
-documented in AUTHORING with a demo page in `tools/kits.html`. Each kit ships with the first wave
-that needs it and is frozen (additive changes only) once a collection depends on it.
-
-| kit | provides | first needed by |
-|---|---|---|
-| core additions | log/polar axes, colour bars, histograms; FFT; n×n linear algebra; distributions | Phase 0 |
-| `graph` | node-link drawing, directed/weighted, layouts (force, layered, circular, tree, grid), editable (add, drag, delete), highlight paths, cuts and matchings | `algo`, `graph`, `toc`, `stoch`, `causal`, `bioinf`, `circ` |
-| `steps` | timeline of precomputed states with step, back and scrub controls, plus a pseudo-code panel with the active line | `algo`, proofs, `nla`, `toc`, `dist` |
-| `table` | matrices and tables with highlighted or editable cells | DP tables, Cayley tables, truth tables, transition matrices, character tables |
-| `sim` | Verlet/leapfrog/symplectic Euler, RK45, implicit Euler; particle systems; energy-drift readout; Gillespie SSA | `mech`, `thermo`, `astro`, `kin`, `popgen` |
-| `grid` | 1D/2D finite differences (heat, wave, advection, reaction–diffusion); split-step Fourier Schrödinger | `pde`, `qm`, `mathbio`, `em` |
-| `fields` | field lines and streamlines in 2D/3D, equipotentials, flux through a draggable surface | `vcalc`, `em`, `fluid` |
-| `freq` | Bode, Nyquist, root locus, pole–zero plots | `sig`, `ctrl`, `circ` |
-| `circuit` | schematic symbols on a grid plus an MNA solver (DC/AC/transient) | `circ`, `ctrl` |
-| `mol` | ball-and-stick (3D), MO/energy-level diagrams, orbital slices | `qchem`, `xtal`, `pchem` |
-| `automata` | DFA/NFA/PDA/TM on `graph`, plus a tape renderer | `toc`, `cplx` |
-| `quantum` | qubit state, Bloch sphere, circuit diagram simulator (≤ 6 qubits) | `qm`, `qinfo` |
-| `nt` | BigInt modpow, egcd, sieve, Pollard ρ, continued fractions, elliptic-curve arithmetic | `nt`, `alg`, `crypto` |
-| `lattice` | lattices, reciprocal lattices, symmetry operations, tilings | `xtal`, `cm`, `alg` |
-| `units` | SI formatting with prefixes; CODATA constants; dimension check in readouts | all physical sciences |
-
----
-
-## 6b. Visualizing everything
-
-The rule is simple: **no idea without a picture you can push on, and no part of the atlas you
-cannot see at a glance.**
-
-**Every kind of idea has a visual grammar.**
-
-| kind | the picture shows | the reader tests it by |
-|---|---|---|
-| Theorem / Lemma / Corollary | the hypotheses and the conclusion on a concrete instance | breaking a hypothesis and watching the conclusion fail |
-| Law / Principle / Postulate | a simulation obeying the law, with the predicted vs measured quantity read out | leaving the regime of validity |
-| Model | the model's state and its key output curve | moving the parameters across thresholds |
-| Algorithm | the algorithm running step by step on editable input, invariant and operation counter live | editing the input, stepping, feeding adversarial cases |
-| Concept / Definition | the defining picture, examples and non-examples side by side | toggling between examples and non-examples |
-| Phenomenon / Paradox | the effect produced live (and heard, for sound) | changing the conditions that create or dissolve it |
-| Method | the method applied to a problem, before and after | swapping problems and watching it succeed or fail |
-| Invention / Event | the device working, or the historical dynamic quantitatively | operating the mechanism; sliding the parameters of history |
-
-**Kits cover the fields** (the runtime gives every viz the same look and behaviour):
-
-| kit | fields it serves |
-|---|---|
-| core stages, handles, sliders, 3D, TeX; log/polar axes, histograms, colour bars | everything |
-| numerics (FFT, n×n linear algebra, distributions, symplectic and adaptive integrators, Gillespie, units, number theory) | mathematics, physics, chemistry, biology, statistics, engineering |
-| `graph`, `steps`, `table` | algorithms, graph theory, automata, Markov chains, causal DAGs, DP, Cayley tables, payoff matrices |
-| `phasePlane`, `fields` | ODEs, mechanics, ecology, neuroscience, kinetics, control; vector calculus, electromagnetism, fluids |
-| `quantum`, `mol`, `circuit` | quantum mechanics and computing; chemistry and spectroscopy; circuits and electronics |
-| `globe`, `timeline`, `agents`, `curves`, `tree` | geography, geology, climate; history and deep time; social and ecological simulations; economics; phylogenetics, linguistics, syntax |
-| `sound` (audio) | music, acoustics, hearing, signals |
-
-**Automated gates** (scripts/check.mjs): runtime errors, blank canvases, TeX errors, and
-*quality warnings* for a static picture (no control, handle, drag, click or hover) or a missing
-live readout. Screenshots in light, dark and every mode are reviewed per chapter.
-
-**Seeing the whole atlas:**
-
-- *Everything at a glance*: a zoomable treemap of fields → collections → chapters (area ∝ ideas,
-  solid = written, pale = planned) on the home and field pages.
-- *The map*: every idea as a node in one graph, field regions shelf-packed; semantic zoom with
-  bundled collection-to-collection edges when far out, individual edges and labels when close;
-  hover lights up ancestry and descendants; planned ideas as ghost nodes.
-- *Flows*: how chapters and collections feed one another (home, field and collection pages).
-- *Lineage*: on every page, the prerequisites a chosen number of steps back.
-- *Timeline* (next): every idea with a `credit` year placed on a zoomable log/linear timeline,
-  from Euclid to CRISPR.
-- *Bridges* and *paths* (§8): curated cross-field walks and computed prerequisite plans.
-
-## 7. Authoring at scale
-
-### 7.1 Field guides (extend AUTHORING.md)
-
-`docs/fields/<field>.md`, one per field, each with: what counts as a dependency, the kinds used,
-notation conventions, how "break a hypothesis" translates, the colour semantics, which kits to
-reach for, and three exemplary items. Highlights:
-
-- **Physics / chemistry.** Every Law, Principle and Model states its `scope`. Readouts carry
-  units. Simulations show their conserved quantities (energy drift < 0.1%). The "break it" mode
-  leaves the regime: large-angle pendulum, relativistic speeds, real gas near its critical point.
-- **CS.** Algorithms run on input the reader can edit (drag the graph, shuffle the array). The
-  readout shows the invariant being maintained and an operation counter against the proven
-  bound. Lower bounds show the adversary or the decision tree.
-- **Statistics.** Simulation verifies theory: seeded samples, the empirical law beside the exact
-  one, a **Resample** button, coverage that accumulates over repeats.
-- **Biology / engineering.** Parameter sliders that cross thresholds (R₀ = 1, the Turing
-  instability, a gain margin). Stochastic and deterministic versions side by side.
+### 3.1 Add coverage without renaming the atlas
+
+The [coverage map](docs/universal-coverage.md) and [versioned coverage registry](docs/coverage/README.md) define **30 planning domains**, with gaps, current collections, and exploration ideas. These are research/navigation views, not newly implemented runtime fields.
+
+Keep field → area → collection → chapter → item and the current 13 field IDs. Add many-to-many domain mappings and facets. Irrigation can appear under agriculture, engineering, environment, and history while remaining one canonical item.
+
+Use external classifications for gap detection rather than as the sole ontology. UNESCO education fields, OECD research fields, library classification, and living-heritage categories serve different purposes and have limits. See the [research record](docs/universal-atlas-research.md).
+
+### 3.2 Separate four schema questions
+
+| Question | Proposed representation | Compatibility |
+| --- | --- | --- |
+| What is it about? | Domains, topics, places, periods, languages, traditions, audiences | Existing field/area/collection stays valid |
+| What sort of knowledge is it? | Formal, empirical, historical, interpretive, normative, procedural, creative; multiple allowed | Do not infer certainty from `kind` |
+| How is it explored? | Proof, experiment, source comparison, argument, annotation, case, practice, performance, object/map | Existing `viz` remains supported |
+| What has been checked? | Authorship, source review, content/model review, independent acceptance, visual review, accessibility, learning evaluation | Do not collapse these into `written` or one “verified” badge |
+
+The [additive schema and URL contract](docs/architecture/universal-schema-urls.md) now fixes these fields for two local prototypes, with executable validation and a tested legacy adapter. Production loading, public routes and the other method payloads remain gated integration work. Existing chapters do not require migration to run.
+
+Retain book-anchored and curated-course collections. Add archive, casebook, practice-sequence or annotated-corpus types only when pilots justify them. Keep canonical idea IDs separate from identifiers for sources, works, datasets, people, places, and events.
+
+### 3.3 Typed connections
+
+Retain `deps` for actual prerequisites of the supplied explanation/proof. Add relationships such as *applies*, *analogous to*, *contrasts with*, *influenced*, *evidence for*, *challenges*, *part of*, and *version/translation of*.
+
+A nontrivial relation needs a rationale and, where relevant, a source. Influence is not implication; analogy is not evidence. The prerequisite graph remains acyclic; the wider graph may contain cycles. Never run the prerequisite planner over every semantic relation.
+
+Preserve old dependencies until reviewed. Do not relabel mathematical prerequisites simply to manufacture shorter paths.
+
+## 4. Extend the platform that already works
+
+The registry, sharded catalogs, field/collection pages, search, map, timeline, bridges, numeric runtime, visual kits, sharing, and embeds already exist. Revision 2's engine phases are historical.
+
+| Work package | Concrete change | Acceptance evidence |
+| --- | --- | --- |
+| Coverage registry | Versioned domains, many-to-many mappings, gaps, classification references | All 85 collections mapped; no ID changes; prospective entries cannot inflate authored totals |
+| Evidence/review metadata | Claim locators, editions/dates, data/model distinctions, review scope and unresolved reasons | Old content renders; `verify: true` survives; UI names the actual uncertainty instead of calling every flag an unverified number |
+| Relations and routes | Separate semantic links and proof prerequisites; intuition/applied/formal paths | Old prerequisite results unchanged; route assumptions and missing steps visible |
+| Accessible exploration | Semantic descriptions, readouts/tables, equivalent focusable controls, non-drag input, captions/transcripts | Pilot tasks completed by keyboard and single pointer without dragging; screen-reader review of equivalent content |
+| Source/text/media tools | Source alignment, annotations, competing readings, timed media, object inspection | Provenance/rights visible; text fallback; core explanation does not require an external service |
+| Discoverable pages | Pre-rendered HTML, stable path URLs, canonical metadata, sitemap; legacy hash redirects | Old links and states resolve; useful text without client rendering; static hosting works |
+| Check coverage | Map shared-helper/runtime changes to affected chapters; separate quality checks | Changes to shared code check affected pages; warning policy explicit |
+| Coverage dashboard | Separate planned/authored/accepted/redesigned/accessibility-reviewed counts and review age | Reconciles to exact ledgers with declared denominators |
+
+Use small adapters and reusable components. Heavy media loads only when needed. Preserve the ≤300 KB gzipped home-JSON budget and catalog sharding; do not eagerly load a universal graph. Map renderer optimization remains deferred.
+
+## 5. Broaden the actual territory
+
+The atlas has substantial formal and quantitative coverage. General history and archaeology, literature, religion, law, anthropology, education, business/accounting, agriculture/food, care professions, many biological and chemical disciplines, computing practice, performance, crafts, and everyday skills need explicit scope.
+
+The [30-domain map](docs/universal-coverage.md) maps **all 85 current collection IDs** and specifies additions and reader actions. A collection is a foothold, not proof that its whole domain is covered.
+
+Track subject, method, depth, place, period, language/tradition, and accessibility. A world-history overview with only European examples and a history page without source analysis have different gaps; expose both.
+
+New collections require scoped bibliography and syllabus audits. Do not create a shallow lesson for every vocabulary term, artwork, organism, place, or event. Reference indexes handle long-tail discovery; authored exploration is for material where explanation or practice adds value.
+
+## 6. Ways to explore knowledge
+
+| Exploration | Reader action | Required honesty |
+| --- | --- | --- |
+| Formal proof / construction | Change hypotheses, build examples, follow an inference, find counterexamples | Exact claim and proof obligations; examples do not prove the general case |
+| Empirical investigation | Predict, sample, compare data, change analysis, examine uncertainty | Origin, units, measurement limits, missingness, assumptions; observation versus simulation |
+| Mechanism / system | Trace a process, change conditions, inspect feedback/failure | Scope, parameter meaning, numerical limits and alternatives |
+| Historical source laboratory | Compare accounts, trace provenance, test chronology | Author/date/place, perspective, preservation gaps; evidence versus inference |
+| Argument / ethical inquiry | Reconstruct premises, test objections, compare values/consequences | Validity versus truth; empirical versus normative premises; serious alternatives |
+| Annotated text / translation | Align variants, examine rhetoric, compare readings | Edition, translator, ambiguity, textual witness, context, excerpt rights |
+| Case / institution | Vary facts in documented or explicitly hypothetical cases | Jurisdiction/date where relevant, authoritative sources, uncertainty |
+| Guided practice / making | Plan, order, perform, diagnose, record, reflect | Observable criteria, context/materials, error feedback; physical practice/supervision limits |
+| Art / sound / performance | Listen, watch, compare interpretations, compose, follow scores/gestures | Work/performer provenance, cultural context, media rights and accessible alternatives |
+| Object / space / time | Inspect anatomy, artifacts, landscapes; overlay evidence | Reconstruction versus surviving object, scale/projection, uncertain dates/boundaries |
+
+Reuse existing kits where suitable; add source, text, argument, case, and practice components just in time. A timeline or image alone is not a finished exploration: give the learner a meaningful question and evidence.
+
+Use **orient → predict/question → explore → explain → transfer → revisit**. Include worked examples and retrieval/explanation prompts while allowing free exploration. These are research-informed design hypotheses, not demonstrated learning gains for this atlas.
+
+## 7. Authoring and acceptance
+
+### 7.1 Rulebooks and expertise
+
+[AUTHORING.md](AUTHORING.md), [field guidance](docs/fields.md), and chapter briefs remain operative. New formats need addenda and accepted examples before bulk production. This revision does not silently relax an existing wave's visualization or review rules.
+
+Extend guides with evidence conventions, source languages, uncertainty, accessibility, rights, and method-specific assessment. Assign reviewers qualified for medical, legal, cultural, or procedural claims. Automated/agent review does not substitute for missing subject expertise; record the reviewer's actual role.
 
 ### 7.2 The production line (per collection)
 
-1. **Syllabus** (Phase 2): inventory of `num, kind, name, deps, refs, pic`, reviewed first. This
-   is where structural correctness lives, so it is **researched, not recalled**: tables of
-   contents of the references, two or three university course syllabi, lists of named results,
-   and encyclopedia entries are compared; facts and refs are verified; the sources are recorded
-   in the file (docs/syllabus.md, "Research first"). A separate research audit per field checks
-   coverage against those sources before chapters are written.
-2. **Brief**: `collection.js`, chapter summaries, notation, shared helpers, the kits needed, and
-   a *variety plan* so neighbouring items don't look alike.
-3. **Authoring**: parallel agents, one part file (8–12 items) each, following AUTHORING and the
-   field guide.
-4. **Automated gates**: `build --strict`, static check, headless run with light, dark and
-   all-modes screenshots, the new harness gates (§4.6).
-5. **Review**: an independent reviewer agent per chapter. It checks statements against `refs`,
-   verifies computational honesty, scores the AUTHORING §2 rubric from screenshots, and loops
-   fixes until each item passes.
-6. **Reconcile**: zero unknown deps into written collections; `see` links; bridge updates.
-7. **Ship**: independently verified chapters are committed locally. **User direction on 2026-10-21: stop creating PRs or pushing branches; local commits are sufficient.** Existing PRs remain unchanged. Maintain the home-page "new" line and the local integration gates.
+1. **Research scope.** Compare accessible reference contents, specialist curricula/classifications, and primary or authoritative sources. Record actual reading, editions, dates, omissions, and access limits. Search snippets or syllabi locate material; they do not verify every claim.
+2. **Freeze a bounded inventory.** Preserve the current `num, kind, name, deps, refs, pic` contract for frozen waves. Once supported, new collections add intended methods, audience, cultural/geographic scope, and acceptance criteria. Version before authoring.
+3. **Write the brief.** Specify questions, source/model boundaries, varied formats, prerequisites, accessibility, and meaningful reader tasks.
+4. **Author and check.** Follow current constraints; run scoped source/model/content and native-input checks. Preserve genuine failures and repair them. Avoid tests that merely repeat implementation.
+5. **Review independently.** Verify claims against sources; inspect relevant modes, inputs, outputs, and pixels. Interpretation/practice uses its appropriate evidence and rubric. Record unresolved issues.
+6. **Accept exact versions.** Separate author verification, independent content acceptance, redesign, accessibility review, and learning evaluation. Preserve manifests and source receipts; availability is not acceptance.
+7. **Integrate.** Reconcile dependencies/cross-listings, affected bridges, home entries, coverage and ledgers. Run integration checks once per meaningful accepted batch under the handoff.
+8. **Commit locally.** Select intended paths only. No push, PR, merge, or deployment. Workspace, concurrency, browser, source-access, and ownership constraints remain as recorded in the active handoff.
 
-When we execute, each wave is a natural fit for an orchestrated multi-agent workflow (fan out
-authoring by part, then a reviewer agent per chapter). Proceed autonomously after each verification gate, committing in reviewable steps.
+Existing continuous content work proceeds under prior authorization. The universal backlog is a separate execution sequence; proposing a lesson/component does not mean it exists or passes review.
 
-### 7.3 Gates at the end of each wave
+### 7.3 Gates at the end of each wave or release
 
-- 0 build errors; 0 unknown deps pointing into written collections.
-- 100% of non-definition items have a passing `viz`.
-- Every non-math collection has ≥ 25 cross-field deps; every touched bridge updated.
-- Agent visual inspection and automated native-input/audio checks, with findings fed back into the field guide.
-- The home page loads ≤ 300 KB of JSON (gzipped).
+**Frozen waves retain current gates:**
 
-Map performance is **not a wave gate**, by explicit user direction on 2026-10-20. The 60 fps target remains unmet and deferred to a separate renderer workstream; no performance pass is implied. Continue content waves without rerunning the retired timing screen. Existing source restrictions and all content correctness, visualization, dependency and review requirements remain in force.
+- Zero strict-build errors and unknown dependencies into written collections.
+- Every non-definition has a passing visualization under the existing contract.
+- Source/model correctness, independent review, native-input/audio and pixel checks, honest uncertainty.
+- Existing non-math collections retain the ≥25 accepted cross-field-link gate; never pad it with unjustified dependencies.
+- Touched bridges reconcile; home JSON stays ≤300 KB gzipped.
+- Refresh progress only from the accepted export after all required gates.
+- Map 60 fps remains deferred and unmet; it is not a content-wave gate.
 
----
+**New universal releases add these gates after U2 implements their contracts:**
 
-## 8. Phase 7: connective tissue (runs alongside the waves)
+- The exploration fulfills its reader task using a method appropriate to the knowledge.
+- Sources, editions/dates, model/interpretation boundaries, rights and review status are inspectable.
+- New components provide equivalent keyboard/non-drag operation and applicable text/media alternatives. Review relevant WCAG 2.2 criteria; pilot checks do not establish site-wide conformance.
+- Each collection has justified prerequisites/related links and at least one meaningful route into the atlas. A fixed edge quota is not the universal coverage metric.
+- Pilot learners attempt explanation/transfer tasks; observed failures inform repairs. Formative findings do not establish statistical efficacy.
+- Unique items, cross-listings, authored lessons and external resources are counted separately.
 
-These are features only an atlas can have, and the main reason to build one.
+Future inventories adopt broader contracts only when schema and guides support them. Never declare a frozen wave complete under weaker rules.
 
-1. **Bridges**: 15+ curated cross-field narratives, each an ordered walk through existing items
-   with connecting prose and a "same picture, many guises" viz:
-   - *Fourier*: PMA 8 → RCA 9 → FA 7 → sampling theorem → uncertainty principle → X-ray diffraction → MRI → JPEG
-   - *Spectral theorem*: LADR → FA 12 → QM observables → normal modes → PCA → PageRank/Perron–Frobenius → Markov mixing
-   - *Fixed points*: Banach → Picard–Lindelöf → Brouwer → Nash → Bellman value iteration
-   - *Convexity and duality*: Hahn–Banach → separating hyperplanes → LP duality → max-flow min-cut → SVM → Legendre transforms in thermodynamics
-   - *Least action*: Euler–Lagrange → Fermat's principle → geodesics → Noether → path integrals
-   - *Entropy*: Boltzmann → Shannon → KL divergence → maximum entropy → Landauer
-   - *Diffusion*: random walks → Brownian motion → heat equation → Fick → Fisher–KPP → MCMC
-   - *Stability*: Lyapunov → Routh–Hurwitz → Nyquist → Turing instability → CFL
-   - *Harmonic functions*: RCA 11 → electrostatics → potential flow → conformal maps → airfoils
-   - *Symmetry*: groups → representations → crystallography → selection rules → conservation laws
-   **Implemented for all15written narratives (2026-10-19):** distinct canonical models,
-   context selectors, numerical controls/readouts, limits and links to their written steps.
-   [Independent calculations and native evidence](docs/verification/bridge-pictures-followup.md)
-   cover both themes and desktop/320px layouts, complete endpoint markers and a delayed-import
-   navigation regression. Individual source-review flags remain governed by their own audits.
-2. **Prerequisite planner** (`#/path/<id>`): the ancestor closure of any result, topologically
-   sorted and collapsible by chapter, with "I know this" marks stored per browser, which show
-   the frontier of what to learn next.
-3. **Proof steppers** for ~100 flagship results: `v.steps` drives the viz through the proof idea
-   (cover with balls → extract a finite subcover → take the minimum radius).
-   Source/proof/all-frame curation has begun: [2/100 accepted](docs/verification/flagship-proof-curation.json),
-   independently of the historical 102-player control audit. [Basis extraction](docs/verification/flagship-basis-followup.md)
-   now handles plane/line/zero input and exact state replay with explicit numerical limits.
-4. **Shareable states and embeds**: control and handle state encoded in the URL
-   (`#/t/mech-5.3?s=…`), plus `?embed=1` for course pages and slides.
-   **Implemented (2026-10-19):** runtime controls, native2D handles, Stage3D camera,
-   proof step and paused clock round trip; custom edited data has an explicit opt-in API
-   and visible coverage limits. Malformed or outdated states restore fresh defaults.
-   See [implementation and native evidence](docs/verification/shareable-state-followup.md).
-5. **Status dashboard** (`#/status`): coverage, review state, verify flags, unknown deps, kit usage.
-6. **External cross-references**: Wikipedia for everything; Mathlib declaration names for math
-   items where they exist (checked by script); Feynman Lectures and OpenStax for physics.
-7. **Stretch**: offline PWA; keyboard-operable handles and text alternatives for every viz;
-   translations.
+## 8. Exploration and connective tissue
 
----
+Offer entrances **by question**, **discipline**, **method**, **place/time**, **object/practice**, and **connection**. Readers might ask how we know what happened, how societies feed themselves, or what makes an argument convincing.
 
-## 9. Roadmap
+Keep all 15 current bridges and the 100-proof-stepper curation goal. Add journeys spanning forms of knowledge:
 
-Breadth-first: after Wave A every field has a shelf, and foundations land before the
-collections that depend on them.
+- **Water and a city:** physics → infrastructure → public health → governance → history.
+- **A woven cloth:** geometry → materials → agriculture → trade → cultural practice.
+- **How an account becomes evidence:** archives → statistics → law → journalism.
 
-| phase | contents | new items | exit criterion |
-|---|---|---|---|
-| **0 · Engine** | registry, schema v2, catalog split, routes, field pages, colours, map v2 groundwork, core runtime additions, CI and smoke tests | 0 | dummy collection appears with zero code edits; Rudin unchanged |
-| **1 · Pilots** | `ladr` (math, book-anchored), `mech` (physics), `algo` (CS), `micro` (economics), `music` (arts) + kits `graph`, `steps`, `table`, audio, numerics + the first field guides | ≈ 1,100 | schema and kit APIs frozen; pilot retrospective folded into AUTHORING |
-| **2 · Skeleton** | syllabi for all 80 remaining collections (≈ 10,000 planned entries with deps); ghost nodes on the map; `#/status`; map v2 at full scale | (planned) | every planned id exists; the planned graph is acyclic; each field's syllabus reviewed |
-| **3 · Wave A**: every field gets a shelf | `vcalc`, `ode`, `prob`, `em`, `qm`, `thermo`, `toc`, `info`, `stat`, `sig`, `mathbio`, `pchem`, `climate`, `epi`, `macro`, `psych`, `art`, `tech` + kits `grid`, `fields`, `freq`, `automata` | ≈ 3,000 | all 13 fields live; first bridges (Fourier, Spectral, Entropy, Diffusion) |
-| **4 · Wave B**: core curriculum | `alg`, `graph`, `nla`, `num`, `opt`, `stoch`, `waves`, `ml`, `ctrl`, `kin`, `popgen`, `qchem`, `circ`, `fin`, `behav`, `physio`, `pharm`, `soc`, `polsci`, `ling`, `phil` + kits `circuit`, `mol`, `nt` | ≈ 2,900 | prerequisite planner; bridges (Fixed points, Duality, Stability) |
-| **5 · Wave C**: depth | `top`, `dg`, `mfd`, `pde`, `nt`, `comb`, `logic`, `rep`, `game`, `rel`, `fluid`, `crypto`, `cplx`, `solid`, `geol`, `geog`, `ecol`, `demo`, `arch`, `bighist` | ≈ 2,800 | proof steppers for the first 50 flagships; bridges (Least action, Harmonic, Symmetry) |
-| **6 · Wave D**: frontiers & crossovers | `astro`, `cm`, `qinfo`, `geo`, `deep`, `causal`, `dist`, `pl`, `cg`, `neuro`, `bioinf`, `sysbio`, `xtal`, `robot`, `mat`, `aero`, `energy`, `imaging` + kits `quantum`, `lattice` | ≈ 1,700 | ≈ 12,500 items; 15+ bridges; 100 proof steppers |
-| **7 · Connective tissue** | runs alongside 3–6 (§8) | — | — |
+Offer **intuition**, **applied**, and **formal/deep** routes to an idea, labeled with what each enables and omits. Full prerequisite closure remains available, without becoming the default beginner promise. Shorter routes must actually supply the explanations they rely on.
 
-**Effort, roughly.** The trilogy, about 1,000 items, took around three days of agent-driven
-production. At that rate the new content alone is a few weeks of production time. With the
-review loops and reconciliation this plan adds, expect two to three times that. Phases 0–2
-are worth doing carefully, because every later item inherits their decisions.
+Eventually record what learners attempted or can explain; a “known” checkbox is not mastery. Preserve local/offline progress. Accounts, a personalization model, and a tutoring service are not prerequisites.
 
----
+## 9. Concrete roadmap
 
-## 10. Risks and mitigations
+Use **U0–U5** independently of content Wave 6, Wave 7, and later numbered waves. Roles below are execution responsibilities, not appointments already made.
 
-| risk | mitigation |
-|---|---|
-| Quality dilution at 10× volume | pilots first; harness gates; a reviewer agent per chapter; automated audio/input and agent visual checks; field guides with exemplars |
-| Wrong statements in the empirical sciences (dropped assumptions, wrong regimes) | mandatory `scope` for laws and models; `refs` on every curated item; reviewer checks against refs; `verify: true` remains the honest flag |
-| Numbering-verification sink (as with Rudin) | open-access anchors only, or curated numbering; append-only ids |
-| Copyright | the paraphrase rule as today; never transcribe; no copied figures; open licences respected (attribution in `collection.js`) |
-| Dependency semantics drifting between fields | a written definition of "dep" per field guide; syllabus review fixes structure before authoring |
-| Performance at 10k nodes / 30k edges | catalog sharding; level-of-detail map; WebGL fallback; tested early on Phase 2 ghost nodes |
-| Kit sprawl / API churn | kits are frozen once used, demo pages act as tests, content never imports |
-| Scope creep | every collection is independently shippable; waves have exit criteria; Wave D can be trimmed without harming anything earlier |
+| Milestone | Deliverables | Dependencies / owner role | Exit criteria |
+| --- | --- | --- | --- |
+| **U0 · Preserve and reframe** | Revision 3, coverage map, research record, archived plans, accepted/draft/redesign baseline | Current task; integration owner | Documents agree; all 85 collections mapped; old plans recoverable; frozen inventories and accepted assets unchanged |
+| **U1 · Audit territory** | Machine-readable versioned coverage registry; detailed crosswalk against education, research, library and heritage categories; eight pilot briefs; additive schema/URL proposal | U0; coverage editor, domain reviewers, platform owner | Each external category mapped or explicitly excluded/flagged; all 30 domains have gaps, sources, scope and proposed maintainer; eight feasible source/rights/reviewer plans |
+| **U2 · Prove new formats** | Eight accepted pilots; evidence/review adapter; source/text/argument/practice components; accessible patterns; route prototypes | U1 pilot briefs; authors, platform owner, independent reviewers | One accepted exploration per pilot; legacy IDs/content intact; keyboard/non-drag/text tasks work; evidence labels correct; formative reader observations recorded and defects addressed |
+| **U3 · Make breadth navigable** | 30 researched overviews; three-lesson sequence per pilot (24 total, including U2's eight); three cross-method journeys; coverage dashboard; static/legacy route support | U1 inventory + U2 contracts; editors, platform owner | All overviews show scope/gaps and a real next step; 24 lessons accepted; three journeys have no missing claimed lesson; links/counts/accessibility pass |
+| **U4 · Broad first curriculum** | At least three accepted introductory explorations associated with each domain; scoped introductory syllabi, deeper routes, next collection batches | U3; collection editors and reviewers | 30/30 domains meet the target; cross-listed items counted once globally; method/region/language audit completed; existing depth/waves preserved |
+| **U5 · Sustain and deepen** | Versioned releases; specialist depth; regional/language editions; source federation; corrections/review queues; practical-learning partnerships | U4, recurring; editorial stewardship | Each release has scope, qualified reviewers, review dates and reproducible evidence; no “all knowledge complete” claim |
 
----
+**Status, 2026-10-22:** U0 is delivered. U1's registry, eight briefs and [additive schema/URL decision](docs/architecture/universal-schema-urls.md) are delivered; the registry is version 0.2.0, with 30 domains, 85 primary collection homes, eight cross-listings, 217 external entries and 42 source receipts. Of the external entries, 137 are mapped, 79 are review-needed and one is excluded. P01/P02's selected-text source/reuse gaps are resolved for local drafting, and [two working prototypes](labs/atlas/index.html) start U2. Independent source/language/content/accessibility review, learner observation and publication-specific rights checks remain open. U3–U5 remain planned; no new pilot or production-wave item is marked independently accepted. Follow the [continuation handoff](docs/master-plan-handoff.md). The pair is now revised to 0.1.1 after [author-led review and repairs](docs/verification/universal-pilots-review.md), with an explicit [additive integration package](docs/integration/universal-pilots.md) rehearsed on frozen production snapshots.
 
-## 11. Decisions (taken)
+### 9.1 Eight pilot briefs for U1
 
-1. **Name:** *Ideas, Visualized*. "Theorems" was too narrow once the scope became the breadth of
-   human knowledge; the Rudin trilogy stays a named shelf with its original URLs.
-2. **Anchor policy:** open-access book anchors where a canonical numbered free text exists
-   (`ladr`, `alg`, `prob`, `graph`, `ml`); curated syllabi with refs everywhere else.
-3. **Order:** breadth-first. Five pilots in five fields, then Wave A gives every one of the 13
-   fields a shelf.
-4. **Planned items:** visible as faded ghost nodes on the map, on chapter pages ("On the
-   syllabus") and on `#/status`; each has its own page showing its place in the graph.
-5. **Git flow:** work on a feature branch (`claude/stem-atlas`) with CI checks; merge to `main`
-   (which deploys) once a phase is green.
-6. **Scope:** all of §5, including game theory, earth and climate, robotics, and the six non-STEM
-   fields (§5.8–5.13).
+| Pilot | Bounded first exploration | Capability tested |
+| --- | --- | --- |
+| History and archaeology | Compare two sourced accounts of one episode, with an artifact/map where appropriate | Provenance, evidence versus inference, uncertain chronology |
+| Literature and language | Compare lawful editions/translations of a short passage and annotate a defensible difference | Parallel text, ambiguity, rhetoric, language metadata |
+| Philosophy and religion | Reconstruct a specific argument about obligation from two contextualized traditions | Premises, objections, normative claims, contextual comparison |
+| Law and institutions | Trace a hypothetical dispute under one named jurisdiction/date using authoritative rules | Case branching, facts versus authority, temporal scope |
+| Agriculture and food | Investigate germination or soil-water conditions using sourced observations and a separately labeled model | Practical context, measurement/model distinction, environmental variation |
+| Health and care | Explore one anatomical/physiological process and a supervised observation rubric, with appropriate expert review | Spatial explanation, care context, limits of simulation |
+| Craft and making | Plan and inspect a paper weave using an original/licensed demonstration and physical-practice rubric | Sequencing, materials, mistakes, tactile knowledge |
+| Performance | Compare original/licensed interpretations of a short rhythm, phrase, or movement | Timed annotation, expressive choices, audiovisual/text alternatives |
+
+Concrete topics, source passages/data, reader tasks, acceptance checks and unresolved gates are now in the [pilot briefs](docs/pilots/README.md). The researched set uses the Zimmermann telegram, Bashō translations, reciprocity, consumer goods law, soil-water measurements, breathing observation, paper weaving and an original performance phrase. Freeze each lesson only after its source/rights conditions and review capacity are settled. These test formats, not global representativeness. Include at least three regional/tradition contexts and two source languages across the set, with competent language review. English and Japanese source material has been inspected; specialist language review remains outstanding. This is a pilot diversity floor, not a claim of cultural completeness.
+
+### 9.2 Sequence and capacity
+
+1. Finish this revision and retain active-worktree pointers.
+2. Continue Wave 6 acceptance and current redesign independently.
+3. Review the delivered U1 registry/crosswalk, eight briefs and schema/URL contract; resolve remaining reviewer/publication gates. Do not mass-generate new syllabi. Use the [pilot execution order](docs/pilots/README.md#concrete-execution-order).
+4. Independently review the implemented history and literature prototypes. Their shared source cards, static guides and state handling are provisional until review and reader observations support them.
+5. Complete the other six pilots, then U3 navigation and mini-sequences.
+6. Freeze small U4 collection batches based on gaps, learning value, source access and reviewer capacity.
+7. At the next redesign planning boundary, reconcile its 1,101-item scope with newer accepted expansion. Show original scope and additions separately.
+
+Limit new-format work to **two pilot explorations awaiting independent review**. If review/accessibility capacity is unavailable, continue approved existing work or improve briefs; do not accumulate unlimited drafts. Existing content-task concurrency limits remain authoritative.
+
+There is no defensible calendar forecast yet. U2 measures sourcing, authoring, engineering and review effort separately, then informs U3/U4 estimates. The old three-day trilogy rate is not a forecast for law, translation, oral history, care or practical skills.
+
+### 9.3 Measures
+
+| Dimension | Measure and denominator |
+| --- | --- |
+| Breadth | Reviewed overviews / 30-domain inventory; domains meeting introductory target / 30 |
+| Depth | Accepted entries / each frozen syllabus; introductory versus advanced coverage |
+| Review | Accepted / authored; unresolved issues by reason; review age; draft backlog |
+| Experience | Redesigned / declared scope; accessibility-reviewed / applicable components and lessons |
+| Learning | Observed task completion, explanation/transfer errors, usability barriers; later studies require a defensible design |
+| Representation | Place, period, source language, tradition, omissions and reviewer coverage |
+| Connection | Sourced, useful relationships and viable routes; unresolved/misclassified links |
+| Sustainability | Effort per accepted exploration, bottlenecks, broken references, update workload, media/storage budgets |
+
+Set learning outcome targets after pilot baselines. Production targets are commitments, not proof of educational quality.
+
+## 10. Risks and controls
+
+| Risk | Response |
+| --- | --- |
+| A larger taxonomy disguises shallow coverage | Distinguish overview, introductory, advanced and reference-only states |
+| Quantitative formats distort interpretation or practice | Method-specific contracts and accepted pilots before scale |
+| An English/Western canon becomes the default whole | Cross-cutting audits, contextual naming, language review and locally informed reviewers |
+| False certainty or false balance | Attribute interpretations; weigh empirical evidence; retain contested scope |
+| New work erases accepted progress | Stable IDs, exact accepted versions, frozen waves, reconciled redesign integration |
+| Sources/media cannot be used or verified adequately | Check rights/access before freezing; original explanation and permitted excerpts; honest unresolved status |
+| Simulation implies professional/practical competence | Separate conceptual learning and supervised real-world assessment |
+| Volume outruns review | Small batches, reviewer ownership, bounded backlog |
+| Federation becomes brittle | Stable references, version metadata, link maintenance, text fallbacks; no live third-party dependency for core lessons |
+| Master plan becomes another stale log | Dated strategic baseline; operational counts in ledgers; milestone-level revisions |
+
+## 11. Decisions adopted
+
+1. Retain *Ideas, Visualized* and the named Rudin collections.
+2. Adopt all human knowledge as an open-ended ambition with orientation, authored exploration and reference layers.
+3. Adopt the 30-domain map as the first planning inventory, not a final ontology or runtime migration.
+4. Preserve existing content, IDs, evidence, ongoing work and frozen assignments.
+5. Add appropriate exploration methods, typed relationships, evidence metadata and accessible routes through pilots.
+6. Replace “roughly 12,500 ideas completes the atlas” with versioned coverage and stewardship.
+7. Keep content acceptance, redesign, accessibility and learning evaluation distinct.
+8. Run U0–U5 alongside content waves; do not reopen map-performance or source-review stops.
+9. Preserve local-only integration and operational constraints.
+10. Treat the [research record](docs/universal-atlas-research.md) and [coverage map](docs/universal-coverage.md) as part of this plan. Collection syllabi still require deeper topic-specific research.

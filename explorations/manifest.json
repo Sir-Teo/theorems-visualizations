@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "contractVersion": "1.0.0-draft",
+  "maxUnaccepted": 2,
+  "entries": [
+    {
+      "id": "x-history-0001",
+      "file": "history.json"
+    },
+    {
+      "id": "x-literature-0001",
+      "file": "literature.json"
+    }
+  ]
+}

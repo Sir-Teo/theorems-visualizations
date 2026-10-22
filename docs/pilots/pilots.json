@@ -1,0 +1,439 @@
+{
+  "schemaVersion": 1,
+  "updatedOn": "2026-10-22",
+  "pilots": [
+    {
+      "id": "P01",
+      "title": "Zimmermann telegram and Wilson speech",
+      "briefPath": "docs/pilots/01-history.md",
+      "domainIds": [
+        "D20",
+        "D28",
+        "D15"
+      ],
+      "sourceIds": [
+        "telegram",
+        "wilson1917",
+        "archive-analysis",
+        "nara-reuse"
+      ],
+      "relatedCollectionIds": [
+        "tech",
+        "bighist",
+        "polsci"
+      ],
+      "prerequisiteItemIds": [],
+      "sourceLanguagesInspected": [
+        "en"
+      ],
+      "contexts": [
+        "United States, Germany and Mexico, 1917"
+      ],
+      "status": "prototype",
+      "authored": true,
+      "accepted": false,
+      "reviewers": [
+        {
+          "role": "Episode historian",
+          "assignee": null,
+          "status": "unassigned"
+        },
+        {
+          "role": "Archival provenance reviewer",
+          "assignee": null,
+          "status": "unassigned"
+        },
+        {
+          "role": "Accessibility reviewer",
+          "assignee": null,
+          "status": "unassigned"
+        }
+      ],
+      "openGates": [
+        "Independent content/provenance review",
+        "Independent accessibility and screen-reader review",
+        "Formative learner observation",
+        "Release-specific territory and rights review before wider publication"
+      ],
+      "rightsStatus": "prototype-text-scoped",
+      "nextAction": "Review revised 0.1.1 against its content/artifact digests; complete independent content, access and learner gates; use the scoped integration package at the normal handoff boundary.",
+      "prototypePath": "labs/atlas/x-history-0001/index.html",
+      "contentPath": "explorations/history.json",
+      "sourceResolutionPath": "docs/pilots/research/history-literature-resolution.md"
+    },
+    {
+      "id": "P02",
+      "title": "Basho across two translations",
+      "briefPath": "docs/pilots/02-literature.md",
+      "domainIds": [
+        "D24",
+        "D23"
+      ],
+      "sourceIds": [
+        "aston-pond",
+        "hearn-pond",
+        "ndl-pond",
+        "koto-basho",
+        "gutenberg42735",
+        "copyright-basics"
+      ],
+      "relatedCollectionIds": [
+        "ling",
+        "art"
+      ],
+      "prerequisiteItemIds": [],
+      "sourceLanguagesInspected": [
+        "en",
+        "ja"
+      ],
+      "contexts": [
+        "Edo Japan",
+        "Historical English reception"
+      ],
+      "status": "prototype",
+      "authored": true,
+      "accepted": false,
+      "reviewers": [
+        {
+          "role": "Japanese literature and translation specialist",
+          "assignee": null,
+          "status": "unassigned"
+        },
+        {
+          "role": "Textual editor",
+          "assignee": null,
+          "status": "unassigned"
+        },
+        {
+          "role": "Accessibility reviewer",
+          "assignee": null,
+          "status": "unassigned"
+        }
+      ],
+      "openGates": [
+        "Independent literary/language review",
+        "Independent accessibility and screen-reader review",
+        "Formative learner observation",
+        "Release-specific territory and rights review before wider publication"
+      ],
+      "rightsStatus": "prototype-text-scoped",
+      "nextAction": "Review revised 0.1.1 against its content/artifact digests; complete independent content, access and learner gates; use the scoped integration package at the normal handoff boundary.",
+      "prototypePath": "labs/atlas/x-literature-0001/index.html",
+      "contentPath": "explorations/literature.json",
+      "sourceResolutionPath": "docs/pilots/research/history-literature-resolution.md"
+    },
+    {
+      "id": "P03",
+      "title": "Reciprocity and different preferences",
+      "briefPath": "docs/pilots/03-philosophy-religion.md",
+      "domainIds": [
+        "D21",
+        "D22"
+      ],
+      "sourceIds": [
+        "legge-analects",
+        "web-matthew"
+      ],
+      "relatedCollectionIds": [
+        "phil",
+        "logic",
+        "game"
+      ],
+      "prerequisiteItemIds": [],
+      "sourceLanguagesInspected": [
+        "en"
+      ],
+      "contexts": [
+        "Confucian textual tradition",
+        "Christian textual tradition"
+      ],
+      "status": "researched-with-gates",
+      "authored": false,
+      "accepted": false,
+      "reviewers": [
+        {
+          "role": "Confucian studies specialist",
+          "assignee": null,
+          "status": "unassigned"
+        },
+        {
+          "role": "Christian textual/ethical studies specialist",
+          "assignee": null,
+          "status": "unassigned"
+        },
+        {
+          "role": "Argumentation educator",
+          "assignee": null,
+          "status": "unassigned"
+        },
+        {
+          "role": "Accessibility reviewer",
+          "assignee": null,
+          "status": "unassigned"
+        }
+      ],
+      "openGates": [
+        "Verify edition-number crosswalk",
+        "Review contextual reconstruction",
+        "Keep unverified Chinese and Greek claims out"
+      ],
+      "rightsStatus": "scoped-plan-not-asset-clearance",
+      "nextAction": "Verify edition-number crosswalk"
+    },
+    {
+      "id": "P04",
+      "title": "Faulty goods in England and Wales",
+      "briefPath": "docs/pilots/04-law.md",
+      "domainIds": [
+        "D16",
+        "D14"
+      ],
+      "sourceIds": [
+        "cra9",
+        "cra19",
+        "cra20",
+        "cra22",
+        "govuk-refunds",
+        "ogl"
+      ],
+      "relatedCollectionIds": [
+        "micro",
+        "polsci"
+      ],
+      "prerequisiteItemIds": [],
+      "sourceLanguagesInspected": [
+        "en"
+      ],
+      "contexts": [
+        "England and Wales; legal snapshot to be frozen"
+      ],
+      "status": "researched-with-gates",
+      "authored": false,
+      "accepted": false,
+      "reviewers": [
+        {
+          "role": "England-and-Wales consumer-law specialist",
+          "assignee": null,
+          "status": "unassigned"
+        },
+        {
+          "role": "Accessibility reviewer",
+          "assignee": null,
+          "status": "unassigned"
+        }
+      ],
+      "openGates": [
+        "Resolve legal snapshot and outstanding-change notices",
+        "Approve case fact matrix and branch scope",
+        "Independently check dates and remedies"
+      ],
+      "rightsStatus": "scoped-plan-not-asset-clearance",
+      "nextAction": "Resolve legal snapshot and outstanding-change notices"
+    },
+    {
+      "id": "P05",
+      "title": "Measured soil-water retention",
+      "briefPath": "docs/pilots/05-agriculture.md",
+      "domainIds": [
+        "D10",
+        "D06",
+        "D02"
+      ],
+      "sourceIds": [
+        "fao-soil",
+        "ars-reesh",
+        "reesh-data"
+      ],
+      "relatedCollectionIds": [
+        "geol",
+        "climate",
+        "stat",
+        "ecol"
+      ],
+      "prerequisiteItemIds": [],
+      "sourceLanguagesInspected": [
+        "en"
+      ],
+      "contexts": [
+        "Prairie du Sac, Wisconsin; single-site research samples"
+      ],
+      "status": "researched-with-gates",
+      "authored": false,
+      "accepted": false,
+      "reviewers": [
+        {
+          "role": "Soil scientist or agronomist",
+          "assignee": null,
+          "status": "unassigned"
+        },
+        {
+          "role": "Data reviewer",
+          "assignee": null,
+          "status": "unassigned"
+        },
+        {
+          "role": "Accessibility reviewer",
+          "assignee": null,
+          "status": "unassigned"
+        }
+      ],
+      "openGates": [
+        "Approve retained measurements and units",
+        "Exclude unresolved density and flagged conductivity analysis",
+        "Freeze attribution and permitted data subset"
+      ],
+      "rightsStatus": "scoped-plan-not-asset-clearance",
+      "nextAction": "Approve retained measurements and units"
+    },
+    {
+      "id": "P06",
+      "title": "Breathing mechanics and observation",
+      "briefPath": "docs/pilots/06-health.md",
+      "domainIds": [
+        "D09",
+        "D07"
+      ],
+      "sourceIds": [
+        "nhlbi-breathing",
+        "openstax-breathing",
+        "openstax-respiration"
+      ],
+      "relatedCollectionIds": [
+        "physio",
+        "imaging",
+        "epi"
+      ],
+      "prerequisiteItemIds": [],
+      "sourceLanguagesInspected": [
+        "en"
+      ],
+      "contexts": [
+        "General physiology; clinician-reviewed educational care context"
+      ],
+      "status": "researched-with-gates",
+      "authored": false,
+      "accepted": false,
+      "reviewers": [
+        {
+          "role": "Clinician or nurse educator",
+          "assignee": null,
+          "status": "unassigned"
+        },
+        {
+          "role": "Physiology reviewer",
+          "assignee": null,
+          "status": "unassigned"
+        },
+        {
+          "role": "Accessibility reviewer",
+          "assignee": null,
+          "status": "unassigned"
+        }
+      ],
+      "openGates": [
+        "Adjudicate source conflict and observation rubric",
+        "Approve original schematic and cycle convention",
+        "Verify original assets and avoid restricted media"
+      ],
+      "rightsStatus": "scoped-plan-not-asset-clearance",
+      "nextAction": "Adjudicate source conflict and observation rubric"
+    },
+    {
+      "id": "P07",
+      "title": "Paper plain weave",
+      "briefPath": "docs/pilots/07-craft.md",
+      "domainIds": [
+        "D29",
+        "D25"
+      ],
+      "sourceIds": [
+        "textile-techniques"
+      ],
+      "relatedCollectionIds": [
+        "art",
+        "mat",
+        "comb"
+      ],
+      "prerequisiteItemIds": [],
+      "sourceLanguagesInspected": [
+        "en"
+      ],
+      "contexts": [
+        "Generic plain-weave exercise; Greek institutional technical reference"
+      ],
+      "status": "researched-with-gates",
+      "authored": false,
+      "accepted": false,
+      "reviewers": [
+        {
+          "role": "Textile or craft practitioner",
+          "assignee": null,
+          "status": "unassigned"
+        },
+        {
+          "role": "Instructional editor",
+          "assignee": null,
+          "status": "unassigned"
+        },
+        {
+          "role": "Accessibility reviewer",
+          "assignee": null,
+          "status": "unassigned"
+        }
+      ],
+      "openGates": [
+        "Make and independently reproduce physical sample",
+        "Create original step images and licences",
+        "Verify tactile versus digital assessment boundary"
+      ],
+      "rightsStatus": "scoped-plan-not-asset-clearance",
+      "nextAction": "Make and independently reproduce physical sample"
+    },
+    {
+      "id": "P08",
+      "title": "One phrase, two interpretations",
+      "briefPath": "docs/pilots/08-performance.md",
+      "domainIds": [
+        "D26",
+        "D27"
+      ],
+      "sourceIds": [
+        "carnegie-expression"
+      ],
+      "relatedCollectionIds": [
+        "music",
+        "waves",
+        "art"
+      ],
+      "prerequisiteItemIds": [],
+      "sourceLanguagesInspected": [
+        "en"
+      ],
+      "contexts": [
+        "Western notation educational exercise"
+      ],
+      "status": "researched-with-gates",
+      "authored": false,
+      "accepted": false,
+      "reviewers": [
+        {
+          "role": "Performer or music educator",
+          "assignee": null,
+          "status": "unassigned"
+        },
+        {
+          "role": "Media accessibility reviewer",
+          "assignee": null,
+          "status": "unassigned"
+        }
+      ],
+      "openGates": [
+        "Compose and license original phrase",
+        "Create labeled generated playback and event fixtures",
+        "Review expressive contrast and accessible alternatives"
+      ],
+      "rightsStatus": "scoped-plan-not-asset-clearance",
+      "nextAction": "Compose and license original phrase"
+    }
+  ]
+}

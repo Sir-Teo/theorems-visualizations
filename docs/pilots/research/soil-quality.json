@@ -1,0 +1,65 @@
+{
+  "sourceRecord": "https://zenodo.org/api/records/18273606",
+  "inspectedOn": "2026-10-22",
+  "scope": "Single-site snapshot; sample-level characteristics and repeated retention measurements. No time-trend or causal claim.",
+  "fileSha256": {
+    "US_DFC_SoilCharacteristics.csv": "6a7d182505f3eafb1854ecccb229aca15ddc8754c8830b9880f73afee49647d4",
+    "US_DFC_SoilWaterRetentionCurves.csv": "41308fba78d50d96152f40b85af43f45a9aed4d53e23568db483889c8ed744b1"
+  },
+  "characteristics_rows": 12,
+  "retention_rows": 1106,
+  "unique_characteristics_samples": 12,
+  "unique_retention_samples": 12,
+  "duplicate_characteristics_sample_ids": [],
+  "orphan_sample_ids": [],
+  "retention_exact_duplicate_rows": 0,
+  "retention_dates": [
+    "2025-05-29"
+  ],
+  "depths_cm": [
+    0.0,
+    10.0,
+    50.0
+  ],
+  "retention_instruments": {
+    "2": 889,
+    "1": 217
+  },
+  "conductivity_flags": {
+    "1": 10,
+    "0": 2
+  },
+  "measures": {
+    "MPa_Abs": {
+      "missing": 0,
+      "nonfinite": 0,
+      "min": 0.0002979,
+      "max": 17.3780083
+    },
+    "Vol_Water": {
+      "missing": 0,
+      "nonfinite": 0,
+      "min": 1.86,
+      "max": 74.74
+    },
+    "Bulk_Den_g_m3": {
+      "missing": 0,
+      "nonfinite": 0,
+      "min": 0.85856,
+      "max": 1.69114782608696
+    },
+    "Depth_cm": {
+      "missing": 0,
+      "nonfinite": 0,
+      "min": 0.0,
+      "max": 50.0
+    }
+  },
+  "interpretation": {
+    "density": "Unresolved unit conflict: documentation says g m^-3 but values are near 1. Exclude density-derived calculations; do not silently substitute g cm^-3.",
+    "conductivity": "Flag 1 is documented as suspect/use with caution. Exclude conductivity comparisons from P05; do not transfer this flag automatically to retention.",
+    "retention": "Vol_Water is documented as percent. MPa_Abs holds positive magnitudes; make the pressure-sign convention explicit and obtain soil-science review.",
+    "sampling": "Rows within a retention curve are repeated measurements, not independent field samples; row-weighted averaging across curves is not justified.",
+    "limits": "No calibration, laboratory protocol, representativeness or instrument-error audit performed. No model fit or inferred field-capacity/wilting-point values."
+  }
+}
