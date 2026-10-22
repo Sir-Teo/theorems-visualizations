@@ -211,7 +211,7 @@ export default {
       title: 'Waves in space',
       summary: String.raw`In higher dimensions, averaging over spheres reduces the wave equation to a one-dimensional problem. Kirchhoff’s formula in three dimensions shows that a signal is felt only on the sphere of radius ct — Huygens’ principle — while in two dimensions, obtained by descent, waves leave a lingering tail. Energy estimates give finite speed of propagation in every dimension, and sources radiate through retarded potentials.`,
       items: [
-        { num: '6.1', kind: 'Theorem', name: 'Energy and causality in space: the light cone', deps: ['pde-2.4', 'pde-2.3', 'vcalc-8.3'], refs: ['Strauss §9.1', 'Evans §2.4'],
+        { num: '6.1', kind: 'Theorem', name: 'Energy and causality in space: the light cone', deps: ['pde-2.4', 'pde-2.3'], see: ['vcalc-8.3'], refs: ['Strauss §9.1', 'Evans §2.4'],
           pic: 'A 3D wave launched from a bump is shown with its space–time cone; the energy inside a shrinking backward cone never increases, as the flux readout through its side confirms.' },
         { num: '6.2', kind: 'Method', name: 'Spherical means and the Euler–Poisson–Darboux equation', deps: ['pde-6.1', 'pde-2.2'], refs: ['Evans §2.4'],
           pic: 'Average a 3D solution over spheres of radius r around a point; r times that average is shown to solve the 1D wave equation in r, animated side by side.' },
@@ -225,12 +225,12 @@ export default {
           pic: 'Move a source along a path; the field at an observer is built from the source’s past positions on the backward light cone, drawn as the retarded point.' },
         { num: '6.7', kind: 'Phenomenon', name: 'Rays and geometric optics', deps: ['pde-6.1'], refs: ['Strauss §9.3'],
           pic: 'A high-frequency wave passes a lens-shaped region of lower speed; its wavefronts are computed and the rays (normal to the fronts) bend and focus as the eikonal equation predicts.' },
-        { num: '6.8', kind: 'Model', name: 'Free Schrödinger equation and spreading wave packets', deps: ['pde-3.3', 'pde-2.9'], refs: ['Strauss §9.4'],
+        { num: '6.8', kind: 'Model', name: 'Free Schrödinger equation and spreading wave packets', deps: ['pde-2.9'], see: ['pde-3.3'], refs: ['Strauss §9.4'],
           pic: 'A Gaussian wave packet with adjustable momentum moves and spreads; |ψ|² keeps unit integral while its width grows, unlike the heat equation which also spreads but loses oscillations.' },
         { num: '6.9', kind: 'Theorem', name: 'Lorentz invariance of the wave equation', deps: ['pde-6.1'], refs: ['Strauss §9.2'],
           pic: 'Apply a Lorentz boost with a velocity slider to a solution in the (x, t) plane; the boosted function still satisfies the wave equation (residual readout) and the light cone is mapped to itself.' },
         { num: '6.10', kind: 'Phenomenon', name: 'Spherical waves and 1/r decay', deps: ['pde-6.2'], refs: ['Strauss §9.2'],
-          pic: 'An outgoing radial wave F(r − ct)/r is animated; its amplitude falls like 1/r while the energy flux through spheres of every radius stays the same, read out as the wave expands.' },
+          pic: 'An outgoing radial wave F(r − ct)/r has amplitude 1/r; compare exact instantaneous power, its far-field leading term and the radius-independent energy transmitted over a complete compact pulse.' },
       ],
     },
     // ───────────────────────────────────────────────────────────── 7
