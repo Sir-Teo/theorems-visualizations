@@ -17510,9 +17510,9 @@
   "authoringDirection": "User confirmed prior work done; continuously author future waves without routine pauses.",
   "progress": {
     "total": 1031,
-    "written": 903,
-    "remaining": 128,
-    "writtenChapters": 70,
+    "written": 955,
+    "remaining": 76,
+    "writtenChapters": 74,
     "chapters": [
       {
         "collection": "ode",
@@ -18965,19 +18965,44 @@
         "collection": "aero",
         "chapter": 5,
         "total": 10,
-        "written": 0,
-        "remaining": 10,
-        "writtenItems": [],
-        "status": "planned"
+        "written": 10,
+        "remaining": 0,
+        "writtenItems": [
+          "aero-5.1",
+          "aero-5.2",
+          "aero-5.3",
+          "aero-5.4",
+          "aero-5.5",
+          "aero-5.6",
+          "aero-5.7",
+          "aero-5.8",
+          "aero-5.9",
+          "aero-5.10"
+        ],
+        "status": "written"
       },
       {
         "collection": "micro",
         "chapter": 11,
         "total": 13,
-        "written": 0,
-        "remaining": 13,
-        "writtenItems": [],
-        "status": "planned"
+        "written": 13,
+        "remaining": 0,
+        "writtenItems": [
+          "micro-11.1",
+          "micro-11.2",
+          "micro-11.3",
+          "micro-11.4",
+          "micro-11.5",
+          "micro-11.6",
+          "micro-11.7",
+          "micro-11.8",
+          "micro-11.9",
+          "micro-11.10",
+          "micro-11.11",
+          "micro-11.12",
+          "micro-11.13"
+        ],
+        "status": "written"
       },
       {
         "collection": "macro",
@@ -19003,10 +19028,22 @@
         "collection": "fin",
         "chapter": 6,
         "total": 11,
-        "written": 0,
-        "remaining": 11,
-        "writtenItems": [],
-        "status": "planned"
+        "written": 11,
+        "remaining": 0,
+        "writtenItems": [
+          "fin-6.1",
+          "fin-6.2",
+          "fin-6.3",
+          "fin-6.4",
+          "fin-6.5",
+          "fin-6.6",
+          "fin-6.7",
+          "fin-6.8",
+          "fin-6.9",
+          "fin-6.10",
+          "fin-6.11"
+        ],
+        "status": "written"
       },
       {
         "collection": "game",
@@ -19070,10 +19107,29 @@
         "collection": "soc",
         "chapter": 5,
         "total": 18,
-        "written": 0,
-        "remaining": 18,
-        "writtenItems": [],
-        "status": "planned"
+        "written": 18,
+        "remaining": 0,
+        "writtenItems": [
+          "soc-5.1",
+          "soc-5.2",
+          "soc-5.3",
+          "soc-5.4",
+          "soc-5.5",
+          "soc-5.6",
+          "soc-5.7",
+          "soc-5.8",
+          "soc-5.9",
+          "soc-5.10",
+          "soc-5.11",
+          "soc-5.12",
+          "soc-5.13",
+          "soc-5.14",
+          "soc-5.15",
+          "soc-5.16",
+          "soc-5.17",
+          "soc-5.18"
+        ],
+        "status": "written"
       },
       {
         "collection": "polsci",

@@ -197,7 +197,7 @@ an eigen-direction, an orthonormal frame, an ellipse's axes) with live numbers.
 
 ## Economics & finance, social sciences
 
-- State information sets and conditioning events before applying Bayes or comparing insurance choices. Preserve complete maximizing sets at ties, validate every own array index and evaluate discounted flows without losing small original contributions. See the [uncertainty review](verification/wave5-micro-review.md).
+- Distinguish individual labour supply from separately assumed market supply. A uniform-wage monopsonist differentiates the whole wage bill; wage-floor claims require the specified kinked cost and feasible hiring set. State borrowing constraints and discount conventions, validate dense own cash-flow indices, and grow exhaustible-resource net rent rather than gross price. See the [factor-market review](verification/wave5-micro-review.md).
 - Separate no-arbitrage identities from equilibrium or corporate-finance assumptions. Define settlement, borrowing and dividend conventions; a zero-price claim has no defined percentage return. Evaluate tiny forward, debt and parity quantities from original factors, and distinguish an independent proof from verification of an unread original. See the [finance review](verification/wave5-fin-review.md).
 - Distinguish finite network processes, branching limits and mean-field closures. Copied actions need their actual information history; an exact finite influence oracle does not prove a general approximation theorem. Near an unstable equilibrium, disclose amplification of binary64 roundoff and choose a default whose displayed path is meaningful. Finite haploid ancestry is not human pedigree ancestry. See the [diffusion review](verification/wave5-soc-review.md).
 
