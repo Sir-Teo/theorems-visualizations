@@ -216,39 +216,215 @@ export default {
     },
     // ───────────────────────────────────────────────────────────── 7
     {
-      n: 7,
-      title: 'Arithmetic and Gödel’s incompleteness theorems',
-      summary: String.raw`Arithmetic can talk about its own syntax: formulas and proofs become numbers, and every computable relation is expressible by a formula. The diagonal lemma then produces sentences that speak about themselves. From this one device come Tarski’s theorem that truth is undefinable, Gödel’s theorems that no consistent effective theory of arithmetic is complete or proves its own consistency, and Church’s theorem that validity is undecidable.`,
-      items: [
-        { num: '7.1', kind: 'Definition', name: 'Peano arithmetic and Robinson’s Q', deps: ['logic-3.13'], refs: ['Enderton §3.0', 'Enderton §3.3'],
-          pic: 'Check axioms of Q and PA against candidate structures — ℕ, ℕ plus an extra point, polynomials with positive leading coefficient — and see which axioms each satisfies, isolating the role of induction.' },
-        { num: '7.2', kind: 'Definition', name: 'Gödel numbering', deps: ['logic-7.1', 'logic-3.1'], refs: ['Enderton §3.4', 'Smullyan Ch. I'],
-          pic: 'Type a formula: each symbol gets a code and the formula becomes 2^a₁·3^a₂·5^a₃⋯; factor any number back and recover the formula, or learn that it codes nothing.' },
-        { num: '7.3', kind: 'Definition', name: 'Representable relations and functions', deps: ['logic-7.1', 'logic-6.4'], refs: ['Enderton §3.3'],
-          pic: 'A relation on ℕ is represented by a formula when the theory proves each instance or its negation; a table of instances fills with “proved” and “refuted” marks as a proof search runs.' },
-        { num: '7.4', kind: 'Theorem', name: 'Recursive relations are representable in Q', deps: ['logic-7.3', 'logic-6.4'], refs: ['Enderton §3.6', 'Smullyan Ch. VII'],
-          pic: 'Pick a primitive recursive definition and watch it compiled into a formula of arithmetic, using Gödel’s β-function to code finite sequences; the formula is then checked on small inputs.' },
-        { num: '7.5', kind: 'Lemma', name: 'Diagonal (fixed-point) lemma', deps: ['logic-7.2', 'logic-7.4'], refs: ['Enderton §3.5', 'Smullyan Ch. VIII'],
-          pic: 'Choose a property P(x) of Gödel numbers; the substitution machinery builds a sentence G and shows, step by step, that the theory proves G ↔ P(⌜G⌝).' },
-        { num: '7.6', kind: 'Theorem', name: 'Tarski’s undefinability of truth', deps: ['logic-7.5'], refs: ['Smullyan Ch. II', 'Enderton §3.5'],
-          pic: 'Propose any formula T(x) as a truth predicate; the diagonal lemma produces a sentence L with L ↔ ¬T(⌜L⌝), and the evaluator shows that T must misclassify L.' },
-        { num: '7.7', kind: 'Theorem', name: 'Gödel’s first incompleteness theorem', deps: ['logic-7.5', 'logic-4.8'], refs: ['Enderton §3.5', 'Smullyan Ch. V'],
-          pic: 'A proof-search engine enumerates theorems of the theory while the Gödel sentence “I am not provable” sits on the screen; neither it nor its negation ever appears, and a readout explains why each appearance would be a contradiction.' },
-        { num: '7.8', kind: 'Theorem', name: 'Rosser’s theorem', deps: ['logic-7.7'], refs: ['Smullyan Ch. VI'],
-          pic: 'The Rosser sentence races proofs against refutations: “if I am provable, a refutation of me appears earlier”; the race is simulated and shows why plain consistency now suffices.' },
-        { num: '7.9', kind: 'Theorem', name: 'Church’s theorem: validity is undecidable', deps: ['logic-7.4', 'logic-6.7'], refs: ['Enderton §3.5'],
-          pic: 'A halting question is translated into a first-order sentence that is valid exactly when the machine halts; a decider for validity would therefore solve the halting problem, shown as a reduction diagram.' },
-        { num: '7.10', kind: 'Theorem', name: 'Gödel’s second incompleteness theorem', deps: ['logic-7.7'], refs: ['Enderton §3.7', 'Smullyan Ch. IX'],
-          pic: 'The first theorem’s argument is itself formalised: the theory proves Con → G, so a proof of Con would yield a proof of G; the chain of implications is drawn with each link certified.' },
-        { num: '7.11', kind: 'Theorem', name: 'Löb’s theorem', deps: ['logic-7.10'], refs: ['Enderton §3.7'],
-          pic: 'Build the sentence “if this sentence is provable then φ” and follow the derivation showing that proving “Prov(φ) → φ” already proves φ; the second incompleteness theorem appears as the case φ = falsehood.' },
-        { num: '7.12', kind: 'Theorem', name: 'Presburger arithmetic is decidable', deps: ['logic-5.7'], refs: ['Enderton §3.2'],
-          pic: 'Eliminate quantifiers from a formula of (ℕ, +, <) by adding congruences; the set the formula defines is drawn as an eventually periodic pattern on the number line, and adding multiplication breaks the method.' },
-        { num: '7.13', kind: 'Paper', name: 'Über formal unentscheidbare Sätze der Principia Mathematica',
-          paper: { authors: 'Kurt Gödel', year: 1931, title: 'Über formal unentscheidbare Sätze der Principia Mathematica und verwandter Systeme I', venue: 'Monatshefte für Mathematik und Physik 38: 173–198', doi: '10.1007/BF01700692' },
-          introduces: ['logic-7.2', 'logic-7.7', 'logic-7.10'], deps: ['logic-7.1', 'logic-1.10', 'logic-1.7', 'logic-4.6'], refs: [],
-          pic: 'Gödel’s own coding: symbols get the odd codes 1, 3, 5, …, 13, variables powers of primes above 13, and a formula s₁s₂s₃… the number 2^{s₁}·3^{s₂}·5^{s₃}…; the reader types a short formula to see its Gödel number, decodes numbers back into formulas, then follows the diagonal step to the sentence that says ‘my number is not the number of a provable formula’ while a proof search runs and never settles it.' },
-      ],
+      "n": 7,
+      "title": "Arithmetic and Gödel’s incompleteness theorems",
+      "summary": "Arithmetic can encode syntax and finite computations. Numeralwise representability yields a fixed-point construction, which separates truth from provability and leads to incompleteness and undecidability. The finite executors expose their exact computations and resource limits; none establishes nonprovability by waiting.",
+      "items": [
+        {
+          "num": "7.1",
+          "kind": "Definition",
+          "name": "Peano arithmetic and Robinson’s Q",
+          "deps": [
+            "logic-3.13"
+          ],
+          "refs": [
+            "Open Logic Project, Representability in Q, §Robinson’s Q, PDF pp1–3"
+          ],
+          "pic": "Edit the finite successor map and choose the actual operation tables; every Q instance on that carrier is checked with a counterexample. Switch to the infinite authored model to inspect its operations and induction obstruction."
+        },
+        {
+          "num": "7.2",
+          "kind": "Definition",
+          "name": "Gödel numbering",
+          "deps": [
+            "logic-7.1",
+            "logic-3.1",
+            "nt-1.6"
+          ],
+          "refs": [
+            "Open Logic Project, Incompleteness and Provability, §The Fixed-Point Lemma",
+            "Robin Knight2026, §§5.1–5.3"
+          ],
+          "pic": "Encode an editable token word or decode a positive integer. Bars show the actual prime exponents; the live result separately reports exact decoding and formula well-formedness."
+        },
+        {
+          "num": "7.3",
+          "kind": "Definition",
+          "name": "Representable relations and functions",
+          "deps": [
+            "logic-7.1",
+            "logic-7.2"
+          ],
+          "see": [
+            "toc-8.4"
+          ],
+          "refs": [
+            "Open Logic Project, Representability in Q, Definitions req.1 and req.28; §§Basic Functions, Representing Relations"
+          ],
+          "pic": "Edit a term built from0,S,+,* and x. The selected numeral is substituted, and the actual Q4–Q7 normalization equalities can be stepped through. The plot evaluates only displayed numerals."
+        },
+        {
+          "num": "7.4",
+          "kind": "Theorem",
+          "name": "Recursive relations are representable in Q",
+          "deps": [
+            "logic-7.3",
+            "logic-7.2",
+            "nt-2.4"
+          ],
+          "see": [
+            "toc-8.4"
+          ],
+          "refs": [
+            "Open Logic Project, Representability in Q, §§The Beta Function, Composition, Regular Minimization, Computable Functions, Representing Relations, PDF pp4–7,11–16"
+          ],
+          "pic": "Choose a genuine primitive recurrence and its finite length. The values are computed, a CRT solution b,c is constructed, and every beta remainder is decoded and checked exactly; step through the actual CRT merges."
+        },
+        {
+          "num": "7.5",
+          "kind": "Lemma",
+          "name": "Diagonal (fixed-point) lemma",
+          "deps": [
+            "logic-7.2",
+            "logic-7.4"
+          ],
+          "refs": [
+            "Open Logic Project, Incompleteness and Provability, §§Self-Reference, The Fixed-Point Lemma, PDF pp1–4"
+          ],
+          "pic": "Inspect the actual code/substitute/code calculation for an editable property, or switch to general capture-avoiding substitution and deliberately introduce a conflicting bound-variable name."
+        },
+        {
+          "num": "7.6",
+          "kind": "Theorem",
+          "name": "Tarski’s undefinability of truth",
+          "deps": [
+            "logic-7.5",
+            "logic-4.4"
+          ],
+          "refs": [
+            "Open Logic Project, Incompleteness and Provability, §The Undefinability of Truth, PDF pp14–15"
+          ],
+          "pic": "Toggle the diagonal equation and the proposed truth schema. The actual four Boolean assignments are filtered by the selected constraints; change the sign to see why the negative fixed point matters."
+        },
+        {
+          "num": "7.7",
+          "kind": "Theorem",
+          "name": "Gödel’s first incompleteness theorem",
+          "deps": [
+            "logic-7.5",
+            "logic-4.8"
+          ],
+          "refs": [
+            "Open Logic Project, Incompleteness and Provability, §§The First Incompleteness Theorem, Omega-Consistency, PDF pp4–6"
+          ],
+          "pic": "Compare the obligations from hypothetical proofs of G and not G. Increase the finite checked prefix: a witness beyond that prefix remains possible in the second branch. The theory hypothesis is explicitly assumed, never inferred from the plot."
+        },
+        {
+          "num": "7.8",
+          "kind": "Theorem",
+          "name": "Rosser’s theorem",
+          "deps": [
+            "logic-7.7",
+            "logic-7.4"
+          ],
+          "refs": [
+            "Open Logic Project, Incompleteness and Provability, §Rosser’s Theorem, PDF pp6–7 (strict-order variant)",
+            "Robin Knight2026, Theorem6.4.3, PDF pp21–22 (≤ variant)"
+          ],
+          "pic": "Edit an explicitly abstract ledger of indexed proofs/refutations. The top panel locates its entries; the lower panel checks the finite Rosser implications through the chosen cut. A ledger containing both conclusions is visibly incompatible with consistency."
+        },
+        {
+          "num": "7.9",
+          "kind": "Theorem",
+          "name": "Church’s theorem: validity is undecidable",
+          "deps": [
+            "logic-7.2",
+            "logic-4.4",
+            "logic-4.6"
+          ],
+          "see": [
+            "logic-7.4",
+            "toc-9.7"
+          ],
+          "refs": [
+            "Open Logic Project, Turing Machines: Undecidability, §§Representing Turing Machines, Verifying the Representation, The Decision Problem, PDF pp10–18; left-frame exclusion derived here for the written cell"
+          ],
+          "pic": "Edit the actual machine rules and binary input, step through its real tape, and inspect the generated finite premise/goal clauses. A repeated complete configuration certifies a particular cycle; exhausting the execution budget stays inconclusive."
+        },
+        {
+          "num": "7.10",
+          "kind": "Theorem",
+          "name": "Gödel’s second incompleteness theorem",
+          "deps": [
+            "logic-7.7",
+            "logic-7.1"
+          ],
+          "refs": [
+            "Open Logic Project, Incompleteness and Provability, §§Derivability Conditions, Second Incompleteness, PDF pp8–10",
+            "Robin Knight2026, §§6.1,6.5–6.6"
+          ],
+          "pic": "Step through the actual nine-line modal/propositional skeleton of the internal Con→G argument. Remove a derivability license or the diagonal premise and the checker marks the resulting blocked dependencies."
+        },
+        {
+          "num": "7.11",
+          "kind": "Theorem",
+          "name": "Löb’s theorem",
+          "deps": [
+            "logic-7.10",
+            "logic-7.5"
+          ],
+          "refs": [
+            "Open Logic Project, Incompleteness and Provability, §Löb’s Theorem, PDF pp11–13"
+          ],
+          "pic": "Edit a closed target sentence and inspect the actual checked dependency graph. Step to any inference or remove a license, including the hypothetical reflection theorem, and see the precise obstruction propagate."
+        },
+        {
+          "num": "7.12",
+          "kind": "Theorem",
+          "name": "Presburger arithmetic is decidable",
+          "deps": [
+            "logic-5.7",
+            "logic-7.2"
+          ],
+          "refs": [
+            "Christoph Haase2018, A Survival Guide to Presburger Arithmetic, §3.2",
+            "TUM Hoang2020, Automatic Theorem Proving of Presburger Arithmetic, §§3.1–3.5; conservative state bound derived here"
+          ],
+          "pic": "Edit a full additive formula, choose an exact natural assignment, and inspect actual DFA construction sizes, accepted sample values or the real LSBF state trace. Add zero padding or change state budget to test the encoding invariant and explicit resource stops."
+        },
+        {
+          "num": "7.13",
+          "kind": "Paper",
+          "name": "Über formal unentscheidbare Sätze der Principia Mathematica",
+          "paper": {
+            "authors": "Kurt Gödel",
+            "year": 1931,
+            "title": "Über formal unentscheidbare Sätze der Principia Mathematica und verwandter Systeme I",
+            "venue": "Monatshefte für Mathematik und Physik 38: 173–198",
+            "doi": "10.1007/BF01700692"
+          },
+          "introduces": [
+            "logic-7.2",
+            "logic-7.7",
+            "logic-7.10"
+          ],
+          "verify": true,
+          "deps": [
+            "logic-7.1",
+            "logic-1.10",
+            "logic-1.7",
+            "logic-4.6"
+          ],
+          "see": [
+            "logic-7.10"
+          ],
+          "refs": [
+            "Original1931 publisher metadata/preview (body not accessible)",
+            "Open Logic Project, Incompleteness and Provability, §§Comparison with Gödel’s Original Paper, Second Incompleteness"
+          ],
+          "pic": "Inspect the exact bytes and code of a selected row in an authored modern proof description. Change its license package: decoding still works even when the finite schematic checker rejects the purported derivation."
+        }
+      ]
     },
     // ───────────────────────────────────────────────────────────── 8
     {
