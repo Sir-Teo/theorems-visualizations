@@ -1,0 +1,386 @@
+{
+  "schemaVersion": 1,
+  "id": "archaeology-methods-20261022",
+  "version": "0.1.0",
+  "status": "source-and-premise-preparation-only",
+  "author": "codex-root",
+  "updatedOn": "2026-10-22",
+  "predecessorCommit": "fd58a543872a093803f0f2d97a1868a4034e1db7",
+  "lesson": "P01-L03",
+  "existingBindings": {
+    "docs/pilots/sequences/p01-03-material-evidence.md": "6168a16f585a96fddf1d70944c8b1393abb57ede7aa0b58939f019c7d84a8fb0",
+    "docs/pilots/sequences/sources.json": "aa728ce4083c7d242484c8f998168f5e61e03e30f312ff12b0bd4e02736b18c6",
+    "docs/pilots/sequences/queue.json": "2ad2477129d1d6aa871a07105c7a209df0ae66eefe452067f9e4acbac97ebcc4",
+    "docs/pilots/sequences/README.md": "589316cf449084627cc28201c9a31c50478c613592f9548d5e6432042197015b",
+    "explorations/history.json": "4064003cdf885da7b4c0fd8a3863b4fe357353b8685313459ca1ed16c64edc29",
+    "docs/coverage/registry.json": "8adc6ab70344ff5605f3bc5c6925827603d0a9102799781049c3749137fae2c4"
+  },
+  "counting": {
+    "newAuthoredLessons": 0,
+    "newAcceptedLessons": 0,
+    "newRuntimeIds": 0,
+    "newReleaseDecisions": 0
+  },
+  "sources": [
+    {
+      "id": "experiment",
+      "url": "https://pompeiisites.org/wp-content/uploads/27_E-Journal_La-data-della-distruzione-di-Pompei_2.pdf",
+      "finalUrl": "https://pompeiisites.org/wp-content/uploads/27_E-Journal_La-data-della-distruzione-di-Pompei_2.pdf",
+      "file": "experiment.pdf",
+      "bytes": 9237397,
+      "sha256": "c21252e6d54e71be82b5c26463895a347ceabfa9a0447acbeee3b6b9201a28c0",
+      "status": "downloaded",
+      "title": "La data della distruzione di Pompei: premesse per un dibattito aperto",
+      "creator": "Gabriel Zuchtriegel, Chiara Comegna, Fabrizio Conte, Alessandro Russo",
+      "language": "it",
+      "publicationDate": "2024-12-12",
+      "edition": "E-Journal Scavi di Pompei 27; exact _2.pdf bytes",
+      "inspection": "Complete experimental/removal sections, contextual discussion and conclusions: text pp.4–17,23–25,32; page images pp.4–10,23–25,32. Archeobotanical section and bibliography not fully reviewed.",
+      "imagePages": [
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        23,
+        24,
+        25,
+        32
+      ],
+      "textPages": [
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        23,
+        24,
+        25,
+        32
+      ],
+      "readOn": "2026-10-22",
+      "reuse": "Links and bounded original summary only; no quotation, translation, PDF, photograph or extracted dataset bundled."
+    },
+    {
+      "id": "excavation",
+      "url": "https://pompeiisites.org/wp-content/uploads/REGIO-V-EXCAVATIONS-ENG.pdf",
+      "finalUrl": "https://pompeiisites.org/wp-content/uploads/REGIO-V-EXCAVATIONS-ENG.pdf",
+      "file": "excavation.pdf",
+      "bytes": 2621662,
+      "sha256": "89c65036b9a7fd4863fa3ca0c8a94d4f297423a34ad954ebcaf36164725339f1",
+      "status": "downloaded",
+      "title": "The Regio V Excavations",
+      "creator": "Parco Archeologico di Pompei",
+      "language": "en",
+      "publicationDate": null,
+      "inspection": "Page 11 complete text and page image, including the inscription photograph; no independent epigraphic transcription. Publication date not established from inspected page.",
+      "imagePages": [
+        11
+      ],
+      "textPages": [
+        11
+      ],
+      "readOn": "2026-10-22",
+      "reuse": "Links and bounded original summary only; no quotation, translation, PDF, photograph or extracted dataset bundled."
+    },
+    {
+      "id": "berkeley-lead",
+      "title": "The eruption that destroyed Pompeii is helping scientists date Earth’s history",
+      "creator": "Robert Sanders, Berkeley News",
+      "publishedOn": "2026-09-25",
+      "url": "https://news.berkeley.edu/2026/09/25/the-eruption-that-destroyed-pompeii-is-helping-scientists-date-earths-history/",
+      "readOn": "2026-10-22",
+      "inspection": "Web tool body read before a direct-download HTTP403. No successful local HTML snapshot; no independent reviewer retrieval or body check claimed.",
+      "role": "Discovery lead to a later paper, not a substitute for its methods or supplements.",
+      "paperUrl": "https://www.science.org/doi/10.1126/sciadv.aeg2624",
+      "paperAccess": "HTTP403; stopped without alternate recovery. Full paper not inspected.",
+      "use": "Records that relevant later work exists. No new eruption date, isotope estimate, error interval or calibration claim adopted."
+    }
+  ],
+  "sourceNotes": [
+    {
+      "id": "E1",
+      "sourceId": "excavation",
+      "locator": "p.11",
+      "text": "The earlier account links a day/month inscription, renovation context and fragility to an autumn date. The reported date has no year; other words have competing readings.",
+      "kind": "original-source-summary",
+      "textSha256": "69f06c7fb07c88ca8c49ffd9b6a22cef8690029c3473a94a176e5e98d03bc2a5"
+    },
+    {
+      "id": "M1",
+      "sourceId": "experiment",
+      "locator": "p.5",
+      "text": "On 17 October 2023, oak charcoal was applied to ancient plaster on the same wall, at about 180 cm.",
+      "kind": "original-source-summary",
+      "textSha256": "56843203f1dded5b03cbac418b347f3f4eda6be35f9282a27ed1884f87bb35a0"
+    },
+    {
+      "id": "M2",
+      "sourceId": "experiment",
+      "locator": "pp.5–6",
+      "text": "Temporary roofing excluded rain; intermittent sunlight, wind and rising damp remained. Three brief coverings were reported.",
+      "kind": "original-source-summary",
+      "textSha256": "4317e75aefe6832603038cc579fa4748f36ec001f02e529817bfbf8f278d2bac"
+    },
+    {
+      "id": "M3",
+      "sourceId": "experiment",
+      "locator": "pp.7–8; figures 4–5",
+      "text": "Photographs used a color reference; twelve dates are listed. Figure 4 includes 24 August 2024; figure 5 ends at 17 August.",
+      "kind": "original-source-summary",
+      "textSha256": "c0dd0cadef378a4d8bf12e59d2e822b563f2fa855f49827a8f186c185eefc36a"
+    },
+    {
+      "id": "M4",
+      "sourceId": "experiment",
+      "locator": "p.8",
+      "text": "Authors report continued legibility, with pressure-dependent differences and slight fading.",
+      "kind": "original-source-summary",
+      "textSha256": "2890252853bbe9b59a9acab63f39e931f249122d1c906ea85879f41a86da1ac8"
+    },
+    {
+      "id": "M5",
+      "sourceId": "experiment",
+      "locator": "pp.9–10; figures 6–8; captions p.32",
+      "text": "Separate removal trials tested dry/wet methods and simulated rain; deliberate removal differs from passive survival.",
+      "kind": "original-source-summary",
+      "textSha256": "af5c53e19c6f05298241bfec5b348168d98bdc00a90c073c1650d0bae84fe4a2"
+    },
+    {
+      "id": "M6",
+      "sourceId": "experiment",
+      "locator": "pp.6,11–17,23–25",
+      "text": "Environmental comparability and interrupted renovation are author interpretations. Conclusions allow an earlier inscription year without establishing the eruption day.",
+      "kind": "original-source-summary",
+      "textSha256": "83c79eb374c254c5386515c3b169a220cce007173a58203a8a2b61a886f97683"
+    }
+  ],
+  "premiseExercise": {
+    "kind": "Original editorial counterfactual; neither measured data nor a dating engine.",
+    "fixedAssumptions": [
+      "For this exercise only, accept the reported day/month reading.",
+      "For this exercise only, assume the reported date refers to creating the mark, rather than a past event it mentions. This is an added premise, not established by reading a date.",
+      "Assume the mark precedes the destruction being considered and remains in its original context.",
+      "Any independent-year toggle is hypothetical; this dossier does not establish that year."
+    ],
+    "inputs": [
+      {
+        "id": "year79IndependentlyEstablished",
+        "meaning": "Independent evidence fixes the mark’s year, rather than deriving it from freshness."
+      },
+      {
+        "id": "analogyJustified",
+        "meaning": "Relevant differences between modern and ancient conditions have been addressed sufficiently for the stated comparison."
+      },
+      {
+        "id": "modernReportAccepted",
+        "meaning": "The selected modern observation is accepted for the exercise; switching off is withholding assessment, not evidence that it failed."
+      }
+    ],
+    "outputs": {
+      "conditional-lower-bound-only": "With the fixed assumptions, the destruction cannot predate the reported calendar day in the independently anchored year; it could occur later that day or on a later day. No exact eruption day follows.",
+      "year-unresolved": "A month/day and an unanchored year do not produce a dated calendar lower bound.",
+      "analogy-challenges-short-survival-exclusion": "The analogous result challenges using inevitable early disappearance to exclude an older mark. It supplies neither a universal lifetime nor a probability.",
+      "local-modern-result-only": "The modern result remains evidence for its tested setting; transfer to ancient conditions has not been justified.",
+      "modern-result-not-assessed": "This exercise adds no preservation inference; it does not establish the opposite by default."
+    },
+    "cases": [
+      {
+        "id": "C1",
+        "inputs": {
+          "year79IndependentlyEstablished": false,
+          "analogyJustified": false,
+          "modernReportAccepted": false
+        },
+        "calendarInference": "year-unresolved",
+        "preservationInference": "modern-result-not-assessed",
+        "exactEruptionDayEstablished": false
+      },
+      {
+        "id": "C2",
+        "inputs": {
+          "year79IndependentlyEstablished": false,
+          "analogyJustified": false,
+          "modernReportAccepted": true
+        },
+        "calendarInference": "year-unresolved",
+        "preservationInference": "local-modern-result-only",
+        "exactEruptionDayEstablished": false
+      },
+      {
+        "id": "C3",
+        "inputs": {
+          "year79IndependentlyEstablished": false,
+          "analogyJustified": true,
+          "modernReportAccepted": false
+        },
+        "calendarInference": "year-unresolved",
+        "preservationInference": "modern-result-not-assessed",
+        "exactEruptionDayEstablished": false
+      },
+      {
+        "id": "C4",
+        "inputs": {
+          "year79IndependentlyEstablished": false,
+          "analogyJustified": true,
+          "modernReportAccepted": true
+        },
+        "calendarInference": "year-unresolved",
+        "preservationInference": "analogy-challenges-short-survival-exclusion",
+        "exactEruptionDayEstablished": false
+      },
+      {
+        "id": "C5",
+        "inputs": {
+          "year79IndependentlyEstablished": true,
+          "analogyJustified": false,
+          "modernReportAccepted": false
+        },
+        "calendarInference": "conditional-lower-bound-only",
+        "preservationInference": "modern-result-not-assessed",
+        "exactEruptionDayEstablished": false
+      },
+      {
+        "id": "C6",
+        "inputs": {
+          "year79IndependentlyEstablished": true,
+          "analogyJustified": false,
+          "modernReportAccepted": true
+        },
+        "calendarInference": "conditional-lower-bound-only",
+        "preservationInference": "local-modern-result-only",
+        "exactEruptionDayEstablished": false
+      },
+      {
+        "id": "C7",
+        "inputs": {
+          "year79IndependentlyEstablished": true,
+          "analogyJustified": true,
+          "modernReportAccepted": false
+        },
+        "calendarInference": "conditional-lower-bound-only",
+        "preservationInference": "modern-result-not-assessed",
+        "exactEruptionDayEstablished": false
+      },
+      {
+        "id": "C8",
+        "inputs": {
+          "year79IndependentlyEstablished": true,
+          "analogyJustified": true,
+          "modernReportAccepted": true
+        },
+        "calendarInference": "conditional-lower-bound-only",
+        "preservationInference": "analogy-challenges-short-survival-exclusion",
+        "exactEruptionDayEstablished": false
+      }
+    ],
+    "unsupportedOutputs": [
+      "A numerical survival probability",
+      "A definite ancient inscription year",
+      "A definite eruption day",
+      "An asserted measured effect size from rendered image darkness"
+    ],
+    "presentation": "Three clearly hypothetical premise controls with a persistent observed-source table. Every control and output needs an ordered text equivalent; changing an assumption must not rewrite the evidence."
+  },
+  "activities": [
+    {
+      "id": "provenance-split",
+      "sourceNotes": [
+        "E1"
+      ],
+      "prompt": "Separate what is reported as visible, what is interpreted and what needs an additional premise. Identify the source span for each.",
+      "assessment": "Do not let an inferred value move into the observation column without new evidence."
+    },
+    {
+      "id": "method-audit",
+      "sourceNotes": [
+        "M1",
+        "M2",
+        "M3",
+        "M4",
+        "M5",
+        "M6"
+      ],
+      "prompt": "Build a method checklist: specimen, setting, intervention, observation schedule, outcome and transfer limits. Keep each entry attached to its locator.",
+      "assessment": "Do not mix different intervention arms or treat an author’s comparability argument as a controlled demonstration."
+    },
+    {
+      "id": "figure-locator",
+      "sourceNotes": [
+        "M3"
+      ],
+      "prompt": "Compare the full series, the paired comparison and the prose. Explain which source locator answers each timing question.",
+      "assessment": "A selected pair is not automatically the full observation schedule; no missing or conflicting observation is inferred solely from the pair."
+    },
+    {
+      "id": "premise-transfer",
+      "sourceNotes": [
+        "E1",
+        "M6"
+      ],
+      "prompt": "Use the eight original counterfactual cases. Explain which conclusion changes when one premise changes, and name evidence needed to justify that premise.",
+      "assessment": "Possibility, lower bound, typical behavior and exact event date are different conclusions. A counterexample to inevitability does not estimate prevalence."
+    },
+    {
+      "id": "update-audit",
+      "sourceNotes": [],
+      "prompt": "Separate an announcement, an accessible research body, supplements and a completed independent methodological check. State what each permits you to conclude.",
+      "assessment": "A later title or institutional announcement is a discovery lead, not proof that an earlier argument has been superseded."
+    }
+  ],
+  "preparationStatus": {
+    "methodReading": "Completed for the selected experimental/removal sections and contextual/conclusion qualifications, within the exact scopes above.",
+    "subsequentResearch": "Started, incomplete. A material 2026 lead was located; primary-paper access stopped. No claim of an exhaustive or current chronology review.",
+    "specialistReview": "Open; source language, context, chronology and final premise map still need the qualified role required by the brief.",
+    "capacity": "P07/P08 retain both unaccepted draft slots.",
+    "finalLesson": "Not authored; final artifact, applicable human/access work and actual release remain open. The P01 first-lesson removal of human requirements is not extended."
+  },
+  "accessStops": [
+    {
+      "url": "https://www.science.org/doi/10.1126/sciadv.aeg2624",
+      "result": "Web tool HTTP403",
+      "action": "Stopped; no retry, alternate host/copy or paper recovery."
+    },
+    {
+      "url": "https://news.berkeley.edu/2026/09/25/the-eruption-that-destroyed-pompeii-is-helping-scientists-date-earths-history/",
+      "result": "Direct download HTTP403 after earlier web body read",
+      "action": "Stopped; prior discovery receipt retained, no local snapshot or further recovery."
+    },
+    {
+      "url": "https://pompeiisites.org/e-journal-degli-scavi-di-pompei/la-data-della-distruzione-di-pompei-premesse-per-un-dibattito-aperto/",
+      "result": "Web tool timeout",
+      "action": "Landing route stopped. The exact linked PDF had already been successfully downloaded and read before this timeout; no alternate copy sought."
+    }
+  ],
+  "searchScope": {
+    "checkedOn": "2026-10-22",
+    "queries": [
+      "Pompeii charcoal inscription eruption date experiment 2025 2026 research",
+      "site.pompeiisites.org data distruzione 2025",
+      "Zuchtriegel charcoal 2026",
+      "site.pompeiisites.org 2025 vestiti eruzione",
+      "site.pompeiisites.org 2026 data dell’eruzione"
+    ],
+    "limits": "Bounded discovery search, not a systematic review. Unread results and other leads are not evidence or added acceptance gates."
+  },
+  "localEvidenceDirectory": "/tmp/atlas-archaeology-preparation-20261022",
+  "assets": "No source photograph, rendered page, translated paragraph, complete PDF or numerical experimental dataset is included in this package. Read-only local renders support inspection only.",
+  "limits": [
+    "AI reading is not qualified Italian or archaeology approval.",
+    "No Pliny manuscript collation, numismatic audit or radiometric reanalysis.",
+    "No field experiment or learner/access observation performed.",
+    "The schematic truth table is original conditional reasoning, not empirical data or final reviewed teaching logic.",
+    "The older brief, source/queue records, accepted pilot and prior receipts remain unchanged."
+  ]
+}

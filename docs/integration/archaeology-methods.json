@@ -1,0 +1,20 @@
+{
+  "schemaVersion": 1,
+  "mode": "archaeology-source-and-premise-preparation-delta",
+  "predecessorCommit": "fd58a543872a093803f0f2d97a1868a4034e1db7",
+  "replacements": [],
+  "additions": [
+    "docs/pilots/sequences/preparation/archaeology-methods-20261022.json",
+    "docs/pilots/sequences/preparation/archaeology-methods-20261022.md",
+    "docs/pilots/sequences/preparation/review-archaeology-methods-20261022.md",
+    "docs/pilots/sequences/preparation/README.md",
+    "docs/integration/archaeology-methods.json",
+    "docs/integration/archaeology-methods.md",
+    "docs/verification/universal-archaeology-methods.md"
+  ],
+  "manualReconciliation": [
+    "MASTER_PLAN.md",
+    "docs/master-plan-execution.md",
+    "docs/master-plan-handoff.md"
+  ]
+}
