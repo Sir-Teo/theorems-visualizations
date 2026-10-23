@@ -1315,5 +1315,13 @@
         "D27"
       ]
     }
-  ]
+  ],
+  "authorVerification": {
+    "kind": "author-check",
+    "author": "codex-root",
+    "checkedOn": "2026-10-23",
+    "contentDigest": "42898cd885252bf33c3fedac2a7a6af7a5ce15cd899a507645c1be916310276d",
+    "artifactDigest": "68139ea61148eb6204a620557567dc8b3ff714e934d751d46439b8aa2c05f61e",
+    "evidencePath": "docs/verification/universal-author-sequences.md"
+  }
 }

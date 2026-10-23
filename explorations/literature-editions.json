@@ -1,0 +1,237 @@
+{
+  "schemaVersion": 1,
+  "id": "x-literature-0002",
+  "pilotId": "P02",
+  "revision": "0.1.0",
+  "status": "accepted",
+  "publication": "local-preview",
+  "title": "Elizabeth in two Frankensteins",
+  "subtitle": "Compare a changed origin and a continuing narrative voice.",
+  "summary": "Align seven selected paragraphs from digital transcriptions representing the 1818 and 1831 editions. Examine kinship, mediation and possession without inventing an explanation for the revision.",
+  "audience": "Readers interested in prose comparison; no prior reading of the novel required.",
+  "scope": "Selected English digital witnesses only. No manuscript, print-facsimile comparison or authorial-intention finding is claimed.",
+  "author": "atlas-editor",
+  "updatedOn": "2026-10-23",
+  "domainIds": [
+    "D24"
+  ],
+  "relatedCollectionIds": [
+    "ling",
+    "art"
+  ],
+  "knowledgeModes": [
+    "interpretive"
+  ],
+  "methods": [
+    "annotation"
+  ],
+  "prerequisites": [],
+  "sources": [
+    {
+      "id": "followup-shelley-1818-pg41445",
+      "title": "Frankenstein; Or, The Modern Prometheus",
+      "url": "https://www.gutenberg.org/cache/epub/41445/pg41445-images.html",
+      "locator": "Transcriber identifies a photo-reprint of the 1818 edition. Selected witness is the digital transcription; no print image or manuscript inspected.",
+      "creator": "Mary Wollstonecraft Shelley",
+      "date": "1818; London: Lackington, Hughes, Harding, Mavor, & Jones",
+      "language": "en",
+      "rights": {
+        "decision": "usable-for-prototype",
+        "basis": "Selected historical text and original commentary, carried from the hash-bound research packet; no modern illustrations or complete ebook reproduced.",
+        "scope": "Local selected-text use; exact witness attribution and historical source limits retained."
+      }
+    },
+    {
+      "id": "followup-shelley-1831-pg42324",
+      "title": "Frankenstein; Or, The Modern Prometheus",
+      "url": "https://www.gutenberg.org/cache/epub/42324/pg42324-images.html",
+      "locator": "Selected witness is the digital transcription. Local differences do not establish all edition changes, editorial agency or authorial intention.",
+      "creator": "Mary Wollstonecraft Shelley",
+      "date": "1831; London: H. Colburn and R. Bentley",
+      "language": "en",
+      "rights": {
+        "decision": "usable-for-prototype",
+        "basis": "Selected historical text and original commentary, carried from the hash-bound research packet; no modern illustrations or complete ebook reproduced.",
+        "scope": "Local selected-text use; exact witness attribution and historical source limits retained."
+      }
+    }
+  ],
+  "passages": [
+    {
+      "id": "f1818-family",
+      "sourceId": "followup-shelley-1818-pg41445",
+      "title": "F1818 family · Volume I, chapter I",
+      "form": "quotation",
+      "language": "en",
+      "text": "My father had a sister, whom he tenderly loved, and who had married early in life an Italian gentleman. Soon after her marriage, she had accompanied her husband into her native country, and for some years my father had very little communication with her. About the time I mentioned she died; and a few months afterwards he received a letter from her husband, acquainting him with his intention of marrying an Italian lady, and requesting my father to take charge of the infant Elizabeth, the only child of his deceased sister. “It is my wish,” he said, “that you should consider her as your own daughter, and educate her thus. Her mother’s fortune is secured to her, the documents of which I will commit to your keeping. Reflect upon this proposition; and decide whether you would prefer educating your niece yourself to her being brought up by a stepmother.”",
+      "context": "Victor reports his paternal aunt, her death, and her husband's proposed care arrangement; the quoted letter is still mediated by Victor.",
+      "sha256": "6ff35db13344b979ee5fd6e1458dd73592ec3722eb7961db6ce62e9a6e969a3c"
+    },
+    {
+      "id": "f1818-arrival",
+      "sourceId": "followup-shelley-1818-pg41445",
+      "title": "F1818 arrival · Volume I, chapter I",
+      "form": "quotation",
+      "language": "en",
+      "text": "My father did not hesitate, and immediately went to Italy, that he might accompany the little Elizabeth to her future home. I have often heard my mother say, that she was at that time the most beautiful child she had ever seen, and shewed signs even then of a gentle and affectionate disposition. These indications, and a desire to bind as closely as possible the ties of domestic love, determined my mother to consider Elizabeth as my future wife; a design which she never found reason to repent.",
+      "context": "Distinguish the father's journey and the mother's reported words/plans from independent authorial explanation.",
+      "sha256": "1446ced990a774cf4bcc8a7b96f89b9cc80fa518563bf4a2a6784359f1036037"
+    },
+    {
+      "id": "f1818-description",
+      "sourceId": "followup-shelley-1818-pg41445",
+      "title": "F1818 description · Volume I, chapter I",
+      "form": "quotation",
+      "language": "en",
+      "text": "From this time Elizabeth Lavenza became my playfellow, and, as we grew older, my friend. She was docile and good tempered, yet gay and playful as a summer insect. Although she was lively and animated, her feelings were strong and deep, and her disposition uncommonly affectionate. No one could better enjoy liberty, yet no one could submit with more grace than she did to constraint and caprice. Her imagination was luxuriant, yet her capability of application was great. Her person was the image of her mind; her hazel eyes, although as lively as a bird’s, possessed an attractive softness. Her figure was light and airy; and, though capable of enduring great fatigue, she appeared the most fragile creature in the world. While I admired her understanding and fancy, I loved to tend on her, as I should on a favourite animal; and I never saw so much grace both of person and mind united to so little pretension.",
+      "context": "Victor's evaluative description includes both admiration and possession-like comparison; retain wording without endorsing it.",
+      "sha256": "d0aa6d787aa8db3cf68983537cc3bb799371a01fd01c25e46a641470a3dc8506"
+    },
+    {
+      "id": "f1831-encounter",
+      "sourceId": "followup-shelley-1831-pg42324",
+      "title": "F1831 encounter · Chapter I",
+      "form": "quotation",
+      "language": "en",
+      "text": "For a long time I was their only care. My mother had much desired to have a daughter, but I continued their single offspring. When I was about five years old, while making an excursion beyond the frontiers of Italy, they passed a week on the shores of the Lake of Como. Their benevolent disposition often made them enter the cottages of the poor. This, to my mother, was more than a duty; it was a necessity, a passion,—remembering what she had suffered, and how she had been relieved,—for her to act in her turn the guardian angel to the afflicted. During one of their walks a poor cot in the foldings of a vale attracted their notice, as being singularly disconsolate, while the number of half-clothed children gathered about it, spoke of penury in its worst shape. One day, when my father had gone by himself to Milan, my mother, accompanied by me, visited this abode. She found a peasant and his wife, hard working, bent down by care and labour, distributing a scanty meal to five hungry babes. Among these there was one which attracted my mother far above all the rest. She appeared of a different stock. The four others were dark-eyed, hardy little vagrants; this child was thin, and very fair. Her hair was the brightest living gold, and, despite the poverty of her clothing, seemed to set a crown of distinction on her head. Her brow was clear and ample, her blue eyes cloudless, and her lips and the moulding of her face so expressive of sensibility and sweetness, that none could behold her without looking on her as of a distinct species, a being heaven-sent, and bearing a celestial stamp in all her features.",
+      "context": "Appearance/class judgments belong to the narrator's presentation. This whole paragraph supplies the encounter before the origin account.",
+      "sha256": "e041ea1288bf9ace46b27d9708f7eea453d929a4d45b248dbdce07644ba3bd26"
+    },
+    {
+      "id": "f1831-parentage",
+      "sourceId": "followup-shelley-1831-pg42324",
+      "title": "F1831 parentage · Chapter I",
+      "form": "quotation",
+      "language": "en",
+      "text": "The peasant woman, perceiving that my mother fixed eyes of wonder and admiration on this lovely girl, eagerly communicated her history. She was not her child, but the daughter of a Milanese nobleman. Her mother was a German, and had died on giving her birth. The infant had been placed with these good people to nurse: they were better off then. They had not been long married, and their eldest child was but just born. The father of their charge was one of those Italians nursed in the memory of the antique glory of Italy,—one among the schiavi ognor frementi, who exerted himself to obtain the liberty of his country. He became the victim of its weakness. Whether he had died, or still lingered in the dungeons of Austria, was not known. His property was confiscated, his child became an orphan and a beggar. She continued with her foster parents, and bloomed in their rude abode, fairer than a garden rose among dark-leaved brambles.",
+      "context": "The peasant woman's account is mediated by Victor. The father's fate is uncertain within the passage; do not silently convert it to a witnessed death.",
+      "sha256": "6f4bbe56bea69000fa43a8496fc68a49a3f42e6b883d527524e1c913cfe91e71"
+    },
+    {
+      "id": "f1831-transfer",
+      "sourceId": "followup-shelley-1831-pg42324",
+      "title": "F1831 transfer · Chapter I",
+      "form": "quotation",
+      "language": "en",
+      "text": "When my father returned from Milan, he found playing with me in the hall of our villa, a child fairer than pictured cherub—a creature who seemed to shed radiance from her looks, and whose form and motions were lighter than the chamois of the hills. The apparition was soon explained. With his permission my mother prevailed on her rustic guardians to yield their charge to her. They were fond of the sweet orphan. Her presence had seemed a blessing to them; but it would be unfair to her to keep her in poverty and want, when Providence afforded her such powerful protection. They consulted their village priest, and the result was, that Elizabeth Lavenza became the inmate of my parents' house—my more than sister—the beautiful and adored companion of all my occupations and my pleasures.",
+      "context": "The narrator describes negotiations, guardians and priest. An interpretation of agency needs these words, not an invented legal adoption record.",
+      "sha256": "cb36d88e9ca35204859c6c1a23010e2d1f3c65630d9d7446ac3cb3aacb8704ab"
+    },
+    {
+      "id": "f1831-gift",
+      "sourceId": "followup-shelley-1831-pg42324",
+      "title": "F1831 gift · Chapter I",
+      "form": "quotation",
+      "language": "en",
+      "text": "Every one loved Elizabeth. The passionate and almost reverential attachment with which all regarded her became, while I shared it, my pride and my delight. On the evening previous to her being brought to my home, my mother had said playfully,—\"I have a pretty present for my Victor—to-morrow he shall have it.\" And when, on the morrow, she presented Elizabeth to me as her promised gift, I, with childish seriousness, interpreted her words literally, and looked upon Elizabeth as mine—mine to protect, love, and cherish. All praises bestowed on her, I received as made to a possession of my own. We called each other familiarly by the name of cousin. No word, no expression could body forth the kind of relation in which she stood to me—my more than sister, since till death she was to be mine only.",
+      "context": "The familiar term cousin coexists with the different origin account. The gift/possession language supports a bounded reading of Victor, not a proven reason for Shelley's revision.",
+      "sha256": "3cc688f33dbbf71a5fc842d17e5d8d5f95232996e63b8b6e975ee7fa401fbc1f"
+    }
+  ],
+  "claims": [
+    {
+      "id": "origins-differ",
+      "kind": "textual",
+      "text": "The selected witnesses give Elizabeth different origin accounts.",
+      "passageIds": [
+        "f1818-family",
+        "f1831-parentage"
+      ],
+      "qualification": "This identifies a textual difference, not its cause."
+    },
+    {
+      "id": "mediated-voice",
+      "kind": "interpretive",
+      "text": "Both accounts reach the reader through Victor’s narration and attributed speech.",
+      "passageIds": [
+        "f1818-arrival",
+        "f1831-parentage"
+      ],
+      "qualification": "Reported speech remains inside the fictional narration."
+    }
+  ],
+  "context": [
+    "The 1818 witness describes Elizabeth as the daughter of Victor’s paternal aunt. The 1831 witness reports a different family account through a peasant woman.",
+    "The later use of cousin does not erase the different origin story. Compare the relevant paragraphs rather than treating a repeated word as proof of identical kinship.",
+    "Keep the mother’s reported plans and words, Victor’s evaluation and your interpretation separate.",
+    "The selected 1831 account explicitly leaves the father’s fate uncertain. A reader should not silently convert that uncertainty to an observed death."
+  ],
+  "timeline": [],
+  "relations": [],
+  "reviews": [],
+  "reviewRequirements": [
+    "content",
+    "rights"
+  ],
+  "reviewLimitations": [
+    "Exact prepared digital-witness text retained. No print-image fidelity, specialist interpretation or learner observation is claimed."
+  ],
+  "activity": {
+    "type": "annotation",
+    "lenses": [
+      {
+        "id": "kinship",
+        "label": "Origin, kinship and the word cousin",
+        "observation": "The 1818 family paragraph names the paternal aunt; the 1831 parentage paragraph describes different parents, while the gift paragraph still uses cousin.",
+        "question": "Which passages are needed to explain the relationship in each witness?",
+        "readings": [
+          "Read cousin alongside each origin account; the same label can function differently.",
+          "Compare the practical household relationship with the narrated genealogical account."
+        ],
+        "boundary": "Do not treat this comparison as a legal adoption record or a complete account of every edition."
+      },
+      {
+        "id": "agency",
+        "label": "Who arranges the move?",
+        "observation": "The 1818 letter requests the father’s care; the 1831 transfer paragraph describes the mother, guardians and priest.",
+        "question": "Whose actions and reported reasons structure the transfer in each witness?",
+        "readings": [
+          "Compare the narrated decision-makers and the position offered to Elizabeth.",
+          "Ask what direct speech or perspective from Elizabeth is absent in these selections."
+        ],
+        "boundary": "Absence in this selection is not absence from the whole novel."
+      },
+      {
+        "id": "possession",
+        "label": "Admiration and possession",
+        "observation": "The 1818 description compares tending Elizabeth to tending a favourite animal; the 1831 gift paragraph makes mine and possession explicit.",
+        "question": "How can admiration coexist with possessive language in these descriptions?",
+        "readings": [
+          "A reading can emphasize the narrator’s affection while noting an unequal relation.",
+          "Another reading can foreground the tension between idealization and possession."
+        ],
+        "boundary": "Support the reading with wording. These paragraphs do not prove why Shelley revised the novel."
+      }
+    ],
+    "transfer": "Write a four-sentence comparison: one precise change, one continuity, a passage locator for each, and one claim about authorial intention that the evidence cannot settle.",
+    "rubric": [
+      "Identify the witness and exact paragraph.",
+      "Compare complete contextual units, not isolated words.",
+      "Separate narrator, reported speaker and author.",
+      "Retain the uncertainty about the father’s fate and the limits of the selected text."
+    ]
+  },
+  "extensions": {
+    "atlas:preparation": {
+      "path": "docs/pilots/sequences/preparation/literature-selections-20261022.json",
+      "scope": "Selected evidence carried forward; historical packet unchanged."
+    }
+  },
+  "authorVerification": {
+    "kind": "author-check",
+    "scope": "local-preview",
+    "author": "atlas-editor",
+    "checkedOn": "2026-10-23",
+    "revision": "0.1.0",
+    "contentDigest": "fa32c2fcf4d8ea88407da79384cebdc4d475da194fac7f8adbd522eb7910b127",
+    "artifactDigest": "bbb01a604f5cca8e018c913394f10adbb9aadcc99efb7fae42b4226a0fc8a965",
+    "evidencePath": "docs/verification/universal-author-continuation.md",
+    "checks": [
+      "Schema, source-reference and preparation-packet hash validation",
+      "Passed tests/exploration-methods.test.mjs",
+      "Passed tests/exploration-studio.test.mjs",
+      "Passed tests/exploration-professions.test.mjs",
+      "Passed tests/exploration-followups.test.mjs"
+    ]
+  }
+}

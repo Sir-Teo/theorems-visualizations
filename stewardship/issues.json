@@ -11,7 +11,7 @@
       "description": "The earlier 2518 witness reads “band”; selecting the distinct 1918 witness does not correct 2518 or establish the anomaly’s origin.",
       "responsibility": {
         "role": "Literature source editor with relevant edition/language expertise",
-        "assignee": null
+        "assignee": "atlas-editor (AI author; maintains local evidence and versioning, no professional credential implied)"
       },
       "nextAction": "Obtain independently inspectable provenance evidence for the earlier witness, or retain its unresolved status while explicitly using the distinct selected witness.",
       "editionTrigger": "A changed witness, quotation, attribution or claim requires an explicit selection decision and review of the affected lesson version.",
@@ -30,6 +30,19 @@
           "state": "waiting-evidence",
           "note": "Imported as an unresolved issue from the exact existing preparation record; no fresh source inspection or review decision.",
           "evidence": []
+        },
+        {
+          "sequence": 2,
+          "at": "2026-10-23",
+          "state": "waiting-evidence",
+          "note": "Local lesson x-literature-0003@0.1.0 now uses explicitly bounded evidence. The underlying source issue remains unresolved; author ownership does not create fresh source access, independent review or real-world observations.",
+          "evidence": [
+            {
+              "path": "explorations/literature-narrative.json",
+              "sha256": "c8c8f4cdfdd421e38d609323039d67a93c2fbe50797a0337f5fb7e70295b22c1",
+              "locator": "x-literature-0003"
+            }
+          ]
         }
       ]
     },
@@ -41,10 +54,10 @@
       "description": "The inspected MSSRF body begins in Nuaguda and ends in Kumbharaguda; no correction or location resolution was established.",
       "responsibility": {
         "role": "Situated agriculture/community-context reviewer",
-        "assignee": null
+        "assignee": "atlas-editor (AI author; maintains local evidence and versioning, no professional credential implied)"
       },
       "nextAction": "Obtain authenticated location clarification or separately scoped situated evidence without recovering a stopped work. Preserve the discrepancy until resolved.",
-      "editionTrigger": "A resolved location changes source/context claims and requires a new reviewed preparation record before an affected lesson can be accepted.",
+      "editionTrigger": "A resolved location changes source/context claims and requires an explicit new evidence record and versioned author check. The current source-scope exercise retains the unresolved discrepancy.",
       "accessStops": [
         "MSSRF seed-keeper feature: direct capture stopped at HTTP 307; no retry or alternate-copy recovery.",
         "Earlier FAO Koraput profile timeout remains a stop."
@@ -63,6 +76,19 @@
           "state": "waiting-evidence",
           "note": "Imported as an unresolved issue from the exact existing preparation record; no fresh source inspection or review decision.",
           "evidence": []
+        },
+        {
+          "sequence": 2,
+          "at": "2026-10-23",
+          "state": "waiting-evidence",
+          "note": "Local lesson x-agriculture-0003@0.1.0 now uses explicitly bounded evidence. The underlying source issue remains unresolved; author ownership does not create fresh source access, independent review or real-world observations.",
+          "evidence": [
+            {
+              "path": "explorations/agriculture-koraput.json",
+              "sha256": "89427b87a21f6a9165b4376887d6b07a97a2baeffbaa3ecf5b305340320439f2",
+              "locator": "x-agriculture-0003"
+            }
+          ]
         }
       ]
     },
@@ -74,7 +100,7 @@
       "description": "Prior source review remains historical after direct requests for the Sikh Coalition FAQ, SGPC English PDF and official directory returned HTTP 403.",
       "responsibility": {
         "role": "Religion source editor and practitioner/context reviewer",
-        "assignee": null
+        "assignee": "atlas-editor (AI author; maintains local evidence and versioning, no professional credential implied)"
       },
       "nextAction": "Wait for permitted new evidence or an explicit change to the recorded access boundary; assess current code status and context before asserting freshness.",
       "editionTrigger": "Current-code or practice claims require exact selected-body review; a successful access check alone cannot approve those claims.",
@@ -96,6 +122,19 @@
           "state": "waiting-evidence",
           "note": "Imported as an unresolved issue from the exact existing preparation record; no fresh source inspection or review decision.",
           "evidence": []
+        },
+        {
+          "sequence": 2,
+          "at": "2026-10-23",
+          "state": "waiting-evidence",
+          "note": "Local lesson x-philosophy-0003@0.1.0 now uses explicitly bounded evidence. The underlying source issue remains unresolved; author ownership does not create fresh source access, independent review or real-world observations.",
+          "evidence": [
+            {
+              "path": "explorations/philosophy-langar.json",
+              "sha256": "f5142daece5eaeb99baae9f0ebeb14be71fa8592ee547fe3a9d7d0edcc26c4ed",
+              "locator": "x-philosophy-0003"
+            }
+          ]
         }
       ]
     },
@@ -107,7 +146,7 @@
       "description": "A September 2026 announcement supplied a discovery lead, but the journal paper was not inspected and no technical result was adopted.",
       "responsibility": {
         "role": "Archaeology/chronology specialist",
-        "assignee": null
+        "assignee": "atlas-editor (AI author; maintains local evidence and versioning, no professional credential implied)"
       },
       "nextAction": "Assess the newer research only after permitted evidence becomes available; retain the current bounded method claims and open research-update qualification.",
       "editionTrigger": "New chronology or premise-map claims require exact source assessment and a new reviewed artifact; an announcement is insufficient.",
@@ -129,6 +168,19 @@
           "state": "waiting-evidence",
           "note": "Imported as an unresolved issue from the exact existing preparation record; no fresh source inspection or review decision.",
           "evidence": []
+        },
+        {
+          "sequence": 2,
+          "at": "2026-10-23",
+          "state": "waiting-evidence",
+          "note": "Local lesson x-history-0003@0.1.0 now uses explicitly bounded evidence. The underlying source issue remains unresolved; author ownership does not create fresh source access, independent review or real-world observations.",
+          "evidence": [
+            {
+              "path": "explorations/history-material-evidence.json",
+              "sha256": "6761ca1d9205200268621ab46824405d051513cedd194ed948e1fd89b22a385a",
+              "locator": "x-history-0003"
+            }
+          ]
         }
       ]
     }

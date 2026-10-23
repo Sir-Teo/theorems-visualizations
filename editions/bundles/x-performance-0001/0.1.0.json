@@ -1,0 +1,284 @@
+{
+  "schemaVersion": 1,
+  "id": "x-performance-0001",
+  "revision": "0.1.0",
+  "record": {
+    "schemaVersion": 1,
+    "id": "x-performance-0001",
+    "pilotId": "P08",
+    "revision": "0.1.0",
+    "status": "accepted",
+    "publication": "local-preview",
+    "title": "One phrase, two durations",
+    "subtitle": "Locate the change before interpreting its effect.",
+    "summary": "Compare two generated versions of an original eight-beat rhythmic phrase. Keep onset positions fixed, inspect short and sustained tone envelopes, then explore tempo without confusing beats with seconds.",
+    "audience": "Beginners; no notation or craft experience required.",
+    "scope": "Generated sine-tone rhythm, not a human percussion recording. Event tables support structural comparison; they do not reproduce hearing or establish a universal emotional effect.",
+    "author": "atlas-editor",
+    "updatedOn": "2026-10-22",
+    "domainIds": [
+      "D26",
+      "D27"
+    ],
+    "relatedCollectionIds": [
+      "music",
+      "waves",
+      "art"
+    ],
+    "knowledgeModes": [
+      "creative",
+      "interpretive",
+      "empirical"
+    ],
+    "methods": [
+      "phrase-comparison"
+    ],
+    "prerequisites": [],
+    "sources": [
+      {
+        "id": "carnegie-expression",
+        "title": "Explore Expressive Qualities in Music and Movement",
+        "url": "https://www.carnegiehall.org/Education/Programs/Link-Up/New-York-City/Explore-Expressive-Qualities-in-Music-and-Movement",
+        "locator": "Tempo, dynamics and articulation; comparing observations and explaining responses",
+        "creator": "Carnegie Hall, Link Up",
+        "date": "Inspected 2026-10-22; page publication date not established",
+        "language": "English",
+        "rights": {
+          "decision": "usable-for-prototype",
+          "basis": "Reference and original explanatory prose only. No source photographs, scores, recordings, worksheets or other assets reproduced.",
+          "scope": "Local prototype scope; no general asset licence or endorsement is inferred from access."
+        }
+      }
+    ],
+    "passages": [
+      {
+        "id": "expression",
+        "sourceId": "carnegie-expression",
+        "title": "Describe a choice, then explain a response",
+        "form": "paraphrase",
+        "language": "en",
+        "text": "Tempo, dynamics and articulation offer ways to compare musical choices and discuss how listeners interpret them. An observation about timing is different from an interpretation of expressive effect.",
+        "context": "Original instructional paraphrase. No Carnegie repertoire or media is used; the source does not validate this generated stimulus or prescribe one emotion for a particular sound.",
+        "sha256": "0aed01d10207dc5bcafd0067dd1ad1c5a2fc28bf4816031f5b9009bd98b2104a"
+      }
+    ],
+    "claims": [
+      {
+        "id": "controlled",
+        "kind": "empirical",
+        "text": "At the same tempo, the two generated versions share onset positions, sine frequency and peak gain while their tone-envelope lengths differ.",
+        "passageIds": [
+          "expression"
+        ],
+        "qualification": "This is a property of the authored event/synthesis specification, not a claim of equal perceived loudness, energy or timbre."
+      },
+      {
+        "id": "interpretation",
+        "kind": "interpretive",
+        "text": "A duration difference can support more than one reasoned expressive interpretation.",
+        "passageIds": [
+          "expression"
+        ],
+        "qualification": "Perceptibility, musical usefulness and learner responses have not been evaluated by a performer or participant."
+      }
+    ],
+    "context": [
+      "The span is eight quarter-note beats, shown as two groups of four in this Western beat-grid exercise. There are nine tone events; eight beats does not mean eight sounds. Beat offsets start at zero; the first event is displayed as beat 1.",
+      "The original onset offsets are 0, 1, 1.5, 2.5, 3, 4, 5.5, 6 and 7 beats. Short tones last 0.12 beat and sustained tones 0.42 beat. Neither version connects every adjacent tone, so sustained is not labeled legato.",
+      "For a beat offset b and tempo T, elapsed seconds = b × 60 / T. Tone lengths scale with beats when tempo changes; oscillator frequency stays 440 Hz. Attack and release remain 5 ms and 15 ms.",
+      "Equal oscillator settings and peak gain are controlled signal parameters, not equal perceived loudness, timbre or signal energy. The master-volume control is not loudness normalization.",
+      "The sound is mono, generated from a sine formula with smooth attack/release and no third-party samples. The arrangement and diagrams are Codex-assisted original work for this pilot; no human composer or performer is invented.",
+      "Select a replay region and start playback yourself. Version, tempo or region changes stop the current sound. Pause preserves an approximate beat cursor; shared cursors do not establish what another person heard.",
+      "This is a local draft. A performer/educator, actual learner/accessibility observations and final release terms remain open. The no-audio event task supports structure and interpretation, not an identical sensory experience."
+    ],
+    "timeline": [],
+    "relations": [],
+    "reviews": [
+      {
+        "dimension": "content",
+        "result": "passed",
+        "reviewer": {
+          "id": "literature_review",
+          "role": "Independent AI instructional/provenance and local-draft-rights reviewer",
+          "independent": true
+        },
+        "revision": "0.1.0",
+        "contentDigest": "40190c5a0dc101882934a6579af5e9c3eb75a2d38b65d18e728fee03d9e23aaa",
+        "artifactDigest": "14fcf71efb415de3c2e36c19f56ba413d09628ef5c5fefda0e9018004edb382d",
+        "evidencePath": "docs/verification/universal-pilots-ai-performance.md",
+        "reviewedOn": "2026-10-22"
+      },
+      {
+        "dimension": "provenance",
+        "result": "passed",
+        "reviewer": {
+          "id": "literature_review",
+          "role": "Independent AI instructional/provenance and local-draft-rights reviewer",
+          "independent": true
+        },
+        "revision": "0.1.0",
+        "contentDigest": "40190c5a0dc101882934a6579af5e9c3eb75a2d38b65d18e728fee03d9e23aaa",
+        "artifactDigest": "14fcf71efb415de3c2e36c19f56ba413d09628ef5c5fefda0e9018004edb382d",
+        "evidencePath": "docs/verification/universal-pilots-ai-performance.md",
+        "reviewedOn": "2026-10-22"
+      },
+      {
+        "dimension": "rights",
+        "result": "passed",
+        "reviewer": {
+          "id": "literature_review",
+          "role": "Independent AI instructional/provenance and local-draft-rights reviewer",
+          "independent": true
+        },
+        "revision": "0.1.0",
+        "contentDigest": "40190c5a0dc101882934a6579af5e9c3eb75a2d38b65d18e728fee03d9e23aaa",
+        "artifactDigest": "14fcf71efb415de3c2e36c19f56ba413d09628ef5c5fefda0e9018004edb382d",
+        "evidencePath": "docs/verification/universal-pilots-ai-performance.md",
+        "reviewedOn": "2026-10-22"
+      }
+    ],
+    "reviewRequirements": [
+      "content",
+      "provenance",
+      "rights",
+      "learning",
+      "accessibility"
+    ],
+    "reviewLimitations": [
+      "Digital/source review is separate from performer/educator review and actual screen-reader/learner sessions, which remain unperformed. Release licensing is proposed, not granted."
+    ],
+    "extensions": {},
+    "activity": {
+      "type": "phrase-comparison",
+      "spanBeats": 8,
+      "tempos": [
+        60,
+        90,
+        120
+      ],
+      "events": [
+        {
+          "id": "e1",
+          "beat": 0
+        },
+        {
+          "id": "e2",
+          "beat": 1
+        },
+        {
+          "id": "e3",
+          "beat": 1.5
+        },
+        {
+          "id": "e4",
+          "beat": 2.5
+        },
+        {
+          "id": "e5",
+          "beat": 3
+        },
+        {
+          "id": "e6",
+          "beat": 4
+        },
+        {
+          "id": "e7",
+          "beat": 5.5
+        },
+        {
+          "id": "e8",
+          "beat": 6
+        },
+        {
+          "id": "e9",
+          "beat": 7
+        }
+      ],
+      "versions": [
+        {
+          "id": "short",
+          "label": "A · Short tones",
+          "gateBeats": 0.12
+        },
+        {
+          "id": "sustained",
+          "label": "B · Sustained tones",
+          "gateBeats": 0.42
+        }
+      ],
+      "synthesis": {
+        "waveform": "sine",
+        "frequencyHz": 440,
+        "peakGain": 0.18,
+        "attackSeconds": 0.005,
+        "releaseSeconds": 0.015
+      },
+      "assetRights": {
+        "status": "local-draft",
+        "provenance": "Original Codex-assisted event arrangement, notation and formula-generated signal created for this repository on 2026-10-22. No imported recording, sampled instrument or external score.",
+        "releaseProposal": "Proposed CC BY 4.0 for this pilot’s original educational phrase/diagrams, subject to rights-holder approval before release; no repository-wide licence or exclusive copyright assertion."
+      },
+      "transfer": "Keep the onset pattern but compare a slower tempo with longer tones. Cite an event and its beat/second values, identify which variables changed, then offer two possible listener responses and explain what actual observation would test them.",
+      "rubric": [
+        "Locate evidence by event ID and beat offset; include seconds at the chosen tempo.",
+        "Separate onset, tone length, gap, frequency and peak gain from perceived loudness or expressive character.",
+        "Give two reasoned interpretations without treating a mood label as an answer key.",
+        "Distinguish generated signal, human performance and listener evidence.",
+        "Explain what the visual/no-audio route can establish and what it cannot."
+      ]
+    },
+    "authorVerification": {
+      "kind": "author-check",
+      "scope": "local-preview",
+      "author": "atlas-editor",
+      "checkedOn": "2026-10-23",
+      "revision": "0.1.0",
+      "contentDigest": "40190c5a0dc101882934a6579af5e9c3eb75a2d38b65d18e728fee03d9e23aaa",
+      "artifactDigest": "d2e8ef9563533f485619ec40760e45dbf89d66358644d07f18a4c296fb9d6be2",
+      "evidencePath": "docs/verification/universal-author-continuation.md",
+      "checks": [
+        "Schema, source-reference and preparation-packet hash validation",
+        "Passed tests/exploration-methods.test.mjs",
+        "Passed tests/exploration-studio.test.mjs",
+        "Passed tests/exploration-professions.test.mjs",
+        "Passed tests/exploration-followups.test.mjs"
+      ]
+    }
+  },
+  "context": {
+    "domainIds": [
+      "D26",
+      "D27"
+    ],
+    "collectionIds": [
+      "music",
+      "waves",
+      "art"
+    ],
+    "sourceIds": [
+      "carnegie-expression"
+    ],
+    "knownItemIds": []
+  },
+  "collectionTitles": {
+    "music": "Music Theory & Acoustics",
+    "waves": "Waves & Optics",
+    "art": "Visual Art & Color"
+  },
+  "runtimeDigest": "ca81bc9e95550cc6c8e5c31a3fcbb6b78a066ecaa6a57038441949fe61f17025",
+  "contentDigest": "40190c5a0dc101882934a6579af5e9c3eb75a2d38b65d18e728fee03d9e23aaa",
+  "artifactDigest": "d2e8ef9563533f485619ec40760e45dbf89d66358644d07f18a4c296fb9d6be2",
+  "previewHTML": "<!doctype html>\n<html lang=\"en\"><head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width,initial-scale=1\">\n<meta name=\"robots\" content=\"noindex,nofollow\"><meta name=\"description\" content=\"Draft source-based explorations for Ideas, Visualized.\">\n<title>One phrase, two durations · Ideas, Visualized</title><link rel=\"stylesheet\" href=\"../../../explorations/style.css\"></head>\n<body><a class=\"skip\" href=\"#main\">Skip to the exploration</a>\n<header class=\"site-header\"><a href=\"../../../#/\">Ideas, Visualized</a><span>Exploration workshop</span></header>\n<main id=\"main\" tabindex=\"-1\"><nav aria-label=\"Workshop\"><a href=\"../\">← All pilot explorations</a></nav>\n    <section class=\"hero\"><p class=\"eyebrow\">Author-checked · local preview</p><h1>One phrase, two durations</h1>\n    <p class=\"subtitle\">Locate the change before interpreting its effect.</p><p class=\"lede\">Compare two generated versions of an original eight-beat rhythmic phrase. Keep onset positions fixed, inspect short and sustained tone envelopes, then explore tempo without confusing beats with seconds.</p>\n    <p class=\"muted\">Digital/source review is separate from performer/educator review and actual screen-reader/learner sessions, which remain unperformed. Release licensing is proposed, not granted.</p>\n    <p class=\"scope\">Generated sine-tone rhythm, not a human percussion recording. Event tables support structural comparison; they do not reproduce hearing or establish a universal emotional effect.</p><ol class=\"steps\"><li>Read the sources</li><li>Explore the evidence</li><li>Explain a limitation</li></ol></section>\n    <section aria-labelledby=\"source-heading\"><div class=\"section-heading\"><span>01</span><h2 id=\"source-heading\">Read closely</h2></div>\n    <div class=\"sources\"><article class=\"source-card\" id=\"passage-expression\" data-passage=\"expression\">\n      <p class=\"eyebrow\">Carnegie Hall, Link Up</p><h3>Describe a choice, then explain a response</h3>\n      <p class=\"source-form\">Editorial paraphrase</p>\n      <p class=\"passage\" lang=\"en\">Tempo, dynamics and articulation offer ways to compare musical choices and discuss how listeners interpret them. An observation about timing is different from an interpretation of expressive effect.</p>\n      <p><strong>Editorial context:</strong> Original instructional paraphrase. No Carnegie repertoire or media is used; the source does not validate this generated stimulus or prescribe one emotion for a particular sound.</p><details><summary>Source and reuse details</summary>\n      <p><a href=\"https://www.carnegiehall.org/Education/Programs/Link-Up/New-York-City/Explore-Expressive-Qualities-in-Music-and-Movement\">Explore Expressive Qualities in Music and Movement</a></p><p>Tempo, dynamics and articulation; comparing observations and explaining responses · Inspected 2026-10-22; page publication date not established</p>\n      <p>Reference and original explanatory prose only. No source photographs, scores, recordings, worksheets or other assets reproduced.</p><p class=\"muted\">Local prototype scope; no general asset licence or endorsement is inferred from access.</p></details></article></div></section>\n    <section class=\"context\"><h2>What this exploration can establish</h2><ul><li>The span is eight quarter-note beats, shown as two groups of four in this Western beat-grid exercise. There are nine tone events; eight beats does not mean eight sounds. Beat offsets start at zero; the first event is displayed as beat 1.</li><li>The original onset offsets are 0, 1, 1.5, 2.5, 3, 4, 5.5, 6 and 7 beats. Short tones last 0.12 beat and sustained tones 0.42 beat. Neither version connects every adjacent tone, so sustained is not labeled legato.</li><li>For a beat offset b and tempo T, elapsed seconds = b × 60 / T. Tone lengths scale with beats when tempo changes; oscillator frequency stays 440 Hz. Attack and release remain 5 ms and 15 ms.</li><li>Equal oscillator settings and peak gain are controlled signal parameters, not equal perceived loudness, timbre or signal energy. The master-volume control is not loudness normalization.</li><li>The sound is mono, generated from a sine formula with smooth attack/release and no third-party samples. The arrangement and diagrams are Codex-assisted original work for this pilot; no human composer or performer is invented.</li><li>Select a replay region and start playback yourself. Version, tempo or region changes stop the current sound. Pause preserves an approximate beat cursor; shared cursors do not establish what another person heard.</li><li>This is a local draft. A performer/educator, actual learner/accessibility observations and final release terms remain open. The no-audio event task supports structure and interpretation, not an identical sensory experience.</li></ul>\n\n    </section>\n\n    <section class=\"activity\" aria-labelledby=\"activity-heading\"><div class=\"section-heading\"><span>02</span><h2 id=\"activity-heading\">Explore the evidence</h2></div>\n    <noscript><p>The source text, comparison guides and transfer task work without JavaScript. Use the guides below and write your notes separately.</p></noscript>\n    <p><strong>Generated audio, started only by you.</strong> Nine sine-tone events occupy an eight-beat span. The two versions differ in tone length; they share the authored onset pattern, 440 Hz sine frequency and peak gain.</p>\n    <div class=\"interactive\" hidden><div class=\"control-grid\"><div><label for=\"version\">Generated version</label><select id=\"version\"><option value=\"short\">A · Short tones · 0.12 beat</option><option value=\"sustained\">B · Sustained tones · 0.42 beat</option></select></div><div><label for=\"bpm\">Tempo (quarter-note beats per minute)</label><select id=\"bpm\"><option value=\"60\">60 BPM</option><option value=\"90\">90 BPM</option><option value=\"120\">120 BPM</option></select></div><div><label for=\"region\">Replay region</label><select id=\"region\"><option value=\"full\">Whole span · offsets 0–8</option><option value=\"first\">First four beats · offsets 0–4</option><option value=\"second\">Second four beats · offsets 4–8</option></select></div><div><label for=\"event\">Evidence focus</label><select id=\"event\"><option value=\"e1\">e1 · offset 0</option><option value=\"e2\">e2 · offset 1</option><option value=\"e3\">e3 · offset 1.5</option><option value=\"e4\">e4 · offset 2.5</option><option value=\"e5\">e5 · offset 3</option><option value=\"e6\">e6 · offset 4</option><option value=\"e7\">e7 · offset 5.5</option><option value=\"e8\">e8 · offset 6</option><option value=\"e9\">e9 · offset 7</option></select></div></div>\n    <p id=\"event-readout\" role=\"status\"></p><label for=\"volume\">Playback volume (0 is silent)</label><input id=\"volume\" type=\"range\" min=\"0\" max=\"1\" step=\"0.05\" value=\"0.35\" data-volume><p>Changing version, tempo or replay region stops the sound. Tone lengths scale with the beat; attack/release remain 5/15 ms. Perceived loudness and timbre are not held constant.</p>\n    <div class=\"actions\"><button id=\"phrase-play\" type=\"button\">Play / resume</button><button id=\"phrase-pause\" type=\"button\">Pause</button><button id=\"phrase-stop\" type=\"button\">Stop and return to region start</button><button id=\"phrase-seek\" type=\"button\">Jump to focused event</button><button id=\"phrase-download\" type=\"button\">Export WAV with provenance</button></div>\n    <audio id=\"phrase-player\" preload=\"metadata\" hidden></audio><p id=\"playback-status\" role=\"status\">Stopped. Audio has not started.</p><p id=\"playback-position\" aria-live=\"off\">Beat offset 0</p></div>\n    <div id=\"phrase-diagram\" class=\"studio-diagram phrase-diagram\" tabindex=\"0\" role=\"region\" aria-label=\"Event diagram; horizontally scrollable on narrow screens\"><svg viewBox=\"0 0 760 160\" role=\"img\" aria-label=\"Eight-beat event diagram; short tone lengths, 90 BPM. Rectangles show tone durations; full values are in the table.\"><line x1=\"40\" x2=\"40\" y1=\"32\" y2=\"112\" class=\"plot-grid\"/><text x=\"40\" y=\"136\" text-anchor=\"middle\">0</text><line x1=\"125\" x2=\"125\" y1=\"32\" y2=\"112\" class=\"plot-grid\"/><text x=\"125\" y=\"136\" text-anchor=\"middle\">1</text><line x1=\"210\" x2=\"210\" y1=\"32\" y2=\"112\" class=\"plot-grid\"/><text x=\"210\" y=\"136\" text-anchor=\"middle\">2</text><line x1=\"295\" x2=\"295\" y1=\"32\" y2=\"112\" class=\"plot-grid\"/><text x=\"295\" y=\"136\" text-anchor=\"middle\">3</text><line x1=\"380\" x2=\"380\" y1=\"32\" y2=\"112\" class=\"plot-grid\"/><text x=\"380\" y=\"136\" text-anchor=\"middle\">4</text><line x1=\"465\" x2=\"465\" y1=\"32\" y2=\"112\" class=\"plot-grid\"/><text x=\"465\" y=\"136\" text-anchor=\"middle\">5</text><line x1=\"550\" x2=\"550\" y1=\"32\" y2=\"112\" class=\"plot-grid\"/><text x=\"550\" y=\"136\" text-anchor=\"middle\">6</text><line x1=\"635\" x2=\"635\" y1=\"32\" y2=\"112\" class=\"plot-grid\"/><text x=\"635\" y=\"136\" text-anchor=\"middle\">7</text><line x1=\"720\" x2=\"720\" y1=\"32\" y2=\"112\" class=\"plot-grid\"/><text x=\"720\" y=\"136\" text-anchor=\"middle\">8</text><g><rect x=\"40\" y=\"54\" width=\"10.2\" height=\"36\" class=\"phrase-tone\"/><text x=\"40\" y=\"44\">e1</text></g><g><rect x=\"125\" y=\"54\" width=\"10.2\" height=\"36\" class=\"phrase-tone\"/><text x=\"125\" y=\"44\">e2</text></g><g><rect x=\"167.5\" y=\"54\" width=\"10.2\" height=\"36\" class=\"phrase-tone\"/><text x=\"167.5\" y=\"44\">e3</text></g><g><rect x=\"252.5\" y=\"54\" width=\"10.2\" height=\"36\" class=\"phrase-tone\"/><text x=\"252.5\" y=\"44\">e4</text></g><g><rect x=\"295\" y=\"54\" width=\"10.2\" height=\"36\" class=\"phrase-tone\"/><text x=\"295\" y=\"44\">e5</text></g><g><rect x=\"380\" y=\"54\" width=\"10.2\" height=\"36\" class=\"phrase-tone\"/><text x=\"380\" y=\"44\">e6</text></g><g><rect x=\"507.5\" y=\"54\" width=\"10.2\" height=\"36\" class=\"phrase-tone\"/><text x=\"507.5\" y=\"44\">e7</text></g><g><rect x=\"550\" y=\"54\" width=\"10.2\" height=\"36\" class=\"phrase-tone\"/><text x=\"550\" y=\"44\">e8</text></g><g><rect x=\"635\" y=\"54\" width=\"10.2\" height=\"36\" class=\"phrase-tone\"/><text x=\"635\" y=\"44\">e9</text></g><text x=\"40\" y=\"157\">Beat offset (zero-based) · two groups of four beats</text></svg></div>\n    <p>Rectangles show tone duration, not emotion or loudness. Event IDs and beat offsets identify the same positions at every tempo. Scroll horizontally on a narrow screen.</p><div id=\"event-table\" class=\"table-scroll\" tabindex=\"0\" role=\"region\" aria-label=\"Selected event values\"><table class=\"event-table\"><caption>A · Short tones, 90 BPM; seconds rounded to four decimals</caption><thead><tr><th scope=\"col\">Event</th><th scope=\"col\">Beat offset / displayed beat</th><th scope=\"col\">Onset seconds</th><th scope=\"col\">Tone seconds</th><th scope=\"col\">Gap to next onset / span end (s)</th></tr></thead><tbody><tr data-event=\"e1\"><th scope=\"row\">e1</th><td>0 / 1</td><td>0</td><td>0.08</td><td>0.5867</td></tr><tr data-event=\"e2\"><th scope=\"row\">e2</th><td>1 / 2</td><td>0.6667</td><td>0.08</td><td>0.2533</td></tr><tr data-event=\"e3\"><th scope=\"row\">e3</th><td>1.5 / 2.5</td><td>1</td><td>0.08</td><td>0.5867</td></tr><tr data-event=\"e4\"><th scope=\"row\">e4</th><td>2.5 / 3.5</td><td>1.6667</td><td>0.08</td><td>0.2533</td></tr><tr data-event=\"e5\"><th scope=\"row\">e5</th><td>3 / 4</td><td>2</td><td>0.08</td><td>0.5867</td></tr><tr data-event=\"e6\"><th scope=\"row\">e6</th><td>4 / 5</td><td>2.6667</td><td>0.08</td><td>0.92</td></tr><tr data-event=\"e7\"><th scope=\"row\">e7</th><td>5.5 / 6.5</td><td>3.6667</td><td>0.08</td><td>0.2533</td></tr><tr data-event=\"e8\"><th scope=\"row\">e8</th><td>6 / 7</td><td>4</td><td>0.08</td><td>0.5867</td></tr><tr data-event=\"e9\"><th scope=\"row\">e9</th><td>7 / 8</td><td>4.6667</td><td>0.08</td><td>0.5867</td></tr></tbody></table></div>\n    <details class=\"static-guide\"><summary>Compare both full event tables without audio</summary><p>At 90 BPM, short tones last 0.08 s and sustained tones 0.28 s. The complete span is 5⅓ s. The final sustained tone ends at offset 7.42, leaving silence to offset 8; no release tail exceeds the span.</p><div class=\"table-scroll\" tabindex=\"0\" role=\"region\" aria-label=\"A · Short tones static table\"><table class=\"event-table\"><caption>A · Short tones, 90 BPM; seconds rounded to four decimals</caption><thead><tr><th scope=\"col\">Event</th><th scope=\"col\">Beat offset / displayed beat</th><th scope=\"col\">Onset seconds</th><th scope=\"col\">Tone seconds</th><th scope=\"col\">Gap to next onset / span end (s)</th></tr></thead><tbody><tr data-event=\"e1\"><th scope=\"row\">e1</th><td>0 / 1</td><td>0</td><td>0.08</td><td>0.5867</td></tr><tr data-event=\"e2\"><th scope=\"row\">e2</th><td>1 / 2</td><td>0.6667</td><td>0.08</td><td>0.2533</td></tr><tr data-event=\"e3\"><th scope=\"row\">e3</th><td>1.5 / 2.5</td><td>1</td><td>0.08</td><td>0.5867</td></tr><tr data-event=\"e4\"><th scope=\"row\">e4</th><td>2.5 / 3.5</td><td>1.6667</td><td>0.08</td><td>0.2533</td></tr><tr data-event=\"e5\"><th scope=\"row\">e5</th><td>3 / 4</td><td>2</td><td>0.08</td><td>0.5867</td></tr><tr data-event=\"e6\"><th scope=\"row\">e6</th><td>4 / 5</td><td>2.6667</td><td>0.08</td><td>0.92</td></tr><tr data-event=\"e7\"><th scope=\"row\">e7</th><td>5.5 / 6.5</td><td>3.6667</td><td>0.08</td><td>0.2533</td></tr><tr data-event=\"e8\"><th scope=\"row\">e8</th><td>6 / 7</td><td>4</td><td>0.08</td><td>0.5867</td></tr><tr data-event=\"e9\"><th scope=\"row\">e9</th><td>7 / 8</td><td>4.6667</td><td>0.08</td><td>0.5867</td></tr></tbody></table></div><div class=\"table-scroll\" tabindex=\"0\" role=\"region\" aria-label=\"B · Sustained tones static table\"><table class=\"event-table\"><caption>B · Sustained tones, 90 BPM; seconds rounded to four decimals</caption><thead><tr><th scope=\"col\">Event</th><th scope=\"col\">Beat offset / displayed beat</th><th scope=\"col\">Onset seconds</th><th scope=\"col\">Tone seconds</th><th scope=\"col\">Gap to next onset / span end (s)</th></tr></thead><tbody><tr data-event=\"e1\"><th scope=\"row\">e1</th><td>0 / 1</td><td>0</td><td>0.28</td><td>0.3867</td></tr><tr data-event=\"e2\"><th scope=\"row\">e2</th><td>1 / 2</td><td>0.6667</td><td>0.28</td><td>0.0533</td></tr><tr data-event=\"e3\"><th scope=\"row\">e3</th><td>1.5 / 2.5</td><td>1</td><td>0.28</td><td>0.3867</td></tr><tr data-event=\"e4\"><th scope=\"row\">e4</th><td>2.5 / 3.5</td><td>1.6667</td><td>0.28</td><td>0.0533</td></tr><tr data-event=\"e5\"><th scope=\"row\">e5</th><td>3 / 4</td><td>2</td><td>0.28</td><td>0.3867</td></tr><tr data-event=\"e6\"><th scope=\"row\">e6</th><td>4 / 5</td><td>2.6667</td><td>0.28</td><td>0.72</td></tr><tr data-event=\"e7\"><th scope=\"row\">e7</th><td>5.5 / 6.5</td><td>3.6667</td><td>0.28</td><td>0.0533</td></tr><tr data-event=\"e8\"><th scope=\"row\">e8</th><td>6 / 7</td><td>4</td><td>0.28</td><td>0.3867</td></tr><tr data-event=\"e9\"><th scope=\"row\">e9</th><td>7 / 8</td><td>4.6667</td><td>0.28</td><td>0.3867</td></tr></tbody></table></div><p>At 60 BPM, the same offsets occur at b seconds; at 120 BPM, at b/2 seconds. Tone lengths also scale. Comparing beat offsets aligns the phrase; identical clock times do not.</p><p>Cite an event, describe the duration or speed change, then propose two possible expressive effects with reasons. There is no mood answer key. The event route supports structural comparison but does not reproduce hearing.</p></details>\n    <details><summary>Original stimulus and release terms</summary><p>Original Codex-assisted event arrangement, notation and formula-generated signal created for this repository on 2026-10-22. No imported recording, sampled instrument or external score.</p><p>Proposed CC BY 4.0 for this pilot’s original educational phrase/diagrams, subject to rights-holder approval before release; no repository-wide licence or exclusive copyright assertion.</p><p>The WAV is mono 16-bit PCM at 48 kHz, generated locally from the reviewed event/envelope formula. Its samples use a smooth 5 ms attack and 15 ms release. No third-party recording, external instrument sample or human performance is included. The export carries its exact events, synthesis settings, renderer version and pending release terms in an embedded JSON comment. Keep that metadata with the file; audio editors may strip it. Playback volume and private notes are excluded.</p></details><div class=\"interactive notes\" hidden><label for=\"notes\">Your evidence and explanation</label>\n    <textarea id=\"notes\" rows=\"5\" maxlength=\"1500\" aria-describedby=\"notes-help\" placeholder=\"Name the words, then explain what they support and what they do not.\"></textarea>\n    <p id=\"notes-help\" class=\"muted\">One notebook for this exploration revision, up to 1,500 characters. Notes stay in this browser. Shared links contain selections only. Nothing is sent to a server.</p>\n    <p id=\"save-status\" role=\"status\" class=\"muted\"></p>\n    <div class=\"actions\"><button id=\"share\" type=\"button\">Copy a link to these selections</button><button id=\"export\" type=\"button\">Export notes</button><button id=\"previous-notes\" type=\"button\" hidden>Export earlier notes</button><button id=\"reset\" type=\"button\">Reset and erase this revision’s notes</button></div>\n    <label id=\"share-label\" for=\"share-url\" hidden>Shareable link (notes excluded)</label><input id=\"share-url\" readonly hidden>\n    <p id=\"state-status\" role=\"status\"></p></div></section>\n    <section class=\"transfer\" aria-labelledby=\"transfer-heading\"><div class=\"section-heading\"><span>03</span><h2 id=\"transfer-heading\">Try the idea elsewhere</h2></div>\n    <p>Keep the onset pattern but compare a slower tempo with longer tones. Cite an event and its beat/second values, identify which variables changed, then offer two possible listener responses and explain what actual observation would test them.</p><details><summary>What a careful explanation includes</summary><ul><li>Locate evidence by event ID and beat offset; include seconds at the chosen tempo.</li><li>Separate onset, tone length, gap, frequency and peak gain from perceived loudness or expressive character.</li><li>Give two reasoned interpretations without treating a mood label as an answer key.</li><li>Distinguish generated signal, human performance and listener evidence.</li><li>Explain what the visual/no-audio route can establish and what it cannot.</li></ul></details>\n    <p>There is no automatic score for your written interpretation. Use the guide to inspect your reasoning.</p></section>\n    <section class=\"related\"><h2>Connections into the atlas</h2><p>Optional collection routes; these are not prerequisites or independent evidence for this task.</p>\n    <div class=\"actions\"><a href=\"../../../#/c/music\">Music Theory &amp; Acoustics</a><a href=\"../../../#/c/waves\">Waves &amp; Optics</a><a href=\"../../../#/c/art\">Visual Art &amp; Color</a></div></section>\n    </main><footer><p>Local previews. Review scope and public release are separate.</p><a href=\"../../../docs/master-plan-handoff.md\">Editorial status and next work</a></footer><script id=\"exploration-data\" type=\"application/json\">{\"schemaVersion\":1,\"id\":\"x-performance-0001\",\"pilotId\":\"P08\",\"revision\":\"0.1.0\",\"status\":\"accepted\",\"publication\":\"local-preview\",\"title\":\"One phrase, two durations\",\"subtitle\":\"Locate the change before interpreting its effect.\",\"summary\":\"Compare two generated versions of an original eight-beat rhythmic phrase. Keep onset positions fixed, inspect short and sustained tone envelopes, then explore tempo without confusing beats with seconds.\",\"audience\":\"Beginners; no notation or craft experience required.\",\"scope\":\"Generated sine-tone rhythm, not a human percussion recording. Event tables support structural comparison; they do not reproduce hearing or establish a universal emotional effect.\",\"author\":\"atlas-editor\",\"updatedOn\":\"2026-10-22\",\"domainIds\":[\"D26\",\"D27\"],\"relatedCollectionIds\":[\"music\",\"waves\",\"art\"],\"knowledgeModes\":[\"creative\",\"interpretive\",\"empirical\"],\"methods\":[\"phrase-comparison\"],\"prerequisites\":[],\"sources\":[{\"id\":\"carnegie-expression\",\"title\":\"Explore Expressive Qualities in Music and Movement\",\"url\":\"https://www.carnegiehall.org/Education/Programs/Link-Up/New-York-City/Explore-Expressive-Qualities-in-Music-and-Movement\",\"locator\":\"Tempo, dynamics and articulation; comparing observations and explaining responses\",\"creator\":\"Carnegie Hall, Link Up\",\"date\":\"Inspected 2026-10-22; page publication date not established\",\"language\":\"English\",\"rights\":{\"decision\":\"usable-for-prototype\",\"basis\":\"Reference and original explanatory prose only. No source photographs, scores, recordings, worksheets or other assets reproduced.\",\"scope\":\"Local prototype scope; no general asset licence or endorsement is inferred from access.\"}}],\"passages\":[{\"id\":\"expression\",\"sourceId\":\"carnegie-expression\",\"title\":\"Describe a choice, then explain a response\",\"form\":\"paraphrase\",\"language\":\"en\",\"text\":\"Tempo, dynamics and articulation offer ways to compare musical choices and discuss how listeners interpret them. An observation about timing is different from an interpretation of expressive effect.\",\"context\":\"Original instructional paraphrase. No Carnegie repertoire or media is used; the source does not validate this generated stimulus or prescribe one emotion for a particular sound.\",\"sha256\":\"0aed01d10207dc5bcafd0067dd1ad1c5a2fc28bf4816031f5b9009bd98b2104a\"}],\"claims\":[{\"id\":\"controlled\",\"kind\":\"empirical\",\"text\":\"At the same tempo, the two generated versions share onset positions, sine frequency and peak gain while their tone-envelope lengths differ.\",\"passageIds\":[\"expression\"],\"qualification\":\"This is a property of the authored event/synthesis specification, not a claim of equal perceived loudness, energy or timbre.\"},{\"id\":\"interpretation\",\"kind\":\"interpretive\",\"text\":\"A duration difference can support more than one reasoned expressive interpretation.\",\"passageIds\":[\"expression\"],\"qualification\":\"Perceptibility, musical usefulness and learner responses have not been evaluated by a performer or participant.\"}],\"context\":[\"The span is eight quarter-note beats, shown as two groups of four in this Western beat-grid exercise. There are nine tone events; eight beats does not mean eight sounds. Beat offsets start at zero; the first event is displayed as beat 1.\",\"The original onset offsets are 0, 1, 1.5, 2.5, 3, 4, 5.5, 6 and 7 beats. Short tones last 0.12 beat and sustained tones 0.42 beat. Neither version connects every adjacent tone, so sustained is not labeled legato.\",\"For a beat offset b and tempo T, elapsed seconds = b × 60 / T. Tone lengths scale with beats when tempo changes; oscillator frequency stays 440 Hz. Attack and release remain 5 ms and 15 ms.\",\"Equal oscillator settings and peak gain are controlled signal parameters, not equal perceived loudness, timbre or signal energy. The master-volume control is not loudness normalization.\",\"The sound is mono, generated from a sine formula with smooth attack/release and no third-party samples. The arrangement and diagrams are Codex-assisted original work for this pilot; no human composer or performer is invented.\",\"Select a replay region and start playback yourself. Version, tempo or region changes stop the current sound. Pause preserves an approximate beat cursor; shared cursors do not establish what another person heard.\",\"This is a local draft. A performer/educator, actual learner/accessibility observations and final release terms remain open. The no-audio event task supports structure and interpretation, not an identical sensory experience.\"],\"timeline\":[],\"relations\":[],\"reviews\":[{\"dimension\":\"content\",\"result\":\"passed\",\"reviewer\":{\"id\":\"literature_review\",\"role\":\"Independent AI instructional/provenance and local-draft-rights reviewer\",\"independent\":true},\"revision\":\"0.1.0\",\"contentDigest\":\"40190c5a0dc101882934a6579af5e9c3eb75a2d38b65d18e728fee03d9e23aaa\",\"artifactDigest\":\"14fcf71efb415de3c2e36c19f56ba413d09628ef5c5fefda0e9018004edb382d\",\"evidencePath\":\"docs/verification/universal-pilots-ai-performance.md\",\"reviewedOn\":\"2026-10-22\"},{\"dimension\":\"provenance\",\"result\":\"passed\",\"reviewer\":{\"id\":\"literature_review\",\"role\":\"Independent AI instructional/provenance and local-draft-rights reviewer\",\"independent\":true},\"revision\":\"0.1.0\",\"contentDigest\":\"40190c5a0dc101882934a6579af5e9c3eb75a2d38b65d18e728fee03d9e23aaa\",\"artifactDigest\":\"14fcf71efb415de3c2e36c19f56ba413d09628ef5c5fefda0e9018004edb382d\",\"evidencePath\":\"docs/verification/universal-pilots-ai-performance.md\",\"reviewedOn\":\"2026-10-22\"},{\"dimension\":\"rights\",\"result\":\"passed\",\"reviewer\":{\"id\":\"literature_review\",\"role\":\"Independent AI instructional/provenance and local-draft-rights reviewer\",\"independent\":true},\"revision\":\"0.1.0\",\"contentDigest\":\"40190c5a0dc101882934a6579af5e9c3eb75a2d38b65d18e728fee03d9e23aaa\",\"artifactDigest\":\"14fcf71efb415de3c2e36c19f56ba413d09628ef5c5fefda0e9018004edb382d\",\"evidencePath\":\"docs/verification/universal-pilots-ai-performance.md\",\"reviewedOn\":\"2026-10-22\"}],\"reviewRequirements\":[\"content\",\"provenance\",\"rights\",\"learning\",\"accessibility\"],\"reviewLimitations\":[\"Digital/source review is separate from performer/educator review and actual screen-reader/learner sessions, which remain unperformed. Release licensing is proposed, not granted.\"],\"extensions\":{},\"activity\":{\"type\":\"phrase-comparison\",\"spanBeats\":8,\"tempos\":[60,90,120],\"events\":[{\"id\":\"e1\",\"beat\":0},{\"id\":\"e2\",\"beat\":1},{\"id\":\"e3\",\"beat\":1.5},{\"id\":\"e4\",\"beat\":2.5},{\"id\":\"e5\",\"beat\":3},{\"id\":\"e6\",\"beat\":4},{\"id\":\"e7\",\"beat\":5.5},{\"id\":\"e8\",\"beat\":6},{\"id\":\"e9\",\"beat\":7}],\"versions\":[{\"id\":\"short\",\"label\":\"A · Short tones\",\"gateBeats\":0.12},{\"id\":\"sustained\",\"label\":\"B · Sustained tones\",\"gateBeats\":0.42}],\"synthesis\":{\"waveform\":\"sine\",\"frequencyHz\":440,\"peakGain\":0.18,\"attackSeconds\":0.005,\"releaseSeconds\":0.015},\"assetRights\":{\"status\":\"local-draft\",\"provenance\":\"Original Codex-assisted event arrangement, notation and formula-generated signal created for this repository on 2026-10-22. No imported recording, sampled instrument or external score.\",\"releaseProposal\":\"Proposed CC BY 4.0 for this pilot’s original educational phrase/diagrams, subject to rights-holder approval before release; no repository-wide licence or exclusive copyright assertion.\"},\"transfer\":\"Keep the onset pattern but compare a slower tempo with longer tones. Cite an event and its beat/second values, identify which variables changed, then offer two possible listener responses and explain what actual observation would test them.\",\"rubric\":[\"Locate evidence by event ID and beat offset; include seconds at the chosen tempo.\",\"Separate onset, tone length, gap, frequency and peak gain from perceived loudness or expressive character.\",\"Give two reasoned interpretations without treating a mood label as an answer key.\",\"Distinguish generated signal, human performance and listener evidence.\",\"Explain what the visual/no-audio route can establish and what it cannot.\"]},\"authorVerification\":{\"kind\":\"author-check\",\"scope\":\"local-preview\",\"author\":\"atlas-editor\",\"checkedOn\":\"2026-10-23\",\"revision\":\"0.1.0\",\"contentDigest\":\"40190c5a0dc101882934a6579af5e9c3eb75a2d38b65d18e728fee03d9e23aaa\",\"artifactDigest\":\"d2e8ef9563533f485619ec40760e45dbf89d66358644d07f18a4c296fb9d6be2\",\"evidencePath\":\"docs/verification/universal-author-continuation.md\",\"checks\":[\"Schema, source-reference and preparation-packet hash validation\",\"Passed tests/exploration-methods.test.mjs\",\"Passed tests/exploration-studio.test.mjs\",\"Passed tests/exploration-professions.test.mjs\",\"Passed tests/exploration-followups.test.mjs\"]}}</script><script type=\"module\" src=\"../../../explorations/ui.mjs\"></script></body></html>\n",
+  "previewDigest": "e28f33f74b9994cf2b04d5941660ea3ab3b0cecf76af70a159d611cf4256229a",
+  "receipts": {
+    "docs/verification/universal-pilots-ai-performance.md": {
+      "text": "# P08 implemented draft: independent AI review\n\nDate: 2026-10-22. Reviewer: separate Codex `literature_review` AI process, acting as source/instructional-design reviewer. No performer, professional music-educator, legal or accessibility-observer qualification is claimed. No repository edits, browser, new source requests, other-chat messages or nested agents were used.\n\n## Exact candidate and method\n\nRecord: `x-performance-0001`, revision `0.1.0`, draft/local-preview.\nContent digest: `862e2e8b68c83197998279111f689bcfe81dde990a06cbbf256a9bbb408a785f`.\nArtifact digest: `b24e36b9e5defdf74dda27e5fd080a75f91a56fb2b51cc662485e12f9af04dc0`.\n\nRead canonical `explorations/performance.json`, `performance-model.mjs`, `studio-views.mjs`, `studio-ui.mjs`, the original-assets proposal and supplied review HTML. Independently recomputed both digests with Node 22.23.3 `node:crypto`, a separate canonical serializer, the builder's current bound-file set and current related collection titles. Values match `/tmp/atlas-studio-digests.json`. Canonical rendering exactly reproduces `/tmp/atlas-studio-review-pages/x-performance-0001.html`; the selected paraphrase's hash also matches. Evaluated all six version/tempo signals and their WAV encodings without playback. This verifies numeric/model properties, not audible perceptibility or native browser behavior.\n\nThe primary teaching-source body was independently inspected in the prior source review: [Carnegie Hall expressive-qualities resource](https://www.carnegiehall.org/Education/Programs/Link-Up/New-York-City/Explore-Expressive-Qualities-in-Music-and-Movement). It supports comparing musical choices and explaining responses. No new source claim or third-party excerpt/media is introduced by this implementation; no fresh retrieval was needed. See `/tmp/atlas-p08-source-review.md` for that body-read scope.\n\n## Findings\n\n**P2 — Include provenance and pending terms with the generated WAV export.** In `explorations/studio-ui.mjs`, the `phrase-download` handler exports only the WAV and a variant/BPM/region filename. `encodeWav` writes audio-format/data chunks without authoring, event, licence-status or version metadata. The exported file therefore cannot carry the exact event JSON and synthesis-code version requested by `docs/pilots/research/studio-original-assets.md`, or the visibly pending rights terms. Add an accompanying provenance export containing pilot ID/revision, content/artifact digests or actual synthesis-code digest, event offsets and gate/synthesis parameters, BPM/region/sample format, Codex-assisted provenance and explicit proposed-not-granted release terms. A deliberate combined export or linked companion JSON is suitable; do not silently grant CC BY in metadata. This is a repair request for the export, not a claim that a licence has been granted or a reason to discard the local draft.\n\nNo other actionable conceptual/source defect found in the reviewed candidate. Native transport correctness remains for the separate engineering review and actual browser checks.\n\n## Supported observations\n\n- Eight beats is correctly a metric span with nine events. Zero-based offsets and displayed beat numbering are explicitly distinguished. The original offsets remain stable across variants and tempos.\n- At each selected BPM, short/sustained gates are 0.12/0.42 beat; frequency is 440 Hz, waveform sine and peak-gain parameter 0.18. The code's 5 ms attack and 15 ms release are included inside each gate, not appended after it. No event overlaps another. The maximum computed sample magnitude is approximately 0.180000007 (Float32 rounding), well below clipping. Equal perceived loudness, energy or timbre is expressly disclaimed.\n- Full spans render 8 s at 60 BPM, 5⅓ s at 90, and 4 s at 120. At 90 BPM, gates are 0.08/0.28 s, agreeing with the no-audio guide. The last sustained tone ends at offset 7.42; silence continues to the span end. The smallest sustained gap is 0.08 s at 60 BPM, approximately 0.053333 s at 90 and 0.04 s at 120. Thus neither version is represented as fully connected/legato.\n- Seconds derive from offset × 60/BPM, and gate lengths scale with beat duration. Attack/release remain fixed in seconds, as disclosed. Source event IDs, beat/time table and gap-to-next/span-end column allow a checkable structural observation at each tempo.\n- Formula-generated mono PCM and locally encoded WAV avoid third-party samples. This is explicitly a generated sine-tone rhythm, not a human percussion recording. The source is instructional context, not empirical proof that the authored stimulus works.\n- The claim about controlled parameters explicitly attributes itself to the event/synthesis specification. Its displayed-source reference is pedagogical rather than a purported external measurement of this audio. The proposed expressive interpretations remain open and unvalidated by listeners.\n- The static no-audio guide includes both complete 90 BPM event tables, conversion guidance, span/tail explanation, a located evidence task and multiple possible interpretations. The transfer rubric distinguishes generated parameters, human performance and listener evidence. It does not promise equivalence to hearing or score agreement with a mood label.\n- The asset panel and main limitations identify the CC BY 4.0 terms as a proposal requiring approval. The checkout has no stated repository-wide licence. No human composer, performer release, exclusive copyright or external sample permission is fabricated. The Carnegie paraphrase and excluded-asset boundary remain appropriate for local drafting.\n\n## Scoped decisions\n\n**Conceptual/source content: passed within the inspected model and instructional limits.** This is not a performer assessment or evidence of actual learning. Numeric timing/formula checks support the structural assertions; listening observations remain absent.\n\n**External-source/prototype reuse: passed within reference and original paraphrase only.** No source score, repertoire, recording, worksheet or media licence is inferred. **Original-asset release rights: pending**; proposed terms are not a grant. The export provenance defect above needs repair before treating export provenance as complete. Do not issue an unrestricted whole-rights acceptance from this report.\n\n**Performer/educator perceptibility and pedagogical-meaning review: not performed.** **Learner, screen-reader, reduced-motion, keyboard and actual native playback checks: not performed.** Keep their actual status explicit. The independent source/design AI role cannot close these observation gaps. Full acceptance remains blocked by the declared outstanding reviews and release/provenance scope; exact-artifact recheck is required after repairs.\n\n\n---\n\n# P08 final repair recheck: bounded independent AI review\n\nDate: 2026-10-22. Reviewer: separate Codex `literature_review` AI source/instructional reviewer. No performer, legal, accessibility or learner-observer qualification is asserted. This supplements `/tmp/atlas-p08-artifact-review.md` and preserves its earlier findings as history.\n\nExact candidate: `x-performance-0001`, revision `0.1.0`, draft/local-preview.\nContent digest: `40190c5a0dc101882934a6579af5e9c3eb75a2d38b65d18e728fee03d9e23aaa`.\nArtifact digest: `14fcf71efb415de3c2e36c19f56ba413d09628ef5c5fefda0e9018004edb382d`.\n\nIndependently recomputed both hashes using Node 22.23.3, a separate canonical serializer and `node:crypto`, current bound files and collection titles. Values match the supplied manifest. Canonical rendering exactly matches the refreshed supplied HTML. Read current source/model, asset proposal, provenance encoder and shared UI. No browser or source retrieval was used.\n\n## Export finding resolved\n\nThe prior P2 finding is repaired. `performanceProvenance` supplies identity/revision, the named version-1 formula renderer, exact event timing/gaps, synthesis settings, region frame boundaries, sample format, Codex-assisted provenance, local-draft rights status and proposed-not-granted terms. `encodeWav` embeds that JSON in a NUL-terminated ASCII RIFF LIST/INFO/ICMT comment, escaping Unicode without losing its JSON value. The playback source and download handler both call the same `wav()` function with that provenance. No separate unprovenanced export path was found.\n\nIndependently generated full, first-half and second-half sustained/90 BPM WAVs and parsed their RIFF chunks without relying on the encoder for decoding. Embedded JSON round-trips exactly, RIFF size matches file size, and region frame counts match PCM lengths (256000/128000/128000 at 48 kHz). Supplied private-note sentinel, cursor and playback volume do not enter the serialized selection or waveform provenance. Metadata carries `local-draft` and the explicit pending terms; no CC BY grant is invented. The documentation correctly warns that later editors/conversions can remove metadata.\n\n## Current conclusions\n\nNo remaining actionable conceptual/source/provenance defect was found in this recheck. The exact event/gate semantics and no-audio evidence task remain as reviewed: nine sine-tone events in eight quarter-note beats; unchanged onset offsets; short/sustained durations, fixed oscillator parameters and explicit perceptual limits; tempo conversion and release-within-gate/span semantics; multiple supported interpretations without a mood answer key. The paraphrased teaching source is not represented as validation of this generated stimulus.\n\n- **Content: passed within model/source/instructional scope.** No performer perceptibility, actual learning or native playback claim is supplied by this AI review.\n- **Provenance: passed within authored specification and local generated-export scope.** The repaired exported file retains the actual renderer/formula and event/settings record and pending rights context.\n- **Rights: passed only for continued local drafting/review and the source-reference/original-paraphrase boundary.** No third-party repertoire, recording, score, worksheet or sampled instrument is imported. **Public-release terms remain pending**; the licence proposal is not a grant or legal clearance. This is not unrestricted rights acceptance.\n\nPerformer/educator observation, actual learner and accessibility observations remain unperformed in this review. Parent-reported native playback/export and engineering test results are not relabeled as my own observations. Full acceptance is not issued. Any later content or bound-code change requires a new artifact binding. No authored file edit, browser, source request, other-chat message or nested agent occurred.\n",
+      "sha256": "3ed4552d5a8bbb46a871dc8b2573fc6a1028f11a692564554d056efff313496e"
+    },
+    "docs/verification/universal-author-continuation.md": {
+      "text": "# Local continuation under author checks\n\n23 October 2026. The user explicitly removed the outstanding review prerequisites and instructed continued implementation of the full master plan. Independent AI, specialist, engineering, practitioner, learner and screen-reader reviews are optional follow-up, not gates on local authoring, validation, acceptance or integration preparation. This supersedes earlier local review-gate requirements. No rejected external review operation is retried.\n\nLocal acceptance records use `authorVerification.kind: author-check` and bind the current revision, content and rendered-code digest to actual author checks. They do not create independent review receipts. Existing receipts remain unchanged as historical evidence. Physical and participant sessions remain unperformed; professional reviewer fields remain empty. The renderer labels author-checked previews distinctly. Legacy independent-review acceptance is retained for archived records and rejects stale receipts as before.\n\nThe six existing pilot texts and activities remain intact. The four already archived pilots receive new revisions for the changed runtime and acceptance basis; earlier revisions remain available through explicit note export. Craft/performance retain their original revision because neither had an archived edition. No private note store is read or migrated by these changes. Craft remains a structural model without a physical specimen; performance remains a generated digital stimulus with its existing local asset terms. The new law and health pilots supply original bounded learning tasks, not professional approval or a decision about a reader's health or legal dispute. Source access, truthful claims, privacy, actual rights and automatic validation remain substantive requirements.\n\n## Source checks\n\nThe four named CRA sections (9, 19, 20, 22) returned HTTP 200 from their official URLs on 23 October. The web reader could not parse XHTML; an ordinary direct request to the same URLs succeeded. All four byte hashes match the retained 22 October preparation captures. Their displayed editorial cutoffs still differ (22/20/22/21 October) and future/outstanding notices remain. No certified current-law consolidation is claimed. The statutory timing paragraphs and their exceptions were inspected; the activity only applies the ordinary arithmetic to stipulated facts. Repair waiting periods return no ordinary deadline.\n\nNHLBI's [breathing description](https://www.nhlbi.nih.gov/health/lungs/breathing-benefits) was reread on 23 October, including the diaphragm phases and the distinction between air movement and gas exchange. Its third-party animation is excluded. No stopped clinical or licence source was reopened.\n\nFresh legal capture hashes:\n\n- §9: `e967cd7aa348f8d5efc5fc3f84028219afb4f3e276000bd07b11edd2f18ff7c9`\n- §19: `cace7192983aa605c5f524ceb5a1146b3fd23679c78b505fc97ccbf9fcbbd3ab`\n- §20: `3ac4e952da31966e51f2b033f151f80ec1156567120969c86d123fc12fa1963c`\n- §22: `cb3bb9fd0c236d7180dfc78fa909456b8232fa254f5b96ca9902b1d6a43b00fd`\n\nCapture location: `/tmp/atlas-author-continuation-20261023/`. Capture dates are not legal-effective dates. Original source registers and preparation packets remain historical and unchanged.\n\n## Verification\n\nThe source/schema/model suite passed 100 test groups. The native-browser suite passed 27 groups; three affected layout/activity groups passed again after making long numeric tables horizontally scrollable. A saved-state normalization inconsistency (`0.50` versus `0.5`) was repaired. Desktop and phone, light and dark, static reading, keyboard controls, notes, sharing, malformed windows and impossible irrigation requests were exercised. This is author verification, not human learning or screen-reader observation.\n\nEight pilots and six follow-ups are now authored and checked locally: diplomatic perspectives, archaeology premises, Frankenstein editions, Cabuliwallah narrative access, Cicero disclosure and the water ledger. Selected historical quotations retain their exact prepared text and hashes; the archaeology truth table matches all eight prepared cases, and water tests verify conservation, delivery limits, missing values, corrections and path differences.\n\nFor subsequent authoring, run `node scripts/check-local-continuation.mjs` for read-only schema, source-binding and model/source tests. After actually inspecting new source/content changes, run `node scripts/check-local-continuation.mjs --record --date YYYY-MM-DD` with the real check date to record author verification and rebuild the workshop/orientations. Then run the affected browser and integration tests. This command does not supply specialist qualifications, source freshness, real sessions or public release. Before freezing a changed already-retained lesson, increment its revision and preserve `previousRevisions`; immutable earlier editions must not be replaced.\n\nSupplemental source identities bind exact preparation-packet bytes and the original source URL/read record. Earlier source registers, quotes, access stops and review evidence remain untouched. New orientation verification covers the changed local lesson links and rendering; all 30 substantive orientation texts and their historical reviews remain retained.\n\nThe cumulative delivery rehearsal and preservation audit are recorded separately in `docs/verification/universal-author-delivery.md`. That later record does not alter this immutable source-check receipt.\n",
+      "sha256": "cb211f401ec6aaa192c27595d04057ddb4dd6a0430880fa88964da3daf5a1431"
+    }
+  },
+  "supplements": {}
+}

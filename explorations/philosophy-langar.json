@@ -1,0 +1,207 @@
+{
+  "schemaVersion": 1,
+  "id": "x-philosophy-0003",
+  "pilotId": "P03",
+  "revision": "0.1.0",
+  "status": "accepted",
+  "publication": "local-preview",
+  "title": "A purpose, a rule and an observation",
+  "subtitle": "Read two institutional accounts of langar.",
+  "summary": "Read two institutional accounts of langar. Decide which claims they support and which need an account of a particular occasion.",
+  "audience": "General readers; all selected evidence and task instructions are included.",
+  "scope": "English institutional accounts read 22 October 2026. Current code status, Punjabi comparison and observed local practice are unverified; this is source literacy, not ritual instruction.",
+  "author": "atlas-editor",
+  "updatedOn": "2026-10-23",
+  "domainIds": [
+    "D21",
+    "D22",
+    "D17"
+  ],
+  "relatedCollectionIds": [],
+  "knowledgeModes": [
+    "interpretive"
+  ],
+  "methods": [
+    "source-comparison"
+  ],
+  "prerequisites": [],
+  "sources": [
+    {
+      "id": "followup-seq-sikh-faq",
+      "title": "FAQ: What is langar?",
+      "url": "https://www.sikhcoalition.org/about-sikhs/faq/",
+      "locator": "Named langar subsection; adjacent visitor/welcome context. Public explanation, not observation of every gurdwara or project participant consent. Other FAQ claims not adopted.",
+      "creator": "Sikh Coalition",
+      "date": "Undated page retrieved 22 October 2026",
+      "language": "en",
+      "rights": {
+        "decision": "usable-for-prototype",
+        "basis": "Original attributed summaries and original fictional exercises; no third-party media, full documents or extended quotations copied. No broad licence established. Links/original commentary; exact quotation or media selection needs review.",
+        "scope": "Local commentary and source links only; no third-party assets or participant consent implied."
+      }
+    },
+    {
+      "id": "followup-seq-sgpc-reht",
+      "title": "The Code of Sikh Conduct and Conventions: English Version of the Sikh Reht Maryada",
+      "url": "https://sgpc.net/wp-content/uploads/2025/06/Sikh-Rehat-Maryada-English-n.pdf",
+      "locator": "Rendered cover/contents, preface p.6, article XXI p.49 and adjacent p.50; text layer effectively empty. English only; Punjabi uninspected. Current edition status and lived practice not established.",
+      "creator": "Dharam Parchar Committee, SGPC; English preface signed Kulraj Singh",
+      "date": "Preface dated 31 August 1994; upload path 2025/06 does not establish edition date",
+      "language": "en",
+      "rights": {
+        "decision": "usable-for-prototype",
+        "basis": "Original attributed summaries and original fictional exercises; no third-party media, full documents or extended quotations copied. Links/original bounded commentary only; no broad reproduction licence established.",
+        "scope": "Local commentary and source links only; no third-party assets or participant consent implied."
+      }
+    }
+  ],
+  "passages": [
+    {
+      "id": "purpose",
+      "sourceId": "followup-seq-sikh-faq",
+      "title": "A stated purpose",
+      "form": "paraphrase",
+      "language": "en",
+      "text": "The Sikh Coalition connects communal preparation and eating with equality. Its account qualifies sitting on the floor by ability.",
+      "context": "Original bounded summary of the dated source reading; see source scope and limits.",
+      "sha256": "07e0da6bd1d58fbd400c075bab607fa7adf3078dbeb2595655b4bbaad042dc02"
+    },
+    {
+      "id": "norm",
+      "sourceId": "followup-seq-sgpc-reht",
+      "title": "A normative text",
+      "form": "paraphrase",
+      "language": "en",
+      "text": "Article XXI in the selected SGPC English code discusses service and participation across backgrounds, while distinguishing a same-plate restriction concerning baptised Sikhs. Meal participation and sharing a plate are different provisions.",
+      "context": "Original bounded summary of the dated source reading; see source scope and limits.",
+      "sha256": "e6e9e2b6e0580fa5b21127d8f21f079c9750250a4aacfdae310b4888e99a2515"
+    },
+    {
+      "id": "edition",
+      "sourceId": "followup-seq-sgpc-reht",
+      "title": "An edition question",
+      "form": "paraphrase",
+      "language": "en",
+      "text": "The English preface is dated 31 August 1994. The file was hosted under a 2025/06 path; neither that path nor the date of reading proves when the code was issued or its current status.",
+      "context": "Original bounded summary of the dated source reading; see source scope and limits.",
+      "sha256": "344c83375bf4b50f31d7bb64cf3045b7778a2eb3a84a3ab1e0077597c84828c8"
+    },
+    {
+      "id": "visit",
+      "sourceId": "followup-seq-sikh-faq",
+      "title": "An unfilled observation card",
+      "form": "original",
+      "language": "en",
+      "text": "Occasion: unknown. Place: unknown. Participants and their account: not recorded. Accessibility arrangement: not observed. Permission to reuse any future account: not obtained.",
+      "context": "Original fictional scenario; associated source supplies a method/context only, not these facts.",
+      "sha256": "057b97e2aa80ae66b0482f27ad42802f500f3be23ba39f416d1ae3f89518dcbc"
+    }
+  ],
+  "claims": [
+    {
+      "id": "scope-of-evidence",
+      "kind": "interpretive",
+      "text": "Distinguish an institutional explanation from an observed event.",
+      "passageIds": [
+        "purpose"
+      ],
+      "qualification": "English institutional accounts read 22 October 2026. Current code status, Punjabi comparison and observed local practice are unverified; this is source literacy, not ritual instruction."
+    }
+  ],
+  "context": [
+    "The earlier failed refresh of these sources remains a stop. The lesson uses retained, dated reading scopes; no fresh access is claimed.",
+    "The two institutions provide named perspectives, not project community participation. No sacred media, ritual simulation or participant quotation is used."
+  ],
+  "timeline": [],
+  "relations": [],
+  "reviews": [],
+  "reviewRequirements": [
+    "content",
+    "rights"
+  ],
+  "reviewLimitations": [
+    "Local author check only. No independent reviewer, professional credential, actual learner/access observation, community endorsement or physical outcome is claimed."
+  ],
+  "activity": {
+    "type": "source-comparison",
+    "prompts": [
+      {
+        "id": "ability",
+        "claim": "The selected FAQ makes floor sitting conditional on ability.",
+        "answer": "direct",
+        "evidenceIds": [
+          "purpose"
+        ],
+        "feedback": "Retain the qualification. It is a statement in this institutional account, not an observation of a visitor."
+      },
+      {
+        "id": "everywhere",
+        "claim": "These accounts prove what happened at every gurdwara this week.",
+        "answer": "unsupported",
+        "evidenceIds": [
+          "none"
+        ],
+        "feedback": "A general account cannot fill the missing place, time and observation card."
+      },
+      {
+        "id": "plate",
+        "claim": "Welcoming participants entails unrestricted use of one shared plate in the selected code.",
+        "answer": "unsupported",
+        "evidenceIds": [
+          "none"
+        ],
+        "feedback": "The selected code distinguishes these provisions. Do not erase the distinction to create agreement."
+      },
+      {
+        "id": "upload",
+        "claim": "The upload folder establishes a 2025 edition of the code.",
+        "answer": "unsupported",
+        "evidenceIds": [
+          "none"
+        ],
+        "feedback": "Hosting paths and edition statements answer different questions."
+      },
+      {
+        "id": "interpret",
+        "claim": "Reading purpose and instruction separately helps avoid treating an aspiration as measured compliance.",
+        "answer": "inference",
+        "evidenceIds": [
+          "purpose",
+          "norm"
+        ],
+        "feedback": "This is a method inference about evidence types; it does not judge religious authenticity."
+      }
+    ],
+    "transfer": "Draft three questions for a hypothetical future local account: one about an occasion, one about participation/access and one about permission to use the account. Leave all answers unknown until evidence exists.",
+    "rubric": [
+      "Distinguish an institutional explanation from an observed event.",
+      "Preserve the meal/plate and ability qualifications.",
+      "Identify edition uncertainty without supplying a guessed date.",
+      "Attribute both accounts without claiming to represent all Sikh practice."
+    ]
+  },
+  "extensions": {
+    "atlas:preparation": {
+      "path": "docs/pilots/sequences/preparation/remaining-sequences-20261023.json",
+      "scope": "Exact historical source receipts retained; current exercise is independently identified original authoring."
+    }
+  },
+  "authorVerification": {
+    "kind": "author-check",
+    "scope": "local-preview",
+    "author": "atlas-editor",
+    "checkedOn": "2026-10-23",
+    "revision": "0.1.0",
+    "contentDigest": "a4871ca75d8fa38c662211c40fc799aa8ae75730dce93fcd8237d77208e4b92a",
+    "artifactDigest": "7fee447422488ce15456caa4ffe80ababf246825a3426808af32ec664acb730e",
+    "evidencePath": "docs/verification/universal-author-sequences.md",
+    "checks": [
+      "Schema, source-reference and preparation-packet hash validation",
+      "Passed tests/exploration-methods.test.mjs",
+      "Passed tests/exploration-studio.test.mjs",
+      "Passed tests/exploration-professions.test.mjs",
+      "Passed tests/exploration-followups.test.mjs",
+      "Passed tests/exploration-sequences.test.mjs"
+    ]
+  }
+}

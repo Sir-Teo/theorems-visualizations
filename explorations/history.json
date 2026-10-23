@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "revision": "0.1.2",
+  "revision": "0.1.3",
   "status": "accepted",
   "publication": "local-preview",
   "author": "Atlas authoring task",
@@ -410,9 +410,27 @@
   },
   "previousRevisions": [
     "0.1.0",
-    "0.1.1"
+    "0.1.1",
+    "0.1.2"
   ],
   "reviewLimitations": [
     "Screen-reader and learner sessions have not been performed."
-  ]
+  ],
+  "authorVerification": {
+    "kind": "author-check",
+    "scope": "local-preview",
+    "author": "Atlas authoring task",
+    "checkedOn": "2026-10-23",
+    "revision": "0.1.3",
+    "contentDigest": "0a98cce8c9f30e37b7f8ce4e50bda45f877a244049cc34c83abbfc3579d11102",
+    "artifactDigest": "8b9ff5bba723967d5d760842f4a253cfdc91ad951df5bb1a14f53aaf0c7b5fd2",
+    "evidencePath": "docs/verification/universal-author-continuation.md",
+    "checks": [
+      "Schema, source-reference and preparation-packet hash validation",
+      "Passed tests/exploration-methods.test.mjs",
+      "Passed tests/exploration-studio.test.mjs",
+      "Passed tests/exploration-professions.test.mjs",
+      "Passed tests/exploration-followups.test.mjs"
+    ]
+  }
 }

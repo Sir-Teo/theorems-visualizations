@@ -16,7 +16,7 @@ function canonical(value) {
 // Lifecycle/review additions do not change the reviewed content, but all reader-facing
 // text, source/rights metadata, activity logic and requirements do.
 export function contentDigest(record) {
-  const { reviews, status, publication, ...content } = record;
+  const { reviews, authorVerification, status, publication, ...content } = record;
   return textDigest(canonical(content));
 }
 export function reviewArtifactDigest(record, codeHashes, collectionTitles = {}) {
@@ -127,6 +127,15 @@ export function validateExploration(r, { domainIds, collectionIds, sourceIds, kn
     check(/^\d+\.\d+\.\d+$/.test(review.revision) && /^[a-f0-9]{64}$/.test(review.contentDigest || '') && /^[a-f0-9]{64}$/.test(review.artifactDigest || ''), 'review version/digests missing');
   }
   if (r.status === 'accepted') {
+    if (r.authorVerification !== undefined) {
+      const v = r.authorVerification;
+      check(v?.kind === 'author-check' && v?.scope === 'local-preview' && r.publication === 'local-preview', 'author verification is limited to local previews');
+      check(v?.author === r.author && /^\d{4}-\d{2}-\d{2}$/.test(v?.checkedOn || ''), 'author verification identity/date missing');
+      check(v?.revision === r.revision && v?.contentDigest === contentDigest(r), 'author verification is stale for this exact content');
+      check(/^[a-f0-9]{64}$/.test(artifactDigest || '') && v?.artifactDigest === artifactDigest, 'author verification is stale or unbound for this rendered artifact');
+      check(/^docs\/verification\/[a-z0-9-]+\.md$/.test(v?.evidencePath || ''), 'author verification evidence path invalid');
+      check(Array.isArray(v?.checks) && v.checks.length > 0 && v.checks.every(text), 'author verification checks missing');
+    } else {
     check(a?.type !== 'weave-structure', 'P07 physical evidence and asset contract remain unimplemented; structural review cannot accept the full craft pilot');
     check(a?.type !== 'phrase-comparison' || a.assetRights?.status !== 'local-draft', 'P08 release terms and declared observations remain open; keep this prototype unaccepted');
     for (const dimension of r.reviewRequirements) {
@@ -135,6 +144,7 @@ export function validateExploration(r, { domainIds, collectionIds, sourceIds, kn
       if (!latest) continue;
       check(latest.revision === r.revision && latest.contentDigest === contentDigest(r), 'review is stale for this exact content: ' + dimension);
       check(/^[a-f0-9]{64}$/.test(artifactDigest || '') && latest.artifactDigest === artifactDigest, 'review is stale or unbound for this rendered artifact: ' + dimension);
+    }
     }
   }
   check(r.extensions && typeof r.extensions === 'object' && !Array.isArray(r.extensions) && Object.keys(r.extensions).every(x => /^[a-z][a-z0-9-]*:[a-z][a-z0-9-]*$/.test(x)), 'extensions must use namespaced keys');

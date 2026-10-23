@@ -18,10 +18,10 @@ const fixture = () => ({ schemaVersion: 1, scope: 'Test issue, no publication.',
 const append = (x, state, extra = {}) => x.issues[0].events.push({ sequence: x.issues[0].events.length + 1,
   at: '2026-10-23', state, note: 'Explicit test decision.', evidence: [structuredClone(evidence)], ...extra });
 
-test('the actual queue has four exact local evidence bindings, open and unassigned', async () => {
+test('the actual queue has four exact local evidence bindings, open with explicit author ownership', async () => {
   const ledger = JSON.parse(await readFile(new URL('../stewardship/issues.json', import.meta.url)));
   const report = await auditStewardship(ledger, '2026-10-23');
-  assert.deepEqual(report.counts, { tracked: 4, open: 4, recordedClosed: 0, needingEvidenceReconciliation: 0, unassigned: 4 });
+  assert.deepEqual(report.counts, { tracked: 4, open: 4, recordedClosed: 0, needingEvidenceReconciliation: 0, unassigned: 0 });
   assert.deepEqual(ledger.issues.map(x => x.target), ['P02-L03', 'P05-L03', 'P03-L03', 'P01-L03']);
 });
 

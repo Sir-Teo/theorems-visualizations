@@ -29,9 +29,9 @@ function nextEdition(source=first) {
  bundle.previewHTML=renderExploration(r,bundle.collectionTitles);bundle.previewDigest=sha(bundle.previewHTML);
  const entry={id:r.id,revision:r.revision,path:`editions/bundles/${r.id}/${r.revision}.json`,sha256:sha(jsonBytes(bundle))};validateBundle(bundle,runtime,entry);return {bundle,entry};
 }
-test('four exact accepted source editions freeze reproducibly; studio drafts and release approvals remain absent',async()=>{
- assert.equal((await freezeEditions({checkOnly:true})).retained,4);
- assert.deepEqual([...archive.bundles.values()].map(e=>e.bundle.record.pilotId).sort(),['P01','P02','P03','P05']);
+test('current local editions freeze reproducibly while historical editions and empty release ledgers remain',async()=>{
+ assert.equal((await freezeEditions({checkOnly:true})).retained,28);
+ assert.deepEqual([...new Set([...archive.bundles.values()].map(e=>e.bundle.record.pilotId))].sort(),['P01','P02','P03','P04','P05','P06','P07','P08']);
  assert.deepEqual(JSON.parse(await readFile(new URL('../editions/releases.json',import.meta.url))).events,[]);
  for(const {bundle}of archive.bundles.values())assert.equal(bundle.record.publication,'local-preview');
 });
@@ -52,8 +52,9 @@ test('release ledger does not treat local acceptance as distribution permission'
 });
 test('preview and release catalogs have separate inventories, metadata and source payloads',()=>{
  const entries=[...archive.bundles.values()].map(e=>({...e,state:'preview'})),preview=renderEditions(entries,archive.runtimes);
- assert.equal(preview.currentCount,4);assert.equal(preview.canonicalPaths.length,0);assert.equal(preview.runtimes,1);
- assert.ok(![...preview.outputs.keys()].some(p=>/^explore\/x-(?:craft|performance)-/.test(p)));
+ assert.equal(preview.currentCount,24);assert.equal(preview.canonicalPaths.length,0);assert.equal(preview.runtimes,2);
+ assert.ok([...preview.outputs.keys()].some(p=>/^explore\/x-craft-0001\//.test(p)));
+ assert.ok([...archive.bundles.values()].every(e=>e.bundle.record.status==='accepted'));
  assert.ok(![...preview.outputs.keys()].some(p=>/^(?:docs|editions|labs)\//.test(p)));
  assert.ok(![...preview.outputs.values()].some(t=>t.includes('rel="canonical"')));
  assert.throws(()=>renderEditions(entries,archive.runtimes,{base}),/must not/);
@@ -67,7 +68,7 @@ test('delivery adapter preserves all reviewed passage bytes, browser payload and
   const html=relocateEdition(bundle,{mode:'preview'});
   const payload=html.match(/<script id="exploration-data" type="application\/json">([^]*?)<\/script>/)[1];assert.deepEqual(JSON.parse(payload),bundle.record);
   for(const p of bundle.record.passages)assert.ok(JSON.parse(payload).passages.some(x=>x.sha256===p.sha256&&x.text===p.text));
-  assert.ok(!html.includes('../../../explorations/'));assert.ok(!html.includes('href="../../../docs/'));assert.ok(html.includes('href="../../../../#/c/'));
+  assert.ok(!html.includes('../../../explorations/'));assert.ok(!html.includes('href="../../../docs/'));if(bundle.record.relatedCollectionIds.length)assert.ok(html.includes('href="../../../../#/c/'));
   assert.match(html,/Edition history and review scope/);
  }
  assert.throws(()=>relocateEdition({...first.bundle,previewHTML:first.bundle.previewHTML.replace('Exploration workshop','Unexpected shell')},{mode:'preview'}),/Unknown frozen page/);

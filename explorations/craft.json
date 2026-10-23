@@ -3,7 +3,7 @@
   "id": "x-craft-0001",
   "pilotId": "P07",
   "revision": "0.1.0",
-  "status": "in-review",
+  "status": "accepted",
   "publication": "local-preview",
   "title": "Read and repair a weave plan",
   "subtitle": "Trace the same crossing from front to back.",
@@ -196,5 +196,22 @@
       "provenance": "Original Codex-assisted schematic diagrams and step wording created for this local pilot; not photographs or evidence of physical making. No ARTEX images imported.",
       "releaseProposal": "Proposed CC BY 4.0 for original educational diagrams, subject to rights-holder approval before public release. No existing repository-wide licence was found."
     }
+  },
+  "authorVerification": {
+    "kind": "author-check",
+    "scope": "local-preview",
+    "author": "atlas-editor",
+    "checkedOn": "2026-10-23",
+    "revision": "0.1.0",
+    "contentDigest": "dc94eecd0cfbc9e820935e68dec7bcd3fcfd16d24f9dc07018c9a8b7752ad14f",
+    "artifactDigest": "158b65de3dfbf5b0106280e1c432e9522ee0161f4d3183395d822d5189fed3f1",
+    "evidencePath": "docs/verification/universal-author-continuation.md",
+    "checks": [
+      "Schema, source-reference and preparation-packet hash validation",
+      "Passed tests/exploration-methods.test.mjs",
+      "Passed tests/exploration-studio.test.mjs",
+      "Passed tests/exploration-professions.test.mjs",
+      "Passed tests/exploration-followups.test.mjs"
+    ]
   }
 }

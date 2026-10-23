@@ -22,12 +22,12 @@ function withdrawal(f, ids = p.data.plans.routes.map(r => r.id)) {
   const d = { schemaVersion: 1, decision: 'withdraw-journeys', routes: ids.map(id => ({ id, revision: p.data.plans.version })), authorizedBy: 'Fixture only', authorizedOn: '2026-10-22', reason: 'Synthetic <withdrawal>' }, path = 'docs/releases/journey-test-withdraw.json', bytes = json(d);
   f.files.set(path, bytes); return { type: 'withdraw', evidence: { path, sha256: hash(bytes) } };
 }
-test('three static routes reuse ten accepted targets, three readings and one non-lesson gap', () => {
+test('three static routes reuse eleven accepted targets and three readings', () => {
   const before = json(p.data), r = render(), c = JSON.parse(r.outputs.get('journeys/catalog.json'));
   assert.equal(r.outputs.size, 6); assert.equal(r.availableCount, 3); assert.equal(r.canonicalPaths.length, 0); assert.equal(c.newLessons, 0);
-  const stops = c.journeys.flatMap(j => j.stops); assert.equal(stops.filter(s => s.href).length, 10); assert.equal(new Set(stops.filter(s => s.href).map(s => s.targetId)).size, 10);
-  assert.equal(stops.filter(s => s.kind === 'external-reading').length, 3); assert.equal(stops.filter(s => s.kind === 'gap').length, 1);
-  const all = [...r.outputs.values()].join('\n'); assert.ok(!all.includes('x-craft-0001')); assert.ok(!all.includes('x-performance-0001')); assert.ok(!all.includes('<script')); assert.ok(!all.includes('rel="canonical"'));
+  const stops = c.journeys.flatMap(j => j.stops); assert.equal(stops.filter(s => s.href).length, 11); assert.equal(new Set(stops.filter(s => s.href).map(s => s.targetId)).size, 11);
+  assert.equal(stops.filter(s => s.kind === 'external-reading').length, 3); assert.equal(stops.filter(s => s.kind === 'gap').length, 0);
+  const all = [...r.outputs.values()].join('\n'); assert.ok(all.includes('x-craft-0001')); assert.ok(!all.includes('x-performance-0001')); assert.ok(!all.includes('<script')); assert.ok(!all.includes('rel="canonical"'));
   assert.equal(json(p.data), before);
 });
 test('all non-gap tasks, entry support, checks, limitations and exact source scopes survive rendering', () => {
@@ -62,7 +62,7 @@ test('withdrawn target version is unavailable even when another version is publi
   const t = p.data.targets.targets.find(t => t.id === 'x-history-0001');
   const editions = { mode: 'release', explorations: [{ id: t.id, state: 'published', versions: [{ revision: t.revision, state: 'withdrawn', href: t.href }, { revision: '0.1.3', state: 'published', href: 'explore/x-history-0001/versions/0.1.3/' }] }] };
   const a = deliveredTargets(p.data.targets, { mode: 'release', legacyIds: p.context.accepted.ids, editions }); assert.equal(a.get(t.id), 'withdrawn');
-  const r = renderJourneys(p.data, [{ id: 'account-evidence', revision: '0.1.0', state: 'published' }], a, { mode: 'release', base });
+  const r = renderJourneys(p.data, [{ id: 'account-evidence', revision: p.data.plans.version, state: 'published' }], a, { mode: 'release', base });
   assert.equal(r.availableCount, 0); assert.equal(r.canonicalPaths.length, 0); assert.ok(![...r.outputs.values()].join('').includes('What can two documents establish?'));
   const bad = structuredClone(editions); bad.explorations[0].versions[0].href = 'explore/other/'; assert.throws(() => deliveredTargets(p.data.targets, { mode: 'release', legacyIds: [], editions: bad }), /path/);
 });

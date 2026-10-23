@@ -1,0 +1,211 @@
+{
+  "schemaVersion": 1,
+  "id": "x-health-0001",
+  "pilotId": "P06",
+  "revision": "0.1.0",
+  "status": "accepted",
+  "publication": "local-preview",
+  "title": "What can a counted cycle tell you?",
+  "subtitle": "Equal averages can hide different timing.",
+  "summary": "Inspect two synthetic timing tables, crop the observation window and compare complete-cycle and onset counts. Explain what those counts cannot tell you.",
+  "audience": "General readers; counting and seconds are enough.",
+  "scope": "Conceptual education using authored timing labels. No patient recording, clinical rate estimator, diagnosis, breathing exercise or instruction to alter your breathing.",
+  "author": "atlas-editor",
+  "updatedOn": "2026-10-23",
+  "domainIds": [
+    "D09",
+    "D07"
+  ],
+  "relatedCollectionIds": [
+    "physio",
+    "imaging",
+    "epi"
+  ],
+  "knowledgeModes": [
+    "empirical",
+    "procedural"
+  ],
+  "methods": [
+    "cycle-observation"
+  ],
+  "prerequisites": [],
+  "sources": [
+    {
+      "id": "nhlbi-breathing",
+      "title": "NHLBI, How the Lungs Work: What Breathing Does for the Body",
+      "url": "https://www.nhlbi.nih.gov/health/lungs/breathing-benefits",
+      "locator": "Breathing in; Breathing out; distinction from Gas exchange",
+      "creator": "National Heart, Lung, and Blood Institute, NIH",
+      "date": "Updated 2025-06-27; phase description reread 2026-10-23",
+      "language": "English",
+      "rights": {
+        "decision": "usable-for-prototype",
+        "basis": "Original explanatory prose and fictional examples with source links. No third-party images, animation, textbook passages or full statutory text are reproduced.",
+        "scope": "Local educational preview; no endorsement or professional approval is implied."
+      }
+    }
+  ],
+  "passages": [
+    {
+      "id": "quiet-phases",
+      "sourceId": "nhlbi-breathing",
+      "title": "Air movement and a qualitative phase map",
+      "form": "paraphrase",
+      "language": "en",
+      "text": "During quiet inhalation the diaphragm contracts and moves downward, increasing chest space as air enters. During quiet exhalation the diaphragm relaxes and air leaves. Air movement and gas exchange are different processes; a timing table does not measure oxygenation.",
+      "context": "Original paraphrase of the named NHLBI sections. This lesson excludes its third-party animation and does not reproduce it. Phase durations below are authored, not physiological measurements.",
+      "sha256": "0c49babf164b37d23f9c7eeadc5e2aea8db94f36dae9672bae2bbf225fb79749"
+    },
+    {
+      "id": "authored-boundaries",
+      "sourceId": "nhlbi-breathing",
+      "title": "Define what is counted before counting",
+      "form": "original",
+      "language": "en",
+      "text": "For this exercise, a complete cycle is a supplied start–phase-change–end row wholly inside the chosen window. A separate rule counts start landmarks in a window that includes its left endpoint and excludes its right endpoint. These conventions can give different counts when the window cuts through cycles.",
+      "context": "Original mathematical definitions for synthetic tables, not a counting protocol supplied or approved by NHLBI.",
+      "sha256": "8e13536dece6353e49412bb95b3cd3d000ee2dbed769abbb21440b30bd36ca06"
+    }
+  ],
+  "claims": [
+    {
+      "id": "average-and-timing",
+      "kind": "formal",
+      "text": "Both full twenty-second tables contain five complete cycles, while their intervals differ.",
+      "passageIds": [
+        "authored-boundaries"
+      ],
+      "qualification": "A property of the authored table, not evidence of any person’s breathing or health."
+    },
+    {
+      "id": "counting-boundaries",
+      "kind": "formal",
+      "text": "Complete-cycle and onset counts need not agree in a cropped window.",
+      "passageIds": [
+        "authored-boundaries"
+      ],
+      "qualification": "Neither convention is presented as a clinically validated rate estimator."
+    },
+    {
+      "id": "scope-of-rate",
+      "kind": "empirical",
+      "text": "This timing table does not measure gas exchange or oxygenation.",
+      "passageIds": [
+        "quiet-phases"
+      ],
+      "qualification": "No healthy/abnormal thresholds, diagnosis or treatment follow from the arithmetic."
+    }
+  ],
+  "context": [
+    "Solid diagram segments mark an authored in-phase label; outlined segments mark an authored out-phase label. Segment widths represent time only.",
+    "The regular table has five four-second cycles. The varied table has durations 2, 6, 3, 6 and 3 seconds. Equal average counts do not make the sequences identical.",
+    "Complete cycles must lie wholly inside the closed window. Onsets use [start, end), so a landmark shared by adjacent windows is not counted twice.",
+    "A short window can contain part of a cycle and zero complete cycles. That is not absence of breathing. Outside the supplied interval the result is unknown, not zero.",
+    "All times are original fixtures. Phase lengths, pressures, volumes, effort and clinical interpretation have not been calibrated or measured."
+  ],
+  "timeline": [],
+  "relations": [],
+  "reviews": [],
+  "reviewRequirements": [
+    "content",
+    "rights"
+  ],
+  "reviewLimitations": [
+    "Author checks support this local educational preview. Independent professional and participant reviews have not been performed and are not required for local continuation."
+  ],
+  "activity": {
+    "type": "cycle-observation",
+    "synthetic": true,
+    "patientData": false,
+    "countingConvention": "Complete cycles: both endpoints inside the window. Onsets: start included, end excluded. The two descriptions answer different questions.",
+    "traces": [
+      {
+        "id": "regular",
+        "label": "Regular four-second intervals",
+        "cycles": [
+          [
+            0,
+            1600,
+            4000
+          ],
+          [
+            4000,
+            5600,
+            8000
+          ],
+          [
+            8000,
+            9600,
+            12000
+          ],
+          [
+            12000,
+            13600,
+            16000
+          ],
+          [
+            16000,
+            17600,
+            20000
+          ]
+        ]
+      },
+      {
+        "id": "varied",
+        "label": "Varied intervals, same full-window count",
+        "cycles": [
+          [
+            0,
+            800,
+            2000
+          ],
+          [
+            2000,
+            4400,
+            8000
+          ],
+          [
+            8000,
+            9200,
+            11000
+          ],
+          [
+            11000,
+            13400,
+            17000
+          ],
+          [
+            17000,
+            18200,
+            20000
+          ]
+        ]
+      }
+    ],
+    "transfer": "Crop the regular trace to 2–18 seconds. Explain why it contains three complete cycles but four onsets. Then inspect a 1–2 second crop: explain why zero complete cycles is not evidence of no breathing.",
+    "rubric": [
+      "Name the counting convention and window before giving a number.",
+      "For 2–18 seconds, identify complete cycles 2, 3, 4 and onset landmarks 2, 3, 4, 5.",
+      "Distinguish equal counts from equal intervals, and partial information from absence.",
+      "Do not infer normality, illness, depth, effort or gas exchange from the synthetic table."
+    ]
+  },
+  "extensions": {},
+  "authorVerification": {
+    "kind": "author-check",
+    "scope": "local-preview",
+    "author": "atlas-editor",
+    "checkedOn": "2026-10-23",
+    "revision": "0.1.0",
+    "contentDigest": "0f0c27cb146248146be68eabe76a7f0eff6a7f6bca028aefad30a2807caf03b0",
+    "artifactDigest": "48b8edeba113571b0f99edc38c4d164ee3dea5289ef52ad0e1c8def7999af154",
+    "evidencePath": "docs/verification/universal-author-continuation.md",
+    "checks": [
+      "Schema, source-reference and preparation-packet hash validation",
+      "Passed tests/exploration-methods.test.mjs",
+      "Passed tests/exploration-studio.test.mjs",
+      "Passed tests/exploration-professions.test.mjs",
+      "Passed tests/exploration-followups.test.mjs"
+    ]
+  }
+}

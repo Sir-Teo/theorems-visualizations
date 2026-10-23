@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "id": "x-agriculture-0001",
   "pilotId": "P05",
-  "revision": "0.1.0",
+  "revision": "0.1.1",
   "status": "accepted",
   "publication": "local-preview",
   "title": "What does a soil-water point measure?",
@@ -3330,5 +3330,25 @@
       "State the synthetic fractions, uniform layer and metre-to-millimetre conversion separately from the dataset.",
       "Identify missing information before applying a result to another site or crop."
     ]
-  }
+  },
+  "authorVerification": {
+    "kind": "author-check",
+    "scope": "local-preview",
+    "author": "atlas-editor",
+    "checkedOn": "2026-10-23",
+    "revision": "0.1.1",
+    "contentDigest": "aa669ee6dbe2fcb7a06209641a0af91fbbf4b7010b125ac5ca09fae6961ea0e6",
+    "artifactDigest": "0f9c7f0aa46a66f524788ab01ae0e30ff81210ec312e4edfd53585254004ce62",
+    "evidencePath": "docs/verification/universal-author-continuation.md",
+    "checks": [
+      "Schema, source-reference and preparation-packet hash validation",
+      "Passed tests/exploration-methods.test.mjs",
+      "Passed tests/exploration-studio.test.mjs",
+      "Passed tests/exploration-professions.test.mjs",
+      "Passed tests/exploration-followups.test.mjs"
+    ]
+  },
+  "previousRevisions": [
+    "0.1.0"
+  ]
 }

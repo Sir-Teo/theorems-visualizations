@@ -1,0 +1,194 @@
+{
+  "schemaVersion": 1,
+  "id": "x-craft-0002",
+  "pilotId": "P07",
+  "revision": "0.1.0",
+  "status": "accepted",
+  "publication": "local-preview",
+  "title": "Covering a hole is not yet an attachment",
+  "subtitle": "Inspect three original patch plans.",
+  "summary": "Inspect three original patch plans. Test coverage and layer presence as separate geometric questions, then identify the physical evidence still missing.",
+  "audience": "General readers; all selected evidence and task instructions are included.",
+  "scope": "Dimensionless plan analysis; no completed swatch, durability claim, practical handling instruction or observed reproduction. A non-sewing route supplies the whole task.",
+  "author": "atlas-editor",
+  "updatedOn": "2026-10-23",
+  "domainIds": [
+    "D29",
+    "D01"
+  ],
+  "relatedCollectionIds": [],
+  "knowledgeModes": [
+    "formal",
+    "procedural"
+  ],
+  "methods": [
+    "annotation"
+  ],
+  "prerequisites": [],
+  "sources": [
+    {
+      "id": "followup-seq-ifixit-patch",
+      "title": "How to Hand Stitch a Patch to Clothing",
+      "url": "https://www.ifixit.com/Guide/How+to+Hand+Stitch+a+Patch+to+Clothing/172554",
+      "locator": "Introduction, tools, steps 1–8, conclusion and update/contributor labels; text only. Photographs not inspected; no physical reproduction or professional endorsement established. Interface completion text is not evidence of our completion.",
+      "creator": "Eli Hardy and two other contributors; iFixit Featured Student Guide",
+      "date": "Updated 25 August 2025",
+      "language": "en",
+      "rights": {
+        "decision": "usable-for-prototype",
+        "basis": "Original attributed summaries and original fictional exercises; no third-party media, full documents or extended quotations copied. Original exercise/diagrams and link only. No image or general redistribution licence established.",
+        "scope": "Local commentary and source links only; no third-party assets or participant consent implied."
+      }
+    },
+    {
+      "id": "followup-seq-sca-basting",
+      "title": "Running Stitch: Basting, guideline 15.105",
+      "url": "https://www.sewing.org/files/guidelines/15_105_running_stitch_basting.pdf",
+      "locator": "Both pages in extracted text and local rendered images, including four diagrams and page-1 rights notice. Dated sewing guidance; no current standard or physical repair tested. Web screenshot failed technically; same public PDF downloaded and rendered, not an access-denial bypass.",
+      "creator": "Sewing & Craft Alliance",
+      "date": "Page-2 code 3/06; page-1 copyright notice 2008",
+      "language": "en",
+      "rights": {
+        "decision": "usable-for-prototype",
+        "basis": "Original attributed summaries and original fictional exercises; no third-party media, full documents or extended quotations copied. Notice permits specified educators/retailers unchanged educational handouts, with alteration and other-use restrictions; no adapted figure or website-distribution clearance inferred. Link/original diagrams only.",
+        "scope": "Local commentary and source links only; no third-party assets or participant consent implied."
+      }
+    }
+  ],
+  "passages": [
+    {
+      "id": "basis",
+      "sourceId": "followup-seq-ifixit-patch",
+      "title": "Separate overlap and attachment",
+      "form": "paraphrase",
+      "language": "en",
+      "text": "The iFixit account discusses overlap, edge attachment and tension. The Sewing & Craft Alliance distinguishes temporary basting and restricts its seam example to work without strain. Neither source proves that the original plans below have been made or tested.",
+      "context": "Original bounded summary of the dated source reading; see source scope and limits.",
+      "sha256": "f97b7d8446e4d84ec6fe15d46b85ce5bc93ffc172777e85048e6b008923944ff"
+    },
+    {
+      "id": "through-layers",
+      "sourceId": "followup-seq-sca-basting",
+      "title": "Full cover; proposed locations meet both layers",
+      "form": "original",
+      "language": "en",
+      "text": "Dimensionless drawing: base rectangle (0,0)–(100,100), hole (40,40)–(60,60), patch [30, 30, 70, 70]. Proposed through-locations in order: (35, 35); (50, 35); (65, 35); (65, 50); (65, 65); (50, 65); (35, 65); (35, 50). These coordinates describe a plan, not stitch spacing or instructions for handling a needle.",
+      "context": "Original fictional scenario; associated source supplies a method/context only, not these facts.",
+      "sha256": "26c4e32ab28ef5256a1739871c73cb6fd162b1d38a1935cdb40be54c6ded8256"
+    },
+    {
+      "id": "miss-base",
+      "sourceId": "followup-seq-sca-basting",
+      "title": "Full cover; proposed locations miss the base",
+      "form": "original",
+      "language": "en",
+      "text": "Dimensionless drawing: base rectangle (0,0)–(100,100), hole (40,40)–(60,60), patch [30, 30, 70, 70]. Proposed through-locations in order: (45, 45); (50, 45); (55, 45); (55, 50); (55, 55); (50, 55); (45, 55); (45, 50). These coordinates describe a plan, not stitch spacing or instructions for handling a needle.",
+      "context": "Original fictional scenario; associated source supplies a method/context only, not these facts.",
+      "sha256": "92b3878022f610b8695cc1e2853cdef1a9c6954f653e54fab3a30394c0c66a6f"
+    },
+    {
+      "id": "partial-cover",
+      "sourceId": "followup-seq-sca-basting",
+      "title": "Incomplete cover; marked locations meet both layers",
+      "form": "original",
+      "language": "en",
+      "text": "Dimensionless drawing: base rectangle (0,0)–(100,100), hole (40,40)–(60,60), patch [30, 30, 50, 70]. Proposed through-locations in order: (45, 35); (35, 35); (35, 50); (35, 65); (45, 65). These coordinates describe a plan, not stitch spacing or instructions for handling a needle.",
+      "context": "Original fictional scenario; associated source supplies a method/context only, not these facts.",
+      "sha256": "bd4f2710fc22bc55f7db968ce2fb1d979e8c25d4eefd3ce8d93af2cb65b27f5f"
+    }
+  ],
+  "claims": [
+    {
+      "id": "scope-of-evidence",
+      "kind": "interpretive",
+      "text": "Separate area coverage from layer presence.",
+      "passageIds": [
+        "basis"
+      ],
+      "qualification": "Dimensionless plan analysis; no completed swatch, durability claim, practical handling instruction or observed reproduction. A non-sewing route supplies the whole task."
+    }
+  ],
+  "context": [
+    "The full original coordinates and five source-preparation diagrams remain in the retained preparation packet. This text route includes every location needed for the calculation.",
+    "No third-party figure or source photograph is reproduced. The lesson requires no sewing or tool handling."
+  ],
+  "timeline": [],
+  "relations": [],
+  "reviews": [],
+  "reviewRequirements": [
+    "content",
+    "rights"
+  ],
+  "reviewLimitations": [
+    "Local author check only. No independent reviewer, professional credential, actual learner/access observation, community endorsement or physical outcome is claimed."
+  ],
+  "activity": {
+    "type": "annotation",
+    "lenses": [
+      {
+        "id": "coverage",
+        "label": "Compare covered area",
+        "observation": "The hole has area 20 × 20 = 400 square units.",
+        "question": "Which patch covers all of that rectangle?",
+        "readings": [
+          "Through-layers and miss-base both cover 400; partial-cover covers 10 × 20 = 200.",
+          "Coverage alone cannot tell whether any proposed location passes through intact base fabric."
+        ],
+        "boundary": "Drawing units are not material dimensions."
+      },
+      {
+        "id": "layers",
+        "label": "Read the missing base",
+        "observation": "The miss-base plan places every marked point inside the hole.",
+        "question": "Why can a patch cover the hole while its proposed locations miss the base?",
+        "readings": [
+          "Patch material exists at those points, but the base has a hole there.",
+          "The other plans mark locations in both intended layers, even though partial-cover still leaves half the hole exposed."
+        ],
+        "boundary": "A location predicate does not describe the whole thread path, fastening or tension."
+      },
+      {
+        "id": "specimen",
+        "label": "Ask what a specimen could show",
+        "observation": "All physical verdicts in the preparation packet are unfilled.",
+        "question": "What would need observation before calling it a successful attachment?",
+        "readings": [
+          "Inspect actual materials, fastening, missed layers and tension on both sides.",
+          "Record deviations and a reproducible inspection; later washing/load performance is a different claim."
+        ],
+        "boundary": "No physical pass is inferred from a neat drawing or a correct calculation."
+      }
+    ],
+    "transfer": "Design a fourth rectangle-and-point plan that passes one drawing predicate but fails the other. Explain its coordinates, then name two physical properties your drawing still cannot establish.",
+    "rubric": [
+      "Separate area coverage from layer presence.",
+      "Treat the hole as absent base fabric.",
+      "Distinguish a proposed location from a finished stitch.",
+      "Keep physical outcomes unknown until observed."
+    ]
+  },
+  "extensions": {
+    "atlas:preparation": {
+      "path": "docs/pilots/sequences/preparation/remaining-sequences-20261023.json",
+      "scope": "Exact historical source receipts retained; current exercise is independently identified original authoring."
+    }
+  },
+  "authorVerification": {
+    "kind": "author-check",
+    "scope": "local-preview",
+    "author": "atlas-editor",
+    "checkedOn": "2026-10-23",
+    "revision": "0.1.0",
+    "contentDigest": "7d92b32506d05a1058ee363d1522e542cec6e932ad2870e7166681edad9bf7e2",
+    "artifactDigest": "cfe7669b8b3e9c367b4897f705f75f2424cdb59aaa9facac6863674f440352cb",
+    "evidencePath": "docs/verification/universal-author-sequences.md",
+    "checks": [
+      "Schema, source-reference and preparation-packet hash validation",
+      "Passed tests/exploration-methods.test.mjs",
+      "Passed tests/exploration-studio.test.mjs",
+      "Passed tests/exploration-professions.test.mjs",
+      "Passed tests/exploration-followups.test.mjs",
+      "Passed tests/exploration-sequences.test.mjs"
+    ]
+  }
+}

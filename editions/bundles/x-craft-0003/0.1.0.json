@@ -1,0 +1,229 @@
+{
+  "schemaVersion": 1,
+  "id": "x-craft-0003",
+  "revision": "0.1.0",
+  "record": {
+    "schemaVersion": 1,
+    "id": "x-craft-0003",
+    "pilotId": "P07",
+    "revision": "0.1.0",
+    "status": "accepted",
+    "publication": "local-preview",
+    "title": "A teaching offer is not an observed workshop",
+    "subtitle": "Locate one practitioner’s account in Nsawam.",
+    "summary": "Locate one practitioner’s account in Nsawam. Decide what a biography and teaching page can establish about a cloth, a workshop and a learner.",
+    "audience": "General readers; all selected evidence and task instructions are included.",
+    "scope": "Dated English self-presentation of Kwasi Asare/Dento Mills; no selected textile object, current workshop availability, authenticated pattern meaning or community endorsement.",
+    "author": "atlas-editor",
+    "updatedOn": "2026-10-23",
+    "domainIds": [
+      "D29",
+      "D25",
+      "D19"
+    ],
+    "relatedCollectionIds": [],
+    "knowledgeModes": [
+      "interpretive"
+    ],
+    "methods": [
+      "source-comparison"
+    ],
+    "prerequisites": [],
+    "sources": [
+      {
+        "id": "followup-seq-asare-context",
+        "title": "Kwasi Asare: practitioner and teaching self-presentation",
+        "url": "https://kwasiasare.com/",
+        "locator": "Homepage biographical and teaching prose, including Ashanti tradition, father and Dento Mills/Nsawam account. Self-presentation; lineage, promotional superlatives and current offers not independently verified. No object, video, course or loom inspected; not representative of all kente.",
+        "creator": "Kwasi Asare website",
+        "date": "Undated page retrieved 22 October 2026",
+        "language": "en",
+        "rights": {
+          "decision": "usable-for-prototype",
+          "basis": "Original attributed summaries and original fictional exercises; no third-party media, full documents or extended quotations copied. Links/original commentary only; no course, image, pattern or design reuse permission established.",
+          "scope": "Local commentary and source links only; no third-party assets or participant consent implied."
+        }
+      },
+      {
+        "id": "followup-seq-asare-workshop",
+        "title": "Kwasi Asare Kente Weaving Handloom Workshop",
+        "url": "https://kwasiasare.com/kwasi-asare-kente-weaving-handloom-workshop/",
+        "locator": "Workshop description and advertised format; text only. Same provider perspective as homepage, not independent corroboration. Offer is not current availability, observed learning or an equivalence to other practice. Promotional health/uniqueness claims excluded.",
+        "creator": "Kwasi Asare website",
+        "date": "Undated provider account referring to a handloom developed in 2013",
+        "language": "en",
+        "rights": {
+          "decision": "usable-for-prototype",
+          "basis": "Original attributed summaries and original fictional exercises; no third-party media, full documents or extended quotations copied. Links/original commentary only; no demonstration, course content or loom design copied or cleared.",
+          "scope": "Local commentary and source links only; no third-party assets or participant consent implied."
+        }
+      }
+    ],
+    "passages": [
+      {
+        "id": "maker",
+        "sourceId": "followup-seq-asare-context",
+        "title": "A named account",
+        "form": "paraphrase",
+        "language": "en",
+        "text": "Kwasi Asare’s site presents him as a mathematics teacher and kente weaver, connects his practice with an Ashanti tradition and his father’s Dento Mills Kente Studio in Nsawam, Ghana. These are attributed self-descriptions.",
+        "context": "Original bounded summary of the dated source reading; see source scope and limits.",
+        "sha256": "9d28673bb5115097f3106056bde5e9ba12e22f3b37ef8e3492956aa25cb4be98"
+      },
+      {
+        "id": "offer",
+        "sourceId": "followup-seq-asare-workshop",
+        "title": "A teaching description",
+        "form": "paraphrase",
+        "language": "en",
+        "text": "The undated workshop page describes a teaching handloom developed in 2013 and connects introductory design with geometry. An advertised format is not evidence that a session currently runs or that a learner achieved an outcome.",
+        "context": "Original bounded summary of the dated source reading; see source scope and limits.",
+        "sha256": "ed3586ce4f4772ccf7db5b7219c01432b41cea539d6b05e6cbced23886b6628f"
+      },
+      {
+        "id": "object",
+        "sourceId": "followup-seq-asare-context",
+        "title": "Original unfilled object record",
+        "form": "original",
+        "language": "en",
+        "text": "Object identifier: unknown. Maker: unknown. Date and place of making: unknown. Materials and structure: uninspected. Meaning and whose explanation: unrecorded. Permission for image or process use: absent.",
+        "context": "Original fictional scenario; associated source supplies a method/context only, not these facts.",
+        "sha256": "5ad1ec7d0bbd8bb505cd90d42326eefc97742ec353f27363cc964ddfb1be13df"
+      }
+    ],
+    "claims": [
+      {
+        "id": "scope-of-evidence",
+        "kind": "interpretive",
+        "text": "Attribute the selected practitioner and place precisely.",
+        "passageIds": [
+          "maker"
+        ],
+        "qualification": "Dated English self-presentation of Kwasi Asare/Dento Mills; no selected textile object, current workshop availability, authenticated pattern meaning or community endorsement."
+      }
+    ],
+    "context": [
+      "No outreach, object selection or new asset permission is claimed. This is a complete exercise in the scope of the available accounts; a situated object study remains a distinct future activity.",
+      "Earlier UNESCO, inventory and gift-page access stops remain excluded. No course content, loom design, pattern or image is bundled."
+    ],
+    "timeline": [],
+    "relations": [],
+    "reviews": [],
+    "reviewRequirements": [
+      "content",
+      "rights"
+    ],
+    "reviewLimitations": [
+      "Local author check only. No independent reviewer, professional credential, actual learner/access observation, community endorsement or physical outcome is claimed."
+    ],
+    "activity": {
+      "type": "source-comparison",
+      "prompts": [
+        {
+          "id": "place",
+          "claim": "The selected website connects its account with Dento Mills in Nsawam.",
+          "answer": "direct",
+          "evidenceIds": [
+            "maker"
+          ],
+          "feedback": "This is attributable to the site; it is not independent verification of every biographical claim."
+        },
+        {
+          "id": "independent",
+          "claim": "The homepage and workshop page are two independent cultural authorities.",
+          "answer": "unsupported",
+          "evidenceIds": [
+            "none"
+          ],
+          "feedback": "They are two pages from the same provider."
+        },
+        {
+          "id": "outcome",
+          "claim": "The teaching offer proves a learner can now weave the proposed cloth.",
+          "answer": "unsupported",
+          "evidenceIds": [
+            "none"
+          ],
+          "feedback": "No session, object or learner performance was observed."
+        },
+        {
+          "id": "meaning",
+          "claim": "An original generic weave diagram establishes the cultural meaning of a named kente pattern.",
+          "answer": "unsupported",
+          "evidenceIds": [
+            "none"
+          ],
+          "feedback": "Construction and situated meaning require different evidence and attribution."
+        },
+        {
+          "id": "inquiry",
+          "claim": "A particular cloth claim would need an object record beyond these two pages.",
+          "answer": "inference",
+          "evidenceIds": [
+            "maker",
+            "offer",
+            "object"
+          ],
+          "feedback": "The empty fields reveal what the selected material does not establish."
+        }
+      ],
+      "transfer": "Choose three fields in the object record and specify who or what could support them. Explain why one source might support a maker’s account without establishing every broader cultural claim.",
+      "rubric": [
+        "Attribute the selected practitioner and place precisely.",
+        "Separate self-description, teaching offer and observed outcome.",
+        "Do not infer fixed meanings from colour or geometry.",
+        "Keep uninspected object fields unknown."
+      ]
+    },
+    "extensions": {
+      "atlas:preparation": {
+        "path": "docs/pilots/sequences/preparation/remaining-sequences-20261023.json",
+        "scope": "Exact historical source receipts retained; current exercise is independently identified original authoring."
+      }
+    },
+    "authorVerification": {
+      "kind": "author-check",
+      "scope": "local-preview",
+      "author": "atlas-editor",
+      "checkedOn": "2026-10-23",
+      "revision": "0.1.0",
+      "contentDigest": "6897127e6de4d6f2c688dee21a6916a093b92c58811f744a8240d5b6c9d7fdc1",
+      "artifactDigest": "2b4e526b6db185d564cedc2f534eb6daf21a5530e6f2b2d2aeceed03c0b50c70",
+      "evidencePath": "docs/verification/universal-author-sequences.md",
+      "checks": [
+        "Schema, source-reference and preparation-packet hash validation",
+        "Passed tests/exploration-methods.test.mjs",
+        "Passed tests/exploration-studio.test.mjs",
+        "Passed tests/exploration-professions.test.mjs",
+        "Passed tests/exploration-followups.test.mjs",
+        "Passed tests/exploration-sequences.test.mjs"
+      ]
+    }
+  },
+  "context": {
+    "domainIds": [
+      "D29",
+      "D25",
+      "D19"
+    ],
+    "collectionIds": [],
+    "sourceIds": [
+      "followup-seq-asare-context",
+      "followup-seq-asare-workshop"
+    ],
+    "knownItemIds": []
+  },
+  "collectionTitles": {},
+  "runtimeDigest": "ca81bc9e95550cc6c8e5c31a3fcbb6b78a066ecaa6a57038441949fe61f17025",
+  "contentDigest": "6897127e6de4d6f2c688dee21a6916a093b92c58811f744a8240d5b6c9d7fdc1",
+  "artifactDigest": "2b4e526b6db185d564cedc2f534eb6daf21a5530e6f2b2d2aeceed03c0b50c70",
+  "previewHTML": "<!doctype html>\n<html lang=\"en\"><head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width,initial-scale=1\">\n<meta name=\"robots\" content=\"noindex,nofollow\"><meta name=\"description\" content=\"Draft source-based explorations for Ideas, Visualized.\">\n<title>A teaching offer is not an observed workshop · Ideas, Visualized</title><link rel=\"stylesheet\" href=\"../../../explorations/style.css\"></head>\n<body><a class=\"skip\" href=\"#main\">Skip to the exploration</a>\n<header class=\"site-header\"><a href=\"../../../#/\">Ideas, Visualized</a><span>Exploration workshop</span></header>\n<main id=\"main\" tabindex=\"-1\"><nav aria-label=\"Workshop\"><a href=\"../\">← All pilot explorations</a></nav>\n    <section class=\"hero\"><p class=\"eyebrow\">Author-checked · local preview</p><h1>A teaching offer is not an observed workshop</h1>\n    <p class=\"subtitle\">Locate one practitioner’s account in Nsawam.</p><p class=\"lede\">Locate one practitioner’s account in Nsawam. Decide what a biography and teaching page can establish about a cloth, a workshop and a learner.</p>\n    <p class=\"muted\">Local author check only. No independent reviewer, professional credential, actual learner/access observation, community endorsement or physical outcome is claimed.</p>\n    <p class=\"scope\">Dated English self-presentation of Kwasi Asare/Dento Mills; no selected textile object, current workshop availability, authenticated pattern meaning or community endorsement.</p><ol class=\"steps\"><li>Read the sources</li><li>Explore the evidence</li><li>Explain a limitation</li></ol></section>\n    <section aria-labelledby=\"source-heading\"><div class=\"section-heading\"><span>01</span><h2 id=\"source-heading\">Read closely</h2></div>\n    <div class=\"sources\"><article class=\"source-card\" id=\"passage-maker\" data-passage=\"maker\">\n      <p class=\"eyebrow\">Kwasi Asare website</p><h3>A named account</h3>\n      <p class=\"source-form\">Editorial paraphrase</p>\n      <p class=\"passage\" lang=\"en\">Kwasi Asare’s site presents him as a mathematics teacher and kente weaver, connects his practice with an Ashanti tradition and his father’s Dento Mills Kente Studio in Nsawam, Ghana. These are attributed self-descriptions.</p>\n      <p><strong>Editorial context:</strong> Original bounded summary of the dated source reading; see source scope and limits.</p><details><summary>Source and reuse details</summary>\n      <p><a href=\"https://kwasiasare.com/\">Kwasi Asare: practitioner and teaching self-presentation</a></p><p>Homepage biographical and teaching prose, including Ashanti tradition, father and Dento Mills/Nsawam account. Self-presentation; lineage, promotional superlatives and current offers not independently verified. No object, video, course or loom inspected; not representative of all kente. · Undated page retrieved 22 October 2026</p>\n      <p>Original attributed summaries and original fictional exercises; no third-party media, full documents or extended quotations copied. Links/original commentary only; no course, image, pattern or design reuse permission established.</p><p class=\"muted\">Local commentary and source links only; no third-party assets or participant consent implied.</p></details></article><article class=\"source-card\" id=\"passage-offer\" data-passage=\"offer\">\n      <p class=\"eyebrow\">Kwasi Asare website</p><h3>A teaching description</h3>\n      <p class=\"source-form\">Editorial paraphrase</p>\n      <p class=\"passage\" lang=\"en\">The undated workshop page describes a teaching handloom developed in 2013 and connects introductory design with geometry. An advertised format is not evidence that a session currently runs or that a learner achieved an outcome.</p>\n      <p><strong>Editorial context:</strong> Original bounded summary of the dated source reading; see source scope and limits.</p><details><summary>Source and reuse details</summary>\n      <p><a href=\"https://kwasiasare.com/kwasi-asare-kente-weaving-handloom-workshop/\">Kwasi Asare Kente Weaving Handloom Workshop</a></p><p>Workshop description and advertised format; text only. Same provider perspective as homepage, not independent corroboration. Offer is not current availability, observed learning or an equivalence to other practice. Promotional health/uniqueness claims excluded. · Undated provider account referring to a handloom developed in 2013</p>\n      <p>Original attributed summaries and original fictional exercises; no third-party media, full documents or extended quotations copied. Links/original commentary only; no demonstration, course content or loom design copied or cleared.</p><p class=\"muted\">Local commentary and source links only; no third-party assets or participant consent implied.</p></details></article><article class=\"source-card\" id=\"passage-object\" data-passage=\"object\">\n      <p class=\"eyebrow\">Kwasi Asare website</p><h3>Original unfilled object record</h3>\n      <p class=\"source-form\">Original explanation</p>\n      <p class=\"passage\" lang=\"en\">Object identifier: unknown. Maker: unknown. Date and place of making: unknown. Materials and structure: uninspected. Meaning and whose explanation: unrecorded. Permission for image or process use: absent.</p>\n      <p><strong>Editorial context:</strong> Original fictional scenario; associated source supplies a method/context only, not these facts.</p><details><summary>Source and reuse details</summary>\n      <p><a href=\"https://kwasiasare.com/\">Kwasi Asare: practitioner and teaching self-presentation</a></p><p>Homepage biographical and teaching prose, including Ashanti tradition, father and Dento Mills/Nsawam account. Self-presentation; lineage, promotional superlatives and current offers not independently verified. No object, video, course or loom inspected; not representative of all kente. · Undated page retrieved 22 October 2026</p>\n      <p>Original attributed summaries and original fictional exercises; no third-party media, full documents or extended quotations copied. Links/original commentary only; no course, image, pattern or design reuse permission established.</p><p class=\"muted\">Local commentary and source links only; no third-party assets or participant consent implied.</p></details></article></div></section>\n    <section class=\"context\"><h2>What this exploration can establish</h2><ul><li>No outreach, object selection or new asset permission is claimed. This is a complete exercise in the scope of the available accounts; a situated object study remains a distinct future activity.</li><li>Earlier UNESCO, inventory and gift-page access stops remain excluded. No course content, loom design, pattern or image is bundled.</li></ul>\n\n    </section>\n\n    <section class=\"activity\" aria-labelledby=\"activity-heading\"><div class=\"section-heading\"><span>02</span><h2 id=\"activity-heading\">Explore the evidence</h2></div>\n    <noscript><p>The source text, comparison guides and transfer task work without JavaScript. Use the guides below and write your notes separately.</p></noscript>\n    <div class=\"interactive\" hidden><label for=\"task\">Choose a claim</label>\n      <select id=\"task\"><option value=\"place\">The selected website connects its account with Dento Mills in Nsawam.</option><option value=\"independent\">The homepage and workshop page are two independent cultural authorities.</option><option value=\"outcome\">The teaching offer proves a learner can now weave the proposed cloth.</option><option value=\"meaning\">An original generic weave diagram establishes the cultural meaning of a named kente pattern.</option><option value=\"inquiry\">A particular cloth claim would need an object record beyond these two pages.</option></select><p id=\"current-claim\" class=\"current-claim\"></p>\n      <div class=\"control-grid\"><div><label for=\"evidence\">Select the most relevant passage</label>\n      <select id=\"evidence\"><option value=\"none\">Neither establishes the claim</option><option value=\"maker\">A named account</option><option value=\"offer\">A teaching description</option><option value=\"object\">Original unfilled object record</option></select></div>\n      <div><label for=\"category\">How is the claim supported?</label><select id=\"category\"><option value=\"direct\">Direct statement</option><option value=\"inference\">Interpretation / inference</option><option value=\"unsupported\">Not established by this pair</option></select></div></div>\n      <button id=\"check\" class=\"primary\" type=\"button\">Compare with the evidence guide</button>\n      <p id=\"feedback\" class=\"feedback\" role=\"status\" aria-live=\"polite\"></p></div>\n      <details class=\"static-guide\"><summary>Read every claim and its evidence guide</summary>\n      <section><h3>The selected website connects its account with Dento Mills in Nsawam.</h3><p><strong>Direct statement.</strong> This is attributable to the site; it is not independent verification of every biographical claim.</p><p>Evidence: <a href=\"#passage-maker\">A named account</a></p></section><section><h3>The homepage and workshop page are two independent cultural authorities.</h3><p><strong>Not established by this pair.</strong> They are two pages from the same provider.</p><p>Evidence: Neither selected document establishes this claim.</p></section><section><h3>The teaching offer proves a learner can now weave the proposed cloth.</h3><p><strong>Not established by this pair.</strong> No session, object or learner performance was observed.</p><p>Evidence: Neither selected document establishes this claim.</p></section><section><h3>An original generic weave diagram establishes the cultural meaning of a named kente pattern.</h3><p><strong>Not established by this pair.</strong> Construction and situated meaning require different evidence and attribution.</p><p>Evidence: Neither selected document establishes this claim.</p></section><section><h3>A particular cloth claim would need an object record beyond these two pages.</h3><p><strong>Interpretation / inference.</strong> The empty fields reveal what the selected material does not establish.</p><p>Evidence: <a href=\"#passage-maker\">A named account</a>; <a href=\"#passage-offer\">A teaching description</a>; <a href=\"#passage-object\">Original unfilled object record</a></p></section></details><div class=\"interactive notes\" hidden><label for=\"notes\">Your evidence and explanation</label>\n    <textarea id=\"notes\" rows=\"5\" maxlength=\"1500\" aria-describedby=\"notes-help\" placeholder=\"Name the words, then explain what they support and what they do not.\"></textarea>\n    <p id=\"notes-help\" class=\"muted\">One notebook for this exploration revision, up to 1,500 characters. Notes stay in this browser. Shared links contain selections only. Nothing is sent to a server.</p>\n    <p id=\"save-status\" role=\"status\" class=\"muted\"></p>\n    <div class=\"actions\"><button id=\"share\" type=\"button\">Copy a link to these selections</button><button id=\"export\" type=\"button\">Export notes</button><button id=\"previous-notes\" type=\"button\" hidden>Export earlier notes</button><button id=\"reset\" type=\"button\">Reset and erase this revision’s notes</button></div>\n    <label id=\"share-label\" for=\"share-url\" hidden>Shareable link (notes excluded)</label><input id=\"share-url\" readonly hidden>\n    <p id=\"state-status\" role=\"status\"></p></div></section>\n    <section class=\"transfer\" aria-labelledby=\"transfer-heading\"><div class=\"section-heading\"><span>03</span><h2 id=\"transfer-heading\">Try the idea elsewhere</h2></div>\n    <p>Choose three fields in the object record and specify who or what could support them. Explain why one source might support a maker’s account without establishing every broader cultural claim.</p><details><summary>What a careful explanation includes</summary><ul><li>Attribute the selected practitioner and place precisely.</li><li>Separate self-description, teaching offer and observed outcome.</li><li>Do not infer fixed meanings from colour or geometry.</li><li>Keep uninspected object fields unknown.</li></ul></details>\n    <p>There is no automatic score for your written interpretation. Use the guide to inspect your reasoning.</p></section>\n    <section class=\"related\"><h2>Connections into the atlas</h2><p>Optional collection routes; these are not prerequisites or independent evidence for this task.</p>\n    <div class=\"actions\"></div></section>\n    </main><footer><p>Local previews. Review scope and public release are separate.</p><a href=\"../../../docs/master-plan-handoff.md\">Editorial status and next work</a></footer><script id=\"exploration-data\" type=\"application/json\">{\"schemaVersion\":1,\"id\":\"x-craft-0003\",\"pilotId\":\"P07\",\"revision\":\"0.1.0\",\"status\":\"accepted\",\"publication\":\"local-preview\",\"title\":\"A teaching offer is not an observed workshop\",\"subtitle\":\"Locate one practitioner’s account in Nsawam.\",\"summary\":\"Locate one practitioner’s account in Nsawam. Decide what a biography and teaching page can establish about a cloth, a workshop and a learner.\",\"audience\":\"General readers; all selected evidence and task instructions are included.\",\"scope\":\"Dated English self-presentation of Kwasi Asare/Dento Mills; no selected textile object, current workshop availability, authenticated pattern meaning or community endorsement.\",\"author\":\"atlas-editor\",\"updatedOn\":\"2026-10-23\",\"domainIds\":[\"D29\",\"D25\",\"D19\"],\"relatedCollectionIds\":[],\"knowledgeModes\":[\"interpretive\"],\"methods\":[\"source-comparison\"],\"prerequisites\":[],\"sources\":[{\"id\":\"followup-seq-asare-context\",\"title\":\"Kwasi Asare: practitioner and teaching self-presentation\",\"url\":\"https://kwasiasare.com/\",\"locator\":\"Homepage biographical and teaching prose, including Ashanti tradition, father and Dento Mills/Nsawam account. Self-presentation; lineage, promotional superlatives and current offers not independently verified. No object, video, course or loom inspected; not representative of all kente.\",\"creator\":\"Kwasi Asare website\",\"date\":\"Undated page retrieved 22 October 2026\",\"language\":\"en\",\"rights\":{\"decision\":\"usable-for-prototype\",\"basis\":\"Original attributed summaries and original fictional exercises; no third-party media, full documents or extended quotations copied. Links/original commentary only; no course, image, pattern or design reuse permission established.\",\"scope\":\"Local commentary and source links only; no third-party assets or participant consent implied.\"}},{\"id\":\"followup-seq-asare-workshop\",\"title\":\"Kwasi Asare Kente Weaving Handloom Workshop\",\"url\":\"https://kwasiasare.com/kwasi-asare-kente-weaving-handloom-workshop/\",\"locator\":\"Workshop description and advertised format; text only. Same provider perspective as homepage, not independent corroboration. Offer is not current availability, observed learning or an equivalence to other practice. Promotional health/uniqueness claims excluded.\",\"creator\":\"Kwasi Asare website\",\"date\":\"Undated provider account referring to a handloom developed in 2013\",\"language\":\"en\",\"rights\":{\"decision\":\"usable-for-prototype\",\"basis\":\"Original attributed summaries and original fictional exercises; no third-party media, full documents or extended quotations copied. Links/original commentary only; no demonstration, course content or loom design copied or cleared.\",\"scope\":\"Local commentary and source links only; no third-party assets or participant consent implied.\"}}],\"passages\":[{\"id\":\"maker\",\"sourceId\":\"followup-seq-asare-context\",\"title\":\"A named account\",\"form\":\"paraphrase\",\"language\":\"en\",\"text\":\"Kwasi Asare’s site presents him as a mathematics teacher and kente weaver, connects his practice with an Ashanti tradition and his father’s Dento Mills Kente Studio in Nsawam, Ghana. These are attributed self-descriptions.\",\"context\":\"Original bounded summary of the dated source reading; see source scope and limits.\",\"sha256\":\"9d28673bb5115097f3106056bde5e9ba12e22f3b37ef8e3492956aa25cb4be98\"},{\"id\":\"offer\",\"sourceId\":\"followup-seq-asare-workshop\",\"title\":\"A teaching description\",\"form\":\"paraphrase\",\"language\":\"en\",\"text\":\"The undated workshop page describes a teaching handloom developed in 2013 and connects introductory design with geometry. An advertised format is not evidence that a session currently runs or that a learner achieved an outcome.\",\"context\":\"Original bounded summary of the dated source reading; see source scope and limits.\",\"sha256\":\"ed3586ce4f4772ccf7db5b7219c01432b41cea539d6b05e6cbced23886b6628f\"},{\"id\":\"object\",\"sourceId\":\"followup-seq-asare-context\",\"title\":\"Original unfilled object record\",\"form\":\"original\",\"language\":\"en\",\"text\":\"Object identifier: unknown. Maker: unknown. Date and place of making: unknown. Materials and structure: uninspected. Meaning and whose explanation: unrecorded. Permission for image or process use: absent.\",\"context\":\"Original fictional scenario; associated source supplies a method/context only, not these facts.\",\"sha256\":\"5ad1ec7d0bbd8bb505cd90d42326eefc97742ec353f27363cc964ddfb1be13df\"}],\"claims\":[{\"id\":\"scope-of-evidence\",\"kind\":\"interpretive\",\"text\":\"Attribute the selected practitioner and place precisely.\",\"passageIds\":[\"maker\"],\"qualification\":\"Dated English self-presentation of Kwasi Asare/Dento Mills; no selected textile object, current workshop availability, authenticated pattern meaning or community endorsement.\"}],\"context\":[\"No outreach, object selection or new asset permission is claimed. This is a complete exercise in the scope of the available accounts; a situated object study remains a distinct future activity.\",\"Earlier UNESCO, inventory and gift-page access stops remain excluded. No course content, loom design, pattern or image is bundled.\"],\"timeline\":[],\"relations\":[],\"reviews\":[],\"reviewRequirements\":[\"content\",\"rights\"],\"reviewLimitations\":[\"Local author check only. No independent reviewer, professional credential, actual learner/access observation, community endorsement or physical outcome is claimed.\"],\"activity\":{\"type\":\"source-comparison\",\"prompts\":[{\"id\":\"place\",\"claim\":\"The selected website connects its account with Dento Mills in Nsawam.\",\"answer\":\"direct\",\"evidenceIds\":[\"maker\"],\"feedback\":\"This is attributable to the site; it is not independent verification of every biographical claim.\"},{\"id\":\"independent\",\"claim\":\"The homepage and workshop page are two independent cultural authorities.\",\"answer\":\"unsupported\",\"evidenceIds\":[\"none\"],\"feedback\":\"They are two pages from the same provider.\"},{\"id\":\"outcome\",\"claim\":\"The teaching offer proves a learner can now weave the proposed cloth.\",\"answer\":\"unsupported\",\"evidenceIds\":[\"none\"],\"feedback\":\"No session, object or learner performance was observed.\"},{\"id\":\"meaning\",\"claim\":\"An original generic weave diagram establishes the cultural meaning of a named kente pattern.\",\"answer\":\"unsupported\",\"evidenceIds\":[\"none\"],\"feedback\":\"Construction and situated meaning require different evidence and attribution.\"},{\"id\":\"inquiry\",\"claim\":\"A particular cloth claim would need an object record beyond these two pages.\",\"answer\":\"inference\",\"evidenceIds\":[\"maker\",\"offer\",\"object\"],\"feedback\":\"The empty fields reveal what the selected material does not establish.\"}],\"transfer\":\"Choose three fields in the object record and specify who or what could support them. Explain why one source might support a maker’s account without establishing every broader cultural claim.\",\"rubric\":[\"Attribute the selected practitioner and place precisely.\",\"Separate self-description, teaching offer and observed outcome.\",\"Do not infer fixed meanings from colour or geometry.\",\"Keep uninspected object fields unknown.\"]},\"extensions\":{\"atlas:preparation\":{\"path\":\"docs/pilots/sequences/preparation/remaining-sequences-20261023.json\",\"scope\":\"Exact historical source receipts retained; current exercise is independently identified original authoring.\"}},\"authorVerification\":{\"kind\":\"author-check\",\"scope\":\"local-preview\",\"author\":\"atlas-editor\",\"checkedOn\":\"2026-10-23\",\"revision\":\"0.1.0\",\"contentDigest\":\"6897127e6de4d6f2c688dee21a6916a093b92c58811f744a8240d5b6c9d7fdc1\",\"artifactDigest\":\"2b4e526b6db185d564cedc2f534eb6daf21a5530e6f2b2d2aeceed03c0b50c70\",\"evidencePath\":\"docs/verification/universal-author-sequences.md\",\"checks\":[\"Schema, source-reference and preparation-packet hash validation\",\"Passed tests/exploration-methods.test.mjs\",\"Passed tests/exploration-studio.test.mjs\",\"Passed tests/exploration-professions.test.mjs\",\"Passed tests/exploration-followups.test.mjs\",\"Passed tests/exploration-sequences.test.mjs\"]}}</script><script type=\"module\" src=\"../../../explorations/ui.mjs\"></script></body></html>\n",
+  "previewDigest": "7550ac846952f36fdba4c239e1d6cc837e25e479f39fd3879487ac3d6fd9a321",
+  "receipts": {
+    "docs/verification/universal-author-sequences.md": {
+      "text": "# Remaining sequence authoring — 23 October 2026\n\nTen original local lessons extend the eight pilots to three lessons each. Source evidence binds the unchanged historical sequence register; newly read legal/health pages have separately dated scope. The exercise is narrower wherever a selected object, language, physical event or current legal/clinical claim lacks evidence. Independent review is not required by the current user instruction. Missing observations are not converted to passes.\n\nAll quotations are excluded from these ten lessons. Original source summaries, fictional cases, sample values and plan coordinates carry explicit provenance and scope. New native model code is not required: existing source-comparison and annotation controls supply the tasks and full static guides.\n\nThe continuation command passed all 29 model/source groups across the five named suites, including exact retained-source comparisons, sample-ratio arithmetic, patch predicates and staging changes. A floating-point equality assertion was corrected to a numerical tolerance; the underlying rational example is unchanged.\n\nThe native browser group exercised all ten lessons at 320 px, in both themes, with and without JavaScript: all source passages, static guides and transfer tasks were present; controls and private notes survived reload; no horizontal page overflow, script errors or external requests were observed. The initial harness looked for the transfer task inside the guide rather than its separate transfer section; that selector was corrected. Craft and health static screenshots were visually inspected and readable.\n\nThese are author checks on local artifacts. No real-world observation, external reviewer approval or public release is recorded. Logs and screenshots: /tmp/atlas-author-continuation-20261023/sequences-check2.log, sequences-ui2.log and sequences-shots/. The receipt is retained with the frozen editions; later delivery evidence belongs in a subsequent receipt.\n",
+      "sha256": "3d6ab895d64eecad39e44cfd48673376ad6a016ac92051a5db48659be0ef2632"
+    }
+  },
+  "supplements": {}
+}

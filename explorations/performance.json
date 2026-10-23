@@ -3,7 +3,7 @@
   "id": "x-performance-0001",
   "pilotId": "P08",
   "revision": "0.1.0",
-  "status": "in-review",
+  "status": "accepted",
   "publication": "local-preview",
   "title": "One phrase, two durations",
   "subtitle": "Locate the change before interpreting its effect.",
@@ -221,6 +221,23 @@
       "Give two reasoned interpretations without treating a mood label as an answer key.",
       "Distinguish generated signal, human performance and listener evidence.",
       "Explain what the visual/no-audio route can establish and what it cannot."
+    ]
+  },
+  "authorVerification": {
+    "kind": "author-check",
+    "scope": "local-preview",
+    "author": "atlas-editor",
+    "checkedOn": "2026-10-23",
+    "revision": "0.1.0",
+    "contentDigest": "40190c5a0dc101882934a6579af5e9c3eb75a2d38b65d18e728fee03d9e23aaa",
+    "artifactDigest": "d2e8ef9563533f485619ec40760e45dbf89d66358644d07f18a4c296fb9d6be2",
+    "evidencePath": "docs/verification/universal-author-continuation.md",
+    "checks": [
+      "Schema, source-reference and preparation-packet hash validation",
+      "Passed tests/exploration-methods.test.mjs",
+      "Passed tests/exploration-studio.test.mjs",
+      "Passed tests/exploration-professions.test.mjs",
+      "Passed tests/exploration-followups.test.mjs"
     ]
   }
 }

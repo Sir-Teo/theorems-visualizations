@@ -1,0 +1,222 @@
+{
+  "schemaVersion": 1,
+  "id": "x-agriculture-0003",
+  "pilotId": "P05",
+  "revision": "0.1.0",
+  "status": "accepted",
+  "publication": "local-preview",
+  "title": "A farming-system claim needs the right evidence",
+  "subtitle": "Compare a programme profile, proposed outputs and a published farmer account.",
+  "summary": "Compare a programme profile, proposed outputs and a published farmer account. Keep place, time and uncertainty attached to each claim.",
+  "audience": "General readers; all selected evidence and task instructions are included.",
+  "scope": "Dated FAO/MSSRF institutional accounts of Koraput; source-literacy exercise, not an agronomic evaluation or a representation of every community. The feature’s village discrepancy remains unresolved.",
+  "author": "atlas-editor",
+  "updatedOn": "2026-10-23",
+  "domainIds": [
+    "D10",
+    "D17",
+    "D08"
+  ],
+  "relatedCollectionIds": [],
+  "knowledgeModes": [
+    "interpretive"
+  ],
+  "methods": [
+    "source-comparison"
+  ],
+  "prerequisites": [],
+  "sources": [
+    {
+      "id": "followup-seq-fao-koraput",
+      "title": "Koraput Traditional Agriculture, India",
+      "url": "https://www.fao.org/giahs/giahs-around-the-world/india-koraput/en",
+      "locator": "Profile sections, requesting agency and action-plan link. Historical diversity counts are not a current census; institutional description not a community mandate. Medicinal claims not adopted.",
+      "creator": "FAO GIAHS",
+      "date": "Institutional profile: GIAHS since 2012; retrieved 22 October 2026",
+      "language": "en",
+      "rights": {
+        "decision": "usable-for-prototype",
+        "basis": "Original attributed summaries and original fictional exercises; no third-party media, full documents or extended quotations copied. Link/original summary only; no photo, map or broad reuse permission assumed.",
+        "scope": "Local commentary and source links only; no third-party assets or participant consent implied."
+      }
+    },
+    {
+      "id": "followup-seq-koraput-plan",
+      "title": "Participatory Action Plan for Dynamic Conservation: Traditional Agriculture in Koraput, Orissa",
+      "url": "https://www.fao.org/fileadmin/templates/giahs/Action_plan_Koraput.pdf",
+      "locator": "Title and selected pp.2–5,9–10 extracted text; definition-of-output table printed p.2 also visually inspected. Not an independent confirmation of the related FAO/MSSRF accounts. Legal/policy and medicinal assertions not verified or adopted.",
+      "creator": "M. S. Swaminathan Research Foundation; hosted by FAO",
+      "date": "PDF undated in inspected title; linked by profile under 10 October 2012 highlight",
+      "language": "en",
+      "rights": {
+        "decision": "usable-for-prototype",
+        "basis": "Original attributed summaries and original fictional exercises; no third-party media, full documents or extended quotations copied. Links/original summary only; no redistribution licence for report/images inferred.",
+        "scope": "Local commentary and source links only; no third-party assets or participant consent implied."
+      }
+    },
+    {
+      "id": "followup-seq-mssrf-seeds",
+      "title": "The quiet power of seed keepers in Odisha’s community seed banks",
+      "url": "https://www.mssrf.org/stories-of-change/seed-keepers-odishas-community-seed-banks",
+      "locator": "Byline/date and full feature body including opening/closing location names. Original interview, language/translation and participant reuse terms uninspected. Reported benefits are not measured causal effects.",
+      "creator": "Team DIVERSIFARM-India, MSSRF",
+      "date": "Feature story, 19 May 2026",
+      "language": "en",
+      "rights": {
+        "decision": "usable-for-prototype",
+        "basis": "Original attributed summaries and original fictional exercises; no third-party media, full documents or extended quotations copied. Link/original bounded commentary; no photo, quotation, translation or practice-reproduction permission assumed.",
+        "scope": "Local commentary and source links only; no third-party assets or participant consent implied."
+      }
+    }
+  ],
+  "passages": [
+    {
+      "id": "profile",
+      "sourceId": "followup-seq-fao-koraput",
+      "title": "Programme profile",
+      "form": "paraphrase",
+      "language": "en",
+      "text": "The FAO profile describes a farming and forest context and identifies MSSRF as requesting agency. Its historical diversity figures do not constitute a current census.",
+      "context": "Original bounded summary of the dated source reading; see source scope and limits.",
+      "sha256": "5e6f9847a581ddea7df67c79d8e086f893450858705d86e7d57cc7689536f5c8"
+    },
+    {
+      "id": "plan",
+      "sourceId": "followup-seq-koraput-plan",
+      "title": "Proposed outputs",
+      "form": "paraphrase",
+      "language": "en",
+      "text": "The MSSRF conservation action plan hosted by FAO defines programme outputs. A proposed output is a plan, not a completed activity or measured benefit.",
+      "context": "Original bounded summary of the dated source reading; see source scope and limits.",
+      "sha256": "71529f421fe924c708ff555051c3444d0f5935350e206deabcb6e976938fc638"
+    },
+    {
+      "id": "account",
+      "sourceId": "followup-seq-mssrf-seeds",
+      "title": "Published account with a location problem",
+      "form": "paraphrase",
+      "language": "en",
+      "text": "The 19 May 2026 MSSRF feature presents a farmer’s reported seed choices through an institutional writer. Its opening names Nuaguda and its ending Kumbharaguda. The selected reading cannot resolve that mismatch.",
+      "context": "Original bounded summary of the dated source reading; see source scope and limits.",
+      "sha256": "fecb69987bbf87eacc86b9e56552b6ce5d0a736ee328e680adc030b508fe0276"
+    },
+    {
+      "id": "matrix",
+      "sourceId": "followup-seq-fao-koraput",
+      "title": "An original inquiry matrix",
+      "form": "original",
+      "language": "en",
+      "text": "Seed access: which source, occasion and household? Diversity: which varieties, sampling frame and year? Labour: whose time and compared with what? Food preferences: whose account? Decision-making: who could choose and who could not? None of these questions is answered merely by adding a variety count.",
+      "context": "Original fictional scenario; associated source supplies a method/context only, not these facts.",
+      "sha256": "2e9e7bca4d969e15576f40cdfe3a225bc836e1b39939b22af47afcb7f4e0648d"
+    }
+  ],
+  "claims": [
+    {
+      "id": "scope-of-evidence",
+      "kind": "interpretive",
+      "text": "Distinguish proposed outputs from demonstrated outcomes.",
+      "passageIds": [
+        "profile"
+      ],
+      "qualification": "Dated FAO/MSSRF institutional accounts of Koraput; source-literacy exercise, not an agronomic evaluation or a representation of every community. The feature’s village discrepancy remains unresolved."
+    }
+  ],
+  "context": [
+    "No farmer quotation, image, interview transcript or cultivation instruction is reproduced. This lesson examines the published accounts and their limitations.",
+    "The raw-capture stop and unresolved location issue are retained; this authoring does not count as a resolution or community participation."
+  ],
+  "timeline": [],
+  "relations": [],
+  "reviews": [],
+  "reviewRequirements": [
+    "content",
+    "rights"
+  ],
+  "reviewLimitations": [
+    "Local author check only. No independent reviewer, professional credential, actual learner/access observation, community endorsement or physical outcome is claimed."
+  ],
+  "activity": {
+    "type": "source-comparison",
+    "prompts": [
+      {
+        "id": "output",
+        "claim": "The plan’s output table proves the proposed work was completed.",
+        "answer": "unsupported",
+        "evidenceIds": [
+          "none"
+        ],
+        "feedback": "An implementation record would be needed; a plan cannot fill it."
+      },
+      {
+        "id": "village",
+        "claim": "The feature supports a single unambiguous village pin.",
+        "answer": "unsupported",
+        "evidenceIds": [
+          "none"
+        ],
+        "feedback": "Both conflicting names remain visible; no map pin or guessed correction is supplied."
+      },
+      {
+        "id": "census",
+        "claim": "The profile gives a verified current census.",
+        "answer": "unsupported",
+        "evidenceIds": [
+          "none"
+        ],
+        "feedback": "Historical reference periods cannot become a current count through a new reading date."
+      },
+      {
+        "id": "linked",
+        "claim": "These materials have institutional connections and should not be counted as three independent confirmations.",
+        "answer": "inference",
+        "evidenceIds": [
+          "profile",
+          "plan",
+          "account"
+        ],
+        "feedback": "Follow authorship, hosting and programme relationships before assessing independence."
+      },
+      {
+        "id": "labour",
+        "claim": "More crop varieties alone proves less labour.",
+        "answer": "unsupported",
+        "evidenceIds": [
+          "none"
+        ],
+        "feedback": "Labour needs its own measurement and distributional context, not a proxy count."
+      }
+    ],
+    "transfer": "Choose one matrix row and specify a question, an appropriately scoped source, a date/place requirement and what permission would be needed for a participant account. Retain unknowns instead of filling them with the programme narrative.",
+    "rubric": [
+      "Distinguish proposed outputs from demonstrated outcomes.",
+      "Retain the location discrepancy and historical time scope.",
+      "Check source dependence before claiming corroboration.",
+      "Use a distinct evidence question for each system outcome."
+    ]
+  },
+  "extensions": {
+    "atlas:preparation": {
+      "path": "docs/pilots/sequences/preparation/remaining-sequences-20261023.json",
+      "scope": "Exact historical source receipts retained; current exercise is independently identified original authoring."
+    }
+  },
+  "authorVerification": {
+    "kind": "author-check",
+    "scope": "local-preview",
+    "author": "atlas-editor",
+    "checkedOn": "2026-10-23",
+    "revision": "0.1.0",
+    "contentDigest": "a94a0aa74ae625a85ee3ec51c851951a04351bd01951860ce50cfe586d6b8772",
+    "artifactDigest": "6d6559813f17d5230843c915abf0cfc581643801e4940c6e8bdf3e02ba18d0ad",
+    "evidencePath": "docs/verification/universal-author-sequences.md",
+    "checks": [
+      "Schema, source-reference and preparation-packet hash validation",
+      "Passed tests/exploration-methods.test.mjs",
+      "Passed tests/exploration-studio.test.mjs",
+      "Passed tests/exploration-professions.test.mjs",
+      "Passed tests/exploration-followups.test.mjs",
+      "Passed tests/exploration-sequences.test.mjs"
+    ]
+  }
+}

@@ -1,9 +1,15 @@
+import {applyWater} from './water-ledger.mjs';
+import {applyReasoning} from './reasoning-lab.mjs';
+import {applyProfession, connectProfession} from './profession-ui.mjs';
 import {applyStudio, connectStudio} from './studio-ui.mjs';
 import { argumentAssessment, storageResult } from './method-models.mjs';
 import { scatter } from './method-views.mjs';
 const $=id=>document.getElementById(id);
 export function applyMethod(record,state) {
   applyStudio(record,state);
+  applyProfession(record,state);
+  applyReasoning(record,state);
+  applyWater(record,state);
   const a=record.activity;
   if(a.type==='argument-map') {
     const result=argumentAssessment(record,state), list=$('argument-list');list.replaceChildren();
@@ -31,6 +37,7 @@ export function applyMethod(record,state) {
 }
 export function connectMethod(record,getState,change) {
   connectStudio(record,getState,change);
+  connectProfession(record,getState);
   const a=record.activity;
   if(a.type==='argument-map') {
     $('premise-choice').addEventListener('change',()=>{ $('premise-preview').textContent=a.premises.find(p=>p.id===$('premise-choice').value).text; });

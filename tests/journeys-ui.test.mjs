@@ -40,7 +40,7 @@ test('five journey HTML pages and every local reference resolve with no private 
   let refs = 0; const targets = new Set();
   for (const path of ['journeys/index.html', 'journeys/about/index.html', ...prepared.entries.map(e => `journeys/${e.id}/index.html`)]) {
     const html = await readFile(join(output, path), 'utf8'); assert.ok(html.includes('noindex,nofollow')); assert.ok(!html.includes('rel="canonical"')); assert.ok(!html.includes('<script'));
-    for (const forbidden of ['x-craft-0001', 'x-performance-0001', 'docs/journeys', 'docs/pilots', 'labs/atlas']) assert.ok(!html.includes(forbidden));
+    for (const forbidden of ['x-performance-0001', 'docs/journeys', 'docs/pilots', 'labs/atlas']) assert.ok(!html.includes(forbidden));
     for (const [, href] of html.matchAll(/(?:href|src)="([^"]+)"/g)) {
       if (/^(?:https?:|#|data:)/.test(href)) continue;
       const u = new URL(href.replaceAll('&amp;', '&'), 'https://local/' + path); let target = u.pathname.slice(1); if (!target || target.endsWith('/')) target += 'index.html'; targets.add(target); refs++;
@@ -57,8 +57,8 @@ test('all tasks and source limits can be read without JavaScript at root and pro
     }
     for (const id of new Set(r.steps.flatMap(s => s.sourceIds))) { const source = prepared.data.sources.sources.find(s => s.id === id), content = await page.locator('#source-' + id).textContent(); assert.ok(content.includes(source.limits) && content.includes(source.reuse)); }
   }
-  await page.goto(origin + '/project/journeys/account-evidence/'); assert.equal(await page.locator('#step-law a, #step-law input, #step-law summary').count(), 1); // Only the available field orientation link.
-  assert.equal(await page.locator('#step-law .destination').count(), 0); assert.equal(await page.locator('input[type="checkbox"]').count(), 0);
+  await page.goto(origin + '/project/journeys/account-evidence/'); assert.equal(await page.locator('#step-law summary').count(), 1);
+  assert.equal(await page.locator('#step-law .destination').count(), 1); assert.equal(await page.locator('input[type="checkbox"]').count(), 0);
 }, { javaScriptEnabled: false }));
 test('keyboard skip, stop anchors and reasoning disclosures work; private stores and network stay untouched', () => run(async page => {
   const requests = []; page.on('request', r => requests.push(r.url())); await page.goto(origin + '/project/journeys/water-city/');
@@ -89,7 +89,7 @@ test('all routes fit320px in both themes and enlarged text; desktop and phone ca
       await page.goto(origin + '/project/' + path); assert.equal(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1), true, path + ' ' + colorScheme);
     }
     await page.goto(origin + '/project/journeys/'); await page.screenshot({ path: join(shots, `index-320-${colorScheme}.png`) });
-    await page.goto(origin + '/project/journeys/account-evidence/#step-law'); await page.addStyleTag({ content: 'html{font-size:24px}body{font-size:24px}' }); assert.equal(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1), true); await page.locator('#step-law').evaluate(el => el.scrollIntoView({ block: 'start' })); await page.screenshot({ path: join(shots, `law-gap-320-large-${colorScheme}.png`) });
+    await page.goto(origin + '/project/journeys/account-evidence/#step-law'); await page.addStyleTag({ content: 'html{font-size:24px}body{font-size:24px}' }); assert.equal(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1), true); await page.locator('#step-law').evaluate(el => el.scrollIntoView({ block: 'start' })); await page.screenshot({ path: join(shots, `law-lesson-320-large-${colorScheme}.png`) });
   }, { viewport: { width: 320, height: 900 }, colorScheme });
   for (const [id, colorScheme] of [['water-city', 'light'], ['woven-cloth', 'dark']]) await run(async page => { await page.goto(origin + '/project/journeys/' + id + '/'); await page.screenshot({ path: join(shots, `${id}-1280-${colorScheme}.png`) }); }, { colorScheme });
 });

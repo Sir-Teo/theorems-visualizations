@@ -1,0 +1,194 @@
+{
+  "schemaVersion": 1,
+  "id": "x-law-0003",
+  "pilotId": "P04",
+  "revision": "0.1.0",
+  "status": "accepted",
+  "publication": "local-preview",
+  "title": "Change the jurisdiction, recheck the rule",
+  "subtitle": "Compare a fictional Australian kettle file with its own authority.",
+  "summary": "Compare a fictional Australian kettle file with its own authority. Identify what a borrowed UK timing card cannot establish.",
+  "audience": "General readers; all selected evidence and task instructions are included.",
+  "scope": "Pinned Australian federal compilation 167 of 16 September 2026 and ACCC guidance, not a complete NSW legal decision. State procedure, commencement effects and individual entitlements are outside the exercise.",
+  "author": "atlas-editor",
+  "updatedOn": "2026-10-23",
+  "domainIds": [
+    "D16",
+    "D15"
+  ],
+  "relatedCollectionIds": [],
+  "knowledgeModes": [
+    "normative",
+    "interpretive"
+  ],
+  "methods": [
+    "annotation"
+  ],
+  "prerequisites": [],
+  "sources": [
+    {
+      "id": "followup-seq-acl-c167",
+      "title": "Competition and Consumer Act 2010, compilation 167: corporate application and selected Australian Consumer Law goods provisions",
+      "url": "https://www.legislation.gov.au/C2004A00109/2026-09-16/2026-09-16/text/original/pdf/4",
+      "locator": "Register latest-version label; volume 4 cover/compilation caveats, Schedule 2 ss3(1)–(2) pp87–88,54 pp143–144,259–263 pp334–338; volume 3 s131 p92. Selected PDF text extracted locally. HTML navigation supplied contents, not provision bodies; pinned PDFs supplied bodies. State law, forum, full endnotes/commencement and modifications unverified. No regulated monetary threshold adopted.",
+      "creator": "Office of Parliamentary Counsel, Australia",
+      "date": "Compilation 167, 16 September 2026; C2026C00405 registered 24 September 2026",
+      "language": "en",
+      "rights": {
+        "decision": "usable-for-prototype",
+        "basis": "Original attributed summaries and original fictional exercises; no third-party media, full documents or extended quotations copied. Links and original case/commentary only; no blanket government-media or excerpt licence asserted.",
+        "scope": "Local commentary and source links only; no third-party assets or participant consent implied."
+      }
+    },
+    {
+      "id": "followup-seq-accc-remedies",
+      "title": "Repair, replace, refund, cancel",
+      "url": "https://www.accc.gov.au/consumers/problem-with-a-product-or-service-you-bought/repair-replace-refund-cancel",
+      "locator": "Consumer guarantees, major/minor goods problems, remedies, supplier role, return conditions and stated ACCC role. Guidance is not the statute or a ruling on the fictional case. Service/manufacturer/video examples are not adopted as lesson cases.",
+      "creator": "Australian Competition and Consumer Commission",
+      "date": "Undated guidance page retrieved 22 October 2026",
+      "language": "en",
+      "rights": {
+        "decision": "usable-for-prototype",
+        "basis": "Original attributed summaries and original fictional exercises; no third-party media, full documents or extended quotations copied. Links/original commentary only; no source video, images or example narrative copied.",
+        "scope": "Local commentary and source links only; no third-party assets or participant consent implied."
+      }
+    }
+  ],
+  "passages": [
+    {
+      "id": "authority",
+      "sourceId": "followup-seq-acl-c167",
+      "title": "Pinned authority",
+      "form": "paraphrase",
+      "language": "en",
+      "text": "The selected compilation separates guarantee questions from remedies. Sections 259–263 distinguish repairable non-major failures, major failures and restrictions on rejection. Section 262 uses a contextual rejection period; a UK thirty-day card does not supply its rule.",
+      "context": "Original bounded summary of the dated source reading; see source scope and limits.",
+      "sha256": "c9dc7a7bbf5989aa12f9e5573b2c528148e512a4aa033832b4bb17f123116a51"
+    },
+    {
+      "id": "guidance",
+      "sourceId": "followup-seq-accc-remedies",
+      "title": "Guidance has a different role",
+      "form": "paraphrase",
+      "language": "en",
+      "text": "ACCC guidance explains major/minor problems and remedies. The agency states that it does not resolve individual disputes or give case-specific advice. Guidance is distinct from the statute and from a ruling.",
+      "context": "Original bounded summary of the dated source reading; see source scope and limits.",
+      "sha256": "96307da449f1afe96b826b3fb6b387dee69d389cf22ab297686e2ed03f5223d0"
+    },
+    {
+      "id": "file",
+      "sourceId": "followup-seq-acl-c167",
+      "title": "Fictional transaction and variants",
+      "form": "original",
+      "language": "en",
+      "text": "A NSW household buys a new kettle for domestic use from an incorporated retailer, without an auction, resale purpose or finance. Variant A stipulates an unsafe concealed fault. Variant B stipulates an easily repairable non-major fault. Variant C records several failures but leaves their combined significance disputed.",
+      "context": "Original fictional scenario; associated source supplies a method/context only, not these facts.",
+      "sha256": "89933d5510b90000e7de2f0b2881400234bb187114f47d46ac568053a0fb8112"
+    },
+    {
+      "id": "foreign-card",
+      "sourceId": "followup-seq-acl-c167",
+      "title": "An inserted card",
+      "form": "original",
+      "language": "en",
+      "text": "A note in the file says: thirty days after delivery, because that was the rule in an earlier UK exercise. It supplies no Australian statutory locator.",
+      "context": "Original fictional scenario; associated source supplies a method/context only, not these facts.",
+      "sha256": "88c0cdb3df4a4416093387df3606ed1afdb31bf7d0de41acd0d835752a693525"
+    }
+  ],
+  "claims": [
+    {
+      "id": "scope-of-evidence",
+      "kind": "interpretive",
+      "text": "Identify authority before importing a rule.",
+      "passageIds": [
+        "authority"
+      ],
+      "qualification": "Pinned Australian federal compilation 167 of 16 September 2026 and ACCC guidance, not a complete NSW legal decision. State procedure, commencement effects and individual entitlements are outside the exercise."
+    }
+  ],
+  "context": [
+    "Volume 4 was opened again on 23 October; volume 3 was not accessible through that tool, so the earlier scoped s131 receipt remains historical. No current common consolidation or NSW procedure is certified.",
+    "Original scenarios and summaries only; no government PDF, source media or example narrative bundled."
+  ],
+  "timeline": [],
+  "relations": [],
+  "reviews": [],
+  "reviewRequirements": [
+    "content",
+    "rights"
+  ],
+  "reviewLimitations": [
+    "Local author check only. No independent reviewer, professional credential, actual learner/access observation, community endorsement or physical outcome is claimed."
+  ],
+  "activity": {
+    "type": "annotation",
+    "lenses": [
+      {
+        "id": "authority",
+        "label": "Name the authority",
+        "observation": "The transaction and compilation are explicit, while the inserted timing card has no Australian basis.",
+        "question": "What would be needed to justify a local rejection-period conclusion?",
+        "readings": [
+          "Identify the applicable provision and the facts it makes relevant.",
+          "Keep a separate list of unverified state, procedure and legal-effect questions."
+        ],
+        "boundary": "Do not calculate an Australian deadline from the UK example."
+      },
+      {
+        "id": "variants",
+        "label": "Compare the stipulated variants",
+        "observation": "The variants alter the failure description, not the governing country.",
+        "question": "Which condition still needs analysis in each variant?",
+        "readings": [
+          "For B, inspect the supplier-remedy stage and consequences of refusal or failure within reasonable time.",
+          "For C, examine the statutory combined-failures test; counting failures alone is insufficient."
+        ],
+        "boundary": "The exercise supplies branch-reading questions, not a resolved personal claim."
+      },
+      {
+        "id": "status",
+        "label": "Keep guidance and adjudication separate",
+        "observation": "A regulator explanation is available; a ruling on this fictional file is not.",
+        "question": "What claim would require evidence beyond the public guidance?",
+        "readings": [
+          "An outcome for an individual dispute needs its facts and applicable legal analysis.",
+          "A current legal-effect claim needs the relevant amendments and application rules."
+        ],
+        "boundary": "An official source is not automatically a complete answer to every case."
+      }
+    ],
+    "transfer": "Remove the foreign timing card. Replace it with the jurisdiction, pinned compilation, provision to inspect and two missing facts. Explain why a structurally similar problem can need a different legal analysis.",
+    "rubric": [
+      "Identify authority before importing a rule.",
+      "Separate a guarantee, failure classification and remedy restrictions.",
+      "Do not turn several faults into an automatic major-failure finding.",
+      "Preserve the boundary between guidance and a case decision."
+    ]
+  },
+  "extensions": {
+    "atlas:preparation": {
+      "path": "docs/pilots/sequences/preparation/remaining-sequences-20261023.json",
+      "scope": "Exact historical source receipts retained; current exercise is independently identified original authoring."
+    }
+  },
+  "authorVerification": {
+    "kind": "author-check",
+    "scope": "local-preview",
+    "author": "atlas-editor",
+    "checkedOn": "2026-10-23",
+    "revision": "0.1.0",
+    "contentDigest": "192557dc8a56e1509aeae46b399771b011fb7041d3c729f8431866cc703bf22b",
+    "artifactDigest": "52d29d8c60bffc263e5b967baea67ede18909a52ea34c12078ff5e7137808e21",
+    "evidencePath": "docs/verification/universal-author-sequences.md",
+    "checks": [
+      "Schema, source-reference and preparation-packet hash validation",
+      "Passed tests/exploration-methods.test.mjs",
+      "Passed tests/exploration-studio.test.mjs",
+      "Passed tests/exploration-professions.test.mjs",
+      "Passed tests/exploration-followups.test.mjs",
+      "Passed tests/exploration-sequences.test.mjs"
+    ]
+  }
+}

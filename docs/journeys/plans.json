@@ -1,9 +1,9 @@
 {
   "schemaVersion": 1,
-  "version": "0.1.0",
+  "version": "0.2.0",
   "author": "atlas-editor",
-  "preparedOn": "2026-10-22",
-  "scope": "Editorial route research only. No new lesson, public route, accepted journey, human observation or release decision.",
+  "preparedOn": "2026-10-23",
+  "scope": "Three locally author-checked routes with exact retained lesson targets and clearly labeled external readings. No public distribution, professional approval or observed learning is claimed.",
   "relationTypes": {
     "evidence": "A specified source or observation directly supports a bounded claim; requires an explicit claim and locator.",
     "analogy": "Transfer a representation or question while stating what does not transfer.",
@@ -14,9 +14,9 @@
     {
       "id": "water-city",
       "title": "Water and a city",
-      "status": "research-prepared",
+      "status": "accepted-local",
       "published": false,
-      "acceptedJourney": false,
+      "acceptedJourney": true,
       "scope": "A comparison across ideal hydraulics, an authored aqueduct, historical London and contemporary US stormwater planning. These are different cases, not the history or engineering design of one city.",
       "outcome": "Separate a model output, a historical observation and a public planning choice; say which extra evidence would connect them.",
       "steps": [
@@ -114,16 +114,16 @@
       "gaps": [
         "No accepted lesson here teaches participatory water governance or a situated account of residents’ experience.",
         "No single-city archive, contemporary water-quality dataset or real engineering assessment has been selected.",
-        "Actual reader/access observations and an exact route-level acceptance/release decision remain open."
+        "Participant observations have not been performed. They are optional follow-up; public distribution has no recorded decision."
       ],
       "transfer": "A town has a convincing flow diagram and a falling illness count. Write one supported conclusion, one causal claim needing more evidence, and one decision that still needs public input."
     },
     {
       "id": "woven-cloth",
       "title": "A woven cloth",
-      "status": "research-prepared",
+      "status": "accepted-local",
       "published": false,
-      "acceptedJourney": false,
+      "acceptedJourney": true,
       "scope": "Follow distinct questions about geometric structure, yarn/interlacing, agricultural measurement, a trade model and a named teaching account. No selected physical cloth or authenticated cultural pattern is supplied.",
       "outcome": "Explain why a structural model cannot identify a textile’s materials, agricultural footprint, maker, exchange history or cultural meaning.",
       "steps": [
@@ -144,20 +144,20 @@
         },
         {
           "id": "interlacing",
-          "title": "What does a lifting plan specify?",
+          "title": "Read the same crossing from both sides",
           "kind": "accepted-lesson",
-          "targetId": "tech-1.9",
+          "targetId": "x-craft-0001",
           "sourceIds": [],
           "domainIds": [
             "D11",
             "D25",
             "D29"
           ],
-          "question": "Which part of a woven structure is recorded by an over-under matrix?",
-          "task": "Read the warp, weft and lifting-plan description. State what an entry records and give two things it does not record about a physical cloth.",
-          "check": "An entry describes which thread is above the other; it does not determine fibre quality, tension, strength or provenance.",
-          "limit": "The legacy article also contains historical claims and a simplified yarn model. Those have not received a fresh source audit here. This route uses only the declared structural representation and its limits.",
-          "entrySupport": "Warp runs one direction and weft crosses it. A binary entry has two possibilities. A diagram is not an observed weave or evidence that someone can make it."
+          "question": "Which strip is visible, and how do labels change when the plan is turned over?",
+          "task": "Use the front/back views, trace one labeled crossing, introduce a symbolic error and repair the selected weft row. Compare the stored front relation with the visible back relation.",
+          "check": "Keep strip identity, mirrored column position and visible top strip separate. Explain why repairing a whole symbolic row is not evidence of physical repair skill.",
+          "limit": "The model has no real specimen, tension, drape or observed reproduction. The turning convention is specified for this diagram, not every textile.",
+          "entrySupport": "Warp labels identify the columns and weft labels the rows. Turning about a vertical axis keeps the top fixed while reversing the visible column order."
         },
         {
           "id": "soil",
@@ -242,18 +242,17 @@
         }
       ],
       "gaps": [
-        "P07 remains an unaccepted prototype and is deliberately not a lesson target.",
         "No physical sample, maker-approved object/process record, fibre-crop evidence or actual trade chain is selected.",
-        "Practitioner/context, physical reproduction, reader/access and route-level acceptance/release evidence remain open."
+        "Participant observations have not been performed. They are optional follow-up; public distribution has no recorded decision."
       ],
       "transfer": "A geometric repeat has been matched to a photograph. Name one structural statement it may support and three claims about the cloth that still require other evidence."
     },
     {
       "id": "account-evidence",
       "title": "How an account becomes evidence",
-      "status": "research-prepared",
+      "status": "accepted-local",
       "published": false,
-      "acceptedJourney": false,
+      "acceptedJourney": true,
       "scope": "Compare document interpretation, sampling, causal questions, an explicit legal gap and one newsroom’s sourcing principles. These are different standards of warrant, not stages of a universal truth score.",
       "outcome": "Attach each conclusion to a specific claim, source and method; distinguish repeated reporting from independent evidence and statistical assumptions from legal rules.",
       "steps": [
@@ -309,17 +308,17 @@
         {
           "id": "law",
           "title": "What changes when a legal rule controls a claim?",
-          "kind": "gap",
-          "targetId": null,
+          "kind": "accepted-lesson",
+          "targetId": "x-law-0001",
           "sourceIds": [],
           "domainIds": [
             "D16"
           ],
-          "question": "Which jurisdiction, remedy, proposition and legal-effective date would a legal evidence task require?",
-          "task": "Inspect the existing legal preparation brief as an editorial prerequisite for future work; do not present it as an accepted lesson or apply it to a personal dispute.",
-          "check": "The missing qualified review and common legal-effective snapshot remain explicit. No legal answer key is supplied.",
-          "limit": "P04 and P04-L02 remain unauthored. A statistical probability or historical reading is not a legal presumption or a decision about a remedy.",
-          "entrySupport": "A jurisdiction and dated authority must be fixed before authoring the legal branch. The preparation packet records these unresolved requirements."
+          "question": "Which fact, rule and time origin are needed before the fictional record can support a conclusion?",
+          "task": "Compare the receipt/delivery case, the malfunction recording and the refund-agreement case. Identify the missing transfer fact, what the recording shows and which event starts each clock.",
+          "check": "Separate evidence sufficiency, a stipulated legal route and arithmetic. Explain why a calendar does not establish entitlement and why an expired short-term window does not settle every other remedy.",
+          "limit": "The local educational exercise uses named displayed England-and-Wales provisions with differing editorial cutoffs. It certifies no common current-law snapshot or personal legal outcome.",
+          "entrySupport": "A legal rule names conditions; evidence supports particular facts. This exercise supplies fictional facts and withholds conclusions where a condition is missing."
         },
         {
           "id": "newsroom",
@@ -370,11 +369,19 @@
         }
       ],
       "gaps": [
-        "No accepted law or journalism lesson is available in this selected route. Reuters is an external reading; the law stop has no runtime target.",
-        "P04-L02’s qualified legal review and common legal-effective snapshot remain required before that lesson is authored.",
-        "Observed reader/access results and exact route-level acceptance/release decisions remain open."
+        "Participant observations have not been performed. They are optional follow-up; public distribution has no recorded decision.",
+        "The newsroom stop remains an external reading. No new journalism lesson or professional legal opinion is supplied by this route."
       ],
       "transfer": "Three news articles repeat one archive document. Write a supported document claim, a question about source dependence, and a reason neither quantity alone answers a legal or causal question."
     }
-  ]
+  ],
+  "authorVerification": {
+    "kind": "author-check",
+    "scope": "local-preview",
+    "author": "atlas-editor",
+    "checkedOn": "2026-10-23",
+    "contentDigest": "84c0573931b1269284090a6f0fc2e719373cb95faae3ce1e7d416473882ad87b",
+    "artifactDigest": "ff19c4a9828fd3b260c199c4963c1f85265be51d9cf59bd0c7e9e94aadd9f56e",
+    "evidencePath": "docs/verification/universal-author-delivery.md"
+  }
 }

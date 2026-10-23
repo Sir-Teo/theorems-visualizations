@@ -1,0 +1,328 @@
+{
+  "schemaVersion": 1,
+  "id": "x-history-0003",
+  "pilotId": "P01",
+  "revision": "0.1.0",
+  "status": "accepted",
+  "publication": "local-preview",
+  "title": "What can a charcoal mark date?",
+  "subtitle": "Change a premise without changing the observation.",
+  "summary": "Compare an excavation account with a later preservation experiment. Toggle three hypothetical premises to separate a conditional lower bound, a transferable analogy and an exact event date.",
+  "audience": "Readers learning how material evidence supports a historical inference.",
+  "scope": "A bounded reasoning exercise from selected reported observations. No exact eruption day, ancient inscription year or numerical survival probability is established.",
+  "author": "atlas-editor",
+  "updatedOn": "2026-10-23",
+  "domainIds": [
+    "D20",
+    "D02"
+  ],
+  "relatedCollectionIds": [
+    "tech",
+    "bighist",
+    "polsci"
+  ],
+  "knowledgeModes": [
+    "historical",
+    "empirical"
+  ],
+  "methods": [
+    "conditional-reasoning"
+  ],
+  "prerequisites": [],
+  "sources": [
+    {
+      "id": "followup-excavation",
+      "title": "The Regio V Excavations",
+      "url": "https://pompeiisites.org/wp-content/uploads/REGIO-V-EXCAVATIONS-ENG.pdf",
+      "locator": "Selected passages; exact locators appear beside each selection.",
+      "creator": "Parco Archeologico di Pompei",
+      "date": "Historical source; selected witness read 2026-10-22",
+      "language": "en",
+      "rights": {
+        "decision": "usable-for-prototype",
+        "basis": "Original bounded source summaries only; no PDF, photograph, image extraction or translated quotation is reproduced.",
+        "scope": "Local selected-text use; exact witness attribution and historical source limits retained."
+      }
+    },
+    {
+      "id": "followup-experiment",
+      "title": "La data della distruzione di Pompei: premesse per un dibattito aperto",
+      "url": "https://pompeiisites.org/wp-content/uploads/27_E-Journal_La-data-della-distruzione-di-Pompei_2.pdf",
+      "locator": "Selected passages; exact locators appear beside each selection.",
+      "creator": "Gabriel Zuchtriegel, Chiara Comegna, Fabrizio Conte and Alessandro Russo",
+      "date": "E-Journal Scavi di Pompei 27; exact _2.pdf bytes",
+      "language": "it",
+      "rights": {
+        "decision": "usable-for-prototype",
+        "basis": "Original bounded source summaries only; no PDF, photograph, image extraction or translated quotation is reproduced.",
+        "scope": "Local selected-text use; exact witness attribution and historical source limits retained."
+      }
+    }
+  ],
+  "passages": [
+    {
+      "id": "e1",
+      "sourceId": "followup-excavation",
+      "title": "E1 · p.11",
+      "form": "paraphrase",
+      "language": "en",
+      "text": "The earlier account links a day/month inscription, renovation context and fragility to an autumn date. The reported date has no year; other words have competing readings.",
+      "context": "Prepared source summary, not an independent field observation or epigraphic transcription.",
+      "sha256": "69f06c7fb07c88ca8c49ffd9b6a22cef8690029c3473a94a176e5e98d03bc2a5"
+    },
+    {
+      "id": "m1",
+      "sourceId": "followup-experiment",
+      "title": "M1 · p.5",
+      "form": "paraphrase",
+      "language": "en",
+      "text": "On 17 October 2023, oak charcoal was applied to ancient plaster on the same wall, at about 180 cm.",
+      "context": "Prepared source summary, not an independent field observation or epigraphic transcription.",
+      "sha256": "56843203f1dded5b03cbac418b347f3f4eda6be35f9282a27ed1884f87bb35a0"
+    },
+    {
+      "id": "m2",
+      "sourceId": "followup-experiment",
+      "title": "M2 · pp.5–6",
+      "form": "paraphrase",
+      "language": "en",
+      "text": "Temporary roofing excluded rain; intermittent sunlight, wind and rising damp remained. Three brief coverings were reported.",
+      "context": "Prepared source summary, not an independent field observation or epigraphic transcription.",
+      "sha256": "4317e75aefe6832603038cc579fa4748f36ec001f02e529817bfbf8f278d2bac"
+    },
+    {
+      "id": "m3",
+      "sourceId": "followup-experiment",
+      "title": "M3 · pp.7–8; figures 4–5",
+      "form": "paraphrase",
+      "language": "en",
+      "text": "Photographs used a color reference; twelve dates are listed. Figure 4 includes 24 August 2024; figure 5 ends at 17 August.",
+      "context": "Prepared source summary, not an independent field observation or epigraphic transcription.",
+      "sha256": "c0dd0cadef378a4d8bf12e59d2e822b563f2fa855f49827a8f186c185eefc36a"
+    },
+    {
+      "id": "m4",
+      "sourceId": "followup-experiment",
+      "title": "M4 · p.8",
+      "form": "paraphrase",
+      "language": "en",
+      "text": "Authors report continued legibility, with pressure-dependent differences and slight fading.",
+      "context": "Prepared source summary, not an independent field observation or epigraphic transcription.",
+      "sha256": "2890252853bbe9b59a9acab63f39e931f249122d1c906ea85879f41a86da1ac8"
+    },
+    {
+      "id": "m5",
+      "sourceId": "followup-experiment",
+      "title": "M5 · pp.9–10; figures 6–8; captions p.32",
+      "form": "paraphrase",
+      "language": "en",
+      "text": "Separate removal trials tested dry/wet methods and simulated rain; deliberate removal differs from passive survival.",
+      "context": "Prepared source summary, not an independent field observation or epigraphic transcription.",
+      "sha256": "af5c53e19c6f05298241bfec5b348168d98bdc00a90c073c1650d0bae84fe4a2"
+    },
+    {
+      "id": "m6",
+      "sourceId": "followup-experiment",
+      "title": "M6 · pp.6,11–17,23–25",
+      "form": "paraphrase",
+      "language": "en",
+      "text": "Environmental comparability and interrupted renovation are author interpretations. Conclusions allow an earlier inscription year without establishing the eruption day.",
+      "context": "Prepared source summary, not an independent field observation or epigraphic transcription.",
+      "sha256": "83c79eb374c254c5386515c3b169a220cce007173a58203a8a2b61a886f97683"
+    }
+  ],
+  "claims": [
+    {
+      "id": "date-needs-year",
+      "kind": "formal",
+      "text": "A month/day without an anchored year does not yield a dated calendar lower bound.",
+      "passageIds": [
+        "e1"
+      ],
+      "qualification": "The date must also refer to creating the mark, not merely an event the mark mentions."
+    },
+    {
+      "id": "survival-transfer",
+      "kind": "interpretive",
+      "text": "A modern survival observation supports its tested setting; a historical analogy needs additional premises.",
+      "passageIds": [
+        "m1",
+        "m2",
+        "m4",
+        "m6"
+      ],
+      "qualification": "Neither a universal charcoal lifetime nor a frequency estimate follows."
+    }
+  ],
+  "context": [
+    "Separate the reported date, renovation context and interpretation of fragility. The inscription date as reported has no year.",
+    "The modern experiment applied oak charcoal on 17 October 2023 to ancient plaster on the same wall. Temporary roofing excluded rain; other environmental exposures remained.",
+    "The listed photographic series and a selected paired comparison cover different sets of dates. One pair is not the entire observation schedule.",
+    "Deliberate removal trials and passive survival observations are different interventions. Do not combine them into one lifetime measurement.",
+    "A newer research announcement was found, but its underlying paper was inaccessible. This exercise does not claim to settle that newer work or the full scholarly chronology debate."
+  ],
+  "timeline": [],
+  "relations": [],
+  "reviews": [],
+  "reviewRequirements": [
+    "content",
+    "rights"
+  ],
+  "reviewLimitations": [
+    "Selected source summaries and original conditional reasoning. No field experiment, specialist language review or participant observation is claimed."
+  ],
+  "activity": {
+    "type": "conditional-reasoning",
+    "assumptions": [
+      "For this exercise only, accept the reported day/month reading.",
+      "For this exercise only, assume the reported date refers to creating the mark, rather than a past event it mentions. This is an added premise, not established by reading a date.",
+      "Assume the mark precedes the destruction being considered and remains in its original context.",
+      "Any independent-year toggle is hypothetical; this dossier does not establish that year."
+    ],
+    "inputs": [
+      {
+        "id": "year",
+        "label": "Independent evidence fixes the mark’s year, rather than deriving it from freshness.",
+        "boundary": "Hypothetical premise only. This selection does not add a source observation."
+      },
+      {
+        "id": "analogy",
+        "label": "Relevant differences between modern and ancient conditions have been addressed sufficiently for the stated comparison.",
+        "boundary": "Hypothetical premise only. This selection does not add a source observation."
+      },
+      {
+        "id": "report",
+        "label": "The selected modern observation is accepted for the exercise; switching off is withholding assessment, not evidence that it failed.",
+        "boundary": "Hypothetical premise only. This selection does not add a source observation."
+      }
+    ],
+    "cases": [
+      {
+        "inputs": {
+          "year": false,
+          "analogy": false,
+          "report": false
+        },
+        "conclusions": [
+          "A month/day and an unanchored year do not produce a dated calendar lower bound.",
+          "This exercise adds no preservation inference; it does not establish the opposite by default.",
+          "No exact eruption day is established."
+        ]
+      },
+      {
+        "inputs": {
+          "year": false,
+          "analogy": false,
+          "report": true
+        },
+        "conclusions": [
+          "A month/day and an unanchored year do not produce a dated calendar lower bound.",
+          "The modern result remains evidence for its tested setting; transfer to ancient conditions has not been justified.",
+          "No exact eruption day is established."
+        ]
+      },
+      {
+        "inputs": {
+          "year": false,
+          "analogy": true,
+          "report": false
+        },
+        "conclusions": [
+          "A month/day and an unanchored year do not produce a dated calendar lower bound.",
+          "This exercise adds no preservation inference; it does not establish the opposite by default.",
+          "No exact eruption day is established."
+        ]
+      },
+      {
+        "inputs": {
+          "year": false,
+          "analogy": true,
+          "report": true
+        },
+        "conclusions": [
+          "A month/day and an unanchored year do not produce a dated calendar lower bound.",
+          "The analogous result challenges using inevitable early disappearance to exclude an older mark. It supplies neither a universal lifetime nor a probability.",
+          "No exact eruption day is established."
+        ]
+      },
+      {
+        "inputs": {
+          "year": true,
+          "analogy": false,
+          "report": false
+        },
+        "conclusions": [
+          "With the fixed assumptions, the destruction cannot predate the reported calendar day in the independently anchored year; it could occur later that day or on a later day. No exact eruption day follows.",
+          "This exercise adds no preservation inference; it does not establish the opposite by default.",
+          "No exact eruption day is established."
+        ]
+      },
+      {
+        "inputs": {
+          "year": true,
+          "analogy": false,
+          "report": true
+        },
+        "conclusions": [
+          "With the fixed assumptions, the destruction cannot predate the reported calendar day in the independently anchored year; it could occur later that day or on a later day. No exact eruption day follows.",
+          "The modern result remains evidence for its tested setting; transfer to ancient conditions has not been justified.",
+          "No exact eruption day is established."
+        ]
+      },
+      {
+        "inputs": {
+          "year": true,
+          "analogy": true,
+          "report": false
+        },
+        "conclusions": [
+          "With the fixed assumptions, the destruction cannot predate the reported calendar day in the independently anchored year; it could occur later that day or on a later day. No exact eruption day follows.",
+          "This exercise adds no preservation inference; it does not establish the opposite by default.",
+          "No exact eruption day is established."
+        ]
+      },
+      {
+        "inputs": {
+          "year": true,
+          "analogy": true,
+          "report": true
+        },
+        "conclusions": [
+          "With the fixed assumptions, the destruction cannot predate the reported calendar day in the independently anchored year; it could occur later that day or on a later day. No exact eruption day follows.",
+          "The analogous result challenges using inevitable early disappearance to exclude an older mark. It supplies neither a universal lifetime nor a probability.",
+          "No exact eruption day is established."
+        ]
+      }
+    ],
+    "transfer": "Find two cases that differ in exactly one premise. Explain which conclusion changes, which remains fixed, and what evidence would be needed to justify that premise.",
+    "rubric": [
+      "Keep the reported month/day separate from an independently anchored year.",
+      "State the assumption that the mark records its creation date.",
+      "Allow later on the same day under the conditional lower bound; do not force a later calendar day.",
+      "Distinguish a challenge to inevitable disappearance from a universal lifetime or survival probability."
+    ]
+  },
+  "extensions": {
+    "atlas:preparation": {
+      "path": "docs/pilots/sequences/preparation/archaeology-methods-20261022.json",
+      "scope": "Selected evidence carried forward; historical packet unchanged."
+    }
+  },
+  "authorVerification": {
+    "kind": "author-check",
+    "scope": "local-preview",
+    "author": "atlas-editor",
+    "checkedOn": "2026-10-23",
+    "revision": "0.1.0",
+    "contentDigest": "11ea148e9630b5450c010902c37f77f533a1dd82c78b1fb6f8a3c7b25a8fedb1",
+    "artifactDigest": "357bc5b06932ebb56b9a752d905116a6a3daa8f2d065227f0fa8d2b8191e6856",
+    "evidencePath": "docs/verification/universal-author-continuation.md",
+    "checks": [
+      "Schema, source-reference and preparation-packet hash validation",
+      "Passed tests/exploration-methods.test.mjs",
+      "Passed tests/exploration-studio.test.mjs",
+      "Passed tests/exploration-professions.test.mjs",
+      "Passed tests/exploration-followups.test.mjs"
+    ]
+  }
+}

@@ -1,0 +1,479 @@
+{
+  "schemaVersion": 1,
+  "id": "x-history-0001",
+  "revision": "0.1.3",
+  "record": {
+    "schemaVersion": 1,
+    "revision": "0.1.3",
+    "status": "accepted",
+    "publication": "local-preview",
+    "author": "Atlas authoring task",
+    "updatedOn": "2026-10-22",
+    "prerequisites": [],
+    "relations": [],
+    "reviews": [
+      {
+        "dimension": "content",
+        "result": "passed",
+        "reviewer": {
+          "id": "atlas-ai-history-review",
+          "role": "Independent AI source/content/provenance reviewer; bounded text-only US local prototype rights assessment; no professional or public-release clearance",
+          "independent": true
+        },
+        "evidencePath": "docs/verification/universal-pilots-ai-history.md",
+        "reviewedOn": "2026-10-22",
+        "revision": "0.1.1",
+        "contentDigest": "6a1aaf4c32b5dbf2603b4f3de469297a0a42abe0efbb2eff1d0026cc272043db",
+        "artifactDigest": "87d5558bfd38472fe904c3bc37d413a53458cc6ecd0af5933e9659e3d2282899"
+      },
+      {
+        "dimension": "provenance",
+        "result": "passed",
+        "reviewer": {
+          "id": "atlas-ai-history-review",
+          "role": "Independent AI source/content/provenance reviewer; bounded text-only US local prototype rights assessment; no professional or public-release clearance",
+          "independent": true
+        },
+        "evidencePath": "docs/verification/universal-pilots-ai-history.md",
+        "reviewedOn": "2026-10-22",
+        "revision": "0.1.1",
+        "contentDigest": "6a1aaf4c32b5dbf2603b4f3de469297a0a42abe0efbb2eff1d0026cc272043db",
+        "artifactDigest": "87d5558bfd38472fe904c3bc37d413a53458cc6ecd0af5933e9659e3d2282899"
+      },
+      {
+        "dimension": "rights",
+        "result": "passed",
+        "reviewer": {
+          "id": "atlas-ai-history-review",
+          "role": "Independent AI source/content/provenance reviewer; bounded text-only US local prototype rights assessment; no professional or public-release clearance",
+          "independent": true
+        },
+        "evidencePath": "docs/verification/universal-pilots-ai-history.md",
+        "reviewedOn": "2026-10-22",
+        "revision": "0.1.1",
+        "contentDigest": "6a1aaf4c32b5dbf2603b4f3de469297a0a42abe0efbb2eff1d0026cc272043db",
+        "artifactDigest": "87d5558bfd38472fe904c3bc37d413a53458cc6ecd0af5933e9659e3d2282899"
+      },
+      {
+        "dimension": "content",
+        "result": "passed",
+        "reviewer": {
+          "id": "atlas-ai-history-review",
+          "role": "Independent AI source/content/provenance reviewer; bounded text-only US local prototype rights assessment; no professional or public-release clearance",
+          "independent": true
+        },
+        "evidencePath": "docs/verification/universal-pilots-ai-history.md",
+        "reviewedOn": "2026-10-22",
+        "revision": "0.1.2",
+        "contentDigest": "f1ad96959e069d4f3896063e82bd8468eb3241749096e856a514631e721b72af",
+        "artifactDigest": "ffef0964100bbcdd7496cc798bea195a912d93375c4e2b892e4a656736e8dce4"
+      },
+      {
+        "dimension": "provenance",
+        "result": "passed",
+        "reviewer": {
+          "id": "atlas-ai-history-review",
+          "role": "Independent AI source/content/provenance reviewer; bounded text-only US local prototype rights assessment; no professional or public-release clearance",
+          "independent": true
+        },
+        "evidencePath": "docs/verification/universal-pilots-ai-history.md",
+        "reviewedOn": "2026-10-22",
+        "revision": "0.1.2",
+        "contentDigest": "f1ad96959e069d4f3896063e82bd8468eb3241749096e856a514631e721b72af",
+        "artifactDigest": "ffef0964100bbcdd7496cc798bea195a912d93375c4e2b892e4a656736e8dce4"
+      },
+      {
+        "dimension": "rights",
+        "result": "passed",
+        "reviewer": {
+          "id": "atlas-ai-history-review",
+          "role": "Independent AI source/content/provenance reviewer; bounded text-only US local prototype rights assessment; no professional or public-release clearance",
+          "independent": true
+        },
+        "evidencePath": "docs/verification/universal-pilots-ai-history.md",
+        "reviewedOn": "2026-10-22",
+        "revision": "0.1.2",
+        "contentDigest": "f1ad96959e069d4f3896063e82bd8468eb3241749096e856a514631e721b72af",
+        "artifactDigest": "ffef0964100bbcdd7496cc798bea195a912d93375c4e2b892e4a656736e8dce4"
+      },
+      {
+        "dimension": "content",
+        "result": "passed",
+        "reviewer": {
+          "id": "history_review",
+          "role": "Independent AI history/provenance and scoped prototype-rights reviewer",
+          "independent": true
+        },
+        "revision": "0.1.2",
+        "contentDigest": "f1ad96959e069d4f3896063e82bd8468eb3241749096e856a514631e721b72af",
+        "artifactDigest": "bea7f7e523e89e0c36dec0c0bcf66c681dc1ccde92c05cd48079b8e1ad193eef",
+        "evidencePath": "docs/verification/universal-pilots-ai-history.md",
+        "reviewedOn": "2026-10-22"
+      },
+      {
+        "dimension": "provenance",
+        "result": "passed",
+        "reviewer": {
+          "id": "history_review",
+          "role": "Independent AI history/provenance and scoped prototype-rights reviewer",
+          "independent": true
+        },
+        "revision": "0.1.2",
+        "contentDigest": "f1ad96959e069d4f3896063e82bd8468eb3241749096e856a514631e721b72af",
+        "artifactDigest": "bea7f7e523e89e0c36dec0c0bcf66c681dc1ccde92c05cd48079b8e1ad193eef",
+        "evidencePath": "docs/verification/universal-pilots-ai-history.md",
+        "reviewedOn": "2026-10-22"
+      },
+      {
+        "dimension": "rights",
+        "result": "passed",
+        "reviewer": {
+          "id": "history_review",
+          "role": "Independent AI history/provenance and scoped prototype-rights reviewer",
+          "independent": true
+        },
+        "revision": "0.1.2",
+        "contentDigest": "f1ad96959e069d4f3896063e82bd8468eb3241749096e856a514631e721b72af",
+        "artifactDigest": "bea7f7e523e89e0c36dec0c0bcf66c681dc1ccde92c05cd48079b8e1ad193eef",
+        "evidencePath": "docs/verification/universal-pilots-ai-history.md",
+        "reviewedOn": "2026-10-22"
+      },
+      {
+        "dimension": "content",
+        "result": "passed",
+        "reviewer": {
+          "id": "history_review",
+          "role": "Independent AI history/provenance and scoped prototype-rights reviewer",
+          "independent": true
+        },
+        "revision": "0.1.2",
+        "contentDigest": "f1ad96959e069d4f3896063e82bd8468eb3241749096e856a514631e721b72af",
+        "artifactDigest": "c002df87d23466b1bcfafea21f67a2db7a294dc2b4118b7aaf701220210b8033",
+        "evidencePath": "docs/verification/universal-pilots-ai-history.md",
+        "reviewedOn": "2026-10-22"
+      },
+      {
+        "dimension": "provenance",
+        "result": "passed",
+        "reviewer": {
+          "id": "history_review",
+          "role": "Independent AI history/provenance and scoped prototype-rights reviewer",
+          "independent": true
+        },
+        "revision": "0.1.2",
+        "contentDigest": "f1ad96959e069d4f3896063e82bd8468eb3241749096e856a514631e721b72af",
+        "artifactDigest": "c002df87d23466b1bcfafea21f67a2db7a294dc2b4118b7aaf701220210b8033",
+        "evidencePath": "docs/verification/universal-pilots-ai-history.md",
+        "reviewedOn": "2026-10-22"
+      },
+      {
+        "dimension": "rights",
+        "result": "passed",
+        "reviewer": {
+          "id": "history_review",
+          "role": "Independent AI history/provenance and scoped prototype-rights reviewer",
+          "independent": true
+        },
+        "revision": "0.1.2",
+        "contentDigest": "f1ad96959e069d4f3896063e82bd8468eb3241749096e856a514631e721b72af",
+        "artifactDigest": "c002df87d23466b1bcfafea21f67a2db7a294dc2b4118b7aaf701220210b8033",
+        "evidencePath": "docs/verification/universal-pilots-ai-history.md",
+        "reviewedOn": "2026-10-22"
+      },
+      {
+        "dimension": "content",
+        "result": "passed",
+        "reviewer": {
+          "id": "history_review",
+          "role": "Independent AI history/provenance and scoped prototype-rights reviewer",
+          "independent": true
+        },
+        "revision": "0.1.2",
+        "contentDigest": "f1ad96959e069d4f3896063e82bd8468eb3241749096e856a514631e721b72af",
+        "artifactDigest": "451251379199fcc10fda552dc6e27c227fc87b0b4e986a6d9ae17da84e4c37ec",
+        "evidencePath": "docs/verification/universal-pilots-ai-history.md",
+        "reviewedOn": "2026-10-22"
+      },
+      {
+        "dimension": "provenance",
+        "result": "passed",
+        "reviewer": {
+          "id": "history_review",
+          "role": "Independent AI history/provenance and scoped prototype-rights reviewer",
+          "independent": true
+        },
+        "revision": "0.1.2",
+        "contentDigest": "f1ad96959e069d4f3896063e82bd8468eb3241749096e856a514631e721b72af",
+        "artifactDigest": "451251379199fcc10fda552dc6e27c227fc87b0b4e986a6d9ae17da84e4c37ec",
+        "evidencePath": "docs/verification/universal-pilots-ai-history.md",
+        "reviewedOn": "2026-10-22"
+      },
+      {
+        "dimension": "rights",
+        "result": "passed",
+        "reviewer": {
+          "id": "history_review",
+          "role": "Independent AI history/provenance and scoped prototype-rights reviewer",
+          "independent": true
+        },
+        "revision": "0.1.2",
+        "contentDigest": "f1ad96959e069d4f3896063e82bd8468eb3241749096e856a514631e721b72af",
+        "artifactDigest": "451251379199fcc10fda552dc6e27c227fc87b0b4e986a6d9ae17da84e4c37ec",
+        "evidencePath": "docs/verification/universal-pilots-ai-history.md",
+        "reviewedOn": "2026-10-22"
+      }
+    ],
+    "extensions": {},
+    "id": "x-history-0001",
+    "pilotId": "P01",
+    "title": "What can two documents establish?",
+    "subtitle": "The Zimmermann telegram and Wilson’s use of it",
+    "summary": "Compare a conditional diplomatic proposal with a public argument. Decide what the documents say, what you infer, and what this pair cannot establish.",
+    "domainIds": [
+      "D20",
+      "D28",
+      "D15"
+    ],
+    "knowledgeModes": [
+      "historical",
+      "interpretive"
+    ],
+    "methods": [
+      "source-comparison"
+    ],
+    "audience": "General readers; no prior history course required.",
+    "relatedCollectionIds": [
+      "tech",
+      "bighist",
+      "polsci"
+    ],
+    "scope": "United States–Germany–Mexico, 1917. A small source pair, not a complete explanation of US entry into the war.",
+    "reviewRequirements": [
+      "content",
+      "provenance",
+      "rights"
+    ],
+    "sources": [
+      {
+        "id": "telegram",
+        "title": "Decoded Zimmermann telegram",
+        "url": "https://www.archives.gov/milestone-documents/zimmermann-telegram",
+        "locator": "Transcript, opening paragraph; RG 59, 862.20212/82A and /69",
+        "creator": "Arthur Zimmermann; displayed in the archive’s English decoded-message transcript",
+        "date": "January 1917 (month precision)",
+        "language": "en",
+        "rights": {
+          "decision": "usable-for-prototype",
+          "basis": "Two short attributed phrases (15 words total) for close critical comparison; original surrounding paraphrase. No full translation or scan reproduced.",
+          "scope": "US local prototype; wider distribution requires release-specific review.",
+          "excludedAssets": [
+            "Facsimile images",
+            "Website design and editorial copy",
+            "Audio and video"
+          ]
+        }
+      },
+      {
+        "id": "wilson1917",
+        "title": "Wilson’s address to Congress",
+        "url": "https://www.archives.gov/milestone-documents/address-to-congress-declaration-of-war-against-germany",
+        "locator": "Transcript, paragraph beginning “But they have played their part”; RG 46",
+        "creator": "Woodrow Wilson",
+        "date": "April 2, 1917",
+        "language": "en",
+        "rights": {
+          "decision": "usable-for-prototype",
+          "basis": "Short attributed quotation from an official presidential address; US government text. No facsimile or modern editorial copy reproduced.",
+          "scope": "US local prototype; wider distribution requires release-specific review.",
+          "excludedAssets": [
+            "Facsimile images",
+            "Website design and editorial copy",
+            "Audio and video"
+          ]
+        }
+      }
+    ],
+    "passages": [
+      {
+        "id": "conditional",
+        "sourceId": "telegram",
+        "title": "A condition, not an accomplished alliance",
+        "text": "In the event of this not succeeding",
+        "context": "The preceding sentence states an aim to keep the United States neutral. The proposal is introduced as conditional on that aim failing. The diplomatic recipient is being instructed; this is not a reply from Mexico.",
+        "language": "en",
+        "form": "quotation",
+        "sha256": "2f1b572c83e42e4e34ee7770c896e38724630ab959f2e5ef546cadae1a87a49e"
+      },
+      {
+        "id": "proposal",
+        "sourceId": "telegram",
+        "title": "Terms proposed",
+        "text": "make war together, make peace together",
+        "context": "The message proposes cooperation and support. A proposal is evidence of what the sender offers, not evidence that the recipient accepts.",
+        "language": "en",
+        "form": "quotation",
+        "sha256": "60e17afb9522cbed7ebedc201d2900b775f3ea366d57fb9a01a3078852b689ab"
+      },
+      {
+        "id": "speech",
+        "sourceId": "wilson1917",
+        "title": "A public argument",
+        "text": "That it means to stir up enemies against us at our very doors",
+        "context": "Wilson immediately identifies the intercepted note to the German minister in Mexico City as evidence. This passage addresses Congress and argues that the German government threatens US security.",
+        "language": "en",
+        "form": "quotation",
+        "sha256": "e2ba7d06c2d29a0940b340af69f83d45c19da1ff78c3a384dc66280f9f988bbf"
+      }
+    ],
+    "claims": [
+      {
+        "id": "h-scope",
+        "kind": "historical",
+        "text": "The telegram introduces a conditional proposal.",
+        "passageIds": [
+          "conditional",
+          "proposal"
+        ],
+        "qualification": "A proposal does not establish acceptance."
+      },
+      {
+        "id": "h-rhetoric",
+        "kind": "interpretive",
+        "text": "Wilson uses the intercepted message in a public security argument.",
+        "passageIds": [
+          "speech"
+        ],
+        "qualification": "An interpretation of the speech’s use of evidence, not proof of the speech’s effect on every listener."
+      }
+    ],
+    "context": [
+      "The decoded message is presented in English by the National Archives. Its German original and the entire interception/decoding chain are not part of this exercise.",
+      "The speech refers to the intercepted message. It is dependent evidence for the message, while being direct evidence of Wilson’s public argument.",
+      "Neither source supplies Mexico’s reply. Neither isolates the telegram from the other causes of the US war decision."
+    ],
+    "timeline": [
+      {
+        "date": "January 1917",
+        "precision": "month",
+        "event": "Diplomatic message",
+        "sourceId": "telegram"
+      },
+      {
+        "date": "April 2, 1917",
+        "precision": "day",
+        "event": "Address to Congress",
+        "sourceId": "wilson1917"
+      }
+    ],
+    "activity": {
+      "type": "source-comparison",
+      "prompts": [
+        {
+          "id": "conditional-offer",
+          "claim": "The message makes the proposed cooperation conditional.",
+          "answer": "direct",
+          "evidenceIds": [
+            "conditional"
+          ],
+          "feedback": "The quoted conditional phrase directly supports this classification. The editorial context explains what the condition refers to. An offer under a condition does not establish a completed agreement."
+        },
+        {
+          "id": "accepted-alliance",
+          "claim": "Mexico accepted the proposed alliance.",
+          "answer": "unsupported",
+          "evidenceIds": [
+            "none"
+          ],
+          "feedback": "Neither selected document supplies a Mexican acceptance. Missing evidence does not prove rejection either."
+        },
+        {
+          "id": "public-framing",
+          "claim": "The border-threat wording could help frame war as a response to danger.",
+          "answer": "inference",
+          "evidenceIds": [
+            "speech"
+          ],
+          "feedback": "This is a defensible interpretation of the rhetoric. The wording alone does not measure its effect on Congress or the public."
+        },
+        {
+          "id": "single-cause",
+          "claim": "The telegram alone caused the US declaration of war.",
+          "answer": "unsupported",
+          "evidenceIds": [
+            "none"
+          ],
+          "feedback": "This pair cannot isolate a single cause. A speech’s use of one document is not a controlled account of all causes."
+        }
+      ],
+      "transfer": "A later newspaper repeats the telegram. Does that automatically give you an independent confirmation? Explain what you would need to know about its source.",
+      "rubric": [
+        "Distinguish a record from an independent source of its information.",
+        "Name one missing perspective or link in provenance.",
+        "Attach the limitation to a specific claim."
+      ]
+    },
+    "previousRevisions": [
+      "0.1.0",
+      "0.1.1",
+      "0.1.2"
+    ],
+    "reviewLimitations": [
+      "Screen-reader and learner sessions have not been performed."
+    ],
+    "authorVerification": {
+      "kind": "author-check",
+      "scope": "local-preview",
+      "author": "Atlas authoring task",
+      "checkedOn": "2026-10-23",
+      "revision": "0.1.3",
+      "contentDigest": "0a98cce8c9f30e37b7f8ce4e50bda45f877a244049cc34c83abbfc3579d11102",
+      "artifactDigest": "8b9ff5bba723967d5d760842f4a253cfdc91ad951df5bb1a14f53aaf0c7b5fd2",
+      "evidencePath": "docs/verification/universal-author-continuation.md",
+      "checks": [
+        "Schema, source-reference and preparation-packet hash validation",
+        "Passed tests/exploration-methods.test.mjs",
+        "Passed tests/exploration-studio.test.mjs",
+        "Passed tests/exploration-professions.test.mjs",
+        "Passed tests/exploration-followups.test.mjs"
+      ]
+    }
+  },
+  "context": {
+    "domainIds": [
+      "D20",
+      "D28",
+      "D15"
+    ],
+    "collectionIds": [
+      "tech",
+      "bighist",
+      "polsci"
+    ],
+    "sourceIds": [
+      "telegram",
+      "wilson1917"
+    ],
+    "knownItemIds": []
+  },
+  "collectionTitles": {
+    "tech": "History of Technology",
+    "bighist": "Big History & Quantitative History",
+    "polsci": "Political Science & Social Choice"
+  },
+  "runtimeDigest": "ca81bc9e95550cc6c8e5c31a3fcbb6b78a066ecaa6a57038441949fe61f17025",
+  "contentDigest": "0a98cce8c9f30e37b7f8ce4e50bda45f877a244049cc34c83abbfc3579d11102",
+  "artifactDigest": "8b9ff5bba723967d5d760842f4a253cfdc91ad951df5bb1a14f53aaf0c7b5fd2",
+  "previewHTML": "<!doctype html>\n<html lang=\"en\"><head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width,initial-scale=1\">\n<meta name=\"robots\" content=\"noindex,nofollow\"><meta name=\"description\" content=\"Draft source-based explorations for Ideas, Visualized.\">\n<title>What can two documents establish? · Ideas, Visualized</title><link rel=\"stylesheet\" href=\"../../../explorations/style.css\"></head>\n<body><a class=\"skip\" href=\"#main\">Skip to the exploration</a>\n<header class=\"site-header\"><a href=\"../../../#/\">Ideas, Visualized</a><span>Exploration workshop</span></header>\n<main id=\"main\" tabindex=\"-1\"><nav aria-label=\"Workshop\"><a href=\"../\">← All pilot explorations</a></nav>\n    <section class=\"hero\"><p class=\"eyebrow\">Author-checked · local preview</p><h1>What can two documents establish?</h1>\n    <p class=\"subtitle\">The Zimmermann telegram and Wilson’s use of it</p><p class=\"lede\">Compare a conditional diplomatic proposal with a public argument. Decide what the documents say, what you infer, and what this pair cannot establish.</p>\n    <p class=\"muted\">Screen-reader and learner sessions have not been performed.</p>\n    <p class=\"scope\">United States–Germany–Mexico, 1917. A small source pair, not a complete explanation of US entry into the war.</p><ol class=\"steps\"><li>Read the sources</li><li>Explore the evidence</li><li>Explain a limitation</li></ol></section>\n    <section aria-labelledby=\"source-heading\"><div class=\"section-heading\"><span>01</span><h2 id=\"source-heading\">Read closely</h2></div>\n    <div class=\"sources\"><article class=\"source-card\" id=\"passage-conditional\" data-passage=\"conditional\">\n      <p class=\"eyebrow\">Arthur Zimmermann; displayed in the archive’s English decoded-message transcript</p><h3>A condition, not an accomplished alliance</h3>\n      <p class=\"source-form\">Quotation</p>\n      <blockquote lang=\"en\">In the event of this not succeeding</blockquote>\n      <p><strong>Editorial context:</strong> The preceding sentence states an aim to keep the United States neutral. The proposal is introduced as conditional on that aim failing. The diplomatic recipient is being instructed; this is not a reply from Mexico.</p><details><summary>Source and reuse details</summary>\n      <p><a href=\"https://www.archives.gov/milestone-documents/zimmermann-telegram\">Decoded Zimmermann telegram</a></p><p>Transcript, opening paragraph; RG 59, 862.20212/82A and /69 · January 1917 (month precision)</p>\n      <p>Two short attributed phrases (15 words total) for close critical comparison; original surrounding paraphrase. No full translation or scan reproduced.</p><p class=\"muted\">US local prototype; wider distribution requires release-specific review.</p></details></article><article class=\"source-card\" id=\"passage-proposal\" data-passage=\"proposal\">\n      <p class=\"eyebrow\">Arthur Zimmermann; displayed in the archive’s English decoded-message transcript</p><h3>Terms proposed</h3>\n      <p class=\"source-form\">Quotation</p>\n      <blockquote lang=\"en\">make war together, make peace together</blockquote>\n      <p><strong>Editorial context:</strong> The message proposes cooperation and support. A proposal is evidence of what the sender offers, not evidence that the recipient accepts.</p><details><summary>Source and reuse details</summary>\n      <p><a href=\"https://www.archives.gov/milestone-documents/zimmermann-telegram\">Decoded Zimmermann telegram</a></p><p>Transcript, opening paragraph; RG 59, 862.20212/82A and /69 · January 1917 (month precision)</p>\n      <p>Two short attributed phrases (15 words total) for close critical comparison; original surrounding paraphrase. No full translation or scan reproduced.</p><p class=\"muted\">US local prototype; wider distribution requires release-specific review.</p></details></article><article class=\"source-card\" id=\"passage-speech\" data-passage=\"speech\">\n      <p class=\"eyebrow\">Woodrow Wilson</p><h3>A public argument</h3>\n      <p class=\"source-form\">Quotation</p>\n      <blockquote lang=\"en\">That it means to stir up enemies against us at our very doors</blockquote>\n      <p><strong>Editorial context:</strong> Wilson immediately identifies the intercepted note to the German minister in Mexico City as evidence. This passage addresses Congress and argues that the German government threatens US security.</p><details><summary>Source and reuse details</summary>\n      <p><a href=\"https://www.archives.gov/milestone-documents/address-to-congress-declaration-of-war-against-germany\">Wilson’s address to Congress</a></p><p>Transcript, paragraph beginning “But they have played their part”; RG 46 · April 2, 1917</p>\n      <p>Short attributed quotation from an official presidential address; US government text. No facsimile or modern editorial copy reproduced.</p><p class=\"muted\">US local prototype; wider distribution requires release-specific review.</p></details></article></div></section>\n    <section class=\"context\"><h2>What this exploration can establish</h2><ul><li>The decoded message is presented in English by the National Archives. Its German original and the entire interception/decoding chain are not part of this exercise.</li><li>The speech refers to the intercepted message. It is dependent evidence for the message, while being direct evidence of Wilson’s public argument.</li><li>Neither source supplies Mexico’s reply. Neither isolates the telegram from the other causes of the US war decision.</li></ul>\n<ol class=\"timeline\"><li><strong>January 1917</strong><span>Diplomatic message</span><small>month precision</small></li><li><strong>April 2, 1917</strong><span>Address to Congress</span><small>day precision</small></li></ol>\n    </section>\n\n    <section class=\"activity\" aria-labelledby=\"activity-heading\"><div class=\"section-heading\"><span>02</span><h2 id=\"activity-heading\">Explore the evidence</h2></div>\n    <noscript><p>The source text, comparison guides and transfer task work without JavaScript. Use the guides below and write your notes separately.</p></noscript>\n    <div class=\"interactive\" hidden><label for=\"task\">Choose a claim</label>\n      <select id=\"task\"><option value=\"conditional-offer\">The message makes the proposed cooperation conditional.</option><option value=\"accepted-alliance\">Mexico accepted the proposed alliance.</option><option value=\"public-framing\">The border-threat wording could help frame war as a response to danger.</option><option value=\"single-cause\">The telegram alone caused the US declaration of war.</option></select><p id=\"current-claim\" class=\"current-claim\"></p>\n      <div class=\"control-grid\"><div><label for=\"evidence\">Select the most relevant passage</label>\n      <select id=\"evidence\"><option value=\"none\">Neither establishes the claim</option><option value=\"conditional\">A condition, not an accomplished alliance</option><option value=\"proposal\">Terms proposed</option><option value=\"speech\">A public argument</option></select></div>\n      <div><label for=\"category\">How is the claim supported?</label><select id=\"category\"><option value=\"direct\">Direct statement</option><option value=\"inference\">Interpretation / inference</option><option value=\"unsupported\">Not established by this pair</option></select></div></div>\n      <button id=\"check\" class=\"primary\" type=\"button\">Compare with the evidence guide</button>\n      <p id=\"feedback\" class=\"feedback\" role=\"status\" aria-live=\"polite\"></p></div>\n      <details class=\"static-guide\"><summary>Read every claim and its evidence guide</summary>\n      <section><h3>The message makes the proposed cooperation conditional.</h3><p><strong>Direct statement.</strong> The quoted conditional phrase directly supports this classification. The editorial context explains what the condition refers to. An offer under a condition does not establish a completed agreement.</p><p>Evidence: <a href=\"#passage-conditional\">A condition, not an accomplished alliance</a></p></section><section><h3>Mexico accepted the proposed alliance.</h3><p><strong>Not established by this pair.</strong> Neither selected document supplies a Mexican acceptance. Missing evidence does not prove rejection either.</p><p>Evidence: Neither selected document establishes this claim.</p></section><section><h3>The border-threat wording could help frame war as a response to danger.</h3><p><strong>Interpretation / inference.</strong> This is a defensible interpretation of the rhetoric. The wording alone does not measure its effect on Congress or the public.</p><p>Evidence: <a href=\"#passage-speech\">A public argument</a></p></section><section><h3>The telegram alone caused the US declaration of war.</h3><p><strong>Not established by this pair.</strong> This pair cannot isolate a single cause. A speech’s use of one document is not a controlled account of all causes.</p><p>Evidence: Neither selected document establishes this claim.</p></section></details><div class=\"interactive notes\" hidden><label for=\"notes\">Your evidence and explanation</label>\n    <textarea id=\"notes\" rows=\"5\" maxlength=\"1500\" aria-describedby=\"notes-help\" placeholder=\"Name the words, then explain what they support and what they do not.\"></textarea>\n    <p id=\"notes-help\" class=\"muted\">One notebook for this exploration revision, up to 1,500 characters. Notes stay in this browser. Shared links contain selections only. Nothing is sent to a server.</p>\n    <p id=\"save-status\" role=\"status\" class=\"muted\"></p>\n    <div class=\"actions\"><button id=\"share\" type=\"button\">Copy a link to these selections</button><button id=\"export\" type=\"button\">Export notes</button><button id=\"previous-notes\" type=\"button\" hidden>Export earlier notes</button><button id=\"reset\" type=\"button\">Reset and erase this revision’s notes</button></div>\n    <label id=\"share-label\" for=\"share-url\" hidden>Shareable link (notes excluded)</label><input id=\"share-url\" readonly hidden>\n    <p id=\"state-status\" role=\"status\"></p></div></section>\n    <section class=\"transfer\" aria-labelledby=\"transfer-heading\"><div class=\"section-heading\"><span>03</span><h2 id=\"transfer-heading\">Try the idea elsewhere</h2></div>\n    <p>A later newspaper repeats the telegram. Does that automatically give you an independent confirmation? Explain what you would need to know about its source.</p><details><summary>What a careful explanation includes</summary><ul><li>Distinguish a record from an independent source of its information.</li><li>Name one missing perspective or link in provenance.</li><li>Attach the limitation to a specific claim.</li></ul></details>\n    <p>There is no automatic score for your written interpretation. Use the guide to inspect your reasoning.</p></section>\n    <section class=\"related\"><h2>Connections into the atlas</h2><p>Optional collection routes; these are not prerequisites or independent evidence for this task.</p>\n    <div class=\"actions\"><a href=\"../../../#/c/tech\">History of Technology</a><a href=\"../../../#/c/bighist\">Big History &amp; Quantitative History</a><a href=\"../../../#/c/polsci\">Political Science &amp; Social Choice</a></div></section>\n    </main><footer><p>Local previews. Review scope and public release are separate.</p><a href=\"../../../docs/master-plan-handoff.md\">Editorial status and next work</a></footer><script id=\"exploration-data\" type=\"application/json\">{\"schemaVersion\":1,\"revision\":\"0.1.3\",\"status\":\"accepted\",\"publication\":\"local-preview\",\"author\":\"Atlas authoring task\",\"updatedOn\":\"2026-10-22\",\"prerequisites\":[],\"relations\":[],\"reviews\":[{\"dimension\":\"content\",\"result\":\"passed\",\"reviewer\":{\"id\":\"atlas-ai-history-review\",\"role\":\"Independent AI source/content/provenance reviewer; bounded text-only US local prototype rights assessment; no professional or public-release clearance\",\"independent\":true},\"evidencePath\":\"docs/verification/universal-pilots-ai-history.md\",\"reviewedOn\":\"2026-10-22\",\"revision\":\"0.1.1\",\"contentDigest\":\"6a1aaf4c32b5dbf2603b4f3de469297a0a42abe0efbb2eff1d0026cc272043db\",\"artifactDigest\":\"87d5558bfd38472fe904c3bc37d413a53458cc6ecd0af5933e9659e3d2282899\"},{\"dimension\":\"provenance\",\"result\":\"passed\",\"reviewer\":{\"id\":\"atlas-ai-history-review\",\"role\":\"Independent AI source/content/provenance reviewer; bounded text-only US local prototype rights assessment; no professional or public-release clearance\",\"independent\":true},\"evidencePath\":\"docs/verification/universal-pilots-ai-history.md\",\"reviewedOn\":\"2026-10-22\",\"revision\":\"0.1.1\",\"contentDigest\":\"6a1aaf4c32b5dbf2603b4f3de469297a0a42abe0efbb2eff1d0026cc272043db\",\"artifactDigest\":\"87d5558bfd38472fe904c3bc37d413a53458cc6ecd0af5933e9659e3d2282899\"},{\"dimension\":\"rights\",\"result\":\"passed\",\"reviewer\":{\"id\":\"atlas-ai-history-review\",\"role\":\"Independent AI source/content/provenance reviewer; bounded text-only US local prototype rights assessment; no professional or public-release clearance\",\"independent\":true},\"evidencePath\":\"docs/verification/universal-pilots-ai-history.md\",\"reviewedOn\":\"2026-10-22\",\"revision\":\"0.1.1\",\"contentDigest\":\"6a1aaf4c32b5dbf2603b4f3de469297a0a42abe0efbb2eff1d0026cc272043db\",\"artifactDigest\":\"87d5558bfd38472fe904c3bc37d413a53458cc6ecd0af5933e9659e3d2282899\"},{\"dimension\":\"content\",\"result\":\"passed\",\"reviewer\":{\"id\":\"atlas-ai-history-review\",\"role\":\"Independent AI source/content/provenance reviewer; bounded text-only US local prototype rights assessment; no professional or public-release clearance\",\"independent\":true},\"evidencePath\":\"docs/verification/universal-pilots-ai-history.md\",\"reviewedOn\":\"2026-10-22\",\"revision\":\"0.1.2\",\"contentDigest\":\"f1ad96959e069d4f3896063e82bd8468eb3241749096e856a514631e721b72af\",\"artifactDigest\":\"ffef0964100bbcdd7496cc798bea195a912d93375c4e2b892e4a656736e8dce4\"},{\"dimension\":\"provenance\",\"result\":\"passed\",\"reviewer\":{\"id\":\"atlas-ai-history-review\",\"role\":\"Independent AI source/content/provenance reviewer; bounded text-only US local prototype rights assessment; no professional or public-release clearance\",\"independent\":true},\"evidencePath\":\"docs/verification/universal-pilots-ai-history.md\",\"reviewedOn\":\"2026-10-22\",\"revision\":\"0.1.2\",\"contentDigest\":\"f1ad96959e069d4f3896063e82bd8468eb3241749096e856a514631e721b72af\",\"artifactDigest\":\"ffef0964100bbcdd7496cc798bea195a912d93375c4e2b892e4a656736e8dce4\"},{\"dimension\":\"rights\",\"result\":\"passed\",\"reviewer\":{\"id\":\"atlas-ai-history-review\",\"role\":\"Independent AI source/content/provenance reviewer; bounded text-only US local prototype rights assessment; no professional or public-release clearance\",\"independent\":true},\"evidencePath\":\"docs/verification/universal-pilots-ai-history.md\",\"reviewedOn\":\"2026-10-22\",\"revision\":\"0.1.2\",\"contentDigest\":\"f1ad96959e069d4f3896063e82bd8468eb3241749096e856a514631e721b72af\",\"artifactDigest\":\"ffef0964100bbcdd7496cc798bea195a912d93375c4e2b892e4a656736e8dce4\"},{\"dimension\":\"content\",\"result\":\"passed\",\"reviewer\":{\"id\":\"history_review\",\"role\":\"Independent AI history/provenance and scoped prototype-rights reviewer\",\"independent\":true},\"revision\":\"0.1.2\",\"contentDigest\":\"f1ad96959e069d4f3896063e82bd8468eb3241749096e856a514631e721b72af\",\"artifactDigest\":\"bea7f7e523e89e0c36dec0c0bcf66c681dc1ccde92c05cd48079b8e1ad193eef\",\"evidencePath\":\"docs/verification/universal-pilots-ai-history.md\",\"reviewedOn\":\"2026-10-22\"},{\"dimension\":\"provenance\",\"result\":\"passed\",\"reviewer\":{\"id\":\"history_review\",\"role\":\"Independent AI history/provenance and scoped prototype-rights reviewer\",\"independent\":true},\"revision\":\"0.1.2\",\"contentDigest\":\"f1ad96959e069d4f3896063e82bd8468eb3241749096e856a514631e721b72af\",\"artifactDigest\":\"bea7f7e523e89e0c36dec0c0bcf66c681dc1ccde92c05cd48079b8e1ad193eef\",\"evidencePath\":\"docs/verification/universal-pilots-ai-history.md\",\"reviewedOn\":\"2026-10-22\"},{\"dimension\":\"rights\",\"result\":\"passed\",\"reviewer\":{\"id\":\"history_review\",\"role\":\"Independent AI history/provenance and scoped prototype-rights reviewer\",\"independent\":true},\"revision\":\"0.1.2\",\"contentDigest\":\"f1ad96959e069d4f3896063e82bd8468eb3241749096e856a514631e721b72af\",\"artifactDigest\":\"bea7f7e523e89e0c36dec0c0bcf66c681dc1ccde92c05cd48079b8e1ad193eef\",\"evidencePath\":\"docs/verification/universal-pilots-ai-history.md\",\"reviewedOn\":\"2026-10-22\"},{\"dimension\":\"content\",\"result\":\"passed\",\"reviewer\":{\"id\":\"history_review\",\"role\":\"Independent AI history/provenance and scoped prototype-rights reviewer\",\"independent\":true},\"revision\":\"0.1.2\",\"contentDigest\":\"f1ad96959e069d4f3896063e82bd8468eb3241749096e856a514631e721b72af\",\"artifactDigest\":\"c002df87d23466b1bcfafea21f67a2db7a294dc2b4118b7aaf701220210b8033\",\"evidencePath\":\"docs/verification/universal-pilots-ai-history.md\",\"reviewedOn\":\"2026-10-22\"},{\"dimension\":\"provenance\",\"result\":\"passed\",\"reviewer\":{\"id\":\"history_review\",\"role\":\"Independent AI history/provenance and scoped prototype-rights reviewer\",\"independent\":true},\"revision\":\"0.1.2\",\"contentDigest\":\"f1ad96959e069d4f3896063e82bd8468eb3241749096e856a514631e721b72af\",\"artifactDigest\":\"c002df87d23466b1bcfafea21f67a2db7a294dc2b4118b7aaf701220210b8033\",\"evidencePath\":\"docs/verification/universal-pilots-ai-history.md\",\"reviewedOn\":\"2026-10-22\"},{\"dimension\":\"rights\",\"result\":\"passed\",\"reviewer\":{\"id\":\"history_review\",\"role\":\"Independent AI history/provenance and scoped prototype-rights reviewer\",\"independent\":true},\"revision\":\"0.1.2\",\"contentDigest\":\"f1ad96959e069d4f3896063e82bd8468eb3241749096e856a514631e721b72af\",\"artifactDigest\":\"c002df87d23466b1bcfafea21f67a2db7a294dc2b4118b7aaf701220210b8033\",\"evidencePath\":\"docs/verification/universal-pilots-ai-history.md\",\"reviewedOn\":\"2026-10-22\"},{\"dimension\":\"content\",\"result\":\"passed\",\"reviewer\":{\"id\":\"history_review\",\"role\":\"Independent AI history/provenance and scoped prototype-rights reviewer\",\"independent\":true},\"revision\":\"0.1.2\",\"contentDigest\":\"f1ad96959e069d4f3896063e82bd8468eb3241749096e856a514631e721b72af\",\"artifactDigest\":\"451251379199fcc10fda552dc6e27c227fc87b0b4e986a6d9ae17da84e4c37ec\",\"evidencePath\":\"docs/verification/universal-pilots-ai-history.md\",\"reviewedOn\":\"2026-10-22\"},{\"dimension\":\"provenance\",\"result\":\"passed\",\"reviewer\":{\"id\":\"history_review\",\"role\":\"Independent AI history/provenance and scoped prototype-rights reviewer\",\"independent\":true},\"revision\":\"0.1.2\",\"contentDigest\":\"f1ad96959e069d4f3896063e82bd8468eb3241749096e856a514631e721b72af\",\"artifactDigest\":\"451251379199fcc10fda552dc6e27c227fc87b0b4e986a6d9ae17da84e4c37ec\",\"evidencePath\":\"docs/verification/universal-pilots-ai-history.md\",\"reviewedOn\":\"2026-10-22\"},{\"dimension\":\"rights\",\"result\":\"passed\",\"reviewer\":{\"id\":\"history_review\",\"role\":\"Independent AI history/provenance and scoped prototype-rights reviewer\",\"independent\":true},\"revision\":\"0.1.2\",\"contentDigest\":\"f1ad96959e069d4f3896063e82bd8468eb3241749096e856a514631e721b72af\",\"artifactDigest\":\"451251379199fcc10fda552dc6e27c227fc87b0b4e986a6d9ae17da84e4c37ec\",\"evidencePath\":\"docs/verification/universal-pilots-ai-history.md\",\"reviewedOn\":\"2026-10-22\"}],\"extensions\":{},\"id\":\"x-history-0001\",\"pilotId\":\"P01\",\"title\":\"What can two documents establish?\",\"subtitle\":\"The Zimmermann telegram and Wilson’s use of it\",\"summary\":\"Compare a conditional diplomatic proposal with a public argument. Decide what the documents say, what you infer, and what this pair cannot establish.\",\"domainIds\":[\"D20\",\"D28\",\"D15\"],\"knowledgeModes\":[\"historical\",\"interpretive\"],\"methods\":[\"source-comparison\"],\"audience\":\"General readers; no prior history course required.\",\"relatedCollectionIds\":[\"tech\",\"bighist\",\"polsci\"],\"scope\":\"United States–Germany–Mexico, 1917. A small source pair, not a complete explanation of US entry into the war.\",\"reviewRequirements\":[\"content\",\"provenance\",\"rights\"],\"sources\":[{\"id\":\"telegram\",\"title\":\"Decoded Zimmermann telegram\",\"url\":\"https://www.archives.gov/milestone-documents/zimmermann-telegram\",\"locator\":\"Transcript, opening paragraph; RG 59, 862.20212/82A and /69\",\"creator\":\"Arthur Zimmermann; displayed in the archive’s English decoded-message transcript\",\"date\":\"January 1917 (month precision)\",\"language\":\"en\",\"rights\":{\"decision\":\"usable-for-prototype\",\"basis\":\"Two short attributed phrases (15 words total) for close critical comparison; original surrounding paraphrase. No full translation or scan reproduced.\",\"scope\":\"US local prototype; wider distribution requires release-specific review.\",\"excludedAssets\":[\"Facsimile images\",\"Website design and editorial copy\",\"Audio and video\"]}},{\"id\":\"wilson1917\",\"title\":\"Wilson’s address to Congress\",\"url\":\"https://www.archives.gov/milestone-documents/address-to-congress-declaration-of-war-against-germany\",\"locator\":\"Transcript, paragraph beginning “But they have played their part”; RG 46\",\"creator\":\"Woodrow Wilson\",\"date\":\"April 2, 1917\",\"language\":\"en\",\"rights\":{\"decision\":\"usable-for-prototype\",\"basis\":\"Short attributed quotation from an official presidential address; US government text. No facsimile or modern editorial copy reproduced.\",\"scope\":\"US local prototype; wider distribution requires release-specific review.\",\"excludedAssets\":[\"Facsimile images\",\"Website design and editorial copy\",\"Audio and video\"]}}],\"passages\":[{\"id\":\"conditional\",\"sourceId\":\"telegram\",\"title\":\"A condition, not an accomplished alliance\",\"text\":\"In the event of this not succeeding\",\"context\":\"The preceding sentence states an aim to keep the United States neutral. The proposal is introduced as conditional on that aim failing. The diplomatic recipient is being instructed; this is not a reply from Mexico.\",\"language\":\"en\",\"form\":\"quotation\",\"sha256\":\"2f1b572c83e42e4e34ee7770c896e38724630ab959f2e5ef546cadae1a87a49e\"},{\"id\":\"proposal\",\"sourceId\":\"telegram\",\"title\":\"Terms proposed\",\"text\":\"make war together, make peace together\",\"context\":\"The message proposes cooperation and support. A proposal is evidence of what the sender offers, not evidence that the recipient accepts.\",\"language\":\"en\",\"form\":\"quotation\",\"sha256\":\"60e17afb9522cbed7ebedc201d2900b775f3ea366d57fb9a01a3078852b689ab\"},{\"id\":\"speech\",\"sourceId\":\"wilson1917\",\"title\":\"A public argument\",\"text\":\"That it means to stir up enemies against us at our very doors\",\"context\":\"Wilson immediately identifies the intercepted note to the German minister in Mexico City as evidence. This passage addresses Congress and argues that the German government threatens US security.\",\"language\":\"en\",\"form\":\"quotation\",\"sha256\":\"e2ba7d06c2d29a0940b340af69f83d45c19da1ff78c3a384dc66280f9f988bbf\"}],\"claims\":[{\"id\":\"h-scope\",\"kind\":\"historical\",\"text\":\"The telegram introduces a conditional proposal.\",\"passageIds\":[\"conditional\",\"proposal\"],\"qualification\":\"A proposal does not establish acceptance.\"},{\"id\":\"h-rhetoric\",\"kind\":\"interpretive\",\"text\":\"Wilson uses the intercepted message in a public security argument.\",\"passageIds\":[\"speech\"],\"qualification\":\"An interpretation of the speech’s use of evidence, not proof of the speech’s effect on every listener.\"}],\"context\":[\"The decoded message is presented in English by the National Archives. Its German original and the entire interception/decoding chain are not part of this exercise.\",\"The speech refers to the intercepted message. It is dependent evidence for the message, while being direct evidence of Wilson’s public argument.\",\"Neither source supplies Mexico’s reply. Neither isolates the telegram from the other causes of the US war decision.\"],\"timeline\":[{\"date\":\"January 1917\",\"precision\":\"month\",\"event\":\"Diplomatic message\",\"sourceId\":\"telegram\"},{\"date\":\"April 2, 1917\",\"precision\":\"day\",\"event\":\"Address to Congress\",\"sourceId\":\"wilson1917\"}],\"activity\":{\"type\":\"source-comparison\",\"prompts\":[{\"id\":\"conditional-offer\",\"claim\":\"The message makes the proposed cooperation conditional.\",\"answer\":\"direct\",\"evidenceIds\":[\"conditional\"],\"feedback\":\"The quoted conditional phrase directly supports this classification. The editorial context explains what the condition refers to. An offer under a condition does not establish a completed agreement.\"},{\"id\":\"accepted-alliance\",\"claim\":\"Mexico accepted the proposed alliance.\",\"answer\":\"unsupported\",\"evidenceIds\":[\"none\"],\"feedback\":\"Neither selected document supplies a Mexican acceptance. Missing evidence does not prove rejection either.\"},{\"id\":\"public-framing\",\"claim\":\"The border-threat wording could help frame war as a response to danger.\",\"answer\":\"inference\",\"evidenceIds\":[\"speech\"],\"feedback\":\"This is a defensible interpretation of the rhetoric. The wording alone does not measure its effect on Congress or the public.\"},{\"id\":\"single-cause\",\"claim\":\"The telegram alone caused the US declaration of war.\",\"answer\":\"unsupported\",\"evidenceIds\":[\"none\"],\"feedback\":\"This pair cannot isolate a single cause. A speech’s use of one document is not a controlled account of all causes.\"}],\"transfer\":\"A later newspaper repeats the telegram. Does that automatically give you an independent confirmation? Explain what you would need to know about its source.\",\"rubric\":[\"Distinguish a record from an independent source of its information.\",\"Name one missing perspective or link in provenance.\",\"Attach the limitation to a specific claim.\"]},\"previousRevisions\":[\"0.1.0\",\"0.1.1\",\"0.1.2\"],\"reviewLimitations\":[\"Screen-reader and learner sessions have not been performed.\"],\"authorVerification\":{\"kind\":\"author-check\",\"scope\":\"local-preview\",\"author\":\"Atlas authoring task\",\"checkedOn\":\"2026-10-23\",\"revision\":\"0.1.3\",\"contentDigest\":\"0a98cce8c9f30e37b7f8ce4e50bda45f877a244049cc34c83abbfc3579d11102\",\"artifactDigest\":\"8b9ff5bba723967d5d760842f4a253cfdc91ad951df5bb1a14f53aaf0c7b5fd2\",\"evidencePath\":\"docs/verification/universal-author-continuation.md\",\"checks\":[\"Schema, source-reference and preparation-packet hash validation\",\"Passed tests/exploration-methods.test.mjs\",\"Passed tests/exploration-studio.test.mjs\",\"Passed tests/exploration-professions.test.mjs\",\"Passed tests/exploration-followups.test.mjs\"]}}</script><script type=\"module\" src=\"../../../explorations/ui.mjs\"></script></body></html>\n",
+  "previewDigest": "578275af74e7aa5c5f10f93d29eebea791b885e2750ca2927edb9b794a5f988e",
+  "receipts": {
+    "docs/verification/universal-pilots-ai-history.md": {
+      "text": "# Independent AI review: history pilot\n\nDate: 2026-10-22.\nReviewer: `atlas-ai-history-review` (separate Codex AI reviewer, independent of the authoring agent for this review). This is an AI source/content/provenance and bounded reuse assessment; I do not claim historian or lawyer credentials, legal clearance, screen-reader observation or learner evidence.\n\n## Exact candidate\n\nWorktree: `/Users/teodev/.codex/worktrees/universal-pilots-integration/theorems-visualizations`.\nBaseline commit: `d638f2ec39435b5ef04439f72d46f5be5da6f54c`.\nPilot: `x-history-0001`, revision `0.1.1`, draft/local-preview.\n\nThe read-only command `/tmp/atlas-ci-node22-20261020/node scripts/build-explorations.mjs --check` succeeded and reported:\n\n- Content digest: `6a1aaf4c32b5dbf2603b4f3de469297a0a42abe0efbb2eff1d0026cc272043db`.\n- Artifact digest: `8f814e4b133f508639df0be35d30fac37b98960873ff10452c0eaf1f1cab035f`.\n\nNo repository file was modified. No browser was launched, no external person/chat was contacted, and no subagent was spawned.\n\n## Method and material inspected\n\nI read the complete `explorations/history.json`, relevant source receipts in `docs/coverage/sources.json`, `docs/pilots/research/history-literature-resolution.md`, the review-session protocol, `docs/exploration-authoring.md`, `docs/architecture/universal-schema-urls.md`, the integration verification checkpoint and relevant renderer/contract sections. I compared every selected history quotation, contextual explanation, claim, answer guide, chronology and transfer task against the permitted institutional source text. I did not inspect scan pixels, the German original or the whole intelligence chain.\n\nIndependent web reads, all successful on 2026-10-22:\n\n1. [National Archives: Zimmermann Telegram](https://www.archives.gov/milestone-documents/zimmermann-telegram). Inspected citation and transcript, particularly transcript opening paragraph and following instruction. This is the actual displayed English decoded-message body, rather than only search metadata.\n2. [National Archives: Wilson address](https://www.archives.gov/milestone-documents/address-to-congress-declaration-of-war-against-germany). Inspected date/citation and the transcript paragraph beginning “But they have played their part,” with surrounding argument. Actual body read.\n3. [National Archives copyright FAQ](https://www.archives.gov/faqs#copyright). Inspected the Copyright section. Actual body read.\n\nNo stopped, denied, CAPTCHA or timed-out source was reopened; Koto and other unrelated stops were outside this review.\n\n## Required repair\n\n**H-R1 — P2, source-registry reuse scope contradicts the selected prototype.** `docs/coverage/sources.json:164` (`telegram`) and `:181` (`wilson1917`) both retain “Reference and original paraphrase only; assets require a separate rights check.” The current pilot instead embeds short attributed quotations and records that decision in `explorations/history.json:52` and `:71`, with a consistent decision in the research resolution document. The central receipts are presented as current source/reuse records rather than explicitly historical pre-selection plans. A future integrator cannot tell whether quotation is within their authorized asset scope.\n\nRepair: align those two receipt plans with the actual selected text-only, US local prototype decisions. Preserve the distinction between the telegram's foreign-origin English witness and the official presidential speech; preserve excluded scans, website prose/design and audio/video, and the requirement for release-specific review. Do not expand this into blanket permission. This is a documentation/metadata consistency defect; I found no evidence that the authored quotations themselves need replacement. Source-registry edits do not alter the displayed content digest, but the integration owner should verify that expectation and re-run the registry validator.\n\nResult at this candidate: **changes requested for receipt consistency**. No historical content or provenance correction requested.\n\n## Supported content/provenance findings\n\nThe telegram's two exact selected phrases match the NARA transcript and total 15 words. The surrounding transcript connects the condition to the aim of maintaining US neutrality and instructs a diplomatic recipient. The pilot's explanation therefore fits this witness. The month-level date is suitably bounded; the pilot does not invent an exact transmission date or claim a scan/manuscript inspection. [NARA telegram](https://www.archives.gov/milestone-documents/zimmermann-telegram).\n\nThe selected Wilson clause matches the transcript; its continuation names the intercepted note. The pilot reasonably treats the speech as evidence of Wilson's public argument and makes audience effect an inference. Its dependence warning prevents the two documents from being counted as independent confirmations. The April 2 date agrees with the archive. [NARA address](https://www.archives.gov/milestone-documents/address-to-congress-declaration-of-war-against-germany).\n\nThe four task guides fit their claim scope. The conditional-language task can be answered from the selected phrase. The acceptance and sole-cause tasks correctly say the pair does not establish those claims; the feedback does not turn missing acceptance into rejection. The rhetoric task permits interpretation while disclaiming measured public effect. The transfer question asks for provenance rather than treating repeated publication as automatically independent evidence. These are review judgments about task design; no reader response was observed.\n\nThe current labels disclose the English witness, missing German original/interception chain and missing Mexican response. The pilot does not adopt the archive webpage's broader editorial summary about declarations against Germany and allies. I found no unsupported certainty that requires a content repair within this deliberately small corpus.\n\n## Bounded reuse assessment\n\nNARA's FAQ distinguishes generally usable government records from potentially copyrighted donated/other material and assigns users responsibility for determining restrictions. It supports the pilot's refusal to treat every hosted record/image as cleared. [NARA copyright FAQ](https://www.archives.gov/faqs#copyright).\n\nThe prototype's short, attributed critical extracts and original surrounding explanations are a bounded use assessment, not an item-specific license or a legal determination. I found no copied scan or modern archive editorial prose in the JSON selection. The government-speech and foreign-origin decoded-text bases are distinguished. Keep the existing US local prototype scope and wider-distribution gate. Shortness alone should never become an automatic rights rule for future pilots.\n\n## Limits and gates left open\n\n- Actual screen-reader task review: **not observed**. No DOM inspection or automated test substitutes for it.\n- Formative learner observation and transfer performance: **not observed**.\n- Subject-professional credentials or expert recruitment: none claimed. This AI review covers consistency and institutional text checking within its stated scope.\n- Public distribution, additional jurisdictions, complete translation reuse, scans, later editions/media and withdrawal/update stewardship: **not cleared by this review**.\n- Source-authenticity research beyond the named institutional transcript bodies: outside scope; missing chain already disclosed to readers.\n\nThe pilot should remain a draft while required acceptance evidence is absent. This report may be retained as supplemental independent AI evidence; it must not be used to mark unobserved accessibility or learning dimensions passed. Recheck this finding after repair and bind any final receipt to the then-current candidate digests.\n\n## Repair recheck, 2026-10-22\n\nThe integration owner changed the two `rights.plan` entries. I reread the exact edited entries: telegram now scopes the two short attributed phrases/15 words and excludes full translation, scans, modern editorial copy and other site assets; Wilson now scopes a short attributed official-address quotation with corresponding exclusions. Both retain wider-distribution review. **H-R1 resolved.** `node scripts/validate-coverage.mjs` passes (30 domains, 85 primary collections, 42 source receipts, 8 pilot briefs).\n\nExplicit bounded dimension conclusions after this repair:\n\n| Dimension | AI review conclusion | Scope |\n| --- | --- | --- |\n| content | passed | Exact selected institutional wording, authored historical/interpretive claims and answer-guide consistency within the disclosed small corpus |\n| provenance | passed | Identified English witness, locators, date precision, source dependence and disclosed missing original/chain/Mexican response |\n| rights | passed | Consistency and bounded basis of the documented text-only US local prototype assessment; no legal clearance, professional opinion or wider-release permission |\n| accessibility | not observed | No actual screen-reader task session conducted |\n| learning | not observed | No learner session or transfer response collected |\n\nThese can be represented as scoped AI receipts with the actual AI identity/role and this durable evidence path, provided acceptance/publication is not implied and the unobserved required dimensions remain open. If the workflow interprets `rights: passed` as legal or public-release clearance beyond the prototype scope, retain it as supplemental-only instead; do not broaden this conclusion. Final receipts must bind the final frozen artifact; rendering/code changes were still possible when this recheck was written.\n\n## Final artifact recheck, 2026-10-22\n\nI inspected the current Git diff for `history.json`, `contract.mjs`, `build-explorations.mjs`, the related regression and the repaired source receipts. History's reader-facing JSON is unchanged. The code change adds the actual rendered related-collection titles (including the renderer's ID fallback) to the review artifact digest, using the same title map for validation, rendering and reported hashes. It does not alter the history passages, task guides, source links or scope. The regression checks that a displayed label change invalidates a review while unrelated collection metadata does not. No new source retrieval or browser session was needed or conducted for this delta.\n\nI reran `/tmp/atlas-ci-node22-20261020/node scripts/build-explorations.mjs --check`; it passed and reported this final checked candidate:\n\n- ID: `x-history-0001`; revision: `0.1.1`; status: `draft`.\n- Content digest: `6a1aaf4c32b5dbf2603b4f3de469297a0a42abe0efbb2eff1d0026cc272043db`.\n- Artifact digest: `87d5558bfd38472fe904c3bc37d413a53458cc6ecd0af5933e9659e3d2282899`.\n\nThe bounded **content / provenance / rights** AI review passes apply to these final hashes with the scopes and exclusions recorded above. H-R1 remains resolved. This is suitable for three receipts identifying `atlas-ai-history-review` as an independent AI reviewer, with the actual bounded role and the durable copied report path. **Accessibility and learning remain unobserved; independent overall acceptance and public release are not asserted.**\n\n## Revision 0.1.2 scoped recheck, 2026-10-22\n\nThe integration owner relayed the user's explicit decision to remove the screen-reader and learner checks as acceptance requirements. This section supersedes earlier statements that those sessions must remain acceptance gates; it does not turn those unperformed sessions into passing observations.\n\nI inspected the current Git diff read-only and ran the current builder's `--check` successfully. I also compared the parsed current history JSON with `HEAD:explorations/history.json`: `sources`, `passages`, `claims`, `context`, `timeline`, `activity` and all historical `reviews` are exactly unchanged. The current declared dimensions are `content`, `provenance` and `rights`. The revision increments to 0.1.2; `previousRevisions` now includes 0.1.1 as well as 0.1.0 so earlier notes remain explicitly exportable. A reader-visible `reviewLimitations` message states that screen-reader and learner sessions have not been performed. No new source retrieval or browser session was needed or performed.\n\nThe contract still enforces content/rights as minimum dimensions and enforces every declared dimension for accepted records; provenance remains explicitly required for this history pilot. The renderer escapes and shows the limitations, describes acceptance as reviewed for local preview, and keeps public release separate. Nothing in this delta supplies human observation, legal clearance or professional qualifications. Historical receipts remain intact and must not approve the new revision without a fresh exact-version receipt.\n\nFinal candidate checked:\n\n- ID: `x-history-0001`; revision: `0.1.2`; status at recheck: `in-review`; publication: `local-preview`.\n- Content digest: `f1ad96959e069d4f3896063e82bd8468eb3241749096e856a514631e721b72af`.\n- Artifact digest: `ffef0964100bbcdd7496cc798bea195a912d93375c4e2b892e4a656736e8dce4`.\n\n**Final bounded AI conclusions for revision 0.1.2: content passed; provenance passed; rights passed.** These conclusions carry the same specific corpus, institutional text-checking, prototype-only reuse scope and limitations explained above. The revision/review-policy/display delta introduces no defect in those checked dimensions. H-R1 remains resolved. Fresh scoped receipts may identify `atlas-ai-history-review` as an independent AI reviewer and bind these exact hashes. Screen-reader and learner sessions remain explicitly unperformed, without passing receipts or efficacy claims. This review does not authorize public distribution or assert legal/professional clearance.\n\n\n# Independent AI recheck: history under expanded method code\n\nDate: 2026-10-22.\nReviewer: `atlas-ai-history-review`, separate AI source/content/provenance reviewer. Bounded text-only US local prototype reuse assessment; no historian/lawyer credential, legal clearance or public-release authorization claimed.\n\nCandidate: `x-history-0001`, revision `0.1.2`, `accepted` / `local-preview` lifecycle labels. Those labels describe the repository state, not a broader certification by this review.\n\n## Scope and exact hashes\n\nI read the diff since `e3b85eb1` for the shared contract, renderer, browser UI, state helpers and builder, and read the new method module dispatch relevant to history. I inspected `/tmp/atlas-next-review-pages/x-history-0001.html` as HTML text. I did not launch a browser, retrieve sources, edit repository files, contact other chats or spawn reviewers.\n\nI independently recomputed canonical SHA-256 using Node's crypto, a separately written canonical JSON serializer, actual current bytes for all nine builder-listed code files, and related labels from the current registry. I did not rely on the reported temporary JSON hashes alone. Computed values agree with `/tmp/atlas-next-pair-digests.json`:\n\n- Content digest: `f1ad96959e069d4f3896063e82bd8468eb3241749096e856a514631e721b72af`.\n- Artifact digest: `9d0101eb73f6bb3f964aeeaae46c642129928658640872fe82e514e30c143b75`.\n\nI also rendered this candidate in memory using the current renderer and real collection labels; its output exactly equals the supplied review HTML. The supplied HTML is therefore current for the inspected artifact. This verification is not a claim that the normal build passed: old acceptance receipts are stale against the new artifact until fresh reviews are appended.\n\n## Findings and decisions\n\n**No required repair found for the bounded history review.** Entire parsed `explorations/history.json` equals its `e3b85eb1` version, including selected passages, sources and asset/reuse decisions, contextual limitations, task/answer guides, chronology and review limitations. The prior independent institutional body checks and source-scope repair remain the evidence basis; no fresh remote verification is claimed.\n\nThe common heading changes (all pilot explorations, explore the evidence, exploration limits) accommodate the additional pilots without changing history's claims. History still dispatches through its existing source-comparison renderer before the new method path. All three quotations and their source/reuse detail sections remain present; conditionality, nonacceptance inference, rhetoric/causation boundaries and the newspaper provenance transfer prompt remain intact. Related collection names and routes remain the same.\n\nThe shared state normalization's new-method helper returns an empty object for history; the existing history state branch is preserved. The new UI apply helper performs no method-specific operations for history. The shared select listener still includes history's existing controls. These observations support compatibility within this review's scope; a separate engineering reviewer owns comprehensive runtime verification.\n\nThe rendered page preserves the visible disclosure that screen-reader and learner sessions have not been performed, the local-preview label, and the separation between review scope and public release. It does not imply human observation or learning efficacy.\n\n| Dimension | Final scoped AI conclusion |\n| --- | --- |\n| content | passed — unchanged institutional selections, authored claims and task guides still render without an unsupported historical assertion introduced by this delta |\n| provenance | passed — named English witness, source links/locators, date precision and disclosed dependency/missing-chain boundaries remain intact |\n| rights | passed — same documented short-attributed-text US local prototype scope and exclusions remain intact; this is not legal or public-distribution clearance |\n\nFresh scoped receipts can bind these exact hashes and identify this AI reviewer and report. Historic receipts should remain appended and unaltered. Actual screen-reader and learner observations remain unperformed; the user's removal of those acceptance requirements does not fabricate their completion. No conclusion extends to newly authored P03/P05 content, foreign jurisdictions, complete translation reuse, scans or additional media.\n\n## Final shared validator correction recheck, 2026-10-22\n\nThe follow-up change validates measured-data omittedColumns and retained row projection in method-models.mjs. I inspected those checks: they are confined to the measured-data branch, with no new source-comparison behavior. History content remains unchanged. I independently recomputed hashes again and verified the refreshed review HTML equals the current history renderer output.\n\n- Content digest: `f1ad96959e069d4f3896063e82bd8468eb3241749096e856a514631e721b72af`.\n- Artifact digest: `bea7f7e523e89e0c36dec0c0bcf66c681dc1ccde92c05cd48079b8e1ad193eef`.\n\nThe scoped AI content, provenance and prototype-rights conclusions remain **passed** for these final hashes, with all prior limitations retained. No source retrieval, browser session or repository edit was performed for this recheck. These passes supply no professional/legal/public-release clearance and no human session evidence.\n\n\n## Readable chart final recheck\n\nDate: 2026-10-22. Reviewer: atlas-ai-history-review (same bounded independent AI role). The shared method view/style change places the soil plot at readable minimum width in a named focusable scroll region; argument UI text now includes complete selected premise/action text. I inspected the relevant code delta. Those method-specific paths do not change history sources, quotations, tasks, provenance or reuse decisions. History's content digest remains identical, and its freshly rendered HTML exactly matches the refreshed supplied review HTML.\n\nIndependently recomputed final hashes:\n\n- Content: `f1ad96959e069d4f3896063e82bd8468eb3241749096e856a514631e721b72af`.\n- Artifact: `c002df87d23466b1bcfafea21f67a2db7a294dc2b4118b7aaf701220210b8033`.\n\nScoped AI **content / provenance / rights: passed** for this exact history artifact. The rights conclusion remains limited to the documented text-only US local prototype, without legal/professional or wider-release clearance. Screen-reader/learner sessions remain unperformed, with no fabricated observation. No browser, source retrieval or repository edit was performed for this recheck.\n\n\n---\n\n# History recheck after studio additions\n\nDate: 2026-10-22. Reviewer: atlas-ai-history-review, independent AI source/context and conceptual-model reviewer. No practitioner, historian, lawyer or accessibility-observer credential is asserted.\n\nI inspected the final shared code relevant to this candidate, the current JSON and refreshed HTML. I independently recomputed canonical SHA-256 using a separately written serializer, actual bytes of all thirteen builder-listed files and actual related collection labels. The hashes match the supplied candidate digest file. In-memory rendering exactly matches the supplied review HTML; selected-text hashes and visible review-limitations text also match. No browser, repository edit, source retrieval, other-chat contact or nested reviewer was used.\n\n- ID/revision: x-history-0001 / 0.1.2.\n- Content digest: `f1ad96959e069d4f3896063e82bd8468eb3241749096e856a514631e721b72af`.\n- Artifact digest: `451251379199fcc10fda552dc6e27c227fc87b0b4e986a6d9ae17da84e4c37ec`.\n\n## Findings and decisions\n\nNo required repair found for the bounded history review. History content digest is unchanged from the already checked revision 0.1.2. Thus the source/passage selections, quotations, source/reuse metadata, answer guides, context, dates and task remain identical. The new studio method branches and performance WAV metadata do not replace the history source-comparison branch. The refreshed static page retains the quotation/context distinction, source and reuse details, source-dependence warning, missing Mexican reply/causal-chain limits, original newspaper-transfer task and disclosure of unperformed human sessions. Table-layout changes do not alter those historical claims.\n\nThis report supplements the prior independent NARA body checks and /tmp/atlas-history-methods-recheck.md; it does not assert new remote verification. Scoped AI **content / provenance / prototype-rights: passed** for these exact hashes. Rights remain limited to the documented short-text US local prototype assessment. No historian/lawyer clearance, public-distribution approval, screen-reader or learner observation is asserted.\n",
+      "sha256": "21f004f7639b0674a3b592e3cc9f166be1a252e296f6c679cdcd69dc15dc492b"
+    },
+    "docs/verification/universal-author-continuation.md": {
+      "text": "# Local continuation under author checks\n\n23 October 2026. The user explicitly removed the outstanding review prerequisites and instructed continued implementation of the full master plan. Independent AI, specialist, engineering, practitioner, learner and screen-reader reviews are optional follow-up, not gates on local authoring, validation, acceptance or integration preparation. This supersedes earlier local review-gate requirements. No rejected external review operation is retried.\n\nLocal acceptance records use `authorVerification.kind: author-check` and bind the current revision, content and rendered-code digest to actual author checks. They do not create independent review receipts. Existing receipts remain unchanged as historical evidence. Physical and participant sessions remain unperformed; professional reviewer fields remain empty. The renderer labels author-checked previews distinctly. Legacy independent-review acceptance is retained for archived records and rejects stale receipts as before.\n\nThe six existing pilot texts and activities remain intact. The four already archived pilots receive new revisions for the changed runtime and acceptance basis; earlier revisions remain available through explicit note export. Craft/performance retain their original revision because neither had an archived edition. No private note store is read or migrated by these changes. Craft remains a structural model without a physical specimen; performance remains a generated digital stimulus with its existing local asset terms. The new law and health pilots supply original bounded learning tasks, not professional approval or a decision about a reader's health or legal dispute. Source access, truthful claims, privacy, actual rights and automatic validation remain substantive requirements.\n\n## Source checks\n\nThe four named CRA sections (9, 19, 20, 22) returned HTTP 200 from their official URLs on 23 October. The web reader could not parse XHTML; an ordinary direct request to the same URLs succeeded. All four byte hashes match the retained 22 October preparation captures. Their displayed editorial cutoffs still differ (22/20/22/21 October) and future/outstanding notices remain. No certified current-law consolidation is claimed. The statutory timing paragraphs and their exceptions were inspected; the activity only applies the ordinary arithmetic to stipulated facts. Repair waiting periods return no ordinary deadline.\n\nNHLBI's [breathing description](https://www.nhlbi.nih.gov/health/lungs/breathing-benefits) was reread on 23 October, including the diaphragm phases and the distinction between air movement and gas exchange. Its third-party animation is excluded. No stopped clinical or licence source was reopened.\n\nFresh legal capture hashes:\n\n- §9: `e967cd7aa348f8d5efc5fc3f84028219afb4f3e276000bd07b11edd2f18ff7c9`\n- §19: `cace7192983aa605c5f524ceb5a1146b3fd23679c78b505fc97ccbf9fcbbd3ab`\n- §20: `3ac4e952da31966e51f2b033f151f80ec1156567120969c86d123fc12fa1963c`\n- §22: `cb3bb9fd0c236d7180dfc78fa909456b8232fa254f5b96ca9902b1d6a43b00fd`\n\nCapture location: `/tmp/atlas-author-continuation-20261023/`. Capture dates are not legal-effective dates. Original source registers and preparation packets remain historical and unchanged.\n\n## Verification\n\nThe source/schema/model suite passed 100 test groups. The native-browser suite passed 27 groups; three affected layout/activity groups passed again after making long numeric tables horizontally scrollable. A saved-state normalization inconsistency (`0.50` versus `0.5`) was repaired. Desktop and phone, light and dark, static reading, keyboard controls, notes, sharing, malformed windows and impossible irrigation requests were exercised. This is author verification, not human learning or screen-reader observation.\n\nEight pilots and six follow-ups are now authored and checked locally: diplomatic perspectives, archaeology premises, Frankenstein editions, Cabuliwallah narrative access, Cicero disclosure and the water ledger. Selected historical quotations retain their exact prepared text and hashes; the archaeology truth table matches all eight prepared cases, and water tests verify conservation, delivery limits, missing values, corrections and path differences.\n\nFor subsequent authoring, run `node scripts/check-local-continuation.mjs` for read-only schema, source-binding and model/source tests. After actually inspecting new source/content changes, run `node scripts/check-local-continuation.mjs --record --date YYYY-MM-DD` with the real check date to record author verification and rebuild the workshop/orientations. Then run the affected browser and integration tests. This command does not supply specialist qualifications, source freshness, real sessions or public release. Before freezing a changed already-retained lesson, increment its revision and preserve `previousRevisions`; immutable earlier editions must not be replaced.\n\nSupplemental source identities bind exact preparation-packet bytes and the original source URL/read record. Earlier source registers, quotes, access stops and review evidence remain untouched. New orientation verification covers the changed local lesson links and rendering; all 30 substantive orientation texts and their historical reviews remain retained.\n\nThe cumulative delivery rehearsal and preservation audit are recorded separately in `docs/verification/universal-author-delivery.md`. That later record does not alter this immutable source-check receipt.\n",
+      "sha256": "cb211f401ec6aaa192c27595d04057ddb4dd6a0430880fa88964da3daf5a1431"
+    }
+  },
+  "supplements": {}
+}

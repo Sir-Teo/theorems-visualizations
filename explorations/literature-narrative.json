@@ -1,0 +1,243 @@
+{
+  "schemaVersion": 1,
+  "id": "x-literature-0003",
+  "pilotId": "P02",
+  "revision": "0.1.0",
+  "status": "accepted",
+  "publication": "local-preview",
+  "title": "Seeing, hearing and imagining in The Cabuliwallah",
+  "subtitle": "A narrator can describe an event and imagine another mind.",
+  "summary": "Read nine selected paragraphs from the explicitly attributed 1918 English witness. Distinguish narrated perception, represented testimony, mental attribution and imagined reunion.",
+  "audience": "General readers; the necessary narrative context is included.",
+  "scope": "1918 English school-reader witness attributed to Sister Nivedita, with a preface describing revisions. No Bengali comparison or identification of every reviser is claimed.",
+  "author": "atlas-editor",
+  "updatedOn": "2026-10-23",
+  "domainIds": [
+    "D24",
+    "D23"
+  ],
+  "relatedCollectionIds": [
+    "ling",
+    "art"
+  ],
+  "knowledgeModes": [
+    "interpretive"
+  ],
+  "methods": [
+    "annotation"
+  ],
+  "prerequisites": [],
+  "sources": [
+    {
+      "id": "followup-tagore-1918-pg33525",
+      "title": "Stories from Tagore: The Cabuliwallah",
+      "url": "https://www.gutenberg.org/cache/epub/33525/pg33525-images.html",
+      "locator": "Title/imprint and Notes p.223 inspected in the transcription. Preface describes slight revision of earlier volumes for a school reader; do not equate its wording with the 1912 translation or Gutenberg 2518. Bengali text and print-page pixels not inspected.",
+      "creator": "Rabindranath Tagore; translation attributed to Sister Nivedita in this edition",
+      "date": "October 1918; New York: The Macmillan Company",
+      "language": "en",
+      "rights": {
+        "decision": "usable-for-prototype",
+        "basis": "Selected historical text and original commentary, carried from the hash-bound research packet; no modern illustrations or complete ebook reproduced.",
+        "scope": "Local selected-text use; exact witness attribution and historical source limits retained."
+      }
+    }
+  ],
+  "passages": [
+    {
+      "id": "t1918-uncertainty",
+      "sourceId": "followup-tagore-1918-pg33525",
+      "title": "T1918 uncertainty · The Cabuliwallah; transcribed pp.4-5",
+      "form": "quotation",
+      "language": "en",
+      "text": "I cannot tell what were my daughter's feelings at the sight of this man, but she began to call him loudly. \"Ah!\" I thought, \"he will come in, and my seventeenth chapter will never be finished!\" At which exact moment the Cabuliwallah turned, and looked up at the child. When she saw this, overcome by terror, she fled to her mother's protection and disappeared. She had a blind belief that inside the bag, which the big man carried, there were perhaps two or three other children like herself. The pedlar meanwhile entered my doorway and greeted me with a smiling face.",
+      "context": "The father disclaims access to Mini's feelings, then narrates her belief. Allow a supported reading of this tension; do not force the whole paragraph into a single evidence category.",
+      "sha256": "a9feb7305f5691314a810ad2195ab81c59dec2e4d2c78167c6f41618b3fa4a4a"
+    },
+    {
+      "id": "t1918-imagination",
+      "sourceId": "followup-tagore-1918-pg33525",
+      "title": "T1918 imagination · The Cabuliwallah; transcribed p.8",
+      "form": "quotation",
+      "language": "en",
+      "text": "These were autumn mornings, the very time of year when kings of old went forth to conquest; and I, never stirring from my little corner in Calcutta, would let my mind wander over the whole world. At the very name of another country, my heart would go out to it, and at the sight of a foreigner in the streets, I would fall to weaving a network of dreams,—the mountains, the glens, and the forests of his distant home, with his cottage in its setting, and the free and independent life of far-away wilds. Perhaps the scenes of travel conjure themselves up before me and pass and repass in my imagination all the more vividly, because I lead such a vegetable existence that a call to travel would fall upon me like a thunder-bolt. In the presence of this Cabuliwallah I was immediately transported to the foot of arid mountain peaks, with narrow little defiles twisting in and out amongst their towering heights. I could see the string of camels bearing the merchandise, and the company of turbanned merchants carrying some their queer old firearms, and some their spears, journeying downward towards the plains. I could see—. But at some such point Mini's mother would intervene, imploring me to \"beware of that man.\"",
+      "context": "Explicitly imagined travel scenes do not establish actual places visited or generalized facts about traders.",
+      "sha256": "482e310aaef730e5f7febb31c3dfb8852aa3d0989af4f06f232a4749efe7a3ae"
+    },
+    {
+      "id": "t1918-incident",
+      "sourceId": "followup-tagore-1918-pg33525",
+      "title": "T1918 incident · The Cabuliwallah; transcribed pp.10-11",
+      "form": "quotation",
+      "language": "en",
+      "text": "One morning, a few days before he had made up his mind to go, I was correcting my proof sheets in my study. It was chilly weather. Through the window the rays of the sun touched my feet, and the slight warmth was very welcome. It was almost eight o'clock, and the early pedestrians were returning home with their heads covered. All at once I heard an uproar in the street, and, looking out, saw Rahmun being led away bound between two policemen, and behind them a crowd of curious boys. There were blood-stains on the clothes of the Cabuliwallah, and one of the policemen carried a knife. Hurrying out, I stopped them, and inquired what it all meant. Partly from one, partly from another, I gathered that a certain neighbour had owed the pedlar something for a Rampuri shawl, but had falsely denied having bought it, and that in the course of the quarrel Rahmun had struck him. Now, in the heat of his excitement, the prisoner began calling his enemy all sorts of names, when suddenly in a verandah of my house appeared my little Mini, with her usual exclamation: \"O Cabuliwallah! Cabuliwallah!\" Rahmun's face lighted up as he turned to her. He had no bag under his arm to-day, so she could not discuss the elephant with him. She at once therefore proceeded to the next question: \"Are you going to the father-in-law's house?\" Rahmun laughed and said: \"Just where I am going, little one!\" Then, seeing that the reply did not amuse the child, he held up his fettered hands. \"Ah!\" he said, \"I would have thrashed that old father-in-law, but my hands are bound!\"",
+      "context": "Separate the narrator's hearing/seeing, gathered accounts of a quarrel, and quoted dialogue within one paragraph. He does not narrate witnessing the stabbing.",
+      "sha256": "357a950d69f80890d4b801a9395e9d76de13a2da872ec634aa5333e032763562"
+    },
+    {
+      "id": "t1918-testimony",
+      "sourceId": "followup-tagore-1918-pg33525",
+      "title": "T1918 testimony · The Cabuliwallah; transcribed p.14",
+      "form": "quotation",
+      "language": "en",
+      "text": "I took them and was going to pay him, but he caught my hand and said: \"You are very kind, sir! Keep me in your recollection. Do not offer me money!—You have a little girl: I too have one like her in my own home. I think of her, and bring fruits to your child—not to make a profit for myself.\"",
+      "context": "Rahmun's quoted explanation is speech represented by the narrator. It is distinct from the father's attributed account of another mind.",
+      "sha256": "f07dc2ae03689db7701f9416ac5440771c60e7cd32e351d690a9d57a5573aa37"
+    },
+    {
+      "id": "t1918-impression",
+      "sourceId": "followup-tagore-1918-pg33525",
+      "title": "T1918 impression · The Cabuliwallah; transcribed p.14",
+      "form": "quotation",
+      "language": "en",
+      "text": "Saying this, he put his hand inside his big loose robe, and brought out a small and dirty piece of paper. With great care he unfolded this, and smoothed it out with both hands on my table. It bore the impression of a little hand. Not a photograph. Not a drawing. The impression of an ink-smeared hand laid flat on the paper. This touch of his own little daughter had been always on his heart, as he had come year after year to Calcutta to sell his wares in the streets.",
+      "context": "This witness reads hand. The paragraph combines handling an object with narration about its emotional history; a physical mark alone does not verify all that history.",
+      "sha256": "c0142bc0531e25bc0d2bda298f8ee963815bc1d213e2f9a6aec6e04ac901c483"
+    },
+    {
+      "id": "t1918-attributed-thought",
+      "sourceId": "followup-tagore-1918-pg33525",
+      "title": "T1918 attributed thought · The Cabuliwallah; transcribed p.15",
+      "form": "quotation",
+      "language": "en",
+      "text": "I remembered the day when the Cabuliwallah and my Mini had first met, and I felt sad. When she had gone, Rahmun heaved a deep sigh, and sat down on the floor. The idea had suddenly come to him that his daughter too must have grown in this long time, and that he would have to make friends with her anew. Assuredly he would not find her as he used to know her. And besides, what might not have happened to her in these eight years?",
+      "context": "A sigh is narrated with a mental attribution and rhetorical question. Neither gives direct access outside the fiction to another person's thoughts.",
+      "sha256": "9bf3931bb1bb8fb356861978aacd619912abcfba363f4ab23381aa3d46bef174"
+    },
+    {
+      "id": "t1918-mountains",
+      "sourceId": "followup-tagore-1918-pg33525",
+      "title": "T1918 mountains · The Cabuliwallah; transcribed pp.15-16",
+      "form": "quotation",
+      "language": "en",
+      "text": "The marriage-pipes sounded, and the mild autumn sun streamed round us. But Rahmun sat in the little Calcutta lane, and saw before him the barren mountains of Afghanistan.",
+      "context": "The narrative locates Rahmun in Calcutta while describing Afghanistan before him; do not treat this as a witnessed journey.",
+      "sha256": "105e7be6bebb6808469be75c55d1afb3847e8f29880c12650127558b4095b30e"
+    },
+    {
+      "id": "t1918-gift",
+      "sourceId": "followup-tagore-1918-pg33525",
+      "title": "T1918 gift · The Cabuliwallah; transcribed p.16",
+      "form": "quotation",
+      "language": "en",
+      "text": "I took out a bank-note and gave it to him, saying: \"Go back to your own daughter, Rahmun, in your own country, and may the happiness of your meeting bring good fortune to my child!\"",
+      "context": "Money and the father's spoken wish precede the ending. Preserve this boundary before evaluating the reunion claim.",
+      "sha256": "7c942c219d017c2061e7edad39082023d0ed1afe0ed683a0cac3820aa8a30151"
+    },
+    {
+      "id": "t1918-ending",
+      "sourceId": "followup-tagore-1918-pg33525",
+      "title": "T1918 ending · The Cabuliwallah; transcribed p.16",
+      "form": "quotation",
+      "language": "en",
+      "text": "Having made this present, I had to curtail some of the festivities. I could not have the electric lights I had intended, nor the military band, and the ladies of the house were despondent at it. But to me the wedding-feast was all the brighter for the thought that in a distant land a long-lost father met again with his only child.",
+      "context": "The ending gives the father's thought of reunion, without narrating his observation of a reunion in Afghanistan.",
+      "sha256": "29180f0f011784a054f031b3e47531d35155dd47b900ce4300e187c19cbb297c"
+    }
+  ],
+  "claims": [
+    {
+      "id": "narrative-layers",
+      "kind": "interpretive",
+      "text": "One paragraph can mix narrated perception, gathered accounts and represented speech.",
+      "passageIds": [
+        "t1918-incident"
+      ],
+      "qualification": "These are distinctions inside a fictional narrator’s account."
+    },
+    {
+      "id": "reunion-limits",
+      "kind": "textual",
+      "text": "The ending gives the father’s thought of reunion without narrating his observation of one.",
+      "passageIds": [
+        "t1918-gift",
+        "t1918-ending"
+      ],
+      "qualification": "Do not turn an imagined scene into a documented later event."
+    }
+  ],
+  "context": [
+    "The father narrates his encounters with Rahmun and his daughter Mini. His location, hearing, testimony and imagination offer different kinds of access within the story.",
+    "This witness’s notes attribute the translation to Sister Nivedita. Its preface describes revisions; attribution does not identify the origin of every changed word.",
+    "The selected hand-impression paragraph reads hand. A different earlier ebook witness reads band; its anomaly remains unresolved. This lesson selects a different identified witness rather than silently correcting or merging the texts.",
+    "The father’s disclaimer about knowing Mini’s feelings and his subsequent description of her belief create an interpretive tension, not a single automatic reliability score."
+  ],
+  "timeline": [],
+  "relations": [],
+  "reviews": [],
+  "reviewRequirements": [
+    "content",
+    "rights"
+  ],
+  "reviewLimitations": [
+    "Selected English witness only; no Bengali-language or print-facsimile check. Unperformed participant reviews remain optional."
+  ],
+  "activity": {
+    "type": "annotation",
+    "lenses": [
+      {
+        "id": "access",
+        "label": "What kind of access does the narrator claim?",
+        "observation": "The incident paragraph separates hearing a disturbance, seeing an arrest and gathering an account from others.",
+        "question": "Which clause supports which kind of narrative access?",
+        "readings": [
+          "Identify the arrest as narrated perception and the preceding quarrel as a gathered account.",
+          "Read the represented dialogue alongside the narrator’s framing rather than treating it as an external transcript."
+        ],
+        "boundary": "The narrator does not narrate witnessing the stabbing; a fictional statement is not an authenticated historical deposition."
+      },
+      {
+        "id": "mind",
+        "label": "Disclaimed knowledge and attributed thought",
+        "observation": "The father first disclaims knowledge of Mini’s feelings, then gives a belief; later a sigh accompanies an account of Rahmun’s realization.",
+        "question": "How does the narration move between outward action and another person’s mind?",
+        "readings": [
+          "Read the mental attribution as an empathetic interpretation linked to visible action.",
+          "Question the narrator’s confidence and compare it with his earlier disclaimer."
+        ],
+        "boundary": "Do not collapse an entire paragraph into direct observation, or infer a real community’s psychology from this narration."
+      },
+      {
+        "id": "ending",
+        "label": "A gift, a wish and a thought of reunion",
+        "observation": "The father gives money and expresses a wish; the ending makes the wedding brighter through his thought of reunion.",
+        "question": "Which events are narrated at the wedding, and which scene is imagined beyond it?",
+        "readings": [
+          "The imagined reunion can supply emotional closure without a witnessed return.",
+          "The ending can be read as the father interpreting his sacrifice through a hopeful parallel."
+        ],
+        "boundary": "No scene here documents Rahmun’s later journey or verifies the daughter’s circumstances."
+      }
+    ],
+    "transfer": "Select a paragraph containing more than one kind of access. Mark one narrated perception, one report or mental attribution, and a conclusion that still needs evidence. Explain why the 1918 witness must retain its own identity.",
+    "rubric": [
+      "Use clause-level evidence, not a single label for an entire paragraph.",
+      "Distinguish represented speech from direct access to another mind.",
+      "Keep the imagined reunion separate from observed events.",
+      "Name translation and witness limits without silently changing the text."
+    ]
+  },
+  "extensions": {
+    "atlas:preparation": {
+      "path": "docs/pilots/sequences/preparation/literature-selections-20261022.json",
+      "scope": "Selected evidence carried forward; historical packet unchanged."
+    }
+  },
+  "authorVerification": {
+    "kind": "author-check",
+    "scope": "local-preview",
+    "author": "atlas-editor",
+    "checkedOn": "2026-10-23",
+    "revision": "0.1.0",
+    "contentDigest": "7c6d012980bfb5ef2433630e6b52427fba77fb33643cbd1323414c145d02c3ed",
+    "artifactDigest": "e526c24a1b2c18790c36da2c647b9f69f52c2eb9d96b19019a8778bc6f5328ff",
+    "evidencePath": "docs/verification/universal-author-continuation.md",
+    "checks": [
+      "Schema, source-reference and preparation-packet hash validation",
+      "Passed tests/exploration-methods.test.mjs",
+      "Passed tests/exploration-studio.test.mjs",
+      "Passed tests/exploration-professions.test.mjs",
+      "Passed tests/exploration-followups.test.mjs"
+    ]
+  }
+}

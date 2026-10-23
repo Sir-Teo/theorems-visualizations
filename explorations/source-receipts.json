@@ -1,0 +1,302 @@
+{
+  "schemaVersion": 1,
+  "sources": [
+    {
+      "id": "followup-d39",
+      "url": "https://history.state.gov/historicaldocuments/frus1917Supp01v01/d39",
+      "evidence": {
+        "path": "docs/pilots/sequences/preparation/history-primary-20261022.json",
+        "sha256": "5f7646201da8cc42f6924e24d17d02346730639f71f7bffe6f10643c3d8fdea5",
+        "sourceId": "d39"
+      }
+    },
+    {
+      "id": "followup-d300",
+      "url": "https://history.state.gov/historicaldocuments/frus1917Supp01v01/d300",
+      "evidence": {
+        "path": "docs/pilots/sequences/preparation/history-primary-20261022.json",
+        "sha256": "5f7646201da8cc42f6924e24d17d02346730639f71f7bffe6f10643c3d8fdea5",
+        "sourceId": "d300"
+      }
+    },
+    {
+      "id": "followup-d59",
+      "url": "https://history.state.gov/historicaldocuments/frus1917Supp01v01/d59",
+      "evidence": {
+        "path": "docs/pilots/sequences/preparation/history-primary-20261022.json",
+        "sha256": "5f7646201da8cc42f6924e24d17d02346730639f71f7bffe6f10643c3d8fdea5",
+        "sourceId": "d59"
+      }
+    },
+    {
+      "id": "followup-shelley-1818-pg41445",
+      "url": "https://www.gutenberg.org/cache/epub/41445/pg41445-images.html",
+      "evidence": {
+        "path": "docs/pilots/sequences/preparation/literature-selections-20261022.json",
+        "sha256": "088c5604adf9c93a3df7e352ae04026ecb090dbb3e896e2232f9e3a3948c1214",
+        "sourceId": "shelley-1818-pg41445"
+      }
+    },
+    {
+      "id": "followup-shelley-1831-pg42324",
+      "url": "https://www.gutenberg.org/cache/epub/42324/pg42324-images.html",
+      "evidence": {
+        "path": "docs/pilots/sequences/preparation/literature-selections-20261022.json",
+        "sha256": "088c5604adf9c93a3df7e352ae04026ecb090dbb3e896e2232f9e3a3948c1214",
+        "sourceId": "shelley-1831-pg42324"
+      }
+    },
+    {
+      "id": "followup-tagore-1918-pg33525",
+      "url": "https://www.gutenberg.org/cache/epub/33525/pg33525-images.html",
+      "evidence": {
+        "path": "docs/pilots/sequences/preparation/literature-selections-20261022.json",
+        "sha256": "088c5604adf9c93a3df7e352ae04026ecb090dbb3e896e2232f9e3a3948c1214",
+        "sourceId": "tagore-1918-pg33525"
+      }
+    },
+    {
+      "id": "followup-excavation",
+      "url": "https://pompeiisites.org/wp-content/uploads/REGIO-V-EXCAVATIONS-ENG.pdf",
+      "evidence": {
+        "path": "docs/pilots/sequences/preparation/archaeology-methods-20261022.json",
+        "sha256": "89be5ab00a7085747df335f09f5394458601ee5972d60781c9a55f7b7b6be107",
+        "sourceId": "excavation"
+      }
+    },
+    {
+      "id": "followup-experiment",
+      "url": "https://pompeiisites.org/wp-content/uploads/27_E-Journal_La-data-della-distruzione-di-Pompei_2.pdf",
+      "evidence": {
+        "path": "docs/pilots/sequences/preparation/archaeology-methods-20261022.json",
+        "sha256": "89be5ab00a7085747df335f09f5394458601ee5972d60781c9a55f7b7b6be107",
+        "sourceId": "experiment"
+      }
+    },
+    {
+      "id": "followup-cicero",
+      "url": "https://www.gutenberg.org/cache/epub/47001/pg47001-images.html",
+      "evidence": {
+        "path": "docs/pilots/sequences/preparation/cicero-selections-20261022.json",
+        "sha256": "d22283ec1a57e2614765216c5a32bc87d48dda655b441c74fef82a8d8dc88861",
+        "sourceId": "cicero"
+      }
+    },
+    {
+      "id": "followup-umn",
+      "url": "https://extension.umn.edu/natural-resources/conservation/agricultural-soil-and-water/irrigation/irrigation-scheduling-checkbook-method",
+      "evidence": {
+        "path": "docs/pilots/sequences/preparation/irrigation-ledger-20261022.json",
+        "sha256": "418465653ea7802b334318ca91edaa230ce12742d7d5071f524acea0cc1314b1",
+        "sourceId": "umn"
+      }
+    },
+    {
+      "id": "followup-ndsu",
+      "url": "https://www.ndsu.edu/agriculture/extension/publications/irrigation-scheduling-checkbook-method",
+      "evidence": {
+        "path": "docs/pilots/sequences/preparation/irrigation-ledger-20261022.json",
+        "sha256": "418465653ea7802b334318ca91edaa230ce12742d7d5071f524acea0cc1314b1",
+        "sourceId": "ndsu"
+      }
+    },
+    {
+      "id": "followup-seq-sikh-faq",
+      "url": "https://www.sikhcoalition.org/about-sikhs/faq/",
+      "evidence": {
+        "path": "docs/pilots/sequences/preparation/remaining-sequences-20261023.json",
+        "sha256": "57be1cba11b5c2151a7fde429d4bf71ee342e11b4b5785856aa4457710b515a6",
+        "sourceId": "seq-sikh-faq"
+      }
+    },
+    {
+      "id": "followup-seq-sgpc-reht",
+      "url": "https://sgpc.net/wp-content/uploads/2025/06/Sikh-Rehat-Maryada-English-n.pdf",
+      "evidence": {
+        "path": "docs/pilots/sequences/preparation/remaining-sequences-20261023.json",
+        "sha256": "57be1cba11b5c2151a7fde429d4bf71ee342e11b4b5785856aa4457710b515a6",
+        "sourceId": "seq-sgpc-reht"
+      }
+    },
+    {
+      "id": "followup-seq-cra19",
+      "url": "https://www.legislation.gov.uk/ukpga/2015/15/section/19",
+      "evidence": {
+        "path": "docs/pilots/sequences/preparation/remaining-sequences-20261023.json",
+        "sha256": "57be1cba11b5c2151a7fde429d4bf71ee342e11b4b5785856aa4457710b515a6",
+        "sourceId": "seq-cra19"
+      }
+    },
+    {
+      "id": "followup-seq-cra23",
+      "url": "https://www.legislation.gov.uk/ukpga/2015/15/section/23",
+      "evidence": {
+        "path": "docs/pilots/sequences/preparation/remaining-sequences-20261023.json",
+        "sha256": "57be1cba11b5c2151a7fde429d4bf71ee342e11b4b5785856aa4457710b515a6",
+        "sourceId": "seq-cra23"
+      }
+    },
+    {
+      "id": "followup-seq-cra24",
+      "url": "https://www.legislation.gov.uk/ukpga/2015/15/section/24",
+      "evidence": {
+        "path": "docs/pilots/sequences/preparation/remaining-sequences-20261023.json",
+        "sha256": "57be1cba11b5c2151a7fde429d4bf71ee342e11b4b5785856aa4457710b515a6",
+        "sourceId": "seq-cra24"
+      }
+    },
+    {
+      "id": "followup-seq-acl-c167",
+      "url": "https://www.legislation.gov.au/C2004A00109/2026-09-16/2026-09-16/text/original/pdf/4",
+      "evidence": {
+        "path": "docs/pilots/sequences/preparation/remaining-sequences-20261023.json",
+        "sha256": "57be1cba11b5c2151a7fde429d4bf71ee342e11b4b5785856aa4457710b515a6",
+        "sourceId": "seq-acl-c167"
+      }
+    },
+    {
+      "id": "followup-seq-accc-remedies",
+      "url": "https://www.accc.gov.au/consumers/problem-with-a-product-or-service-you-bought/repair-replace-refund-cancel",
+      "evidence": {
+        "path": "docs/pilots/sequences/preparation/remaining-sequences-20261023.json",
+        "sha256": "57be1cba11b5c2151a7fde429d4bf71ee342e11b4b5785856aa4457710b515a6",
+        "sourceId": "seq-accc-remedies"
+      }
+    },
+    {
+      "id": "followup-seq-fao-koraput",
+      "url": "https://www.fao.org/giahs/giahs-around-the-world/india-koraput/en",
+      "evidence": {
+        "path": "docs/pilots/sequences/preparation/remaining-sequences-20261023.json",
+        "sha256": "57be1cba11b5c2151a7fde429d4bf71ee342e11b4b5785856aa4457710b515a6",
+        "sourceId": "seq-fao-koraput"
+      }
+    },
+    {
+      "id": "followup-seq-koraput-plan",
+      "url": "https://www.fao.org/fileadmin/templates/giahs/Action_plan_Koraput.pdf",
+      "evidence": {
+        "path": "docs/pilots/sequences/preparation/remaining-sequences-20261023.json",
+        "sha256": "57be1cba11b5c2151a7fde429d4bf71ee342e11b4b5785856aa4457710b515a6",
+        "sourceId": "seq-koraput-plan"
+      }
+    },
+    {
+      "id": "followup-seq-mssrf-seeds",
+      "url": "https://www.mssrf.org/stories-of-change/seed-keepers-odishas-community-seed-banks",
+      "evidence": {
+        "path": "docs/pilots/sequences/preparation/remaining-sequences-20261023.json",
+        "sha256": "57be1cba11b5c2151a7fde429d4bf71ee342e11b4b5785856aa4457710b515a6",
+        "sourceId": "seq-mssrf-seeds"
+      }
+    },
+    {
+      "id": "followup-seq-nhlbi-lung-tests",
+      "url": "https://www.nhlbi.nih.gov/health/lung-tests",
+      "evidence": {
+        "path": "docs/pilots/sequences/preparation/remaining-sequences-20261023.json",
+        "sha256": "57be1cba11b5c2151a7fde429d4bf71ee342e11b4b5785856aa4457710b515a6",
+        "sourceId": "seq-nhlbi-lung-tests"
+      }
+    },
+    {
+      "id": "followup-seq-niosh-spirometry",
+      "url": "https://www.cdc.gov/niosh/docs/2012-116/pdfs/2012-116.pdf",
+      "evidence": {
+        "path": "docs/pilots/sequences/preparation/remaining-sequences-20261023.json",
+        "sha256": "57be1cba11b5c2151a7fde429d4bf71ee342e11b4b5785856aa4457710b515a6",
+        "sourceId": "seq-niosh-spirometry"
+      }
+    },
+    {
+      "id": "followup-seq-ahrq-tool5",
+      "url": "https://www.ahrq.gov/health-literacy/improve/precautions/tool5.html",
+      "evidence": {
+        "path": "docs/pilots/sequences/preparation/remaining-sequences-20261023.json",
+        "sha256": "57be1cba11b5c2151a7fde429d4bf71ee342e11b4b5785856aa4457710b515a6",
+        "sourceId": "seq-ahrq-tool5"
+      }
+    },
+    {
+      "id": "followup-seq-ahrq-tool9",
+      "url": "https://www.ahrq.gov/health-literacy/improve/precautions/tool9.html",
+      "evidence": {
+        "path": "docs/pilots/sequences/preparation/remaining-sequences-20261023.json",
+        "sha256": "57be1cba11b5c2151a7fde429d4bf71ee342e11b4b5785856aa4457710b515a6",
+        "sourceId": "seq-ahrq-tool9"
+      }
+    },
+    {
+      "id": "followup-seq-ifixit-patch",
+      "url": "https://www.ifixit.com/Guide/How+to+Hand+Stitch+a+Patch+to+Clothing/172554",
+      "evidence": {
+        "path": "docs/pilots/sequences/preparation/remaining-sequences-20261023.json",
+        "sha256": "57be1cba11b5c2151a7fde429d4bf71ee342e11b4b5785856aa4457710b515a6",
+        "sourceId": "seq-ifixit-patch"
+      }
+    },
+    {
+      "id": "followup-seq-sca-basting",
+      "url": "https://www.sewing.org/files/guidelines/15_105_running_stitch_basting.pdf",
+      "evidence": {
+        "path": "docs/pilots/sequences/preparation/remaining-sequences-20261023.json",
+        "sha256": "57be1cba11b5c2151a7fde429d4bf71ee342e11b4b5785856aa4457710b515a6",
+        "sourceId": "seq-sca-basting"
+      }
+    },
+    {
+      "id": "followup-seq-asare-context",
+      "url": "https://kwasiasare.com/",
+      "evidence": {
+        "path": "docs/pilots/sequences/preparation/remaining-sequences-20261023.json",
+        "sha256": "57be1cba11b5c2151a7fde429d4bf71ee342e11b4b5785856aa4457710b515a6",
+        "sourceId": "seq-asare-context"
+      }
+    },
+    {
+      "id": "followup-seq-asare-workshop",
+      "url": "https://kwasiasare.com/kwasi-asare-kente-weaving-handloom-workshop/",
+      "evidence": {
+        "path": "docs/pilots/sequences/preparation/remaining-sequences-20261023.json",
+        "sha256": "57be1cba11b5c2151a7fde429d4bf71ee342e11b4b5785856aa4457710b515a6",
+        "sourceId": "seq-asare-workshop"
+      }
+    },
+    {
+      "id": "followup-seq-rsc-performing",
+      "url": "https://www.rsc.org.uk/shakespeare-learning-zone/measure-for-measure/staging/performing",
+      "evidence": {
+        "path": "docs/pilots/sequences/preparation/remaining-sequences-20261023.json",
+        "sha256": "57be1cba11b5c2151a7fde429d4bf71ee342e11b4b5785856aa4457710b515a6",
+        "sourceId": "seq-rsc-performing"
+      }
+    },
+    {
+      "id": "followup-seq-rsc-kyle",
+      "url": "https://www.rsc.org.uk/measure-for-measure/past-productions/in-focus-barry-kyle-1978",
+      "evidence": {
+        "path": "docs/pilots/sequences/preparation/remaining-sequences-20261023.json",
+        "sha256": "57be1cba11b5c2151a7fde429d4bf71ee342e11b4b5785856aa4457710b515a6",
+        "sourceId": "seq-rsc-kyle"
+      }
+    },
+    {
+      "id": "followup-seq-ammannur-history",
+      "url": "https://www.ammannurgurukulam.com/",
+      "evidence": {
+        "path": "docs/pilots/sequences/preparation/remaining-sequences-20261023.json",
+        "sha256": "57be1cba11b5c2151a7fde429d4bf71ee342e11b4b5785856aa4457710b515a6",
+        "sourceId": "seq-ammannur-history"
+      }
+    },
+    {
+      "id": "followup-seq-ammannur-plays",
+      "url": "https://www.ammannurgurukulam.com/plays.htm",
+      "evidence": {
+        "path": "docs/pilots/sequences/preparation/remaining-sequences-20261023.json",
+        "sha256": "57be1cba11b5c2151a7fde429d4bf71ee342e11b4b5785856aa4457710b515a6",
+        "sourceId": "seq-ammannur-plays"
+      }
+    }
+  ]
+}

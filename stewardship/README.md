@@ -1,6 +1,6 @@
 # Source correction and freshness queue
 
-This is the first working U5 stewardship queue: four unresolved source issues affecting follow-up preparation. It is deliberately scoped to those records, not a complete inventory of atlas defects, source stops or review needs. [issues.json](issues.json) pins the existing evidence and names the affected editorial target, required responsibility, next action and circumstances requiring a new edition or review. No person has been appointed: every assignee is `null`.
+This is the first working U5 stewardship queue: four unresolved source issues affecting follow-up preparation. It is deliberately scoped to those records, not a complete inventory of atlas defects, source stops or review needs. [issues.json](issues.json) pins the existing evidence and names the affected editorial target, required responsibility, next action and circumstances requiring a new edition or review. The local author `atlas-editor` now owns evidence maintenance and versioning. This is AI author ownership, not a professional appointment or community representation. All four source issues remain unresolved; appended events bind the locally authored lessons without treating authoring as source resolution.
 
 | Issue | Affected preparation | What remains unresolved |
 | --- | --- | --- |
@@ -31,3 +31,5 @@ An access stop stays visible even after an issue closes. The queue never authori
 A closure does not modify a source, accepted lesson, retained edition, release ledger or distribution decision. Apply an actual correction through the relevant versioned preparation/content workflow and review the resulting artifact. The edition-trigger text identifies what must be reconsidered; it is not an automatic release instruction. Claims about historical sources, physical observations and professional decisions retain their existing limits.
 
 This additive local package follows the [complete candidate checkpoint](../docs/integration/master-plan-candidate.md); that pinned rehearsal does not include these later files. The [execution ledger](../docs/master-plan-execution.md) remains the whole roadmap. U5 also still requires release stewardship, specialist depth, language/regional editions, federation and practical partnerships.
+
+Under the 23 October user instruction, an external reviewer is not a local-work prerequisite. The existing resolution identity field can record an explicit author decision with its actual role; it must never impersonate a qualified or independent reviewer. Fresh evidence and truthful scope remain required for substantive corrections.

@@ -36,6 +36,11 @@ export async function validateOverviewReviewFiles(data, root = ROOT) {
       }
     } catch { errors.push('Missing orientation evidence: ' + r.evidencePath); }
   }
+  if (data.catalog.authorVerification) {
+    const v = data.catalog.authorVerification;
+    if (!/^docs\/verification\/[a-z0-9-]+\.md$/.test(v.evidencePath || '')) errors.push('Unsafe author evidence path');
+    else try { await readFile(resolve(root, v.evidencePath), 'utf8'); } catch { errors.push('Missing orientation author evidence'); }
+  }
   return errors;
 }
 export async function buildDomainOverviews({ checkOnly = false, root = ROOT } = {}) {
@@ -52,7 +57,7 @@ export async function buildDomainOverviews({ checkOnly = false, root = ROOT } = 
       if (current !== html) throw new Error('Regenerate stale orientation: ' + path);
     } else { await mkdir(dirname(resolve(root, path)), { recursive: true }); await writeFile(resolve(root, path), html); }
   }
-  return { pages: outputs.size, overviews: data.catalog.overviews.length, reviewStatus: data.catalog.review.status, contentDigest: overviewDigest(data, data.catalog.overviews.map(r => r.domainId)), artifactDigest, publication: data.catalog.publication };
+  return { pages: outputs.size, overviews: data.catalog.overviews.length, reviewStatus: data.catalog.authorVerification ? 'author-checked-local' : data.catalog.review.status, contentDigest: overviewDigest(data, data.catalog.overviews.map(r => r.domainId)), artifactDigest, publication: data.catalog.publication };
 }
 if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
   try { console.log(JSON.stringify(await buildDomainOverviews({ checkOnly: process.argv.includes('--check') }), null, 2)); }

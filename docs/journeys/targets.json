@@ -45,17 +45,6 @@
       ]
     },
     {
-      "id": "tech-1.9",
-      "kind": "legacy-accepted",
-      "title": "Spinning and the loom",
-      "href": "ideas/tech-1.9/",
-      "projectionDigest": "0c156ee0669e2030abd6d7eee7d2c9f61d864c164aa69add148a08e61098dffb",
-      "declaredPrerequisites": [
-        "tech-1.6",
-        "tech-1.8"
-      ]
-    },
-    {
       "id": "x-agriculture-0001",
       "kind": "locally-accepted-exploration",
       "title": "What does a soil-water point measure?",
@@ -103,6 +92,26 @@
       "title": "Potential outcomes",
       "href": "ideas/causal-1.1/",
       "projectionDigest": "ba434a45e858e4b604a0c398e5a335d508194c98bb0053f36604bcd7c4dd2bd6",
+      "declaredPrerequisites": []
+    },
+    {
+      "id": "x-law-0001",
+      "kind": "locally-accepted-exploration",
+      "title": "A faulty kettle: what does the evidence establish?",
+      "revision": "0.1.0",
+      "href": "explore/x-law-0001/versions/0.1.0/",
+      "bundlePath": "editions/bundles/x-law-0001/0.1.0.json",
+      "bundleSha256": "13f7e75641f7ea50d126cac2494745726427c336f3274a09eed0f4fcbe02f73e",
+      "declaredPrerequisites": []
+    },
+    {
+      "id": "x-craft-0001",
+      "kind": "locally-accepted-exploration",
+      "title": "Read and repair a weave plan",
+      "revision": "0.1.0",
+      "href": "explore/x-craft-0001/versions/0.1.0/",
+      "bundlePath": "editions/bundles/x-craft-0001/0.1.0.json",
+      "bundleSha256": "ea16af482edfb6a1dd0e919a3a37884a31ba6b1a4ef12a299d0f03772475cbe3",
       "declaredPrerequisites": []
     }
   ]

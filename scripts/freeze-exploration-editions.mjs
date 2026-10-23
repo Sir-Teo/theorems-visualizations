@@ -2,7 +2,7 @@ import { readFile, writeFile, mkdir, lstat } from 'node:fs/promises';
 import { resolve, dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { ROOT, loadRegistry } from './lib.mjs';
-import { loadExplorations, buildExplorations } from './build-explorations.mjs';
+import { loadExplorations, buildExplorations, loadExplorationSourceIds } from './build-explorations.mjs';
 import { REVIEW_CODE, SUPPLEMENTS, sha, jsonBytes, validateBundle } from './exploration-editions.mjs';
 
 // Freeze exact reviewed artifacts. Existing edition bytes are never replaced, including review history.
@@ -11,16 +11,25 @@ export async function freezeEditions({checkOnly=false}={}) {
   const [{records},registry]=await Promise.all([loadExplorations(),loadRegistry()]);
   const manifest=JSON.parse(await readFile(join(ROOT,'editions/manifest.json'),'utf8'));
   if(manifest.schemaVersion!==1 || !Array.isArray(manifest.bundles))throw new Error('Invalid edition manifest');
-  const runtime={schemaVersion:1,files:Object.fromEntries(await Promise.all(REVIEW_CODE.map(async p=>[p,await readFile(join(ROOT,p),'utf8')])))},runtimeDigest=sha(jsonBytes(runtime));
+  const runtime={schemaVersion:2,files:Object.fromEntries(await Promise.all(REVIEW_CODE.map(async p=>[p,await readFile(join(ROOT,p),'utf8')])))},runtimeDigest=sha(jsonBytes(runtime));
   const coverage=JSON.parse(await readFile(join(ROOT,'docs/coverage/registry.json'),'utf8')),sources=JSON.parse(await readFile(join(ROOT,'docs/coverage/sources.json'),'utf8'));
-  const context={domainIds:coverage.domains.map(x=>x.id),collectionIds:registry.collections.map(x=>x.id),sourceIds:sources.sources.filter(x=>['body-read','table-read','file-read'].includes(x.access.status)).map(x=>x.id),knownItemIds:[]};
+  const context={domainIds:coverage.domains.map(x=>x.id),collectionIds:registry.collections.map(x=>x.id),sourceIds:await loadExplorationSourceIds(),knownItemIds:[]};
   const outputs=new Map([[`editions/runtimes/${runtimeDigest}.json`,jsonBytes(runtime)]]);
   for(const record of records.filter(r=>r.status==='accepted')) {
     const proof=built.records.find(r=>r.id===record.id),path=`editions/bundles/${record.id}/${record.revision}.json`;
+    const retained=manifest.bundles.find(e=>e.id===record.id&&e.revision===record.revision);
+    if(retained) {
+      const bytes=await readFile(join(ROOT,retained.path),'utf8'),bundle=JSON.parse(bytes);
+      const priorRuntime=JSON.parse(await readFile(join(ROOT,'editions/runtimes',bundle.runtimeDigest+'.json'),'utf8'));
+      validateBundle(bundle,priorRuntime,retained);
+      if(bundle.contentDigest!==proof.digest||bundle.artifactDigest!==proof.artifactDigest)throw new Error('Retained edition changed; prepare a new content/runtime revision: '+record.id);
+      // Later unrelated source additions or author rechecks do not rewrite retained evidence.
+      continue;
+    }
     const previewHTML=await readFile(join(ROOT,'labs/atlas',record.id,'index.html'),'utf8');
-    const receipts=Object.fromEntries(await Promise.all([...new Set(record.reviews.map(r=>r.evidencePath))].map(async p=>{const text=await readFile(join(ROOT,p),'utf8');return [p,{text,sha256:sha(text)}];})));
+    const receipts=Object.fromEntries(await Promise.all([...new Set([...record.reviews,...(record.authorVerification?[record.authorVerification]:[])].map(r=>r.evidencePath))].map(async p=>{const text=await readFile(join(ROOT,p),'utf8');return [p,{text,sha256:sha(text)}];})));
     const supplements=Object.fromEntries(await Promise.all(SUPPLEMENTS.filter(p=>previewHTML.includes(`href="../../../${p}"`)).map(async p=>{const text=await readFile(join(ROOT,p),'utf8');return[p,{text,sha256:sha(text)}];})));
-    const bundle={schemaVersion:1,id:record.id,revision:record.revision,record,context,collectionTitles:Object.fromEntries(record.relatedCollectionIds.map(id=>[id,registry.collections.find(c=>c.id===id)?.title||id])),runtimeDigest,contentDigest:proof.digest,artifactDigest:proof.artifactDigest,previewHTML,previewDigest:sha(previewHTML),receipts,supplements};
+    const bundle={schemaVersion:1,id:record.id,revision:record.revision,record,context:{domainIds:record.domainIds,collectionIds:record.relatedCollectionIds,sourceIds:record.sources.map(s=>s.id),knownItemIds:[...record.prerequisites,...record.relations.map(r=>r.targetId)]},collectionTitles:Object.fromEntries(record.relatedCollectionIds.map(id=>[id,registry.collections.find(c=>c.id===id)?.title||id])),runtimeDigest,contentDigest:proof.digest,artifactDigest:proof.artifactDigest,previewHTML,previewDigest:sha(previewHTML),receipts,supplements};
     const entry={id:record.id,revision:record.revision,path,sha256:sha(jsonBytes(bundle))};
     validateBundle(bundle,runtime,entry);
     const prior=manifest.bundles.find(e=>e.id===entry.id&&e.revision===entry.revision);

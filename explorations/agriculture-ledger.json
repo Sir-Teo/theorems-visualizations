@@ -1,0 +1,360 @@
+{
+  "schemaVersion": 1,
+  "id": "x-agriculture-0002",
+  "pilotId": "P05",
+  "revision": "0.1.0",
+  "status": "accepted",
+  "publication": "local-preview",
+  "title": "A water ledger is not a field decision",
+  "subtitle": "Compare paths, delivery limits and missing observations.",
+  "summary": "Explore four fictional three-day water budgets. Audit operating hours, avoid counting the same loss twice, and explain what a field average hides.",
+  "audience": "Readers comfortable with addition, subtraction and units.",
+  "scope": "A synthetic daily netting model. It supplies no crop threshold, irrigation recommendation, weather forecast or observed field result.",
+  "author": "atlas-editor",
+  "updatedOn": "2026-10-23",
+  "domainIds": [
+    "D10",
+    "D02"
+  ],
+  "relatedCollectionIds": [
+    "geol",
+    "climate",
+    "stat",
+    "ecol"
+  ],
+  "knowledgeModes": [
+    "empirical",
+    "procedural"
+  ],
+  "methods": [
+    "water-ledger"
+  ],
+  "prerequisites": [],
+  "sources": [
+    {
+      "id": "followup-umn",
+      "title": "Irrigation scheduling: checkbook method",
+      "url": "https://extension.umn.edu/natural-resources/conservation/agricultural-soil-and-water/irrigation/irrigation-scheduling-checkbook-method",
+      "locator": "Selected field observations, deficit balance, delivery and crop-stage discussion",
+      "creator": "University of Minnesota Extension",
+      "date": "Selected page inspected 2026-10-22",
+      "language": "English",
+      "rights": {
+        "decision": "usable-for-prototype",
+        "basis": "Original source summaries and fictional calculations only; no source figures, tables or worksheets reproduced.",
+        "scope": "Local selected-text use; exact witness attribution and historical source limits retained."
+      }
+    },
+    {
+      "id": "followup-ndsu",
+      "title": "Irrigation scheduling: checkbook method",
+      "url": "https://www.ndsu.edu/agriculture/extension/publications/irrigation-scheduling-checkbook-method",
+      "locator": "Selected field observations, deficit balance, delivery and crop-stage discussion",
+      "creator": "North Dakota State University Extension",
+      "date": "Selected page inspected 2026-10-22",
+      "language": "English",
+      "rights": {
+        "decision": "usable-for-prototype",
+        "basis": "Original source summaries and fictional calculations only; no source figures, tables or worksheets reproduced.",
+        "scope": "Local selected-text use; exact witness attribution and historical source limits retained."
+      }
+    }
+  ],
+  "passages": [
+    {
+      "id": "umn-scheduling",
+      "sourceId": "followup-umn",
+      "title": "Checkbook scheduling; Excess water, discrepancies and interruptions; When to start irrigating",
+      "form": "paraphrase",
+      "language": "en",
+      "text": "UMN requires field observations, comparison with estimated deficits and attention to forecasts and crop stage. Field checks may revise the estimate. Its excess-water discussion includes temporarily available surplus during drainage; immediate removal in this toy ledger is a simplification.",
+      "context": "Bounded prepared source summary. The following numerical cases are authored assumptions, not source observations.",
+      "sha256": "9aaddbea338f973a44a3b3d5cbfb704e652866d2ee0f3cf67ba3109975892cf0"
+    },
+    {
+      "id": "umn-inputs",
+      "sourceId": "followup-umn",
+      "title": "Measuring soil water inputs; Irrigation system pumping capacity",
+      "form": "paraphrase",
+      "language": "en",
+      "text": "The page distinguishes field-gauge measurements from estimates using pumping capacity, operating time and efficiency. A quantity already measured at the input boundary must not receive the same loss adjustment again.",
+      "context": "Bounded prepared source summary. The following numerical cases are authored assumptions, not source observations.",
+      "sha256": "d916d6cbd529319b38eee75d7d0b142362a09136454bcded55e47a83e123224d"
+    },
+    {
+      "id": "ndsu-context",
+      "sourceId": "followup-ndsu",
+      "title": "AE792 heading; The Root Zone, Table 2; Crop Water Use; Daily Crop Water Use Estimates",
+      "form": "paraphrase",
+      "language": "en",
+      "text": "AE792 is marked reviewed February 2024. Corn management depth is 36 inches, distinct from full rooting depth. Its North Dakota example estimates 0.25 inch at 85°F in week nine; stage can matter more than calendar week. Repeating that number below is a fictional constant, not a three-day forecast.",
+      "context": "Bounded prepared source summary. The following numerical cases are authored assumptions, not source observations.",
+      "sha256": "dc6d859f61b948a21dc3af6782ab86cb84afbead770c4769a6a04380939bb886"
+    },
+    {
+      "id": "ndsu-delivery",
+      "sourceId": "followup-ndsu",
+      "title": "Definitions; Water Application Efficiency; Soil Water Balance",
+      "form": "paraphrase",
+      "language": "en",
+      "text": "Definitions describe stored-water efficiency, while the application section discusses infiltration and evaporation/wind loss. The source also warns that the last irrigated sector may receive water days later. The new model therefore names its boundary delivery fraction explicitly and compares sector deficits rather than treating a field average as every location.",
+      "context": "Bounded prepared source summary. The following numerical cases are authored assumptions, not source observations.",
+      "sha256": "5c3afd884f582d1405ecf46c40d382861ce2f34a8c9fd6fe51bff70473ea2d43"
+    }
+  ],
+  "claims": [
+    {
+      "id": "path-matters",
+      "kind": "formal",
+      "text": "Equal final deficits can accompany different daily paths.",
+      "passageIds": [
+        "umn-scheduling"
+      ],
+      "qualification": "This is demonstrated by fictional cases; it does not identify the preferable real schedule."
+    },
+    {
+      "id": "boundary-matters",
+      "kind": "formal",
+      "text": "An incoming quantity already measured after a loss boundary must not receive that loss adjustment a second time.",
+      "passageIds": [
+        "umn-inputs",
+        "ndsu-delivery"
+      ],
+      "qualification": "The model distinguishes boundary input from final stored-water efficiency."
+    }
+  ],
+  "context": [
+    "Fixed profile and illustrative wilting baseline; no capillary rise, root growth, salinity or spatial soil variation.",
+    "Daily netting does not resolve order within a day, peak stress or transient drainage. Instant surplus removal is explicitly artificial.",
+    "An end deficit greater than capacity ends the model with no valid final storage or continuing unstressed-use trajectory.",
+    "Unknown rain does not become zero. Forecasts remain separate from observation records.",
+    "Equal final deficits do not establish equal paths or equally acceptable decisions. No trigger, crop-loss function or optimal schedule is selected.",
+    "The uniform field calculation is only an average toy budget. The two-sector counterexample exposes why that average cannot represent the last sector.",
+    "The deficit balance is start + crop use − rain − incoming irrigation. Negative raw deficit becomes an artificial surplus outflow; deficit above capacity terminates the model.",
+    "The four paths retain separate forecast and observation labels. Both are fictional; neither label turns the numbers into an actual weather record."
+  ],
+  "timeline": [],
+  "relations": [],
+  "reviews": [],
+  "reviewRequirements": [
+    "content",
+    "rights"
+  ],
+  "reviewLimitations": [
+    "Author-checked arithmetic and source-scoped summaries. No agronomic approval, field measurement or participant session is claimed."
+  ],
+  "activity": {
+    "type": "water-ledger",
+    "model": {
+      "units": {
+        "waterDepth": "inch",
+        "soilDepth": "inch",
+        "time": "hour",
+        "grossDeliveryRate": "inch of field-equivalent water per hour"
+      },
+      "managementDepth": "36",
+      "assumedCapacityPerDepth": "0.09",
+      "capacity": "3.24",
+      "boundaryDeliveryFraction": "0.80",
+      "grossDeliveryRate": "0.025",
+      "maximumHoursPerDay": "24",
+      "millimetresPerInch": "25.4",
+      "inputProvenance": {
+        "capacity": "fictional uniform profile assumption, retained from the earlier preparation",
+        "delivery": "original hypothetical constant rate and boundary fraction; not measured application efficiency",
+        "rain": "fictional forecasts or fictional observations, never actual weather",
+        "cropUse": "source-example number repeated as a fictional constant",
+        "fieldCheck": "fictional revised estimate with no actual measurement protocol performed"
+      },
+      "convention": "G is gross delivered water. I=fG crosses the toy input boundary; L=G-I is lost before that boundary. This fraction excludes the separate surplus outflow Q. It is not the source definition of final stored-water application efficiency. Boundary-gauge I is used directly, never multiplied by f again.",
+      "equations": [
+        "raw deficit = starting deficit + crop use - rain - incoming irrigation",
+        "surplus Q = max(0, -raw deficit), only within the toy daily netting convention",
+        "ending deficit = raw deficit + Q, provided raw deficit <= capacity",
+        "available storage = capacity - deficit",
+        "storage end = storage start + rain + gross irrigation - delivery loss - crop use - Q",
+        "required operating hours = gross irrigation / gross delivery rate"
+      ],
+      "limits": [
+        "Fixed profile and illustrative wilting baseline; no capillary rise, root growth, salinity or spatial soil variation.",
+        "Daily netting does not resolve order within a day, peak stress or transient drainage. Instant surplus removal is explicitly artificial.",
+        "An end deficit greater than capacity ends the model with no valid final storage or continuing unstressed-use trajectory.",
+        "Unknown rain does not become zero. Forecasts remain separate from observation records.",
+        "Equal final deficits do not establish equal paths or equally acceptable decisions. No trigger, crop-loss function or optimal schedule is selected.",
+        "The uniform field calculation is only an average toy budget. The two-sector counterexample exposes why that average cannot represent the last sector."
+      ]
+    },
+    "sequences": [
+      {
+        "id": "forecast-early",
+        "initialDeficit": "1.00",
+        "rainProvenance": "fictional-forecast",
+        "actionProvenance": "fictional-schedule",
+        "days": [
+          {
+            "day": 1,
+            "rain": "0.00",
+            "cropUse": "0.25",
+            "grossIrrigation": "0.50",
+            "expectedEndDeficit": "0.85"
+          },
+          {
+            "day": 2,
+            "rain": "0.80",
+            "cropUse": "0.25",
+            "grossIrrigation": "0.00",
+            "expectedEndDeficit": "0.30"
+          },
+          {
+            "day": 3,
+            "rain": "0.00",
+            "cropUse": "0.25",
+            "grossIrrigation": "0.00",
+            "expectedEndDeficit": "0.55"
+          }
+        ],
+        "expectedMaxDailyEndDeficit": "0.85",
+        "expectedTotalGross": "0.50",
+        "expectedTotalDeliveryLoss": "0.10",
+        "expectedTotalCropUse": "0.75"
+      },
+      {
+        "id": "forecast-late",
+        "initialDeficit": "1.00",
+        "rainProvenance": "fictional-forecast",
+        "actionProvenance": "fictional-schedule",
+        "days": [
+          {
+            "day": 1,
+            "rain": "0.00",
+            "cropUse": "0.25",
+            "grossIrrigation": "0.00",
+            "expectedEndDeficit": "1.25"
+          },
+          {
+            "day": 2,
+            "rain": "0.80",
+            "cropUse": "0.25",
+            "grossIrrigation": "0.00",
+            "expectedEndDeficit": "0.70"
+          },
+          {
+            "day": 3,
+            "rain": "0.00",
+            "cropUse": "0.25",
+            "grossIrrigation": "0.50",
+            "expectedEndDeficit": "0.55"
+          }
+        ],
+        "expectedMaxDailyEndDeficit": "1.25",
+        "expectedTotalGross": "0.50",
+        "expectedTotalDeliveryLoss": "0.10",
+        "expectedTotalCropUse": "0.75"
+      },
+      {
+        "id": "observed-early",
+        "initialDeficit": "1.00",
+        "rainProvenance": "fictional-observation",
+        "actionProvenance": "fictional-schedule",
+        "days": [
+          {
+            "day": 1,
+            "rain": "0.00",
+            "cropUse": "0.25",
+            "grossIrrigation": "0.50",
+            "expectedEndDeficit": "0.85"
+          },
+          {
+            "day": 2,
+            "rain": "0.10",
+            "cropUse": "0.25",
+            "grossIrrigation": "0.00",
+            "expectedEndDeficit": "1.00"
+          },
+          {
+            "day": 3,
+            "rain": "0.00",
+            "cropUse": "0.25",
+            "grossIrrigation": "0.00",
+            "expectedEndDeficit": "1.25"
+          }
+        ],
+        "expectedMaxDailyEndDeficit": "1.25",
+        "expectedTotalGross": "0.50",
+        "expectedTotalDeliveryLoss": "0.10",
+        "expectedTotalCropUse": "0.75"
+      },
+      {
+        "id": "observed-late",
+        "initialDeficit": "1.00",
+        "rainProvenance": "fictional-observation",
+        "actionProvenance": "fictional-schedule",
+        "days": [
+          {
+            "day": 1,
+            "rain": "0.00",
+            "cropUse": "0.25",
+            "grossIrrigation": "0.00",
+            "expectedEndDeficit": "1.25"
+          },
+          {
+            "day": 2,
+            "rain": "0.10",
+            "cropUse": "0.25",
+            "grossIrrigation": "0.00",
+            "expectedEndDeficit": "1.40"
+          },
+          {
+            "day": 3,
+            "rain": "0.00",
+            "cropUse": "0.25",
+            "grossIrrigation": "0.50",
+            "expectedEndDeficit": "1.25"
+          }
+        ],
+        "expectedMaxDailyEndDeficit": "1.40",
+        "expectedTotalGross": "0.50",
+        "expectedTotalDeliveryLoss": "0.10",
+        "expectedTotalCropUse": "0.75"
+      }
+    ],
+    "boundaryNotes": [
+      "A 0.50-inch gross request takes 20 hours; 0.60 takes 24. A 0.75-inch request takes 30 hours and cannot be silently delivered in one day.",
+      "A fictional boundary gauge already reporting 0.40 inches yields deficit 1.00 + 0.25 − 0.10 − 0.40 = 0.75 inches. Multiplying that incoming value by 0.80 again would produce an incorrect 0.83.",
+      "With starting deficit 0.20, crop use 0.10, rain 1.00 and gross irrigation 0.50, delivery loss is 0.10 and raw deficit is −1.10. The separate surplus is 1.10; ending deficit is zero. Delivery loss and surplus are not the same quantity.",
+      "Starting deficit 3.10 plus crop use 0.25 without input exceeds the assumed 3.24 capacity. Do not continue an unstressed-use trajectory or invent negative storage.",
+      "Unknown rain remains unknown. A later hypothetical estimate changing deficit from 1.40 to 1.10 is a recorded −0.30 reconciliation, not invented rainfall. With next-day use 0.25 and incoming irrigation 0.40, the revised branch ends at 0.95.",
+      "Two equal-area sectors ending at deficits 0.85 and 1.25 have mean 1.05, which describes neither sector. Delivering 0.50 inches to one half is 0.25 field-equivalent inches and takes 10 hours at the assumed field-equivalent rate."
+    ],
+    "transfer": "Compare forecast-early and forecast-late: explain their equal 0.55-inch ending deficit and different daily maxima. Then replace the forecast rain with the fictional observed value. Identify what still prevents a field recommendation.",
+    "rubric": [
+      "State units, boundaries and which inputs are assumptions.",
+      "Keep forecast and observation histories distinct.",
+      "Respect finite delivery hours and retain missing or out-of-range results.",
+      "Do not treat an estimation correction as a water flux or a field average as every location."
+    ]
+  },
+  "extensions": {
+    "atlas:preparation": {
+      "path": "docs/pilots/sequences/preparation/irrigation-ledger-20261022.json",
+      "scope": "Selected evidence carried forward; historical packet unchanged."
+    }
+  },
+  "authorVerification": {
+    "kind": "author-check",
+    "scope": "local-preview",
+    "author": "atlas-editor",
+    "checkedOn": "2026-10-23",
+    "revision": "0.1.0",
+    "contentDigest": "c8c96584f7bab2b179dee204d5b22e55d55550f46bebe0c27fc9f36cd5587cdd",
+    "artifactDigest": "880bff8d5ed9049f5fae631d85999925a0a83e06aa8a99fe99c33f6c2953988b",
+    "evidencePath": "docs/verification/universal-author-continuation.md",
+    "checks": [
+      "Schema, source-reference and preparation-packet hash validation",
+      "Passed tests/exploration-methods.test.mjs",
+      "Passed tests/exploration-studio.test.mjs",
+      "Passed tests/exploration-professions.test.mjs",
+      "Passed tests/exploration-followups.test.mjs"
+    ]
+  }
+}

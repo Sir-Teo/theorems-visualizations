@@ -1,0 +1,284 @@
+{
+  "schemaVersion": 1,
+  "id": "x-history-0002",
+  "pilotId": "P01",
+  "revision": "0.1.0",
+  "status": "accepted",
+  "publication": "local-preview",
+  "title": "Whose diplomatic voice are you reading?",
+  "subtitle": "Follow the message through its transmission chain.",
+  "summary": "Read a translated Mexican peace proposal beside a US ambassador’s report and a US reply. Separate reported speech, the writer’s inference and the proposal each document addresses.",
+  "audience": "Readers of the first history exploration; no diplomatic history prerequisite.",
+  "scope": "Eight exact selections from three FRUS documents. English translation and US editorial mediation are visible; no Spanish manuscript or authenticated German-alliance response is supplied.",
+  "author": "atlas-editor",
+  "updatedOn": "2026-10-23",
+  "domainIds": [
+    "D20",
+    "D15"
+  ],
+  "relatedCollectionIds": [
+    "tech",
+    "bighist",
+    "polsci"
+  ],
+  "knowledgeModes": [
+    "historical",
+    "interpretive"
+  ],
+  "methods": [
+    "source-comparison"
+  ],
+  "prerequisites": [],
+  "sources": [
+    {
+      "id": "followup-d39",
+      "title": "De Negri to the Secretary of State, transmitting Aguilar’s note at Carranza’s direction",
+      "url": "https://history.state.gov/historicaldocuments/frus1917Supp01v01/d39",
+      "locator": "Contemporaneous Mexican governmental peace proposal; not a German-alliance response. Spanish original and manuscript not inspected.",
+      "creator": "Mexican diplomatic communication, in a US official documentary edition",
+      "date": "1917-02-12",
+      "language": "English; marked Translation; translator unnamed",
+      "rights": {
+        "decision": "usable-for-prototype",
+        "basis": "Selected historical text and original commentary, carried from the hash-bound research packet; no modern illustrations or complete ebook reproduced.",
+        "scope": "Local selected-text use; exact witness attribution and historical source limits retained."
+      }
+    },
+    {
+      "id": "followup-d300",
+      "title": "Fletcher to the Secretary of State",
+      "url": "https://history.state.gov/historicaldocuments/frus1917Supp01v01/d300",
+      "locator": "Reports speech and the ambassador’s own assessment. No verbatim Mexican transcript or proof of actual nonreceipt/rejection. Use the document dateline for document and receipt dates; do not infer them from an index.",
+      "creator": "US ambassador’s telegram reporting conversations with Carranza and the foreign minister",
+      "date": "1917-03-10",
+      "language": "English; spoken-language/translation process not specified",
+      "rights": {
+        "decision": "usable-for-prototype",
+        "basis": "Selected historical text and original commentary, carried from the hash-bound research packet; no modern illustrations or complete ebook reproduced.",
+        "scope": "Local selected-text use; exact witness attribution and historical source limits retained."
+      }
+    },
+    {
+      "id": "followup-d59",
+      "title": "Lansing to De Negri",
+      "url": "https://history.state.gov/historicaldocuments/frus1917Supp01v01/d59",
+      "locator": "US policy response; repeats and responds to the Mexican note, so it is not an independent Mexican voice.",
+      "creator": "US Secretary of State reply to the Mexican peace initiative",
+      "date": "1917-03-16",
+      "language": "English",
+      "rights": {
+        "decision": "usable-for-prototype",
+        "basis": "Selected historical text and original commentary, carried from the hash-bound research packet; no modern illustrations or complete ebook reproduced.",
+        "scope": "Local selected-text use; exact witness attribution and historical source limits retained."
+      }
+    }
+  ],
+  "passages": [
+    {
+      "id": "mexican-transmission",
+      "sourceId": "followup-d39",
+      "title": "Mexican transmission · Document 39, opening and nested note, transcribed pp.44–45",
+      "form": "quotation",
+      "language": "en",
+      "text": "Mr. Secretary: I have the honor to transcribe to your excellency the following note, which the Secretary of Foreign Relations of my country has been pleased to write to me: Querétaro, February 11, 1917. Señor Ramón P. De Negri, Washington, D. C.: Please transcribe to the most excellent the Minister of Foreign Relations of that country the following note: By direction of Citizen Venustiano Carranza, First Chief of the Constitutionalist Army, in charge of the executive power of the Mexican nation, I have the honor of addressing to your excellency the following note, which the above-named high mandatory has seen fit to send to the neutral countries:",
+      "context": "De Negri transcribes Aguilar, writing by Carranza’s direction; FRUS labels the record Translation without naming a translator. The outer date is February 12 and the nested note February 11.",
+      "sha256": "e895b1e2be3451d22ca2f8a234d22e9730f862d28bb3e206feb36c22abfe7044"
+    },
+    {
+      "id": "mexican-proposal",
+      "sourceId": "followup-d39",
+      "title": "Mexican proposal · Document 39, two proposal paragraphs, transcribed pp.45–46",
+      "form": "quotation",
+      "language": "en",
+      "text": "To that end the Government of Mexico, within the bounds of the strictest respect due to the sovereignty of the warring countries, inspired by the highest humanitarian sentiments, and also actuated by the sentiment of self-conservation and defense, takes the liberty of proposing to your excellency’s Government, as it is proposing to all the other neutral governments, that the groups of contending powers be invited, in common accord and on the basis of absolutely perfect equality on either side, to bring this war to an end either by their own effort or by availing themselves of the good offices of friendly mediation of all the countries which Would jointly extend that invitation. If within a reasonable term peace could not be restored by this means, the neutral countries would then take the necessary measures to reduce the conflagration to its narrowest limit, by refusing any kind of implements to the belligerents and suspending commercial relations with the warring nations until the said conflagration shall have been smothered.",
+      "context": "A stated proposal to neutral governments: invite peace or mediation, then suspend supplies and trade if peace does not follow. It does not answer the German alliance proposal.",
+      "sha256": "6fde9926c89b789c1c21b36f4b3a28edacfa672dd2397e0c8a865ec1c3c62162"
+    },
+    {
+      "id": "mexican-cooperation",
+      "sourceId": "followup-d39",
+      "title": "Mexican cooperation · Document 39, cooperation and named neutral states, transcribed p.46",
+      "form": "quotation",
+      "language": "en",
+      "text": "The Government of Mexico understands that no neutral nation, no matter how mighty, could singly take a step of this character, and that the measure can only be brought to a successful issue through the cooperation of the neutral governments wielding the greatest international influence with the belligerent nations. It is specially incumbent on the United States, Argentina, Brazil, and Chile in America; Spain, Sweden, and Norway in Europe, as being more influential and freer to arrive at a decision toward the belligerents, to father an initiative which is none the less worthy of thorough study and earnest consideration for its coming from a nation which is supposed to be weakened at present and therefore incapable of any effective international effort.",
+      "context": "The note presents concerted neutral action and resists the assumption of Mexican incapacity. This is diplomatic self-presentation, not a demonstrated policy outcome.",
+      "sha256": "c595f3875f36dbfff9b05ddc31b9df06c0b72580252992c2845b54fa9078fc98"
+    },
+    {
+      "id": "reported-nonreceipt",
+      "sourceId": "followup-d300",
+      "title": "Reported nonreceipt · Document 300, first body paragraph, transcribed p.238",
+      "form": "quotation",
+      "language": "en",
+      "text": "He said that Mexico had not received up to the present time from Germany any proposition whatever of alliance;",
+      "context": "Fletcher reports Carranza’s assertion of nonreceipt. A report of a denial does not establish whether a proposal had actually arrived.",
+      "sha256": "36745b094bbd5e419eff68c1da02584914eb71f5da24c98c44bf3d3d1d5c5bd7"
+    },
+    {
+      "id": "reported-conditional-answer",
+      "sourceId": "followup-d300",
+      "title": "Reported conditional answer · Document 300, first body paragraph, transcribed p.239",
+      "form": "quotation",
+      "language": "en",
+      "text": "In answer to my direct question as to his attitude in case Germany should propose an alliance, he said that Mexico desires to avoid becoming involved in the war and again referred to his note, but he avoided saying directly that such a proposition would be rejected.",
+      "context": "Fletcher reports an answer to a hypothetical alliance question and characterizes it as avoiding direct rejection; this is not a signed Mexican rejection.",
+      "sha256": "9178deb53c1d359ed9a5a0c1161c7ad13f88753fe7ac2d60cd727f8ab5962c3d"
+    },
+    {
+      "id": "ambassador-inference",
+      "sourceId": "followup-d300",
+      "title": "Ambassador inference · Document 300, first body paragraph, transcribed p.239",
+      "form": "quotation",
+      "language": "en",
+      "text": "Personally I do not think Mexico would under present circumstances accept alliance referred to but I think First Chief wishes withhold categorical statement to that effect in the hope of inducing our Government to accept his peace proposals or a peace conference of neutrals.",
+      "context": "The ambassador explicitly marks his prediction and explanation of Carranza’s motive as his own belief. Keep this distinct from reported speech and from evidence of actual decisions.",
+      "sha256": "3cd4f0aa010e34397cc26752a023479a445173a5c4487ca39222fc12f09ab09d"
+    },
+    {
+      "id": "us-response",
+      "sourceId": "followup-d59",
+      "title": "Us response · Document 59, response to the peace invitation, transcribed p.68",
+      "form": "quotation",
+      "language": "en",
+      "text": "In these circumstances, all of which were existent when the note under acknowledgment was received, the Government of the United States finds itself, greatly to its regret and contrary to its desires, in a position which precludes it from participating at the present time in the proposal of General Carranza that the neutral governments jointly extend an invitation to the belligerent countries to bring the war to an end either by their own effort or by availing themselves of the good offices or friendly mediation of neutral countries.",
+      "context": "Lansing communicates the United States’ inability to join the invitation at that time. It is a US response to Mexican peace proposals, not Mexico’s response to Germany.",
+      "sha256": "90db637f9d872110da008c13d6877b72be06dc406cd967fde87e9c4e3baf765c"
+    },
+    {
+      "id": "us-trade-position",
+      "sourceId": "followup-d59",
+      "title": "Us trade position · Document 59, response to the trade proposal, transcribed p.68",
+      "form": "quotation",
+      "language": "en",
+      "text": "Believing that this position of the United States is based upon sound principles of international law and is consonant with the established practice of nations, the President directs me to say that he can not bring himself to consider such a modification of these principles or of this practice as compliance with General Carranza’s proposal to suspend commercial relations with the warring nations would entail.",
+      "context": "The US response invokes its stated legal and policy position against suspending commercial relations; the packet does not adjudicate that legal argument.",
+      "sha256": "eb52d6b7a0218161ee4e116dddba7ac2a373c6b5f7a9ea94fdb49e4cd92e977c"
+    }
+  ],
+  "claims": [
+    {
+      "id": "policy-vs-outcome",
+      "kind": "interpretive",
+      "text": "A proposed neutral policy is evidence of a stated position, not its successful execution.",
+      "passageIds": [
+        "mexican-proposal",
+        "mexican-cooperation"
+      ],
+      "qualification": "Diplomatic self-presentation is not a demonstrated outcome."
+    },
+    {
+      "id": "reported-denial",
+      "kind": "interpretive",
+      "text": "Fletcher reports an assertion of nonreceipt; that report alone does not settle actual receipt.",
+      "passageIds": [
+        "reported-nonreceipt"
+      ],
+      "qualification": "Keep witness, reported speaker and proposition distinct."
+    }
+  ],
+  "context": [
+    "Carranza’s direction, Aguilar’s note, De Negri’s transmission, the unnamed English translation and the later FRUS edition form different layers of the record.",
+    "The nested note is dated 11 February 1917; its transmission is dated 12 February. The FRUS edition was published in 1931. Those dates describe different events.",
+    "The Mexican peace proposal and a German-alliance question are different propositions. A US reply to the first cannot become a Mexican reply to the second.",
+    "Repeated mentions of one diplomatic initiative do not automatically create independent corroboration. Fletcher’s prediction is marked as his belief."
+  ],
+  "timeline": [],
+  "relations": [],
+  "reviews": [],
+  "reviewRequirements": [
+    "content",
+    "rights"
+  ],
+  "reviewLimitations": [
+    "Author-checked local exercise. No Spanish-language, manuscript, specialist or participant verification is claimed."
+  ],
+  "activity": {
+    "type": "source-comparison",
+    "prompts": [
+      {
+        "id": "neutral-proposal",
+        "claim": "The note proposes concerted neutral mediation, followed conditionally by trade suspension.",
+        "answer": "direct",
+        "evidenceIds": [
+          "mexican-proposal"
+        ],
+        "feedback": "The sequence is explicitly proposed. Nothing here demonstrates that the sequence was implemented."
+      },
+      {
+        "id": "actual-nonreceipt",
+        "claim": "These documents establish that Germany’s proposal never reached Carranza.",
+        "answer": "unsupported",
+        "evidenceIds": [
+          "none"
+        ],
+        "feedback": "Fletcher reports what Carranza said. A reported denial does not verify the underlying nonreceipt."
+      },
+      {
+        "id": "fletcher-belief",
+        "claim": "The prediction about accepting an alliance is explicitly Fletcher’s own assessment.",
+        "answer": "direct",
+        "evidenceIds": [
+          "ambassador-inference"
+        ],
+        "feedback": "The writer introduces his personal belief and motive inference. Preserve that attribution."
+      },
+      {
+        "id": "formal-rejection",
+        "claim": "The conditional answer is a signed Mexican rejection of Germany’s alliance offer.",
+        "answer": "unsupported",
+        "evidenceIds": [
+          "none"
+        ],
+        "feedback": "This is Fletcher’s account of an answer to a hypothetical question; it says a direct rejection was avoided."
+      },
+      {
+        "id": "response-direction",
+        "claim": "The US reply declines participation in the Mexican peace proposal at that time.",
+        "answer": "direct",
+        "evidenceIds": [
+          "us-response"
+        ],
+        "feedback": "Identify responding government, recipient and proposal. This reply does not answer a German offer on Mexico’s behalf."
+      },
+      {
+        "id": "diplomatic-position",
+        "claim": "The cooperation paragraph presents Mexico as capable of proposing an initiative despite an assumption of weakness.",
+        "answer": "inference",
+        "evidenceIds": [
+          "mexican-cooperation"
+        ],
+        "feedback": "That reading is supported by the wording about a supposed weakness. It is not proof of Mexico’s subsequent diplomatic effectiveness."
+      }
+    ],
+    "transfer": "Choose one claim about an actual decision or receipt that remains unresolved. Specify the missing witness and explain how it differs from repeating a report already in this packet.",
+    "rubric": [
+      "Trace the author, reported speaker, translator and publisher separately.",
+      "Keep proposal, report, prediction and outcome distinct.",
+      "Name the proposal each answer addresses.",
+      "Explain dependence between witnesses before calling them corroboration."
+    ]
+  },
+  "extensions": {
+    "atlas:preparation": {
+      "path": "docs/pilots/sequences/preparation/history-primary-20261022.json",
+      "scope": "Selected evidence carried forward; historical packet unchanged."
+    }
+  },
+  "authorVerification": {
+    "kind": "author-check",
+    "scope": "local-preview",
+    "author": "atlas-editor",
+    "checkedOn": "2026-10-23",
+    "revision": "0.1.0",
+    "contentDigest": "9c497b34777bc53c6dcd112cc055b7b4e670c54b25b77d14f58f566846cf2e41",
+    "artifactDigest": "6d4a48e8d0233ce08e36911fc8f1a797f602111d94a9718cf28e70edd51ad582",
+    "evidencePath": "docs/verification/universal-author-continuation.md",
+    "checks": [
+      "Schema, source-reference and preparation-packet hash validation",
+      "Passed tests/exploration-methods.test.mjs",
+      "Passed tests/exploration-studio.test.mjs",
+      "Passed tests/exploration-professions.test.mjs",
+      "Passed tests/exploration-followups.test.mjs"
+    ]
+  }
+}

@@ -1,16 +1,16 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
-import { loadExplorations, buildExplorations, checkCapacity } from '../scripts/build-explorations.mjs';
+import { loadExplorations, buildExplorations, checkCapacity, loadExplorationSourceIds } from '../scripts/build-explorations.mjs';
 import { validateExploration, contentDigest, reviewArtifactDigest } from '../explorations/contract.mjs';
 import { draftHref, proposedPublicHref, legacyHref, legacyEvidence, normalizeState, parseState, serializeState, assessHistory } from '../explorations/route-state.mjs';
 import { renderExploration, renderIndex } from '../explorations/render.mjs';
 import { loadRegistry } from '../scripts/lib.mjs';
 const { records: currentRecords } = await loadExplorations();
-const records = structuredClone(currentRecords).map(r => ({ ...r, status: 'draft', reviews: [] })), [h,l] = records;
+const records = structuredClone(currentRecords).map(r => ({ ...r, authorVerification: undefined, status: 'draft', reviews: [] })), [h,l] = records;
 const runtime = await loadRegistry(), coverage = JSON.parse(await readFile(new URL('../docs/coverage/registry.json', import.meta.url)));
 const sources = JSON.parse(await readFile(new URL('../docs/coverage/sources.json', import.meta.url)));
-const ctx = { domainIds: coverage.domains.map(x => x.id), collectionIds: runtime.collections.map(x => x.id), sourceIds: sources.sources.filter(x => x.access.status !== 'blocked').map(x => x.id) };
+const ctx = { domainIds: coverage.domains.map(x => x.id), collectionIds: runtime.collections.map(x => x.id), sourceIds: await loadExplorationSourceIds() };
 test('records validate and generated pages are reproducible', async () => {
   const built = await buildExplorations({ checkOnly: true });
   for (const r of currentRecords) assert.deepEqual(validateExploration(r, { ...ctx, artifactDigest: built.records.find(x => x.id === r.id).artifactDigest }), []);
@@ -145,7 +145,7 @@ test('superseded receipts remain recoverable while only latest exact-version rev
 });
 
 test('changed related collection labels invalidate acceptance but unrelated metadata does not', () => {
-  for (const original of records.filter(r=>currentRecords.find(c=>c.id===r.id).status==='accepted')) {
+  for (const original of records.filter(r=>r.relatedCollectionIds.length&&!['P07','P08'].includes(r.pilotId))) {
     const r=structuredClone(original), code={'test-runtime':'a'.repeat(64)};
     const titles=Object.fromEntries(runtime.collections.map(c=>[c.id,c.title]));
     const digest=reviewArtifactDigest(r,code,titles);
@@ -177,9 +177,28 @@ test('withdrawn index entries do not leak former titles or summaries',()=>{
   const html=renderIndex([r,l]);assert.ok(!html.includes(r.title));assert.ok(!html.includes(r.summary));assert.match(html,/Withdrawn preview/);
 });
 test('studio drafts cannot gain full acceptance from invented all-pass review fixtures',()=>{
- for(const original of records.filter(r=>['P07','P08'].includes(r.pilotId))){
+ for(const original of records.filter(r=>['weave-structure','phrase-comparison'].includes(r.activity.type))){
   const r=structuredClone(original),artifactDigest=reviewArtifactDigest(r,{'test-runtime':'a'.repeat(64)});r.status='accepted';
   r.reviews=r.reviewRequirements.map(dimension=>({dimension,result:'passed',reviewer:{id:'independent-fixture',role:'Fixture only',independent:true},revision:r.revision,contentDigest:contentDigest(r),artifactDigest,evidencePath:'test-only',reviewedOn:'2026-10-22'}));
   assert.match(validateExploration(r,{...ctx,artifactDigest}).join('\n'),r.pilotId==='P07'?/physical/:/release/);
  }
+});
+
+test('author acceptance binds current content and rendering without inventing independent reviews',()=>{
+ const original=currentRecords.find(r=>r.pilotId==='P04'),r=structuredClone(original);
+ assert.equal(r.reviews.length,0);assert.equal(r.authorVerification.kind,'author-check');
+ const artifactDigest=r.authorVerification.artifactDigest;
+ assert.deepEqual(validateExploration(r,{...ctx,artifactDigest}),[]);
+ assert.match(renderExploration(r),/Author-checked · local preview/);
+ r.claims[0].qualification='A different claim boundary';
+ assert.match(validateExploration(r,{...ctx,artifactDigest}).join('\n'),/author verification is stale for this exact content/);
+ r.claims=original.claims;
+ assert.match(validateExploration(r,{...ctx,artifactDigest:'f'.repeat(64)}).join('\n'),/author verification is stale or unbound/);
+});
+test('author checks cannot assert publication, professional approval or fabricated physical observations',()=>{
+ const r=structuredClone(currentRecords.find(r=>r.pilotId==='P07'));
+ r.authorVerification.scope='published';
+ assert.match(validateExploration(r,{...ctx,artifactDigest:r.authorVerification.artifactDigest}).join('\n'),/limited to local previews/);
+ r.authorVerification.scope='local-preview';r.activity.physicalEvidence.status='observed';
+ assert.match(validateExploration(r,{...ctx,artifactDigest:r.authorVerification.artifactDigest}).join('\n'),/separately implemented/);
 });

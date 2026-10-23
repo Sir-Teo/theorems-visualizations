@@ -1,0 +1,589 @@
+{
+  "schemaVersion": 1,
+  "id": "remaining-sequence-authoring",
+  "updatedOn": "2026-10-23",
+  "scope": "Exact retained source descriptions and original exercises. Read is the historical receipt status; refresh is separately dated. Access stops and unobserved practice remain explicit.",
+  "retainedPath": "docs/pilots/sequences/sources.json",
+  "retainedSha256": "aa728ce4083c7d242484c8f998168f5e61e03e30f312ff12b0bd4e02736b18c6",
+  "sources": [
+    {
+      "id": "seq-sikh-faq",
+      "url": "https://www.sikhcoalition.org/about-sikhs/faq/",
+      "status": "read",
+      "readOn": "2026-10-22",
+      "mode": "retained-scoped-reading",
+      "retainedReceipt": {
+        "id": "seq-sikh-faq",
+        "title": "FAQ: What is langar?",
+        "creator": "Sikh Coalition",
+        "edition": "Undated page retrieved 22 October 2026",
+        "language": "en",
+        "urls": [
+          "https://www.sikhcoalition.org/about-sikhs/faq/"
+        ],
+        "readAt": "2026-10-22",
+        "access": "body-read-scoped",
+        "readScope": "Named langar subsection; adjacent visitor/welcome context.",
+        "finding": "Institutional account connects communal service/eating with equality; floor sitting qualified by ability.",
+        "limits": "Public explanation, not observation of every gurdwara or project participant consent. Other FAQ claims not adopted.",
+        "reuse": "No broad licence established. Links/original commentary; exact quotation or media selection needs review."
+      },
+      "limits": "Public explanation, not observation of every gurdwara or project participant consent. Other FAQ claims not adopted."
+    },
+    {
+      "id": "seq-sgpc-reht",
+      "url": "https://sgpc.net/wp-content/uploads/2025/06/Sikh-Rehat-Maryada-English-n.pdf",
+      "status": "read",
+      "readOn": "2026-10-22",
+      "mode": "retained-scoped-reading",
+      "retainedReceipt": {
+        "id": "seq-sgpc-reht",
+        "title": "The Code of Sikh Conduct and Conventions: English Version of the Sikh Reht Maryada",
+        "creator": "Dharam Parchar Committee, SGPC; English preface signed Kulraj Singh",
+        "edition": "Preface dated 31 August 1994; upload path 2025/06 does not establish edition date",
+        "language": "en",
+        "urls": [
+          "https://sgpc.net/wp-content/uploads/2025/06/Sikh-Rehat-Maryada-English-n.pdf"
+        ],
+        "readAt": "2026-10-22",
+        "access": "body-read-scoped",
+        "readScope": "Rendered cover/contents, preface p.6, article XXI p.49 and adjacent p.50; text layer effectively empty.",
+        "finding": "Service/participation provisions distinguished from same-plate clause.",
+        "limits": "English only; Punjabi uninspected. Current edition status and lived practice not established.",
+        "reuse": "Links/original bounded commentary only; no broad reproduction licence established.",
+        "downloadSha256": "aa9645db5b828549bd31eebe33dd84e9af3221d2327b4c36b2a08dbe63b618fc"
+      },
+      "limits": "English only; Punjabi uninspected. Current edition status and lived practice not established."
+    },
+    {
+      "id": "seq-cra19",
+      "url": "https://www.legislation.gov.uk/ukpga/2015/15/section/19",
+      "status": "read",
+      "readOn": "2026-10-22",
+      "mode": "retained-scoped-reading",
+      "retainedReceipt": {
+        "language": "en",
+        "readAt": "2026-10-22",
+        "access": "body-read-scoped",
+        "id": "seq-cra19",
+        "title": "Consumer Rights Act 2015, s19: Consumer's rights to enforce terms about goods",
+        "creator": "UK Parliament; revised text supplied by legislation.gov.uk",
+        "edition": "Latest-available revised page retrieved 22 October 2026; notice says known changes through 20 October 2026",
+        "urls": [
+          "https://www.legislation.gov.uk/ukpga/2015/15/section/19"
+        ],
+        "readScope": "Complete s19 body, change/commencement notices and licence footer.",
+        "finding": "The six-month presumption names particular remedy routes and retains exceptions; not an unconditional refund rule.",
+        "limits": "Web reader rejected XHTML content type; same public URL downloaded successfully and parsed locally. Outstanding/future effects and consolidated legal date not professionally verified.",
+        "reuse": "Site identifies OGL v3.0 with exceptions; original case and links now, exact excerpt/attribution review before release.",
+        "downloadSha256": "cace7192983aa605c5f524ceb5a1146b3fd23679c78b505fc97ccbf9fcbbd3ab"
+      },
+      "limits": "Web reader rejected XHTML content type; same public URL downloaded successfully and parsed locally. Outstanding/future effects and consolidated legal date not professionally verified.",
+      "refresh": {
+        "date": "2026-10-23",
+        "scope": "Same official body re-read 23 October; retained hash unchanged."
+      }
+    },
+    {
+      "id": "seq-cra23",
+      "url": "https://www.legislation.gov.uk/ukpga/2015/15/section/23",
+      "status": "read",
+      "readOn": "2026-10-22",
+      "mode": "retained-scoped-reading",
+      "retainedReceipt": {
+        "language": "en",
+        "readAt": "2026-10-22",
+        "access": "body-read-scoped",
+        "id": "seq-cra23",
+        "title": "Consumer Rights Act 2015, s23: Right to repair or replacement",
+        "creator": "UK Parliament; revised text supplied by legislation.gov.uk",
+        "edition": "Latest-available revised page retrieved 22 October 2026; notice says known changes through 21 October 2026",
+        "urls": [
+          "https://www.legislation.gov.uk/ukpga/2015/15/section/23"
+        ],
+        "readScope": "Complete s23 body, change/commencement notices and licence footer.",
+        "finding": "Repair/replacement has reasonableness, inconvenience and impossibility/disproportion conditions.",
+        "limits": "Web reader rejected XHTML content type; same public URL downloaded successfully and parsed locally. Outstanding/future effects and consolidated legal date not professionally verified.",
+        "reuse": "Site identifies OGL v3.0 with exceptions; original case and links now, exact excerpt/attribution review before release.",
+        "downloadSha256": "1e7eb052b3d9fb19bc8a5f9f362541801ae04308090bce46f2c82e97d5c508ea"
+      },
+      "limits": "Web reader rejected XHTML content type; same public URL downloaded successfully and parsed locally. Outstanding/future effects and consolidated legal date not professionally verified.",
+      "refresh": {
+        "date": "2026-10-23",
+        "scope": "Same official body re-read 23 October; hash 1e7eb052b3d9fb19bc8a5f9f362541801ae04308090bce46f2c82e97d5c508ea unchanged."
+      }
+    },
+    {
+      "id": "seq-cra24",
+      "url": "https://www.legislation.gov.uk/ukpga/2015/15/section/24",
+      "status": "read",
+      "readOn": "2026-10-22",
+      "mode": "retained-scoped-reading",
+      "retainedReceipt": {
+        "language": "en",
+        "readAt": "2026-10-22",
+        "access": "body-read-scoped",
+        "id": "seq-cra24",
+        "title": "Consumer Rights Act 2015, s24: Right to price reduction or final right to reject",
+        "creator": "UK Parliament; revised text supplied by legislation.gov.uk",
+        "edition": "Latest-available revised page retrieved 22 October 2026; notice says known changes through 21 October 2026",
+        "urls": [
+          "https://www.legislation.gov.uk/ukpga/2015/15/section/24"
+        ],
+        "readScope": "Complete s24 body and change/commencement notices; related provision bodies require final scoped review.",
+        "finding": "Progression and refund deductions have their own statutory conditions; repair request is not a completed repair.",
+        "limits": "Web reader rejected XHTML content type; same public URL downloaded successfully and parsed locally. Outstanding/future effects and consolidated legal date not professionally verified.",
+        "reuse": "Site identifies OGL v3.0 with exceptions; original case and links now, exact excerpt/attribution review before release.",
+        "downloadSha256": "c6d728399eec311ff78580da444f03c6916cb3dd2dc22c345fa066301a35b115"
+      },
+      "limits": "Web reader rejected XHTML content type; same public URL downloaded successfully and parsed locally. Outstanding/future effects and consolidated legal date not professionally verified.",
+      "refresh": {
+        "date": "2026-10-23",
+        "scope": "Same official body re-read 23 October; hash c6d728399eec311ff78580da444f03c6916cb3dd2dc22c345fa066301a35b115 unchanged."
+      }
+    },
+    {
+      "id": "seq-acl-c167",
+      "url": "https://www.legislation.gov.au/C2004A00109/2026-09-16/2026-09-16/text/original/pdf/4",
+      "status": "read",
+      "readOn": "2026-10-22",
+      "mode": "retained-scoped-reading",
+      "retainedReceipt": {
+        "language": "en",
+        "readAt": "2026-10-22",
+        "access": "body-read-scoped",
+        "id": "seq-acl-c167",
+        "title": "Competition and Consumer Act 2010, compilation 167: corporate application and selected Australian Consumer Law goods provisions",
+        "creator": "Office of Parliamentary Counsel, Australia",
+        "edition": "Compilation 167, 16 September 2026; C2026C00405 registered 24 September 2026",
+        "urls": [
+          "https://www.legislation.gov.au/C2004A00109/latest/text/4",
+          "https://www.legislation.gov.au/C2004A00109/2026-09-16/2026-09-16/text/original/pdf/4",
+          "https://www.legislation.gov.au/C2004A00109/2026-09-16/2026-09-16/text/original/pdf/3"
+        ],
+        "readScope": "Register latest-version label; volume 4 cover/compilation caveats, Schedule 2 ss3(1)–(2) pp87–88,54 pp143–144,259–263 pp334–338; volume 3 s131 p92. Selected PDF text extracted locally.",
+        "finding": "Selected federal goods/remedy structure includes major/non-major paths and contextual rejection restrictions; separate from UK provisions.",
+        "limits": "HTML navigation supplied contents, not provision bodies; pinned PDFs supplied bodies. State law, forum, full endnotes/commencement and modifications unverified. No regulated monetary threshold adopted.",
+        "reuse": "Links and original case/commentary only; no blanket government-media or excerpt licence asserted.",
+        "downloadSha256": {
+          "volume4": "f9c20a584170876838bd3393d8ea40518325e38c67e9b353a0dd5345c6440820",
+          "volume3": "114b3f333418b65b6d91ad9010e9c3157c4d23b3bace2da415f13398ed6e7dee"
+        }
+      },
+      "limits": "HTML navigation supplied contents, not provision bodies; pinned PDFs supplied bodies. State law, forum, full endnotes/commencement and modifications unverified. No regulated monetary threshold adopted.",
+      "refresh": {
+        "date": "2026-10-23",
+        "scope": "Volume 4 compilation and selected remedy provisions opened 23 October. Volume 3 tool-inaccessible; earlier scoped s131 receipt retained without claiming fresh access."
+      }
+    },
+    {
+      "id": "seq-accc-remedies",
+      "url": "https://www.accc.gov.au/consumers/problem-with-a-product-or-service-you-bought/repair-replace-refund-cancel",
+      "status": "read",
+      "readOn": "2026-10-22",
+      "mode": "retained-scoped-reading",
+      "retainedReceipt": {
+        "language": "en",
+        "readAt": "2026-10-22",
+        "access": "body-read-scoped",
+        "id": "seq-accc-remedies",
+        "title": "Repair, replace, refund, cancel",
+        "creator": "Australian Competition and Consumer Commission",
+        "edition": "Undated guidance page retrieved 22 October 2026",
+        "urls": [
+          "https://www.accc.gov.au/consumers/problem-with-a-product-or-service-you-bought/repair-replace-refund-cancel"
+        ],
+        "readScope": "Consumer guarantees, major/minor goods problems, remedies, supplier role, return conditions and stated ACCC role.",
+        "finding": "Guidance distinguishes remedy stages and says ACCC does not resolve individual disputes.",
+        "limits": "Guidance is not the statute or a ruling on the fictional case. Service/manufacturer/video examples are not adopted as lesson cases.",
+        "reuse": "Links/original commentary only; no source video, images or example narrative copied."
+      },
+      "limits": "Guidance is not the statute or a ruling on the fictional case. Service/manufacturer/video examples are not adopted as lesson cases.",
+      "refresh": {
+        "date": "2026-10-23",
+        "scope": "Guidance body read 23 October; selected goods/remedy and stated agency role only."
+      }
+    },
+    {
+      "id": "seq-fao-koraput",
+      "url": "https://www.fao.org/giahs/giahs-around-the-world/india-koraput/en",
+      "status": "read",
+      "readOn": "2026-10-22",
+      "mode": "retained-scoped-reading",
+      "retainedReceipt": {
+        "id": "seq-fao-koraput",
+        "title": "Koraput Traditional Agriculture, India",
+        "creator": "FAO GIAHS",
+        "edition": "Institutional profile: GIAHS since 2012; retrieved 22 October 2026",
+        "language": "en",
+        "urls": [
+          "https://www.fao.org/giahs/giahs-around-the-world/india-koraput/en"
+        ],
+        "readAt": "2026-10-22",
+        "access": "body-read-scoped",
+        "readScope": "Profile sections, requesting agency and action-plan link.",
+        "finding": "Farming/forest context, biodiversity and livelihood dimensions; MSSRF identified as requesting agency.",
+        "limits": "Historical diversity counts are not a current census; institutional description not a community mandate. Medicinal claims not adopted.",
+        "reuse": "Link/original summary only; no photo, map or broad reuse permission assumed."
+      },
+      "limits": "Historical diversity counts are not a current census; institutional description not a community mandate. Medicinal claims not adopted."
+    },
+    {
+      "id": "seq-koraput-plan",
+      "url": "https://www.fao.org/fileadmin/templates/giahs/Action_plan_Koraput.pdf",
+      "status": "read",
+      "readOn": "2026-10-22",
+      "mode": "retained-scoped-reading",
+      "retainedReceipt": {
+        "id": "seq-koraput-plan",
+        "title": "Participatory Action Plan for Dynamic Conservation: Traditional Agriculture in Koraput, Orissa",
+        "creator": "M. S. Swaminathan Research Foundation; hosted by FAO",
+        "edition": "PDF undated in inspected title; linked by profile under 10 October 2012 highlight",
+        "language": "en",
+        "urls": [
+          "https://www.fao.org/fileadmin/templates/giahs/Action_plan_Koraput.pdf"
+        ],
+        "readAt": "2026-10-22",
+        "access": "body-read-scoped",
+        "readScope": "Title and selected pp.2–5,9–10 extracted text; definition-of-output table printed p.2 also visually inspected.",
+        "finding": "Defines programme outputs and benefit-sharing objectives; proposal is not completion evidence.",
+        "limits": "Not an independent confirmation of the related FAO/MSSRF accounts. Legal/policy and medicinal assertions not verified or adopted.",
+        "reuse": "Links/original summary only; no redistribution licence for report/images inferred.",
+        "downloadSha256": "5bdd12c8c5f1e393e8ef32102e5ffec2aa04e06621a284b99985ee5dbcca7737"
+      },
+      "limits": "Not an independent confirmation of the related FAO/MSSRF accounts. Legal/policy and medicinal assertions not verified or adopted."
+    },
+    {
+      "id": "seq-mssrf-seeds",
+      "url": "https://www.mssrf.org/stories-of-change/seed-keepers-odishas-community-seed-banks",
+      "status": "read",
+      "readOn": "2026-10-22",
+      "mode": "retained-scoped-reading",
+      "retainedReceipt": {
+        "id": "seq-mssrf-seeds",
+        "title": "The quiet power of seed keepers in Odisha’s community seed banks",
+        "creator": "Team DIVERSIFARM-India, MSSRF",
+        "edition": "Feature story, 19 May 2026",
+        "language": "en",
+        "urls": [
+          "https://www.mssrf.org/stories-of-change/seed-keepers-odishas-community-seed-banks"
+        ],
+        "readAt": "2026-10-22",
+        "access": "body-read-scoped",
+        "readScope": "Byline/date and full feature body including opening/closing location names.",
+        "finding": "Published farmer account mediated by institutional writer. Opening Nuaguda and closing Kumbharaguda conflict; location unresolved.",
+        "limits": "Original interview, language/translation and participant reuse terms uninspected. Reported benefits are not measured causal effects.",
+        "reuse": "Link/original bounded commentary; no photo, quotation, translation or practice-reproduction permission assumed."
+      },
+      "limits": "Original interview, language/translation and participant reuse terms uninspected. Reported benefits are not measured causal effects."
+    },
+    {
+      "id": "seq-nhlbi-lung-tests",
+      "url": "https://www.nhlbi.nih.gov/health/lung-tests",
+      "status": "read",
+      "readOn": "2026-10-22",
+      "mode": "retained-scoped-reading",
+      "retainedReceipt": {
+        "language": "en",
+        "readAt": "2026-10-22",
+        "access": "body-read-scoped",
+        "id": "seq-nhlbi-lung-tests",
+        "title": "Tests for Lung Disease",
+        "creator": "National Heart, Lung, and Blood Institute, NIH",
+        "edition": "Last updated 4 October 2024",
+        "urls": [
+          "https://www.nhlbi.nih.gov/health/lung-tests"
+        ],
+        "readScope": "Lung function introduction, spirometry, lung volume and diffusion sections; update label.",
+        "finding": "Different tests assess different quantities; spirometry measures exhaled amount and speed.",
+        "limits": "Patient overview, not a technical quality standard. Embedded media, disease interpretation and other test instructions not adopted.",
+        "reuse": "Original schematic/arithmetic and links; no image/video redistribution clearance inferred."
+      },
+      "limits": "Patient overview, not a technical quality standard. Embedded media, disease interpretation and other test instructions not adopted.",
+      "refresh": {
+        "date": "2026-10-23",
+        "scope": "Spirometry, lung-volume and diffusion descriptions re-read 23 October; no media or clinical protocol adopted."
+      }
+    },
+    {
+      "id": "seq-niosh-spirometry",
+      "url": "https://www.cdc.gov/niosh/docs/2012-116/pdfs/2012-116.pdf",
+      "status": "read",
+      "readOn": "2026-10-22",
+      "mode": "retained-scoped-reading",
+      "retainedReceipt": {
+        "language": "en",
+        "readAt": "2026-10-22",
+        "access": "body-read-scoped",
+        "id": "seq-niosh-spirometry",
+        "title": "Spirometry Quality Assurance: Common Errors and Their Impact on Test Results",
+        "creator": "NIOSH; principal contributors Lu-Ann F. Beeckman-Wagner and Diana Freeland",
+        "edition": "DHHS (NIOSH) Publication 2012-116, January 2012",
+        "urls": [
+          "https://www.cdc.gov/niosh/docs/2012-116/pdfs/2012-116.pdf"
+        ],
+        "readScope": "Title, public-domain/credits pages3–4, introduction/abbreviations pp6–7; Error 5 pp18–19 text and rendered graphs.",
+        "finding": "Early termination can distort reported endpoint/ratio; numerical correctness is not sufficient quality evidence.",
+        "limits": "Dated technical teaching source, not current-standard verification. Source example values, reference equations, thresholds and coaching instructions are excluded. 2019 PMC candidate CAPTCHA and distinct 2022 ERS paper403 were stopped; no alternate copies retrieved.",
+        "reuse": "Page3 explicitly states public domain; current design still uses original samples and diagrams, no copied source figure.",
+        "downloadSha256": "ba2a9364f717d9a9ae42b6309f79a5144c51f4f9033eac2348b719ee2256e3b2"
+      },
+      "limits": "Dated technical teaching source, not current-standard verification. Source example values, reference equations, thresholds and coaching instructions are excluded. 2019 PMC candidate CAPTCHA and distinct 2022 ERS paper403 were stopped; no alternate copies retrieved."
+    },
+    {
+      "id": "seq-ahrq-tool5",
+      "url": "https://www.ahrq.gov/health-literacy/improve/precautions/tool5.html",
+      "status": "read",
+      "readOn": "2026-10-22",
+      "mode": "retained-scoped-reading",
+      "retainedReceipt": {
+        "language": "en",
+        "readAt": "2026-10-22",
+        "access": "body-read-scoped",
+        "id": "seq-ahrq-tool5",
+        "title": "Use the Teach-Back Method: Tool 5",
+        "creator": "Agency for Healthcare Research and Quality",
+        "edition": "Health Literacy Universal Precautions Toolkit, third edition; reviewed April 2024, created February 2024",
+        "urls": [
+          "https://www.ahrq.gov/health-literacy/improve/precautions/tool5.html"
+        ],
+        "readScope": "Overview, actions, practice experiences, progress section and dates in HTML body.",
+        "finding": "Own-words checking, non-shaming clarification and checking again; acknowledgement/recitation alone is insufficient.",
+        "limits": "No linked external instrument/video or full toolkit PDF inspected. Practice anecdotes do not validate this proposed artifact or demonstrate patient outcomes.",
+        "reuse": "Original dialogue and links; source quotes/posters/media/external tools not bundled or cleared."
+      },
+      "limits": "No linked external instrument/video or full toolkit PDF inspected. Practice anecdotes do not validate this proposed artifact or demonstrate patient outcomes.",
+      "refresh": {
+        "date": "2026-10-23",
+        "scope": "Own-words, clarification, non-shaming and recheck portions re-read 23 October."
+      }
+    },
+    {
+      "id": "seq-ahrq-tool9",
+      "url": "https://www.ahrq.gov/health-literacy/improve/precautions/tool9.html",
+      "status": "read",
+      "readOn": "2026-10-22",
+      "mode": "retained-scoped-reading",
+      "retainedReceipt": {
+        "language": "en",
+        "readAt": "2026-10-22",
+        "access": "body-read-scoped",
+        "id": "seq-ahrq-tool9",
+        "title": "Address Language Differences: Tool 9",
+        "creator": "Agency for Healthcare Research and Quality",
+        "edition": "Health Literacy Universal Precautions Toolkit, third edition; reviewed September 2024, created February 2024",
+        "urls": [
+          "https://www.ahrq.gov/health-literacy/improve/precautions/tool9.html"
+        ],
+        "readScope": "Language preferences, qualified support, written translation, planning/progress sections and dates.",
+        "finding": "Language access and translation/interpreting roles require explicit attention; English repetition is not sufficient.",
+        "limits": "Legal-compliance statements and linked resources not verified as current law or adopted; no language proficiency or translated artifact certified.",
+        "reuse": "Original task and links only; no toolkit media or external assessment instrument copied."
+      },
+      "limits": "Legal-compliance statements and linked resources not verified as current law or adopted; no language proficiency or translated artifact certified.",
+      "refresh": {
+        "date": "2026-10-23",
+        "scope": "Preferences, qualified language support and written-translation portions re-read 23 October; legal assertions excluded."
+      }
+    },
+    {
+      "id": "seq-ifixit-patch",
+      "url": "https://www.ifixit.com/Guide/How+to+Hand+Stitch+a+Patch+to+Clothing/172554",
+      "status": "read",
+      "readOn": "2026-10-22",
+      "mode": "retained-scoped-reading",
+      "retainedReceipt": {
+        "id": "seq-ifixit-patch",
+        "title": "How to Hand Stitch a Patch to Clothing",
+        "creator": "Eli Hardy and two other contributors; iFixit Featured Student Guide",
+        "edition": "Updated 25 August 2025",
+        "urls": [
+          "https://www.ifixit.com/Guide/How+to+Hand+Stitch+a+Patch+to+Clothing/172554"
+        ],
+        "readScope": "Introduction, tools, steps 1–8, conclusion and update/contributor labels; text only.",
+        "finding": "Patch overlap, edge attachment and tension are distinct construction considerations.",
+        "limits": "Photographs not inspected; no physical reproduction or professional endorsement established. Interface completion text is not evidence of our completion.",
+        "reuse": "Original exercise/diagrams and link only. No image or general redistribution licence established.",
+        "language": "en",
+        "readAt": "2026-10-22",
+        "access": "body-read-scoped"
+      },
+      "limits": "Photographs not inspected; no physical reproduction or professional endorsement established. Interface completion text is not evidence of our completion."
+    },
+    {
+      "id": "seq-sca-basting",
+      "url": "https://www.sewing.org/files/guidelines/15_105_running_stitch_basting.pdf",
+      "status": "read",
+      "readOn": "2026-10-22",
+      "mode": "retained-scoped-reading",
+      "retainedReceipt": {
+        "id": "seq-sca-basting",
+        "title": "Running Stitch: Basting, guideline 15.105",
+        "creator": "Sewing & Craft Alliance",
+        "edition": "Page-2 code 3/06; page-1 copyright notice 2008",
+        "urls": [
+          "https://www.sewing.org/files/guidelines/15_105_running_stitch_basting.pdf"
+        ],
+        "readScope": "Both pages in extracted text and local rendered images, including four diagrams and page-1 rights notice.",
+        "finding": "Distinguishes temporary basting; seam use is qualified by absence of strain. Intended layers and tension matter.",
+        "limits": "Dated sewing guidance; no current standard or physical repair tested. Web screenshot failed technically; same public PDF downloaded and rendered, not an access-denial bypass.",
+        "reuse": "Notice permits specified educators/retailers unchanged educational handouts, with alteration and other-use restrictions; no adapted figure or website-distribution clearance inferred. Link/original diagrams only.",
+        "downloadSha256": "928f7a7f034778a6f77895e437d6e01156a1db42851870bbde5f723afa2b628a",
+        "language": "en",
+        "readAt": "2026-10-22",
+        "access": "body-read-scoped"
+      },
+      "limits": "Dated sewing guidance; no current standard or physical repair tested. Web screenshot failed technically; same public PDF downloaded and rendered, not an access-denial bypass."
+    },
+    {
+      "id": "seq-asare-context",
+      "url": "https://kwasiasare.com/",
+      "status": "read",
+      "readOn": "2026-10-22",
+      "mode": "retained-scoped-reading",
+      "retainedReceipt": {
+        "id": "seq-asare-context",
+        "title": "Kwasi Asare: practitioner and teaching self-presentation",
+        "creator": "Kwasi Asare website",
+        "edition": "Undated page retrieved 22 October 2026",
+        "urls": [
+          "https://kwasiasare.com/"
+        ],
+        "readScope": "Homepage biographical and teaching prose, including Ashanti tradition, father and Dento Mills/Nsawam account.",
+        "finding": "Identifies one practitioner and a named studio/place for a situated research route.",
+        "limits": "Self-presentation; lineage, promotional superlatives and current offers not independently verified. No object, video, course or loom inspected; not representative of all kente.",
+        "reuse": "Links/original commentary only; no course, image, pattern or design reuse permission established.",
+        "language": "en",
+        "readAt": "2026-10-22",
+        "access": "body-read-scoped"
+      },
+      "limits": "Self-presentation; lineage, promotional superlatives and current offers not independently verified. No object, video, course or loom inspected; not representative of all kente."
+    },
+    {
+      "id": "seq-asare-workshop",
+      "url": "https://kwasiasare.com/kwasi-asare-kente-weaving-handloom-workshop/",
+      "status": "read",
+      "readOn": "2026-10-22",
+      "mode": "retained-scoped-reading",
+      "retainedReceipt": {
+        "id": "seq-asare-workshop",
+        "title": "Kwasi Asare Kente Weaving Handloom Workshop",
+        "creator": "Kwasi Asare website",
+        "edition": "Undated provider account referring to a handloom developed in 2013",
+        "urls": [
+          "https://kwasiasare.com/kwasi-asare-kente-weaving-handloom-workshop/"
+        ],
+        "readScope": "Workshop description and advertised format; text only.",
+        "finding": "Provider connects introductory weaving/design teaching with geometry using a teaching handloom.",
+        "limits": "Same provider perspective as homepage, not independent corroboration. Offer is not current availability, observed learning or an equivalence to other practice. Promotional health/uniqueness claims excluded.",
+        "reuse": "Links/original commentary only; no demonstration, course content or loom design copied or cleared.",
+        "language": "en",
+        "readAt": "2026-10-22",
+        "access": "body-read-scoped"
+      },
+      "limits": "Same provider perspective as homepage, not independent corroboration. Offer is not current availability, observed learning or an equivalence to other practice. Promotional health/uniqueness claims excluded."
+    },
+    {
+      "id": "seq-rsc-performing",
+      "url": "https://www.rsc.org.uk/shakespeare-learning-zone/measure-for-measure/staging/performing",
+      "status": "read",
+      "readOn": "2026-10-22",
+      "mode": "retained-scoped-reading",
+      "retainedReceipt": {
+        "id": "seq-rsc-performing",
+        "title": "Performing Measure for Measure",
+        "creator": "Royal Shakespeare Company, Shakespeare Learning Zone",
+        "edition": "Undated teaching page retrieved 22 October 2026",
+        "urls": [
+          "https://www.rsc.org.uk/shakespeare-learning-zone/measure-for-measure/staging/performing"
+        ],
+        "readScope": "Main teaching prose/questions about setting, relationships, aims, status and positioning.",
+        "finding": "Provides play-specific prompts for staging decisions; these support a separately authored comparison task.",
+        "limits": "No universal gesture dictionary or observed audience outcome. Source images/performance media not inspected. Independent performance reviewer's later request timed out and was stopped without retry/mirror; that reviewer does not independently certify a fresh reading of this teaching page.",
+        "reuse": "Original script/maps and link only; no modern production media or source scene bundled.",
+        "language": "en",
+        "readAt": "2026-10-22",
+        "access": "body-read-scoped"
+      },
+      "limits": "No universal gesture dictionary or observed audience outcome. Source images/performance media not inspected. Independent performance reviewer's later request timed out and was stopped without retry/mirror; that reviewer does not independently certify a fresh reading of this teaching page."
+    },
+    {
+      "id": "seq-rsc-kyle",
+      "url": "https://www.rsc.org.uk/measure-for-measure/past-productions/in-focus-barry-kyle-1978",
+      "status": "read",
+      "readOn": "2026-10-22",
+      "mode": "retained-scoped-reading",
+      "retainedReceipt": {
+        "id": "seq-rsc-kyle",
+        "title": "In focus: Barry Kyle 1978",
+        "creator": "Royal Shakespeare Company",
+        "edition": "Undated retrospective institutional account of the 1978 production",
+        "urls": [
+          "https://www.rsc.org.uk/measure-for-measure/past-productions/in-focus-barry-kyle-1978"
+        ],
+        "readScope": "Main production/design prose, cast/creative list, scene summary, gallery captions and rights labels; images not inspected.",
+        "finding": "Named production and designer provide a situated example of staging interpretation; reported criticism is distinct from audience measurement.",
+        "limits": "Rehearsal caption assigns Richard Griffiths to Lucio while prose/cast list assign him to Pompey; conflicting caption not adopted. No prompt-book image, photograph, recording or original critic publication inspected.",
+        "reuse": "Gallery labels identify multiple rights holders and image licensing; no blanket clearance inferred. Original task/links only, no critic quotation copied.",
+        "language": "en",
+        "readAt": "2026-10-22",
+        "access": "body-read-scoped"
+      },
+      "limits": "Rehearsal caption assigns Richard Griffiths to Lucio while prose/cast list assign him to Pompey; conflicting caption not adopted. No prompt-book image, photograph, recording or original critic publication inspected."
+    },
+    {
+      "id": "seq-ammannur-history",
+      "url": "https://www.ammannurgurukulam.com/",
+      "status": "read",
+      "readOn": "2026-10-22",
+      "mode": "retained-scoped-reading",
+      "retainedReceipt": {
+        "id": "seq-ammannur-history",
+        "title": "Ammannur Chachu Chakyar Smaraka Gurukulam: institutional account",
+        "creator": "Ammannur Gurukulam website",
+        "edition": "Undated history/homepage; homepage contains old festival announcements",
+        "urls": [
+          "https://www.ammannurgurukulam.com/",
+          "https://www.ammannurgurukulam.com/about.htm"
+        ],
+        "readScope": "Homepage institutional paragraph and history main prose; old event labels observed. Training/maestros pages inspected only to establish their reading limits.",
+        "finding": "Institution describes family teaching and subsequent training/performing organisation, giving 27 October 1982 as its start.",
+        "limits": "Historical institutional self-account, not independently complete history/current roster. Training page lacks curriculum body; maestros page has incomplete biography dates. No performance or original-language manual inspected.",
+        "reuse": "Site footer all rights reserved. Links/original commentary only; no images, manuals or recordings cleared.",
+        "language": "en",
+        "readAt": "2026-10-22",
+        "access": "body-read-scoped"
+      },
+      "limits": "Historical institutional self-account, not independently complete history/current roster. Training page lacks curriculum body; maestros page has incomplete biography dates. No performance or original-language manual inspected."
+    },
+    {
+      "id": "seq-ammannur-plays",
+      "url": "https://www.ammannurgurukulam.com/plays.htm",
+      "status": "read",
+      "readOn": "2026-10-22",
+      "mode": "retained-scoped-reading",
+      "retainedReceipt": {
+        "id": "seq-ammannur-plays",
+        "title": "Plays in the Ammannur School",
+        "creator": "Ammannur Gurukulam website",
+        "edition": "Undated repertoire/production account with some dated entries",
+        "urls": [
+          "https://www.ammannurgurukulam.com/plays.htm"
+        ],
+        "readScope": "Main repertoire, acting-manual/direction and later-production entries; English labels only.",
+        "finding": "Lists Asokavanikamkam as fifth act of Ashcharyachoodamani and gives a sixteen-day description; differentiates some stage/acting-manual entries.",
+        "limits": "Listing not an inspected script/manual or event record; duration not a universal rule. English spellings and Sanskrit/Malayalam terminology need specialist review. No gesture, performance or translation competence inferred.",
+        "reuse": "Site all-rights-reserved footer; links/original commentary only. Event/text/media selection and permissions remain open.",
+        "language": "en",
+        "readAt": "2026-10-22",
+        "access": "body-read-scoped"
+      },
+      "limits": "Listing not an inspected script/manual or event record; duration not a universal rule. English spellings and Sanskrit/Malayalam terminology need specialist review. No gesture, performance or translation competence inferred."
+    }
+  ],
+  "originalEvidence": {
+    "docs/pilots/sequences/research/volume-time.json": "4aec6d574a5d5a59e8b04e0a2c667ccbf256fb44d172b3e05da808771a62bfbf",
+    "docs/pilots/sequences/preparation/patch-plans-20261023.json": "bc8a7216e365651afeca501718d58278c65bea1eb858e2ece23e61a8e65e981b",
+    "docs/pilots/sequences/preparation/staging-scores-20261023.json": "22f2d51875a73cdcfb6fa75cb2a5d2efaa25723023475991f9ecd2bd77dad6ec"
+  }
+}

@@ -264,3 +264,75 @@ test('studio diagrams remain keyboard scrollable and readable at narrow widths a
   }
  },{viewport:{width,height:900},colorScheme});
 });
+
+test('law cases offer distinct evidence feedback and never compute an ordinary repair deadline',async()=>run(async page=>{
+ await page.goto(base+'/labs/atlas/x-law-0001/');
+ await page.locator('#case').selectOption('case-3');await page.locator('#category').selectOption('missing-fact');
+ await page.locator('#case-check').focus();await page.keyboard.press('Enter');
+ assert.match(await page.locator('#case-feedback').textContent(),/Your selection fits/);
+ assert.match(await page.locator('#case-calendar').textContent(),/No calendar result/);
+ await page.locator('#case').selectOption('case-8');assert.match(await page.locator('#case-calendar').textContent(),/2026-11-13/);
+ await page.locator('#case').selectOption('case-10');assert.match(await page.locator('#case-calendar').textContent(),/No deadline is calculated/);
+ await page.locator('#notes').fill('PRIVATE case reasoning');await page.reload();
+ assert.equal(await page.locator('#case').inputValue(),'case-10');assert.equal(await page.locator('#notes').inputValue(),'PRIVATE case reasoning');
+ await page.locator('#share').click();assert.ok(!(await page.locator('#share-url').inputValue()).includes('PRIVATE'));
+}));
+test('synthetic counting responds to typed endpoints and refuses unknown or zero-length windows',async()=>run(async page=>{
+ await page.goto(base+'/labs/atlas/x-health-0001/');
+ await page.locator('#start').fill('2');await page.locator('#end').fill('18');await page.locator('#end').press('Tab');
+ assert.match(await page.locator('#cycle-result').textContent(),/11.25 per minute/);
+ assert.match(await page.locator('#cycle-result').textContent(),/Onset landmarks: 2, 3, 4, 5/);
+ await page.reload();assert.equal(await page.locator('#start').inputValue(),'2');assert.equal(await page.locator('#end').inputValue(),'18');
+ await page.locator('#end').fill('21');await page.locator('#end').press('Tab');assert.match(await page.locator('#cycle-result').textContent(),/unknown, not zero/);
+ await page.locator('#end').fill('2');await page.locator('#end').press('Tab');assert.match(await page.locator('#cycle-result').textContent(),/later than/);
+ await page.locator('#phase').selectOption('out');assert.match(await page.locator('#phase-description').textContent(),/relaxes/);
+}));
+test('profession pilots are readable without scripting and fit phone and desktop in both themes',async()=>{
+ for(const width of [320,1280])for(const colorScheme of ['light','dark'])await run(async page=>{
+  for(const name of ['law','health']){
+   await page.goto(base+'/labs/atlas/x-'+name+'-0001/');
+   while(await page.locator('details:not([open]) > summary').count())await page.locator('details:not([open]) > summary').first().click();
+   assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth),false,name+' overflow');
+   await page.screenshot({path:shots+'/'+name+'-'+width+'-'+colorScheme+'.png',fullPage:true});
+   assert.match(await page.locator('main').textContent(),name==='law'?/No deadline is calculated/:/11.25 per minute/);
+  }
+ },{viewport:{width,height:900},colorScheme,javaScriptEnabled:false});
+});
+
+test('archaeology premise controls separate lower-bound and preservation inferences',async()=>run(async page=>{
+ await page.goto(base+'/labs/atlas/x-history-0003/');
+ assert.match(await page.locator('#premise-result').textContent(),/unanchored year/);
+ await page.locator('#year').selectOption('true');assert.match(await page.locator('#premise-result').textContent(),/later that day/);
+ await page.locator('#report').selectOption('true');assert.match(await page.locator('#premise-result').textContent(),/tested setting/);
+ await page.locator('#analogy').selectOption('true');assert.match(await page.locator('#premise-result').textContent(),/neither a universal lifetime nor a probability/);
+ await page.reload();assert.equal(await page.locator('#year').inputValue(),'true');
+ assert.match(await page.locator('#premise-result').textContent(),/No exact eruption day/);
+}));
+test('water paths retain observations and reject impossible delivery requests',async()=>run(async page=>{
+ await page.goto(base+'/labs/atlas/x-agriculture-0002/');await page.locator('#sequence').selectOption('observed-late');
+ assert.match(await page.locator('#water-path').textContent(),/fictional-observation/);
+ await page.locator('#gross').fill('0.75');await page.locator('#gross').press('Tab');assert.match(await page.locator('#water-result').textContent(),/30 hours/);
+ await page.locator('#gross').fill('');await page.locator('#gross').press('Tab');assert.match(await page.locator('#water-result').textContent(),/unknown, not zero/);
+ await page.locator('#gross').fill('0.5');await page.locator('#gross').press('Tab');assert.match(await page.locator('#water-result').textContent(),/ending deficit 0.75/);
+},{viewport:{width:320,height:900}}));
+test('all six follow-up activities retain static evidence, functional controls and phone layout',async()=>{
+ const ids=['history-0002','history-0003','literature-0002','literature-0003','philosophy-0002','agriculture-0002'];
+ for(const colorScheme of ['light','dark'])await run(async page=>{
+  for(const id of ids){await page.goto(base+'/labs/atlas/x-'+id+'/');await page.locator('#notes').waitFor();assert.ok(await page.locator('.sources article').count()>0);assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth),false,id);const c=page.locator('.interactive select').first();if(await c.count()){const values=await c.locator('option').evaluateAll(xs=>xs.map(x=>x.value));await c.selectOption(values.at(-1));}await page.locator('.activity').scrollIntoViewIfNeeded();await page.screenshot({path:shots+'/'+id+'-activity-320-'+colorScheme+'.png'});}
+ },{viewport:{width:320,height:900},colorScheme});
+});
+
+test('ten remaining sequence lessons expose complete static guides and working saved controls',async()=>{
+ const files=['philosophy-langar','law-evidence','law-australia','agriculture-koraput','health-measurement','health-communication','craft-patch','craft-kente','performance-staging','performance-kutiyattam'];
+ const records=await Promise.all(files.map(async name=>JSON.parse(await readFile(new URL('../explorations/'+name+'.json',import.meta.url),'utf8'))));
+ for(const scripting of [false,true])for(const colorScheme of ['light','dark'])await run(async page=>{
+  for(const r of records){
+   await page.goto(base+'/labs/atlas/'+r.id+'/');
+   if(scripting){await page.locator('#notes').waitFor();const c=page.locator('.interactive select').first();const values=await c.locator('option').evaluateAll(xs=>xs.map(x=>x.value));await c.selectOption(values.at(-1));await page.locator('#notes').fill('LOCAL PRIVATE '+r.id);await page.reload();assert.equal(await page.locator('#notes').inputValue(),'LOCAL PRIVATE '+r.id);assert.equal(await page.locator('.interactive select').first().inputValue(),values.at(-1));}
+   else{assert.equal(await page.locator('#notes').isVisible(),false);await page.locator('.static-guide summary').click();assert.ok((await page.locator('main').textContent()).includes(r.activity.transfer));}
+   for(const p of r.passages)assert.equal(await page.locator('#passage-'+p.id+' .passage, #passage-'+p.id+' blockquote').textContent(),p.text);
+   assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1),true,r.id);
+   if(!scripting&&['x-craft-0002','x-health-0002','x-philosophy-0003'].includes(r.id)){await page.locator('.activity').scrollIntoViewIfNeeded();await page.screenshot({path:shots+'/'+r.id+'-static-320-'+colorScheme+'.png'});}
+  }
+ },{viewport:{width:320,height:900},javaScriptEnabled:scripting,colorScheme});
+});

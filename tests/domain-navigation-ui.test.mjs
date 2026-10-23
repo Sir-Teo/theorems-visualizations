@@ -33,7 +33,7 @@ async function run(fn,options={}){const context=await browser.newContext({viewpo
 test('all32domain HTML pages, local targets and delivered module/style bytes resolve without private/draft roots',async()=>{
   const targets=new Set();let pages=0,refs=0;
   async function walk(prefix){for(const e of await readdir(join(output,prefix),{withFileTypes:true})){const path=prefix+'/'+e.name;if(e.isDirectory())await walk(path);else if(path.endsWith('.html')){
-    pages++;const html=await readFile(join(output,path),'utf8');assert.ok(html.includes('noindex,nofollow'));assert.ok(!html.includes('rel="canonical"'));assert.ok(!html.includes('x-craft-0001'));assert.ok(!html.includes('x-performance-0001'));
+    pages++;const html=await readFile(join(output,path),'utf8');assert.ok(html.includes('noindex,nofollow'));assert.ok(!html.includes('rel="canonical"'));
     for(const [,href]of html.matchAll(/(?:href|src)="([^"]+)"/g)){if(/^(?:https?:|#|data:)/.test(href))continue;const u=new URL(href.replaceAll('&amp;','&'),'https://local/'+path);let target=u.pathname.slice(1);if(!target||target.endsWith('/'))target+='index.html';targets.add(target);refs++;}
   }}}
   await walk('domains');assert.equal(pages,32);for(const path of targets)assert.ok((await stat(join(output,path)).catch(()=>null))?.isFile(),path);
@@ -55,7 +55,7 @@ test('field/question/method/route filters compose and reset using keyboard witho
   const before=await page.evaluate(()=>JSON.stringify(Object.entries(localStorage).sort()));
   await page.locator('#query').fill('ＭＡＴＨＥＭＡＴＩＣＳ');assert.ok(await page.locator('[data-domain="D01"]').isVisible());await page.locator('#query').fill('evidence');await page.locator('#method').selectOption('source-comparison');assert.ok(await page.locator('.domain-card:visible').count()>0);
   assert.ok((await page.locator('.domain-card:visible').evaluateAll(xs=>xs.map(x=>x.dataset.methods))).every(s=>s.split(' ').includes('source-comparison')));
-  await page.getByRole('button',{name:'Clear filters'}).click();await page.locator('#route').selectOption('editions');assert.equal(await page.locator('.domain-card:visible').count(),10);assert.equal(await page.locator('#results').textContent(),'10 of 30 available orientations');
+  await page.getByRole('button',{name:'Clear filters'}).click();await page.locator('#route').selectOption('editions');const available=new Set(prepared.data.catalog.overviews.filter(r=>prepared.catalog.explorations.some(e=>e.domainIds.includes(r.domainId))).map(r=>r.domainId)).size;assert.equal(await page.locator('.domain-card:visible').count(),available);assert.equal(await page.locator('#results').textContent(),available+' of 30 available orientations');
   await page.locator('#query').fill('zzzznoresult');assert.equal(await page.locator('#empty').isVisible(),true);await page.locator('#query').press('Enter');assert.equal(new URL(page.url()).search,'');
   await page.getByRole('button',{name:'Clear filters'}).focus();await page.keyboard.press('Enter');assert.equal(await page.locator('.domain-card:visible').count(),30);
   assert.equal(await page.evaluate(()=>JSON.stringify(Object.entries(localStorage).sort())),before);assert.ok(requests.every(u=>u.startsWith(origin+'/')));assert.ok(requests.every(u=>!u.includes('PRIVATE')));

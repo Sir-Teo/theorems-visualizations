@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "id": "x-philosophy-0001",
   "pilotId": "P03",
-  "revision": "0.1.0",
+  "revision": "0.1.1",
   "status": "accepted",
   "publication": "local-preview",
   "title": "Does reciprocity settle a disagreement?",
@@ -378,5 +378,25 @@
       "Explain a proposed action and an objection; swapping roles must not silently swap the other person’s preferences.",
       "Allow another defensible reconstruction. Neither example belongs exclusively to one tradition."
     ]
-  }
+  },
+  "authorVerification": {
+    "kind": "author-check",
+    "scope": "local-preview",
+    "author": "atlas-editor",
+    "checkedOn": "2026-10-23",
+    "revision": "0.1.1",
+    "contentDigest": "57207d8141008eb7316da025b98b338e8c3654480283dcf7d613648e287a9659",
+    "artifactDigest": "dbaacbd6fad332dd6e6f89cf5ae3eea3e50f92215cf0e9f95cf0988d8b89a3a7",
+    "evidencePath": "docs/verification/universal-author-continuation.md",
+    "checks": [
+      "Schema, source-reference and preparation-packet hash validation",
+      "Passed tests/exploration-methods.test.mjs",
+      "Passed tests/exploration-studio.test.mjs",
+      "Passed tests/exploration-professions.test.mjs",
+      "Passed tests/exploration-followups.test.mjs"
+    ]
+  },
+  "previousRevisions": [
+    "0.1.0"
+  ]
 }

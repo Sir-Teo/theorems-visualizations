@@ -1,3 +1,4 @@
+import { EXPLORATION_CODE } from './build-explorations.mjs';
 // Delivery is separate from source acceptance. Frozen local reviews never grant publication.
 import { createHash } from 'node:crypto';
 import { contentDigest, reviewArtifactDigest, validateExploration, EXP_ID } from '../explorations/contract.mjs';
@@ -5,10 +6,11 @@ import { esc } from '../explorations/render.mjs';
 import { canonicalBase } from './static-ideas.mjs';
 import { notebookPage } from './notebook-pages.mjs';
 
-export const REVIEW_CODE = ['explorations/contract.mjs', 'explorations/route-state.mjs', 'explorations/render.mjs', 'explorations/ui.mjs', 'explorations/style.css', 'explorations/method-models.mjs', 'explorations/method-views.mjs', 'explorations/method-ui.mjs', 'explorations/practice-model.mjs', 'explorations/performance-model.mjs', 'explorations/studio-views.mjs', 'explorations/studio-ui.mjs', 'scripts/build-explorations.mjs'];
+const LEGACY_REVIEW_CODE = ['explorations/contract.mjs', 'explorations/route-state.mjs', 'explorations/render.mjs', 'explorations/ui.mjs', 'explorations/style.css', 'explorations/method-models.mjs', 'explorations/method-views.mjs', 'explorations/method-ui.mjs', 'explorations/practice-model.mjs', 'explorations/performance-model.mjs', 'explorations/studio-views.mjs', 'explorations/studio-ui.mjs', 'scripts/build-explorations.mjs'];
+export const REVIEW_CODE = EXPLORATION_CODE;
 export const BROWSER_CODE = REVIEW_CODE.filter(p => !['explorations/contract.mjs', 'explorations/render.mjs', 'scripts/build-explorations.mjs'].includes(p));
 export const DELIVERY_CODE = [...new Set(['scripts/exploration-editions.mjs', 'scripts/notebook-pages.mjs', 'assets/js/notebook-model.js', 'assets/js/notebook-view.js', 'assets/css/notebooks.css', 'scripts/freeze-exploration-editions.mjs', 'scripts/build-exploration-editions.mjs', 'scripts/static-ideas.mjs', 'scripts/build-static-ideas.mjs', 'scripts/lib.mjs', 'static-pages/accepted.json', 'assets/css/exploration-delivery.css', ...REVIEW_CODE])];
-export const SUPPLEMENTS = ['docs/pilots/research/soil-subset.py'];
+export const SUPPLEMENTS = ['docs/pilots/research/soil-subset.py', 'docs/pilots/research/craft-physical-session.md'];
 export const sha = data => createHash('sha256').update(data).digest('hex');
 export const jsonBytes = value => JSON.stringify(value, null, 2) + '\n';
 export const versionOK = value => typeof value === 'string' && /^(0|[1-9]\d{0,5})\.(0|[1-9]\d{0,5})\.(0|[1-9]\d{0,5})$/.test(value);
@@ -19,11 +21,23 @@ export const bundleKey = (id, revision) => id + '@' + revision;
 export const editionPath = (id, revision) => `explore/${id}/versions/${revision}/`;
 export const compareVersions = (a,b) => { const x=a.split('.').map(Number),y=b.split('.').map(Number); return x[0]-y[0] || x[1]-y[1] || x[2]-y[2]; };
 
-export function validateRuntime(runtime) {
-  insist(runtime?.schemaVersion === 1 && runtime.files && Object.keys(runtime.files).sort().join() === [...REVIEW_CODE].sort().join(), 'Unsupported frozen runtime inventory');
-  insist(REVIEW_CODE.every(p => text(runtime.files[p])), 'Frozen runtime source missing');
-  return Object.fromEntries(REVIEW_CODE.map(p => [p, sha(runtime.files[p])]));
+export function runtimeBrowserFiles(runtime) {
+  return Object.keys(runtime.files).filter(p => p.startsWith('explorations/') && !['explorations/contract.mjs','explorations/render.mjs'].includes(p));
 }
+export function validateRuntime(runtime) {
+  const paths = runtime?.files && Object.keys(runtime.files);
+  insist(Array.isArray(paths) && [1,2].includes(runtime.schemaVersion), 'Unsupported frozen runtime inventory');
+  if (runtime.schemaVersion === 1) insist(paths.slice().sort().join() === [...LEGACY_REVIEW_CODE].sort().join(), 'Unsupported frozen runtime inventory');
+  else {
+    insist(LEGACY_REVIEW_CODE.every(p=>paths.includes(p)) && paths.every(p=>LEGACY_REVIEW_CODE.includes(p) || /^explorations\/[a-z][a-z0-9-]*\.(?:mjs|css)$/.test(p)), 'Unsafe or incomplete frozen runtime inventory');
+    // Each runtime retains its own module inventory as the set of methods grows.
+    for (const path of runtimeBrowserFiles(runtime)) for (const [,relative] of String(runtime.files[path]).matchAll(/from\s*['"](\.\/[^'"]+)['"]/g))
+      insist(paths.includes('explorations/' + relative.slice(2)), 'Frozen browser dependency missing: ' + relative);
+  }
+  insist(paths.every(p => text(runtime.files[p])), 'Frozen runtime source missing');
+  return Object.fromEntries(paths.map(p => [p, sha(runtime.files[p])]));
+}
+
 export function validateBundle(bundle, runtime, entry) {
   insist(bundle?.schemaVersion === 1 && EXP_ID.test(bundle.id) && versionOK(bundle.revision), 'Invalid edition identity');
   insist(entry.id === bundle.id && entry.revision === bundle.revision && entry.path === `editions/bundles/${bundle.id}/${bundle.revision}.json`, 'Edition manifest identity/path mismatch');
@@ -37,7 +51,7 @@ export function validateBundle(bundle, runtime, entry) {
   insist(text(bundle.previewHTML) && sha(bundle.previewHTML) === bundle.previewDigest, 'Frozen preview changed');
   insist(bundle.previewHTML.includes(`<script id="exploration-data" type="application/json">${JSON.stringify(record).replace(/</g, '\\u003c')}</script>`), 'Frozen reader payload differs from reviewed record');
   insist(bundle.receipts && typeof bundle.receipts === 'object', 'Frozen review evidence missing');
-  for (const review of record.reviews) {
+  for (const review of [...record.reviews, ...(record.authorVerification ? [record.authorVerification] : [])]) {
     const receipt=bundle.receipts[review.evidencePath];
     insist(text(receipt?.text) && sha(receipt.text) === receipt.sha256, 'Frozen review receipt missing or changed');
   }
@@ -138,8 +152,8 @@ export function renderEditions(entries,runtimes,{mode='preview',base=null}={}) {
       outputs.set(path+'index.html',relocateEdition(bundle,{mode,base}));usedRuntimes.add(bundle.runtimeDigest);if(mode==='release')paths.push(path);
       if(Object.keys(bundle.supplements).length) {
         for(const [source,file]of Object.entries(bundle.supplements))outputs.set(path+'reproduction/'+source,file.text);
-        const recordPath='explorations/agriculture.json';outputs.set(path+'reproduction/'+recordPath,jsonBytes(bundle.record));
-        outputs.set(path+'reproduction/index.html',shell('Reproduce this edition’s data selection',`<h1>Reproduce this edition’s data selection</h1><p>These files are frozen with edition ${esc(bundle.revision)}. Download both files and preserve the shown directory layout under one folder. Supply the original CSV directory yourself; the script checks its exact SHA-256 and performs no network requests or writes.</p><ul>${Object.keys(bundle.supplements).map(p=>`<li><a href="${esc(p)}">${esc(p)}</a></li>`).join('')}<li><a href="${recordPath}">${recordPath}</a></li></ul><pre>python3 docs/pilots/research/soil-subset.py /path/to/original/csv/directory</pre><p>The upstream dataset and attribution are linked in the lesson. This output does not redistribute the original CSV.</p><a href="../">Return to this edition</a>`,5));
+        const measured=bundle.record.activity.type==='measured-data',recordPath=measured?'explorations/agriculture.json':'edition-record.json';outputs.set(path+'reproduction/'+recordPath,jsonBytes(bundle.record));
+        outputs.set(path+'reproduction/index.html',shell(measured?'Reproduce this edition’s data selection':'Retained supporting material',measured?`<h1>Reproduce this edition’s data selection</h1><p>These files are frozen with edition ${esc(bundle.revision)}. Download both files and preserve the shown directory layout under one folder. Supply the original CSV directory yourself; the script checks its exact SHA-256 and performs no network requests or writes.</p><ul>${Object.keys(bundle.supplements).map(p=>`<li><a href="${esc(p)}">${esc(p)}</a></li>`).join('')}<li><a href="${recordPath}">${recordPath}</a></li></ul><pre>python3 docs/pilots/research/soil-subset.py /path/to/original/csv/directory</pre><p>The upstream dataset and attribution are linked in the lesson. This output does not redistribute the original CSV.</p><a href="../">Return to this edition</a>`:`<h1>Retained supporting material</h1><p>These historical preparation documents are frozen with this local edition. They do not establish that a physical or participant session occurred. The current local acceptance policy makes external reviews optional.</p><ul>${Object.keys(bundle.supplements).map(p=>`<li><a href="${esc(p)}">${esc(p)}</a></li>`).join('')}<li><a href="${recordPath}">Edition source record</a></li></ul><a href="../">Return to this edition</a>`,5));
       }
     }
   }
@@ -156,7 +170,7 @@ export function renderEditions(entries,runtimes,{mode='preview',base=null}={}) {
   }
   catalog.sort((a,b)=>a.id.localeCompare(b.id));
   const live=catalog.filter(x=>x.state!=='withdrawn');
-  const intro=mode==='preview'?'These frozen editions are reviewed local previews. They have no public-distribution approval.':'Only editions with explicit, exact distribution and delivery decisions appear here.';
+  const intro=mode==='preview'?'These frozen editions are checked local previews; each retains its actual author-check or independent-review evidence. They have no public-distribution approval.':'Only editions with explicit, exact distribution and delivery decisions appear here.';
   const cards=live.map(r=>`<article><h2><a href="${r.id}/">${esc(r.title)}</a></h2><p>${esc(r.summary)}</p><p>Edition ${esc(r.currentRevision)}</p></article>`).join('');
   outputs.set('explore/index.html',shell('Ways to explore knowledge',`<p class="eyebrow">${mode==='preview'?'Local delivery preview':'Explorations'}</p><h1>Ways to explore knowledge</h1><p>${intro}</p><p>${live.length} current explorations. Edition history does not add to the lesson count.</p>${cards||'<p>No exploration is currently released in this catalog.</p>'}`,1,{base:live.length?base:null,path:'explore/',indexable:mode==='release'&&live.length>0}));
   if(mode==='release'&&live.length)paths.push('explore/');
@@ -171,7 +185,7 @@ export function renderEditions(entries,runtimes,{mode='preview',base=null}={}) {
   }
   for(const digest of usedRuntimes) {
     const runtime=runtimes.get(digest);insist(runtime,'Missing edition runtime');validateRuntime(runtime);
-    for(const file of BROWSER_CODE)outputs.set(`assets/editions/${digest}/${file.slice('explorations/'.length)}`,runtime.files[file]);
+    for(const file of runtimeBrowserFiles(runtime))outputs.set(`assets/editions/${digest}/${file.slice('explorations/'.length)}`,runtime.files[file]);
   }
   return {outputs,canonicalPaths:paths,currentCount:live.length,retainedEditionCount:entries.length,runtimes:usedRuntimes.size};
 }

@@ -1,3 +1,6 @@
+import {renderWater} from './water-ledger.mjs';
+import {renderReasoning} from './reasoning-lab.mjs';
+import {renderProfession} from './profession-views.mjs';
 import {renderStudio} from './studio-views.mjs';
 const esc = value => String(value ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const kind = k => ({ interpretation: 'Interpretation', 'empirical-assumption': 'Empirical assumption', 'normative-addition': 'Normative addition' }[k]);
@@ -39,5 +42,5 @@ export function renderMethod(r) {
     <details><summary>Attribution and reproducible selection</summary><p>Data: Desai, Duff, Wiesner, Mather, Thom, Beverly, A. Crookshanks, Gress and M. Crookshanks. <a href="https://doi.org/10.5281/zenodo.18273606">ReESH_US-DFC, record 18273606</a>, <a href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a>. Changes: all plot 1 rows selected, eight columns projected, x coordinates log10 transformed; no measured values altered.</p><p>File: ${esc(d.sourceFile)}. SHA-256: ${esc(d.sourceSha256)}.</p><p>Excluded columns: ${esc(d.omittedColumns.join(', '))}. <a href="../../../docs/pilots/research/soil-subset.py">Reproduction script</a> verifies the pinned file before comparing the complete projection with this page’s record.</p></details>
     <section class="synthetic"><h3>A separate synthetic model</h3><p>Assume a uniform layer with upper volumetric fraction 0.30, lower fraction 0.15 and depth 0.40 m. Storage difference = (0.30 − 0.15) × 0.40 × 1000 = <strong>60 mm</strong>. The 1000 converts metres to millimetres.</p><p>These are invented model parameters, not measured thresholds, field capacity, wilting point or an irrigation instruction. Changing them does not alter the observed points.</p><div class="interactive" hidden><div class="control-grid"><div><label for="upper">Assumed upper volumetric fraction (0–1)</label><input id="upper" data-model type="number" min="0" max="1" step="any" value="0.3"></div><div><label for="lower">Assumed lower volumetric fraction (0–1)</label><input id="lower" data-model type="number" min="0" max="1" step="any" value="0.15"></div></div><label for="depth">Assumed uniform layer depth (m, greater than 0, up to 2)</label><input id="depth" data-model type="number" min="0" max="2" step="any" value="0.4"><p id="model-result" class="feedback" role="status"></p></div></section>`;
   }
-  return renderStudio(r);
+  return renderWater(r) || renderReasoning(r) || renderProfession(r) || renderStudio(r);
 }

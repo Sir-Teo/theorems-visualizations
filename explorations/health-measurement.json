@@ -1,0 +1,204 @@
+{
+  "schemaVersion": 1,
+  "id": "x-health-0002",
+  "pilotId": "P06",
+  "revision": "0.1.0",
+  "status": "accepted",
+  "publication": "local-preview",
+  "title": "A larger ratio can hide missing observation",
+  "subtitle": "Calculate with three original volume traces.",
+  "summary": "Calculate with three original volume traces. Compare amount, interval-average flow and the effect of cropping an endpoint.",
+  "audience": "General readers; all selected evidence and task instructions are included.",
+  "scope": "Synthetic arithmetic with editorial time zero and piecewise-linear samples. Not patient data, spirometry quality certification, a validated clinical ratio or diagnosis.",
+  "author": "atlas-editor",
+  "updatedOn": "2026-10-23",
+  "domainIds": [
+    "D09",
+    "D02"
+  ],
+  "relatedCollectionIds": [],
+  "knowledgeModes": [
+    "empirical",
+    "formal"
+  ],
+  "methods": [
+    "annotation"
+  ],
+  "prerequisites": [],
+  "sources": [
+    {
+      "id": "followup-seq-nhlbi-lung-tests",
+      "title": "Tests for Lung Disease",
+      "url": "https://www.nhlbi.nih.gov/health/lung-tests",
+      "locator": "Lung function introduction, spirometry, lung volume and diffusion sections; update label. Patient overview, not a technical quality standard. Embedded media, disease interpretation and other test instructions not adopted.",
+      "creator": "National Heart, Lung, and Blood Institute, NIH",
+      "date": "Last updated 4 October 2024",
+      "language": "en",
+      "rights": {
+        "decision": "usable-for-prototype",
+        "basis": "Original attributed summaries and original fictional exercises; no third-party media, full documents or extended quotations copied. Original schematic/arithmetic and links; no image/video redistribution clearance inferred.",
+        "scope": "Local commentary and source links only; no third-party assets or participant consent implied."
+      }
+    },
+    {
+      "id": "followup-seq-niosh-spirometry",
+      "title": "Spirometry Quality Assurance: Common Errors and Their Impact on Test Results",
+      "url": "https://www.cdc.gov/niosh/docs/2012-116/pdfs/2012-116.pdf",
+      "locator": "Title, public-domain/credits pages3–4, introduction/abbreviations pp6–7; Error 5 pp18–19 text and rendered graphs. Dated technical teaching source, not current-standard verification. Source example values, reference equations, thresholds and coaching instructions are excluded. 2019 PMC candidate CAPTCHA and distinct 2022 ERS paper403 were stopped; no alternate copies retrieved.",
+      "creator": "NIOSH; principal contributors Lu-Ann F. Beeckman-Wagner and Diana Freeland",
+      "date": "DHHS (NIOSH) Publication 2012-116, January 2012",
+      "language": "en",
+      "rights": {
+        "decision": "usable-for-prototype",
+        "basis": "Original attributed summaries and original fictional exercises; no third-party media, full documents or extended quotations copied. Page3 explicitly states public domain; current design still uses original samples and diagrams, no copied source figure.",
+        "scope": "Local commentary and source links only; no third-party assets or participant consent implied."
+      }
+    }
+  ],
+  "passages": [
+    {
+      "id": "quantities",
+      "sourceId": "followup-seq-nhlbi-lung-tests",
+      "title": "Name the quantity",
+      "form": "paraphrase",
+      "language": "en",
+      "text": "NHLBI distinguishes exhaled amount and speed in spirometry from lung-volume and diffusion testing. A quantity from one kind of test is not automatically a result from the others.",
+      "context": "Original bounded summary of the dated source reading; see source scope and limits.",
+      "sha256": "af3a403448abef26c20f6aee2c76343f8ee7635f9e2c199fdc4edee7e08f6f55"
+    },
+    {
+      "id": "quality",
+      "sourceId": "followup-seq-niosh-spirometry",
+      "title": "A dated measurement lesson",
+      "form": "paraphrase",
+      "language": "en",
+      "text": "The 2012 NIOSH guide illustrates early termination as a source of misleading results. Its historical criteria, patient examples and coaching protocol are excluded from this exercise.",
+      "context": "Original bounded summary of the dated source reading; see source scope and limits.",
+      "sha256": "3b47d2aa5ecf2d1c0f0951a5c4bdc9ae648ddee620c748e93db78d8f0c28eeed"
+    },
+    {
+      "id": "trace-a",
+      "sourceId": "followup-seq-nhlbi-lung-tests",
+      "title": "Original trace A: seconds, litres",
+      "form": "original",
+      "language": "en",
+      "text": "Samples (s, L): (0,0); (0.5,2); (1,3); (2,3.6); (3,3.9); (4,4); (5,4). The authored mathematical endpoint is 4 L. Between listed samples only, use straight-line interpolation.",
+      "context": "Original fictional scenario; associated source supplies a method/context only, not these facts.",
+      "sha256": "891d7376a98b7ccaebf59c8d1ef4ffaeff214065290c3c62b1f72ae5d7c76445"
+    },
+    {
+      "id": "trace-b",
+      "sourceId": "followup-seq-nhlbi-lung-tests",
+      "title": "Original trace B: seconds, litres",
+      "form": "original",
+      "language": "en",
+      "text": "Samples (s, L): (0,0); (0.5,1); (1,2); (2,3); (3,3.6); (4,4); (5,4). The authored mathematical endpoint is 4 L. These numbers are not measurements of a person.",
+      "context": "Original fictional scenario; associated source supplies a method/context only, not these facts.",
+      "sha256": "1dd1defe47900247f93ec681da4c6f8f0d0b52917478ab21072e72ee4f01cf6f"
+    },
+    {
+      "id": "crop",
+      "sourceId": "followup-seq-nhlbi-lung-tests",
+      "title": "Original cropped trace A",
+      "form": "original",
+      "language": "en",
+      "text": "Retain only (0,0); (0.5,2); (1,3); (2,3.6). The observed endpoint is 3.6 L. The complete endpoint is unknown within this cropped observation; the last point does not certify a completed manoeuvre.",
+      "context": "Original fictional scenario; associated source supplies a method/context only, not these facts.",
+      "sha256": "53776147662d723ee8c68d80df7eb782c7e50d616fb0929b587c254f7a0230ed"
+    }
+  ],
+  "claims": [
+    {
+      "id": "scope-of-evidence",
+      "kind": "interpretive",
+      "text": "Keep amount, interval-average rate and dimensionless ratio distinct.",
+      "passageIds": [
+        "quantities"
+      ],
+      "qualification": "Synthetic arithmetic with editorial time zero and piecewise-linear samples. Not patient data, spirometry quality certification, a validated clinical ratio or diagnosis."
+    }
+  ],
+  "context": [
+    "The NHLBI overview was read again on 23 October. NIOSH is a dated teaching source; stopped current-standard candidates remain unverified.",
+    "The complete sample arrays and arithmetic are retained in the source preparation. No breathing exercise or personal health input is requested."
+  ],
+  "timeline": [],
+  "relations": [],
+  "reviews": [],
+  "reviewRequirements": [
+    "content",
+    "rights"
+  ],
+  "reviewLimitations": [
+    "Local author check only. No independent reviewer, professional credential, actual learner/access observation, community endorsement or physical outcome is claimed."
+  ],
+  "activity": {
+    "type": "annotation",
+    "lenses": [
+      {
+        "id": "units",
+        "label": "Amount and average flow",
+        "observation": "Trace A rises by 2 L in its first 0.5 s.",
+        "question": "Compute the interval-average flow and convert the amount to mL.",
+        "readings": [
+          "The amount is 2000 mL; dividing 2 L by 0.5 s gives 4 L/s.",
+          "Trace B rises 1 L in the same interval: 2 L/s, although both full traces end at 4 L."
+        ],
+        "boundary": "Amount and average flow have different units. Neither value is a health classification."
+      },
+      {
+        "id": "ratio",
+        "label": "Keep the denominator visible",
+        "observation": "The one-second amounts are 3 L and 2 L; the full authored endpoints are both 4 L.",
+        "question": "What happens when the observed endpoint replaces the full one?",
+        "readings": [
+          "A gives 3/4 and B gives 1/2. Cropped A gives 3/3.6 = 5/6.",
+          "The ratio rises after cropping because its denominator falls; this does not demonstrate improved physiology."
+        ],
+        "boundary": "Label it volume at 1 s / observed end volume, not a certified clinical ratio."
+      },
+      {
+        "id": "missing",
+        "label": "Distinguish unknown from zero",
+        "observation": "The cropped observation contains no sample after 2 s.",
+        "question": "What would justify a claim about a complete clinical test?",
+        "readings": [
+          "Additional measurements alone do not settle calibration, effort, time-zero and protocol quality.",
+          "A current technical standard and appropriate clinical evidence would be separate from the arithmetic here."
+        ],
+        "boundary": "Do not extrapolate the crop, perform a self-test or infer disease."
+      }
+    ],
+    "transfer": "Create an arithmetic counterexample: keep a 1-second numerator fixed and lower the observed endpoint while keeping it above that numerator. Show why the ratio rises and list the observation you removed.",
+    "rubric": [
+      "Keep amount, interval-average rate and dimensionless ratio distinct.",
+      "Use the explicitly authored samples and units.",
+      "Treat a cropped endpoint as incomplete evidence.",
+      "Do not interpret a synthetic ratio clinically."
+    ]
+  },
+  "extensions": {
+    "atlas:preparation": {
+      "path": "docs/pilots/sequences/preparation/remaining-sequences-20261023.json",
+      "scope": "Exact historical source receipts retained; current exercise is independently identified original authoring."
+    }
+  },
+  "authorVerification": {
+    "kind": "author-check",
+    "scope": "local-preview",
+    "author": "atlas-editor",
+    "checkedOn": "2026-10-23",
+    "revision": "0.1.0",
+    "contentDigest": "a786958df7c1f229d915d9677c5e2f79461fac721511770a4c3311c8f5bd6cc1",
+    "artifactDigest": "e0e19db9533cf3619ec153d66b656aa6b2c49e4a3939106436510311636ef1b6",
+    "evidencePath": "docs/verification/universal-author-sequences.md",
+    "checks": [
+      "Schema, source-reference and preparation-packet hash validation",
+      "Passed tests/exploration-methods.test.mjs",
+      "Passed tests/exploration-studio.test.mjs",
+      "Passed tests/exploration-professions.test.mjs",
+      "Passed tests/exploration-followups.test.mjs",
+      "Passed tests/exploration-sequences.test.mjs"
+    ]
+  }
+}

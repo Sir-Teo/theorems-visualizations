@@ -40,3 +40,6 @@ body{overflow-wrap:anywhere}.site-header>*{min-width:0}
 .studio-diagram{overflow-x:auto;max-width:100%;margin:1rem 0}.studio-diagram:focus-visible{outline:3px solid var(--accent);outline-offset:2px}.studio-diagram svg{display:block;width:100%;min-width:400px;max-width:720px;height:auto;font:14px system-ui;fill:var(--ink)}.phrase-diagram svg{min-width:760px;max-width:100%}.warp-strip{fill:var(--accent)}.weft-strip{fill:var(--soft);stroke:var(--control)}.crossing-letter{fill:var(--ink);stroke:var(--panel);stroke-width:3px;paint-order:stroke;stroke-linejoin:round;font-weight:700}.selected-crossing{outline:3px solid var(--accent);outline-offset:-3px;font-weight:800}.phrase-tone{fill:var(--accent)}.focused-event{stroke:var(--ink);stroke-width:3px}
 
 .event-table{min-width:42rem}
+/* Long numeric headings stay readable in a keyboard-scrollable region on phones. */
+.water-budget-table{min-width:44rem}.cycle-table{min-width:32rem}
+.cycle-figure{overflow-x:auto;max-width:100%}.cycle-figure svg{display:block;width:100%;min-width:30rem;height:auto;fill:var(--ink);font:14px system-ui}

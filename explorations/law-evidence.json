@@ -1,0 +1,218 @@
+{
+  "schemaVersion": 1,
+  "id": "x-law-0002",
+  "pilotId": "P04",
+  "revision": "0.1.0",
+  "status": "accepted",
+  "publication": "local-preview",
+  "title": "What does this evidence establish?",
+  "subtitle": "Separate a recorded malfunction, a statutory presumption and a remedy condition.",
+  "summary": "Separate a recorded malfunction, a statutory presumption and a remedy condition. Work through fictional evidence cards without calculating a personal entitlement.",
+  "audience": "General readers; all selected evidence and task instructions are included.",
+  "scope": "Reading exercise on selected Consumer Rights Act 2015 provisions for the stated England-and-Wales scenario. Section-specific editorial snapshots are retained; not a consolidated legal opinion.",
+  "author": "atlas-editor",
+  "updatedOn": "2026-10-23",
+  "domainIds": [
+    "D16",
+    "D02"
+  ],
+  "relatedCollectionIds": [],
+  "knowledgeModes": [
+    "normative",
+    "interpretive"
+  ],
+  "methods": [
+    "annotation"
+  ],
+  "prerequisites": [],
+  "sources": [
+    {
+      "id": "followup-seq-cra19",
+      "title": "Consumer Rights Act 2015, s19: Consumer's rights to enforce terms about goods",
+      "url": "https://www.legislation.gov.uk/ukpga/2015/15/section/19",
+      "locator": "Complete s19 body, change/commencement notices and licence footer. Web reader rejected XHTML content type; same public URL downloaded successfully and parsed locally. Outstanding/future effects and consolidated legal date not professionally verified.",
+      "creator": "UK Parliament; revised text supplied by legislation.gov.uk",
+      "date": "Latest-available revised page retrieved 22 October 2026; notice says known changes through 20 October 2026",
+      "language": "en",
+      "rights": {
+        "decision": "usable-for-prototype",
+        "basis": "Original attributed summaries and original fictional exercises; no third-party media, full documents or extended quotations copied. Site identifies OGL v3.0 with exceptions; original case and links now, exact excerpt/attribution review before release.",
+        "scope": "Local commentary and source links only; no third-party assets or participant consent implied."
+      }
+    },
+    {
+      "id": "followup-seq-cra23",
+      "title": "Consumer Rights Act 2015, s23: Right to repair or replacement",
+      "url": "https://www.legislation.gov.uk/ukpga/2015/15/section/23",
+      "locator": "Complete s23 body, change/commencement notices and licence footer. Web reader rejected XHTML content type; same public URL downloaded successfully and parsed locally. Outstanding/future effects and consolidated legal date not professionally verified.",
+      "creator": "UK Parliament; revised text supplied by legislation.gov.uk",
+      "date": "Latest-available revised page retrieved 22 October 2026; notice says known changes through 21 October 2026",
+      "language": "en",
+      "rights": {
+        "decision": "usable-for-prototype",
+        "basis": "Original attributed summaries and original fictional exercises; no third-party media, full documents or extended quotations copied. Site identifies OGL v3.0 with exceptions; original case and links now, exact excerpt/attribution review before release.",
+        "scope": "Local commentary and source links only; no third-party assets or participant consent implied."
+      }
+    },
+    {
+      "id": "followup-seq-cra24",
+      "title": "Consumer Rights Act 2015, s24: Right to price reduction or final right to reject",
+      "url": "https://www.legislation.gov.uk/ukpga/2015/15/section/24",
+      "locator": "Complete s24 body and change/commencement notices; related provision bodies require final scoped review. Web reader rejected XHTML content type; same public URL downloaded successfully and parsed locally. Outstanding/future effects and consolidated legal date not professionally verified.",
+      "creator": "UK Parliament; revised text supplied by legislation.gov.uk",
+      "date": "Latest-available revised page retrieved 22 October 2026; notice says known changes through 21 October 2026",
+      "language": "en",
+      "rights": {
+        "decision": "usable-for-prototype",
+        "basis": "Original attributed summaries and original fictional exercises; no third-party media, full documents or extended quotations copied. Site identifies OGL v3.0 with exceptions; original case and links now, exact excerpt/attribution review before release.",
+        "scope": "Local commentary and source links only; no third-party assets or participant consent implied."
+      }
+    }
+  ],
+  "passages": [
+    {
+      "id": "presumption",
+      "sourceId": "followup-seq-cra19",
+      "title": "Locate the proposition",
+      "form": "paraphrase",
+      "language": "en",
+      "text": "Section 19(14) names routes in (3)(b), (c) and (4), with exceptions in (15). The presumption concerns conformity at delivery; it is not an unconditional six-month refund rule or an automatic extension to (3)(a).",
+      "context": "Original bounded summary of the dated source reading; see source scope and limits.",
+      "sha256": "265d9298cdb89f25212f5b21cee1885b85862967875c58c8e90937fb0400568f"
+    },
+    {
+      "id": "repair",
+      "sourceId": "followup-seq-cra23",
+      "title": "Locate the remedy conditions",
+      "form": "paraphrase",
+      "language": "en",
+      "text": "Section 23 addresses repair or replacement, including impossibility, disproportion, reasonable time and significant inconvenience. These conditions need their own facts.",
+      "context": "Original bounded summary of the dated source reading; see source scope and limits.",
+      "sha256": "068372252a736763394ed5b04f3dd0033060fe942f9e10edab889722e6988e16"
+    },
+    {
+      "id": "progression",
+      "sourceId": "followup-seq-cra24",
+      "title": "Request versus completion",
+      "form": "paraphrase",
+      "language": "en",
+      "text": "Section 24(5)–(7) distinguishes routes to price reduction or final rejection. Asking for a repair does not establish that a repair was completed.",
+      "context": "Original bounded summary of the dated source reading; see source scope and limits.",
+      "sha256": "bd2a3da35893dd5951760c9093b3b5a44db4851fd792c574962c03ad087ed09f"
+    },
+    {
+      "id": "recording",
+      "sourceId": "followup-seq-cra19",
+      "title": "Fictional file: a kettle",
+      "form": "original",
+      "language": "en",
+      "text": "Delivery record: 1 March. Video: the kettle does not switch on on 1 May. The video says nothing about the internal cause or condition on delivery. A repair was requested on 3 May. No completion record is present.",
+      "context": "Original fictional scenario; associated source supplies a method/context only, not these facts.",
+      "sha256": "3f26da508f9a3ac8e5ca4435928829b8ddb29026afc91c00630834128d26a160"
+    },
+    {
+      "id": "competing",
+      "sourceId": "followup-seq-cra19",
+      "title": "Two additional fictional cards",
+      "form": "original",
+      "language": "en",
+      "text": "Card A: a report alleges a latent component fault but explains no test. Card B: a dated photograph shows later impact damage but does not establish whether it caused the malfunction. Both causes remain disputed.",
+      "context": "Original fictional scenario; associated source supplies a method/context only, not these facts.",
+      "sha256": "5499cf405a6036fd7ae6e1c6b62384cfdcc0915195d1146714bad1ed0edd785a"
+    }
+  ],
+  "claims": [
+    {
+      "id": "scope-of-evidence",
+      "kind": "interpretive",
+      "text": "Separate the observed failure from its cause and delivery condition.",
+      "passageIds": [
+        "presumption"
+      ],
+      "qualification": "Reading exercise on selected Consumer Rights Act 2015 provisions for the stated England-and-Wales scenario. Section-specific editorial snapshots are retained; not a consolidated legal opinion."
+    }
+  ],
+  "context": [
+    "Sections 19, 23 and 24 were read again on 23 October; downloaded bodies match the retained hashes. Notices retain different known-change cutoffs; a common effective-date consolidation is not claimed.",
+    "No personal transactions, documents or litigation assessment are requested. The example is an original teaching file."
+  ],
+  "timeline": [],
+  "relations": [],
+  "reviews": [],
+  "reviewRequirements": [
+    "content",
+    "rights"
+  ],
+  "reviewLimitations": [
+    "Local author check only. No independent reviewer, professional credential, actual learner/access observation, community endorsement or physical outcome is claimed."
+  ],
+  "activity": {
+    "type": "annotation",
+    "lenses": [
+      {
+        "id": "proposition",
+        "label": "Identify the disputed proposition",
+        "observation": "The May recording shows the stipulated malfunction; delivery condition and cause remain separate.",
+        "question": "Which proposition does each card support?",
+        "readings": [
+          "Build a row for the recorded failure, a row for delivery condition and a row for cause; locate each source.",
+          "Ask what inspection or provenance evidence would distinguish the competing explanations."
+        ],
+        "boundary": "Do not assign a numerical probability of winning or invent an inspection result."
+      },
+      {
+        "id": "route",
+        "label": "Read the route before using a presumption",
+        "observation": "The named cross-references and exceptions limit the presumption.",
+        "question": "Why is selecting a remedy route necessary before invoking s19(14)?",
+        "readings": [
+          "Trace the actual cross-references and keep their exclusions visible.",
+          "Explain how contrary delivery/cause evidence would require further analysis instead of an automatic result."
+        ],
+        "boundary": "Elapsed time alone does not establish a complete entitlement."
+      },
+      {
+        "id": "completion",
+        "label": "Find the missing event",
+        "observation": "A request appears in the file but a completed repair does not.",
+        "question": "What changes if a dated return-after-repair record is later supplied?",
+        "readings": [
+          "It can supply evidence of an event missing from the current file.",
+          "It still does not automatically establish every condition of the chosen remedy."
+        ],
+        "boundary": "No universal deadline or procedural advice is supplied."
+      }
+    ],
+    "transfer": "Write a three-column note: proposition, supporting evidence, unresolved question. Then identify the exact provision needed for one selected remedy route. Explain why the video alone is insufficient.",
+    "rubric": [
+      "Separate the observed failure from its cause and delivery condition.",
+      "Read the presumption’s named routes and exceptions.",
+      "Keep remedy conditions separate from factual evidence.",
+      "Treat an unrecorded completion as unknown, not as a completed repair."
+    ]
+  },
+  "extensions": {
+    "atlas:preparation": {
+      "path": "docs/pilots/sequences/preparation/remaining-sequences-20261023.json",
+      "scope": "Exact historical source receipts retained; current exercise is independently identified original authoring."
+    }
+  },
+  "authorVerification": {
+    "kind": "author-check",
+    "scope": "local-preview",
+    "author": "atlas-editor",
+    "checkedOn": "2026-10-23",
+    "revision": "0.1.0",
+    "contentDigest": "db3eacd4814124afd60f3f92635cb7832e642fed3988191969f4f4715635f82d",
+    "artifactDigest": "e1c417c6cf76f1a0fbc1d0d756a61b57ce4732f026bf1f55501c1c4574f31b29",
+    "evidencePath": "docs/verification/universal-author-sequences.md",
+    "checks": [
+      "Schema, source-reference and preparation-packet hash validation",
+      "Passed tests/exploration-methods.test.mjs",
+      "Passed tests/exploration-studio.test.mjs",
+      "Passed tests/exploration-professions.test.mjs",
+      "Passed tests/exploration-followups.test.mjs",
+      "Passed tests/exploration-sequences.test.mjs"
+    ]
+  }
+}

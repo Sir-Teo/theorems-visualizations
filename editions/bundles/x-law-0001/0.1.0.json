@@ -1,0 +1,385 @@
+{
+  "schemaVersion": 1,
+  "id": "x-law-0001",
+  "revision": "0.1.0",
+  "record": {
+    "schemaVersion": 1,
+    "id": "x-law-0001",
+    "pilotId": "P04",
+    "revision": "0.1.0",
+    "status": "accepted",
+    "publication": "local-preview",
+    "title": "A faulty kettle: what does the evidence establish?",
+    "subtitle": "Separate facts, rules and calendar arithmetic.",
+    "summary": "Compare ten fictional records. Identify a missing fact, distinguish two time limits and explain why a calendar alone cannot decide a dispute.",
+    "audience": "General readers; no legal vocabulary assumed.",
+    "scope": "England and Wales; illustrative in-person consumer purchase from a trader. This is a source-reading exercise, not a decision about your dispute or a certified current-law consolidation.",
+    "author": "atlas-editor",
+    "updatedOn": "2026-10-23",
+    "domainIds": [
+      "D16",
+      "D14"
+    ],
+    "relatedCollectionIds": [
+      "micro",
+      "polsci"
+    ],
+    "knowledgeModes": [
+      "normative",
+      "interpretive"
+    ],
+    "methods": [
+      "case-reasoning"
+    ],
+    "prerequisites": [],
+    "sources": [
+      {
+        "id": "cra9",
+        "title": "Consumer Rights Act 2015, section 9",
+        "url": "https://www.legislation.gov.uk/ukpga/2015/15/section/9",
+        "locator": "quality and disclosed-fault exceptions",
+        "creator": "UK legislation publishing service",
+        "date": "2015 Act; named HTML section read 2026-10-23; editorial cutoff varies",
+        "language": "English",
+        "rights": {
+          "decision": "usable-for-prototype",
+          "basis": "Original explanatory prose and fictional examples with source links. No third-party images, animation, textbook passages or full statutory text are reproduced.",
+          "scope": "Local educational preview; no endorsement or professional approval is implied."
+        }
+      },
+      {
+        "id": "cra19",
+        "title": "Consumer Rights Act 2015, section 19",
+        "url": "https://www.legislation.gov.uk/ukpga/2015/15/section/19",
+        "locator": "remedies and relationship to conformity",
+        "creator": "UK legislation publishing service",
+        "date": "2015 Act; named HTML section read 2026-10-23; editorial cutoff varies",
+        "language": "English",
+        "rights": {
+          "decision": "usable-for-prototype",
+          "basis": "Original explanatory prose and fictional examples with source links. No third-party images, animation, textbook passages or full statutory text are reproduced.",
+          "scope": "Local educational preview; no endorsement or professional approval is implied."
+        }
+      },
+      {
+        "id": "cra20",
+        "title": "Consumer Rights Act 2015, section 20",
+        "url": "https://www.legislation.gov.uk/ukpga/2015/15/section/20",
+        "locator": "clear rejection and refund obligations",
+        "creator": "UK legislation publishing service",
+        "date": "2015 Act; named HTML section read 2026-10-23; editorial cutoff varies",
+        "language": "English",
+        "rights": {
+          "decision": "usable-for-prototype",
+          "basis": "Original explanatory prose and fictional examples with source links. No third-party images, animation, textbook passages or full statutory text are reproduced.",
+          "scope": "Local educational preview; no endorsement or professional approval is implied."
+        }
+      },
+      {
+        "id": "cra22",
+        "title": "Consumer Rights Act 2015, section 22",
+        "url": "https://www.legislation.gov.uk/ukpga/2015/15/section/22",
+        "locator": "subsections 3–8: start, exceptions, repair waiting period",
+        "creator": "UK legislation publishing service",
+        "date": "2015 Act; named HTML section read 2026-10-23; editorial cutoff varies",
+        "language": "English",
+        "rights": {
+          "decision": "usable-for-prototype",
+          "basis": "Original explanatory prose and fictional examples with source links. No third-party images, animation, textbook passages or full statutory text are reproduced.",
+          "scope": "Local educational preview; no endorsement or professional approval is implied."
+        }
+      }
+    ],
+    "passages": [
+      {
+        "id": "quality",
+        "sourceId": "cra9",
+        "title": "A disclosed scratch and a different alleged defect",
+        "form": "paraphrase",
+        "language": "en",
+        "text": "The quality test considers the goods and the circumstances. A condition specifically brought to the buyer’s attention before the contract is treated differently from an undisclosed problem. A disclosed scratch does not, by itself, settle an unrelated allegation about an electrical fault.",
+        "context": "Original explanation of section 9, especially (2)–(4). The activity stipulates a consumer, a trader and a paid shop sale; it does not determine that status for a real person.",
+        "sha256": "c5dd4985ba37430c45a8cc34abf3b7a9e7dc6ea1fdd86ddd9d230abe9042918f"
+      },
+      {
+        "id": "remedies",
+        "sourceId": "cra19",
+        "title": "One route is not every remedy",
+        "form": "paraphrase",
+        "language": "en",
+        "text": "Section 19 connects nonconformity with different remedies. The six-month provision in subsection (14) names particular routes; it is not a universal shortcut for proving every issue in a short-term rejection. A recording of a malfunction does not by itself establish its cause or its condition at delivery.",
+        "context": "Original explanation of the selected remedy provisions. Only the fictional record is assessed; no automatic burden-of-proof decision is made.",
+        "sha256": "bd241bc5787232070a617870d036ff501f1771fd585d0f941003d3a90917143b"
+      },
+      {
+        "id": "communication",
+        "sourceId": "cra20",
+        "title": "Rejection and a separate refund clock",
+        "form": "paraphrase",
+        "language": "en",
+        "text": "Rejection needs a sufficiently clear indication that the goods are rejected and the contract treated as ended. A question about repair does not necessarily communicate that. The refund provision requires action without undue delay and sets a fourteen-day outer period beginning with the day the trader agrees the consumer is entitled to a refund.",
+        "context": "Original explanation of section 20(5)–(6), (15). Return arrangements and this refund-agreement clock are distinct from the short-term rejection clock.",
+        "sha256": "14fa813fa2333accb09ed8e357e67bc0cfe4174d3ad2ed2aae26e9238e2f8f9e"
+      },
+      {
+        "id": "calendar",
+        "sourceId": "cra22",
+        "title": "A conditional thirty-day calendar",
+        "form": "paraphrase",
+        "language": "en",
+        "text": "In the unextended ordinary example, counting begins on the first day after all relevant ownership or possession, delivery and any required installation or enabling-action conditions have occurred. Purchase day alone is insufficient. The section also addresses earlier exercise, perishable goods and repair waiting periods. Those exceptions cannot be resolved by applying the ordinary thirty-day arithmetic indiscriminately.",
+        "context": "Original explanation of section 22(3)–(8). The calculator uses only stipulated conditions-complete dates. Its dates are examples, not legal-effective dates.",
+        "sha256": "f75975e842010b8ea76430140513c8624eee3e3b971fc8fc26cad6408d9a887e"
+      }
+    ],
+    "claims": [
+      {
+        "id": "clock-not-case",
+        "kind": "normative",
+        "text": "The selected rule and a calendar result do not establish all facts needed for a legal conclusion.",
+        "passageIds": [
+          "calendar",
+          "remedies"
+        ],
+        "qualification": "Educational reasoning about stipulated cases; no individual entitlement is decided."
+      },
+      {
+        "id": "two-clocks",
+        "kind": "textual",
+        "text": "The selected provisions use different events to start the rejection and refund clocks.",
+        "passageIds": [
+          "calendar",
+          "communication"
+        ],
+        "qualification": "Read the cited provision and its qualifications; the two clock calculations are deliberately separate."
+      }
+    ],
+    "context": [
+      "Consumer and trader are stipulated roles in these examples. Conformity concerns whether the supplied goods meet relevant contract requirements; a remedy is a legal response to an established failure.",
+      "A fact stated by the exercise is an assumption, not a document you have independently proved. A missing fact must remain missing.",
+      "Source inspection: 23 October 2026. Displayed editorial cutoffs are 22 October for sections 9/20, 20 October for section 19 and 21 October for section 22, with outstanding/future-change notices. No common certified legal snapshot is claimed.",
+      "The examples exclude finance, services, digital content, perishables and installation. Repair waiting-period arithmetic is outside this version.",
+      "The calendar is computed in whole UTC civil days, avoiding daylight-saving hour differences. An elapsed short-term window does not mean every possible remedy has expired."
+    ],
+    "timeline": [],
+    "relations": [],
+    "reviews": [],
+    "reviewRequirements": [
+      "content",
+      "rights"
+    ],
+    "reviewLimitations": [
+      "Author checks support this local educational preview. Independent professional and participant reviews have not been performed and are not required for local continuation."
+    ],
+    "activity": {
+      "type": "case-reasoning",
+      "jurisdiction": "England and Wales",
+      "legalSnapshotCertified": false,
+      "snapshotScope": "Named displayed provisions, inspected 2026-10-23; no common legal-effective snapshot certified.",
+      "cases": [
+        {
+          "id": "case-1",
+          "title": "Last day, with facts stipulated",
+          "facts": "New domestic kettle from a trader; single paid sale in a shop; s9 nonconformity at delivery stipulated; all trigger conditions complete 1 October; clear rejection communicated 31 October.",
+          "category": "conditional-route",
+          "feedback": "Under the stipulated ordinary conditions, 31 October is day 30. The example assumes a qualifying defect and a clear rejection; the calendar does not prove either.",
+          "passageIds": [
+            "quality",
+            "calendar",
+            "communication"
+          ],
+          "repair": false,
+          "conditionsComplete": "2026-10-01",
+          "observation": "2026-10-31",
+          "refundAgreed": null
+        },
+        {
+          "id": "case-2",
+          "title": "The following day",
+          "facts": "Same delivery and stipulated defect; communication moved to 1 November; no extension agreement or repair request.",
+          "category": "outside-scope",
+          "feedback": "1 November is outside the modelled unextended thirty-day period. Other remedies are not assessed and are not declared unavailable.",
+          "passageIds": [
+            "calendar",
+            "remedies"
+          ],
+          "repair": false,
+          "conditionsComplete": "2026-10-01",
+          "observation": "2026-11-01",
+          "refundAgreed": null
+        },
+        {
+          "id": "case-3",
+          "title": "Receipt and delivery are different",
+          "facts": "Payment receipt 1 October; delivery note 5 October; ownership-transfer date not given.",
+          "category": "missing-fact",
+          "feedback": "The receipt and delivery note do not give the ownership-transfer fact. Do not substitute purchase day for the date all clock conditions were met.",
+          "passageIds": [
+            "calendar"
+          ],
+          "repair": false,
+          "conditionsComplete": null,
+          "observation": null,
+          "refundAgreed": null
+        },
+        {
+          "id": "case-4",
+          "title": "A malfunction on video",
+          "facts": "A video shows malfunction on 10 October; cause and condition at delivery disputed.",
+          "category": "missing-fact",
+          "feedback": "The video supports the described malfunction at that moment. It does not establish its cause or the delivery condition, and this exercise does not assign a legal burden by presumption.",
+          "passageIds": [
+            "remedies"
+          ],
+          "repair": false,
+          "conditionsComplete": null,
+          "observation": null,
+          "refundAgreed": null
+        },
+        {
+          "id": "case-5",
+          "title": "A disclosed scratch",
+          "facts": "A scratch was specifically disclosed before sale; an unrelated electrical fault is alleged.",
+          "category": "missing-fact",
+          "feedback": "Keep the specifically disclosed scratch separate from the alleged electrical fault. The latter still needs evidence; one disclosure is not a blanket answer.",
+          "passageIds": [
+            "quality"
+          ],
+          "repair": false,
+          "conditionsComplete": null,
+          "observation": null,
+          "refundAgreed": null
+        },
+        {
+          "id": "case-6",
+          "title": "A different preferred colour",
+          "facts": "Kettle functions as described; buyer changes preferred colour after an in-person sale.",
+          "category": "outside-scope",
+          "feedback": "Changing a colour preference is not the stipulated quality defect. A voluntary returns policy or a different type of contract would need its own facts.",
+          "passageIds": [
+            "quality"
+          ],
+          "repair": false,
+          "conditionsComplete": null,
+          "observation": null,
+          "refundAgreed": null
+        },
+        {
+          "id": "case-7",
+          "title": "An inquiry about repair",
+          "facts": "Buyer asks whether the shop can repair the kettle; no clear rejection statement is stipulated.",
+          "category": "missing-fact",
+          "feedback": "The wording does not establish a clear rejection. An actual repair request can also affect the clock; do not infer both from mere contact.",
+          "passageIds": [
+            "communication",
+            "calendar"
+          ],
+          "repair": false,
+          "conditionsComplete": null,
+          "observation": null,
+          "refundAgreed": null
+        },
+        {
+          "id": "case-8",
+          "title": "Agreement to refund",
+          "facts": "Trader agrees to refund on 31 October; return collection is discussed separately.",
+          "category": "separate-clock",
+          "feedback": "31 October is day one of the separate illustrative refund period, giving 13 November as its outer date. The duty to act without undue delay remains relevant.",
+          "passageIds": [
+            "communication"
+          ],
+          "repair": false,
+          "conditionsComplete": null,
+          "observation": null,
+          "refundAgreed": "2026-10-31"
+        },
+        {
+          "id": "case-9",
+          "title": "Before delivery",
+          "facts": "Goods have not yet been delivered; a clear rejection is proposed.",
+          "category": "missing-fact",
+          "feedback": "No completed clock-trigger date is supplied. A counting window that has not started is not automatically a bar to exercising a right earlier; other conditions still matter.",
+          "passageIds": [
+            "calendar"
+          ],
+          "repair": false,
+          "conditionsComplete": null,
+          "observation": null,
+          "refundAgreed": null
+        },
+        {
+          "id": "case-10",
+          "title": "A repair waiting period",
+          "facts": "Repair agreed; returned item may still be nonconforming.",
+          "category": "outside-scope",
+          "feedback": "This version does not model repair waiting periods or returned-goods conditions. It deliberately returns no ordinary deadline for this case.",
+          "passageIds": [
+            "calendar"
+          ],
+          "repair": true,
+          "conditionsComplete": null,
+          "observation": null,
+          "refundAgreed": null
+        }
+      ],
+      "transfer": "A receipt is dated 1 March, delivery is dated 5 March, and ownership transfer is unstated. Name the missing fact before attempting the ordinary calendar. Then explain why an unrelated disclosed scratch would not settle a different alleged defect.",
+      "rubric": [
+        "Separate the date of purchase from all required clock-trigger conditions.",
+        "Identify the exact proposition each document supports; do not infer delivery condition from later malfunction alone.",
+        "Keep rejection, refund agreement and any repair waiting period separate.",
+        "State which route is outside the model without declaring every remedy unavailable."
+      ]
+    },
+    "extensions": {},
+    "authorVerification": {
+      "kind": "author-check",
+      "scope": "local-preview",
+      "author": "atlas-editor",
+      "checkedOn": "2026-10-23",
+      "revision": "0.1.0",
+      "contentDigest": "d18645be827abccde1c34efaa0b065feac6ac440e2a9521a9499080c04b99dd9",
+      "artifactDigest": "e0c775427d306687381003bd735d76344da9bc3743b26167fe034eaab8798196",
+      "evidencePath": "docs/verification/universal-author-continuation.md",
+      "checks": [
+        "Schema, source-reference and preparation-packet hash validation",
+        "Passed tests/exploration-methods.test.mjs",
+        "Passed tests/exploration-studio.test.mjs",
+        "Passed tests/exploration-professions.test.mjs",
+        "Passed tests/exploration-followups.test.mjs"
+      ]
+    }
+  },
+  "context": {
+    "domainIds": [
+      "D16",
+      "D14"
+    ],
+    "collectionIds": [
+      "micro",
+      "polsci"
+    ],
+    "sourceIds": [
+      "cra9",
+      "cra19",
+      "cra20",
+      "cra22"
+    ],
+    "knownItemIds": []
+  },
+  "collectionTitles": {
+    "micro": "Microeconomics",
+    "polsci": "Political Science & Social Choice"
+  },
+  "runtimeDigest": "ca81bc9e95550cc6c8e5c31a3fcbb6b78a066ecaa6a57038441949fe61f17025",
+  "contentDigest": "d18645be827abccde1c34efaa0b065feac6ac440e2a9521a9499080c04b99dd9",
+  "artifactDigest": "e0c775427d306687381003bd735d76344da9bc3743b26167fe034eaab8798196",
+  "previewHTML": "<!doctype html>\n<html lang=\"en\"><head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width,initial-scale=1\">\n<meta name=\"robots\" content=\"noindex,nofollow\"><meta name=\"description\" content=\"Draft source-based explorations for Ideas, Visualized.\">\n<title>A faulty kettle: what does the evidence establish? · Ideas, Visualized</title><link rel=\"stylesheet\" href=\"../../../explorations/style.css\"></head>\n<body><a class=\"skip\" href=\"#main\">Skip to the exploration</a>\n<header class=\"site-header\"><a href=\"../../../#/\">Ideas, Visualized</a><span>Exploration workshop</span></header>\n<main id=\"main\" tabindex=\"-1\"><nav aria-label=\"Workshop\"><a href=\"../\">← All pilot explorations</a></nav>\n    <section class=\"hero\"><p class=\"eyebrow\">Author-checked · local preview</p><h1>A faulty kettle: what does the evidence establish?</h1>\n    <p class=\"subtitle\">Separate facts, rules and calendar arithmetic.</p><p class=\"lede\">Compare ten fictional records. Identify a missing fact, distinguish two time limits and explain why a calendar alone cannot decide a dispute.</p>\n    <p class=\"muted\">Author checks support this local educational preview. Independent professional and participant reviews have not been performed and are not required for local continuation.</p>\n    <p class=\"scope\">England and Wales; illustrative in-person consumer purchase from a trader. This is a source-reading exercise, not a decision about your dispute or a certified current-law consolidation.</p><ol class=\"steps\"><li>Read the sources</li><li>Explore the evidence</li><li>Explain a limitation</li></ol></section>\n    <section aria-labelledby=\"source-heading\"><div class=\"section-heading\"><span>01</span><h2 id=\"source-heading\">Read closely</h2></div>\n    <div class=\"sources\"><article class=\"source-card\" id=\"passage-quality\" data-passage=\"quality\">\n      <p class=\"eyebrow\">UK legislation publishing service</p><h3>A disclosed scratch and a different alleged defect</h3>\n      <p class=\"source-form\">Editorial paraphrase</p>\n      <p class=\"passage\" lang=\"en\">The quality test considers the goods and the circumstances. A condition specifically brought to the buyer’s attention before the contract is treated differently from an undisclosed problem. A disclosed scratch does not, by itself, settle an unrelated allegation about an electrical fault.</p>\n      <p><strong>Editorial context:</strong> Original explanation of section 9, especially (2)–(4). The activity stipulates a consumer, a trader and a paid shop sale; it does not determine that status for a real person.</p><details><summary>Source and reuse details</summary>\n      <p><a href=\"https://www.legislation.gov.uk/ukpga/2015/15/section/9\">Consumer Rights Act 2015, section 9</a></p><p>quality and disclosed-fault exceptions · 2015 Act; named HTML section read 2026-10-23; editorial cutoff varies</p>\n      <p>Original explanatory prose and fictional examples with source links. No third-party images, animation, textbook passages or full statutory text are reproduced.</p><p class=\"muted\">Local educational preview; no endorsement or professional approval is implied.</p></details></article><article class=\"source-card\" id=\"passage-remedies\" data-passage=\"remedies\">\n      <p class=\"eyebrow\">UK legislation publishing service</p><h3>One route is not every remedy</h3>\n      <p class=\"source-form\">Editorial paraphrase</p>\n      <p class=\"passage\" lang=\"en\">Section 19 connects nonconformity with different remedies. The six-month provision in subsection (14) names particular routes; it is not a universal shortcut for proving every issue in a short-term rejection. A recording of a malfunction does not by itself establish its cause or its condition at delivery.</p>\n      <p><strong>Editorial context:</strong> Original explanation of the selected remedy provisions. Only the fictional record is assessed; no automatic burden-of-proof decision is made.</p><details><summary>Source and reuse details</summary>\n      <p><a href=\"https://www.legislation.gov.uk/ukpga/2015/15/section/19\">Consumer Rights Act 2015, section 19</a></p><p>remedies and relationship to conformity · 2015 Act; named HTML section read 2026-10-23; editorial cutoff varies</p>\n      <p>Original explanatory prose and fictional examples with source links. No third-party images, animation, textbook passages or full statutory text are reproduced.</p><p class=\"muted\">Local educational preview; no endorsement or professional approval is implied.</p></details></article><article class=\"source-card\" id=\"passage-communication\" data-passage=\"communication\">\n      <p class=\"eyebrow\">UK legislation publishing service</p><h3>Rejection and a separate refund clock</h3>\n      <p class=\"source-form\">Editorial paraphrase</p>\n      <p class=\"passage\" lang=\"en\">Rejection needs a sufficiently clear indication that the goods are rejected and the contract treated as ended. A question about repair does not necessarily communicate that. The refund provision requires action without undue delay and sets a fourteen-day outer period beginning with the day the trader agrees the consumer is entitled to a refund.</p>\n      <p><strong>Editorial context:</strong> Original explanation of section 20(5)–(6), (15). Return arrangements and this refund-agreement clock are distinct from the short-term rejection clock.</p><details><summary>Source and reuse details</summary>\n      <p><a href=\"https://www.legislation.gov.uk/ukpga/2015/15/section/20\">Consumer Rights Act 2015, section 20</a></p><p>clear rejection and refund obligations · 2015 Act; named HTML section read 2026-10-23; editorial cutoff varies</p>\n      <p>Original explanatory prose and fictional examples with source links. No third-party images, animation, textbook passages or full statutory text are reproduced.</p><p class=\"muted\">Local educational preview; no endorsement or professional approval is implied.</p></details></article><article class=\"source-card\" id=\"passage-calendar\" data-passage=\"calendar\">\n      <p class=\"eyebrow\">UK legislation publishing service</p><h3>A conditional thirty-day calendar</h3>\n      <p class=\"source-form\">Editorial paraphrase</p>\n      <p class=\"passage\" lang=\"en\">In the unextended ordinary example, counting begins on the first day after all relevant ownership or possession, delivery and any required installation or enabling-action conditions have occurred. Purchase day alone is insufficient. The section also addresses earlier exercise, perishable goods and repair waiting periods. Those exceptions cannot be resolved by applying the ordinary thirty-day arithmetic indiscriminately.</p>\n      <p><strong>Editorial context:</strong> Original explanation of section 22(3)–(8). The calculator uses only stipulated conditions-complete dates. Its dates are examples, not legal-effective dates.</p><details><summary>Source and reuse details</summary>\n      <p><a href=\"https://www.legislation.gov.uk/ukpga/2015/15/section/22\">Consumer Rights Act 2015, section 22</a></p><p>subsections 3–8: start, exceptions, repair waiting period · 2015 Act; named HTML section read 2026-10-23; editorial cutoff varies</p>\n      <p>Original explanatory prose and fictional examples with source links. No third-party images, animation, textbook passages or full statutory text are reproduced.</p><p class=\"muted\">Local educational preview; no endorsement or professional approval is implied.</p></details></article></div></section>\n    <section class=\"context\"><h2>What this exploration can establish</h2><ul><li>Consumer and trader are stipulated roles in these examples. Conformity concerns whether the supplied goods meet relevant contract requirements; a remedy is a legal response to an established failure.</li><li>A fact stated by the exercise is an assumption, not a document you have independently proved. A missing fact must remain missing.</li><li>Source inspection: 23 October 2026. Displayed editorial cutoffs are 22 October for sections 9/20, 20 October for section 19 and 21 October for section 22, with outstanding/future-change notices. No common certified legal snapshot is claimed.</li><li>The examples exclude finance, services, digital content, perishables and installation. Repair waiting-period arithmetic is outside this version.</li><li>The calendar is computed in whole UTC civil days, avoiding daylight-saving hour differences. An elapsed short-term window does not mean every possible remedy has expired.</li></ul>\n\n    </section>\n\n    <section class=\"activity\" aria-labelledby=\"activity-heading\"><div class=\"section-heading\"><span>02</span><h2 id=\"activity-heading\">Explore the evidence</h2></div>\n    <noscript><p>The source text, comparison guides and transfer task work without JavaScript. Use the guides below and write your notes separately.</p></noscript>\n    <div class=\"interactive\" hidden><label for=\"case\">Choose a fictional case</label><select id=\"case\"><option value=\"case-1\">Last day, with facts stipulated</option><option value=\"case-2\">The following day</option><option value=\"case-3\">Receipt and delivery are different</option><option value=\"case-4\">A malfunction on video</option><option value=\"case-5\">A disclosed scratch</option><option value=\"case-6\">A different preferred colour</option><option value=\"case-7\">An inquiry about repair</option><option value=\"case-8\">Agreement to refund</option><option value=\"case-9\">Before delivery</option><option value=\"case-10\">A repair waiting period</option></select><p id=\"case-facts\"></p><label for=\"category\">What can this record support?</label><select id=\"category\"><option value=\"conditional-route\">Conditional route under stated facts</option><option value=\"missing-fact\">A necessary fact is missing</option><option value=\"outside-scope\">Outside this simplified case</option><option value=\"separate-clock\">A separate refund clock</option></select><button id=\"case-check\" type=\"button\">Compare my reasoning</button><p id=\"case-feedback\" role=\"status\"></p><p id=\"case-calendar\"></p></div><details class=\"static-guide\"><summary>Read all ten case guides and calendars</summary><section><h3>Last day, with facts stipulated</h3><p>New domestic kettle from a trader; single paid sale in a shop; s9 nonconformity at delivery stipulated; all trigger conditions complete 1 October; clear rejection communicated 31 October.</p><p><strong>Conditional route under stated facts.</strong> Under the stipulated ordinary conditions, 31 October is day 30. The example assumes a qualifying defect and a clear rejection; the calendar does not prove either.</p><p>Illustrative day 1: 2026-10-02; day 30: 2026-10-31. Communication on 2026-10-31: last day. Calendar position alone does not establish entitlement; a clock that has not started is not automatically a bar to early exercise.</p><p>Read: <a href=\"#passage-quality\">A disclosed scratch and a different alleged defect</a>; <a href=\"#passage-calendar\">A conditional thirty-day calendar</a>; <a href=\"#passage-communication\">Rejection and a separate refund clock</a></p></section><section><h3>The following day</h3><p>Same delivery and stipulated defect; communication moved to 1 November; no extension agreement or repair request.</p><p><strong>Outside this simplified case.</strong> 1 November is outside the modelled unextended thirty-day period. Other remedies are not assessed and are not declared unavailable.</p><p>Illustrative day 1: 2026-10-02; day 30: 2026-10-31. Communication on 2026-11-01: after window. Calendar position alone does not establish entitlement; a clock that has not started is not automatically a bar to early exercise.</p><p>Read: <a href=\"#passage-calendar\">A conditional thirty-day calendar</a>; <a href=\"#passage-remedies\">One route is not every remedy</a></p></section><section><h3>Receipt and delivery are different</h3><p>Payment receipt 1 October; delivery note 5 October; ownership-transfer date not given.</p><p><strong>A necessary fact is missing.</strong> The receipt and delivery note do not give the ownership-transfer fact. Do not substitute purchase day for the date all clock conditions were met.</p><p>No calendar result: the date all relevant conditions were met is not supplied.</p><p>Read: <a href=\"#passage-calendar\">A conditional thirty-day calendar</a></p></section><section><h3>A malfunction on video</h3><p>A video shows malfunction on 10 October; cause and condition at delivery disputed.</p><p><strong>A necessary fact is missing.</strong> The video supports the described malfunction at that moment. It does not establish its cause or the delivery condition, and this exercise does not assign a legal burden by presumption.</p><p>No calendar result: the date all relevant conditions were met is not supplied.</p><p>Read: <a href=\"#passage-remedies\">One route is not every remedy</a></p></section><section><h3>A disclosed scratch</h3><p>A scratch was specifically disclosed before sale; an unrelated electrical fault is alleged.</p><p><strong>A necessary fact is missing.</strong> Keep the specifically disclosed scratch separate from the alleged electrical fault. The latter still needs evidence; one disclosure is not a blanket answer.</p><p>No calendar result: the date all relevant conditions were met is not supplied.</p><p>Read: <a href=\"#passage-quality\">A disclosed scratch and a different alleged defect</a></p></section><section><h3>A different preferred colour</h3><p>Kettle functions as described; buyer changes preferred colour after an in-person sale.</p><p><strong>Outside this simplified case.</strong> Changing a colour preference is not the stipulated quality defect. A voluntary returns policy or a different type of contract would need its own facts.</p><p>No calendar result: the date all relevant conditions were met is not supplied.</p><p>Read: <a href=\"#passage-quality\">A disclosed scratch and a different alleged defect</a></p></section><section><h3>An inquiry about repair</h3><p>Buyer asks whether the shop can repair the kettle; no clear rejection statement is stipulated.</p><p><strong>A necessary fact is missing.</strong> The wording does not establish a clear rejection. An actual repair request can also affect the clock; do not infer both from mere contact.</p><p>No calendar result: the date all relevant conditions were met is not supplied.</p><p>Read: <a href=\"#passage-communication\">Rejection and a separate refund clock</a>; <a href=\"#passage-calendar\">A conditional thirty-day calendar</a></p></section><section><h3>Agreement to refund</h3><p>Trader agrees to refund on 31 October; return collection is discussed separately.</p><p><strong>A separate refund clock.</strong> 31 October is day one of the separate illustrative refund period, giving 13 November as its outer date. The duty to act without undue delay remains relevant.</p><p>Refund agreement: 2026-10-31. The illustrative fourteen-day outer date is 2026-11-13 (agreement day included). This does not replace the requirement to act without undue delay.</p><p>Read: <a href=\"#passage-communication\">Rejection and a separate refund clock</a></p></section><section><h3>Before delivery</h3><p>Goods have not yet been delivered; a clear rejection is proposed.</p><p><strong>A necessary fact is missing.</strong> No completed clock-trigger date is supplied. A counting window that has not started is not automatically a bar to exercising a right earlier; other conditions still matter.</p><p>No calendar result: the date all relevant conditions were met is not supplied.</p><p>Read: <a href=\"#passage-calendar\">A conditional thirty-day calendar</a></p></section><section><h3>A repair waiting period</h3><p>Repair agreed; returned item may still be nonconforming.</p><p><strong>Outside this simplified case.</strong> This version does not model repair waiting periods or returned-goods conditions. It deliberately returns no ordinary deadline for this case.</p><p>Repair waiting periods are outside this unextended calendar. No deadline is calculated.</p><p>Read: <a href=\"#passage-calendar\">A conditional thirty-day calendar</a></p></section></details><div class=\"interactive notes\" hidden><label for=\"notes\">Your evidence and explanation</label>\n    <textarea id=\"notes\" rows=\"5\" maxlength=\"1500\" aria-describedby=\"notes-help\" placeholder=\"Name the words, then explain what they support and what they do not.\"></textarea>\n    <p id=\"notes-help\" class=\"muted\">One notebook for this exploration revision, up to 1,500 characters. Notes stay in this browser. Shared links contain selections only. Nothing is sent to a server.</p>\n    <p id=\"save-status\" role=\"status\" class=\"muted\"></p>\n    <div class=\"actions\"><button id=\"share\" type=\"button\">Copy a link to these selections</button><button id=\"export\" type=\"button\">Export notes</button><button id=\"previous-notes\" type=\"button\" hidden>Export earlier notes</button><button id=\"reset\" type=\"button\">Reset and erase this revision’s notes</button></div>\n    <label id=\"share-label\" for=\"share-url\" hidden>Shareable link (notes excluded)</label><input id=\"share-url\" readonly hidden>\n    <p id=\"state-status\" role=\"status\"></p></div></section>\n    <section class=\"transfer\" aria-labelledby=\"transfer-heading\"><div class=\"section-heading\"><span>03</span><h2 id=\"transfer-heading\">Try the idea elsewhere</h2></div>\n    <p>A receipt is dated 1 March, delivery is dated 5 March, and ownership transfer is unstated. Name the missing fact before attempting the ordinary calendar. Then explain why an unrelated disclosed scratch would not settle a different alleged defect.</p><details><summary>What a careful explanation includes</summary><ul><li>Separate the date of purchase from all required clock-trigger conditions.</li><li>Identify the exact proposition each document supports; do not infer delivery condition from later malfunction alone.</li><li>Keep rejection, refund agreement and any repair waiting period separate.</li><li>State which route is outside the model without declaring every remedy unavailable.</li></ul></details>\n    <p>There is no automatic score for your written interpretation. Use the guide to inspect your reasoning.</p></section>\n    <section class=\"related\"><h2>Connections into the atlas</h2><p>Optional collection routes; these are not prerequisites or independent evidence for this task.</p>\n    <div class=\"actions\"><a href=\"../../../#/c/micro\">Microeconomics</a><a href=\"../../../#/c/polsci\">Political Science &amp; Social Choice</a></div></section>\n    </main><footer><p>Local previews. Review scope and public release are separate.</p><a href=\"../../../docs/master-plan-handoff.md\">Editorial status and next work</a></footer><script id=\"exploration-data\" type=\"application/json\">{\"schemaVersion\":1,\"id\":\"x-law-0001\",\"pilotId\":\"P04\",\"revision\":\"0.1.0\",\"status\":\"accepted\",\"publication\":\"local-preview\",\"title\":\"A faulty kettle: what does the evidence establish?\",\"subtitle\":\"Separate facts, rules and calendar arithmetic.\",\"summary\":\"Compare ten fictional records. Identify a missing fact, distinguish two time limits and explain why a calendar alone cannot decide a dispute.\",\"audience\":\"General readers; no legal vocabulary assumed.\",\"scope\":\"England and Wales; illustrative in-person consumer purchase from a trader. This is a source-reading exercise, not a decision about your dispute or a certified current-law consolidation.\",\"author\":\"atlas-editor\",\"updatedOn\":\"2026-10-23\",\"domainIds\":[\"D16\",\"D14\"],\"relatedCollectionIds\":[\"micro\",\"polsci\"],\"knowledgeModes\":[\"normative\",\"interpretive\"],\"methods\":[\"case-reasoning\"],\"prerequisites\":[],\"sources\":[{\"id\":\"cra9\",\"title\":\"Consumer Rights Act 2015, section 9\",\"url\":\"https://www.legislation.gov.uk/ukpga/2015/15/section/9\",\"locator\":\"quality and disclosed-fault exceptions\",\"creator\":\"UK legislation publishing service\",\"date\":\"2015 Act; named HTML section read 2026-10-23; editorial cutoff varies\",\"language\":\"English\",\"rights\":{\"decision\":\"usable-for-prototype\",\"basis\":\"Original explanatory prose and fictional examples with source links. No third-party images, animation, textbook passages or full statutory text are reproduced.\",\"scope\":\"Local educational preview; no endorsement or professional approval is implied.\"}},{\"id\":\"cra19\",\"title\":\"Consumer Rights Act 2015, section 19\",\"url\":\"https://www.legislation.gov.uk/ukpga/2015/15/section/19\",\"locator\":\"remedies and relationship to conformity\",\"creator\":\"UK legislation publishing service\",\"date\":\"2015 Act; named HTML section read 2026-10-23; editorial cutoff varies\",\"language\":\"English\",\"rights\":{\"decision\":\"usable-for-prototype\",\"basis\":\"Original explanatory prose and fictional examples with source links. No third-party images, animation, textbook passages or full statutory text are reproduced.\",\"scope\":\"Local educational preview; no endorsement or professional approval is implied.\"}},{\"id\":\"cra20\",\"title\":\"Consumer Rights Act 2015, section 20\",\"url\":\"https://www.legislation.gov.uk/ukpga/2015/15/section/20\",\"locator\":\"clear rejection and refund obligations\",\"creator\":\"UK legislation publishing service\",\"date\":\"2015 Act; named HTML section read 2026-10-23; editorial cutoff varies\",\"language\":\"English\",\"rights\":{\"decision\":\"usable-for-prototype\",\"basis\":\"Original explanatory prose and fictional examples with source links. No third-party images, animation, textbook passages or full statutory text are reproduced.\",\"scope\":\"Local educational preview; no endorsement or professional approval is implied.\"}},{\"id\":\"cra22\",\"title\":\"Consumer Rights Act 2015, section 22\",\"url\":\"https://www.legislation.gov.uk/ukpga/2015/15/section/22\",\"locator\":\"subsections 3–8: start, exceptions, repair waiting period\",\"creator\":\"UK legislation publishing service\",\"date\":\"2015 Act; named HTML section read 2026-10-23; editorial cutoff varies\",\"language\":\"English\",\"rights\":{\"decision\":\"usable-for-prototype\",\"basis\":\"Original explanatory prose and fictional examples with source links. No third-party images, animation, textbook passages or full statutory text are reproduced.\",\"scope\":\"Local educational preview; no endorsement or professional approval is implied.\"}}],\"passages\":[{\"id\":\"quality\",\"sourceId\":\"cra9\",\"title\":\"A disclosed scratch and a different alleged defect\",\"form\":\"paraphrase\",\"language\":\"en\",\"text\":\"The quality test considers the goods and the circumstances. A condition specifically brought to the buyer’s attention before the contract is treated differently from an undisclosed problem. A disclosed scratch does not, by itself, settle an unrelated allegation about an electrical fault.\",\"context\":\"Original explanation of section 9, especially (2)–(4). The activity stipulates a consumer, a trader and a paid shop sale; it does not determine that status for a real person.\",\"sha256\":\"c5dd4985ba37430c45a8cc34abf3b7a9e7dc6ea1fdd86ddd9d230abe9042918f\"},{\"id\":\"remedies\",\"sourceId\":\"cra19\",\"title\":\"One route is not every remedy\",\"form\":\"paraphrase\",\"language\":\"en\",\"text\":\"Section 19 connects nonconformity with different remedies. The six-month provision in subsection (14) names particular routes; it is not a universal shortcut for proving every issue in a short-term rejection. A recording of a malfunction does not by itself establish its cause or its condition at delivery.\",\"context\":\"Original explanation of the selected remedy provisions. Only the fictional record is assessed; no automatic burden-of-proof decision is made.\",\"sha256\":\"bd241bc5787232070a617870d036ff501f1771fd585d0f941003d3a90917143b\"},{\"id\":\"communication\",\"sourceId\":\"cra20\",\"title\":\"Rejection and a separate refund clock\",\"form\":\"paraphrase\",\"language\":\"en\",\"text\":\"Rejection needs a sufficiently clear indication that the goods are rejected and the contract treated as ended. A question about repair does not necessarily communicate that. The refund provision requires action without undue delay and sets a fourteen-day outer period beginning with the day the trader agrees the consumer is entitled to a refund.\",\"context\":\"Original explanation of section 20(5)–(6), (15). Return arrangements and this refund-agreement clock are distinct from the short-term rejection clock.\",\"sha256\":\"14fa813fa2333accb09ed8e357e67bc0cfe4174d3ad2ed2aae26e9238e2f8f9e\"},{\"id\":\"calendar\",\"sourceId\":\"cra22\",\"title\":\"A conditional thirty-day calendar\",\"form\":\"paraphrase\",\"language\":\"en\",\"text\":\"In the unextended ordinary example, counting begins on the first day after all relevant ownership or possession, delivery and any required installation or enabling-action conditions have occurred. Purchase day alone is insufficient. The section also addresses earlier exercise, perishable goods and repair waiting periods. Those exceptions cannot be resolved by applying the ordinary thirty-day arithmetic indiscriminately.\",\"context\":\"Original explanation of section 22(3)–(8). The calculator uses only stipulated conditions-complete dates. Its dates are examples, not legal-effective dates.\",\"sha256\":\"f75975e842010b8ea76430140513c8624eee3e3b971fc8fc26cad6408d9a887e\"}],\"claims\":[{\"id\":\"clock-not-case\",\"kind\":\"normative\",\"text\":\"The selected rule and a calendar result do not establish all facts needed for a legal conclusion.\",\"passageIds\":[\"calendar\",\"remedies\"],\"qualification\":\"Educational reasoning about stipulated cases; no individual entitlement is decided.\"},{\"id\":\"two-clocks\",\"kind\":\"textual\",\"text\":\"The selected provisions use different events to start the rejection and refund clocks.\",\"passageIds\":[\"calendar\",\"communication\"],\"qualification\":\"Read the cited provision and its qualifications; the two clock calculations are deliberately separate.\"}],\"context\":[\"Consumer and trader are stipulated roles in these examples. Conformity concerns whether the supplied goods meet relevant contract requirements; a remedy is a legal response to an established failure.\",\"A fact stated by the exercise is an assumption, not a document you have independently proved. A missing fact must remain missing.\",\"Source inspection: 23 October 2026. Displayed editorial cutoffs are 22 October for sections 9/20, 20 October for section 19 and 21 October for section 22, with outstanding/future-change notices. No common certified legal snapshot is claimed.\",\"The examples exclude finance, services, digital content, perishables and installation. Repair waiting-period arithmetic is outside this version.\",\"The calendar is computed in whole UTC civil days, avoiding daylight-saving hour differences. An elapsed short-term window does not mean every possible remedy has expired.\"],\"timeline\":[],\"relations\":[],\"reviews\":[],\"reviewRequirements\":[\"content\",\"rights\"],\"reviewLimitations\":[\"Author checks support this local educational preview. Independent professional and participant reviews have not been performed and are not required for local continuation.\"],\"activity\":{\"type\":\"case-reasoning\",\"jurisdiction\":\"England and Wales\",\"legalSnapshotCertified\":false,\"snapshotScope\":\"Named displayed provisions, inspected 2026-10-23; no common legal-effective snapshot certified.\",\"cases\":[{\"id\":\"case-1\",\"title\":\"Last day, with facts stipulated\",\"facts\":\"New domestic kettle from a trader; single paid sale in a shop; s9 nonconformity at delivery stipulated; all trigger conditions complete 1 October; clear rejection communicated 31 October.\",\"category\":\"conditional-route\",\"feedback\":\"Under the stipulated ordinary conditions, 31 October is day 30. The example assumes a qualifying defect and a clear rejection; the calendar does not prove either.\",\"passageIds\":[\"quality\",\"calendar\",\"communication\"],\"repair\":false,\"conditionsComplete\":\"2026-10-01\",\"observation\":\"2026-10-31\",\"refundAgreed\":null},{\"id\":\"case-2\",\"title\":\"The following day\",\"facts\":\"Same delivery and stipulated defect; communication moved to 1 November; no extension agreement or repair request.\",\"category\":\"outside-scope\",\"feedback\":\"1 November is outside the modelled unextended thirty-day period. Other remedies are not assessed and are not declared unavailable.\",\"passageIds\":[\"calendar\",\"remedies\"],\"repair\":false,\"conditionsComplete\":\"2026-10-01\",\"observation\":\"2026-11-01\",\"refundAgreed\":null},{\"id\":\"case-3\",\"title\":\"Receipt and delivery are different\",\"facts\":\"Payment receipt 1 October; delivery note 5 October; ownership-transfer date not given.\",\"category\":\"missing-fact\",\"feedback\":\"The receipt and delivery note do not give the ownership-transfer fact. Do not substitute purchase day for the date all clock conditions were met.\",\"passageIds\":[\"calendar\"],\"repair\":false,\"conditionsComplete\":null,\"observation\":null,\"refundAgreed\":null},{\"id\":\"case-4\",\"title\":\"A malfunction on video\",\"facts\":\"A video shows malfunction on 10 October; cause and condition at delivery disputed.\",\"category\":\"missing-fact\",\"feedback\":\"The video supports the described malfunction at that moment. It does not establish its cause or the delivery condition, and this exercise does not assign a legal burden by presumption.\",\"passageIds\":[\"remedies\"],\"repair\":false,\"conditionsComplete\":null,\"observation\":null,\"refundAgreed\":null},{\"id\":\"case-5\",\"title\":\"A disclosed scratch\",\"facts\":\"A scratch was specifically disclosed before sale; an unrelated electrical fault is alleged.\",\"category\":\"missing-fact\",\"feedback\":\"Keep the specifically disclosed scratch separate from the alleged electrical fault. The latter still needs evidence; one disclosure is not a blanket answer.\",\"passageIds\":[\"quality\"],\"repair\":false,\"conditionsComplete\":null,\"observation\":null,\"refundAgreed\":null},{\"id\":\"case-6\",\"title\":\"A different preferred colour\",\"facts\":\"Kettle functions as described; buyer changes preferred colour after an in-person sale.\",\"category\":\"outside-scope\",\"feedback\":\"Changing a colour preference is not the stipulated quality defect. A voluntary returns policy or a different type of contract would need its own facts.\",\"passageIds\":[\"quality\"],\"repair\":false,\"conditionsComplete\":null,\"observation\":null,\"refundAgreed\":null},{\"id\":\"case-7\",\"title\":\"An inquiry about repair\",\"facts\":\"Buyer asks whether the shop can repair the kettle; no clear rejection statement is stipulated.\",\"category\":\"missing-fact\",\"feedback\":\"The wording does not establish a clear rejection. An actual repair request can also affect the clock; do not infer both from mere contact.\",\"passageIds\":[\"communication\",\"calendar\"],\"repair\":false,\"conditionsComplete\":null,\"observation\":null,\"refundAgreed\":null},{\"id\":\"case-8\",\"title\":\"Agreement to refund\",\"facts\":\"Trader agrees to refund on 31 October; return collection is discussed separately.\",\"category\":\"separate-clock\",\"feedback\":\"31 October is day one of the separate illustrative refund period, giving 13 November as its outer date. The duty to act without undue delay remains relevant.\",\"passageIds\":[\"communication\"],\"repair\":false,\"conditionsComplete\":null,\"observation\":null,\"refundAgreed\":\"2026-10-31\"},{\"id\":\"case-9\",\"title\":\"Before delivery\",\"facts\":\"Goods have not yet been delivered; a clear rejection is proposed.\",\"category\":\"missing-fact\",\"feedback\":\"No completed clock-trigger date is supplied. A counting window that has not started is not automatically a bar to exercising a right earlier; other conditions still matter.\",\"passageIds\":[\"calendar\"],\"repair\":false,\"conditionsComplete\":null,\"observation\":null,\"refundAgreed\":null},{\"id\":\"case-10\",\"title\":\"A repair waiting period\",\"facts\":\"Repair agreed; returned item may still be nonconforming.\",\"category\":\"outside-scope\",\"feedback\":\"This version does not model repair waiting periods or returned-goods conditions. It deliberately returns no ordinary deadline for this case.\",\"passageIds\":[\"calendar\"],\"repair\":true,\"conditionsComplete\":null,\"observation\":null,\"refundAgreed\":null}],\"transfer\":\"A receipt is dated 1 March, delivery is dated 5 March, and ownership transfer is unstated. Name the missing fact before attempting the ordinary calendar. Then explain why an unrelated disclosed scratch would not settle a different alleged defect.\",\"rubric\":[\"Separate the date of purchase from all required clock-trigger conditions.\",\"Identify the exact proposition each document supports; do not infer delivery condition from later malfunction alone.\",\"Keep rejection, refund agreement and any repair waiting period separate.\",\"State which route is outside the model without declaring every remedy unavailable.\"]},\"extensions\":{},\"authorVerification\":{\"kind\":\"author-check\",\"scope\":\"local-preview\",\"author\":\"atlas-editor\",\"checkedOn\":\"2026-10-23\",\"revision\":\"0.1.0\",\"contentDigest\":\"d18645be827abccde1c34efaa0b065feac6ac440e2a9521a9499080c04b99dd9\",\"artifactDigest\":\"e0c775427d306687381003bd735d76344da9bc3743b26167fe034eaab8798196\",\"evidencePath\":\"docs/verification/universal-author-continuation.md\",\"checks\":[\"Schema, source-reference and preparation-packet hash validation\",\"Passed tests/exploration-methods.test.mjs\",\"Passed tests/exploration-studio.test.mjs\",\"Passed tests/exploration-professions.test.mjs\",\"Passed tests/exploration-followups.test.mjs\"]}}</script><script type=\"module\" src=\"../../../explorations/ui.mjs\"></script></body></html>\n",
+  "previewDigest": "7cfc67d863931b062bf2fedbb6bfe6597227055a5ee0622686a698d4b2cb727f",
+  "receipts": {
+    "docs/verification/universal-author-continuation.md": {
+      "text": "# Local continuation under author checks\n\n23 October 2026. The user explicitly removed the outstanding review prerequisites and instructed continued implementation of the full master plan. Independent AI, specialist, engineering, practitioner, learner and screen-reader reviews are optional follow-up, not gates on local authoring, validation, acceptance or integration preparation. This supersedes earlier local review-gate requirements. No rejected external review operation is retried.\n\nLocal acceptance records use `authorVerification.kind: author-check` and bind the current revision, content and rendered-code digest to actual author checks. They do not create independent review receipts. Existing receipts remain unchanged as historical evidence. Physical and participant sessions remain unperformed; professional reviewer fields remain empty. The renderer labels author-checked previews distinctly. Legacy independent-review acceptance is retained for archived records and rejects stale receipts as before.\n\nThe six existing pilot texts and activities remain intact. The four already archived pilots receive new revisions for the changed runtime and acceptance basis; earlier revisions remain available through explicit note export. Craft/performance retain their original revision because neither had an archived edition. No private note store is read or migrated by these changes. Craft remains a structural model without a physical specimen; performance remains a generated digital stimulus with its existing local asset terms. The new law and health pilots supply original bounded learning tasks, not professional approval or a decision about a reader's health or legal dispute. Source access, truthful claims, privacy, actual rights and automatic validation remain substantive requirements.\n\n## Source checks\n\nThe four named CRA sections (9, 19, 20, 22) returned HTTP 200 from their official URLs on 23 October. The web reader could not parse XHTML; an ordinary direct request to the same URLs succeeded. All four byte hashes match the retained 22 October preparation captures. Their displayed editorial cutoffs still differ (22/20/22/21 October) and future/outstanding notices remain. No certified current-law consolidation is claimed. The statutory timing paragraphs and their exceptions were inspected; the activity only applies the ordinary arithmetic to stipulated facts. Repair waiting periods return no ordinary deadline.\n\nNHLBI's [breathing description](https://www.nhlbi.nih.gov/health/lungs/breathing-benefits) was reread on 23 October, including the diaphragm phases and the distinction between air movement and gas exchange. Its third-party animation is excluded. No stopped clinical or licence source was reopened.\n\nFresh legal capture hashes:\n\n- §9: `e967cd7aa348f8d5efc5fc3f84028219afb4f3e276000bd07b11edd2f18ff7c9`\n- §19: `cace7192983aa605c5f524ceb5a1146b3fd23679c78b505fc97ccbf9fcbbd3ab`\n- §20: `3ac4e952da31966e51f2b033f151f80ec1156567120969c86d123fc12fa1963c`\n- §22: `cb3bb9fd0c236d7180dfc78fa909456b8232fa254f5b96ca9902b1d6a43b00fd`\n\nCapture location: `/tmp/atlas-author-continuation-20261023/`. Capture dates are not legal-effective dates. Original source registers and preparation packets remain historical and unchanged.\n\n## Verification\n\nThe source/schema/model suite passed 100 test groups. The native-browser suite passed 27 groups; three affected layout/activity groups passed again after making long numeric tables horizontally scrollable. A saved-state normalization inconsistency (`0.50` versus `0.5`) was repaired. Desktop and phone, light and dark, static reading, keyboard controls, notes, sharing, malformed windows and impossible irrigation requests were exercised. This is author verification, not human learning or screen-reader observation.\n\nEight pilots and six follow-ups are now authored and checked locally: diplomatic perspectives, archaeology premises, Frankenstein editions, Cabuliwallah narrative access, Cicero disclosure and the water ledger. Selected historical quotations retain their exact prepared text and hashes; the archaeology truth table matches all eight prepared cases, and water tests verify conservation, delivery limits, missing values, corrections and path differences.\n\nFor subsequent authoring, run `node scripts/check-local-continuation.mjs` for read-only schema, source-binding and model/source tests. After actually inspecting new source/content changes, run `node scripts/check-local-continuation.mjs --record --date YYYY-MM-DD` with the real check date to record author verification and rebuild the workshop/orientations. Then run the affected browser and integration tests. This command does not supply specialist qualifications, source freshness, real sessions or public release. Before freezing a changed already-retained lesson, increment its revision and preserve `previousRevisions`; immutable earlier editions must not be replaced.\n\nSupplemental source identities bind exact preparation-packet bytes and the original source URL/read record. Earlier source registers, quotes, access stops and review evidence remain untouched. New orientation verification covers the changed local lesson links and rendering; all 30 substantive orientation texts and their historical reviews remain retained.\n\nThe cumulative delivery rehearsal and preservation audit are recorded separately in `docs/verification/universal-author-delivery.md`. That later record does not alter this immutable source-check receipt.\n",
+      "sha256": "cb211f401ec6aaa192c27595d04057ddb4dd6a0430880fa88964da3daf5a1431"
+    }
+  },
+  "supplements": {}
+}

@@ -1,7 +1,10 @@
+import {validateWater, normalizeWater} from './water-ledger.mjs';
+import {validateReasoning, normalizeReasoning} from './reasoning-lab.mjs';
+import {validateProfession, normalizeProfession} from './profession-models.mjs';
 import {validatePractice, normalizeWeave} from './practice-model.mjs';
 import {validatePerformance, normalizePerformance} from './performance-model.mjs';
 // Shared pure logic for argument reconstruction and observed-data exploration.
-export const EXTRA_METHODS = ['argument-map', 'measured-data', 'weave-structure', 'phrase-comparison'];
+export const EXTRA_METHODS = ['argument-map', 'measured-data', 'weave-structure', 'phrase-comparison', 'case-reasoning', 'cycle-observation', 'conditional-reasoning', 'water-ledger'];
 export const PREMISE_KINDS = ['interpretation', 'empirical-assumption', 'normative-addition'];
 const text = x => typeof x === 'string' && x.trim().length > 0;
 const id = x => typeof x === 'string' && /^[a-z][a-z0-9-]*$/.test(x);
@@ -48,6 +51,7 @@ export function validateMethod(a, passageIds, sourceIds) {
   }
   if (a?.type === 'weave-structure') errors.push(...validatePractice(a));
   if (a?.type === 'phrase-comparison') errors.push(...validatePerformance(a));
+  errors.push(...validateProfession(a, passageIds), ...validateReasoning(a), ...validateWater(a));
   return errors;
 }
 function numeric(raw, fallback, max) {
@@ -78,7 +82,7 @@ export function normalizeMethodState(record, raw) {
   }
   if (a.type === 'weave-structure') return normalizeWeave(raw);
   if (a.type === 'phrase-comparison') return normalizePerformance(a,raw);
-  return {};
+  return {...normalizeProfession(record, raw), ...normalizeReasoning(record, raw), ...normalizeWater(record, raw)};
 }
 export function argumentAssessment(record, state) {
   const a = record.activity, s = normalizeMethodState(record, state), g = a.guides.find(x => x.id === s.guide);

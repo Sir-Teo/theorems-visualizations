@@ -1,0 +1,1343 @@
+{
+  "schemaVersion": 1,
+  "version": "0.1.0",
+  "author": "atlas-editor",
+  "checkedOn": "2026-10-23",
+  "scope": "Thirty scoped introductory routes, three exact accepted targets each. Routes add tasks and entry support, not 90 new lessons or complete subject coverage.",
+  "publication": "local-preview",
+  "acceptance": "author-checked-local",
+  "legacySnapshot": "2b156195a22cf85186b8b40fb6c35b8966a478a0c46da155a742b498907c2685",
+  "routes": [
+    {
+      "domainId": "D01",
+      "title": "Sets, choices and coordinates",
+      "scope": "Membership tests, finite counting and points/vectors.",
+      "entrySupport": "Use small lists and pairs of numbers first; the formal extension can follow.",
+      "stops": [
+        {
+          "targetId": "alg-1.1a",
+          "kind": "legacy-accepted",
+          "revision": null,
+          "title": "Sets and set operations",
+          "task": "List a union and intersection for two small finite sets.",
+          "declaredPrerequisites": [],
+          "targetSha256": "bc8a16be5a9ec38c6d47dba22a89a4a066cb75aaa0b41824377c3ce6d253a271"
+        },
+        {
+          "targetId": "comb-1.1",
+          "kind": "legacy-accepted",
+          "revision": null,
+          "title": "Sum and product rules",
+          "task": "Count two successive choices and explain when multiplication is justified.",
+          "declaredPrerequisites": [],
+          "targetSha256": "fd9b0eaecdf9e333770aafa783f5c9a0bf0f89a62dcd2f88c7d5a43df05c2370"
+        },
+        {
+          "targetId": "cg-1.1",
+          "kind": "legacy-accepted",
+          "revision": null,
+          "title": "Points, vectors and affine combinations",
+          "task": "Explain the difference between a location and a displacement using two chosen points.",
+          "declaredPrerequisites": [],
+          "targetSha256": "49599abbc899c3cbe8aa64eecc5cad8c6ee9cf0c745b247870e28bd005650de9"
+        }
+      ],
+      "transfer": "Compare the three tasks: name one thing each can establish and one conclusion needing different evidence.",
+      "remainingBreadth": "Elementary arithmetic, proof writing, mathematical history and non-European traditions need further routes.",
+      "representationAudit": {
+        "language": "English reading route; source languages and translation limits remain those of each linked artifact. No new language verification.",
+        "place": "Selected case/model contexts only; no global or community representativeness claimed.",
+        "method": "Reading and model/source analysis; observed practical mastery and learner outcomes are not recorded."
+      }
+    },
+    {
+      "domainId": "D02",
+      "title": "Samples, counterfactuals and measurements",
+      "scope": "How a sample, an unobserved alternative and a cropped observation constrain inference.",
+      "entrySupport": "A statistic is a rule applied to data; a counterfactual is an alternative outcome that was not observed.",
+      "stops": [
+        {
+          "targetId": "stat-1.2",
+          "kind": "legacy-accepted",
+          "revision": null,
+          "title": "Random sample and statistic",
+          "task": "Distinguish a sample value from a statistic and a sampling distribution.",
+          "declaredPrerequisites": [
+            "stat-1.1",
+            "prob-2.1.1a"
+          ],
+          "targetSha256": "79e943b824c640000ed5d336403e61004bff7e5a986e14e2335dd353ad9139f6"
+        },
+        {
+          "targetId": "causal-1.1",
+          "kind": "legacy-accepted",
+          "revision": null,
+          "title": "Potential outcomes",
+          "task": "Label the observed and unobserved potential outcome for one hypothetical unit.",
+          "declaredPrerequisites": [],
+          "targetSha256": "ba434a45e858e4b604a0c398e5a335d508194c98bb0053f36604bcd7c4dd2bd6"
+        },
+        {
+          "targetId": "x-health-0002",
+          "kind": "locally-accepted-exploration",
+          "revision": "0.1.0",
+          "title": "A larger ratio can hide missing observation",
+          "task": "Compute the crop ratio and explain why a larger number need not mean more information.",
+          "declaredPrerequisites": [],
+          "targetSha256": "a69d37cfda297337d6b1a030ce0277f49cf48cbd38aafa6e323eb9a0e6110d0b"
+        }
+      ],
+      "transfer": "Compare the three tasks: name one thing each can establish and one conclusion needing different evidence.",
+      "remainingBreadth": "Qualitative inquiry, research ethics, sampling design and Indigenous research methods remain to broaden.",
+      "representationAudit": {
+        "language": "English reading route; source languages and translation limits remain those of each linked artifact. No new language verification.",
+        "place": "Selected case/model contexts only; no global or community representativeness claimed.",
+        "method": "Reading and model/source analysis; observed practical mastery and learner outcomes are not recorded."
+      }
+    },
+    {
+      "domainId": "D03",
+      "title": "Inputs, strings and syntax trees",
+      "scope": "Three representations used to specify computational tasks.",
+      "entrySupport": "Use finite toy inputs; a tree has a root operation and child expressions.",
+      "stops": [
+        {
+          "targetId": "algo-1.1",
+          "kind": "legacy-accepted",
+          "revision": null,
+          "title": "Problem, instance and algorithm",
+          "task": "Give a problem, one instance and a procedure that fails on another instance.",
+          "declaredPrerequisites": [],
+          "targetSha256": "8b1847f1e3faf77ca163840fc433803bdfe300c33907f1edeec519474c8f74f3"
+        },
+        {
+          "targetId": "toc-1.1",
+          "kind": "legacy-accepted",
+          "revision": null,
+          "title": "Alphabets, strings and languages",
+          "task": "Distinguish the empty language from a language containing the empty string.",
+          "declaredPrerequisites": [
+            "comb-1.1"
+          ],
+          "targetSha256": "1185bfd6c7205495a5eab5fd94ed85cfcc988cb5939741141750dc9687e53b72"
+        },
+        {
+          "targetId": "pl-1.1",
+          "kind": "legacy-accepted",
+          "revision": null,
+          "title": "Abstract syntax trees",
+          "task": "Draw the grouping of 1+2*3 and compare it with (1+2)*3.",
+          "declaredPrerequisites": [
+            "toc-5.2"
+          ],
+          "targetSha256": "038ba8f7992d82d95c029e543360c2acff22ce53cecb3c6db7e880f2a994c899"
+        }
+      ],
+      "transfer": "Compare the three tasks: name one thing each can establish and one conclusion needing different evidence.",
+      "remainingBreadth": "Networking practice, databases, security, accessibility and programming projects are further curriculum work.",
+      "representationAudit": {
+        "language": "English reading route; source languages and translation limits remain those of each linked artifact. No new language verification.",
+        "place": "Selected case/model contexts only; no global or community representativeness claimed.",
+        "method": "Reading and model/source analysis; observed practical mastery and learner outcomes are not recorded."
+      }
+    },
+    {
+      "domainId": "D04",
+      "title": "Motion, energy and periodic waves",
+      "scope": "A deliberately elementary physical-quantities route.",
+      "entrySupport": "Start with units and changes over intervals; the linked derivative formulas are an extension.",
+      "stops": [
+        {
+          "targetId": "mech-1.1",
+          "kind": "legacy-accepted",
+          "revision": null,
+          "title": "Position, velocity and acceleration",
+          "task": "Separate position, velocity and acceleration in a short table of imagined motion.",
+          "declaredPrerequisites": [
+            "pma-5.16"
+          ],
+          "targetSha256": "f400e78b1af75ce65e157a6826860bdbe733a85ad1a77f7e3fee54a51499690f"
+        },
+        {
+          "targetId": "energy-1.1",
+          "kind": "legacy-accepted",
+          "revision": null,
+          "title": "Energy and power units across scales",
+          "task": "For a fixed power, compare energy delivered over two durations.",
+          "declaredPrerequisites": [
+            "mech-3.1"
+          ],
+          "targetSha256": "3166d04754bd6e72f2634e5cf09f1d52d88097a218534be06cef9cedf6849daa"
+        },
+        {
+          "targetId": "music-1.3",
+          "kind": "legacy-accepted",
+          "revision": null,
+          "title": "Frequency, period and wavelength",
+          "task": "Explain period, frequency and wavelength without conflating time and distance.",
+          "declaredPrerequisites": [
+            "music-1.1",
+            "music-1.2"
+          ],
+          "targetSha256": "51f5238e2d1adcc7a9d68ca15f13821f66b734831a5b2e2cfa8f360db05d64cd"
+        }
+      ],
+      "transfer": "Compare the three tasks: name one thing each can establish and one conclusion needing different evidence.",
+      "remainingBreadth": "Astronomy, experimental uncertainty, quantum theory and regional histories of physical inquiry remain broader topics.",
+      "representationAudit": {
+        "language": "English reading route; source languages and translation limits remain those of each linked artifact. No new language verification.",
+        "place": "Selected case/model contexts only; no global or community representativeness claimed.",
+        "method": "Reading and model/source analysis; observed practical mastery and learner outcomes are not recorded."
+      }
+    },
+    {
+      "domainId": "D05",
+      "title": "Gas, reaction and bonding models",
+      "scope": "A model is useful within its stated chemical assumptions.",
+      "entrySupport": "Read a curve’s horizontal and vertical quantities before using algebra or derivatives.",
+      "stops": [
+        {
+          "targetId": "pchem-1.1",
+          "kind": "legacy-accepted",
+          "revision": null,
+          "title": "Boyle’s law",
+          "task": "Hold temperature and amount fixed; explain the ideal pressure-volume relation.",
+          "declaredPrerequisites": [],
+          "targetSha256": "c9e6face1180c0e340adb2dc9bed173d87057b0fd6ec47143f86c76fb860937b"
+        },
+        {
+          "targetId": "kin-1.1",
+          "kind": "legacy-accepted",
+          "revision": null,
+          "title": "Rate of reaction",
+          "task": "For A to 2B, compare the rates of disappearance and appearance with the reaction rate.",
+          "declaredPrerequisites": [],
+          "targetSha256": "2c8d6f0bd8e91162bbe39b3d6f6f88237f4ed707018164e22c0de6ca61114fa9"
+        },
+        {
+          "targetId": "mat-1.1",
+          "kind": "legacy-accepted",
+          "revision": null,
+          "title": "Bond-energy curves and bonding types",
+          "task": "Locate an equilibrium separation on an idealized energy curve and state a many-body limitation.",
+          "declaredPrerequisites": [
+            "qchem-5.2",
+            "mech-3.3",
+            "pma-5.8"
+          ],
+          "targetSha256": "9ea149c9ab207bc47e2241afa5d2518f01ddb92295b781b01710632417eb412a"
+        }
+      ],
+      "transfer": "Compare the three tasks: name one thing each can establish and one conclusion needing different evidence.",
+      "remainingBreadth": "Laboratory practice, organic chemistry, analytical methods and material histories need distinct safe routes.",
+      "representationAudit": {
+        "language": "English reading route; source languages and translation limits remain those of each linked artifact. No new language verification.",
+        "place": "Selected case/model contexts only; no global or community representativeness claimed.",
+        "method": "Reading and model/source analysis; observed practical mastery and learner outcomes are not recorded."
+      }
+    },
+    {
+      "domainId": "D06",
+      "title": "Location, rock transformations and spectral scales",
+      "scope": "Spatial coordinates, a qualitative Earth model and one climate-related radiation model.",
+      "entrySupport": "Angles locate a point; a transformation arrow does not by itself state a timescale.",
+      "stops": [
+        {
+          "targetId": "geog-1.2",
+          "kind": "legacy-accepted",
+          "revision": null,
+          "title": "Latitude and longitude",
+          "task": "Explain why equal longitude differences do not imply equal distances at different latitudes.",
+          "declaredPrerequisites": [
+            "geog-1.1"
+          ],
+          "targetSha256": "39486882885ec740a1d5560e5b6796693e1279d28d4caba426729a15c8dd487c"
+        },
+        {
+          "targetId": "geol-1.2",
+          "kind": "legacy-accepted",
+          "revision": null,
+          "title": "The rock cycle",
+          "task": "Trace two possible rock transformations without assigning an unsupported rate.",
+          "declaredPrerequisites": [
+            "geol-1.1",
+            "pde-1.4"
+          ],
+          "targetSha256": "1a5e4ac3dd135ad449d662ba59a6cb6655afe875d18b04f5c669d901124c0c73"
+        },
+        {
+          "targetId": "climate-1.3",
+          "kind": "legacy-accepted",
+          "revision": null,
+          "title": "Wien’s displacement law",
+          "task": "Compare the wavelength peak for two temperatures while naming the spectral representation.",
+          "declaredPrerequisites": [
+            "climate-1.1",
+            "thermo-9.5",
+            "pma-5.8"
+          ],
+          "targetSha256": "9944badfe8262a7e0ee443fe0539b64093bfaf77a2121b43753a958d02dbd0f4"
+        }
+      ],
+      "transfer": "Compare the three tasks: name one thing each can establish and one conclusion needing different evidence.",
+      "remainingBreadth": "Oceans, weather observation, human geography, mapping ethics and situated place knowledge remain underrepresented.",
+      "representationAudit": {
+        "language": "English reading route; source languages and translation limits remain those of each linked artifact. No new language verification.",
+        "place": "Selected case/model contexts only; no global or community representativeness claimed.",
+        "method": "Reading and model/source analysis; observed practical mastery and learner outcomes are not recorded."
+      }
+    },
+    {
+      "domainId": "D07",
+      "title": "Gene copies, regulation and populations",
+      "scope": "Counting units and reading model boundaries in life science.",
+      "entrySupport": "An individual and a gene copy are different counting units; arrows need biological evidence.",
+      "stops": [
+        {
+          "targetId": "popgen-1.1",
+          "kind": "legacy-accepted",
+          "revision": null,
+          "title": "Genes, alleles, genotypes and allele frequencies",
+          "task": "Repackage four gene copies into two individuals and compare allele versus genotype counts.",
+          "declaredPrerequisites": [],
+          "targetSha256": "a4feeed073acebf4a60cdb72cdcf9c0a83d2eca892d44c34d816cdd4d1748207"
+        },
+        {
+          "targetId": "sysbio-1.1",
+          "kind": "legacy-accepted",
+          "revision": null,
+          "title": "Transcription networks as directed graphs",
+          "task": "Explain a directed regulatory edge and separate a graph definition from evidence for a specific interaction.",
+          "declaredPrerequisites": [
+            "graph-1.10.1a"
+          ],
+          "targetSha256": "5293148e82513d1a78106e3dc4060a812605e10f76f284e6d4aea308a0a5aa98"
+        },
+        {
+          "targetId": "mathbio-1.1",
+          "kind": "legacy-accepted",
+          "revision": null,
+          "title": "Per-capita growth rate and the population balance law",
+          "task": "Balance births, deaths, arrivals and departures before computing a per-capita change.",
+          "declaredPrerequisites": [],
+          "targetSha256": "138dfaf5a4e6c5d1c4baf31d9b3234f2e15f68f97fb61deb6d251cd1903f7c2a"
+        }
+      ],
+      "transfer": "Compare the three tasks: name one thing each can establish and one conclusion needing different evidence.",
+      "remainingBreadth": "Organismal diversity, anatomy, evolution beyond the model, field observation and laboratory methods need expansion.",
+      "representationAudit": {
+        "language": "English reading route; source languages and translation limits remain those of each linked artifact. No new language verification.",
+        "place": "Selected case/model contexts only; no global or community representativeness claimed.",
+        "method": "Reading and model/source analysis; observed practical mastery and learner outcomes are not recorded."
+      }
+    },
+    {
+      "domainId": "D08",
+      "title": "Niches, population balances and situated outcomes",
+      "scope": "Compare model suitability, accounting and evidence about a farming system.",
+      "entrySupport": "Use two environmental axes and a small population ledger before generalizing.",
+      "stops": [
+        {
+          "targetId": "ecol-1.1",
+          "kind": "legacy-accepted",
+          "revision": null,
+          "title": "The niche as an n-dimensional hypervolume (Hutchinson)",
+          "task": "Describe why satisfying one environmental condition may not make a site suitable.",
+          "declaredPrerequisites": [],
+          "targetSha256": "0affa9a4fdcd886e050e5378df42c83aedf4f4c24ebffcd805d116068ef22705"
+        },
+        {
+          "targetId": "mathbio-1.1",
+          "kind": "legacy-accepted",
+          "revision": null,
+          "title": "Per-capita growth rate and the population balance law",
+          "task": "Explain a change in population without assuming it is all reproduction.",
+          "declaredPrerequisites": [],
+          "targetSha256": "138dfaf5a4e6c5d1c4baf31d9b3234f2e15f68f97fb61deb6d251cd1903f7c2a"
+        },
+        {
+          "targetId": "x-agriculture-0003",
+          "kind": "locally-accepted-exploration",
+          "revision": "0.1.0",
+          "title": "A farming-system claim needs the right evidence",
+          "task": "Choose an outcome claim and identify the evidence appropriate to its scale.",
+          "declaredPrerequisites": [],
+          "targetSha256": "522e755b0119626df84e2332c8d57589252dec6817c63026a1c2501de6dffcfc"
+        }
+      ],
+      "transfer": "Compare the three tasks: name one thing each can establish and one conclusion needing different evidence.",
+      "remainingBreadth": "Conservation decisions, ecological field data, marine systems and local stewardship are future routes.",
+      "representationAudit": {
+        "language": "English reading route; source languages and translation limits remain those of each linked artifact. No new language verification.",
+        "place": "Selected case/model contexts only; no global or community representativeness claimed.",
+        "method": "Reading and model/source analysis; observed practical mastery and learner outcomes are not recorded."
+      }
+    },
+    {
+      "domainId": "D09",
+      "title": "Observation, measurement and communication",
+      "scope": "Synthetic health-related quantities and a fictional care exchange.",
+      "entrySupport": "All traces and dialogues are supplied; no self-test, patient data or clinical knowledge is required.",
+      "stops": [
+        {
+          "targetId": "x-health-0001",
+          "kind": "locally-accepted-exploration",
+          "revision": "0.1.0",
+          "title": "What can a counted cycle tell you?",
+          "task": "Distinguish complete cycles, onsets and partial windows.",
+          "declaredPrerequisites": [],
+          "targetSha256": "411b82c3f0c83d0643b589469aeb63fb56f5f89111f151c06a3e60edef0e8642"
+        },
+        {
+          "targetId": "x-health-0002",
+          "kind": "locally-accepted-exploration",
+          "revision": "0.1.0",
+          "title": "A larger ratio can hide missing observation",
+          "task": "Explain the difference between a correct ratio and a clinically interpretable test.",
+          "declaredPrerequisites": [],
+          "targetSha256": "a69d37cfda297337d6b1a030ce0277f49cf48cbd38aafa6e323eb9a0e6110d0b"
+        },
+        {
+          "targetId": "x-health-0003",
+          "kind": "locally-accepted-exploration",
+          "revision": "0.1.0",
+          "title": "What did the reply actually show?",
+          "task": "Revise an explanation in response to the actual uncertainty in a scripted reply.",
+          "declaredPrerequisites": [],
+          "targetSha256": "d9edf69fb4b85f354d45aef23646b4e07663380263b53484737f684b9a455079"
+        }
+      ],
+      "transfer": "Compare the three tasks: name one thing each can establish and one conclusion needing different evidence.",
+      "remainingBreadth": "Public health, social determinants, disability, mental health and care practice need separate evidence and sources.",
+      "representationAudit": {
+        "language": "English reading route; source languages and translation limits remain those of each linked artifact. No new language verification.",
+        "place": "Selected case/model contexts only; no global or community representativeness claimed.",
+        "method": "Reading and model/source analysis; observed practical mastery and learner outcomes are not recorded."
+      }
+    },
+    {
+      "domainId": "D10",
+      "title": "A sample, a water ledger and a farming system",
+      "scope": "Keep measured observations, a fictional model and institutional accounts separate.",
+      "entrySupport": "Follow the units and time boundaries; do not turn a selected soil sample into a universal recommendation.",
+      "stops": [
+        {
+          "targetId": "x-agriculture-0001",
+          "kind": "locally-accepted-exploration",
+          "revision": "0.1.1",
+          "title": "What does a soil-water point measure?",
+          "task": "Identify what the selected soil observations measure and what the synthetic model adds.",
+          "declaredPrerequisites": [],
+          "targetSha256": "d1609393f350ac5e6ecf290674a08612a6628d6a24dcfacd829231ec09ec0683"
+        },
+        {
+          "targetId": "x-agriculture-0002",
+          "kind": "locally-accepted-exploration",
+          "revision": "0.1.0",
+          "title": "A water ledger is not a field decision",
+          "task": "Check a three-day budget and an infeasible delivery request.",
+          "declaredPrerequisites": [],
+          "targetSha256": "380a7324d0bf7fd7af0b2a4aba27bc7729c2918e73401e866ba409c061e73f37"
+        },
+        {
+          "targetId": "x-agriculture-0003",
+          "kind": "locally-accepted-exploration",
+          "revision": "0.1.0",
+          "title": "A farming-system claim needs the right evidence",
+          "task": "Distinguish a programme output proposal from evidence of a benefit.",
+          "declaredPrerequisites": [],
+          "targetSha256": "522e755b0119626df84e2332c8d57589252dec6817c63026a1c2501de6dffcfc"
+        }
+      ],
+      "transfer": "Compare the three tasks: name one thing each can establish and one conclusion needing different evidence.",
+      "remainingBreadth": "Food preparation, forestry, fisheries, veterinary knowledge and locally situated agricultural practice remain broader work.",
+      "representationAudit": {
+        "language": "English reading route; source languages and translation limits remain those of each linked artifact. No new language verification.",
+        "place": "Selected case/model contexts only; no global or community representativeness claimed.",
+        "method": "Reading and model/source analysis; observed practical mastery and learner outcomes are not recorded."
+      }
+    },
+    {
+      "domainId": "D11",
+      "title": "Feedback, energy and stress",
+      "scope": "Engineering quantities and models before design decisions.",
+      "entrySupport": "Use simple ratios and block descriptions; derivations and stability analysis are later steps.",
+      "stops": [
+        {
+          "targetId": "ctrl-1.1",
+          "kind": "legacy-accepted",
+          "revision": null,
+          "title": "Open-loop versus closed-loop control",
+          "task": "Compare an open-loop setting with a controller using a measured error.",
+          "declaredPrerequisites": [],
+          "targetSha256": "747fa809870a178dc0550890392c0a75453acb24094c461d50216a102a144470"
+        },
+        {
+          "targetId": "energy-1.1",
+          "kind": "legacy-accepted",
+          "revision": null,
+          "title": "Energy and power units across scales",
+          "task": "Convert a fixed-power duration to energy and keep the units explicit.",
+          "declaredPrerequisites": [
+            "mech-3.1"
+          ],
+          "targetSha256": "3166d04754bd6e72f2634e5cf09f1d52d88097a218534be06cef9cedf6849daa"
+        },
+        {
+          "targetId": "solid-1.1",
+          "kind": "legacy-accepted",
+          "revision": null,
+          "title": "Normal stress",
+          "task": "Compare force per area for two uniform bars within the stated assumptions.",
+          "declaredPrerequisites": [
+            "mech-1.6"
+          ],
+          "targetSha256": "dc1937509acf2083bb115f020165453b9630160d7969fe9420758646c1824f35"
+        }
+      ],
+      "transfer": "Compare the three tasks: name one thing each can establish and one conclusion needing different evidence.",
+      "remainingBreadth": "These are models, not building, electrical or machine safety instructions; manufacturing practice needs additional curricula.",
+      "representationAudit": {
+        "language": "English reading route; source languages and translation limits remain those of each linked artifact. No new language verification.",
+        "place": "Selected case/model contexts only; no global or community representativeness claimed.",
+        "method": "Reading and model/source analysis; observed practical mastery and learner outcomes are not recorded."
+      }
+    },
+    {
+      "domainId": "D12",
+      "title": "Equilibrium, supports and geometric representation",
+      "scope": "A bounded introduction to structural and spatial reasoning.",
+      "entrySupport": "Start with a two-support beam and a drawing; rank calculations are an optional deeper route.",
+      "stops": [
+        {
+          "targetId": "arch-1.2",
+          "kind": "legacy-accepted",
+          "revision": null,
+          "title": "Static equilibrium of forces and moments",
+          "task": "Explain why balancing forces alone need not balance moments.",
+          "declaredPrerequisites": [
+            "mech-1.7",
+            "mech-2.8"
+          ],
+          "targetSha256": "45c44b7fd5e89625d73886301a7956271261c31f0f73eeceb554e3509c99ffa3"
+        },
+        {
+          "targetId": "arch-1.3",
+          "kind": "legacy-accepted",
+          "revision": null,
+          "title": "Supports, free-body diagrams and determinacy",
+          "task": "Replace an ideal support with the reactions it can supply.",
+          "declaredPrerequisites": [
+            "arch-1.2",
+            "ladr-3.21"
+          ],
+          "targetSha256": "eb2fee0a0db6b42c158fe8387fa36ddac726d4e375917d73554889f68e1b694b"
+        },
+        {
+          "targetId": "art-1.1",
+          "kind": "legacy-accepted",
+          "revision": null,
+          "title": "The picture plane and the visual pyramid",
+          "task": "Locate the eye and picture plane in a spatial representation.",
+          "declaredPrerequisites": [],
+          "targetSha256": "63efd7ea54cff0055cf69e34aff8866943d306c98903a2bd5e1479c4e7f5470a"
+        }
+      ],
+      "transfer": "Compare the three tasks: name one thing each can establish and one conclusion needing different evidence.",
+      "remainingBreadth": "Urban planning, dwelling histories, landscape, access and current building codes are not covered by these three models.",
+      "representationAudit": {
+        "language": "English reading route; source languages and translation limits remain those of each linked artifact. No new language verification.",
+        "place": "Selected case/model contexts only; no global or community representativeness claimed.",
+        "method": "Reading and model/source analysis; observed practical mastery and learner outcomes are not recorded."
+      }
+    },
+    {
+      "domainId": "D13",
+      "title": "Choice, output and accumulation",
+      "scope": "Three basic economic accounting/model distinctions.",
+      "entrySupport": "Use fictional quantities and fixed assumptions; no real investment or policy decision is asked.",
+      "stops": [
+        {
+          "targetId": "micro-1.1",
+          "kind": "legacy-accepted",
+          "revision": null,
+          "title": "Scarcity and choice",
+          "task": "Describe the forgone use of a limited resource.",
+          "declaredPrerequisites": [],
+          "targetSha256": "f9f6ee5f0565dd69b0f9bb5da0225f840ffd3bff98aec4c70ed0e46410abe643"
+        },
+        {
+          "targetId": "macro-1.1",
+          "kind": "legacy-accepted",
+          "revision": null,
+          "title": "GDP: the value of final output",
+          "task": "Distinguish final output from an intermediate input in a fictional production chain.",
+          "declaredPrerequisites": [],
+          "targetSha256": "6d999c9441872364ca434b23dfec44c33d00a94532a96ea9151c237201501043"
+        },
+        {
+          "targetId": "fin-1.1",
+          "kind": "legacy-accepted",
+          "revision": null,
+          "title": "Simple and compound interest",
+          "task": "Compare two periods of simple and compound accumulation with an assumed rate.",
+          "declaredPrerequisites": [
+            "pma-3.26"
+          ],
+          "targetSha256": "95d354f55dd92d092d2ef3e70039e8184e1e12b4ae5e0c112797f24e8f283930"
+        }
+      ],
+      "transfer": "Compare the three tasks: name one thing each can establish and one conclusion needing different evidence.",
+      "remainingBreadth": "Economic institutions, inequality, labour, political economy and regional histories need additional readings.",
+      "representationAudit": {
+        "language": "English reading route; source languages and translation limits remain those of each linked artifact. No new language verification.",
+        "place": "Selected case/model contexts only; no global or community representativeness claimed.",
+        "method": "Reading and model/source analysis; observed practical mastery and learner outcomes are not recorded."
+      }
+    },
+    {
+      "domainId": "D14",
+      "title": "Resources, finance and consumer obligations",
+      "scope": "Business-related models and a dated legal reading exercise.",
+      "entrySupport": "The examples introduce constraints, periods and rules; they do not supply operating or financial advice.",
+      "stops": [
+        {
+          "targetId": "micro-1.1",
+          "kind": "legacy-accepted",
+          "revision": null,
+          "title": "Scarcity and choice",
+          "task": "Name the resource constraint in a small fictional organization.",
+          "declaredPrerequisites": [],
+          "targetSha256": "f9f6ee5f0565dd69b0f9bb5da0225f840ffd3bff98aec4c70ed0e46410abe643"
+        },
+        {
+          "targetId": "fin-1.1",
+          "kind": "legacy-accepted",
+          "revision": null,
+          "title": "Simple and compound interest",
+          "task": "Distinguish an assumed compounding schedule from actual contractual costs.",
+          "declaredPrerequisites": [
+            "pma-3.26"
+          ],
+          "targetSha256": "95d354f55dd92d092d2ef3e70039e8184e1e12b4ae5e0c112797f24e8f283930"
+        },
+        {
+          "targetId": "x-law-0001",
+          "kind": "locally-accepted-exploration",
+          "revision": "0.1.0",
+          "title": "A faulty kettle: what does the evidence establish?",
+          "task": "Separate case facts and statutory timing conditions in the fictional goods file.",
+          "declaredPrerequisites": [],
+          "targetSha256": "13f7e75641f7ea50d126cac2494745726427c336f3274a09eed0f4fcbe02f73e"
+        }
+      ],
+      "transfer": "Compare the three tasks: name one thing each can establish and one conclusion needing different evidence.",
+      "remainingBreadth": "Accounting, governance, cooperative organizations, management and local business institutions remain missing subjects.",
+      "representationAudit": {
+        "language": "English reading route; source languages and translation limits remain those of each linked artifact. No new language verification.",
+        "place": "Selected case/model contexts only; no global or community representativeness claimed.",
+        "method": "Reading and model/source analysis; observed practical mastery and learner outcomes are not recorded."
+      }
+    },
+    {
+      "domainId": "D15",
+      "title": "Votes and diplomatic claims",
+      "scope": "Formal choice rules and historical documents answer different political questions.",
+      "entrySupport": "A ranking orders alternatives; a first-place count uses only part of that ranking.",
+      "stops": [
+        {
+          "targetId": "polsci-1.1",
+          "kind": "legacy-accepted",
+          "revision": null,
+          "title": "Preference profiles and social choice functions",
+          "task": "Build a three-voter preference profile with no ties.",
+          "declaredPrerequisites": [
+            "micro-4.3",
+            "comb-1.5",
+            "comb-1.11"
+          ],
+          "targetSha256": "1cccf0d375680653182d5d1850c427809c14b20d371ee8e734c8e4b21ad103cc"
+        },
+        {
+          "targetId": "polsci-1.2",
+          "kind": "legacy-accepted",
+          "revision": null,
+          "title": "Plurality voting",
+          "task": "Find a plurality winner and decide whether that winner has a majority.",
+          "declaredPrerequisites": [
+            "polsci-1.1",
+            "comb-1.2"
+          ],
+          "targetSha256": "71dfbe1e81d355f3f94b0c150f58f0aae83a6eb4738cdc04359c73b9f88e2439"
+        },
+        {
+          "targetId": "x-history-0002",
+          "kind": "locally-accepted-exploration",
+          "revision": "0.1.0",
+          "title": "Whose diplomatic voice are you reading?",
+          "task": "Distinguish a diplomatic proposal, reported speech and the writer’s prediction.",
+          "declaredPrerequisites": [],
+          "targetSha256": "b58f21939b244ed4750f5a79d0f702a4ff1f62bf232e6e55da529716df50da3f"
+        }
+      ],
+      "transfer": "Compare the three tasks: name one thing each can establish and one conclusion needing different evidence.",
+      "remainingBreadth": "Public administration, lawmaking, comparative institutions, political traditions and participation need more situated accounts.",
+      "representationAudit": {
+        "language": "English reading route; source languages and translation limits remain those of each linked artifact. No new language verification.",
+        "place": "Selected case/model contexts only; no global or community representativeness claimed.",
+        "method": "Reading and model/source analysis; observed practical mastery and learner outcomes are not recorded."
+      }
+    },
+    {
+      "domainId": "D16",
+      "title": "Facts, remedies and jurisdiction",
+      "scope": "Three bounded legal-source exercises.",
+      "entrySupport": "Every case is fictional and every authority is named; no personal claim is submitted.",
+      "stops": [
+        {
+          "targetId": "x-law-0001",
+          "kind": "locally-accepted-exploration",
+          "revision": "0.1.0",
+          "title": "A faulty kettle: what does the evidence establish?",
+          "task": "Identify the facts that start each of two distinct clocks.",
+          "declaredPrerequisites": [],
+          "targetSha256": "13f7e75641f7ea50d126cac2494745726427c336f3274a09eed0f4fcbe02f73e"
+        },
+        {
+          "targetId": "x-law-0002",
+          "kind": "locally-accepted-exploration",
+          "revision": "0.1.0",
+          "title": "What does this evidence establish?",
+          "task": "Separate malfunction evidence, a presumption and remedy conditions.",
+          "declaredPrerequisites": [],
+          "targetSha256": "acf6151622a269bee2623bafb173a546c56b740a557d31de29abdc7197fa3e5f"
+        },
+        {
+          "targetId": "x-law-0003",
+          "kind": "locally-accepted-exploration",
+          "revision": "0.1.0",
+          "title": "Change the jurisdiction, recheck the rule",
+          "task": "Explain why an imported UK timing rule cannot decide the Australian exercise.",
+          "declaredPrerequisites": [],
+          "targetSha256": "2808fcf31d135ca6263d4495b9d1d95df1e09615d93f29382a9a288970df4584"
+        }
+      ],
+      "transfer": "Compare the three tasks: name one thing each can establish and one conclusion needing different evidence.",
+      "remainingBreadth": "Criminal, constitutional, family, international and customary law need their own jurisdictions and dated sources.",
+      "representationAudit": {
+        "language": "English reading route; source languages and translation limits remain those of each linked artifact. No new language verification.",
+        "place": "Selected case/model contexts only; no global or community representativeness claimed.",
+        "method": "Reading and model/source analysis; observed practical mastery and learner outcomes are not recorded."
+      }
+    },
+    {
+      "domainId": "D17",
+      "title": "Aggregate patterns, population accounting and situated accounts",
+      "scope": "Model output is not a complete explanation of social life.",
+      "entrySupport": "A population balance is an accounting identity, while a behavioural rule is a model assumption.",
+      "stops": [
+        {
+          "targetId": "soc-1.1",
+          "kind": "legacy-accepted",
+          "revision": null,
+          "title": "Emergence: aggregate patterns from individual rules",
+          "task": "Give two different hypothetical individual rules that could fit the same aggregate pattern.",
+          "declaredPrerequisites": [],
+          "targetSha256": "1c5349c6f98bf21a18bcb9bcf4f78f168a3a4e1ff0c9c3081e125b6258fae8d3"
+        },
+        {
+          "targetId": "demo-1.1",
+          "kind": "legacy-accepted",
+          "revision": null,
+          "title": "The demographic balancing equation",
+          "task": "Keep territory and membership fixed while checking a population balance.",
+          "declaredPrerequisites": [
+            "mathbio-1.1"
+          ],
+          "targetSha256": "3c1321227df365d15eacc291f6ce2c4ba8254cc67a3a47de6fd4c1c670a4e0ba"
+        },
+        {
+          "targetId": "x-agriculture-0003",
+          "kind": "locally-accepted-exploration",
+          "revision": "0.1.0",
+          "title": "A farming-system claim needs the right evidence",
+          "task": "Distinguish institutional mediation from a participant’s full account.",
+          "declaredPrerequisites": [],
+          "targetSha256": "522e755b0119626df84e2332c8d57589252dec6817c63026a1c2501de6dffcfc"
+        }
+      ],
+      "transfer": "Compare the three tasks: name one thing each can establish and one conclusion needing different evidence.",
+      "remainingBreadth": "Ethnography, kinship, institutions, social theory and participant perspectives remain broader needs.",
+      "representationAudit": {
+        "language": "English reading route; source languages and translation limits remain those of each linked artifact. No new language verification.",
+        "place": "Selected case/model contexts only; no global or community representativeness claimed.",
+        "method": "Reading and model/source analysis; observed practical mastery and learner outcomes are not recorded."
+      }
+    },
+    {
+      "domainId": "D18",
+      "title": "Detection, comparison and interpretation",
+      "scope": "How a task and its conditions shape a reported response.",
+      "entrySupport": "Treat curves as explanatory models; no sensory test or claim about a particular person is required.",
+      "stops": [
+        {
+          "targetId": "psych-1.1",
+          "kind": "legacy-accepted",
+          "revision": null,
+          "title": "Absolute threshold",
+          "task": "Explain why a threshold is a stated response criterion rather than an absolute barrier.",
+          "declaredPrerequisites": [],
+          "targetSha256": "c2f04a3be50275c785c79083c65588e517b8511da28964d2e61142c767323de1"
+        },
+        {
+          "targetId": "psych-1.2",
+          "kind": "legacy-accepted",
+          "revision": null,
+          "title": "Difference threshold and the just-noticeable difference",
+          "task": "Read the 25%, 50% and 75% points of a fictional comparison curve.",
+          "declaredPrerequisites": [
+            "psych-1.1"
+          ],
+          "targetSha256": "a76ec0e56bbf673fe07ad5acf96afc986f10ea31e58b2826c6296b894149a0b8"
+        },
+        {
+          "targetId": "x-performance-0002",
+          "kind": "locally-accepted-exploration",
+          "revision": "0.1.0",
+          "title": "A score predicts; an event supplies evidence",
+          "task": "Separate a staging prediction from an observer’s uncollected response.",
+          "declaredPrerequisites": [],
+          "targetSha256": "bfa63a5970f5de73b6c566fff1068058ec21aacc243778aa48093b53723b95fc"
+        }
+      ],
+      "transfer": "Compare the three tasks: name one thing each can establish and one conclusion needing different evidence.",
+      "remainingBreadth": "Development, memory, social psychology, emotion and cross-cultural methods need distinct source-backed routes.",
+      "representationAudit": {
+        "language": "English reading route; source languages and translation limits remain those of each linked artifact. No new language verification.",
+        "place": "Selected case/model contexts only; no global or community representativeness claimed.",
+        "method": "Reading and model/source analysis; observed practical mastery and learner outcomes are not recorded."
+      }
+    },
+    {
+      "domainId": "D19",
+      "title": "Explanation, teaching offers and checking learning",
+      "scope": "Three ways to distinguish instruction from evidence of understanding.",
+      "entrySupport": "Use the supplied dialogue and source cards; no real learner is assessed.",
+      "stops": [
+        {
+          "targetId": "x-health-0003",
+          "kind": "locally-accepted-exploration",
+          "revision": "0.1.0",
+          "title": "What did the reply actually show?",
+          "task": "Respond to a learner’s actual scripted uncertainty.",
+          "declaredPrerequisites": [],
+          "targetSha256": "d9edf69fb4b85f354d45aef23646b4e07663380263b53484737f684b9a455079"
+        },
+        {
+          "targetId": "x-craft-0003",
+          "kind": "locally-accepted-exploration",
+          "revision": "0.1.0",
+          "title": "A teaching offer is not an observed workshop",
+          "task": "Identify why an advertised workshop does not establish a learning outcome.",
+          "declaredPrerequisites": [],
+          "targetSha256": "03f95c6aea2dcd03f98926426f8398ea82427da957ea90daedee440b7cfeb0ea"
+        },
+        {
+          "targetId": "x-performance-0002",
+          "kind": "locally-accepted-exploration",
+          "revision": "0.1.0",
+          "title": "A score predicts; an event supplies evidence",
+          "task": "Write a prediction and an observation question without inventing the response.",
+          "declaredPrerequisites": [],
+          "targetSha256": "bfa63a5970f5de73b6c566fff1068058ec21aacc243778aa48093b53723b95fc"
+        }
+      ],
+      "transfer": "Compare the three tasks: name one thing each can establish and one conclusion needing different evidence.",
+      "remainingBreadth": "Curriculum design, educational history, disability access and formal/informal learning institutions need expansion.",
+      "representationAudit": {
+        "language": "English reading route; source languages and translation limits remain those of each linked artifact. No new language verification.",
+        "place": "Selected case/model contexts only; no global or community representativeness claimed.",
+        "method": "Reading and model/source analysis; observed practical mastery and learner outcomes are not recorded."
+      }
+    },
+    {
+      "domainId": "D20",
+      "title": "Documents, diplomatic voices and material evidence",
+      "scope": "Three historical inquiries with different evidential limits.",
+      "entrySupport": "Read the provenance and locators before classifying a claim.",
+      "stops": [
+        {
+          "targetId": "x-history-0001",
+          "kind": "locally-accepted-exploration",
+          "revision": "0.1.3",
+          "title": "What can two documents establish?",
+          "task": "Identify what each selected document directly states.",
+          "declaredPrerequisites": [],
+          "targetSha256": "420aac846ee42084da25ba7f1ee57872a873e211b434188179d512ad3b618a9d"
+        },
+        {
+          "targetId": "x-history-0002",
+          "kind": "locally-accepted-exploration",
+          "revision": "0.1.0",
+          "title": "Whose diplomatic voice are you reading?",
+          "task": "Trace a reported claim through its transmission and translation.",
+          "declaredPrerequisites": [],
+          "targetSha256": "b58f21939b244ed4750f5a79d0f702a4ff1f62bf232e6e55da529716df50da3f"
+        },
+        {
+          "targetId": "x-history-0003",
+          "kind": "locally-accepted-exploration",
+          "revision": "0.1.0",
+          "title": "What can a charcoal mark date?",
+          "task": "Separate a dated inscription from the premises needed for an eruption inference.",
+          "declaredPrerequisites": [],
+          "targetSha256": "fc8ca83ef37cf40da8dd20dd5664fba189444697a29c166c024f24452e1a8d53"
+        }
+      ],
+      "transfer": "Compare the three tasks: name one thing each can establish and one conclusion needing different evidence.",
+      "remainingBreadth": "Periods, regions, oral histories and archaeological methods remain far broader than these selected cases.",
+      "representationAudit": {
+        "language": "English reading route; source languages and translation limits remain those of each linked artifact. No new language verification.",
+        "place": "Selected case/model contexts only; no global or community representativeness claimed.",
+        "method": "Reading and model/source analysis; observed practical mastery and learner outcomes are not recorded."
+      }
+    },
+    {
+      "domainId": "D21",
+      "title": "Reconstruction, disclosure and institutional claims",
+      "scope": "Compare normative reasoning without treating traditions as interchangeable.",
+      "entrySupport": "A premise supports a conclusion; a source claim and your added bridge must be separately labeled.",
+      "stops": [
+        {
+          "targetId": "x-philosophy-0001",
+          "kind": "locally-accepted-exploration",
+          "revision": "0.1.1",
+          "title": "Does reciprocity settle a disagreement?",
+          "task": "Build a premise-and-conclusion reconstruction with an objection.",
+          "declaredPrerequisites": [],
+          "targetSha256": "2e6ab5203b41109ce00dbcecd5c5f2522ba73c8300886e38476b43e5e49259df"
+        },
+        {
+          "targetId": "x-philosophy-0002",
+          "kind": "locally-accepted-exploration",
+          "revision": "0.1.0",
+          "title": "When does silence become concealment?",
+          "task": "Distinguish an attributed ancient argument from an added normative bridge.",
+          "declaredPrerequisites": [],
+          "targetSha256": "2c9f174c8aa343fcf3bc2d330b5e8ec2a260fc5cb9f7dc3b9da7eb7f6175b60e"
+        },
+        {
+          "targetId": "x-philosophy-0003",
+          "kind": "locally-accepted-exploration",
+          "revision": "0.1.0",
+          "title": "A purpose, a rule and an observation",
+          "task": "Separate purpose, instruction and observed practice in the selected accounts.",
+          "declaredPrerequisites": [],
+          "targetSha256": "84f7a889f192bc7c4b0e50b31a9df5e4becc0f2e4fdc024d1867eabfd1cd4192"
+        }
+      ],
+      "transfer": "Compare the three tasks: name one thing each can establish and one conclusion needing different evidence.",
+      "remainingBreadth": "Metaphysics, epistemology, aesthetics and wider intellectual traditions require additional original-language and contextual sources.",
+      "representationAudit": {
+        "language": "English reading route; source languages and translation limits remain those of each linked artifact. No new language verification.",
+        "place": "Selected case/model contexts only; no global or community representativeness claimed.",
+        "method": "Reading and model/source analysis; observed practical mastery and learner outcomes are not recorded."
+      }
+    },
+    {
+      "domainId": "D22",
+      "title": "Texts, service accounts and situated performance listings",
+      "scope": "A source-literacy entry into selected belief and worldview contexts.",
+      "entrySupport": "No religious assent or participation is required. English witnesses have explicit language limits.",
+      "stops": [
+        {
+          "targetId": "x-philosophy-0001",
+          "kind": "locally-accepted-exploration",
+          "revision": "0.1.1",
+          "title": "Does reciprocity settle a disagreement?",
+          "task": "Keep the dialogue and teaching-sequence context of two translated passages.",
+          "declaredPrerequisites": [],
+          "targetSha256": "2e6ab5203b41109ce00dbcecd5c5f2522ba73c8300886e38476b43e5e49259df"
+        },
+        {
+          "targetId": "x-philosophy-0003",
+          "kind": "locally-accepted-exploration",
+          "revision": "0.1.0",
+          "title": "A purpose, a rule and an observation",
+          "task": "Preserve the qualifications in two named Sikh institutional accounts.",
+          "declaredPrerequisites": [],
+          "targetSha256": "84f7a889f192bc7c4b0e50b31a9df5e4becc0f2e4fdc024d1867eabfd1cd4192"
+        },
+        {
+          "targetId": "x-performance-0003",
+          "kind": "locally-accepted-exploration",
+          "revision": "0.1.0",
+          "title": "A repertoire entry is not a performance record",
+          "task": "Separate an institutional repertoire label from an actual event or ritual interpretation.",
+          "declaredPrerequisites": [],
+          "targetSha256": "be51ba28edcabe489a2cfd41ad45efb1557167217de429bf0045280fe5d57ef1"
+        }
+      ],
+      "transfer": "Compare the three tasks: name one thing each can establish and one conclusion needing different evidence.",
+      "remainingBreadth": "This is not a survey of religions; lived practice, nonreligious worldviews, regions and original-language traditions remain underrepresented.",
+      "representationAudit": {
+        "language": "English reading route; source languages and translation limits remain those of each linked artifact. No new language verification.",
+        "place": "Selected case/model contexts only; no global or community representativeness claimed.",
+        "method": "Reading and model/source analysis; observed practical mastery and learner outcomes are not recorded."
+      }
+    },
+    {
+      "domainId": "D23",
+      "title": "Contrast, translation and communication",
+      "scope": "Language structure and the limits of an attributed interpretation.",
+      "entrySupport": "A contrast distinguishes words in a language; an English comparison does not verify all original-language meanings.",
+      "stops": [
+        {
+          "targetId": "ling-2.1",
+          "kind": "legacy-accepted",
+          "revision": null,
+          "title": "Phonemes and minimal pairs",
+          "task": "Explain why a minimal pair establishes a contrast within a language.",
+          "declaredPrerequisites": [
+            "ling-1.2"
+          ],
+          "targetSha256": "a79fbec70c81bda4e6c276937f0bedf07a459ba43bd623c785b9fec594f5cd70"
+        },
+        {
+          "targetId": "x-literature-0001",
+          "kind": "locally-accepted-exploration",
+          "revision": "0.1.3",
+          "title": "One pond, two translations",
+          "task": "Compare translation choices while identifying the witness.",
+          "declaredPrerequisites": [],
+          "targetSha256": "7efe674fbc19f37a6f1f5f5f357448f0fe45274e861c40232ca00061fabe1002"
+        },
+        {
+          "targetId": "x-health-0003",
+          "kind": "locally-accepted-exploration",
+          "revision": "0.1.0",
+          "title": "What did the reply actually show?",
+          "task": "Distinguish spoken support from written translation in the fictional exchange.",
+          "declaredPrerequisites": [],
+          "targetSha256": "d9edf69fb4b85f354d45aef23646b4e07663380263b53484737f684b9a455079"
+        }
+      ],
+      "transfer": "Compare the three tasks: name one thing each can establish and one conclusion needing different evidence.",
+      "remainingBreadth": "Signed languages, writing systems, multilingual contexts and community language knowledge need further sources.",
+      "representationAudit": {
+        "language": "English reading route; source languages and translation limits remain those of each linked artifact. No new language verification.",
+        "place": "Selected case/model contexts only; no global or community representativeness claimed.",
+        "method": "Reading and model/source analysis; observed practical mastery and learner outcomes are not recorded."
+      }
+    },
+    {
+      "domainId": "D24",
+      "title": "Translations, editions and narrative access",
+      "scope": "Three close-reading activities with exact selected witnesses.",
+      "entrySupport": "Support each interpretation with a passage locator and preserve narrator/author distinctions.",
+      "stops": [
+        {
+          "targetId": "x-literature-0001",
+          "kind": "locally-accepted-exploration",
+          "revision": "0.1.3",
+          "title": "One pond, two translations",
+          "task": "Locate wording that supports two different translation readings.",
+          "declaredPrerequisites": [],
+          "targetSha256": "7efe674fbc19f37a6f1f5f5f357448f0fe45274e861c40232ca00061fabe1002"
+        },
+        {
+          "targetId": "x-literature-0002",
+          "kind": "locally-accepted-exploration",
+          "revision": "0.1.0",
+          "title": "Elizabeth in two Frankensteins",
+          "task": "Describe a change and a continuity across the selected Frankenstein editions.",
+          "declaredPrerequisites": [],
+          "targetSha256": "00e2ba0038e72b2dc6b3f8e422c875c75a5a7a7643d5a15e4992dccc5296aae8"
+        },
+        {
+          "targetId": "x-literature-0003",
+          "kind": "locally-accepted-exploration",
+          "revision": "0.1.0",
+          "title": "Seeing, hearing and imagining in The Cabuliwallah",
+          "task": "Distinguish a narrator’s access from an unobserved character’s mind.",
+          "declaredPrerequisites": [],
+          "targetSha256": "95ef3a7d463269017581cf85797d32cf30d44363c241569bae6f5ac2be69aab6"
+        }
+      ],
+      "transfer": "Compare the three tasks: name one thing each can establish and one conclusion needing different evidence.",
+      "remainingBreadth": "Genres, periods, regions, oral literatures and additional source languages remain extensive future work.",
+      "representationAudit": {
+        "language": "English reading route; source languages and translation limits remain those of each linked artifact. No new language verification.",
+        "place": "Selected case/model contexts only; no global or community representativeness claimed.",
+        "method": "Reading and model/source analysis; observed practical mastery and learner outcomes are not recorded."
+      }
+    },
+    {
+      "domainId": "D25",
+      "title": "Projection and situated textile accounts",
+      "scope": "Two visual models and a source-scope inquiry.",
+      "entrySupport": "Begin with a straight line from eye through picture plane; geometry is only one visual-art method.",
+      "stops": [
+        {
+          "targetId": "art-1.1",
+          "kind": "legacy-accepted",
+          "revision": null,
+          "title": "The picture plane and the visual pyramid",
+          "task": "Identify the viewpoint on which a perspective construction depends.",
+          "declaredPrerequisites": [],
+          "targetSha256": "63efd7ea54cff0055cf69e34aff8866943d306c98903a2bd5e1479c4e7f5470a"
+        },
+        {
+          "targetId": "art-1.2",
+          "kind": "legacy-accepted",
+          "revision": null,
+          "title": "Central projection by similar triangles",
+          "task": "Use similar triangles to compare images at two depths.",
+          "declaredPrerequisites": [
+            "art-1.1"
+          ],
+          "targetSha256": "b99513c4b8541c471806e4b5ecfe36bc157af8981ed40ebe2bb6e31c95842abc"
+        },
+        {
+          "targetId": "x-craft-0003",
+          "kind": "locally-accepted-exploration",
+          "revision": "0.1.0",
+          "title": "A teaching offer is not an observed workshop",
+          "task": "Explain why a generic geometric weave does not authenticate a cultural meaning.",
+          "declaredPrerequisites": [],
+          "targetSha256": "03f95c6aea2dcd03f98926426f8398ea82427da957ea90daedee440b7cfeb0ea"
+        }
+      ],
+      "transfer": "Compare the three tasks: name one thing each can establish and one conclusion needing different evidence.",
+      "remainingBreadth": "Art histories, material processes, criticism, conservation and diverse visual traditions need additional sources.",
+      "representationAudit": {
+        "language": "English reading route; source languages and translation limits remain those of each linked artifact. No new language verification.",
+        "place": "Selected case/model contexts only; no global or community representativeness claimed.",
+        "method": "Reading and model/source analysis; observed practical mastery and learner outcomes are not recorded."
+      }
+    },
+    {
+      "domainId": "D26",
+      "title": "Sound quantities and an authored phrase",
+      "scope": "A text-accessible route from periodic quantities to a performance plan.",
+      "entrySupport": "The full task can use text and tables; hearing or performing is not required.",
+      "stops": [
+        {
+          "targetId": "music-1.1",
+          "kind": "legacy-accepted",
+          "revision": null,
+          "title": "Sound as a pressure wave",
+          "task": "Distinguish a propagating pressure pattern from bulk travel of air parcels.",
+          "declaredPrerequisites": [
+            "waves-1.11"
+          ],
+          "targetSha256": "432a75901c2a4e519e41433b9de5a0cc06b2a2eff9c13e69424fbe9b711fd94f"
+        },
+        {
+          "targetId": "music-1.3",
+          "kind": "legacy-accepted",
+          "revision": null,
+          "title": "Frequency, period and wavelength",
+          "task": "Relate period and frequency while keeping wavelength separate.",
+          "declaredPrerequisites": [
+            "music-1.1",
+            "music-1.2"
+          ],
+          "targetSha256": "51f5238e2d1adcc7a9d68ca15f13821f66b734831a5b2e2cfa8f360db05d64cd"
+        },
+        {
+          "targetId": "x-performance-0001",
+          "kind": "locally-accepted-exploration",
+          "revision": "0.1.0",
+          "title": "One phrase, two durations",
+          "task": "Compare the timing of an original phrase using its table and optional generated audio.",
+          "declaredPrerequisites": [],
+          "targetSha256": "ed5f77c2e4f684697a2de071afcc3ea1d9260cd593fabc2cd722237843ae8f56"
+        }
+      ],
+      "transfer": "Compare the three tasks: name one thing each can establish and one conclusion needing different evidence.",
+      "remainingBreadth": "Music histories, composition, traditions, improvisation and situated listening are not exhausted by acoustics.",
+      "representationAudit": {
+        "language": "English reading route; source languages and translation limits remain those of each linked artifact. No new language verification.",
+        "place": "Selected case/model contexts only; no global or community representativeness claimed.",
+        "method": "Reading and model/source analysis; observed practical mastery and learner outcomes are not recorded."
+      }
+    },
+    {
+      "domainId": "D27",
+      "title": "A phrase, a staging plan and a repertoire listing",
+      "scope": "Distinguish authored scores from performances and situated accounts.",
+      "entrySupport": "Plans and tables are complete analysis routes; no physical performance is asserted.",
+      "stops": [
+        {
+          "targetId": "x-performance-0001",
+          "kind": "locally-accepted-exploration",
+          "revision": "0.1.0",
+          "title": "One phrase, two durations",
+          "task": "Locate an event in the original phrase plan.",
+          "declaredPrerequisites": [],
+          "targetSha256": "ed5f77c2e4f684697a2de071afcc3ea1d9260cd593fabc2cd722237843ae8f56"
+        },
+        {
+          "targetId": "x-performance-0002",
+          "kind": "locally-accepted-exploration",
+          "revision": "0.1.0",
+          "title": "A score predicts; an event supplies evidence",
+          "task": "Identify three planned staging changes and an uncontrolled factor.",
+          "declaredPrerequisites": [],
+          "targetSha256": "bfa63a5970f5de73b6c566fff1068058ec21aacc243778aa48093b53723b95fc"
+        },
+        {
+          "targetId": "x-performance-0003",
+          "kind": "locally-accepted-exploration",
+          "revision": "0.1.0",
+          "title": "A repertoire entry is not a performance record",
+          "task": "State which manual or event evidence is missing from the institutional listing.",
+          "declaredPrerequisites": [],
+          "targetSha256": "be51ba28edcabe489a2cfd41ad45efb1557167217de429bf0045280fe5d57ef1"
+        }
+      ],
+      "transfer": "Compare the three tasks: name one thing each can establish and one conclusion needing different evidence.",
+      "remainingBreadth": "Dance, film, embodied training, audience studies and additional performance traditions need separate artifacts.",
+      "representationAudit": {
+        "language": "English reading route; source languages and translation limits remain those of each linked artifact. No new language verification.",
+        "place": "Selected case/model contexts only; no global or community representativeness claimed.",
+        "method": "Reading and model/source analysis; observed practical mastery and learner outcomes are not recorded."
+      }
+    },
+    {
+      "domainId": "D28",
+      "title": "Sources, mediation and versions",
+      "scope": "Evidence-handling methods shared by archives and information work.",
+      "entrySupport": "Record who created, transmitted and published each witness; do not collapse those roles.",
+      "stops": [
+        {
+          "targetId": "x-history-0001",
+          "kind": "locally-accepted-exploration",
+          "revision": "0.1.3",
+          "title": "What can two documents establish?",
+          "task": "Separate a primary passage from the modern wrapper presenting it.",
+          "declaredPrerequisites": [],
+          "targetSha256": "420aac846ee42084da25ba7f1ee57872a873e211b434188179d512ad3b618a9d"
+        },
+        {
+          "targetId": "x-history-0002",
+          "kind": "locally-accepted-exploration",
+          "revision": "0.1.0",
+          "title": "Whose diplomatic voice are you reading?",
+          "task": "Trace the reporting and translation chain of a diplomatic claim.",
+          "declaredPrerequisites": [],
+          "targetSha256": "b58f21939b244ed4750f5a79d0f702a4ff1f62bf232e6e55da529716df50da3f"
+        },
+        {
+          "targetId": "x-literature-0002",
+          "kind": "locally-accepted-exploration",
+          "revision": "0.1.0",
+          "title": "Elizabeth in two Frankensteins",
+          "task": "Identify an edition before quoting a changed passage.",
+          "declaredPrerequisites": [],
+          "targetSha256": "00e2ba0038e72b2dc6b3f8e422c875c75a5a7a7643d5a15e4992dccc5296aae8"
+        }
+      ],
+      "transfer": "Compare the three tasks: name one thing each can establish and one conclusion needing different evidence.",
+      "remainingBreadth": "Newsroom practice, libraries, records management, media production and platform studies remain wider subjects.",
+      "representationAudit": {
+        "language": "English reading route; source languages and translation limits remain those of each linked artifact. No new language verification.",
+        "place": "Selected case/model contexts only; no global or community representativeness claimed.",
+        "method": "Reading and model/source analysis; observed practical mastery and learner outcomes are not recorded."
+      }
+    },
+    {
+      "domainId": "D29",
+      "title": "Interlacing, patch plans and situated teaching",
+      "scope": "Construction models and source evidence have different scopes.",
+      "entrySupport": "All tasks have non-making text routes; a digital result is not physical competence.",
+      "stops": [
+        {
+          "targetId": "x-craft-0001",
+          "kind": "locally-accepted-exploration",
+          "revision": "0.1.0",
+          "title": "Read and repair a weave plan",
+          "task": "Read front/back structure and inspect a complete row repair in the digital weave.",
+          "declaredPrerequisites": [],
+          "targetSha256": "ea16af482edfb6a1dd0e919a3a37884a31ba6b1a4ef12a299d0f03772475cbe3"
+        },
+        {
+          "targetId": "x-craft-0002",
+          "kind": "locally-accepted-exploration",
+          "revision": "0.1.0",
+          "title": "Covering a hole is not yet an attachment",
+          "task": "Test area coverage and intended layer presence independently.",
+          "declaredPrerequisites": [],
+          "targetSha256": "25520b516af83957c83a08fafa104db553fddee658a8ce196edd706505c2d162"
+        },
+        {
+          "targetId": "x-craft-0003",
+          "kind": "locally-accepted-exploration",
+          "revision": "0.1.0",
+          "title": "A teaching offer is not an observed workshop",
+          "task": "Identify the object or session evidence a teaching account does not supply.",
+          "declaredPrerequisites": [],
+          "targetSha256": "03f95c6aea2dcd03f98926426f8398ea82427da957ea90daedee440b7cfeb0ea"
+        }
+      ],
+      "transfer": "Compare the three tasks: name one thing each can establish and one conclusion needing different evidence.",
+      "remainingBreadth": "Tools, materials, trades, domestic skills and actual situated making require additional evidence and lessons.",
+      "representationAudit": {
+        "language": "English reading route; source languages and translation limits remain those of each linked artifact. No new language verification.",
+        "place": "Selected case/model contexts only; no global or community representativeness claimed.",
+        "method": "Reading and model/source analysis; observed practical mastery and learner outcomes are not recorded."
+      }
+    },
+    {
+      "domainId": "D30",
+      "title": "Trajectory models and strategic play",
+      "scope": "A narrow analytical entrance into movement and games.",
+      "entrySupport": "Use a tabletop payoff table and a drawn trajectory; no physical training or real throw is required.",
+      "stops": [
+        {
+          "targetId": "mech-1.11",
+          "kind": "legacy-accepted",
+          "revision": null,
+          "title": "Projectile motion in uniform gravity",
+          "task": "Explain why the equal-height, no-drag range model does not determine every real throw.",
+          "declaredPrerequisites": [
+            "mech-1.6"
+          ],
+          "targetSha256": "cab4e323ac3050e70793c894abd9f273f01ec1906a4b791c7cc1ea04c4e22942"
+        },
+        {
+          "targetId": "game-1.1",
+          "kind": "legacy-accepted",
+          "revision": null,
+          "title": "Strategic-form game",
+          "task": "Specify players, actions and outcomes for a tiny invented game.",
+          "declaredPrerequisites": [
+            "micro-4.3"
+          ],
+          "targetSha256": "684101dd7939ff575531ee4161660b3ef44541ea79f152fc1df20910b668c18c"
+        },
+        {
+          "targetId": "game-1.2",
+          "kind": "legacy-accepted",
+          "revision": null,
+          "title": "Best responses",
+          "task": "Find a best response while holding the other player’s action fixed.",
+          "declaredPrerequisites": [
+            "game-1.1",
+            "pma-4.16",
+            "pma-5.8"
+          ],
+          "targetSha256": "48611052498d3adc2a32ba7d7402d1c784e1a438e4a10251e1b79a19c9bbf145"
+        }
+      ],
+      "transfer": "Compare the three tasks: name one thing each can establish and one conclusion needing different evidence.",
+      "remainingBreadth": "Sport history, coaching, movement access, recreation, rules and embodied skills remain major gaps; these models do not establish athletic competence.",
+      "representationAudit": {
+        "language": "English reading route; source languages and translation limits remain those of each linked artifact. No new language verification.",
+        "place": "Selected case/model contexts only; no global or community representativeness claimed.",
+        "method": "Reading and model/source analysis; observed practical mastery and learner outcomes are not recorded."
+      }
+    }
+  ]
+}

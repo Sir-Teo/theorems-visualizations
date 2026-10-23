@@ -1,0 +1,204 @@
+{
+  "schemaVersion": 1,
+  "recordedOn": "2026-10-23",
+  "scope": "Local author verification; no independent reviewer or human-session evidence inferred.",
+  "counts": {
+    "domains": 30,
+    "pilotFamilies": 8,
+    "currentLessons": 24,
+    "locallyAccepted": 24,
+    "drafts": 0,
+    "retainedEditions": 28,
+    "introductoryRoutes": 30,
+    "introductoryAssociations": 90,
+    "distinctIntroductoryTargets": 65,
+    "locallyAcceptedJourneys": 3,
+    "journeyLessonStops": 11,
+    "journeyExternalReadings": 3,
+    "journeyGapStops": 0,
+    "sourceIssuesOpen": 4,
+    "unassignedSourceIssues": 0,
+    "releaseEvents": 0
+  },
+  "offline": {
+    "passed": 171,
+    "failed": 0,
+    "log": "final-offline-recheck.log"
+  },
+  "deliveryBrowser": {
+    "passed": 19,
+    "composition": "17 edition/navigation/journey groups passed in final-delivery-ui.log; the two interrupted curriculum groups passed after harness/navigation corrections in curriculum-ui-final2.log.",
+    "humanObservation": false
+  },
+  "fullLinkAudits": [
+    {
+      "candidate": "curriculum-preview",
+      "htmlPages": 8039,
+      "localReferences": 122694,
+      "missing": []
+    },
+    {
+      "candidate": "final-release-absence",
+      "htmlPages": 7915,
+      "localReferences": 121137,
+      "missing": []
+    }
+  ],
+  "finalHTMLReconciliation": {
+    "finalCandidate": "/tmp/atlas-author-continuation-20261023/curriculum-final",
+    "htmlPages": 8039,
+    "unchangedHTML": 8034,
+    "changedHTML": [
+      "index.html",
+      "domains/index.html",
+      "explore/index.html",
+      "journeys/index.html",
+      "ideas/index.html"
+    ],
+    "changedPageReferencesChecked": 191,
+    "missing": 0,
+    "priorAudit": "final-links.json"
+  },
+  "preservation": {
+    "originalFilesChecked": 3222,
+    "originalDifferences": [
+      "docs/master-plan-handoff.md"
+    ],
+    "differenceScope": "Preexisting original handoff difference; this turn wrote only the integration worktree.",
+    "protectedWorktrees": [
+      {
+        "path": "/Users/teodev/.codex/worktrees/wave-six-expansion/theorems-visualizations",
+        "head": "15757d5476c2428fb2b57fb915df696232588fb8",
+        "baselineHead": "8a0ca340c30596f73f47c24b437f6d989c088a57",
+        "chapterDigest": "3a53e3ae4a663e1298f411760dd9b633b6e77a8511b50384928858cb427251af"
+      },
+      {
+        "path": "/Users/teodev/.codex/worktrees/wave-visual-redesign/theorems-visualizations",
+        "head": "9c6eec56a867f8e777a778429d0dddc9d01f256a",
+        "baselineHead": "9f7bf4bef2043ef8b8a59aa6881a15c65fb91b68",
+        "chapterDigest": "3a53e3ae4a663e1298f411760dd9b633b6e77a8511b50384928858cb427251af"
+      },
+      {
+        "path": "/Users/teodev/.codex/worktrees/wave-five-shipping/theorems-visualizations",
+        "head": "f0a324f98f5f7f2538f7685b84d1041764a65828",
+        "baselineHead": "f0a324f98f5f7f2538f7685b84d1041764a65828",
+        "chapterDigest": "3a53e3ae4a663e1298f411760dd9b633b6e77a8511b50384928858cb427251af"
+      }
+    ],
+    "preservedHistoricalFiles": 71
+  },
+  "curriculumBuild": {
+    "schemaVersion": 1,
+    "mode": "preview",
+    "output": "/tmp/atlas-author-continuation-20261023/curriculum-final",
+    "domains": 30,
+    "associations": 90,
+    "uniqueTargets": 65,
+    "newLessons": 0,
+    "binding": "dc758f60703aec1aa0993955015a4e14afafec60400deb55190ef7fb3c832a18",
+    "legacySnapshot": "2b156195a22cf85186b8b40fb6c35b8966a478a0c46da155a742b498907c2685",
+    "generatedFiles": [
+      "assets/curriculum/style.css",
+      "curriculum/index.html",
+      "curriculum/D01/index.html",
+      "curriculum/D02/index.html",
+      "curriculum/D03/index.html",
+      "curriculum/D04/index.html",
+      "curriculum/D05/index.html",
+      "curriculum/D06/index.html",
+      "curriculum/D07/index.html",
+      "curriculum/D08/index.html",
+      "curriculum/D09/index.html",
+      "curriculum/D10/index.html",
+      "curriculum/D11/index.html",
+      "curriculum/D12/index.html",
+      "curriculum/D13/index.html",
+      "curriculum/D14/index.html",
+      "curriculum/D15/index.html",
+      "curriculum/D16/index.html",
+      "curriculum/D17/index.html",
+      "curriculum/D18/index.html",
+      "curriculum/D19/index.html",
+      "curriculum/D20/index.html",
+      "curriculum/D21/index.html",
+      "curriculum/D22/index.html",
+      "curriculum/D23/index.html",
+      "curriculum/D24/index.html",
+      "curriculum/D25/index.html",
+      "curriculum/D26/index.html",
+      "curriculum/D27/index.html",
+      "curriculum/D28/index.html",
+      "curriculum/D29/index.html",
+      "curriculum/D30/index.html",
+      "curriculum/catalog.json"
+    ],
+    "replacements": [
+      {
+        "path": "index.html",
+        "beforeSha256": "b3fbf83906a73321d30b70e5e2dd24225efc14ecb599eec842d374f737fd8224",
+        "afterSha256": "9c4555f03d318c29daa13d21c22c65140ae005e1aeaaf8e06dbd630d31661662"
+      },
+      {
+        "path": "ideas/index.html",
+        "beforeSha256": "13df262a9c9c99892c6df7aaf7c935c8040cb0b7534767eca050f82df89b054d",
+        "afterSha256": "198e406727c947e223dcc69e9e315bbc736c66dc13bc7d37230a45ee5b7eda6b"
+      },
+      {
+        "path": "explore/index.html",
+        "beforeSha256": "5663dd27675d12ab7ce2ca2656950b2a4407f7474aec3af1036e2c17daaf491f",
+        "afterSha256": "d34c04b2f54c8f8bbc4870586ba5b4bdbf7d7750554e55e958d30ba115292c54"
+      },
+      {
+        "path": "domains/index.html",
+        "beforeSha256": "add3b6969a744f754a22cf9db979eb36997d4720b9edeea2a1537da51e0849a8",
+        "afterSha256": "c4a3e5f3b56ea9b1dcc06b12844fa979b9aab8af683db7a6c8206b8635d337b9"
+      },
+      {
+        "path": "journeys/index.html",
+        "beforeSha256": "9682695a838704a46293881d22a7df9db3ad5392350db25601f9ca1af3e78163",
+        "afterSha256": "850154b2725239d8755f6b3c10fbfe6b6e4215b1415534d736976edfe812e040"
+      }
+    ],
+    "preexistingFilesPreserved": 10540,
+    "scope": "Local candidate only. Exact accepted targets reused; no new lessons, public release or observed mastery."
+  },
+  "releaseAbsence": {
+    "retainedEditions": 0,
+    "retainedOrientations": 0,
+    "availableJourneys": 0
+  },
+  "evidenceLogs": [
+    {
+      "path": "/tmp/atlas-author-continuation-20261023/final-offline-recheck.log",
+      "sha256": "21abdc02e654c12e56c3d63d96471933b5fe1fd7c9a79f143e9df82c427926c2"
+    },
+    {
+      "path": "/tmp/atlas-author-continuation-20261023/final-delivery-ui.log",
+      "sha256": "e0a3476358f0624a4a87a39bc29968f14eb6dd519dc78fd14de98dc05bdbff06"
+    },
+    {
+      "path": "/tmp/atlas-author-continuation-20261023/curriculum-ui-final2.log",
+      "sha256": "bf9e8a28b9d2109bdf97c98822b8acd80f3fad5a9a22b896b1881717f3746da9"
+    },
+    {
+      "path": "/tmp/atlas-author-continuation-20261023/sequences-ui2.log",
+      "sha256": "745f88079d93405dcf99845e4d2173f1e6beda6c0a4ff9f0ab9cd9ce48ab02db"
+    },
+    {
+      "path": "/tmp/atlas-author-continuation-20261023/final-author-check.log",
+      "sha256": "b4a95b8406bd356992f0f774c2f9c5083b1c8c343685f94dd2ce397d9873c231"
+    },
+    {
+      "path": "/tmp/atlas-author-continuation-20261023/final-freeze-check.log",
+      "sha256": "3bee2ef42f8800ff29ca2724a27564a5f9c73201bdaa30ca13b38a009b846cd8"
+    },
+    {
+      "path": "/tmp/atlas-author-continuation-20261023/final-journey-check.log",
+      "sha256": "f5c2466b60cc2da5f6a5cb77e0e45c174020d5e076954b97015e86decd4fe6ad"
+    },
+    {
+      "path": "/tmp/atlas-author-continuation-20261023/final-workshop-check.log",
+      "sha256": "bc3498c7986edfd906c627f1f2afabcdade95b2dc3c1c8ac57157dba03110576"
+    }
+  ]
+}

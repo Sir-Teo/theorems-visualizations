@@ -1,0 +1,204 @@
+{
+  "schemaVersion": 1,
+  "id": "x-performance-0002",
+  "pilotId": "P08",
+  "revision": "0.1.0",
+  "status": "accepted",
+  "publication": "local-preview",
+  "title": "A score predicts; an event supplies evidence",
+  "subtitle": "Compare two original staging scores with identical words.",
+  "summary": "Compare two original staging scores with identical words. Identify planned controls, changed factors and the observations needed to test an interpretation.",
+  "audience": "General readers; all selected evidence and task instructions are included.",
+  "scope": "Original unperformed scene and dimensionless score analysis. No actor, audience report, controlled causal effect or universal gesture meaning is supplied.",
+  "author": "atlas-editor",
+  "updatedOn": "2026-10-23",
+  "domainIds": [
+    "D27",
+    "D02"
+  ],
+  "relatedCollectionIds": [],
+  "knowledgeModes": [
+    "creative",
+    "interpretive"
+  ],
+  "methods": [
+    "annotation"
+  ],
+  "prerequisites": [],
+  "sources": [
+    {
+      "id": "followup-seq-rsc-performing",
+      "title": "Performing Measure for Measure",
+      "url": "https://www.rsc.org.uk/shakespeare-learning-zone/measure-for-measure/staging/performing",
+      "locator": "Main teaching prose/questions about setting, relationships, aims, status and positioning. No universal gesture dictionary or observed audience outcome. Source images/performance media not inspected. Independent performance reviewer's later request timed out and was stopped without retry/mirror; that reviewer does not independently certify a fresh reading of this teaching page.",
+      "creator": "Royal Shakespeare Company, Shakespeare Learning Zone",
+      "date": "Undated teaching page retrieved 22 October 2026",
+      "language": "en",
+      "rights": {
+        "decision": "usable-for-prototype",
+        "basis": "Original attributed summaries and original fictional exercises; no third-party media, full documents or extended quotations copied. Original script/maps and link only; no modern production media or source scene bundled.",
+        "scope": "Local commentary and source links only; no third-party assets or participant consent implied."
+      }
+    },
+    {
+      "id": "followup-seq-rsc-kyle",
+      "title": "In focus: Barry Kyle 1978",
+      "url": "https://www.rsc.org.uk/measure-for-measure/past-productions/in-focus-barry-kyle-1978",
+      "locator": "Main production/design prose, cast/creative list, scene summary, gallery captions and rights labels; images not inspected. Rehearsal caption assigns Richard Griffiths to Lucio while prose/cast list assign him to Pompey; conflicting caption not adopted. No prompt-book image, photograph, recording or original critic publication inspected.",
+      "creator": "Royal Shakespeare Company",
+      "date": "Undated retrospective institutional account of the 1978 production",
+      "language": "en",
+      "rights": {
+        "decision": "usable-for-prototype",
+        "basis": "Original attributed summaries and original fictional exercises; no third-party media, full documents or extended quotations copied. Gallery labels identify multiple rights holders and image licensing; no blanket clearance inferred. Original task/links only, no critic quotation copied.",
+        "scope": "Local commentary and source links only; no third-party assets or participant consent implied."
+      }
+    }
+  ],
+  "passages": [
+    {
+      "id": "context",
+      "sourceId": "followup-seq-rsc-performing",
+      "title": "A staging question",
+      "form": "paraphrase",
+      "language": "en",
+      "text": "The retained RSC teaching account asks about setting, aims, relationships and positioning in a specific play. Such prompts do not establish what every gesture means or what an audience perceived.",
+      "context": "Original bounded summary of the dated source reading; see source scope and limits.",
+      "sha256": "4e2277de096cd7078a579f69252d6591c951544ea27b3a2d75582478c6a27ad7"
+    },
+    {
+      "id": "production",
+      "sourceId": "followup-seq-rsc-kyle",
+      "title": "A retrospective source",
+      "form": "paraphrase",
+      "language": "en",
+      "text": "The RSC’s account of Barry Kyle’s 1978 production reports interpretive choices and criticism. A conflicting rehearsal caption is excluded. No production recording or audience measurement was inspected.",
+      "context": "Original bounded summary of the dated source reading; see source scope and limits.",
+      "sha256": "83973a9055725dfb7ad28e095d9c45c3b635f4e24b94295c083a01fab42083c5"
+    },
+    {
+      "id": "words",
+      "sourceId": "followup-seq-rsc-performing",
+      "title": "Original words and proposed timing",
+      "form": "original",
+      "language": "en",
+      "text": "At 2 s, A: Is this for me? At 6 s, B: I left it here. At 10 s, A: Then I’ll wait. Setup at 0 s; proposed end at 14 s. An unmarked envelope remains at (0,0). These are targets, not measured event times.",
+      "context": "Original fictional scenario; associated source supplies a method/context only, not these facts.",
+      "sha256": "b72725297d71d77b2770909a30c5afc1dd58ff0b12d2065e23be6e2a161c6e5a"
+    },
+    {
+      "id": "facing",
+      "sourceId": "followup-seq-rsc-performing",
+      "title": "Original score: facing",
+      "form": "original",
+      "language": "en",
+      "text": "Dimensionless plan: audience reference (0,-3); +x points right, +y away from the audience. A is at (-1,0), orientation 0° (+x). B is at (1,0), orientation 180° (-x). No movement is prescribed during the scored interval.",
+      "context": "Original fictional scenario; associated source supplies a method/context only, not these facts.",
+      "sha256": "86b8059e3169d7951d7e86564d68aea8acc7b844b6e93302c55924032426e499"
+    },
+    {
+      "id": "offset",
+      "sourceId": "followup-seq-rsc-performing",
+      "title": "Original score: offset",
+      "form": "original",
+      "language": "en",
+      "text": "Use the same words, timing targets and envelope. A is at (-1,1), orientation 270° (-y). B remains at (1,0), orientation 270° (-y). Orientation is a plan reference, not required eye contact or a personality trait.",
+      "context": "Original fictional scenario; associated source supplies a method/context only, not these facts.",
+      "sha256": "2a0e44778baaf1d2d4068cad8aba442037738713e4f80f7ad7c6d9b2c325a8aa"
+    }
+  ],
+  "claims": [
+    {
+      "id": "scope-of-evidence",
+      "kind": "interpretive",
+      "text": "Identify all three planned spatial changes.",
+      "passageIds": [
+        "context"
+      ],
+      "qualification": "Original unperformed scene and dimensionless score analysis. No actor, audience report, controlled causal effect or universal gesture meaning is supplied."
+    }
+  ],
+  "context": [
+    "The original preparation contains the complete coordinates, events and two maps. Its observation records remain unfilled.",
+    "The RSC refresh timeout and caption inconsistency remain retained limitations. No source scene, photograph, critic quotation or recording is copied."
+  ],
+  "timeline": [],
+  "relations": [],
+  "reviews": [],
+  "reviewRequirements": [
+    "content",
+    "rights"
+  ],
+  "reviewLimitations": [
+    "Local author check only. No independent reviewer, professional credential, actual learner/access observation, community endorsement or physical outcome is claimed."
+  ],
+  "activity": {
+    "type": "annotation",
+    "lenses": [
+      {
+        "id": "controls",
+        "label": "Count the changed factors",
+        "observation": "A’s position and both orientations change; B’s position stays fixed.",
+        "question": "Why is this not a single-variable causal experiment?",
+        "readings": [
+          "Three planned spatial factors change, even before any real performance occurs.",
+          "Actual timing, delivery, access mode, viewpoint and order could vary too."
+        ],
+        "boundary": "An authored control is not a measured constancy."
+      },
+      {
+        "id": "prediction",
+        "label": "Mark a prediction as a prediction",
+        "observation": "No actual performance or observer record accompanies the scores.",
+        "question": "What might you notice first, and what supports that prediction?",
+        "readings": [
+          "Locate a specific position or timing feature, and permit an unknown response.",
+          "Offer an alternative interpretation compatible with the same score."
+        ],
+        "boundary": "Do not convert predicted attention or emotion to an audience result."
+      },
+      {
+        "id": "evidence",
+        "label": "Separate reports from events",
+        "observation": "A future comparison would need dated event descriptions and situated reports.",
+        "question": "How would you relate an interpretation to an observable feature?",
+        "readings": [
+          "Record the event locator, deviations, observer viewpoint and access mode.",
+          "Keep performer intention, event description and observer interpretation in separate fields."
+        ],
+        "boundary": "No imitation, acting, recording or participant recruitment is required here."
+      }
+    ],
+    "transfer": "Write one prediction, one possible contrary report and the event evidence needed to compare them. Specify an uncontrolled factor that could affect the comparison.",
+    "rubric": [
+      "Identify all three planned spatial changes.",
+      "Distinguish target timing from measured timing.",
+      "Keep intention, event and interpretation separate.",
+      "Allow disagreement and unknown responses."
+    ]
+  },
+  "extensions": {
+    "atlas:preparation": {
+      "path": "docs/pilots/sequences/preparation/remaining-sequences-20261023.json",
+      "scope": "Exact historical source receipts retained; current exercise is independently identified original authoring."
+    }
+  },
+  "authorVerification": {
+    "kind": "author-check",
+    "scope": "local-preview",
+    "author": "atlas-editor",
+    "checkedOn": "2026-10-23",
+    "revision": "0.1.0",
+    "contentDigest": "7d536ab9e79a8d05c1a4951038438b89e6997b87c11476bbabcc8f3278022581",
+    "artifactDigest": "17d6d359a7418b1a295889b79f85883364b884917d84c41e79c1116b24a40707",
+    "evidencePath": "docs/verification/universal-author-sequences.md",
+    "checks": [
+      "Schema, source-reference and preparation-packet hash validation",
+      "Passed tests/exploration-methods.test.mjs",
+      "Passed tests/exploration-studio.test.mjs",
+      "Passed tests/exploration-professions.test.mjs",
+      "Passed tests/exploration-followups.test.mjs",
+      "Passed tests/exploration-sequences.test.mjs"
+    ]
+  }
+}

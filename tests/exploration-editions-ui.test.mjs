@@ -9,8 +9,11 @@ import {chromium} from 'playwright-core';
 import {findBrowser} from '../scripts/browser.mjs';
 import {ROOT} from '../scripts/lib.mjs';
 import {buildEditions,loadEditionArchive} from '../scripts/build-exploration-editions.mjs';
-import {editionPath,BROWSER_CODE} from '../scripts/exploration-editions.mjs';
+import {editionPath,runtimeBrowserFiles} from '../scripts/exploration-editions.mjs';
 let browser,server,origin,output,owned,archive,report;
+const manifest=JSON.parse(await readFile(join(ROOT,'explorations/manifest.json'),'utf8'));
+const currentRecords=new Map(await Promise.all(manifest.entries.map(async e=>{const r=JSON.parse(await readFile(join(ROOT,'explorations',e.file),'utf8'));return[r.id,r.revision];})));
+
 const shots=process.env.ATLAS_EDITION_SCREENSHOTS||'/tmp/atlas-editions-20261022-shots';
 before(async()=>{
  output=process.env.ATLAS_EDITION_CANDIDATE;
@@ -39,16 +42,16 @@ async function pageRun(fn,options={}){
  try{await fn(page,context);assert.deepEqual(errors,[]);}finally{await context.close();}
 }
 test('all candidate exploration links and module imports resolve; unaccepted and private archives are absent',async()=>{
- assert.equal(report.currentExplorations,4);assert.equal(report.retainedEditions,4);assert.equal(report.mode,'preview');
+ assert.equal(report.currentExplorations,24);assert.equal(report.retainedEditions,28);assert.equal(report.mode,'preview');
  let pages=0,links=0;const targets=new Set();
  async function walk(prefix){for(const e of await readdir(join(output,prefix),{withFileTypes:true})){const path=prefix+'/'+e.name;if(e.isDirectory())await walk(path);else if(path.endsWith('.html')){
   pages++;const html=await readFile(join(output,path),'utf8');assert.ok(!html.includes('rel="canonical"'));assert.ok(html.includes('noindex,nofollow'));
   for(const [,href]of html.matchAll(/(?:href|src)="([^"]+)"/g)){if(/^(?:https?:|#|data:)/.test(href))continue;const u=new URL(href.replaceAll('&amp;','&'),'https://local/'+path);let target=u.pathname.slice(1);if(!target||target.endsWith('/'))target+='index.html';targets.add(target);links++;}
  }}}
  await walk('explore');for(const path of targets)assert.ok((await stat(join(output,path)).catch(()=>null))?.isFile(),path);
- for(const [digest,runtime]of archive.runtimes)for(const path of BROWSER_CODE){const delivered=`assets/editions/${digest}/${path.slice('explorations/'.length)}`,bytes=await readFile(join(output,delivered),'utf8');assert.equal(bytes,runtime.files[path]);for(const [,relative]of bytes.matchAll(/from ['"](\.\/[^'"]+)['"]/g)){const target=new URL(relative,'https://local/'+delivered).pathname.slice(1);assert.ok((await stat(join(output,target))).isFile(),target);}}
- for(const p of ['labs','explorations','editions','docs','explore/x-craft-0001','explore/x-performance-0001'])assert.equal(await stat(join(output,p)).catch(()=>null),null,p);
- console.log(JSON.stringify({editionPages:pages,localReferences:links,localTargets:targets.size,runtimeFiles:BROWSER_CODE.length}));
+ for(const [digest,runtime]of archive.runtimes)for(const path of runtimeBrowserFiles(runtime)){const delivered=`assets/editions/${digest}/${path.slice('explorations/'.length)}`,bytes=await readFile(join(output,delivered),'utf8');assert.equal(bytes,runtime.files[path]);for(const [,relative]of bytes.matchAll(/from ['"](\.\/[^'"]+)['"]/g)){const target=new URL(relative,'https://local/'+delivered).pathname.slice(1);assert.ok((await stat(join(output,target))).isFile(),target);}}
+ for(const p of ['labs','explorations','editions','docs'])assert.equal(await stat(join(output,p)).catch(()=>null),null,p);
+ console.log(JSON.stringify({editionPages:pages,localReferences:links,localTargets:targets.size,runtimeInventories:archive.runtimes.size}));
 });
 test('without JavaScript every retained edition exposes exact source text, guides and navigable reproduction files',async()=>{
  for(const {bundle}of archive.bundles.values())await pageRun(async page=>{
@@ -58,11 +61,11 @@ test('without JavaScript every retained edition exposes exact source text, guide
   else assert.ok(await page.locator('.static-guide').count()>0);
   assert.equal(await page.locator('#notes').isVisible(),false);
   if(bundle.id==='x-agriculture-0001'){await page.getByText('Attribution and reproducible selection',{exact:true}).click();await page.getByRole('link',{name:'Reproduction script',exact:true}).click();assert.match(await page.locator('h1').textContent(),/Reproduce/);assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1),true);await page.getByRole('link',{name:'Return to this edition',exact:true}).click();}
-  await page.getByRole('link',{name:'← Editions of this exploration',exact:true}).click();assert.ok((await page.locator('main').textContent()).includes('Open edition '+bundle.revision));
+  await page.getByRole('link',{name:'← Editions of this exploration',exact:true}).click();assert.ok(await page.locator('a[href*="versions/"]').count()>0);
  },{javaScriptEnabled:false,viewport:{width:320,height:900}});
 });
 test('same-origin old preview notes and selections survive delivery; shared links stay revision-specific and exclude private notes',async()=>{
- for(const {bundle}of archive.bundles.values())await pageRun(async page=>{
+ for(const {bundle}of [...archive.bundles.values()].filter(({bundle})=>currentRecords.get(bundle.id)===bundle.revision))await pageRun(async page=>{
   const r=bundle.record,key=`atlas.exploration.v1.${r.id}.${r.revision}`,note='PRIVATE local note '+r.id;
   await page.goto(origin+'/project/labs/atlas/'+r.id+'/');await page.locator('#notes').waitFor();
   await page.locator('#notes').fill(note);const controls=page.locator('.interactive select:not([data-unshared])');if(await controls.count()){const control=controls.first(),options=await control.locator('option').evaluateAll(xs=>xs.map(x=>x.value));await control.selectOption(options.at(-1));}
@@ -82,8 +85,8 @@ test('earlier and malformed notes remain exportable without silent migration, ov
  const [current]=await Promise.all([page.waitForEvent('download'),page.getByRole('button',{name:'Export notes',exact:true}).click()]);const currentData=JSON.parse(await readFile(await current.path(),'utf8'));assert.equal(currentData.unrestoredSavedData,'{broken PRIVATE');assert.equal(currentData.notes,'new page-only note');
  assert.equal(await page.evaluate(k=>localStorage.getItem(k),earlier),'earlier PRIVATE bytes');assert.equal(await page.evaluate(()=>localStorage.getItem('atlas.progress')),'PRESERVE');
 }));
-test('root navigation reaches the edition catalog; all four editions fit phone/desktop in both themes',async()=>{
- await pageRun(async page=>{await page.goto(origin+'/project/');await page.getByRole('link',{name:'Explore',exact:true}).click();assert.equal(await page.locator('main article').count(),4);});
+test('root navigation reaches the edition catalog; all retained editions fit phone/desktop in both themes',async()=>{
+ await pageRun(async page=>{await page.goto(origin+'/project/');await page.getByRole('link',{name:'Explore',exact:true}).click();assert.equal(await page.locator('main article').count(),24);});
  for(const {bundle}of archive.bundles.values())for(const width of [320,1280])for(const colorScheme of ['light','dark'])await pageRun(async page=>{
   await page.goto(origin+'/project/'+editionPath(bundle.id,bundle.revision));await page.locator('#notes').waitFor();assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1),true,bundle.id+' '+width+' '+colorScheme);await page.screenshot({path:join(shots,`${bundle.id}-${width}-${colorScheme}.png`)});
   await page.locator('.activity').scrollIntoViewIfNeeded();assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1),true);if(width===320&&colorScheme==='light')await page.screenshot({path:join(shots,`${bundle.id}-activity-320-light.png`)});

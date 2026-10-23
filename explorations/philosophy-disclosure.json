@@ -1,0 +1,275 @@
+{
+  "schemaVersion": 1,
+  "id": "x-philosophy-0002",
+  "pilotId": "P03",
+  "revision": "0.1.0",
+  "status": "accepted",
+  "publication": "local-preview",
+  "title": "When does silence become concealment?",
+  "subtitle": "Reconstruct an argument before deciding whether you agree.",
+  "summary": "Read Cicero’s grain and house examples in Walter Miller’s English translation. Distinguish attributed speakers, hypothetical replies and the premises needed to move from a fact to a duty.",
+  "audience": "General readers interested in ethical argument.",
+  "scope": "Selected English paragraphs from the 1913 Miller translation as digitally transcribed. No Latin-text verification, modern legal rule or automatic moral verdict.",
+  "author": "atlas-editor",
+  "updatedOn": "2026-10-23",
+  "domainIds": [
+    "D21"
+  ],
+  "relatedCollectionIds": [
+    "phil",
+    "logic",
+    "game"
+  ],
+  "knowledgeModes": [
+    "normative",
+    "interpretive"
+  ],
+  "methods": [
+    "annotation"
+  ],
+  "prerequisites": [],
+  "sources": [
+    {
+      "id": "followup-cicero",
+      "title": "Cicero, De Officiis, Book III, chapters XII–XIII",
+      "url": "https://www.gutenberg.org/cache/epub/47001/pg47001-images.html",
+      "locator": "Selected English chapters XII–XIII, title, transcriber note, correction list and visible update header.",
+      "creator": "Cicero; English translation by Walter Miller",
+      "date": "1913 translation; selected digital witness read 2026-10-22",
+      "language": "English translation",
+      "rights": {
+        "decision": "usable-for-prototype",
+        "basis": "Selected historical text and original commentary, carried from the hash-bound research packet; no modern illustrations or complete ebook reproduced.",
+        "scope": "Local selected-text use; exact witness attribution and historical source limits retained."
+      }
+    }
+  ],
+  "passages": [
+    {
+      "id": "case-and-principle",
+      "sourceId": "followup-cicero",
+      "title": "Case and principle · Chapter XII opening immediately before III.50, followed by III.50",
+      "form": "quotation",
+      "language": "en",
+      "text": "XII. Let it be set down as an established principle, then, that what is morally wrong can never be expedient—not even when one secures by means of it that which one thinks expedient; for the mere act of thinking a course expedient, when it is morally wrong, is demoralizing. But, as I said above, cases often arise in which expediency may seem to clash with moral rectitude; and so we should examine carefully and see whether their conflict is inevitable or whether they may be reconciled. The following are problems of this sort: suppose, for example, a time of dearth and famine at Rhodes, with provisions at fabulous prices; and suppose that an honest man has imported a large cargo of grain from Alexandria and that to his certain knowledge also several other importers have set sail from Alexandria, and that on the voyage he has sighted their vessels laden with grain and bound for Rhodes; is he to report the fact to the Rhodians or is he to keep his own counsel and sell his own stock at the highest market price? I am assuming the case of a virtuous, upright man, and I am raising the question how a man would think and reason who would not conceal the facts from the Rhodians if he thought that it was immoral to do so, but who might be in doubt whether such silence would really be immoral.",
+      "context": "States the framing principle and poses the hypothetical grain case; the merchant is uncertain about moral obligation, not licensed to do acknowledged wrong for profit.",
+      "sha256": "538dfb4ec9f28e92b8f1021048f78c7e7c13d37fb0bd00ff0c89ea2e9696bc35"
+    },
+    {
+      "id": "reported-positions",
+      "sourceId": "followup-cicero",
+      "title": "Reported positions · III.51",
+      "form": "quotation",
+      "language": "en",
+      "text": "In deciding cases of this kind Diogenes of Babylonia, a great and highly esteemed Stoic, consistently holds one view; his pupil Antipater, a most profound scholar, holds another. According to Antipater all the facts should be disclosed, that the buyer may not be uninformed of any detail that the seller knows; according to Diogenes the seller should declare any defects in his wares, in so far as such a course is prescribed by the common law of the land; but for the rest, since he has goods to sell, he may try to sell them to the best possible advantage, provided he is guilty of no misrepresentation.",
+      "context": "Two attributed accounts of obligation; Diogenes here combines legal disclosure and no misrepresentation. This is not a modern legal rule.",
+      "sha256": "c5e17ae39245f625381f6543c65d9c3cbae94f455eba6d12fa34ef7cf388e5a7"
+    },
+    {
+      "id": "merchant-reply",
+      "sourceId": "followup-cicero",
+      "title": "Merchant reply · III.51 continuation",
+      "form": "quotation",
+      "language": "en",
+      "text": "\"I have imported my stock,\" Diogenes's merchant will say; \"I have offered it for sale; I sell at a price no higher than my competitors—perhaps even lower, when the market is overstocked. Who is wronged?\"",
+      "context": "Cicero constructs what the merchant will say; this is not a transcript or Diogenes speaking as the actual trader.",
+      "sha256": "0f46eaae2c3d0c83229f0392390e2ca53b0ad019d01773e253eff363d4e081d5"
+    },
+    {
+      "id": "community-duty",
+      "sourceId": "followup-cicero",
+      "title": "Community duty · III.52",
+      "form": "quotation",
+      "language": "en",
+      "text": "\"What say you?\" comes Antipater's argument on the other side; \"it is your duty to consider the interests of your fellow-men and to serve society; you were brought into the world under these conditions and have these inborn principles which you are in duty bound to obey and follow, that your interest shall be the interest of the community and conversely that the interest of the community shall be your interest as well; will you, in view of all these facts, conceal from your fellow-men what relief in plenteous supplies is close at hand for them?\"",
+      "context": "An appeal to community and shared interests is connected to information about approaching supplies.",
+      "sha256": "8f00474b1986e50fa6e5104319bd7e9ebef036ee489844908ac5fb9bb6643624"
+    },
+    {
+      "id": "silence-distinction",
+      "sourceId": "followup-cicero",
+      "title": "Silence distinction · III.52 continuation",
+      "form": "quotation",
+      "language": "en",
+      "text": "\"It is one thing to conceal,\" Diogenes will perhaps reply; \"not to reveal is quite a different thing. At this present moment I am not concealing from you, even if I am not revealing to you, the nature of the gods or the highest good; and to know these secrets would be of more advantage to you than to know that the price of wheat was down. But I am under no obligation to tell you everything that it may be to your interest to be told.\"",
+      "context": "The modal phrase about a possible reply matters: this contests a duty to reveal everything useful, not every conceivable disclosure duty.",
+      "sha256": "9b9680eb1025f90fb702e692d8a3a8fb59f23771c1ac005bb39dfc01420e5ec1"
+    },
+    {
+      "id": "fellowship-rejoinder",
+      "sourceId": "followup-cicero",
+      "title": "Fellowship rejoinder · III.53",
+      "form": "quotation",
+      "language": "en",
+      "text": "\"Yea,\" Antipater will say, \"but you are, as you must admit, if you will only bethink you of the bonds of fellowship forged by nature and existing between man and man.\"",
+      "context": "Reasserts natural fellowship as a basis for obligation.",
+      "sha256": "c431fed4a5a5381d3ff17b764a7e9a280f81fb5d8abcd17deab5b32fbcfab6f5"
+    },
+    {
+      "id": "property-objection",
+      "sourceId": "followup-cicero",
+      "title": "Property objection · III.53 continuation",
+      "form": "quotation",
+      "language": "en",
+      "text": "\"I do not forget them,\" the other will reply; \"but do you mean to say that those bonds of fellowship are such that there is no such thing as private property? If that is the case, we should not sell anything at all, but freely give everything away.\"",
+      "context": "The other is resolved by context. The property/gift challenge is a reported objection, not Cicero’s final decision or an independent debate transcript.",
+      "sha256": "88d65a5cbe070bda79f3a133bbfd4fb9e60c52f760dc315eb1eb48184b966194"
+    },
+    {
+      "id": "debate-framing",
+      "sourceId": "followup-cicero",
+      "title": "Debate framing · Chapter XIII opening before III.54",
+      "form": "quotation",
+      "language": "en",
+      "text": "XIII. In this whole discussion, you see, no one says \"However wrong morally this or that may be, still, since it is expedient, I will do it\"; but the one side asserts that a given act is expedient, without being morally wrong, while the other insists that the act should not be done, because it is morally wrong.",
+      "context": "The disagreement concerns whether the proposed act is wrong, not permission to do conceded wrong merely because it profits.",
+      "sha256": "930376fbc74ee8b029f2ecda0ab2d359d2b0c5e03f2810a5bf6e9ce6b08193d0"
+    },
+    {
+      "id": "house-case",
+      "sourceId": "followup-cicero",
+      "title": "House case · III.54",
+      "form": "quotation",
+      "language": "en",
+      "text": "Suppose again that an honest man is offering a house for sale on account of certain undesirable features of which he himself is aware but which nobody else knows; suppose it is unsanitary, but has the reputation of being healthful; suppose it is not generally known that vermin are to be found in all the bedrooms; suppose, finally, that it is built of unsound timber and likely to collapse, but that no one knows about it except the owner; if the vendor does not tell the purchaser these facts but sells him the house for far more than he could reasonably have expected to get for it, I ask whether his transaction is unjust or dishonourable.",
+      "context": "A new hypothetical introduces seller-known defects; separate factual setup from conclusions about obligation.",
+      "sha256": "3ee4b88efcfe483b2390b7743dbf7d714c07464fd9e4ba01121e2ab71df8680f"
+    },
+    {
+      "id": "house-antipater",
+      "sourceId": "followup-cicero",
+      "title": "House antipater · III.55",
+      "form": "quotation",
+      "language": "en",
+      "text": "\"Yes,\" says Antipater, \"it is; for to allow a purchaser to be hasty in closing a deal and through mistaken judgment to incur a very serious loss, if this is not refusing 'to set a man right when he has lost his way' (a crime which at Athens is prohibited on pain of public execration), what is? It is even worse than refusing to set a man on his way: it is deliberately leading a man astray.\"",
+      "context": "Argues that permitting serious mistaken loss is active misdirection, using an analogy.",
+      "sha256": "9b2c7a59832bc95caf595d35a0a566f2564b9640c2ab54ce56e3c6e3f9fb038c"
+    },
+    {
+      "id": "house-diogenes",
+      "sourceId": "followup-cicero",
+      "title": "House diogenes · III.55 continuation",
+      "form": "quotation",
+      "language": "en",
+      "text": "\"Can you say,\" answers Diogenes, \"that he compelled you to purchase, when he did not even advise it? He advertised for sale what he did not like; you bought what you did like. If people are not considered guilty of swindling when they place upon their placards For Sale: A Fine Villa, Well Built, even when it is neither good nor properly built, still less guilty are they who say nothing in praise of their house. For where the purchaser may exercise his own judgment, what fraud can there be on the part of the vendor? But if, again, not all that is expressly stated has to be made good, do you think a man is bound to make good what has not been said? What, pray, would be more stupid than for a vendor to recount all the faults in the article he is offering for sale? And what would be so absurd as for an auctioneer to cry, at the owner's bidding, 'Here is an unsanitary house for sale?'\"",
+      "context": "Invokes choice, advertising and silence. Compare its advertisement example with the earlier no-misrepresentation condition; do not silently harmonize the apparent tension.",
+      "sha256": "13d3bf67910d4e8d90110864a5af5b7a25ea5dffeb231956c9ab861576901844"
+    },
+    {
+      "id": "cicero-resolution",
+      "sourceId": "followup-cicero",
+      "title": "Cicero resolution · III.56–57",
+      "form": "quotation",
+      "language": "en",
+      "text": "In this way, then, in certain doubtful cases moral rectitude is defended on the one side, while on the other side the case of expediency is so presented as to make it appear not only morally right to do what seems expedient, but even morally wrong not to do it. This is the contradiction that seems often to arise between the expedient and the morally right. But I must give my decision in these two cases; for I did not propound them merely to raise the questions, but to offer a solution. I think, then, that it was the duty of that grain dealer not to keep back the facts from the Rhodians, and of this vendor of the house to deal in the same way with his purchaser. The fact is that merely holding one's peace about a thing does not constitute concealment, but concealment consists in trying for your own profit to keep others from finding out something that you know, when it is for their interest to know it. And who fails to discern what manner of concealment that is and what sort of person would be guilty of it? At all events he would be no candid or sincere or straightforward or upright or honest man, but rather one who is shifty, sly, artful, shrewd, underhand, cunning, one grown old in fraud and subtlety. Is it not inexpedient to subject oneself to all these terms of reproach and many more besides?",
+      "context": "Retains the transition and resolution for both cases, and the distinction between mere silence and self-interested concealment. Accurate exposition permits reasoned disagreement.",
+      "sha256": "11075bfadfbb13f469e2584f92265f4e2784052f935c0982a739d322a87318b4"
+    }
+  ],
+  "claims": [
+    {
+      "id": "nested-speakers",
+      "kind": "textual",
+      "text": "Cicero reports opposing positions and constructs possible replies, rather than providing a transcript of an observed debate.",
+      "passageIds": [
+        "reported-positions",
+        "merchant-reply",
+        "silence-distinction"
+      ],
+      "qualification": "Retain modal words such as perhaps and will say."
+    },
+    {
+      "id": "debate-question",
+      "kind": "textual",
+      "text": "The dispute concerns whether the action is wrong, rather than permission to do acknowledged wrong for profit.",
+      "passageIds": [
+        "debate-framing"
+      ],
+      "qualification": "This describes the framing of the selected discussion, not every ethical tradition."
+    }
+  ],
+  "context": [
+    "The grain case stipulates scarcity, a seller’s cargo and the seller’s knowledge of other incoming supplies. That knowledge is a premise of the hypothetical, not a measured market dataset.",
+    "The account attributes different positions to Antipater and Diogenes. The hypothetical merchant and the narrator’s own judgment are additional voices.",
+    "A duty to disclose cannot be obtained from the fact of useful information alone: identify the bridging obligation and defend its scope.",
+    "The house case changes the relevant information from approaching supply to seller-known defects. A transfer argument must reconsider the changed facts and premises."
+  ],
+  "timeline": [],
+  "relations": [],
+  "reviews": [],
+  "reviewRequirements": [
+    "content",
+    "rights"
+  ],
+  "reviewLimitations": [
+    "English digital selection and editorial argument exercise. No Latin collation, specialist approval or participant observation is claimed."
+  ],
+  "activity": {
+    "type": "annotation",
+    "lenses": [
+      {
+        "id": "voices",
+        "label": "Attribute each voice",
+        "observation": "Reported positions, constructed merchant speech, a possible reply and Cicero’s framing have different forms.",
+        "question": "Where does the text attribute an assertion, and where does it stage a possible response?",
+        "readings": [
+          "Retain the perhaps in Diogenes’s possible reply.",
+          "Resolve the other in the property objection through surrounding context, while keeping Cicero’s final judgment separate."
+        ],
+        "boundary": "No constructed exchange is an observed transcript; the translation is the selected witness."
+      },
+      {
+        "id": "bridge",
+        "label": "Supply the missing normative bridge",
+        "observation": "Knowledge that another person would benefit is a fact; a duty to disclose needs a further premise.",
+        "question": "Compare the scope of a fellowship-based duty with a distinction between silence and concealment.",
+        "readings": [
+          "A fellowship argument can connect relevant knowledge to a duty to volunteer it; explain why it reaches this case.",
+          "A silence argument can deny a duty to volunteer everything useful while still prohibiting misrepresentation; defend the conditional boundary."
+        ],
+        "boundary": "These are editorial reconstructions. The interface does not score moral agreement or assert a universal disclosure rule."
+      },
+      {
+        "id": "transfer",
+        "label": "Change from supply to a hidden defect",
+        "observation": "The house scenario introduces defects known to the seller.",
+        "question": "Which factual or bridging premises must be reconsidered when transferring the grain argument?",
+        "readings": [
+          "Ask whether the earlier no-misrepresentation condition remains satisfied.",
+          "Compare the importance of the information and the seller’s purpose while preserving the author’s distinct judgments."
+        ],
+        "boundary": "Do not turn an ancient argument or translated reference to law into advice about a current property transaction."
+      }
+    ],
+    "transfer": "Write a short reconstruction with four labeled lines: quoted or located source claim, stipulated fact, added normative bridge, and proposed conclusion. Add an objection that targets the bridge rather than misattributing a speaker.",
+    "rubric": [
+      "Name the speaker and preserve hypothetical/modal framing.",
+      "Label added premises as your reconstruction.",
+      "Explain relevance and scope instead of a duty to disclose every fact.",
+      "Reconsider the argument when the case changes; do not substitute a modern legal verdict."
+    ]
+  },
+  "extensions": {
+    "atlas:preparation": {
+      "path": "docs/pilots/sequences/preparation/cicero-selections-20261022.json",
+      "scope": "Selected evidence carried forward; historical packet unchanged."
+    }
+  },
+  "authorVerification": {
+    "kind": "author-check",
+    "scope": "local-preview",
+    "author": "atlas-editor",
+    "checkedOn": "2026-10-23",
+    "revision": "0.1.0",
+    "contentDigest": "d9b51bc8e8c01b1d5f3f6af9dc18d0dc83c833466a43b6509ebf04e4fb05acb6",
+    "artifactDigest": "208c8a862553eda9f7ff569d17a909dc7ad8af96eeb1832a14e0d83aa336ec28",
+    "evidencePath": "docs/verification/universal-author-continuation.md",
+    "checks": [
+      "Schema, source-reference and preparation-packet hash validation",
+      "Passed tests/exploration-methods.test.mjs",
+      "Passed tests/exploration-studio.test.mjs",
+      "Passed tests/exploration-professions.test.mjs",
+      "Passed tests/exploration-followups.test.mjs"
+    ]
+  }
+}

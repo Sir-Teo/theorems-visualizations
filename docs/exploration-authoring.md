@@ -1,5 +1,8 @@
 # Authoring and reviewing new exploration methods
 
+> **User-directed continuation · 2026-10-23:** Independent AI, professional, engineering, practitioner, learner and screen-reader reviews are no longer prerequisites for local authoring, acceptance or integration preparation anywhere in this roadmap. Continue with source-backed authoring, automated checks and explicit author-verification records. Retain prior reviews as history and unperformed observations as limitations; do not claim they passed. This direction supersedes conflicting review gates below and in earlier briefs. The two-draft limit is a batch-size preference, not a reason to wait for optional reviewers. Public distribution and real-world evidence remain separate from local completion. See [the current verification record](verification/universal-author-continuation.md).
+
+
 Read [the master-plan handoff](master-plan-handoff.md) first. This guide supplements [AUTHORING.md](../AUTHORING.md) for the new exploration namespace. It does not change frozen waves, numeric visualization contracts or existing content acceptance.
 
 ## Start with the reader task
@@ -26,20 +29,19 @@ Keep private notes out of URL parameters and public analytics. Scope saved progr
 
 When incrementing a content revision, list known `previousRevisions` so readers can explicitly export earlier notes. Do not silently import them as current answers. Unreadable current notes must remain untouched and exportable; reset must report whether stored erasure actually succeeded. Plain page anchors must not be parsed as activity state.
 
-## Review an exact version
+## Check and accept an exact version
 
-Use this receipt checklist for each required dimension:
+Independent reviews are optional for local work under the 23 October user instruction. Inspect the actual source/model claims and affected interface; repair failures and record the checks that really ran. Do not populate professional, learner, physical-session or screen-reader fields with assumed passes.
 
-- Canonical ID, revision and current `contentDigest` and `artifactDigest`, taken from the preview builder's output.
-- Reviewer identity, relevant role/context and independence from the author.
-- Dimension reviewed and concrete observations: sources, content/model, language, rights, accessibility or learning.
-- Evidence path, date, pass or changes requested, unresolved limitations and reproducible steps.
-- For learner observation, task, participant context, observed failure/success and resulting repairs; no invented efficacy claim.
-- For publication, actual distribution scope and asset-level rights, with withdrawal/update responsibilities.
+Use `scripts/check-local-continuation.mjs` for read-only source/model checks. After the author’s content and affected native checks, record a fresh receipt and run:
 
-User-authorized separate AI reviewers may supply bounded source, English-language and prototype-reuse checks when their actual AI role, evidence, limits and independent conclusions are recorded. The four locally accepted pilots have three required dimensional receipts each; P07/P08 remain in review under their distinct real-world requirements; the engineering report is supplemental and supplies no accessibility or learning pass. See the [current method checkpoint](verification/universal-pilots-methods.md) and the historical [first-pair integration checkpoint](verification/universal-pilots-integration.md). The user removed the mandatory screen-reader and learner-session gate for P01/P02. Those sessions remain unperformed and are disclosed as limitations. Other pilots declare appropriate review requirements in their briefs; medical/legal expertise requirements are unchanged. Automated tests are author checks. They do not appoint a subject reviewer, prove screen-reader usability or replace formative learning observation. Do not create a passing receipt merely to satisfy a validator.
+```sh
+node scripts/check-local-continuation.mjs --record --date YYYY-MM-DD --evidence docs/verification/NEW-RECEIPT.md
+```
 
-If a claim, source boundary, activity, rights decision, bound rendering code or displayed related-collection label changes, return the record to draft and obtain fresh reviews for the changed artifact. Historical receipts remain in the append-only array and do not block draft rendering. Only the latest appended receipt per required dimension can approve acceptance, and it must match the current revision and both digests. The latest changes-requested review blocks that dimension even if an earlier review passed. Do not reorder or erase superseded receipts.
+The command preserves already-valid author receipts and historical independent reviews. It binds changed records to their content/runtime and regenerates preview/orientation links. It does not grant publication or certify real-world observations.
+
+Before freezing a changed artifact, increment its revision and retain earlier revision identities. `freeze-exploration-editions.mjs` preserves immutable old bundles and runtime files; it rejects changed content/runtime under an existing revision. Never edit a receipt already retained in a frozen edition. Use another receipt for later work.
 
 ## Validate and hand off
 

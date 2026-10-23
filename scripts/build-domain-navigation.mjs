@@ -25,7 +25,7 @@ export async function prepareNavigation({mode='preview',base=null}={}){
   if(!['preview','release'].includes(mode))throw new Error('Use preview or release navigation mode');
   base=canonicalBase(base);if(mode==='preview'&&base||mode==='release'&&!base)throw new Error('Preview has no canonical base; release needs --base-url');
   const verification=await buildDomainOverviews({checkOnly:true}),data=await readOrientation(),binding=await navigationBinding(data);
-  if(verification.reviewStatus!=='reviewed-local')throw new Error('Domain navigation requires exact reviewed orientation content');
+  if(!['reviewed-local','author-checked-local'].includes(verification.reviewStatus))throw new Error('Domain navigation requires exact reviewed orientation content');
   const {bundles,runtimes}=await loadEditionArchive(),editionLedger=JSON.parse(await readFile(join(ROOT,'editions/releases.json'),'utf8'));
   const editionEntries=mode==='preview'?[...bundles.values()].map(e=>({...e,state:'preview'})):resolveReleases(editionLedger,bundles,{deliveryDigest:binding.editionDeliveryDigest,base,readEvidence});
   const catalog=JSON.parse(renderEditions(editionEntries,runtimes,{mode,base}).outputs.get('explore/catalog.json'));

@@ -26,6 +26,78 @@
     {
       "id": "x-performance-0001",
       "file": "performance.json"
+    },
+    {
+      "id": "x-law-0001",
+      "file": "law.json"
+    },
+    {
+      "id": "x-health-0001",
+      "file": "health.json"
+    },
+    {
+      "id": "x-history-0002",
+      "file": "history-perspectives.json"
+    },
+    {
+      "id": "x-literature-0002",
+      "file": "literature-editions.json"
+    },
+    {
+      "id": "x-literature-0003",
+      "file": "literature-narrative.json"
+    },
+    {
+      "id": "x-history-0003",
+      "file": "history-material-evidence.json"
+    },
+    {
+      "id": "x-philosophy-0002",
+      "file": "philosophy-disclosure.json"
+    },
+    {
+      "id": "x-agriculture-0002",
+      "file": "agriculture-ledger.json"
+    },
+    {
+      "id": "x-philosophy-0003",
+      "file": "philosophy-langar.json"
+    },
+    {
+      "id": "x-law-0002",
+      "file": "law-evidence.json"
+    },
+    {
+      "id": "x-law-0003",
+      "file": "law-australia.json"
+    },
+    {
+      "id": "x-agriculture-0003",
+      "file": "agriculture-koraput.json"
+    },
+    {
+      "id": "x-health-0002",
+      "file": "health-measurement.json"
+    },
+    {
+      "id": "x-health-0003",
+      "file": "health-communication.json"
+    },
+    {
+      "id": "x-craft-0002",
+      "file": "craft-patch.json"
+    },
+    {
+      "id": "x-craft-0003",
+      "file": "craft-kente.json"
+    },
+    {
+      "id": "x-performance-0002",
+      "file": "performance-staging.json"
+    },
+    {
+      "id": "x-performance-0003",
+      "file": "performance-kutiyattam.json"
     }
   ]
 }

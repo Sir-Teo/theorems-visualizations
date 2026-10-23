@@ -1,0 +1,248 @@
+{
+  "schemaVersion": 1,
+  "id": "x-health-0001",
+  "revision": "0.1.0",
+  "record": {
+    "schemaVersion": 1,
+    "id": "x-health-0001",
+    "pilotId": "P06",
+    "revision": "0.1.0",
+    "status": "accepted",
+    "publication": "local-preview",
+    "title": "What can a counted cycle tell you?",
+    "subtitle": "Equal averages can hide different timing.",
+    "summary": "Inspect two synthetic timing tables, crop the observation window and compare complete-cycle and onset counts. Explain what those counts cannot tell you.",
+    "audience": "General readers; counting and seconds are enough.",
+    "scope": "Conceptual education using authored timing labels. No patient recording, clinical rate estimator, diagnosis, breathing exercise or instruction to alter your breathing.",
+    "author": "atlas-editor",
+    "updatedOn": "2026-10-23",
+    "domainIds": [
+      "D09",
+      "D07"
+    ],
+    "relatedCollectionIds": [
+      "physio",
+      "imaging",
+      "epi"
+    ],
+    "knowledgeModes": [
+      "empirical",
+      "procedural"
+    ],
+    "methods": [
+      "cycle-observation"
+    ],
+    "prerequisites": [],
+    "sources": [
+      {
+        "id": "nhlbi-breathing",
+        "title": "NHLBI, How the Lungs Work: What Breathing Does for the Body",
+        "url": "https://www.nhlbi.nih.gov/health/lungs/breathing-benefits",
+        "locator": "Breathing in; Breathing out; distinction from Gas exchange",
+        "creator": "National Heart, Lung, and Blood Institute, NIH",
+        "date": "Updated 2025-06-27; phase description reread 2026-10-23",
+        "language": "English",
+        "rights": {
+          "decision": "usable-for-prototype",
+          "basis": "Original explanatory prose and fictional examples with source links. No third-party images, animation, textbook passages or full statutory text are reproduced.",
+          "scope": "Local educational preview; no endorsement or professional approval is implied."
+        }
+      }
+    ],
+    "passages": [
+      {
+        "id": "quiet-phases",
+        "sourceId": "nhlbi-breathing",
+        "title": "Air movement and a qualitative phase map",
+        "form": "paraphrase",
+        "language": "en",
+        "text": "During quiet inhalation the diaphragm contracts and moves downward, increasing chest space as air enters. During quiet exhalation the diaphragm relaxes and air leaves. Air movement and gas exchange are different processes; a timing table does not measure oxygenation.",
+        "context": "Original paraphrase of the named NHLBI sections. This lesson excludes its third-party animation and does not reproduce it. Phase durations below are authored, not physiological measurements.",
+        "sha256": "0c49babf164b37d23f9c7eeadc5e2aea8db94f36dae9672bae2bbf225fb79749"
+      },
+      {
+        "id": "authored-boundaries",
+        "sourceId": "nhlbi-breathing",
+        "title": "Define what is counted before counting",
+        "form": "original",
+        "language": "en",
+        "text": "For this exercise, a complete cycle is a supplied start–phase-change–end row wholly inside the chosen window. A separate rule counts start landmarks in a window that includes its left endpoint and excludes its right endpoint. These conventions can give different counts when the window cuts through cycles.",
+        "context": "Original mathematical definitions for synthetic tables, not a counting protocol supplied or approved by NHLBI.",
+        "sha256": "8e13536dece6353e49412bb95b3cd3d000ee2dbed769abbb21440b30bd36ca06"
+      }
+    ],
+    "claims": [
+      {
+        "id": "average-and-timing",
+        "kind": "formal",
+        "text": "Both full twenty-second tables contain five complete cycles, while their intervals differ.",
+        "passageIds": [
+          "authored-boundaries"
+        ],
+        "qualification": "A property of the authored table, not evidence of any person’s breathing or health."
+      },
+      {
+        "id": "counting-boundaries",
+        "kind": "formal",
+        "text": "Complete-cycle and onset counts need not agree in a cropped window.",
+        "passageIds": [
+          "authored-boundaries"
+        ],
+        "qualification": "Neither convention is presented as a clinically validated rate estimator."
+      },
+      {
+        "id": "scope-of-rate",
+        "kind": "empirical",
+        "text": "This timing table does not measure gas exchange or oxygenation.",
+        "passageIds": [
+          "quiet-phases"
+        ],
+        "qualification": "No healthy/abnormal thresholds, diagnosis or treatment follow from the arithmetic."
+      }
+    ],
+    "context": [
+      "Solid diagram segments mark an authored in-phase label; outlined segments mark an authored out-phase label. Segment widths represent time only.",
+      "The regular table has five four-second cycles. The varied table has durations 2, 6, 3, 6 and 3 seconds. Equal average counts do not make the sequences identical.",
+      "Complete cycles must lie wholly inside the closed window. Onsets use [start, end), so a landmark shared by adjacent windows is not counted twice.",
+      "A short window can contain part of a cycle and zero complete cycles. That is not absence of breathing. Outside the supplied interval the result is unknown, not zero.",
+      "All times are original fixtures. Phase lengths, pressures, volumes, effort and clinical interpretation have not been calibrated or measured."
+    ],
+    "timeline": [],
+    "relations": [],
+    "reviews": [],
+    "reviewRequirements": [
+      "content",
+      "rights"
+    ],
+    "reviewLimitations": [
+      "Author checks support this local educational preview. Independent professional and participant reviews have not been performed and are not required for local continuation."
+    ],
+    "activity": {
+      "type": "cycle-observation",
+      "synthetic": true,
+      "patientData": false,
+      "countingConvention": "Complete cycles: both endpoints inside the window. Onsets: start included, end excluded. The two descriptions answer different questions.",
+      "traces": [
+        {
+          "id": "regular",
+          "label": "Regular four-second intervals",
+          "cycles": [
+            [
+              0,
+              1600,
+              4000
+            ],
+            [
+              4000,
+              5600,
+              8000
+            ],
+            [
+              8000,
+              9600,
+              12000
+            ],
+            [
+              12000,
+              13600,
+              16000
+            ],
+            [
+              16000,
+              17600,
+              20000
+            ]
+          ]
+        },
+        {
+          "id": "varied",
+          "label": "Varied intervals, same full-window count",
+          "cycles": [
+            [
+              0,
+              800,
+              2000
+            ],
+            [
+              2000,
+              4400,
+              8000
+            ],
+            [
+              8000,
+              9200,
+              11000
+            ],
+            [
+              11000,
+              13400,
+              17000
+            ],
+            [
+              17000,
+              18200,
+              20000
+            ]
+          ]
+        }
+      ],
+      "transfer": "Crop the regular trace to 2–18 seconds. Explain why it contains three complete cycles but four onsets. Then inspect a 1–2 second crop: explain why zero complete cycles is not evidence of no breathing.",
+      "rubric": [
+        "Name the counting convention and window before giving a number.",
+        "For 2–18 seconds, identify complete cycles 2, 3, 4 and onset landmarks 2, 3, 4, 5.",
+        "Distinguish equal counts from equal intervals, and partial information from absence.",
+        "Do not infer normality, illness, depth, effort or gas exchange from the synthetic table."
+      ]
+    },
+    "extensions": {},
+    "authorVerification": {
+      "kind": "author-check",
+      "scope": "local-preview",
+      "author": "atlas-editor",
+      "checkedOn": "2026-10-23",
+      "revision": "0.1.0",
+      "contentDigest": "0f0c27cb146248146be68eabe76a7f0eff6a7f6bca028aefad30a2807caf03b0",
+      "artifactDigest": "48b8edeba113571b0f99edc38c4d164ee3dea5289ef52ad0e1c8def7999af154",
+      "evidencePath": "docs/verification/universal-author-continuation.md",
+      "checks": [
+        "Schema, source-reference and preparation-packet hash validation",
+        "Passed tests/exploration-methods.test.mjs",
+        "Passed tests/exploration-studio.test.mjs",
+        "Passed tests/exploration-professions.test.mjs",
+        "Passed tests/exploration-followups.test.mjs"
+      ]
+    }
+  },
+  "context": {
+    "domainIds": [
+      "D09",
+      "D07"
+    ],
+    "collectionIds": [
+      "physio",
+      "imaging",
+      "epi"
+    ],
+    "sourceIds": [
+      "nhlbi-breathing"
+    ],
+    "knownItemIds": []
+  },
+  "collectionTitles": {
+    "physio": "Human Physiology",
+    "imaging": "Medical Imaging",
+    "epi": "Epidemiology & Evidence"
+  },
+  "runtimeDigest": "ca81bc9e95550cc6c8e5c31a3fcbb6b78a066ecaa6a57038441949fe61f17025",
+  "contentDigest": "0f0c27cb146248146be68eabe76a7f0eff6a7f6bca028aefad30a2807caf03b0",
+  "artifactDigest": "48b8edeba113571b0f99edc38c4d164ee3dea5289ef52ad0e1c8def7999af154",
+  "previewHTML": "<!doctype html>\n<html lang=\"en\"><head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width,initial-scale=1\">\n<meta name=\"robots\" content=\"noindex,nofollow\"><meta name=\"description\" content=\"Draft source-based explorations for Ideas, Visualized.\">\n<title>What can a counted cycle tell you? · Ideas, Visualized</title><link rel=\"stylesheet\" href=\"../../../explorations/style.css\"></head>\n<body><a class=\"skip\" href=\"#main\">Skip to the exploration</a>\n<header class=\"site-header\"><a href=\"../../../#/\">Ideas, Visualized</a><span>Exploration workshop</span></header>\n<main id=\"main\" tabindex=\"-1\"><nav aria-label=\"Workshop\"><a href=\"../\">← All pilot explorations</a></nav>\n    <section class=\"hero\"><p class=\"eyebrow\">Author-checked · local preview</p><h1>What can a counted cycle tell you?</h1>\n    <p class=\"subtitle\">Equal averages can hide different timing.</p><p class=\"lede\">Inspect two synthetic timing tables, crop the observation window and compare complete-cycle and onset counts. Explain what those counts cannot tell you.</p>\n    <p class=\"muted\">Author checks support this local educational preview. Independent professional and participant reviews have not been performed and are not required for local continuation.</p>\n    <p class=\"scope\">Conceptual education using authored timing labels. No patient recording, clinical rate estimator, diagnosis, breathing exercise or instruction to alter your breathing.</p><ol class=\"steps\"><li>Read the sources</li><li>Explore the evidence</li><li>Explain a limitation</li></ol></section>\n    <section aria-labelledby=\"source-heading\"><div class=\"section-heading\"><span>01</span><h2 id=\"source-heading\">Read closely</h2></div>\n    <div class=\"sources\"><article class=\"source-card\" id=\"passage-quiet-phases\" data-passage=\"quiet-phases\">\n      <p class=\"eyebrow\">National Heart, Lung, and Blood Institute, NIH</p><h3>Air movement and a qualitative phase map</h3>\n      <p class=\"source-form\">Editorial paraphrase</p>\n      <p class=\"passage\" lang=\"en\">During quiet inhalation the diaphragm contracts and moves downward, increasing chest space as air enters. During quiet exhalation the diaphragm relaxes and air leaves. Air movement and gas exchange are different processes; a timing table does not measure oxygenation.</p>\n      <p><strong>Editorial context:</strong> Original paraphrase of the named NHLBI sections. This lesson excludes its third-party animation and does not reproduce it. Phase durations below are authored, not physiological measurements.</p><details><summary>Source and reuse details</summary>\n      <p><a href=\"https://www.nhlbi.nih.gov/health/lungs/breathing-benefits\">NHLBI, How the Lungs Work: What Breathing Does for the Body</a></p><p>Breathing in; Breathing out; distinction from Gas exchange · Updated 2025-06-27; phase description reread 2026-10-23</p>\n      <p>Original explanatory prose and fictional examples with source links. No third-party images, animation, textbook passages or full statutory text are reproduced.</p><p class=\"muted\">Local educational preview; no endorsement or professional approval is implied.</p></details></article><article class=\"source-card\" id=\"passage-authored-boundaries\" data-passage=\"authored-boundaries\">\n      <p class=\"eyebrow\">National Heart, Lung, and Blood Institute, NIH</p><h3>Define what is counted before counting</h3>\n      <p class=\"source-form\">Original explanation</p>\n      <p class=\"passage\" lang=\"en\">For this exercise, a complete cycle is a supplied start–phase-change–end row wholly inside the chosen window. A separate rule counts start landmarks in a window that includes its left endpoint and excludes its right endpoint. These conventions can give different counts when the window cuts through cycles.</p>\n      <p><strong>Editorial context:</strong> Original mathematical definitions for synthetic tables, not a counting protocol supplied or approved by NHLBI.</p><details><summary>Source and reuse details</summary>\n      <p><a href=\"https://www.nhlbi.nih.gov/health/lungs/breathing-benefits\">NHLBI, How the Lungs Work: What Breathing Does for the Body</a></p><p>Breathing in; Breathing out; distinction from Gas exchange · Updated 2025-06-27; phase description reread 2026-10-23</p>\n      <p>Original explanatory prose and fictional examples with source links. No third-party images, animation, textbook passages or full statutory text are reproduced.</p><p class=\"muted\">Local educational preview; no endorsement or professional approval is implied.</p></details></article></div></section>\n    <section class=\"context\"><h2>What this exploration can establish</h2><ul><li>Solid diagram segments mark an authored in-phase label; outlined segments mark an authored out-phase label. Segment widths represent time only.</li><li>The regular table has five four-second cycles. The varied table has durations 2, 6, 3, 6 and 3 seconds. Equal average counts do not make the sequences identical.</li><li>Complete cycles must lie wholly inside the closed window. Onsets use [start, end), so a landmark shared by adjacent windows is not counted twice.</li><li>A short window can contain part of a cycle and zero complete cycles. That is not absence of breathing. Outside the supplied interval the result is unknown, not zero.</li><li>All times are original fixtures. Phase lengths, pressures, volumes, effort and clinical interpretation have not been calibrated or measured.</li></ul>\n\n    </section>\n\n    <section class=\"activity\" aria-labelledby=\"activity-heading\"><div class=\"section-heading\"><span>02</span><h2 id=\"activity-heading\">Explore the evidence</h2></div>\n    <noscript><p>The source text, comparison guides and transfer task work without JavaScript. Use the guides below and write your notes separately.</p></noscript>\n    <p>Complete cycles: both endpoints inside the window. Onsets: start included, end excluded. The two descriptions answer different questions.</p><div class=\"interactive\" hidden><label for=\"trace\">Synthetic timing table</label><select id=\"trace\"><option value=\"regular\">Regular four-second intervals</option><option value=\"varied\">Varied intervals, same full-window count</option></select><div class=\"control-grid\"><div><label for=\"start\">Window start (seconds)</label><input id=\"start\" data-model type=\"number\" step=\"any\" min=\"0\" max=\"20\"></div><div><label for=\"end\">Window end (seconds)</label><input id=\"end\" data-model type=\"number\" step=\"any\" min=\"0\" max=\"20\"></div></div><div id=\"cycle-figure\" class=\"cycle-figure\" tabindex=\"0\" role=\"region\" aria-label=\"Synthetic cycle diagram; scroll horizontally\"></div><p id=\"cycle-result\" role=\"status\"></p><label for=\"phase\">Inspect a quiet-breathing phase</label><select id=\"phase\"><option value=\"in\">Inhalation</option><option value=\"out\">Exhalation</option></select><p id=\"phase-description\"></p></div><details open class=\"static-guide\"><summary>Read both complete timing tables and worked examples</summary><section><h3>Regular four-second intervals</h3><svg viewBox=\"0 0 700 245\" role=\"img\" aria-label=\"Synthetic cycle intervals. Solid segments are authored in-phase labels; outlined segments are out-phase labels. The complete numerical table follows.\"><text x=\"50\" y=\"16\">0 seconds</text><text x=\"600\" y=\"16\">20 seconds</text><g><text x=\"8\" y=\"37\">1</text><rect x=\"50\" y=\"22\" width=\"48\" height=\"22\" fill=\"#397b92\"/><rect x=\"98\" y=\"22\" width=\"72\" height=\"22\" fill=\"none\" stroke=\"currentColor\" stroke-dasharray=\"4 2\"/></g><g><text x=\"8\" y=\"72\">2</text><rect x=\"170\" y=\"57\" width=\"48\" height=\"22\" fill=\"#397b92\"/><rect x=\"218\" y=\"57\" width=\"72\" height=\"22\" fill=\"none\" stroke=\"currentColor\" stroke-dasharray=\"4 2\"/></g><g><text x=\"8\" y=\"107\">3</text><rect x=\"290\" y=\"92\" width=\"48\" height=\"22\" fill=\"#397b92\"/><rect x=\"338\" y=\"92\" width=\"72\" height=\"22\" fill=\"none\" stroke=\"currentColor\" stroke-dasharray=\"4 2\"/></g><g><text x=\"8\" y=\"142\">4</text><rect x=\"410\" y=\"127\" width=\"48\" height=\"22\" fill=\"#397b92\"/><rect x=\"458\" y=\"127\" width=\"72\" height=\"22\" fill=\"none\" stroke=\"currentColor\" stroke-dasharray=\"4 2\"/></g><g><text x=\"8\" y=\"177\">5</text><rect x=\"530\" y=\"162\" width=\"48\" height=\"22\" fill=\"#397b92\"/><rect x=\"578\" y=\"162\" width=\"72\" height=\"22\" fill=\"none\" stroke=\"currentColor\" stroke-dasharray=\"4 2\"/></g><path d=\"M50 20V215\" stroke=\"currentColor\" stroke-width=\"2\"/><text x=\"50\" y=\"235\">0 s</text><path d=\"M650 20V215\" stroke=\"currentColor\" stroke-width=\"2\"/><text x=\"620\" y=\"235\">20 s</text></svg><div class=\"table-scroll\" tabindex=\"0\" role=\"region\" aria-label=\"Synthetic cycle times; scroll horizontally\"><table class=\"cycle-table\"><caption>Authored times in seconds; phase lengths are uncalibrated</caption><thead><tr><th>Cycle</th><th>Start</th><th>Phase change</th><th>End</th><th>Duration</th></tr></thead><tbody><tr><th>1</th><td>0</td><td>1.6</td><td>4</td><td>4</td></tr><tr><th>2</th><td>4</td><td>5.6</td><td>8</td><td>4</td></tr><tr><th>3</th><td>8</td><td>9.6</td><td>12</td><td>4</td></tr><tr><th>4</th><td>12</td><td>13.6</td><td>16</td><td>4</td></tr><tr><th>5</th><td>16</td><td>17.6</td><td>20</td><td>4</td></tr></tbody></table></div><p>Window: 20 seconds. Complete cycles: 1, 2, 3, 4, 5 (5); partial cycles: none. Onset landmarks: 1, 2, 3, 4, 5 (5). Complete-cycle density: 15 per minute; onset density: 15 per minute. These describe the supplied table and boundary rules, not a clinical measurement. Zero complete cycles does not mean no breathing.</p><p>Crop 2–18 seconds: Window: 16 seconds. Complete cycles: 2, 3, 4 (3); partial cycles: 1, 5. Onset landmarks: 2, 3, 4, 5 (4). Complete-cycle density: 11.25 per minute; onset density: 15 per minute. These describe the supplied table and boundary rules, not a clinical measurement. Zero complete cycles does not mean no breathing.</p></section><section><h3>Varied intervals, same full-window count</h3><svg viewBox=\"0 0 700 245\" role=\"img\" aria-label=\"Synthetic cycle intervals. Solid segments are authored in-phase labels; outlined segments are out-phase labels. The complete numerical table follows.\"><text x=\"50\" y=\"16\">0 seconds</text><text x=\"600\" y=\"16\">20 seconds</text><g><text x=\"8\" y=\"37\">1</text><rect x=\"50\" y=\"22\" width=\"24\" height=\"22\" fill=\"#397b92\"/><rect x=\"74\" y=\"22\" width=\"36\" height=\"22\" fill=\"none\" stroke=\"currentColor\" stroke-dasharray=\"4 2\"/></g><g><text x=\"8\" y=\"72\">2</text><rect x=\"110\" y=\"57\" width=\"72\" height=\"22\" fill=\"#397b92\"/><rect x=\"182\" y=\"57\" width=\"108\" height=\"22\" fill=\"none\" stroke=\"currentColor\" stroke-dasharray=\"4 2\"/></g><g><text x=\"8\" y=\"107\">3</text><rect x=\"290\" y=\"92\" width=\"36\" height=\"22\" fill=\"#397b92\"/><rect x=\"326\" y=\"92\" width=\"54\" height=\"22\" fill=\"none\" stroke=\"currentColor\" stroke-dasharray=\"4 2\"/></g><g><text x=\"8\" y=\"142\">4</text><rect x=\"380\" y=\"127\" width=\"72\" height=\"22\" fill=\"#397b92\"/><rect x=\"452\" y=\"127\" width=\"108\" height=\"22\" fill=\"none\" stroke=\"currentColor\" stroke-dasharray=\"4 2\"/></g><g><text x=\"8\" y=\"177\">5</text><rect x=\"560\" y=\"162\" width=\"36\" height=\"22\" fill=\"#397b92\"/><rect x=\"596\" y=\"162\" width=\"54\" height=\"22\" fill=\"none\" stroke=\"currentColor\" stroke-dasharray=\"4 2\"/></g><path d=\"M50 20V215\" stroke=\"currentColor\" stroke-width=\"2\"/><text x=\"50\" y=\"235\">0 s</text><path d=\"M650 20V215\" stroke=\"currentColor\" stroke-width=\"2\"/><text x=\"620\" y=\"235\">20 s</text></svg><div class=\"table-scroll\" tabindex=\"0\" role=\"region\" aria-label=\"Synthetic cycle times; scroll horizontally\"><table class=\"cycle-table\"><caption>Authored times in seconds; phase lengths are uncalibrated</caption><thead><tr><th>Cycle</th><th>Start</th><th>Phase change</th><th>End</th><th>Duration</th></tr></thead><tbody><tr><th>1</th><td>0</td><td>0.8</td><td>2</td><td>2</td></tr><tr><th>2</th><td>2</td><td>4.4</td><td>8</td><td>6</td></tr><tr><th>3</th><td>8</td><td>9.2</td><td>11</td><td>3</td></tr><tr><th>4</th><td>11</td><td>13.4</td><td>17</td><td>6</td></tr><tr><th>5</th><td>17</td><td>18.2</td><td>20</td><td>3</td></tr></tbody></table></div><p>Window: 20 seconds. Complete cycles: 1, 2, 3, 4, 5 (5); partial cycles: none. Onset landmarks: 1, 2, 3, 4, 5 (5). Complete-cycle density: 15 per minute; onset density: 15 per minute. These describe the supplied table and boundary rules, not a clinical measurement. Zero complete cycles does not mean no breathing.</p><p>Crop 2–18 seconds: Window: 16 seconds. Complete cycles: 2, 3, 4 (3); partial cycles: 5. Onset landmarks: 2, 3, 4, 5 (4). Complete-cycle density: 11.25 per minute; onset density: 15 per minute. These describe the supplied table and boundary rules, not a clinical measurement. Zero complete cycles does not mean no breathing.</p></section><p>Quiet inhalation: diaphragm contracts and moves downward; chest space increases and air enters. Quiet exhalation: diaphragm relaxes; air leaves. These labels do not measure pressure, depth, oxygenation or gas exchange. No motion, sound or self-observation is required.</p></details><div class=\"interactive notes\" hidden><label for=\"notes\">Your evidence and explanation</label>\n    <textarea id=\"notes\" rows=\"5\" maxlength=\"1500\" aria-describedby=\"notes-help\" placeholder=\"Name the words, then explain what they support and what they do not.\"></textarea>\n    <p id=\"notes-help\" class=\"muted\">One notebook for this exploration revision, up to 1,500 characters. Notes stay in this browser. Shared links contain selections only. Nothing is sent to a server.</p>\n    <p id=\"save-status\" role=\"status\" class=\"muted\"></p>\n    <div class=\"actions\"><button id=\"share\" type=\"button\">Copy a link to these selections</button><button id=\"export\" type=\"button\">Export notes</button><button id=\"previous-notes\" type=\"button\" hidden>Export earlier notes</button><button id=\"reset\" type=\"button\">Reset and erase this revision’s notes</button></div>\n    <label id=\"share-label\" for=\"share-url\" hidden>Shareable link (notes excluded)</label><input id=\"share-url\" readonly hidden>\n    <p id=\"state-status\" role=\"status\"></p></div></section>\n    <section class=\"transfer\" aria-labelledby=\"transfer-heading\"><div class=\"section-heading\"><span>03</span><h2 id=\"transfer-heading\">Try the idea elsewhere</h2></div>\n    <p>Crop the regular trace to 2–18 seconds. Explain why it contains three complete cycles but four onsets. Then inspect a 1–2 second crop: explain why zero complete cycles is not evidence of no breathing.</p><details><summary>What a careful explanation includes</summary><ul><li>Name the counting convention and window before giving a number.</li><li>For 2–18 seconds, identify complete cycles 2, 3, 4 and onset landmarks 2, 3, 4, 5.</li><li>Distinguish equal counts from equal intervals, and partial information from absence.</li><li>Do not infer normality, illness, depth, effort or gas exchange from the synthetic table.</li></ul></details>\n    <p>There is no automatic score for your written interpretation. Use the guide to inspect your reasoning.</p></section>\n    <section class=\"related\"><h2>Connections into the atlas</h2><p>Optional collection routes; these are not prerequisites or independent evidence for this task.</p>\n    <div class=\"actions\"><a href=\"../../../#/c/physio\">Human Physiology</a><a href=\"../../../#/c/imaging\">Medical Imaging</a><a href=\"../../../#/c/epi\">Epidemiology &amp; Evidence</a></div></section>\n    </main><footer><p>Local previews. Review scope and public release are separate.</p><a href=\"../../../docs/master-plan-handoff.md\">Editorial status and next work</a></footer><script id=\"exploration-data\" type=\"application/json\">{\"schemaVersion\":1,\"id\":\"x-health-0001\",\"pilotId\":\"P06\",\"revision\":\"0.1.0\",\"status\":\"accepted\",\"publication\":\"local-preview\",\"title\":\"What can a counted cycle tell you?\",\"subtitle\":\"Equal averages can hide different timing.\",\"summary\":\"Inspect two synthetic timing tables, crop the observation window and compare complete-cycle and onset counts. Explain what those counts cannot tell you.\",\"audience\":\"General readers; counting and seconds are enough.\",\"scope\":\"Conceptual education using authored timing labels. No patient recording, clinical rate estimator, diagnosis, breathing exercise or instruction to alter your breathing.\",\"author\":\"atlas-editor\",\"updatedOn\":\"2026-10-23\",\"domainIds\":[\"D09\",\"D07\"],\"relatedCollectionIds\":[\"physio\",\"imaging\",\"epi\"],\"knowledgeModes\":[\"empirical\",\"procedural\"],\"methods\":[\"cycle-observation\"],\"prerequisites\":[],\"sources\":[{\"id\":\"nhlbi-breathing\",\"title\":\"NHLBI, How the Lungs Work: What Breathing Does for the Body\",\"url\":\"https://www.nhlbi.nih.gov/health/lungs/breathing-benefits\",\"locator\":\"Breathing in; Breathing out; distinction from Gas exchange\",\"creator\":\"National Heart, Lung, and Blood Institute, NIH\",\"date\":\"Updated 2025-06-27; phase description reread 2026-10-23\",\"language\":\"English\",\"rights\":{\"decision\":\"usable-for-prototype\",\"basis\":\"Original explanatory prose and fictional examples with source links. No third-party images, animation, textbook passages or full statutory text are reproduced.\",\"scope\":\"Local educational preview; no endorsement or professional approval is implied.\"}}],\"passages\":[{\"id\":\"quiet-phases\",\"sourceId\":\"nhlbi-breathing\",\"title\":\"Air movement and a qualitative phase map\",\"form\":\"paraphrase\",\"language\":\"en\",\"text\":\"During quiet inhalation the diaphragm contracts and moves downward, increasing chest space as air enters. During quiet exhalation the diaphragm relaxes and air leaves. Air movement and gas exchange are different processes; a timing table does not measure oxygenation.\",\"context\":\"Original paraphrase of the named NHLBI sections. This lesson excludes its third-party animation and does not reproduce it. Phase durations below are authored, not physiological measurements.\",\"sha256\":\"0c49babf164b37d23f9c7eeadc5e2aea8db94f36dae9672bae2bbf225fb79749\"},{\"id\":\"authored-boundaries\",\"sourceId\":\"nhlbi-breathing\",\"title\":\"Define what is counted before counting\",\"form\":\"original\",\"language\":\"en\",\"text\":\"For this exercise, a complete cycle is a supplied start–phase-change–end row wholly inside the chosen window. A separate rule counts start landmarks in a window that includes its left endpoint and excludes its right endpoint. These conventions can give different counts when the window cuts through cycles.\",\"context\":\"Original mathematical definitions for synthetic tables, not a counting protocol supplied or approved by NHLBI.\",\"sha256\":\"8e13536dece6353e49412bb95b3cd3d000ee2dbed769abbb21440b30bd36ca06\"}],\"claims\":[{\"id\":\"average-and-timing\",\"kind\":\"formal\",\"text\":\"Both full twenty-second tables contain five complete cycles, while their intervals differ.\",\"passageIds\":[\"authored-boundaries\"],\"qualification\":\"A property of the authored table, not evidence of any person’s breathing or health.\"},{\"id\":\"counting-boundaries\",\"kind\":\"formal\",\"text\":\"Complete-cycle and onset counts need not agree in a cropped window.\",\"passageIds\":[\"authored-boundaries\"],\"qualification\":\"Neither convention is presented as a clinically validated rate estimator.\"},{\"id\":\"scope-of-rate\",\"kind\":\"empirical\",\"text\":\"This timing table does not measure gas exchange or oxygenation.\",\"passageIds\":[\"quiet-phases\"],\"qualification\":\"No healthy/abnormal thresholds, diagnosis or treatment follow from the arithmetic.\"}],\"context\":[\"Solid diagram segments mark an authored in-phase label; outlined segments mark an authored out-phase label. Segment widths represent time only.\",\"The regular table has five four-second cycles. The varied table has durations 2, 6, 3, 6 and 3 seconds. Equal average counts do not make the sequences identical.\",\"Complete cycles must lie wholly inside the closed window. Onsets use [start, end), so a landmark shared by adjacent windows is not counted twice.\",\"A short window can contain part of a cycle and zero complete cycles. That is not absence of breathing. Outside the supplied interval the result is unknown, not zero.\",\"All times are original fixtures. Phase lengths, pressures, volumes, effort and clinical interpretation have not been calibrated or measured.\"],\"timeline\":[],\"relations\":[],\"reviews\":[],\"reviewRequirements\":[\"content\",\"rights\"],\"reviewLimitations\":[\"Author checks support this local educational preview. Independent professional and participant reviews have not been performed and are not required for local continuation.\"],\"activity\":{\"type\":\"cycle-observation\",\"synthetic\":true,\"patientData\":false,\"countingConvention\":\"Complete cycles: both endpoints inside the window. Onsets: start included, end excluded. The two descriptions answer different questions.\",\"traces\":[{\"id\":\"regular\",\"label\":\"Regular four-second intervals\",\"cycles\":[[0,1600,4000],[4000,5600,8000],[8000,9600,12000],[12000,13600,16000],[16000,17600,20000]]},{\"id\":\"varied\",\"label\":\"Varied intervals, same full-window count\",\"cycles\":[[0,800,2000],[2000,4400,8000],[8000,9200,11000],[11000,13400,17000],[17000,18200,20000]]}],\"transfer\":\"Crop the regular trace to 2–18 seconds. Explain why it contains three complete cycles but four onsets. Then inspect a 1–2 second crop: explain why zero complete cycles is not evidence of no breathing.\",\"rubric\":[\"Name the counting convention and window before giving a number.\",\"For 2–18 seconds, identify complete cycles 2, 3, 4 and onset landmarks 2, 3, 4, 5.\",\"Distinguish equal counts from equal intervals, and partial information from absence.\",\"Do not infer normality, illness, depth, effort or gas exchange from the synthetic table.\"]},\"extensions\":{},\"authorVerification\":{\"kind\":\"author-check\",\"scope\":\"local-preview\",\"author\":\"atlas-editor\",\"checkedOn\":\"2026-10-23\",\"revision\":\"0.1.0\",\"contentDigest\":\"0f0c27cb146248146be68eabe76a7f0eff6a7f6bca028aefad30a2807caf03b0\",\"artifactDigest\":\"48b8edeba113571b0f99edc38c4d164ee3dea5289ef52ad0e1c8def7999af154\",\"evidencePath\":\"docs/verification/universal-author-continuation.md\",\"checks\":[\"Schema, source-reference and preparation-packet hash validation\",\"Passed tests/exploration-methods.test.mjs\",\"Passed tests/exploration-studio.test.mjs\",\"Passed tests/exploration-professions.test.mjs\",\"Passed tests/exploration-followups.test.mjs\"]}}</script><script type=\"module\" src=\"../../../explorations/ui.mjs\"></script></body></html>\n",
+  "previewDigest": "d57852b6fb494412f63fe79fee9a70de837cab82cf37af894c5843fb1efd88c0",
+  "receipts": {
+    "docs/verification/universal-author-continuation.md": {
+      "text": "# Local continuation under author checks\n\n23 October 2026. The user explicitly removed the outstanding review prerequisites and instructed continued implementation of the full master plan. Independent AI, specialist, engineering, practitioner, learner and screen-reader reviews are optional follow-up, not gates on local authoring, validation, acceptance or integration preparation. This supersedes earlier local review-gate requirements. No rejected external review operation is retried.\n\nLocal acceptance records use `authorVerification.kind: author-check` and bind the current revision, content and rendered-code digest to actual author checks. They do not create independent review receipts. Existing receipts remain unchanged as historical evidence. Physical and participant sessions remain unperformed; professional reviewer fields remain empty. The renderer labels author-checked previews distinctly. Legacy independent-review acceptance is retained for archived records and rejects stale receipts as before.\n\nThe six existing pilot texts and activities remain intact. The four already archived pilots receive new revisions for the changed runtime and acceptance basis; earlier revisions remain available through explicit note export. Craft/performance retain their original revision because neither had an archived edition. No private note store is read or migrated by these changes. Craft remains a structural model without a physical specimen; performance remains a generated digital stimulus with its existing local asset terms. The new law and health pilots supply original bounded learning tasks, not professional approval or a decision about a reader's health or legal dispute. Source access, truthful claims, privacy, actual rights and automatic validation remain substantive requirements.\n\n## Source checks\n\nThe four named CRA sections (9, 19, 20, 22) returned HTTP 200 from their official URLs on 23 October. The web reader could not parse XHTML; an ordinary direct request to the same URLs succeeded. All four byte hashes match the retained 22 October preparation captures. Their displayed editorial cutoffs still differ (22/20/22/21 October) and future/outstanding notices remain. No certified current-law consolidation is claimed. The statutory timing paragraphs and their exceptions were inspected; the activity only applies the ordinary arithmetic to stipulated facts. Repair waiting periods return no ordinary deadline.\n\nNHLBI's [breathing description](https://www.nhlbi.nih.gov/health/lungs/breathing-benefits) was reread on 23 October, including the diaphragm phases and the distinction between air movement and gas exchange. Its third-party animation is excluded. No stopped clinical or licence source was reopened.\n\nFresh legal capture hashes:\n\n- §9: `e967cd7aa348f8d5efc5fc3f84028219afb4f3e276000bd07b11edd2f18ff7c9`\n- §19: `cace7192983aa605c5f524ceb5a1146b3fd23679c78b505fc97ccbf9fcbbd3ab`\n- §20: `3ac4e952da31966e51f2b033f151f80ec1156567120969c86d123fc12fa1963c`\n- §22: `cb3bb9fd0c236d7180dfc78fa909456b8232fa254f5b96ca9902b1d6a43b00fd`\n\nCapture location: `/tmp/atlas-author-continuation-20261023/`. Capture dates are not legal-effective dates. Original source registers and preparation packets remain historical and unchanged.\n\n## Verification\n\nThe source/schema/model suite passed 100 test groups. The native-browser suite passed 27 groups; three affected layout/activity groups passed again after making long numeric tables horizontally scrollable. A saved-state normalization inconsistency (`0.50` versus `0.5`) was repaired. Desktop and phone, light and dark, static reading, keyboard controls, notes, sharing, malformed windows and impossible irrigation requests were exercised. This is author verification, not human learning or screen-reader observation.\n\nEight pilots and six follow-ups are now authored and checked locally: diplomatic perspectives, archaeology premises, Frankenstein editions, Cabuliwallah narrative access, Cicero disclosure and the water ledger. Selected historical quotations retain their exact prepared text and hashes; the archaeology truth table matches all eight prepared cases, and water tests verify conservation, delivery limits, missing values, corrections and path differences.\n\nFor subsequent authoring, run `node scripts/check-local-continuation.mjs` for read-only schema, source-binding and model/source tests. After actually inspecting new source/content changes, run `node scripts/check-local-continuation.mjs --record --date YYYY-MM-DD` with the real check date to record author verification and rebuild the workshop/orientations. Then run the affected browser and integration tests. This command does not supply specialist qualifications, source freshness, real sessions or public release. Before freezing a changed already-retained lesson, increment its revision and preserve `previousRevisions`; immutable earlier editions must not be replaced.\n\nSupplemental source identities bind exact preparation-packet bytes and the original source URL/read record. Earlier source registers, quotes, access stops and review evidence remain untouched. New orientation verification covers the changed local lesson links and rendering; all 30 substantive orientation texts and their historical reviews remain retained.\n\nThe cumulative delivery rehearsal and preservation audit are recorded separately in `docs/verification/universal-author-delivery.md`. That later record does not alter this immutable source-check receipt.\n",
+      "sha256": "cb211f401ec6aaa192c27595d04057ddb4dd6a0430880fa88964da3daf5a1431"
+    }
+  },
+  "supplements": {}
+}

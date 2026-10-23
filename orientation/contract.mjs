@@ -66,7 +66,12 @@ export function validateOverviews(data, artifactDigest) {
     check(/^[a-f0-9]{64}$/.test(r?.contentDigest || '') && reviewPath(r?.evidencePath) && /^\d{4}-\d{2}-\d{2}$/.test(r?.reviewedOn || ''), 'Invalid orientation evidence binding');
   }
   if (errors.length) return errors;
-  if (review.status === 'reviewed-local') for (const id of domains) {
+  if (catalog.authorVerification !== undefined) {
+    const v = catalog.authorVerification;
+    check(v?.kind === 'author-check' && v.author === review.author && /^\d{4}-\d{2}-\d{2}$/.test(v.checkedOn || ''), 'Invalid orientation author verification');
+    check(v?.contentDigest === overviewDigest(data, [...domains]) && v?.artifactDigest === artifactDigest && /^[a-f0-9]{64}$/.test(artifactDigest || ''), 'Orientation author verification missing/stale');
+    check(/^docs\/verification\/[a-z0-9-]+\.md$/.test(v?.evidencePath || ''), 'Invalid orientation author evidence');
+  } else if (review.status === 'reviewed-local') for (const id of domains) {
     const current = dimension => review.receipts.filter(r => r.dimension === dimension && r.domainIds.includes(id)).at(-1);
     const source = current('source-content'), engineering = current('engineering');
     for (const r of [source, engineering]) check(r && r.contentDigest === overviewDigest(data, r.domainIds), id + ': source or engineering review missing/stale');

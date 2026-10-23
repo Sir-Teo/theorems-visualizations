@@ -19,12 +19,12 @@ function fixture(ids=p.data.catalog.overviews.map(r=>r.domainId)){
 }
 const resolve=(f,events=[f.event],data=p.data)=>resolveDomainReleases({schemaVersion:1,events},data,f.context);
 function withdrawal(f,ids=['D20']){const decision={schemaVersion:1,decision:'withdraw-domain-orientations',domains:ids.map(id=>({id,revision:'0.1.0'})),authorizedBy:'fixture only',authorizedOn:'2026-10-22',reason:'Synthetic withdrawal <reason>'},path='docs/releases/nav-test-withdraw.json',bytes=json(decision);f.files.set(path,bytes);return {type:'withdraw',evidence:{path,sha256:hash(bytes)}};}
-test('navigation joins all 30 reviewed orientations to85 distinct collections and4 reviewed local explorations without draft leakage',()=>{
-  const c=JSON.parse(p.rendered.outputs.get('domains/catalog.json'));assert.equal(c.liveCount,30);assert.equal(c.distinctCollections,85);assert.equal(c.distinctExplorations,4);assert.equal(p.rendered.outputs.size,33);
+test('navigation joins all 30 reviewed orientations to85 distinct collections and24 checked local explorations without draft leakage',()=>{
+  const c=JSON.parse(p.rendered.outputs.get('domains/catalog.json'));assert.equal(c.liveCount,30);assert.equal(c.distinctCollections,85);assert.equal(c.distinctExplorations,24);assert.equal(p.rendered.outputs.size,33);
   assert.equal(c.domains.reduce((n,r)=>n+r.primaryCount,0),85);assert.equal(c.domains.reduce((n,r)=>n+r.crossCount,0),8);
-  const text=[...p.rendered.outputs.values()].join('\n');assert.ok(!text.includes('x-craft-0001'));assert.ok(!text.includes('x-performance-0001'));assert.ok(!text.includes('Local pilots'));
+  const text=[...p.rendered.outputs.values()].join('\n');assert.ok(text.includes('x-craft-0001'));assert.ok(text.includes('x-performance-0001'));assert.ok(!text.includes('Local pilots'));
   for(const r of c.domains)for(const x of r.editions)assert.ok(p.catalog.explorations.some(e=>e.id===x.id&&e.state==='preview'));
-  assert.equal(c.domains.find(r=>r.id==='D10').primaryCount,0);assert.equal(c.domains.find(r=>r.id==='D10').editions.length,1);assert.equal(c.domains.find(r=>r.id==='D14').editions.length,0);
+  assert.equal(c.domains.find(r=>r.id==='D10').primaryCount,0);assert.equal(c.domains.find(r=>r.id==='D10').editions.length,3);assert.equal(c.domains.find(r=>r.id==='D14').editions.length,1);
 });
 test('adapter preserves every reviewed substantive field, exact source section and reading limits without mutating author data',()=>{
   const before=JSON.stringify(p.data);
@@ -41,7 +41,7 @@ test('filter search combines words, methods and route availability; resets and n
   const match=(r,f)=>matchesDomain({...r,collections:r.collections.length,editions:r.editions.length},f);
   assert.ok(rows.filter(r=>match(r,{query:'ＭＡＴＨＥＭＡＴＩＣＳ'})).some(r=>r.id==='D01'));
   assert.ok(rows.filter(r=>match(r,{query:'evidence',method:'source-comparison'})).every(r=>r.methods.includes('source-comparison')));
-  assert.equal(rows.filter(r=>match(r,{route:'editions'})).length,10);assert.ok(rows.filter(r=>match(r,{route:'reading'})).every(r=>!r.collections.length&&!r.editions.length));
+  assert.equal(rows.filter(r=>match(r,{route:'editions'})).length,new Set(p.catalog.explorations.flatMap(e=>e.domainIds)).size);assert.ok(rows.filter(r=>match(r,{route:'reading'})).every(r=>!r.collections.length&&!r.editions.length));
   assert.equal(rows.filter(r=>match(r,{query:'zzzznoresult'})).length,0);assert.equal(rows.filter(r=>match(r,{route:'unknown'})).length,0);
 });
 test('empty real ledgers deliver no domains, new assets or domain canonical metadata',async()=>{

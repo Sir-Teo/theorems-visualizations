@@ -1,0 +1,207 @@
+{
+  "schemaVersion": 1,
+  "id": "x-performance-0003",
+  "pilotId": "P08",
+  "revision": "0.1.0",
+  "status": "accepted",
+  "publication": "local-preview",
+  "title": "A repertoire entry is not a performance record",
+  "subtitle": "Follow the links between a dramatic work, a manual, an event and an interpretation.",
+  "summary": "Follow the links between a dramatic work, a manual, an event and an interpretation. Use an Ammannur institutional entry to identify which links are still missing.",
+  "audience": "General readers; all selected evidence and task instructions are included.",
+  "scope": "Dated English institutional listing only. No Sanskrit/Malayalam text, manual, actual event segment, translation or gesture instruction is supplied.",
+  "author": "atlas-editor",
+  "updatedOn": "2026-10-23",
+  "domainIds": [
+    "D27",
+    "D24",
+    "D22"
+  ],
+  "relatedCollectionIds": [],
+  "knowledgeModes": [
+    "interpretive"
+  ],
+  "methods": [
+    "source-comparison"
+  ],
+  "prerequisites": [],
+  "sources": [
+    {
+      "id": "followup-seq-ammannur-history",
+      "title": "Ammannur Chachu Chakyar Smaraka Gurukulam: institutional account",
+      "url": "https://www.ammannurgurukulam.com/",
+      "locator": "Homepage institutional paragraph and history main prose; old event labels observed. Training/maestros pages inspected only to establish their reading limits. Historical institutional self-account, not independently complete history/current roster. Training page lacks curriculum body; maestros page has incomplete biography dates. No performance or original-language manual inspected.",
+      "creator": "Ammannur Gurukulam website",
+      "date": "Undated history/homepage; homepage contains old festival announcements",
+      "language": "en",
+      "rights": {
+        "decision": "usable-for-prototype",
+        "basis": "Original attributed summaries and original fictional exercises; no third-party media, full documents or extended quotations copied. Site footer all rights reserved. Links/original commentary only; no images, manuals or recordings cleared.",
+        "scope": "Local commentary and source links only; no third-party assets or participant consent implied."
+      }
+    },
+    {
+      "id": "followup-seq-ammannur-plays",
+      "title": "Plays in the Ammannur School",
+      "url": "https://www.ammannurgurukulam.com/plays.htm",
+      "locator": "Main repertoire, acting-manual/direction and later-production entries; English labels only. Listing not an inspected script/manual or event record; duration not a universal rule. English spellings and Sanskrit/Malayalam terminology need specialist review. No gesture, performance or translation competence inferred.",
+      "creator": "Ammannur Gurukulam website",
+      "date": "Undated repertoire/production account with some dated entries",
+      "language": "en",
+      "rights": {
+        "decision": "usable-for-prototype",
+        "basis": "Original attributed summaries and original fictional exercises; no third-party media, full documents or extended quotations copied. Site all-rights-reserved footer; links/original commentary only. Event/text/media selection and permissions remain open.",
+        "scope": "Local commentary and source links only; no third-party assets or participant consent implied."
+      }
+    }
+  ],
+  "passages": [
+    {
+      "id": "institution",
+      "sourceId": "followup-seq-ammannur-history",
+      "title": "Institutional historical account",
+      "form": "paraphrase",
+      "language": "en",
+      "text": "The Ammannur Gurukulam site describes family teaching and a later training/performing institution; its homepage gives 27 October 1982 as the organisation’s start. Undated prose and older announcements do not verify a current roster or curriculum.",
+      "context": "Original bounded summary of the dated source reading; see source scope and limits.",
+      "sha256": "d14fb46b1985add5c9afcb10ef9be2a4e18f960cb173386e09bf88fedf630c01"
+    },
+    {
+      "id": "listing",
+      "sourceId": "followup-seq-ammannur-plays",
+      "title": "A named repertoire entry",
+      "form": "paraphrase",
+      "language": "en",
+      "text": "The plays page identifies Asokavanikamkam as the fifth act of Ashcharyachoodamani, attributed there to Mahakavi Sakthibhadra, with a sixteen-day description. This is the page’s English listing, not an observed event duration.",
+      "context": "Original bounded summary of the dated source reading; see source scope and limits.",
+      "sha256": "a424cdf6680c385fced0ef3948a29a6e0380deda13d91d934020107c653214c0"
+    },
+    {
+      "id": "manual",
+      "sourceId": "followup-seq-ammannur-plays",
+      "title": "Different kinds of record",
+      "form": "paraphrase",
+      "language": "en",
+      "text": "The page distinguishes some stage-manual and acting-manual entries. No corresponding manual passage was read for this lesson. A label for a manual is not its contents.",
+      "context": "Original bounded summary of the dated source reading; see source scope and limits.",
+      "sha256": "2cc2c5efc19edd627d18fde1a18d822d5323a51fdf1737e538b767ebec6e0661"
+    },
+    {
+      "id": "chain",
+      "sourceId": "followup-seq-ammannur-plays",
+      "title": "Original evidence chain",
+      "form": "original",
+      "language": "en",
+      "text": "Work/act label → particular manual and locator → dated event segment → situated viewer interpretation. Only the institutional listing is populated here. Manual contents, event place/time, recording permission, transcript and viewer account remain unknown.",
+      "context": "Original fictional scenario; associated source supplies a method/context only, not these facts.",
+      "sha256": "a35934340d1054f3f915a10b04cf9a46fda9d2c1eed562a522db9eca5668818d"
+    }
+  ],
+  "claims": [
+    {
+      "id": "scope-of-evidence",
+      "kind": "interpretive",
+      "text": "Separate a work label, a manual and an event.",
+      "passageIds": [
+        "institution"
+      ],
+      "qualification": "Dated English institutional listing only. No Sanskrit/Malayalam text, manual, actual event segment, translation or gesture instruction is supplied."
+    }
+  ],
+  "context": [
+    "No community endorsement, current practitioner participation or permitted event selection is claimed. The completed activity is source-scope analysis; performance study remains separate.",
+    "No photographs, manuals, recordings or ritual simulation are reproduced. Earlier training-page and external-access limits remain."
+  ],
+  "timeline": [],
+  "relations": [],
+  "reviews": [],
+  "reviewRequirements": [
+    "content",
+    "rights"
+  ],
+  "reviewLimitations": [
+    "Local author check only. No independent reviewer, professional credential, actual learner/access observation, community endorsement or physical outcome is claimed."
+  ],
+  "activity": {
+    "type": "source-comparison",
+    "prompts": [
+      {
+        "id": "listed",
+        "claim": "The institutional page supplies a named act and its stated relationship to a work.",
+        "answer": "direct",
+        "evidenceIds": [
+          "listing"
+        ],
+        "feedback": "Preserve attribution and the site’s English labels; no original-language verification is implied."
+      },
+      {
+        "id": "duration",
+        "claim": "The listing proves every performance lasts sixteen days.",
+        "answer": "unsupported",
+        "evidenceIds": [
+          "none"
+        ],
+        "feedback": "A repertoire description is not a universal event record."
+      },
+      {
+        "id": "manual-content",
+        "claim": "The manual label supplies the gesture instructions for an actual segment.",
+        "answer": "unsupported",
+        "evidenceIds": [
+          "none"
+        ],
+        "feedback": "No manual passage or event segment has been inspected."
+      },
+      {
+        "id": "staff",
+        "claim": "An older institutional account proves the current teaching roster.",
+        "answer": "unsupported",
+        "evidenceIds": [
+          "none"
+        ],
+        "feedback": "Current status requires current evidence; a new retrieval date would not repair old prose."
+      },
+      {
+        "id": "chain-method",
+        "claim": "An event claim requires evidence beyond the repertoire label.",
+        "answer": "inference",
+        "evidenceIds": [
+          "listing",
+          "chain"
+        ],
+        "feedback": "Identify the missing link instead of extending the label into an observed action."
+      }
+    ],
+    "transfer": "For a question about one enacted passage, list the needed work/act locator, manual or other basis, event date/place, language context, permissions and observer position. Explain which fields the selected site actually supplies.",
+    "rubric": [
+      "Separate a work label, a manual and an event.",
+      "Retain institutional attribution and language limits.",
+      "Do not universalize the listed duration.",
+      "State exactly which evidence link is missing."
+    ]
+  },
+  "extensions": {
+    "atlas:preparation": {
+      "path": "docs/pilots/sequences/preparation/remaining-sequences-20261023.json",
+      "scope": "Exact historical source receipts retained; current exercise is independently identified original authoring."
+    }
+  },
+  "authorVerification": {
+    "kind": "author-check",
+    "scope": "local-preview",
+    "author": "atlas-editor",
+    "checkedOn": "2026-10-23",
+    "revision": "0.1.0",
+    "contentDigest": "7bffaea1b14bfaf15d4d05eb2ea8d33b349ed9577bf1c310e7d8a534f8a6aaa9",
+    "artifactDigest": "bd020e443a7dc8f11b1f11910da94a5528f17c06678ee1df27b331811e36aeba",
+    "evidencePath": "docs/verification/universal-author-sequences.md",
+    "checks": [
+      "Schema, source-reference and preparation-packet hash validation",
+      "Passed tests/exploration-methods.test.mjs",
+      "Passed tests/exploration-studio.test.mjs",
+      "Passed tests/exploration-professions.test.mjs",
+      "Passed tests/exploration-followups.test.mjs",
+      "Passed tests/exploration-sequences.test.mjs"
+    ]
+  }
+}

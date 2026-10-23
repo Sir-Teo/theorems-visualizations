@@ -14,6 +14,7 @@ function mutate(name, edit, pattern) {
 }
 function reviewedFixture() {
   const d = structuredClone(data), ids = d.catalog.overviews.map(r => r.domainId);
+  delete d.catalog.authorVerification;
   d.catalog.review.status = 'reviewed-local';
   d.catalog.review.receipts = ['source-content','engineering'].map(dimension => ({
     dimension, domainIds: ids, result: 'passed', reviewer: { id: 'fixture-' + dimension, kind: 'ai', independent: true },
