@@ -222,29 +222,129 @@ export default {
     },
     // ───────────────────────────────────────────────────────────── 6
     {
-      n: 6,
-      title: 'Continuous sources and the Gaussian channel',
-      summary: String.raw`For continuous variables, differential entropy plays the role of entropy — it can be negative, but differences and mutual information keep their meaning. The Gaussian has the largest entropy for a given variance, which makes Gaussian noise the hardest and gives the additive white Gaussian noise channel its capacity ½ log(1 + SNR). With the sampling theorem this becomes the Shannon–Hartley law for band-limited channels, sets the ultimate limit on energy per bit, and tells how to share power across parallel channels.`,
-      items: [
-        { num: '6.1', kind: 'Definition', name: 'Differential entropy', deps: ['info-1.2', 'pma-6.1'], refs: ['Cover–Thomas §8.1'],
-          pic: 'Draw a density; h(X) is computed by numerical integration, goes negative for narrow densities and shifts by log a when the density is stretched by a.' },
-        { num: '6.2', kind: 'Theorem', name: 'Differential entropy as a limit of quantized entropy', deps: ['info-6.1'], refs: ['Cover–Thomas §8.3'],
-          pic: 'Quantize a density with bin width Δ; H(X_Δ) + log Δ converges to h(X) as the reader shrinks Δ.' },
-        { num: '6.3', kind: 'Theorem', name: 'The Gaussian maximizes entropy for a given variance', deps: ['info-6.1', 'info-2.2', 'pma-8.21'], refs: ['Cover–Thomas §8.6'],
-          pic: 'Densities with the same variance — uniform, Laplace, mixtures the reader sketches — are compared; the Gaussian’s entropy ½ log(2πeσ²) beats them all.' },
-        { num: '6.4', kind: 'Theorem', name: 'Maximum-entropy distributions', deps: ['info-6.3'], refs: ['Cover–Thomas §12.1'],
-          pic: 'Toggle constraints — bounded support, fixed mean, fixed variance — and the maximum-entropy density is computed as an exponential family: uniform, exponential, Gaussian.' },
-        { num: '6.5', kind: 'Theorem', name: 'Entropy power inequality', deps: ['info-6.3'], refs: ['Cover–Thomas §17.8'],
-          pic: 'Convolve two densities the reader draws; the entropy power of the sum is compared with the sum of entropy powers, with equality only for Gaussians.' },
-        { num: '6.7', kind: 'Theorem', name: 'Capacity of the Gaussian channel', deps: ['info-6.3', 'info-5.11'], refs: ['Cover–Thomas §9.1', 'MacKay ch. 11'],
-          pic: 'Codewords of power P sit near a sphere and noise blurs each into a ball; counting non-overlapping noise balls inside the received sphere gives ½ log(1 + P/N) as the reader varies SNR.' },
-        { num: '6.8', kind: 'Theorem', name: 'Shannon–Hartley theorem', deps: ['info-6.7', 'rca-9.13'], refs: ['Cover–Thomas §9.3'],
-          pic: 'Capacity W log(1 + P/(N₀W)) is plotted against bandwidth W and saturates at P/(N₀ ln 2) in the wideband limit.' },
-        { num: '6.9', kind: 'Concept', name: 'The Shannon limit on energy per bit', deps: ['info-6.8'], refs: ['Cover–Thomas §9.3'],
-          pic: 'Spectral efficiency is plotted against Eb/N₀ with the capacity boundary at −1.59 dB; modulation schemes the reader toggles all land to its right.' },
-        { num: '6.10', kind: 'Algorithm', name: 'Water-filling for parallel Gaussian channels', deps: ['info-6.7'], refs: ['Cover–Thomas §9.4'],
-          pic: 'Pour a power budget into vessels whose floors are the noise levels; the water level settles so total power matches, and the noisiest channels stay dry.' },
-      ],
+      "n": 6,
+      "title": "Continuous sources and the Gaussian channel",
+      "summary": "A continuous density has entropy relative to a coordinate scale. Quantization reveals that scale, while relative entropy identifies the distributions that maximize uncertainty under a constraint. Convolution and Gaussian coding connect these ideas to noise, bandwidth, energy per bit and power allocation.",
+      "items": [
+        {
+          "num": "6.1",
+          "kind": "Definition",
+          "name": "Differential entropy",
+          "deps": [
+            "info-1.2",
+            "pma-6.1"
+          ],
+          "refs": [
+            "Polyanskiy–Wu, MIT6.441 (2016), chapter1 §1.3, PDF11; Gallager, Principles of Digital Communication (28August2007), §§3.6–3.7, printed71–74"
+          ],
+          "pic": "Edit nonnegative cell weights, stretch the support and move it. The density is normalized, and exact cell integrals show when entropy is negative and why a change of scale adds a logarithm."
+        },
+        {
+          "num": "6.2",
+          "kind": "Theorem",
+          "name": "Differential entropy as a limit of quantized entropy",
+          "deps": [
+            "info-6.1",
+            "info-2.2"
+          ],
+          "refs": [
+            "Gallager (2007), §§3.6–3.7, printed71–75, cell-average identity and high-rate discussion; explicit compact-density convergence proof supplied here"
+          ],
+          "pic": "Shrink the quantizer step and shift its grid over an editable density. Every cell probability comes from its actual overlap with the histogram; compare corrected discrete entropy with the exact differential entropy."
+        },
+        {
+          "num": "6.3",
+          "kind": "Theorem",
+          "name": "The Gaussian maximizes entropy for a given variance",
+          "deps": [
+            "info-6.1",
+            "info-2.2",
+            "pma-8.21"
+          ],
+          "refs": [
+            "Polyanskiy–Wu, MIT6.441 (2016), chapter1 §1.3, PDF11; Médard, MIT6.441 (2010), Lecture16, exponential-family entropy bound and Gaussian example"
+          ],
+          "pic": "Compare uniform, Laplace, Gaussian and editable histogram densities after matching their mean and variance. The entropy difference is also their exact divergence from the matched Gaussian."
+        },
+        {
+          "num": "6.4",
+          "kind": "Theorem",
+          "name": "Maximum-entropy distributions",
+          "deps": [
+            "info-6.3"
+          ],
+          "refs": [
+            "Médard, MIT6.441 (2010), Lecture16, normalized exponential-family KL proof; local support and nonexistence cases"
+          ],
+          "pic": "Select the support or moment constraint and edit a test histogram. It is rescaled to satisfy that constraint before comparison. Remove the support restriction from a mean-only problem to see why no maximizer remains."
+        },
+        {
+          "num": "6.5",
+          "kind": "Theorem",
+          "name": "Entropy power inequality",
+          "deps": [
+            "info-6.1",
+            "info-6.3",
+            "info-2.5"
+          ],
+          "refs": [
+            "Rioul, Yet Another Proof of the Entropy Power Inequality, arXiv1606.05969v3 (21February2017), main proof, equality discussion and AppendicesA–D; scalar transport proof and stated extension boundary"
+          ],
+          "pic": "Edit two independent histogram densities and convolve them. Compare the entropy power of the sum with the sum of their entropy powers. Switch to full Gaussian formulas to inspect the equality case."
+        },
+        {
+          "num": "6.7",
+          "kind": "Theorem",
+          "name": "Capacity of the Gaussian channel",
+          "deps": [
+            "info-6.3",
+            "info-5.9",
+            "info-5.10",
+            "info-5.11"
+          ],
+          "refs": [
+            "Polyanskiy–Wu, MIT6.441 (2016), chapter17, PDF1–7, input constraints, Gaussian capacity and constrained random coding; threshold/expurgation details supplied explicitly. MacKay original book request stopped at403; its body is not claimed read."
+          ],
+          "pic": "Edit an actual two-use codebook, vary signal power and noise, and inspect seeded Gaussian noise trials with nearest-neighbor decoding. Compare its finite rate and observed errors with the asymptotic capacity."
+        },
+        {
+          "num": "6.8",
+          "kind": "Theorem",
+          "name": "Shannon–Hartley theorem",
+          "deps": [
+            "info-6.7",
+            "rca-9.13"
+          ],
+          "refs": [
+            "Polyanskiy–Wu, MIT6.441 (2016), chapter19, PDF1–7, PSD, coefficient-channel equivalence and Hartley theorem with its time/bandwidth qualification; Gallager (2007), §4.6 printed111–115 and §5A.2 printed160, sampling and transmission proofs"
+          ],
+          "pic": "Vary bandwidth, power and noise density to see the capacity curve approach its wideband ceiling. Edit a separate finite sinc expansion to inspect the actual orthonormal coordinates and their full-time energy."
+        },
+        {
+          "num": "6.9",
+          "kind": "Concept",
+          "name": "The Shannon limit on energy per bit",
+          "deps": [
+            "info-6.8"
+          ],
+          "refs": [
+            "Polyanskiy–Wu, MIT6.441 (2016), chapter19 §19.1, PDF1–3, energy per bit and infinite-bandwidth limit; finite-efficiency and capacity-fraction algebra supplied here"
+          ],
+          "pic": "Move the spectral efficiency and choose a fraction of channel capacity. Compare the required energy with the capacity boundary, including the limit at zero. The curves use stable exponential formulas at small efficiencies."
+        },
+        {
+          "num": "6.10",
+          "kind": "Algorithm",
+          "name": "Water-filling for parallel Gaussian channels",
+          "deps": [
+            "info-6.7"
+          ],
+          "refs": [
+            "Polyanskiy–Wu, MIT6.441 (2016), chapter17 §17.3, PDF6–7, parallel Gaussian channels and water filling; explicit concavity proof, tie handling and sorting algorithm"
+          ],
+          "pic": "Edit noise floors and comparison weights, then step through the actual sorting-and-filling calculation. Compare its information rate with another allocation using exactly the same total power."
+        }
+      ]
     },
     // ───────────────────────────────────────────────────────────── 7
     {
