@@ -4,6 +4,8 @@ Updated 2026-10-23. The active goal is **“do all”**. It covers the complete 
 
 ## Current checkpoint
 
+The [complete candidate checkpoint](integration/master-plan-candidate.md) now assembles all seventeen committed feature/research packages through `e61efc42`: 602 additions, two code replacements and one manual plan reconciliation. Its [verification](verification/universal-master-plan-candidate.md) passes 181 composed offline tests plus six checker regression groups, both reader build modes and final HTML file-target checks. This unified inventory is the current assembly entry point; the historical package checkpoints below retain their original scope. It adds no accepted lesson, review decision or production release.
+
 Four local explorations have exact-content and exact-artifact AI review receipts: P01 history and P02 literature at 0.1.2; P03 philosophy and P05 agriculture at 0.1.0. These are reviewed local previews, not published production content or professional/human acceptance. Their canonical JSON and generated pages are in the explicit integration manifest. P07/P08 now add two unaccepted digital prototypes; they occupy both draft slots. The two-unaccepted-draft limit remains.
 
 P03 resolves the Legge/Eno English locator crosswalk, retains textual/theological context and exposes editorial premises through an ordered argument list. P05 preserves every selected source row, duplicate magnitudes, qualified units and instrument labels; measured observations and the synthetic storage model are separate. See [method verification](verification/universal-pilots-methods.md).

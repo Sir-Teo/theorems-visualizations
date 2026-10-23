@@ -6,6 +6,8 @@
 > The accepted base’s plan is separately preserved verbatim in [the integration baseline archive](docs/integration/universal-pilots-baseline-plan.md). This branch adds the pilot package to accepted source `facab15e297c645d4826935f2c011a4cf367ee88`; ongoing expansion and redesign stay in their owning worktrees.
 > **Future universal-atlas work starts with [the continuation handoff](docs/master-plan-handoff.md).** It distinguishes implemented prototypes, production integration and remaining review gates.
 
+> **Integration checkpoint · 2026-10-23:** [The complete candidate](docs/integration/master-plan-candidate.md) pins all seventeen feature/research packages through `e61efc42`, with passing combined builds and 181 offline tests. This is local integration evidence; the full U0–U5 roadmap and recorded acceptance/release gaps remain open.
+
 ## 0. The mission
 
 Build a living, explorable atlas of human knowledge: **what people know, how they know it, how they use it, how ideas connect, and where uncertainty and disagreement remain—across disciplines, cultures, places, and time.**
