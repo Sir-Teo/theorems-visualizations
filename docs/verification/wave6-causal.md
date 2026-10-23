@@ -2,7 +2,7 @@
 
 ## Status
 
-Twelve frozen identities are authored and author-verified in two chapter parts, with shared pure models and twelve interactive scenes. This brings the expansion checkpoint to 318 ideas: 36 accepted and 282 author-verified awaiting separate acceptance. The accepted export remains 36/1,057. No frozen identities, kinds or original verification flags change. A combined CAUSAL/ALGO full integration run is pending; the earlier DEEP full suite predates this chapter.
+Twelve frozen identities are authored and author-verified in two chapter parts, with shared pure models and twelve interactive scenes. This brings the expansion checkpoint to 318 ideas: 36 accepted and 282 author-verified awaiting separate acceptance. The accepted export remains 36/1,057. No frozen identities, kinds or original verification flags change. The later combined CAUSAL/ALGO integration run passes all 3,740 tests in 315.780 seconds, with no failures, skips or cancellations; the earlier DEEP suite predates this chapter.
 
 ## Source reading and boundaries
 
@@ -55,4 +55,4 @@ The first full native sweep passed 17 layouts before detecting a genuinely clipp
 - Pixel review also covers all 24 mobile defaults, all 24 narrow statement/proof pairs, the corrected inequality statement, and 22 boundary captures. These include empty populations, equal complier/defier masses, no compliers, perfect and incompatible tables, and RD rank failure. Explicit status centering and graph-node centering were rechecked after repair.
 - Historical filenames `6.1/6.12-zero-relevance` actually test zero direct instrument/genetic coefficients, with other toggles potentially retaining confounding-induced observed association. The readouts correctly retain that association. The fixture label was clarified to `zero-coefficient`; only this label changed after the completed interaction sweep.
 - All 17 production routes pass, including home, statistics field, collection, chapter, all 12 ideas and the next chapter. Log: `/tmp/wave6-causal-smoke-final.log`.
-- All seven source/test files match `/tmp/wave6-causal-author-freeze.sha256`. Chapter-owned browsers and servers are closed. Combined CAUSAL/ALGO full-suite integration and separate acceptance remain outstanding; the accepted inventory is not refreshed.
+- All seven source/test files match `/tmp/wave6-causal-author-freeze.sha256`. Chapter-owned browsers and servers are closed. The later combined CAUSAL/ALGO full suite passes 3,740/3,740 tests in 315.780 seconds (`/tmp/wave6-causal-algo-integration-final.log`); both chapters’ manifests were rechecked unchanged before and after it. Separate acceptance remains outstanding; the accepted inventory is not refreshed.

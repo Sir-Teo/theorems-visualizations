@@ -870,35 +870,176 @@ export default {
     },
     {
       n: 13,
-      title: 'String algorithms',
-      summary: String.raw`Finding a pattern in a text can be done in linear time by refusing to re-read characters. Rabin–Karp compares rolling fingerprints and checks only on a hash match; finite automata and Knuth–Morris–Pratt use the pattern’s self-overlaps to slide forward without backtracking in the text. Suffix arrays index every substring of a text at once, are built by repeated rank doubling, and become far more useful once the longest common prefixes of neighbouring suffixes are known. Boyer–Moore skips ahead by reading the pattern backwards, and Aho–Corasick matches a whole dictionary at once.`,
+      title: "String algorithms",
+      summary: "A matcher can reuse a pattern’s self-overlaps, verify rolling fingerprints or follow an automaton. Tries and suffix arrays expose shared structure in dictionaries and texts. Actual comparison traces accompany the proofs, including overlapping matches, empty strings and the costs hidden by preprocessing.",
       items: [
-        { num: '13.1', kind: 'Definition', name: 'String matching and the naive matcher', deps: ['algo-1.1'], refs: ['CLRS 4e §32.1'], tags: ['strings'],
-          pic: 'Type a text and a pattern; the pattern slides along the text with character comparisons marked green or red at each shift, and the total is compared with (n − m + 1)m.' },
-        { num: '13.2', kind: 'Algorithm', name: 'Rabin–Karp with a rolling hash', deps: ['algo-13.1'], refs: ['CLRS 4e §32.2'], tags: ['strings', 'hashing'],
-          pic: 'A window slides over the text while its fingerprint updates in constant time by dropping the leading digit and adding the next; hits are verified, and a small-modulus slider makes spurious hits visible.' },
-        { num: '13.3', kind: 'Theorem', name: 'Random fingerprints rarely collide', deps: ['algo-13.2', 'algo-12.1'], refs: ['CLRS 4e §32.2'], tags: ['strings', 'randomized'],
-          pic: 'Pick two different strings of length m and sweep every base modulo a small prime p; the bases where their polynomial fingerprints agree are marked, never more than m − 1 of the p choices.' },
-        { num: '13.4', kind: 'Algorithm', name: 'String matching with finite automata', deps: ['algo-13.1'], refs: ['CLRS 4e §32.3'], tags: ['strings', 'automata'],
-          pic: 'Type a pattern and its matching automaton is drawn with one state per matched prefix; feeding the text moves a token through the states, reaching the accepting state at every occurrence.' },
-        { num: '13.5', kind: 'Definition', name: 'The prefix (failure) function', deps: ['algo-13.1'], refs: ['CLRS 4e §32.4'], tags: ['strings'],
-          pic: 'For a typed pattern each position shows π[q], the longest proper prefix that is also a suffix of the first q characters, drawn as a pair of matching brackets.' },
-        { num: '13.6', kind: 'Algorithm', name: 'Knuth–Morris–Pratt', deps: ['algo-13.5', 'algo-13.4', 'algo-6.4'], refs: ['CLRS 4e §32.4', 'Erickson notes: String Matching'], tags: ['strings'],
-          pic: 'Run KMP on a typed text and pattern: on a mismatch the pattern jumps by the failure function, and a potential meter (the current match length) shows total work never exceeding 2n.' },
-        { num: '13.7', kind: 'Algorithm', name: 'Computing the prefix function in linear time', deps: ['algo-13.6'], refs: ['CLRS 4e §32.4'], tags: ['strings'],
-          pic: 'The pattern is matched against itself: the π table fills left to right, fallback jumps are drawn as arcs, and an amortization counter keeps the total number of steps below 2m.' },
-        { num: '13.8', kind: 'Definition', name: 'Tries and suffix tries', deps: ['algo-13.1'], refs: ['CLRS 4e Prob. 12-2'], tags: ['strings', 'trees'],
-          pic: 'Insert words into a trie letter by letter as shared prefixes merge into common branches, then switch to the suffix trie of a typed word where every substring is a path from the root.' },
-        { num: '13.9', kind: 'Definition', name: 'Suffix arrays', deps: ['algo-13.8', 'algo-1.5'], refs: ['CLRS 4e §32.5'], tags: ['strings'],
-          pic: 'All suffixes of a typed string are listed and sorted, the array of their starting positions appears alongside, and a pattern query binary-searches the sorted list with its matching range highlighted.' },
-        { num: '13.10', kind: 'Algorithm', name: 'Suffix array construction by prefix doubling', deps: ['algo-13.9', 'algo-3.14'], refs: ['CLRS 4e §32.5'], tags: ['strings'],
-          pic: 'Pairs of ranks for the first 2ᵏ and next 2ᵏ characters are radix-sorted round by round, and the number of distinct ranks rises until every suffix is separated after about log₂ n rounds.' },
-        { num: '13.11', kind: 'Algorithm', name: 'LCP array in linear time (Kasai)', deps: ['algo-13.9'], refs: ['CLRS 4e §32.5'], tags: ['strings'],
-          pic: 'Suffixes are visited in text order and each one’s common prefix with its sorted predecessor is measured; a counter that drops by at most one per step proves O(n) work, and the maximum entry reveals the longest repeated substring.' },
-        { num: '13.12', kind: 'Algorithm', name: 'Boyer–Moore–Horspool: skipping with the bad-character rule', deps: ['algo-13.1'], refs: ['CLRS 4e Ch. 32'], tags: ['strings'],
-          pic: 'The pattern is compared right to left; on a mismatch it jumps ahead by the distance stored for the text character under its last position, and a counter shows far fewer than n comparisons on natural-language text.' },
-        { num: '13.13', kind: 'Algorithm', name: 'Aho–Corasick dictionary matching', deps: ['algo-13.8', 'algo-13.7'], refs: ['Erickson notes: String Matching'], tags: ['strings', 'automata'],
-          pic: 'A trie of several patterns gains failure links computed breadth-first, generalizing the prefix function; one pass of the text moves a token through the automaton and reports every occurrence of every pattern.' },
+        {
+          "num": "13.1",
+          "kind": "Definition",
+          "name": "String matching and the naive matcher",
+          "deps": [
+            "algo-1.1"
+          ],
+          "refs": [
+            "Kärkkäinen, String Processing Algorithms (2014), PDF pp68–69, Algorithm 2.2; empty-string and Unicode conventions supplied here"
+          ],
+          "pic": "Edit a text and pattern, then step through actual comparisons. Matching positions remain visible, including overlaps. Compare the operation count with the worst-case bound; try an empty pattern or a longer pattern."
+        },
+        {
+          "num": "13.2",
+          "kind": "Algorithm",
+          "name": "Rabin–Karp with a rolling hash",
+          "deps": [
+            "algo-13.1"
+          ],
+          "refs": [
+            "Kärkkäinen (2014), PDF pp62–65, polynomial fingerprints and rolling update; verified matching and exact work accounting derived here"
+          ],
+          "pic": "Change the actual strings, prime and base. Step through hash tests, character verification and the drop–multiply–append update. The second panel shows all window hashes, including false hits that are rejected by exact comparison."
+        },
+        {
+          "num": "13.3",
+          "kind": "Theorem",
+          "name": "Random fingerprints rarely collide",
+          "deps": [
+            "algo-13.2",
+            "nt-2.12",
+            "algo-12.1"
+          ],
+          "refs": [
+            "Kärkkäinen (2014), PDF pp64–65, Lemma 1.44; injective encoding and fixed-input probability space made explicit"
+          ],
+          "pic": "Edit two equal-length strings and enumerate all field bases. Red cells are actual roots of the difference polynomial. Compare their exact fraction with the degree bound; equal strings, unequal lengths and an oversized alphabet visibly leave the theorem’s domain."
+        },
+        {
+          "num": "13.4",
+          "kind": "Algorithm",
+          "name": "String matching with finite automata",
+          "deps": [
+            "algo-13.1",
+            "algo-13.5"
+          ],
+          "refs": [
+            "Kärkkäinen (2014), PDF pp70–75, matched-prefix/border invariant; dense transition recurrence and cost derived here"
+          ],
+          "pic": "Edit text and pattern and inspect the current automaton state. Every text character performs one actual table transition. The outgoing transition row updates with the selected step, including after an overlapping match."
+        },
+        {
+          "num": "13.5",
+          "kind": "Definition",
+          "name": "The prefix (failure) function",
+          "deps": [
+            "algo-13.1"
+          ],
+          "refs": [
+            "Kärkkäinen (2014), PDF pp70–75, border definition and Lemma 2.6; zero-based π convention supplied here"
+          ],
+          "pic": "Choose a prefix length and inspect the actual equal strings at its two ends. Their positions are highlighted in the whole pattern, alongside every π value and the chain of shorter borders. Prefix-function preprocessing has its own scene in 13.7."
+        },
+        {
+          "num": "13.6",
+          "kind": "Algorithm",
+          "name": "Knuth–Morris–Pratt",
+          "deps": [
+            "algo-13.5",
+            "algo-13.7",
+            "algo-6.4"
+          ],
+          "refs": [
+            "Kärkkäinen (2014), PDF pp70–75, Algorithms 2.4 and 2.7; prefix-function variant and comparison accounting explicitly distinguished"
+          ],
+          "pic": "Watch mismatches follow actual border links while the current text position stays fixed. Comparison counts are checked against 2n, preprocessing is separate, and reporting keeps the border needed for overlapping occurrences."
+        },
+        {
+          "num": "13.7",
+          "kind": "Algorithm",
+          "name": "Computing the prefix function in linear time",
+          "deps": [
+            "algo-13.5",
+            "algo-6.4"
+          ],
+          "refs": [
+            "Kärkkäinen (2014), PDF pp73–75, longest-border preprocessing and amortized analysis; literal comparison bound supplied here"
+          ],
+          "pic": "Step through actual candidate, comparison, fallback and assignment events on an editable pattern. The π array fills from left to right, while the live comparison count is compared with the linear bound."
+        },
+        {
+          "num": "13.8",
+          "kind": "Definition",
+          "name": "Tries and suffix tries",
+          "deps": [
+            "algo-13.1"
+          ],
+          "refs": [
+            "Kärkkäinen (2014), PDF pp15–19 (tries), pp151–162 (suffix tries versus compact suffix trees)"
+          ],
+          "pic": "Edit a JSON dictionary or a short suffix-trie text, then follow the actual insertion trace. A local node view shows its parent and built children; double rings mark terminals. Querying navigates the same tree and distinguishes a prefix, a stored word and a missing edge."
+        },
+        {
+          "num": "13.9",
+          "kind": "Definition",
+          "name": "Suffix arrays",
+          "deps": [
+            "algo-13.1",
+            "algo-1.5"
+          ],
+          "refs": [
+            "Kärkkäinen (2014), PDF pp54–61 (binary search), pp177–179 (suffix array and query interval); empty-suffix convention explicit"
+          ],
+          "pic": "Inspect all sorted suffixes, then step through the two binary searches for an editable query. Gold marks the current probe; the highlighted interval contracts to the exact matching suffix ranks, including empty-text and empty-query cases."
+        },
+        {
+          "num": "13.10",
+          "kind": "Algorithm",
+          "name": "Suffix array construction by prefix doubling",
+          "deps": [
+            "algo-13.9",
+            "algo-3.14"
+          ],
+          "refs": [
+            "Kärkkäinen (2014), PDF pp190–194, prefix doubling and Theorem 4.14; exact radix passes and snapshot-space qualification supplied here"
+          ],
+          "pic": "Follow actual stable counting sorts and rank renaming. The table exposes each suffix’s integer pair, sorted order and new class; the counter records the two real counting passes per round."
+        },
+        {
+          "num": "13.11",
+          "kind": "Algorithm",
+          "name": "LCP array in linear time (Kasai)",
+          "deps": [
+            "algo-13.9",
+            "algo-6.4"
+          ],
+          "refs": [
+            "Kärkkäinen (2014), PDF pp180–183, LCP definition and Algorithm 4.10; original Kasai et al. paper body inaccessible, no original-body reading claim"
+          ],
+          "pic": "Scan text positions in order while the suffix table stays sorted. The paired strings show reused equal characters and the next actual comparison; the LCP array and operation count update at each assignment."
+        },
+        {
+          "num": "13.12",
+          "kind": "Algorithm",
+          "name": "Boyer–Moore–Horspool: skipping with the bad-character rule",
+          "deps": [
+            "algo-13.1"
+          ],
+          "refs": [
+            "Kärkkäinen (2014), PDF pp82–85, Horspool table and Algorithm 2.13; exact adversarial count supplied here"
+          ],
+          "pic": "Compare from right to left and inspect the actual last-window-character shift. Edit the strings or select the adversarial no-match example to see why skipping does not guarantee linear worst-case time."
+        },
+        {
+          "num": "13.13",
+          "kind": "Algorithm",
+          "name": "Aho–Corasick dictionary matching",
+          "deps": [
+            "algo-13.8",
+            "algo-13.4",
+            "algo-13.5"
+          ],
+          "refs": [
+            "Kärkkäinen (2014), PDF pp102–108, Algorithms 2.29–2.32; reporting cost and unexpanded terminal-output links explicit; original 1975 body inaccessible"
+          ],
+          "pic": "Edit a text and dictionary, follow actual automaton states, and inspect failure and terminal-output destinations. The second panel records real half-open occurrence intervals by dictionary ID, including nested matches, duplicates and empty words."
+        }
       ],
     },
     {
