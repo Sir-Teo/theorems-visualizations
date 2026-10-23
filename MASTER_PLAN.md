@@ -234,6 +234,8 @@ The subsequent [library/local-context research packet](docs/coverage/research/li
 
 The [literature follow-up selection dossier](docs/pilots/sequences/preparation/literature-selections-20261022.md) now freezes 16 paragraphs across three inspected digital witnesses. It supplies exact 1818/1831 Frankenstein selections and explicitly selects the attributed, revised 1918 school-reader witness for P02-L03. Independent AI source/editorial review verifies the captured texts and limited interpretation; original ebook 2518 provenance remains unresolved. This is source preparation, with no new authored/accepted lesson or draft-slot change.
 
+The [history follow-up primary-source dossier](docs/pilots/sequences/preparation/history-primary-20261022.md) now supplies eight selected spans from three contemporary diplomatic records: a translated Mexican peace initiative, a US ambassador’s report and a US response. Five pinned source/metadata receipts and five reading activities advance P01-L02’s contemporary-policy source gap while leaving original-language and actual alliance-response claims open. Its [additive package](docs/integration/history-primary.md) preserves prior briefs, source/queue bindings and accepted pilots; it creates no authored or accepted lesson.
+
 ### 9.1 Eight pilot briefs for U1
 
 | Pilot | Bounded first exploration | Capability tested |

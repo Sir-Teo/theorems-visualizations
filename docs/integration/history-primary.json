@@ -1,0 +1,19 @@
+{
+  "schemaVersion": 1,
+  "mode": "history-primary-source-preparation-delta",
+  "predecessorCommit": "a690860cf3315ce267fe9854937abcb358997fe5",
+  "replacements": [],
+  "additions": [
+    "docs/pilots/sequences/preparation/history-primary-20261022.json",
+    "docs/pilots/sequences/preparation/history-primary-20261022.md",
+    "docs/pilots/sequences/preparation/review-history-primary-20261022.md",
+    "docs/integration/history-primary.json",
+    "docs/integration/history-primary.md",
+    "docs/verification/universal-history-primary.md"
+  ],
+  "manualReconciliation": [
+    "MASTER_PLAN.md",
+    "docs/master-plan-execution.md",
+    "docs/master-plan-handoff.md"
+  ]
+}
