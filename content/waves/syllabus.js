@@ -403,47 +403,256 @@ export default {
     },
     // ───────────────────────────────────────────────────────────── 6
     {
-      n: 6,
-      title: 'Interference and coherence',
-      summary: String.raw`Coherent waves add amplitudes, not intensities, and the cross term makes fringes: Young’s slits, thin films and Newton’s rings, and interferometers that split and recombine beams to measure lengths, spectra and refractive indices. Multiple-beam interference sharpens fringes into the narrow resonances of Fabry–Pérot cavities and dielectric mirrors. Real light is only partly coherent, and the visibility of fringes measures how far its phase memory reaches in time and space — enough to measure the diameters of stars.`,
-      items: [
-        { num: '6.1', kind: 'Theorem', name: 'Interference of two coherent waves', deps: ['waves-1.6', 'waves-4.2'], refs: ['Hecht ch. 9'],
-          pic: 'Two waves with an adjustable phase difference: the intensity of the sum swings from four times one beam to zero, and averaging over a random phase leaves just the sum of intensities.' },
-        { num: '6.2', kind: 'Phenomenon', name: 'Young’s double-slit experiment', deps: ['waves-6.1', 'waves-4.4'], refs: ['Hecht ch. 9'],
-          pic: 'Adjust slit separation, wavelength and screen distance: the fringe spacing follows λL/d, and covering one slit wipes the fringes out leaving a single smooth band.' },
-        { num: '6.3', kind: 'Definition', name: 'Fringe visibility', deps: ['waves-6.2'], refs: ['Hecht ch. 12'],
-          pic: 'Unbalance the two beams’ intensities or add a random phase jitter: the fringe visibility readout (I_max − I_min)/(I_max + I_min) falls from 1 toward 0.' },
-        { num: '6.4', kind: 'Phenomenon', name: 'Lloyd’s mirror', deps: ['waves-6.2', 'waves-4.14'], refs: ['Hecht ch. 9'],
-          pic: 'A source and its mirror image interfere on a screen: the fringe at the mirror’s edge is dark, not bright, revealing the half-wave phase flip on reflection.' },
-        { num: '6.5', kind: 'Phenomenon', name: 'Thin-film interference', deps: ['waves-6.1', 'waves-4.14'], refs: ['Hecht ch. 9'],
-          pic: 'A soap film thins as it drains: reflected colours are computed from the film thickness and spectrum, cycling through bands until the film turns black just before it pops.' },
-        { num: '6.6', kind: 'Method', name: 'Antireflection coatings', deps: ['waves-6.5', 'waves-1.10'], refs: ['Hecht ch. 9'],
-          pic: 'Coat glass with a quarter-wave layer of adjustable index and thickness: reflectance at the design wavelength drops to zero when the coating index is √n, and rises at other colours.' },
-        { num: '6.7', kind: 'Phenomenon', name: 'Newton’s rings', deps: ['waves-6.5'], refs: ['Hecht ch. 9'],
-          pic: 'A curved lens rests on a flat plate: the air gap grows quadratically outward, producing rings whose radii scale as √n, with a dark centre in reflection.' },
-        { num: '6.8', kind: 'Model', name: 'Michelson interferometer', deps: ['waves-6.1'], refs: ['Hecht ch. 9'],
-          pic: 'Move one mirror in steps of nanometres: fringes stream past the detector, one per half wavelength, and inserting a glass plate in one arm shifts them by its optical path.' },
-        { num: '6.9', kind: 'Model', name: 'Mach–Zehnder interferometer', deps: ['waves-6.1', 'waves-4.11'], refs: ['Hecht ch. 9'],
-          pic: 'Split a beam on two paths and recombine: a phase plate in one arm swings the light between the two output ports, with the port intensities summing to the input.' },
-        { num: '6.10', kind: 'Model', name: 'Fabry–Pérot interferometer', deps: ['waves-6.1', 'waves-4.11'], refs: ['Hecht ch. 9'],
-          pic: 'Raise the mirror reflectivity: the transmission peaks sharpen dramatically (finesse grows like π√R/(1 − R)) while staying at the same frequencies, resolving two close spectral lines.' },
-        { num: '6.11', kind: 'Method', name: 'Dielectric mirrors (Bragg stacks)', deps: ['waves-6.10', 'waves-3.10'], refs: ['Hecht ch. 9'],
-          pic: 'Stack alternating quarter-wave layers of high and low index: the reflectance in a band approaches 1 as layers are added, and the band’s width depends on the index contrast.' },
-        { num: '6.12', kind: 'Definition', name: 'Temporal coherence', deps: ['waves-6.3', 'waves-2.10'], refs: ['Hecht ch. 12'],
-          pic: 'Feed a Michelson with light of adjustable bandwidth: fringe visibility falls off as the path difference exceeds the coherence length c/Δν, which shrinks for white light.' },
-        { num: '6.13', kind: 'Method', name: 'Fourier-transform spectroscopy', deps: ['waves-6.12', 'sig-13.3'], refs: ['Hecht ch. 12'],
-          pic: 'Scan a Michelson mirror and record the interferogram for a spectrum you draw: its Fourier transform recovers the spectrum, with resolution set by the scan length.' },
-        { num: '6.14', kind: 'Theorem', name: 'Spatial coherence (van Cittert–Zernike)', deps: ['waves-6.12', 'waves-6.2'], refs: ['Hecht ch. 12'],
-          pic: 'Illuminate double slits with an extended incoherent source: widening the source or the slit separation washes out the fringes, and the visibility traces the Fourier transform of the source shape.' },
-        { num: '6.15', kind: 'Phenomenon', name: 'Stellar interferometry', deps: ['waves-6.14'], refs: ['Hecht ch. 12'],
-          pic: 'Separate two telescope mirrors viewing a star of adjustable angular size: the fringes vanish at a baseline of about 1.22λ/θ, from which the star’s diameter is read off as Michelson did.' },
-        { num: '6.16', kind: 'Phenomenon', name: 'Hanbury Brown–Twiss intensity correlations', deps: ['waves-6.14'], refs: ['Hecht ch. 12'],
-          pic: 'Two detectors record the fluctuating intensity of thermal light: their correlation shows excess coincidences at zero delay that fall off with separation, measuring coherence without phase-stable optics.' },
-        { num: '6.17', kind: 'Paper', name: 'Experiments and calculations relative to physical optics',
-          paper: { authors: 'Thomas Young', year: 1804, title: 'The Bakerian Lecture: Experiments and calculations relative to physical optics', venue: 'Philosophical Transactions of the Royal Society of London 94: 1–16', doi: '10.1098/rstl.1804.0001' },
-          introduces: ['waves-6.2'], deps: ['waves-4.4', 'waves-6.1'], refs: [],
-          pic: 'Recreate Young’s card experiment: split a narrow sunbeam with a thin slip of card and see fringes form inside the shadow, vanishing the moment either edge is screened; measure the fringe spacing for each colour and recover the wavelengths in his table, from red to violet.' },
-      ],
+      "n": 6,
+      "title": "Interference and coherence",
+      "summary": "Coherent waves add amplitudes, not intensities, and the cross term makes fringes: Young’s slits, thin films and Newton’s rings, and interferometers that split and recombine beams to measure lengths, spectra and refractive indices. Multiple-beam interference sharpens fringes into the narrow resonances of Fabry–Pérot cavities and dielectric mirrors. Real light is only partly coherent, and the visibility of fringes measures how far its phase memory reaches in time and space — enough to measure the diameters of stars.",
+      "items": [
+        {
+          "num": "6.1",
+          "kind": "Theorem",
+          "name": "Interference of two coherent waves",
+          "deps": [
+            "waves-1.6",
+            "waves-4.2"
+          ],
+          "refs": [
+            "Fang, MIT2.71 Lecture11, pp1–2, complex interference and visibility",
+            "Syllabus guide: Hecht ch.9 (book body not consulted)"
+          ],
+          "pic": "Change relative phase, beam balance and polarization. Compare the actual instantaneous field components with the phase-dependent cycle-averaged irradiance."
+        },
+        {
+          "num": "6.2",
+          "kind": "Phenomenon",
+          "name": "Young’s double-slit experiment",
+          "deps": [
+            "waves-6.1",
+            "waves-4.4"
+          ],
+          "refs": [
+            "Fang Lecture11, pp4–5, exact paths and paraxial double-slit interference",
+            "Syllabus guide: Hecht ch.9 (book body not consulted)"
+          ],
+          "pic": "Vary separation, wavelength and screen distance, then cover either aperture. Compare the exact paths with the paraxial fringe-spacing guide."
+        },
+        {
+          "num": "6.3",
+          "kind": "Definition",
+          "name": "Fringe visibility",
+          "deps": [
+            "waves-6.2"
+          ],
+          "refs": [
+            "Fang Lecture11, pp2–4, visibility and complex coherence",
+            "Van Exter, Classical & Quantum Optics, printed 21–22, coherence definitions",
+            "Gaussian characteristic-function calculation and finite average derived here"
+          ],
+          "pic": "Unbalance the beams, add Gaussian phase jitter or add background. Compare the ensemble curve with a seeded finite phase average and inspect the actual samples."
+        },
+        {
+          "num": "6.4",
+          "kind": "Phenomenon",
+          "name": "Lloyd’s mirror",
+          "deps": [
+            "waves-6.2",
+            "waves-4.14"
+          ],
+          "refs": [
+            "Fang Lecture11, pp4–5, two-source path method; image-source construction derived here",
+            "Syllabus guide: Hecht ch.9 (book body not consulted)"
+          ],
+          "pic": "Move the source and screen, change wavelength and reduce the reflected amplitude. See when the edge cancellation survives."
+        },
+        {
+          "num": "6.5",
+          "kind": "Phenomenon",
+          "name": "Thin-film interference",
+          "deps": [
+            "waves-6.1",
+            "waves-4.14"
+          ],
+          "refs": [
+            "Macleod, Thin Film Optics, pp7–10 and13–16, transparent-layer interference",
+            "Van Exter, printed 13–17, lossless interfaces and multiple reflections"
+          ],
+          "pic": "Explore thickness, refractive index and wavelength. The map shows calculated reflectance, while the selected-thickness plot compares reflection and transmission."
+        },
+        {
+          "num": "6.6",
+          "kind": "Method",
+          "name": "Antireflection coatings",
+          "deps": [
+            "waves-6.5",
+            "waves-1.10"
+          ],
+          "refs": [
+            "Macleod, pp7–10, half-wave/quarter-wave layers and reflection matching",
+            "Syllabus guide: Hecht ch.9 (book body not consulted)"
+          ],
+          "pic": "Adjust coating index and optical thickness, then compare coated and bare glass across wavelength. The matching point is marked at the fixed 550 nm design wavelength."
+        },
+        {
+          "num": "6.7",
+          "kind": "Phenomenon",
+          "name": "Newton’s rings",
+          "deps": [
+            "waves-6.5"
+          ],
+          "refs": [
+            "Macleod, pp7–10, air-layer phase cancellation; spherical-gap construction derived here",
+            "Syllabus guide: Hecht ch.9 (book body not consulted)"
+          ],
+          "pic": "Change lens curvature, central gap, wavelength and dark-ring order. Compare the exact spherical radius with the paraxial estimate and the full radial reflectance."
+        },
+        {
+          "num": "6.8",
+          "kind": "Model",
+          "name": "Michelson interferometer",
+          "deps": [
+            "waves-6.1"
+          ],
+          "refs": [
+            "Fang Lecture11, pp2–4, Michelson interferometer and round-trip delay",
+            "Syllabus guide: Hecht ch.9 (book body not consulted)"
+          ],
+          "pic": "Move the mirror, insert a plate and change its index. Read the actual path difference and watch the two output powers trade places."
+        },
+        {
+          "num": "6.9",
+          "kind": "Model",
+          "name": "Mach–Zehnder interferometer",
+          "deps": [
+            "waves-6.1",
+            "waves-4.11"
+          ],
+          "refs": [
+            "Van Exter, printed 13–15, unitary beam splitters and two-beam interferometers",
+            "Syllabus guide: Hecht ch.9 (book body not consulted)"
+          ],
+          "pic": "Change beam-splitter balance, arm phase and attenuation. Inspect both complex output amplitudes and the transmitted-plus-absorbed power ledger."
+        },
+        {
+          "num": "6.10",
+          "kind": "Model",
+          "name": "Fabry–Pérot interferometer",
+          "deps": [
+            "waves-6.1",
+            "waves-4.11"
+          ],
+          "refs": [
+            "Fang Lecture11, pp6–7, Eqs26–37, Fabry–Pérot sum",
+            "Van Exter, printed 15–18, Airy transmission and finesse"
+          ],
+          "pic": "Increase reflectivity to sharpen the resonance, then change phase and the number of retained transmitted beams. Compare the finite phasor sum with the exact Airy curve."
+        },
+        {
+          "num": "6.11",
+          "kind": "Method",
+          "name": "Dielectric mirrors (Bragg stacks)",
+          "deps": [
+            "waves-6.10",
+            "waves-3.10"
+          ],
+          "refs": [
+            "Macleod, pp13–16, quarter-wave multilayer reflectors",
+            "Unit-cell trace and finite-stack impedance formulas derived here"
+          ],
+          "pic": "Add layer pairs and change index contrast. Compare the actual finite-stack reflectance with the infinite periodic stopband and the independent design-wavelength formula."
+        },
+        {
+          "num": "6.12",
+          "kind": "Definition",
+          "name": "Temporal coherence",
+          "deps": [
+            "waves-6.3",
+            "waves-2.10"
+          ],
+          "refs": [
+            "Fang Lecture11, pp2–4, temporal correlation and spectra",
+            "Van Exter, printed 21–23, coherence time and spectral distribution"
+          ],
+          "pic": "Choose Gaussian or rectangular spectral shape, change bandwidth and delay, and compare signed envelope coherence with the phase-scan visibility."
+        },
+        {
+          "num": "6.13",
+          "kind": "Method",
+          "name": "Fourier-transform spectroscopy",
+          "deps": [
+            "waves-6.12",
+            "sig-13.3"
+          ],
+          "refs": [
+            "Fang Lecture11, pp3–4, interferogram and Fourier-transform spectroscopy",
+            "Finite-window cosine identity, discrete quadrature and normalization derived here",
+            "Syllabus guide: Hecht ch.12 (book body not consulted)"
+          ],
+          "pic": "Enter one to six spectral lines, vary scan length and switch windows. Compare input weights with the finite signed reconstruction and the actual central interferogram samples."
+        },
+        {
+          "num": "6.14",
+          "kind": "Theorem",
+          "name": "Spatial coherence (van Cittert–Zernike)",
+          "deps": [
+            "waves-6.12",
+            "waves-6.2"
+          ],
+          "refs": [
+            "Van Exter, printed 23–25, spatial coherence and van Cittert–Zernike",
+            "Fang Lecture11, pp4–5, source extent and two-aperture coherence"
+          ],
+          "pic": "Switch between an incoherent strip and disk, then vary the baseline. See how a sign change in coherence shifts the phase scan while visibility stays nonnegative."
+        },
+        {
+          "num": "6.15",
+          "kind": "Phenomenon",
+          "name": "Stellar interferometry",
+          "deps": [
+            "waves-6.14"
+          ],
+          "refs": [
+            "Van Exter, printed 24–25, uniform-disk coherence and stellar diameter; angular diameter is physical diameter/distance",
+            "Syllabus guide: Hecht ch.12 (book body not consulted)"
+          ],
+          "pic": "Change stellar angular diameter, wavelength and physical baseline. Locate the first null and follow the weaker visibility lobes beyond it."
+        },
+        {
+          "num": "6.16",
+          "kind": "Phenomenon",
+          "name": "Hanbury Brown–Twiss intensity correlations",
+          "deps": [
+            "waves-6.14"
+          ],
+          "refs": [
+            "Aspect, arXiv2005.08239v1, §§2.1–2.3, printed 4–7, Eqs2,6,7",
+            "Van Exter, printed 25, intensity interferometry; normalized denominator corrected to product of means"
+          ],
+          "pic": "Change separation, coherence time, mode count, seed and record length. Compare two actual intensity histories and their sampled correlation with the ensemble prediction; contrast constant intensity."
+        },
+        {
+          "num": "6.17",
+          "kind": "Paper",
+          "name": "Experiments and calculations relative to physical optics",
+          "paper": {
+            "authors": "Thomas Young",
+            "year": 1804,
+            "title": "The Bakerian Lecture: Experiments and calculations relative to physical optics",
+            "venue": "Philosophical Transactions of the Royal Society of London 94: 1–16",
+            "doi": "10.1098/rstl.1804.0001"
+          },
+          "introduces": [
+            "waves-6.2"
+          ],
+          "deps": [
+            "waves-4.4",
+            "waves-6.1"
+          ],
+          "refs": [
+            "Young 1804, printed1–8, §§I–II, actual reading before subsequent direct-source access stop",
+            "Modern plane-wave strip reconstruction derived here; original table numerals not verified"
+          ],
+          "pic": "Change card width, propagation distance and wavelength, and remove either contributing side. Compare the coherent shadow pattern with the sum of separate edge intensities."
+        }
+      ]
     },
     // ───────────────────────────────────────────────────────────── 7
     {
