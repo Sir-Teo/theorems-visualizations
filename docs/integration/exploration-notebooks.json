@@ -1,0 +1,25 @@
+{
+  "schemaVersion": 1,
+  "mode": "exploration-notebooks-delta",
+  "predecessorCommit": "7fd688a48bb026582fae1d24d86536b29ee4038d",
+  "replacements": [
+    {
+      "path": "scripts/exploration-editions.mjs",
+      "baseSha256": "7f1e3003670c75a474f5065ad98ed2c901dd6e57b9ab3cadf9dc1f4157fc74df"
+    }
+  ],
+  "additions": [
+    "assets/css/notebooks.css",
+    "assets/js/notebook-model.js",
+    "assets/js/notebook-view.js",
+    "docs/architecture/exploration-notebooks.md",
+    "docs/integration/exploration-notebooks.json",
+    "docs/integration/exploration-notebooks.md",
+    "docs/verification/universal-notebooks-ai-code.md",
+    "docs/verification/universal-notebooks.md",
+    "scripts/check-notebook-integration.mjs",
+    "scripts/notebook-pages.mjs",
+    "tests/notebooks-ui.test.mjs",
+    "tests/notebooks.test.mjs"
+  ]
+}

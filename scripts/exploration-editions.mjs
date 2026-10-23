@@ -3,10 +3,11 @@ import { createHash } from 'node:crypto';
 import { contentDigest, reviewArtifactDigest, validateExploration, EXP_ID } from '../explorations/contract.mjs';
 import { esc } from '../explorations/render.mjs';
 import { canonicalBase } from './static-ideas.mjs';
+import { notebookPage } from './notebook-pages.mjs';
 
 export const REVIEW_CODE = ['explorations/contract.mjs', 'explorations/route-state.mjs', 'explorations/render.mjs', 'explorations/ui.mjs', 'explorations/style.css', 'explorations/method-models.mjs', 'explorations/method-views.mjs', 'explorations/method-ui.mjs', 'explorations/practice-model.mjs', 'explorations/performance-model.mjs', 'explorations/studio-views.mjs', 'explorations/studio-ui.mjs', 'scripts/build-explorations.mjs'];
 export const BROWSER_CODE = REVIEW_CODE.filter(p => !['explorations/contract.mjs', 'explorations/render.mjs', 'scripts/build-explorations.mjs'].includes(p));
-export const DELIVERY_CODE = [...new Set(['scripts/exploration-editions.mjs', 'scripts/freeze-exploration-editions.mjs', 'scripts/build-exploration-editions.mjs', 'scripts/static-ideas.mjs', 'scripts/build-static-ideas.mjs', 'scripts/lib.mjs', 'static-pages/accepted.json', 'assets/css/exploration-delivery.css', ...REVIEW_CODE])];
+export const DELIVERY_CODE = [...new Set(['scripts/exploration-editions.mjs', 'scripts/notebook-pages.mjs', 'assets/js/notebook-model.js', 'assets/js/notebook-view.js', 'assets/css/notebooks.css', 'scripts/freeze-exploration-editions.mjs', 'scripts/build-exploration-editions.mjs', 'scripts/static-ideas.mjs', 'scripts/build-static-ideas.mjs', 'scripts/lib.mjs', 'static-pages/accepted.json', 'assets/css/exploration-delivery.css', ...REVIEW_CODE])];
 export const SUPPLEMENTS = ['docs/pilots/research/soil-subset.py'];
 export const sha = data => createHash('sha256').update(data).digest('hex');
 export const jsonBytes = value => JSON.stringify(value, null, 2) + '\n';
@@ -113,7 +114,7 @@ export function relocateEdition(bundle,{mode,base=null}) {
   html=replaceOnce(html,'<span>Exploration workshop</span>',`<span>${publicEdition?'Explorations':'Local delivery preview'}</span>`);
   const notice=publicEdition?'This edition has a separate public-distribution decision. Source-review limitations below still apply.':'Local delivery preview. This edition has not been cleared for public distribution.';
   html=replaceOnce(html,'<main id="main" tabindex="-1">',`<main id="main" tabindex="-1"><aside class="edition-notice"><strong>Edition ${esc(r.revision)}</strong> · ${publicEdition?'Released edition':'Local preview'}<details><summary>About this edition</summary><p>${notice}</p><p>Shared links keep this edition. Notes from other editions are kept separately.</p></details></aside>`);
-  html=replaceOnce(html,'<footer><p>Local previews. Review scope and public release are separate.</p><a href="../../../docs/master-plan-handoff.md">Editorial status and next work</a></footer>',`<footer><a href="../../">Edition history and review scope</a><p>Earlier notes remain in their original revision stores. No automatic migration or server synchronization.</p></footer>`);
+  html=replaceOnce(html,'<footer><p>Local previews. Review scope and public release are separate.</p><a href="../../../docs/master-plan-handoff.md">Editorial status and next work</a></footer>',`<footer><a href="../../">Edition history and review scope</a><a href="${prefix}explore/notebooks/">Recover or copy my notes</a><p>Earlier notes remain in their original revision stores. No automatic migration or server synchronization.</p></footer>`);
   for(const path of Object.keys(bundle.supplements))html=html.replaceAll(`href="../../../${path}"`,'href="reproduction/"');
   insist(!/href="\.\.\/\.\.\/\.\.\/docs\//.test(html),'Reader documentation link lacks a retained delivery target');
   html=replaceOnce(html,'<meta name="description" content="Draft source-based explorations for Ideas, Visualized.">',`<meta name="description" content="${esc(r.summary)}">`);
@@ -160,6 +161,14 @@ export function renderEditions(entries,runtimes,{mode='preview',base=null}={}) {
   outputs.set('explore/index.html',shell('Ways to explore knowledge',`<p class="eyebrow">${mode==='preview'?'Local delivery preview':'Explorations'}</p><h1>Ways to explore knowledge</h1><p>${intro}</p><p>${live.length} current explorations. Edition history does not add to the lesson count.</p>${cards||'<p>No exploration is currently released in this catalog.</p>'}`,1,{base:live.length?base:null,path:'explore/',indexable:mode==='release'&&live.length>0}));
   if(mode==='release'&&live.length)paths.push('explore/');
   outputs.set('explore/catalog.json',jsonBytes({schemaVersion:1,mode,explorations:catalog,currentCount:live.length,retainedEditionCount:entries.length}));
+  if(entries.length) {
+    outputs.set('explore/notebooks/index.html',notebookPage(entries));
+    // Add links to catalog, identity and withdrawal pages without changing frozen activity payloads.
+    for(const [path,html]of outputs)if(path.endsWith('/index.html')&&html.includes('<header class="delivery-header">')) {
+      const depth=path.split('/').length-1,prefix='../'.repeat(depth);
+      outputs.set(path,replaceOnce(html,'</header>',`<a href="${prefix}explore/notebooks/">My notes</a></header>`));
+    }
+  }
   for(const digest of usedRuntimes) {
     const runtime=runtimes.get(digest);insist(runtime,'Missing edition runtime');validateRuntime(runtime);
     for(const file of BROWSER_CODE)outputs.set(`assets/editions/${digest}/${file.slice('explorations/'.length)}`,runtime.files[file]);
