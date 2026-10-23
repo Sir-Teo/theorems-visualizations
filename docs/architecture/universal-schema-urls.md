@@ -68,6 +68,8 @@ Scoped AI review is identified explicitly in the reviewer role and linked eviden
 
 The prototype builder emits local previews only and rejects `publication: "published"`. A withdrawn local record renders an identity-reserving stub. The separate [edition-delivery contract](exploration-editions.md) now freezes reviewed sources and implements candidate catalogs, immutable version paths, retained versions and publication/withdrawal decisions. Its real release ledger is empty. Source JSON keeps its local-preview review scope; a distinct exact distribution/delivery decision is required for release-mode assembly. The [notebook candidate](exploration-notebooks.md) now implements explicit note copying and recovery; deployment and translations remain open. No general permission to publish follows from passing prototype tests.
 
+The separate [release-material validation delta](../integration/release-material-validation.md) fixes edition/domain material lists to compare exact IDs as arrays, including distinct source, editorial, software and supplement entries. It changes delivery bindings without changing accepted source content or generated reader bytes. Prior delivery reviews remain historical; author parity checks do not confer a new independent engineering approval or actual distribution permission.
+
 ## URL plan
 
 | Purpose | URL relative to deployment base | State now |

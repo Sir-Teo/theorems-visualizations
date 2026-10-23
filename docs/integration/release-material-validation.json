@@ -1,0 +1,27 @@
+{
+  "schemaVersion": 1,
+  "mode": "release-material-validation-delta",
+  "predecessorCommit": "d11438852c631528b6f27d8107f025e9bf677b7e",
+  "predecessorBindings": {
+    "editionDeliveryDigest": "ea887f6127fba1c23ea8f5d1fb83f40e8f762be1e49459bddc9aee1f0fb1a309",
+    "navigationDigest": "5717f96499c09be3c025bbb3942d52be7691143715f64a34b132d5e92485fddb",
+    "journeyDeliveryDigest": "43a976946250477f0fa8ed7b344101fa2b8e3085bb606ba9d66a96fb4bd46605"
+  },
+  "replacements": [
+    {
+      "path": "scripts/exploration-editions.mjs",
+      "baseSha256": "80a90b689fa867ae1beadf6528213bc312db82e873a971c4a4e31014b0c8aa8e"
+    },
+    {
+      "path": "scripts/domain-navigation.mjs",
+      "baseSha256": "b71b38bac79298c6c961c8fcb4c88db7d948580d6fac613d36becac9b23746f1"
+    }
+  ],
+  "additions": [
+    "docs/integration/release-material-validation.json",
+    "docs/integration/release-material-validation.md",
+    "docs/verification/universal-release-material-validation.md",
+    "scripts/check-release-material-integration.mjs",
+    "tests/release-material-validation.test.mjs"
+  ]
+}

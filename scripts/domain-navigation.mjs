@@ -25,7 +25,7 @@ function authorize(d,data,{navigationDigest,sourceArtifactDigest,base,readEviden
   insist(text(d.authorizedBy)&&/^\d{4}-\d{2}-\d{2}$/.test(d.authorizedOn||'')&&text(d.scope),'Domain distribution authorization missing');
   const sourceIds=[...new Set(data.catalog.overviews.filter(r=>ids.includes(r.domainId)).flatMap(r=>r.sourceIds))];
   const expected=[...sourceIds,'original-editorial-material','navigation-software'].sort();
-  insist(Array.isArray(d.materials)&&d.materials.map(m=>m?.id).sort().join()===expected.join(),'Distribution decision must cover the selected sources, editorial material and navigation software');
+  insist(Array.isArray(d.materials)&&json(d.materials.map(m=>m?.id).sort())===json(expected),'Distribution decision must cover the selected sources, editorial material and navigation software');
   for(const m of d.materials){insist(text(m.basis)&&text(m.territories)&&text(m.scope),'Domain material distribution scope missing');independent(m.reviewer,data.catalog.review.author);evidence(m.evidence,readEvidence);}
   independent(d.engineering?.reviewer,data.catalog.review.author);evidence(d.engineering?.evidence,readEvidence);return ids;
 }

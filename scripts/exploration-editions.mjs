@@ -59,7 +59,7 @@ function approval(value, bundle, entry, deliveryDigest, base, readEvidence) {
   insist(digestOK(deliveryDigest) && base && value.id === bundle.id && value.revision === bundle.revision && value.bundleSha256 === entry.sha256 && value.deliveryDigest === deliveryDigest && value.canonicalBase === base, 'Distribution decision does not bind this edition, delivery code and destination');
   insist(text(value.authorizedBy) && /^\d{4}-\d{2}-\d{2}$/.test(value.authorizedOn || '') && text(value.scope), 'Publication authorization/scope missing');
   const expected=[...bundle.record.sources.map(s=>s.id),'original-editorial-material','software-runtime',...Object.keys(bundle.supplements).map(p=>'supplement:'+p)].sort();
-  insist(Array.isArray(value.materials) && value.materials.map(m=>m?.id).sort().join() === expected.join(), 'Distribution decision must cover every source, editorial material and runtime');
+  insist(Array.isArray(value.materials) && jsonBytes(value.materials.map(m=>m?.id).sort()) === jsonBytes(expected), 'Distribution decision must cover every source, editorial material and runtime');
   for(const material of value.materials) {
     insist(text(material.basis) && text(material.territories) && text(material.scope), 'Asset distribution scope missing');
     reviewer(material.reviewer,bundle.record.author); evidence(material.evidence,readEvidence);
