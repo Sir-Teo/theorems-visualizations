@@ -1,0 +1,21 @@
+{
+  "schemaVersion": 1,
+  "mode": "journey-reader-delta",
+  "predecessorCommit": "49612b3dddceada66c998cde1bf896bd032d9f8e",
+  "replacements": [],
+  "additions": [
+    "docs/architecture/journey-reader.md",
+    "docs/integration/journey-reader.json",
+    "docs/integration/journey-reader.md",
+    "docs/verification/universal-journey-reader-ai-code.md",
+    "docs/verification/universal-journey-reader-ai-content.md",
+    "docs/verification/universal-journey-reader.md",
+    "journeys/reader.mjs",
+    "journeys/releases.json",
+    "journeys/style.css",
+    "scripts/build-journeys.mjs",
+    "scripts/check-journey-integration.mjs",
+    "tests/journeys-ui.test.mjs",
+    "tests/journeys.test.mjs"
+  ]
+}

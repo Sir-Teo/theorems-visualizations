@@ -82,6 +82,7 @@ The prototype builder emits local previews only and rejects `publication: "publi
 | Retained exploration edition | `explore/x-history-0001/versions/0.1.2/` | Implemented locally; source/runtime frozen; public distribution ledger empty |
 | Static legacy reading page | `ideas/pma-4.19/` | Implemented in the [local candidate](static-reading.md); old hash remains functional; no deployment |
 | Domain orientation | `domains/D20/` | Implemented in the separate local navigation candidate; real release ledger empty |
+| Cross-field journeys | `journeys/`, `journeys/water-city/` and sibling routes | Implemented in a separate local reader/catalog candidate; no journey acceptance or public release |
 | Future source view | `sources/<receipt-id>/` | Proposed, not generated |
 
 All paths must work under both `/` and a static-host project base such as `/theorems-visualizations/`. Generated prototypes use relative asset and collection links; tests load them under an emulated project prefix. No rewrite server is required.
@@ -120,6 +121,6 @@ Implementation status and future work are tracked in [the master-plan handoff](.
 
 All three added method modules are bound into every artifact digest. Extending shared code triggers renewed exact-artifact reviews of existing accepted previews. Review roles, unperformed human observations and release scope remain separate.
 
-## Cross-field journey preparation
+## Cross-field journeys
 
-The [journey planning contract](../journeys/README.md) is a separate research layer. It pins accepted legacy projections and retained local exploration editions; external readings and unavailable gaps have no lesson identity. Its v1 comparisons are analogy or question-shift, not prerequisite/evidence edges. A future route renderer must resolve targets against the actual delivered inventory, preserve exact edition URLs, and show unavailable/withdrawn targets without leaking their content. The 14 planned stops add no runtime route, accepted lesson, progress key or public release. Formal prerequisite closure and each original pilot’s review conditions remain unchanged.
+The [journey planning contract](../journeys/README.md) is a separate research layer. It pins accepted legacy projections and retained local exploration editions; external readings and unavailable gaps have no lesson identity. Its v1 comparisons are analogy or question-shift, not prerequisite/evidence edges. The separate [reader contract](journey-reader.md) now resolves targets against the actual delivered inventory and preserves exact edition URLs. A missing or withdrawn required target withholds the entire dependent route narrative and sources, leaving an identity/status notice. Its 14 stops render as a local candidate with native reasoning disclosures; the legal gap omits internal preparation tasks. The reader adds no accepted lesson or journey, progress key or public release. Formal prerequisite closure and each original pilot’s review conditions remain unchanged.
