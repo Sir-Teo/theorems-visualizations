@@ -1,0 +1,23 @@
+{
+  "schemaVersion": 1,
+  "mode": "philosophy-source-and-argument-preparation-delta",
+  "predecessorCommit": "1faf7b2fdb75aafea1b91eada112a5f6b8d0605f",
+  "replacements": [],
+  "additions": [
+    "docs/pilots/sequences/preparation/cicero-selections-20261022.json",
+    "docs/pilots/sequences/preparation/cicero-selections-20261022.md",
+    "docs/pilots/sequences/preparation/review-cicero-selections-20261022.md",
+    "docs/integration/cicero-selections.json",
+    "docs/integration/cicero-selections.md",
+    "docs/verification/universal-cicero-selections.md"
+  ],
+  "manualReconciliation": [
+    "MASTER_PLAN.md",
+    "docs/master-plan-execution.md",
+    "docs/master-plan-handoff.md",
+    "docs/pilots/sequences/preparation/README.md"
+  ],
+  "manualPreimages": {
+    "docs/pilots/sequences/preparation/README.md": "e4c56479d334ae4d31d29951bdc2613b9e28c554de416e0edf452c5d0ca6ebd8"
+  }
+}

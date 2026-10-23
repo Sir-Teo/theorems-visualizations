@@ -1,0 +1,406 @@
+{
+  "schemaVersion": 1,
+  "id": "cicero-selections-20261022",
+  "version": "0.1.0",
+  "status": "source-and-argument-preparation-only",
+  "author": "codex-root",
+  "updatedOn": "2026-10-22",
+  "predecessorCommit": "1faf7b2fdb75aafea1b91eada112a5f6b8d0605f",
+  "lesson": "P03-L02",
+  "existingBindings": {
+    "docs/pilots/sequences/p03-02-disclosure.md": "1d6c8df4ff82941263747847d565a9c24d48df33fed634454bbf61e582a46530",
+    "docs/pilots/sequences/p03-03-langar.md": "134a999d8f107e40ba42094dfc36b9f3edb6a2836f2a0d1737b19c3e4dd9ae58",
+    "docs/pilots/sequences/sources.json": "aa728ce4083c7d242484c8f998168f5e61e03e30f312ff12b0bd4e02736b18c6",
+    "docs/pilots/sequences/queue.json": "2ad2477129d1d6aa871a07105c7a209df0ae66eefe452067f9e4acbac97ebcc4",
+    "docs/pilots/sequences/README.md": "589316cf449084627cc28201c9a31c50478c613592f9548d5e6432042197015b",
+    "explorations/philosophy.json": "8d8c17ce1854d82785fb431be89ab83beb6d88bb04c969bd07040b0cd68121d3",
+    "docs/coverage/registry.json": "8adc6ab70344ff5605f3bc5c6925827603d0a9102799781049c3749137fae2c4"
+  },
+  "counting": {
+    "newAuthoredLessons": 0,
+    "newAcceptedLessons": 0,
+    "newRuntimeIds": 0,
+    "newReleaseDecisions": 0
+  },
+  "edition": {
+    "work": "De Officiis",
+    "creator": "Marcus Tullius Cicero",
+    "translator": "Walter Miller",
+    "representedPrintEdition": "London: William Heinemann; New York: The Macmillan Co., 1913",
+    "digitalEbook": "Project Gutenberg 47001",
+    "visibleReleaseDate": "2014-09-29",
+    "visibleUpdatedDate": "2024-10-24",
+    "generatedHtmlMetadataModified": "2026-10-19T08:29:06.382925+00:00",
+    "dateEvidence": "Use visible catalog labels and matching ebook header. Catalog RDF date attributes differ from those labels; HTML-generation metadata is not a print/publication or textual revision date.",
+    "transcriptionLimits": "Transcriber reports silent punctuation correction and retained inconsistent hyphenation. The explicit correction list was inspected; it is not a complete punctuation-change log. No print image or independent Latin witness checked."
+  },
+  "normalization": {
+    "locator": "Count div elements with english class in document order, then explicit p elements within each block; selected blocks 83 and 84.",
+    "removed": "Markup and span contents with pn (section marker), pb (page marker) or sni (inline side note) classes. Standalone side notes are outside the selected p elements.",
+    "retained": "All other selected English paragraph text, including modal speech framing and chapter labels. Decode entities, collapse Unicode whitespace and trim; no punctuation, spelling or Unicode normalization.",
+    "hash": "SHA-256 of normalized selected UTF-8 text with no final newline.",
+    "scope": "Plain text selection from a digital witness, not facsimile typography or original punctuation."
+  },
+  "sources": [
+    {
+      "id": "cicero",
+      "url": "https://www.gutenberg.org/cache/epub/47001/pg47001-images.html",
+      "finalUrl": "https://www.gutenberg.org/cache/epub/47001/pg47001-images.html",
+      "file": "cicero.html",
+      "bytes": 1037849,
+      "sha256": "66d31219e1c8254f70f31badf9932d7681713353ac0916a22b3cfec798241477",
+      "status": "downloaded",
+      "readOn": "2026-10-22",
+      "scope": "Selected English chapters XII–XIII, title, transcriber note, correction list and visible update header.",
+      "rightsScope": "Historical selected English text; catalog states public domain in USA. No illustration, modern synopsis or full ebook included; actual distribution/trademark/attribution scope remains a separate decision."
+    },
+    {
+      "id": "cicero-catalog",
+      "url": "https://www.gutenberg.org/ebooks/47001",
+      "finalUrl": "https://www.gutenberg.org/ebooks/47001",
+      "file": "cicero-catalog.html",
+      "bytes": 23561,
+      "sha256": "d7334880923e5ade58ea0e2f13a54c0c42e1964c3272085678008e9d61cb93bc",
+      "status": "downloaded",
+      "readOn": "2026-10-22",
+      "scope": "Visible author/translator/title/date/rights rows; generated synopsis excluded.",
+      "rightsScope": "Historical selected English text; catalog states public domain in USA. No illustration, modern synopsis or full ebook included; actual distribution/trademark/attribution scope remains a separate decision."
+    }
+  ],
+  "selections": [
+    {
+      "id": "case-and-principle",
+      "sourceId": "cicero",
+      "englishBlockOneBased": 83,
+      "paragraphOneBased": 1,
+      "anchorIds": [
+        "III.50"
+      ],
+      "locator": "Chapter XII opening immediately before III.50, followed by III.50",
+      "kind": "quotation",
+      "language": "en",
+      "text": "XII. Let it be set down as an established principle, then, that what is morally wrong can never be expedient—not even when one secures by means of it that which one thinks expedient; for the mere act of thinking a course expedient, when it is morally wrong, is demoralizing. But, as I said above, cases often arise in which expediency may seem to clash with moral rectitude; and so we should examine carefully and see whether their conflict is inevitable or whether they may be reconciled. The following are problems of this sort: suppose, for example, a time of dearth and famine at Rhodes, with provisions at fabulous prices; and suppose that an honest man has imported a large cargo of grain from Alexandria and that to his certain knowledge also several other importers have set sail from Alexandria, and that on the voyage he has sighted their vessels laden with grain and bound for Rhodes; is he to report the fact to the Rhodians or is he to keep his own counsel and sell his own stock at the highest market price? I am assuming the case of a virtuous, upright man, and I am raising the question how a man would think and reason who would not conceal the facts from the Rhodians if he thought that it was immoral to do so, but who might be in doubt whether such silence would really be immoral.",
+      "textSha256": "538dfb4ec9f28e92b8f1021048f78c7e7c13d37fb0bd00ff0c89ea2e9696bc35",
+      "attributedVoice": "Cicero as narrator",
+      "narrativeLayer": "Cicero’s written presentation, in Miller’s English translation and this digital transcription; no independent spoken transcript.",
+      "editorialEvidenceNote": "States the framing principle and poses the hypothetical grain case; the merchant is uncertain about moral obligation, not licensed to do acknowledged wrong for profit."
+    },
+    {
+      "id": "reported-positions",
+      "sourceId": "cicero",
+      "englishBlockOneBased": 83,
+      "paragraphOneBased": 2,
+      "anchorIds": [
+        "III.51"
+      ],
+      "locator": "III.51",
+      "kind": "quotation",
+      "language": "en",
+      "text": "In deciding cases of this kind Diogenes of Babylonia, a great and highly esteemed Stoic, consistently holds one view; his pupil Antipater, a most profound scholar, holds another. According to Antipater all the facts should be disclosed, that the buyer may not be uninformed of any detail that the seller knows; according to Diogenes the seller should declare any defects in his wares, in so far as such a course is prescribed by the common law of the land; but for the rest, since he has goods to sell, he may try to sell them to the best possible advantage, provided he is guilty of no misrepresentation.",
+      "textSha256": "c5e17ae39245f625381f6543c65d9c3cbae94f455eba6d12fa34ef7cf388e5a7",
+      "attributedVoice": "Cicero reporting Diogenes and Antipater",
+      "narrativeLayer": "Cicero’s written presentation, in Miller’s English translation and this digital transcription; no independent spoken transcript.",
+      "editorialEvidenceNote": "Two attributed accounts of obligation; Diogenes here combines legal disclosure and no misrepresentation. This is not a modern legal rule."
+    },
+    {
+      "id": "merchant-reply",
+      "sourceId": "cicero",
+      "englishBlockOneBased": 83,
+      "paragraphOneBased": 3,
+      "anchorIds": [],
+      "locator": "III.51 continuation",
+      "kind": "quotation",
+      "language": "en",
+      "text": "\"I have imported my stock,\" Diogenes's merchant will say; \"I have offered it for sale; I sell at a price no higher than my competitors—perhaps even lower, when the market is overstocked. Who is wronged?\"",
+      "textSha256": "0f46eaae2c3d0c83229f0392390e2ca53b0ad019d01773e253eff363d4e081d5",
+      "attributedVoice": "Hypothetical merchant in the reported Diogenes position",
+      "narrativeLayer": "Cicero’s written presentation, in Miller’s English translation and this digital transcription; no independent spoken transcript.",
+      "editorialEvidenceNote": "Cicero constructs what the merchant will say; this is not a transcript or Diogenes speaking as the actual trader."
+    },
+    {
+      "id": "community-duty",
+      "sourceId": "cicero",
+      "englishBlockOneBased": 83,
+      "paragraphOneBased": 4,
+      "anchorIds": [
+        "III.52"
+      ],
+      "locator": "III.52",
+      "kind": "quotation",
+      "language": "en",
+      "text": "\"What say you?\" comes Antipater's argument on the other side; \"it is your duty to consider the interests of your fellow-men and to serve society; you were brought into the world under these conditions and have these inborn principles which you are in duty bound to obey and follow, that your interest shall be the interest of the community and conversely that the interest of the community shall be your interest as well; will you, in view of all these facts, conceal from your fellow-men what relief in plenteous supplies is close at hand for them?\"",
+      "textSha256": "8f00474b1986e50fa6e5104319bd7e9ebef036ee489844908ac5fb9bb6643624",
+      "attributedVoice": "Antipater’s argument as presented by Cicero",
+      "narrativeLayer": "Cicero’s written presentation, in Miller’s English translation and this digital transcription; no independent spoken transcript.",
+      "editorialEvidenceNote": "An appeal to community and shared interests is connected to information about approaching supplies."
+    },
+    {
+      "id": "silence-distinction",
+      "sourceId": "cicero",
+      "englishBlockOneBased": 83,
+      "paragraphOneBased": 5,
+      "anchorIds": [],
+      "locator": "III.52 continuation",
+      "kind": "quotation",
+      "language": "en",
+      "text": "\"It is one thing to conceal,\" Diogenes will perhaps reply; \"not to reveal is quite a different thing. At this present moment I am not concealing from you, even if I am not revealing to you, the nature of the gods or the highest good; and to know these secrets would be of more advantage to you than to know that the price of wheat was down. But I am under no obligation to tell you everything that it may be to your interest to be told.\"",
+      "textSha256": "9b9680eb1025f90fb702e692d8a3a8fb59f23771c1ac005bb39dfc01420e5ec1",
+      "attributedVoice": "Possible Diogenes reply constructed by Cicero",
+      "narrativeLayer": "Cicero’s written presentation, in Miller’s English translation and this digital transcription; no independent spoken transcript.",
+      "editorialEvidenceNote": "The modal phrase about a possible reply matters: this contests a duty to reveal everything useful, not every conceivable disclosure duty."
+    },
+    {
+      "id": "fellowship-rejoinder",
+      "sourceId": "cicero",
+      "englishBlockOneBased": 83,
+      "paragraphOneBased": 6,
+      "anchorIds": [
+        "III.53"
+      ],
+      "locator": "III.53",
+      "kind": "quotation",
+      "language": "en",
+      "text": "\"Yea,\" Antipater will say, \"but you are, as you must admit, if you will only bethink you of the bonds of fellowship forged by nature and existing between man and man.\"",
+      "textSha256": "c431fed4a5a5381d3ff17b764a7e9a280f81fb5d8abcd17deab5b32fbcfab6f5",
+      "attributedVoice": "Antipater reply constructed by Cicero",
+      "narrativeLayer": "Cicero’s written presentation, in Miller’s English translation and this digital transcription; no independent spoken transcript.",
+      "editorialEvidenceNote": "Reasserts natural fellowship as a basis for obligation."
+    },
+    {
+      "id": "property-objection",
+      "sourceId": "cicero",
+      "englishBlockOneBased": 83,
+      "paragraphOneBased": 7,
+      "anchorIds": [],
+      "locator": "III.53 continuation",
+      "kind": "quotation",
+      "language": "en",
+      "text": "\"I do not forget them,\" the other will reply; \"but do you mean to say that those bonds of fellowship are such that there is no such thing as private property? If that is the case, we should not sell anything at all, but freely give everything away.\"",
+      "textSha256": "88d65a5cbe070bda79f3a133bbfd4fb9e60c52f760dc315eb1eb48184b966194",
+      "attributedVoice": "Diogenes-side reply, identified from the alternating exchange",
+      "narrativeLayer": "Cicero’s written presentation, in Miller’s English translation and this digital transcription; no independent spoken transcript.",
+      "editorialEvidenceNote": "The other is resolved by context. The property/gift challenge is a reported objection, not Cicero’s final decision or an independent debate transcript."
+    },
+    {
+      "id": "debate-framing",
+      "sourceId": "cicero",
+      "englishBlockOneBased": 84,
+      "paragraphOneBased": 1,
+      "anchorIds": [],
+      "locator": "Chapter XIII opening before III.54",
+      "kind": "quotation",
+      "language": "en",
+      "text": "XIII. In this whole discussion, you see, no one says \"However wrong morally this or that may be, still, since it is expedient, I will do it\"; but the one side asserts that a given act is expedient, without being morally wrong, while the other insists that the act should not be done, because it is morally wrong.",
+      "textSha256": "930376fbc74ee8b029f2ecda0ab2d359d2b0c5e03f2810a5bf6e9ce6b08193d0",
+      "attributedVoice": "Cicero as narrator",
+      "narrativeLayer": "Cicero’s written presentation, in Miller’s English translation and this digital transcription; no independent spoken transcript.",
+      "editorialEvidenceNote": "The disagreement concerns whether the proposed act is wrong, not permission to do conceded wrong merely because it profits."
+    },
+    {
+      "id": "house-case",
+      "sourceId": "cicero",
+      "englishBlockOneBased": 84,
+      "paragraphOneBased": 2,
+      "anchorIds": [
+        "III.54"
+      ],
+      "locator": "III.54",
+      "kind": "quotation",
+      "language": "en",
+      "text": "Suppose again that an honest man is offering a house for sale on account of certain undesirable features of which he himself is aware but which nobody else knows; suppose it is unsanitary, but has the reputation of being healthful; suppose it is not generally known that vermin are to be found in all the bedrooms; suppose, finally, that it is built of unsound timber and likely to collapse, but that no one knows about it except the owner; if the vendor does not tell the purchaser these facts but sells him the house for far more than he could reasonably have expected to get for it, I ask whether his transaction is unjust or dishonourable.",
+      "textSha256": "3ee4b88efcfe483b2390b7743dbf7d714c07464fd9e4ba01121e2ab71df8680f",
+      "attributedVoice": "Cicero as narrator",
+      "narrativeLayer": "Cicero’s written presentation, in Miller’s English translation and this digital transcription; no independent spoken transcript.",
+      "editorialEvidenceNote": "A new hypothetical introduces seller-known defects; separate factual setup from conclusions about obligation."
+    },
+    {
+      "id": "house-antipater",
+      "sourceId": "cicero",
+      "englishBlockOneBased": 84,
+      "paragraphOneBased": 3,
+      "anchorIds": [
+        "III.55"
+      ],
+      "locator": "III.55",
+      "kind": "quotation",
+      "language": "en",
+      "text": "\"Yes,\" says Antipater, \"it is; for to allow a purchaser to be hasty in closing a deal and through mistaken judgment to incur a very serious loss, if this is not refusing 'to set a man right when he has lost his way' (a crime which at Athens is prohibited on pain of public execration), what is? It is even worse than refusing to set a man on his way: it is deliberately leading a man astray.\"",
+      "textSha256": "9b2c7a59832bc95caf595d35a0a566f2564b9640c2ab54ce56e3c6e3f9fb038c",
+      "attributedVoice": "Antipater as presented by Cicero",
+      "narrativeLayer": "Cicero’s written presentation, in Miller’s English translation and this digital transcription; no independent spoken transcript.",
+      "editorialEvidenceNote": "Argues that permitting serious mistaken loss is active misdirection, using an analogy."
+    },
+    {
+      "id": "house-diogenes",
+      "sourceId": "cicero",
+      "englishBlockOneBased": 84,
+      "paragraphOneBased": 4,
+      "anchorIds": [],
+      "locator": "III.55 continuation",
+      "kind": "quotation",
+      "language": "en",
+      "text": "\"Can you say,\" answers Diogenes, \"that he compelled you to purchase, when he did not even advise it? He advertised for sale what he did not like; you bought what you did like. If people are not considered guilty of swindling when they place upon their placards For Sale: A Fine Villa, Well Built, even when it is neither good nor properly built, still less guilty are they who say nothing in praise of their house. For where the purchaser may exercise his own judgment, what fraud can there be on the part of the vendor? But if, again, not all that is expressly stated has to be made good, do you think a man is bound to make good what has not been said? What, pray, would be more stupid than for a vendor to recount all the faults in the article he is offering for sale? And what would be so absurd as for an auctioneer to cry, at the owner's bidding, 'Here is an unsanitary house for sale?'\"",
+      "textSha256": "13d3bf67910d4e8d90110864a5af5b7a25ea5dffeb231956c9ab861576901844",
+      "attributedVoice": "Diogenes as presented by Cicero",
+      "narrativeLayer": "Cicero’s written presentation, in Miller’s English translation and this digital transcription; no independent spoken transcript.",
+      "editorialEvidenceNote": "Invokes choice, advertising and silence. Compare its advertisement example with the earlier no-misrepresentation condition; do not silently harmonize the apparent tension."
+    },
+    {
+      "id": "cicero-resolution",
+      "sourceId": "cicero",
+      "englishBlockOneBased": 84,
+      "paragraphOneBased": 5,
+      "anchorIds": [
+        "III.56",
+        "III.57"
+      ],
+      "locator": "III.56–57",
+      "kind": "quotation",
+      "language": "en",
+      "text": "In this way, then, in certain doubtful cases moral rectitude is defended on the one side, while on the other side the case of expediency is so presented as to make it appear not only morally right to do what seems expedient, but even morally wrong not to do it. This is the contradiction that seems often to arise between the expedient and the morally right. But I must give my decision in these two cases; for I did not propound them merely to raise the questions, but to offer a solution. I think, then, that it was the duty of that grain dealer not to keep back the facts from the Rhodians, and of this vendor of the house to deal in the same way with his purchaser. The fact is that merely holding one's peace about a thing does not constitute concealment, but concealment consists in trying for your own profit to keep others from finding out something that you know, when it is for their interest to know it. And who fails to discern what manner of concealment that is and what sort of person would be guilty of it? At all events he would be no candid or sincere or straightforward or upright or honest man, but rather one who is shifty, sly, artful, shrewd, underhand, cunning, one grown old in fraud and subtlety. Is it not inexpedient to subject oneself to all these terms of reproach and many more besides?",
+      "textSha256": "11075bfadfbb13f469e2584f92265f4e2784052f935c0982a739d322a87318b4",
+      "attributedVoice": "Cicero as narrator giving his own judgment",
+      "narrativeLayer": "Cicero’s written presentation, in Miller’s English translation and this digital transcription; no independent spoken transcript.",
+      "editorialEvidenceNote": "Retains the transition and resolution for both cases, and the distinction between mere silence and self-interested concealment. Accurate exposition permits reasoned disagreement."
+    }
+  ],
+  "argumentPreparation": {
+    "status": "Editorial candidates, not the source’s words, a complete Stoic system, a final rubric or a moral verdict.",
+    "roles": [
+      "Cicero’s narration and judgment",
+      "Views attributed to Diogenes of Babylonia",
+      "Views attributed to Antipater",
+      "A hypothetical merchant within the reported exchange",
+      "Reader/editor bridging premises and objections"
+    ],
+    "candidateBridges": [
+      {
+        "id": "A-bridge",
+        "attribution": "editorial reconstruction of the Antipater-side argument",
+        "sourceSelectionIds": [
+          "community-duty",
+          "fellowship-rejoinder"
+        ],
+        "text": "When a seller’s relevant knowledge would benefit buyers, a duty of fellowship can require voluntarily disclosing it.",
+        "challenge": "Explain the proposed relevance threshold and why the duty reaches this case; do not substitute a duty to disclose every fact."
+      },
+      {
+        "id": "D-bridge",
+        "attribution": "editorial reconstruction of the Diogenes-side argument",
+        "sourceSelectionIds": [
+          "reported-positions",
+          "merchant-reply",
+          "silence-distinction",
+          "property-objection"
+        ],
+        "text": "If withholding approaching-supply information violates neither a required disclosure nor a prohibition on misrepresentation, the seller may use ordinary market terms without volunteering it.",
+        "challenge": "The if clause needs defense in this particular case. Buyer choice or lawful pricing alone does not establish it."
+      },
+      {
+        "id": "C-bridge",
+        "attribution": "editorial reconstruction around Cicero’s judgment",
+        "sourceSelectionIds": [
+          "cicero-resolution"
+        ],
+        "text": "Classifying an omission requires examining the seller’s purpose and the importance of the information to the other party, not merely whether speech occurred.",
+        "challenge": "Retain the author’s judgments about both cases and defend or contest the classification; disagreement does not excuse misattribution."
+      }
+    ],
+    "transfer": {
+      "sourceSelectionIds": [
+        "house-case",
+        "house-antipater",
+        "house-diogenes",
+        "cicero-resolution"
+      ],
+      "prompt": "When the information concerns a hidden defect rather than incoming supply, identify which factual and bridging premises need reconsideration.",
+      "boundary": "The advertising example and earlier no-misrepresentation condition invite a textual question; no modern legal doctrine or automatic harmonization is supplied."
+    },
+    "evidenceLabels": [
+      "quoted-source",
+      "editorial-paraphrase",
+      "added-bridge",
+      "objection",
+      "reader-revision"
+    ],
+    "feedbackBoundary": "Checks may identify absent source references, confused voices or unlabeled added premises. They must not grade agreement with Cicero, calculate an ethical score or announce a universal disclosure law."
+  },
+  "activities": [
+    {
+      "id": "attribute-voices",
+      "selectionIds": [
+        "reported-positions",
+        "merchant-reply",
+        "silence-distinction",
+        "property-objection"
+      ],
+      "prompt": "Distinguish narrator, attributed philosopher, hypothetical merchant and editorial addition. Explain how each attribution is supported.",
+      "assessment": "Preserve modal framing and the contextual attribution of the other; do not call a constructed exchange an observed transcript."
+    },
+    {
+      "id": "expose-bridge",
+      "selectionIds": [
+        "community-duty",
+        "fellowship-rejoinder",
+        "silence-distinction"
+      ],
+      "prompt": "Reconstruct an argument with one explicitly added bridge, then offer an objection and revise the bridge.",
+      "assessment": "A source citation does not turn the reader’s connecting rule into a quotation."
+    },
+    {
+      "id": "retain-resolution",
+      "selectionIds": [
+        "debate-framing",
+        "cicero-resolution"
+      ],
+      "prompt": "State Cicero’s own answer and compare it with a reasoned view of your own.",
+      "assessment": "Neither equal-author-endorsement nor profitable-wrongdoing framing accurately describes the selected text."
+    },
+    {
+      "id": "transfer-defect",
+      "selectionIds": [
+        "house-case",
+        "house-antipater",
+        "house-diogenes"
+      ],
+      "prompt": "Apply the transfer question and identify any tension requiring more context.",
+      "assessment": "Do not treat market participation as settling every premise or historical legal vocabulary as contemporary advice."
+    }
+  ],
+  "adjacentFollowupFreshness": {
+    "lesson": "P03-L03",
+    "status": "Fresh selected-body/code-status check incomplete",
+    "attempts": [
+      {
+        "url": "https://www.sikhcoalition.org/about-sikhs/faq/",
+        "result": "HTTP Error 403: Forbidden",
+        "action": "Stopped; no retry or alternate copy/host/body recovery."
+      },
+      {
+        "url": "https://sgpc.net/wp-content/uploads/2025/06/Sikh-Rehat-Maryada-English-n.pdf",
+        "result": "HTTP Error 403: Forbidden",
+        "action": "Stopped; no retry or alternate copy/host/body recovery."
+      },
+      {
+        "url": "https://sgpc.net/sikh-rehat-maryada-in-english/",
+        "result": "Official page heading/wrapper visible through web tool; direct HTML download HTTP403. No embedded PDF followed.",
+        "action": "Directory route stopped; no current code revision, universal practice or fresh selected-body review established."
+      }
+    ],
+    "preservation": "Earlier body/image review remains historical evidence. No revised source record, source quotation, current-edition claim or practitioner participation is supplied. Searches of other websites were discovery-only and not used to recover denied bodies."
+  },
+  "preparationStatus": {
+    "exactSelection": "Twelve complete English paragraphs selected with explicit voice/context labels and hashes.",
+    "finalContext": "Qualified philosophy/classics reconstruction and final rendered artifact review remain open. AI source/editorial review is bounded.",
+    "language": "English witness only; additional print/Latin claims need their own evidence.",
+    "capacity": "P07/P08 retain both unaccepted draft slots.",
+    "humanAndRelease": "Applicable access/learner and real distribution requirements remain open. P01/P02 first-lesson removals are not extended."
+  },
+  "localEvidenceDirectory": "/tmp/atlas-philosophy-preparation-20261022",
+  "limitations": [
+    "No new lesson, runtime ID, accepted count, source-queue rewrite or release decision.",
+    "No artwork, source PDF, modern synopsis, transcriber apparatus or full ebook distributed.",
+    "Snapshots are temporary audit evidence; selected historical text and exact identity metadata are durable packet contents.",
+    "New source retrievals were successful only for Cicero body/catalog; denied P03-L03 works remain stopped."
+  ]
+}
