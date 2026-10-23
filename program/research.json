@@ -1,0 +1,38 @@
+{
+  "schemaVersion": 1,
+  "readOn": "2026-10-23",
+  "sources": [
+    {
+      "id": "catalog",
+      "title": "Open Library and Crossref: selected metadata",
+      "url": "program/federated-catalog.json",
+      "locator": "Four exact provider records, their separate identities and dates. Works themselves are not imported or read.",
+      "rights": "Metadata fields only; no abstracts, descriptions, media or source text.",
+      "language": "en"
+    },
+    {
+      "id": "accounting",
+      "title": "OpenStax, Principles of Accounting, Volume 1, §§3.3–3.5",
+      "url": "https://openstax.org/books/principles-financial-accounting/pages/3-5-use-journal-entries-to-record-transactions-and-post-to-t-accounts",
+      "locator": "Read journal/ledger distinctions, debit-credit equality and account effects in §§3.3, 3.4 and 3.5. Scope excludes other financial-reporting standards and actual business decisions.",
+      "rights": "Original numbers, ledger and questions; no source examples, illustrations or prose copied. Site displays CC BY-NC-SA and additional use notices; no blanket reuse permission asserted.",
+      "language": "en"
+    },
+    {
+      "id": "learning",
+      "title": "What Works Clearinghouse: Organizing Instruction and Study to Improve Student Learning",
+      "url": "https://ies.ed.gov/ncee/wwc/PracticeGuide/1",
+      "locator": "Read the September 2007 guide landing page, listed recommendations and evidence ratings. Full PDF not inspected here.",
+      "rights": "Original commentary and fictional comparison; no source illustrations or extended quotations.",
+      "language": "en"
+    },
+    {
+      "id": "art",
+      "title": "National Gallery, Hans Holbein the Younger, The Ambassadors, NG1314",
+      "url": "https://www.nationalgallery.org.uk/paintings/hans-holbein-the-younger-the-ambassadors",
+      "locator": "Read overview, in-depth and audio-transcript text. Signature date, oblique skull and interpretive language distinguished. Image pixels and audio were not inspected or reused; the two age descriptions differ, so no age claim is adopted.",
+      "rights": "Original short summaries and questions only. No painting reproduction, audio, transcript or extended quotation copied.",
+      "language": "en"
+    }
+  ]
+}

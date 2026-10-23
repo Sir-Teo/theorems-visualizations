@@ -1,0 +1,338 @@
+{
+  "schemaVersion": 1,
+  "mode": "local-snapshot",
+  "version": "1.0.0",
+  "checkedOn": "2026-10-23",
+  "records": [
+    {
+      "record": {
+        "provider": "openlibrary",
+        "id": "/works/OL55649W",
+        "kind": "work",
+        "title": "Walden",
+        "revision": 82,
+        "url": "https://openlibrary.org/works/OL55649W",
+        "published": null,
+        "modified": "2026-09-01T14:37:18.585973",
+        "linkedWorks": [],
+        "subjects": {
+          "state": "present",
+          "values": [
+            "Biography",
+            "Homes and haunts",
+            "American Authors",
+            "Social life and customs",
+            "Solitude",
+            "Natural history",
+            "Wilderness areas",
+            "Philosophy",
+            "English essays",
+            "Wildnerness areas",
+            "Classic Literature",
+            "Fiction",
+            "Essays",
+            "Nonfiction",
+            "Homes",
+            "Manners and customs",
+            "Authors, biography",
+            "Philosophy, modern, 19th century",
+            "Conduct of life",
+            "Massachusetts, politics and government",
+            "Massachusetts, social life and customs",
+            "Natural history, united states",
+            "Philosophy of nature",
+            "Lakes",
+            "Aesthetic realism",
+            "Philosophy, american",
+            "Literature, collections",
+            "Authors, american",
+            "Literary",
+            "American",
+            "English language",
+            "Walden (Thoreau, Henry David)",
+            "Civil disobedience",
+            "Resistance to Government",
+            "American literature",
+            "Indexes",
+            "Juvenile literature",
+            "Large type books",
+            "Résistance au gouvernement",
+            "Alternativbewegung",
+            "Gewaltloser Widerstand",
+            "On the duty of civil disobedience (Thoreau)",
+            "Civil disobedience (Thoreau, Henry David)",
+            "Massachusetts, description and travel",
+            "Fiction, general",
+            "Loneliness",
+            "Mœurs et coutumes",
+            "Réserves de la vie sauvage",
+            "Sciences naturelles",
+            "Écrivains américains",
+            "Biographies",
+            "BIOGRAPHY & AUTOBIOGRAPHY",
+            "LITERARY CRITICISM",
+            "Thoreau, henry david, 1817-1862",
+            "Thoreau, Henry David, 1817-1862 -- Homes and haunts -- Massachusetts -- Walden Woods",
+            "Natural history -- Massachusetts -- Walden Woods",
+            "Wilderness areas -- Massachusetts -- Walden Woods",
+            "Authors, American -- 19th century -- Biography",
+            "Walden Woods (Mass.) -- Biography",
+            "Walden Woods (Mass.) -- Social life and customs",
+            "Massachusetts -- Walden Woods",
+            "Nature",
+            "Long Now Manual for Civilization",
+            "Symbolism in literature",
+            "French poetry",
+            "History and criticism",
+            "R.R. Donnelley and Sons Company",
+            "Language arts",
+            "Children's fiction",
+            "United states, history",
+            "Transcendentalism (New England)",
+            "Walden Woods",
+            "Massachusetts",
+            "Readers",
+            "Criticism and interpretation"
+          ]
+        },
+        "classifications": {
+          "state": "absent",
+          "values": null
+        },
+        "authority": null,
+        "scheduleEdition": null,
+        "holdings": null,
+        "workRead": false,
+        "scope": "Catalog assertions only. Work and edition fields stay separate; labels do not establish controlled authority or physical holdings."
+      },
+      "capture": {
+        "name": "walden-work",
+        "url": "https://openlibrary.org/works/OL55649W.json",
+        "finalUrl": "https://openlibrary.org/works/OL55649W.json",
+        "status": 200,
+        "bytes": 4986,
+        "sha256": "38757c8decf141fe59c99a5ddb3641163d6beba0434dc421462b9b727068753e",
+        "filename": "walden-work.body",
+        "readOn": "2026-10-23"
+      },
+      "projectionSha256": "4b822a0ca221d9e455a6139d641e0fd5e4e8974afd3e8792aa19e7acbe08b427",
+      "domainIds": [
+        "D24",
+        "D28"
+      ],
+      "selectionScope": "Exact captured record; reported subject strings remain unverified metadata. Original snapshot, not a new refresh."
+    },
+    {
+      "record": {
+        "provider": "openlibrary",
+        "id": "/books/OL26429580M",
+        "kind": "edition",
+        "title": "Walden; or, Life in the woods",
+        "revision": 3,
+        "url": "https://openlibrary.org/books/OL26429580M",
+        "published": "1854",
+        "modified": "2025-09-29T22:01:10.752769",
+        "linkedWorks": [
+          "/works/OL55649W"
+        ],
+        "subjects": {
+          "state": "present",
+          "values": [
+            "Natural history",
+            "Transcendentalism (New England)"
+          ]
+        },
+        "classifications": {
+          "state": "absent",
+          "values": null
+        },
+        "authority": null,
+        "scheduleEdition": null,
+        "holdings": null,
+        "workRead": false,
+        "scope": "Catalog assertions only. Work and edition fields stay separate; labels do not establish controlled authority or physical holdings."
+      },
+      "capture": {
+        "name": "walden-1854-edition",
+        "url": "https://openlibrary.org/books/OL26429580M.json",
+        "finalUrl": "https://openlibrary.org/books/OL26429580M.json",
+        "status": 200,
+        "bytes": 1831,
+        "sha256": "75a33c040b8d3f0f000a21532e65ac45318b625816225bb002c46e4b31a900cc",
+        "filename": "walden-1854-edition.body",
+        "readOn": "2026-10-23"
+      },
+      "projectionSha256": "dfae4263be51296fbc2e639aaf4599e636411c026a38162ae1da54d447be8758",
+      "domainIds": [
+        "D24",
+        "D28"
+      ],
+      "selectionScope": "Exact captured record; reported subject strings remain unverified metadata. Original snapshot, not a new refresh."
+    },
+    {
+      "record": {
+        "provider": "openlibrary",
+        "id": "/books/OL34549556M",
+        "kind": "edition",
+        "title": "Illustrated Walden",
+        "revision": 3,
+        "url": "https://openlibrary.org/books/OL34549556M",
+        "published": "2018",
+        "modified": "2025-09-29T22:05:02.222036",
+        "linkedWorks": [
+          "/works/OL55649W"
+        ],
+        "subjects": {
+          "state": "present",
+          "values": [
+            "American literature"
+          ]
+        },
+        "classifications": {
+          "state": "present",
+          "values": [
+            "PS3048.A1 2018"
+          ]
+        },
+        "authority": null,
+        "scheduleEdition": null,
+        "holdings": null,
+        "workRead": false,
+        "scope": "Catalog assertions only. Work and edition fields stay separate; labels do not establish controlled authority or physical holdings."
+      },
+      "capture": {
+        "name": "walden-editions",
+        "url": "https://openlibrary.org/works/OL55649W/editions.json?limit=10",
+        "finalUrl": "https://openlibrary.org/works/OL55649W/editions.json?limit=10",
+        "status": 200,
+        "bytes": 7085,
+        "sha256": "37d155394604cc9ceb79452eaf7d5182677040f2680bc19b59ea10969f548f69",
+        "filename": "walden-editions.body",
+        "readOn": "2026-10-23"
+      },
+      "projectionSha256": "669124e223300285b1c1501e9846972aef78e4f00e1b423f5a07069a6125e3d7",
+      "domainIds": [
+        "D24",
+        "D28"
+      ],
+      "selectionScope": "Exact captured record; reported subject strings remain unverified metadata. Original snapshot, not a new refresh."
+    },
+    {
+      "record": {
+        "provider": "crossref",
+        "id": "10.1177/1529100612453266",
+        "kind": "journal-article",
+        "title": "Improving Students’ Learning With Effective Learning Techniques",
+        "container": [
+          "Psychological Science in the Public Interest"
+        ],
+        "publisher": "SAGE Publications",
+        "language": "en",
+        "dates": {
+          "published": {
+            "date-parts": [
+              [
+                2013,
+                1
+              ]
+            ]
+          },
+          "published-print": {
+            "date-parts": [
+              [
+                2013,
+                1
+              ]
+            ]
+          },
+          "published-online": {
+            "date-parts": [
+              [
+                2013,
+                1,
+                8
+              ]
+            ]
+          },
+          "created": {
+            "date-parts": [
+              [
+                2013,
+                1,
+                9
+              ]
+            ],
+            "date-time": "2013-01-09T08:54:23Z"
+          },
+          "deposited": {
+            "date-parts": [
+              [
+                2026,
+                5,
+                2
+              ]
+            ],
+            "date-time": "2026-05-02T05:59:19Z"
+          },
+          "indexed": {
+            "date-parts": [
+              [
+                2026,
+                10,
+                23
+              ]
+            ],
+            "date-time": "2026-10-23T07:09:27Z"
+          }
+        },
+        "url": "https://doi.org/10.1177/1529100612453266",
+        "workRead": false,
+        "scope": "Deposited bibliographic metadata only. Indexing/deposit dates are not publication dates; no abstract, article, clinical conclusion or reuse permission is imported."
+      },
+      "capture": {
+        "url": "https://api.crossref.org/works/10.1177%2F1529100612453266",
+        "finalUrl": "https://api.crossref.org/works/10.1177%2F1529100612453266",
+        "status": 200,
+        "readOn": "2026-10-23",
+        "bytes": 49781,
+        "sha256": "49c844eb882ec530e425920652ca785b43dd3526b951ad7b2ee5659c0c3343c0"
+      },
+      "projectionSha256": "3d4684ee0166ff77451b85bb6514bd8e0cb9a685891782b99071db55f9ea7324",
+      "domainIds": [
+        "D19",
+        "D28"
+      ],
+      "selectionScope": "Article metadata only. The publication, online-publication, deposit and index dates are distinct. Article content was not read for this selection."
+    }
+  ],
+  "rightsScope": "Selected factual bibliographic metadata and original commentary; no abstracts, descriptions, cover art, scans or work text. Metadata licensing does not license the underlying work.",
+  "policies": [
+    {
+      "url": "https://openlibrary.org/developers/api",
+      "readOn": "2026-10-23",
+      "scope": "Single human-initiated lookup; cache responses; no bulk API harvesting; default one request per second. No scheduled requests implemented."
+    },
+    {
+      "url": "https://openlibrary.org/developers/licensing",
+      "readOn": "2026-10-23",
+      "scope": "No new rights asserted by Internet Archive; existing rights/jurisdiction qualifications remain."
+    },
+    {
+      "url": "https://www.crossref.org/documentation/retrieve-metadata/rest-api/",
+      "readOn": "2026-10-23",
+      "scope": "Deposited metadata is discovery evidence; abstract copyright exceptions remain; abstracts excluded."
+    },
+    {
+      "url": "https://www.w3.org/International/questions/qa-lang-why",
+      "readOn": "2026-10-23",
+      "scope": "Document and fragment language tags guide language-sensitive processing; not a translation quality certification."
+    }
+  ],
+  "accessStops": [
+    {
+      "url": "https://www.loc.gov/standards/sru/",
+      "observedOn": "2026-10-23",
+      "reason": "Web reader timed out; no retry or source recovery; SRU adapter not claimed."
+    }
+  ]
+}

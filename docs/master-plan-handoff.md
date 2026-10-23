@@ -4,6 +4,10 @@ Updated 23 October 2026. Work only in `/Users/teodev/.codex/worktrees/universal-
 
 The user removed independent AI, professional, engineering, practitioner, learner and screen-reader review prerequisites for local authoring, acceptance and integration preparation. Continue with real source/model/native checks and exact author-verification records. Historical reviews remain evidence of their original scope; unperformed observations remain unperformed. No new confirmation is needed to continue authorized local work.
 
+## Local completion
+
+The user clarified: finish on their computer, with no public hosting. The installed bundle and `Start Atlas.command` are in `/Users/teodev/Developer/atlas-local/`. Use [the local programme guide](architecture/local-program.md), [current delivery verification](verification/master-plan-local-delivery.md) and [completion delta](integration/master-plan-local.md). There are now 28 current authored lesson identities: 24 pilot lessons plus four general studies, each in English and Spanish. Thirty deeper routes have complete declared prerequisite closure. Two metadata-provider adapters and private practice-note exports are implemented. External partnerships and observed sessions are not fabricated.
+
 ## Current entry points
 
 - [Master plan](../MASTER_PLAN.md): the broad vision, current state and U0–U5.
@@ -62,12 +66,12 @@ node scripts/build-explorations.mjs --check
 node scripts/freeze-exploration-editions.mjs --check
 node scripts/check-journey-plans.mjs
 node scripts/master-plan-status.mjs --as-of 2026-10-23
-node scripts/build-introductory-curriculum.mjs --out /tmp/atlas-fresh-candidate
+node scripts/build-local-program.mjs --out /tmp/atlas-fresh-candidate
 ```
 
 Use a fresh output directory and the actual check date. For new/changed lessons, inspect the sources and artifact, run affected tests, then use `check-local-continuation.mjs --record --date YYYY-MM-DD --evidence docs/verification/NEW-RECEIPT.md`. The receipt must describe actual checks. A content/runtime change needs a new revision before freezing; never edit a frozen receipt, bundle or runtime. Preserve already-valid author receipts. Extend contracts explicitly when a new field or method needs a new payload; do not mislabel a new domain as an existing pilot merely to pass validation.
 
-The independent reviewer queue is no longer a local blocker. Ongoing work is substantive: deeper subject coverage, representative language/place sources, exact classification/catalog evidence, observed practical studies when available, and concrete public-distribution preparation. The plan is open-ended; do not mark all human knowledge complete.
+The independent reviewer queue is no longer a local blocker. Ongoing work is substantive: deeper subject coverage, representative language/place sources, exact classification/catalog evidence, and observed practical studies when available. Public-distribution preparation is outside the user-selected local scope. The local product baseline is complete; continued content growth is open-ended. Do not mark all human knowledge captured.
 
 ## Open decisions that must stay visible
 

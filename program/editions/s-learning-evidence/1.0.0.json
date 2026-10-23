@@ -1,0 +1,171 @@
+{
+  "schemaVersion": 1,
+  "study": {
+    "schemaVersion": 1,
+    "id": "s-learning-evidence",
+    "revision": "1.0.0",
+    "seriesId": "knowledge-foundations",
+    "domainIds": [
+      "D02",
+      "D19",
+      "D28"
+    ],
+    "sourceIds": [
+      "learning",
+      "catalog"
+    ],
+    "author": "atlas-editor",
+    "status": "accepted-local",
+    "languages": [
+      "en",
+      "es"
+    ],
+    "title": {
+      "en": "A learning recommendation is not your result",
+      "es": "Una recomendación educativa no es tu resultado"
+    },
+    "scope": {
+      "en": "Read evidence labels, distinguish dates and design a fairer comparison.",
+      "es": "Lee las etiquetas de evidencia, distingue fechas y diseña una comparación más justa."
+    },
+    "body": {
+      "en": [
+        "The WWC’s 2007 landing page gives different evidence ratings to different recommendations. It assigns moderate evidence to spreading study over time and strong evidence to using quizzes to revisit important content. Those are the guide’s ratings for its scope, not measured outcomes for this atlas.",
+        "Consider an original fictional example: one class scores 8 out of 10 after a practice activity; another scores 6. Their starting knowledge, teacher, assessment conditions and assignment method are unknown. The difference alone cannot isolate the activity’s effect.",
+        "The selected Crossref record reports a January 2013 publication and a 2026 indexing timestamp. Updating an index does not turn the article into a 2026 study."
+      ],
+      "es": [
+        "La página del WWC de 2007 asigna distintos niveles de evidencia a distintas recomendaciones. Indica evidencia moderada para distribuir el estudio en el tiempo y sólida para usar cuestionarios que permitan volver al contenido importante. Son valoraciones de esa guía dentro de su alcance, no resultados medidos de este atlas.",
+        "Considera un ejemplo ficticio original: una clase obtiene 8 de 10 después de una actividad de práctica; otra obtiene 6. Se desconocen los conocimientos iniciales, el docente, las condiciones de evaluación y el método de asignación. La diferencia no permite aislar el efecto de la actividad.",
+        "El registro seleccionado de Crossref indica una publicación de enero de 2013 y una fecha de indexación de 2026. Actualizar un índice no convierte el artículo en un estudio de 2026."
+      ]
+    },
+    "tasks": [
+      {
+        "id": "effect",
+        "answer": "difference",
+        "choices": [
+          {
+            "id": "cause",
+            "en": "The activity caused a 2-point gain",
+            "es": "La actividad causó una mejora de 2 puntos"
+          },
+          {
+            "id": "difference",
+            "en": "The observed scores differ by 2 points",
+            "es": "Las puntuaciones observadas difieren en 2 puntos"
+          }
+        ],
+        "question": {
+          "en": "What can the fictional scores establish?",
+          "es": "¿Qué permiten establecer las puntuaciones ficticias?"
+        },
+        "guide": {
+          "en": "8 − 6 = 2 describes these scores. Assignment and comparison evidence are needed for a causal conclusion.",
+          "es": "8 − 6 = 2 describe estas puntuaciones. Para una conclusión causal hacen falta datos sobre la asignación y la comparación."
+        }
+      },
+      {
+        "id": "date",
+        "answer": "2013",
+        "choices": [
+          {
+            "id": "2013",
+            "en": "2013",
+            "es": "2013"
+          },
+          {
+            "id": "2026",
+            "en": "2026",
+            "es": "2026"
+          }
+        ],
+        "question": {
+          "en": "Which year describes the article’s reported publication?",
+          "es": "¿Qué año corresponde a la publicación indicada del artículo?"
+        },
+        "guide": {
+          "en": "The publication and indexing fields refer to different events. A metadata refresh is not a new experiment.",
+          "es": "Los campos de publicación e indexación se refieren a acontecimientos distintos. Una actualización de metadatos no es un experimento nuevo."
+        }
+      },
+      {
+        "id": "design",
+        "answer": "design",
+        "choices": [
+          {
+            "id": "likes",
+            "en": "Count which activity people prefer",
+            "es": "Contar qué actividad prefieren las personas"
+          },
+          {
+            "id": "design",
+            "en": "Define a common assessment and document how groups are assigned",
+            "es": "Definir una evaluación común y documentar cómo se asignan los grupos"
+          }
+        ],
+        "question": {
+          "en": "Which next step addresses a comparison problem?",
+          "es": "¿Qué paso aborda un problema de comparación?"
+        },
+        "guide": {
+          "en": "Preference may be useful for a different question. A common outcome and an explicit assignment design help assess a learning-effect claim; they do not automatically remove all bias.",
+          "es": "La preferencia puede servir para otra pregunta. Un resultado común y un diseño de asignación explícito ayudan a evaluar un efecto sobre el aprendizaje; no eliminan automáticamente todo sesgo."
+        }
+      }
+    ],
+    "transfer": {
+      "en": "Write a prediction, a delayed explanation task and two alternative explanations for the result. Do not record a learning gain until an actual comparison exists.",
+      "es": "Escribe una predicción, una tarea de explicación diferida y dos explicaciones alternativas del resultado. No registres una mejora de aprendizaje sin una comparación real."
+    },
+    "translationScope": "Original English and Spanish editorial editions checked by the AI author; source titles and provider field values remain in their observed language. No community language validation is claimed.",
+    "authorVerification": {
+      "kind": "author-check",
+      "scope": "local-only",
+      "checkedOn": "2026-10-23",
+      "contentDigest": "600ba275aaa534871b05092c91f63cfccbada15033a44dcf7cd124ee55a806c4",
+      "evidencePath": "docs/verification/local-program-author-check.md"
+    }
+  },
+  "contentDigest": "600ba275aaa534871b05092c91f63cfccbada15033a44dcf7cd124ee55a806c4",
+  "sources": [
+    {
+      "id": "catalog",
+      "title": "Open Library and Crossref: selected metadata",
+      "url": "program/federated-catalog.json",
+      "locator": "Four exact provider records, their separate identities and dates. Works themselves are not imported or read.",
+      "rights": "Metadata fields only; no abstracts, descriptions, media or source text.",
+      "language": "en"
+    },
+    {
+      "id": "learning",
+      "title": "What Works Clearinghouse: Organizing Instruction and Study to Improve Student Learning",
+      "url": "https://ies.ed.gov/ncee/wwc/PracticeGuide/1",
+      "locator": "Read the September 2007 guide landing page, listed recommendations and evidence ratings. Full PDF not inspected here.",
+      "rights": "Original commentary and fictional comparison; no source illustrations or extended quotations.",
+      "language": "en"
+    }
+  ],
+  "codeHashes": {
+    "program/federation.mjs": "7b61347214e74bf75f7a0639eb0f87120babcb61f3502f493ba86f8156aebe5f",
+    "program/learning.mjs": "752365b146b0a8c1f1d83d48048b0a7426efe9e5960820bb908a7aee2e3ba658",
+    "program/render.mjs": "93020e328fe75968e88ec34b99c1288ebe9f1bdb0362582f5262f1a7056c5ddf",
+    "program/ui.mjs": "563ed38e952a6f07b09e69752a4ee8cfe448d25fae0a4a76d735579d1356ba35",
+    "program/archive.mjs": "4507741252509907bf4598e21a7542c66cc753cb401783a834bb9c8103e862bb",
+    "scripts/build-local-program.mjs": "38595afd92f448444bf6c527a45e5203955a608fd72685e36e89423471794874"
+  },
+  "runtime": {
+    "css": ":root{color-scheme:light dark;--bg:#f7f5ef;--fg:#22251f;--muted:#535a52;--line:#c9cec3;--link:#164cad}*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--fg);font:18px/1.65 system-ui,sans-serif}header,main,footer{max-width:74rem;margin:auto;padding:1.3rem}nav{display:flex;gap:.65rem 1.1rem;flex-wrap:wrap}h1{font:clamp(2.1rem,5vw,3.6rem)/1.12 Georgia,serif;max-width:25ch}h2,h3{line-height:1.3}p,li,dd,a{overflow-wrap:anywhere}a{color:var(--link)}.meta{color:var(--muted);font-size:.9rem}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,22rem),1fr));gap:1.5rem}article,section{border-top:1px solid var(--line);padding-top:1rem;margin-top:1.5rem;min-width:0}fieldset{border:1px solid var(--line);margin:1.2rem 0;padding:1rem;min-width:0}legend{font-weight:650;padding:.3rem}label{display:block;margin:.6rem 0}input,textarea,select,button{font:inherit;max-width:100%}input[type=search],textarea,select{width:100%;padding:.5rem}textarea{min-height:8rem}button{padding:.5rem .8rem;cursor:pointer}summary{cursor:pointer;font-weight:650}details{margin:1rem 0}pre{white-space:pre-wrap;overflow-wrap:anywhere;font-size:.9rem}.skip{position:absolute;left:-10000px}.skip:focus{left:1rem;top:1rem;background:var(--bg);padding:.75rem}:focus-visible{outline:3px solid var(--link);outline-offset:4px}table{border-collapse:collapse;width:100%}th,td{border:1px solid var(--line);text-align:left;padding:.5rem;vertical-align:top}.table-scroll{overflow-x:auto}.table-scroll table{min-width:35rem}.pill{display:inline-block;border:1px solid var(--line);padding:.15rem .5rem;border-radius:1rem}footer{font-size:.9rem;color:var(--muted)}@media(prefers-color-scheme:dark){:root{--bg:#121719;--fg:#eeeae1;--muted:#b7c0b6;--line:#45504a;--link:#a9c6ff}}@media print{nav,button,.skip{display:none}body{background:white;color:black}details{display:block}main{max-width:none}}",
+    "ui": "// No network, storage, analytics or shared private-note state.\nfor(const button of document.querySelectorAll('[data-enable]'))button.disabled=false;\nconst text={en:{choose:'Choose a response first.',matches:'This matches the bounded guide.',reconsider:'Reconsider using the guide below.',download:'Downloaded notes; nothing was uploaded.'},es:{choose:'Primero elige una respuesta.',matches:'La respuesta coincide con la guía delimitada.',reconsider:'Reconsidera tu respuesta con la guía siguiente.',download:'Notas descargadas; no se ha enviado nada.'}};\nfor(const form of document.querySelectorAll('[data-study-task]')) form.addEventListener('submit',event=>{event.preventDefault();const choice=new FormData(form).get('choice'),l=text[form.dataset.language];form.querySelector('[data-result]').textContent=!choice?l.choose:choice===form.dataset.answer?l.matches:l.reconsider;});\nfunction download(name,data){const url=URL.createObjectURL(new Blob([JSON.stringify(data,null,2)+'\\n'],{type:'application/json'})),a=document.createElement('a');a.href=url;a.download=name;document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),10000);}\nfor(const button of document.querySelectorAll('[data-export-study]'))button.addEventListener('click',()=>{const {exportStudy:id,revision,language}=button.dataset;download(`${id}-${revision}-${language}-notes.json`,{schemaVersion:1,id,revision,language,notes:document.querySelector('#study-notes').value,scope:'User notes; no assessed outcome or observed mastery.'});document.querySelector('[data-export-status]').textContent=text[language].download;});\nconst search=document.querySelector('[data-catalog-search]'),provider=document.querySelector('[data-catalog-provider]');\nfunction filter(){const q=search.value.trim().toLocaleLowerCase('en'),p=provider.value;let shown=0;for(const card of document.querySelectorAll('[data-provider]')){const visible=(!p||card.dataset.provider===p)&&card.textContent.toLocaleLowerCase('en').includes(q);card.hidden=!visible;if(visible)shown++;}document.querySelector('[data-catalog-count]').textContent=shown+' records shown';}\nsearch?.addEventListener('input',filter);provider?.addEventListener('change',filter);\ndocument.querySelector('[data-practice-form]')?.addEventListener('submit',event=>{event.preventDefault();const form=new FormData(event.currentTarget),data={schemaVersion:1,kind:'self-recorded-practice',activity:form.get('activity'),observation:form.get('observation'),interpretation:form.get('interpretation'),nextAttempt:form.get('nextAttempt'),scope:'User-entered notes; no independent observation, consent, certification or outcome is inferred.'};download('atlas-practice-notes.json',data);document.querySelector('[data-practice-result]').textContent='Downloaded your notes. No data was uploaded or automatically saved.';});\n"
+  },
+  "runtimeDigest": "7797e38fdaa4514a612d38cfd697d67ee69432762a75724bdda6601452576590",
+  "pages": {
+    "en": "<!doctype html><html lang=\"en\"><head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width,initial-scale=1\"><meta name=\"robots\" content=\"noindex,nofollow\"><title>A learning recommendation is not your result · Atlas</title><link rel=\"stylesheet\" href=\"../../../../../assets/program/7797e38fdaa4514a612d38cfd697d67ee69432762a75724bdda6601452576590/style.css\"></head><body><a class=\"skip\" href=\"#main\">Skip to content</a><header><nav aria-label=\"Atlas\"><a href=\"../../../../../start/\">Start</a><a href=\"../../../../../domains/\">Fields</a><a href=\"../../../../../curriculum/\">Starting routes</a><a href=\"../../../../../depth/\">Go deeper</a><a href=\"../../../../../sources/\">Sources</a><a href=\"../../../../../studies/\">New studies</a><a href=\"../../../../../practice/\">Practice notebook</a></nav></header><main id=\"main\" tabindex=\"-1\"><p class=\"meta\">s-learning-evidence · 1.0.0 · Local</p><nav aria-label=\"Language edition\"><a hreflang=\"en\" lang=\"en\" href=\"../en/\" aria-current=\"page\">English</a><a hreflang=\"es\" lang=\"es\" href=\"../es/\">Español</a></nav><h1>A learning recommendation is not your result</h1><p>Read evidence labels, distinguish dates and design a fairer comparison.</p><p>The WWC’s 2007 landing page gives different evidence ratings to different recommendations. It assigns moderate evidence to spreading study over time and strong evidence to using quizzes to revisit important content. Those are the guide’s ratings for its scope, not measured outcomes for this atlas.</p><p>Consider an original fictional example: one class scores 8 out of 10 after a practice activity; another scores 6. Their starting knowledge, teacher, assessment conditions and assignment method are unknown. The difference alone cannot isolate the activity’s effect.</p><p>The selected Crossref record reports a January 2013 publication and a 2026 indexing timestamp. Updating an index does not turn the article into a 2026 study.</p><section id=\"task-effect\"><form data-study-task data-answer=\"difference\" data-language=\"en\"><fieldset><legend>What can the fictional scores establish?</legend><label><input type=\"radio\" name=\"choice\" value=\"cause\"> The activity caused a 2-point gain</label><label><input type=\"radio\" name=\"choice\" value=\"difference\"> The observed scores differ by 2 points</label></fieldset><button type=\"submit\">Check reasoning</button><p data-result role=\"status\" aria-live=\"polite\"></p></form><details><summary>Compare your reasoning</summary><p>8 − 6 = 2 describes these scores. Assignment and comparison evidence are needed for a causal conclusion.</p></details></section><section id=\"task-date\"><form data-study-task data-answer=\"2013\" data-language=\"en\"><fieldset><legend>Which year describes the article’s reported publication?</legend><label><input type=\"radio\" name=\"choice\" value=\"2013\"> 2013</label><label><input type=\"radio\" name=\"choice\" value=\"2026\"> 2026</label></fieldset><button type=\"submit\">Check reasoning</button><p data-result role=\"status\" aria-live=\"polite\"></p></form><details><summary>Compare your reasoning</summary><p>The publication and indexing fields refer to different events. A metadata refresh is not a new experiment.</p></details></section><section id=\"task-design\"><form data-study-task data-answer=\"design\" data-language=\"en\"><fieldset><legend>Which next step addresses a comparison problem?</legend><label><input type=\"radio\" name=\"choice\" value=\"likes\"> Count which activity people prefer</label><label><input type=\"radio\" name=\"choice\" value=\"design\"> Define a common assessment and document how groups are assigned</label></fieldset><button type=\"submit\">Check reasoning</button><p data-result role=\"status\" aria-live=\"polite\"></p></form><details><summary>Compare your reasoning</summary><p>Preference may be useful for a different question. A common outcome and an explicit assignment design help assess a learning-effect claim; they do not automatically remove all bias.</p></details></section><section><h2>Take it further</h2><p>Write a prediction, a delayed explanation task and two alternative explanations for the result. Do not record a learning gain until an actual comparison exists.</p></section><section><h2>Your notes</h2><p>Notes stay on this page until you download them. Nothing is sent or automatically saved.</p><label>Your notes<textarea id=\"study-notes\" maxlength=\"10000\"></textarea></label><button type=\"button\" data-export-study=\"s-learning-evidence\" data-revision=\"1.0.0\" data-language=\"en\">Download notes</button><p data-export-status role=\"status\"></p></section><section><h2>Scope and evidence</h2><p lang=\"en\">Original English and Spanish editorial editions checked by the AI author; source titles and provider field values remain in their observed language. No community language validation is claimed.</p><h2>Source</h2><article lang=\"en\"><h3><a href=\"https://ies.ed.gov/ncee/wwc/PracticeGuide/1\">What Works Clearinghouse: Organizing Instruction and Study to Improve Student Learning</a></h3><p>Read the September 2007 guide landing page, listed recommendations and evidence ratings. Full PDF not inspected here.</p><p>Original commentary and fictional comparison; no source illustrations or extended quotations.</p></article><article lang=\"en\"><h3><a href=\"../../../../../sources/catalog/\">Open Library and Crossref: selected metadata</a></h3><p>Four exact provider records, their separate identities and dates. Works themselves are not imported or read.</p><p>Metadata fields only; no abstracts, descriptions, media or source text.</p></article></section></main><footer>Local edition · AI author checked; no human observation implied</footer><script type=\"module\" src=\"../../../../../assets/program/7797e38fdaa4514a612d38cfd697d67ee69432762a75724bdda6601452576590/ui.mjs\"></script></body></html>\n",
+    "es": "<!doctype html><html lang=\"es\"><head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width,initial-scale=1\"><meta name=\"robots\" content=\"noindex,nofollow\"><title>Una recomendación educativa no es tu resultado · Atlas</title><link rel=\"stylesheet\" href=\"../../../../../assets/program/7797e38fdaa4514a612d38cfd697d67ee69432762a75724bdda6601452576590/style.css\"></head><body><a class=\"skip\" href=\"#main\">Saltar al contenido</a><header><nav aria-label=\"Atlas\"><a href=\"../../../../../start/\">Inicio</a><a href=\"../../../../../domains/\">Áreas</a><a href=\"../../../../../curriculum/\">Rutas iniciales</a><a href=\"../../../../../depth/\">Profundiza</a><a href=\"../../../../../sources/\">Fuentes</a><a href=\"../../../../../studies/\">Nuevos estudios</a><a href=\"../../../../../practice/\">Cuaderno de práctica</a></nav></header><main id=\"main\" tabindex=\"-1\"><p class=\"meta\">s-learning-evidence · 1.0.0 · Local</p><nav aria-label=\"Edición lingüística\"><a hreflang=\"en\" lang=\"en\" href=\"../en/\">English</a><a hreflang=\"es\" lang=\"es\" href=\"../es/\" aria-current=\"page\">Español</a></nav><h1>Una recomendación educativa no es tu resultado</h1><p>Lee las etiquetas de evidencia, distingue fechas y diseña una comparación más justa.</p><p>La página del WWC de 2007 asigna distintos niveles de evidencia a distintas recomendaciones. Indica evidencia moderada para distribuir el estudio en el tiempo y sólida para usar cuestionarios que permitan volver al contenido importante. Son valoraciones de esa guía dentro de su alcance, no resultados medidos de este atlas.</p><p>Considera un ejemplo ficticio original: una clase obtiene 8 de 10 después de una actividad de práctica; otra obtiene 6. Se desconocen los conocimientos iniciales, el docente, las condiciones de evaluación y el método de asignación. La diferencia no permite aislar el efecto de la actividad.</p><p>El registro seleccionado de Crossref indica una publicación de enero de 2013 y una fecha de indexación de 2026. Actualizar un índice no convierte el artículo en un estudio de 2026.</p><section id=\"task-effect\"><form data-study-task data-answer=\"difference\" data-language=\"es\"><fieldset><legend>¿Qué permiten establecer las puntuaciones ficticias?</legend><label><input type=\"radio\" name=\"choice\" value=\"cause\"> La actividad causó una mejora de 2 puntos</label><label><input type=\"radio\" name=\"choice\" value=\"difference\"> Las puntuaciones observadas difieren en 2 puntos</label></fieldset><button type=\"submit\">Comprobar razonamiento</button><p data-result role=\"status\" aria-live=\"polite\"></p></form><details><summary>Compara tu razonamiento</summary><p>8 − 6 = 2 describe estas puntuaciones. Para una conclusión causal hacen falta datos sobre la asignación y la comparación.</p></details></section><section id=\"task-date\"><form data-study-task data-answer=\"2013\" data-language=\"es\"><fieldset><legend>¿Qué año corresponde a la publicación indicada del artículo?</legend><label><input type=\"radio\" name=\"choice\" value=\"2013\"> 2013</label><label><input type=\"radio\" name=\"choice\" value=\"2026\"> 2026</label></fieldset><button type=\"submit\">Comprobar razonamiento</button><p data-result role=\"status\" aria-live=\"polite\"></p></form><details><summary>Compara tu razonamiento</summary><p>Los campos de publicación e indexación se refieren a acontecimientos distintos. Una actualización de metadatos no es un experimento nuevo.</p></details></section><section id=\"task-design\"><form data-study-task data-answer=\"design\" data-language=\"es\"><fieldset><legend>¿Qué paso aborda un problema de comparación?</legend><label><input type=\"radio\" name=\"choice\" value=\"likes\"> Contar qué actividad prefieren las personas</label><label><input type=\"radio\" name=\"choice\" value=\"design\"> Definir una evaluación común y documentar cómo se asignan los grupos</label></fieldset><button type=\"submit\">Comprobar razonamiento</button><p data-result role=\"status\" aria-live=\"polite\"></p></form><details><summary>Compara tu razonamiento</summary><p>La preferencia puede servir para otra pregunta. Un resultado común y un diseño de asignación explícito ayudan a evaluar un efecto sobre el aprendizaje; no eliminan automáticamente todo sesgo.</p></details></section><section><h2>Ve más allá</h2><p>Escribe una predicción, una tarea de explicación diferida y dos explicaciones alternativas del resultado. No registres una mejora de aprendizaje sin una comparación real.</p></section><section><h2>Tus notas</h2><p>Las notas permanecen en esta página hasta que las descargues. No se envían ni se guardan automáticamente.</p><label>Tus notas<textarea id=\"study-notes\" maxlength=\"10000\"></textarea></label><button type=\"button\" data-export-study=\"s-learning-evidence\" data-revision=\"1.0.0\" data-language=\"es\">Descargar notas</button><p data-export-status role=\"status\"></p></section><section><h2>Alcance y evidencia</h2><p lang=\"en\">Original English and Spanish editorial editions checked by the AI author; source titles and provider field values remain in their observed language. No community language validation is claimed.</p><h2>Fuente</h2><article lang=\"en\"><h3><a href=\"https://ies.ed.gov/ncee/wwc/PracticeGuide/1\">What Works Clearinghouse: Organizing Instruction and Study to Improve Student Learning</a></h3><p>Read the September 2007 guide landing page, listed recommendations and evidence ratings. Full PDF not inspected here.</p><p>Original commentary and fictional comparison; no source illustrations or extended quotations.</p></article><article lang=\"en\"><h3><a href=\"../../../../../sources/catalog/\">Open Library and Crossref: selected metadata</a></h3><p>Four exact provider records, their separate identities and dates. Works themselves are not imported or read.</p><p>Metadata fields only; no abstracts, descriptions, media or source text.</p></article></section></main><footer>Edición local · comprobada por el autor de IA; no implica observación humana</footer><script type=\"module\" src=\"../../../../../assets/program/7797e38fdaa4514a612d38cfd697d67ee69432762a75724bdda6601452576590/ui.mjs\"></script></body></html>\n"
+  },
+  "evidence": {
+    "path": "docs/verification/local-program-author-check.md",
+    "sha256": "936ddaee2e60fa5eb0d28d0a329f44919598278e4c544b50727fddb2b055524c",
+    "text": "# Local programme author check — 23 October 2026\n\nFour original studies contain English and Spanish editorial editions and twelve shared reasoning tasks. The author read the stated WWC recommendations/evidence labels, National Gallery account, and OpenStax accounting sections. The selected Crossref record was captured and its publication/deposit/index fields read separately. Earlier Open Library capture hashes matched their retained packet; those are retained observations, not fresh API readings. No source media, abstract or extended quotation is reproduced. The new LOC SRU page timed out and was not retried.\n\nThe first ten offline groups passed: exact accepted depth targets, prerequisite traversal with missing nodes and cycles, language/task completeness, independent study identities and stale-check detection, ledger conservation plus omission/unequal-entry counterexamples, separate provider identities and missing fields, separate Crossref dates and excluded abstracts, bounded retrieval failures without retries, honest practice-note exports, and static/escaped rendering. The original fictional ledger yields cash 810, equipment 240, liabilities 150, equity 900 and assets 1050; omitting the entire borrowing entry still balances and is explicitly wrong.\n\nSpanish is an AI-author editorial edition, not a professionally or community-validated translation. Source metadata remains in its observed language. The National Gallery age discrepancy is excluded from conclusions. The source-reading scope and reuse boundaries are recorded in program/research.json and program/federated-catalog.json.\n\nThese are local author checks, not independent review, certification or observed learning. Native-browser and assembled-delivery evidence will be recorded in a separate delivery receipt after execution. This source receipt is retained unchanged with each new edition.\n"
+  }
+}

@@ -1,0 +1,37 @@
+{
+  "schemaVersion": 1,
+  "editions": [
+    {
+      "path": "program/editions/s-information-records/1.0.0.json",
+      "sha256": "ec657200a2759c1be3cf15886af7facf5417526a998f7a0d6f2e8c899076a04d"
+    },
+    {
+      "path": "program/editions/s-learning-evidence/1.0.0.json",
+      "sha256": "1eb3f997114df41053512a382ea00166a109f34d2c72d41934b8da8eb1ebb38b"
+    },
+    {
+      "path": "program/editions/s-accounting-records/1.0.0.json",
+      "sha256": "fb8f529e9234425d5800c07fa3806270ff6fc0421919879ea517f53cf9ed62d1"
+    },
+    {
+      "path": "program/editions/s-art-interpretation/1.0.0.json",
+      "sha256": "d66806d4903424f022064cd148f1fe89e381eee31bf1a0589177182a9f31cfc9"
+    },
+    {
+      "path": "program/editions/s-information-records/1.0.1.json",
+      "sha256": "8ac8a484cef33d51228975e9417620dbdc65aaa8ddbe9af0da43d3f7aa8eea25"
+    },
+    {
+      "path": "program/editions/s-learning-evidence/1.0.1.json",
+      "sha256": "697ea29ea71c69822774e0cfec989578021d76b862cd0465117f78560d293046"
+    },
+    {
+      "path": "program/editions/s-accounting-records/1.0.1.json",
+      "sha256": "00a5971f4b0c8337eee926e4a22ea38a82c1e51236314419d6ed57dc930f931b"
+    },
+    {
+      "path": "program/editions/s-art-interpretation/1.0.1.json",
+      "sha256": "b71e197f53108eeff812c75212d1ac1974269d628fe866ae160524da5d6dcd50"
+    }
+  ]
+}

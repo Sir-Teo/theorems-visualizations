@@ -1,0 +1,164 @@
+{
+  "schemaVersion": 1,
+  "study": {
+    "schemaVersion": 1,
+    "id": "s-information-records",
+    "revision": "1.0.0",
+    "seriesId": "knowledge-foundations",
+    "domainIds": [
+      "D24",
+      "D28"
+    ],
+    "sourceIds": [
+      "catalog"
+    ],
+    "author": "atlas-editor",
+    "status": "accepted-local",
+    "languages": [
+      "en",
+      "es"
+    ],
+    "title": {
+      "en": "One work, several records",
+      "es": "Una obra, varios registros"
+    },
+    "scope": {
+      "en": "Distinguish a work, an edition, a subject label and a physical holding.",
+      "es": "Distingue una obra, una edición, una etiqueta temática y un ejemplar localizado."
+    },
+    "body": {
+      "en": [
+        "The captured Open Library work /works/OL55649W is linked to distinct editions. The edition /books/OL26429580M reports 1854 and two subject labels. The edition /books/OL34549556M reports 2018 and an LC classification value. Neither observation establishes where a physical copy is held.",
+        "A missing classification field means that this captured record omits the field. It does not mean the book has no classification anywhere. The record’s subject strings also provide no inspected authority identifiers."
+      ],
+      "es": [
+        "La obra /works/OL55649W de Open Library está vinculada a ediciones distintas. La edición /books/OL26429580M indica 1854 y dos etiquetas temáticas. La edición /books/OL34549556M indica 2018 y un valor de clasificación LC. Ninguna observación establece dónde se encuentra un ejemplar físico.",
+        "La ausencia del campo de clasificación significa que el registro capturado no lo incluye. No significa que el libro carezca de clasificación en todos los catálogos. Tampoco se inspeccionaron identificadores de autoridad para sus etiquetas temáticas."
+      ]
+    },
+    "tasks": [
+      {
+        "id": "edition",
+        "answer": "new",
+        "choices": [
+          {
+            "id": "old",
+            "en": "The 1854 edition",
+            "es": "La edición de 1854"
+          },
+          {
+            "id": "new",
+            "en": "The 2018 edition",
+            "es": "La edición de 2018"
+          },
+          {
+            "id": "all",
+            "en": "All editions automatically",
+            "es": "Todas las ediciones automáticamente"
+          }
+        ],
+        "question": {
+          "en": "Which record reports the LC value?",
+          "es": "¿Qué registro indica el valor LC?"
+        },
+        "guide": {
+          "en": "Only /books/OL34549556M reports PS3048.A1 2018 in this capture. Do not copy it into other records.",
+          "es": "Solo /books/OL34549556M indica PS3048.A1 2018 en esta captura. No lo copies a otros registros."
+        }
+      },
+      {
+        "id": "absence",
+        "answer": "local",
+        "choices": [
+          {
+            "id": "none",
+            "en": "No library classified the work",
+            "es": "Ninguna biblioteca clasificó la obra"
+          },
+          {
+            "id": "local",
+            "en": "This captured record omits the field",
+            "es": "Este registro capturado no incluye el campo"
+          }
+        ],
+        "question": {
+          "en": "What follows from an absent field?",
+          "es": "¿Qué se deduce de un campo ausente?"
+        },
+        "guide": {
+          "en": "Absence is record-specific. A present empty array would be a different observation.",
+          "es": "La ausencia corresponde a este registro. Un arreglo presente pero vacío sería una observación diferente."
+        }
+      },
+      {
+        "id": "holding",
+        "answer": "no",
+        "choices": [
+          {
+            "id": "yes",
+            "en": "Yes, it is a shelf address",
+            "es": "Sí, es una ubicación en la estantería"
+          },
+          {
+            "id": "no",
+            "en": "No; institution and holdings evidence are missing",
+            "es": "No; faltan la institución y los datos de existencias"
+          }
+        ],
+        "question": {
+          "en": "Does a classification value locate an available copy?",
+          "es": "¿Un valor de clasificación localiza un ejemplar disponible?"
+        },
+        "guide": {
+          "en": "A classification is not verified holdings or availability. Keep the unknown fields unknown.",
+          "es": "Una clasificación no verifica existencias ni disponibilidad. Conserva como desconocidos los campos que no se han comprobado."
+        }
+      }
+    ],
+    "transfer": {
+      "en": "Choose two records for another work. Write separately what each reports, what they share and what you still cannot infer.",
+      "es": "Elige dos registros de otra obra. Escribe por separado qué indica cada uno, qué comparten y qué todavía no puedes inferir."
+    },
+    "translationScope": "Original English and Spanish editorial editions checked by the AI author; source titles and provider field values remain in their observed language. No community language validation is claimed.",
+    "authorVerification": {
+      "kind": "author-check",
+      "scope": "local-only",
+      "checkedOn": "2026-10-23",
+      "contentDigest": "e1c3497ef2791f7f857ec3be1094765541d421b1793b46345e4ce9d987ef85c2",
+      "evidencePath": "docs/verification/local-program-author-check.md"
+    }
+  },
+  "contentDigest": "e1c3497ef2791f7f857ec3be1094765541d421b1793b46345e4ce9d987ef85c2",
+  "sources": [
+    {
+      "id": "catalog",
+      "title": "Open Library and Crossref: selected metadata",
+      "url": "program/federated-catalog.json",
+      "locator": "Four exact provider records, their separate identities and dates. Works themselves are not imported or read.",
+      "rights": "Metadata fields only; no abstracts, descriptions, media or source text.",
+      "language": "en"
+    }
+  ],
+  "codeHashes": {
+    "program/federation.mjs": "7b61347214e74bf75f7a0639eb0f87120babcb61f3502f493ba86f8156aebe5f",
+    "program/learning.mjs": "752365b146b0a8c1f1d83d48048b0a7426efe9e5960820bb908a7aee2e3ba658",
+    "program/render.mjs": "93020e328fe75968e88ec34b99c1288ebe9f1bdb0362582f5262f1a7056c5ddf",
+    "program/ui.mjs": "563ed38e952a6f07b09e69752a4ee8cfe448d25fae0a4a76d735579d1356ba35",
+    "program/archive.mjs": "4507741252509907bf4598e21a7542c66cc753cb401783a834bb9c8103e862bb",
+    "scripts/build-local-program.mjs": "38595afd92f448444bf6c527a45e5203955a608fd72685e36e89423471794874"
+  },
+  "runtime": {
+    "css": ":root{color-scheme:light dark;--bg:#f7f5ef;--fg:#22251f;--muted:#535a52;--line:#c9cec3;--link:#164cad}*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--fg);font:18px/1.65 system-ui,sans-serif}header,main,footer{max-width:74rem;margin:auto;padding:1.3rem}nav{display:flex;gap:.65rem 1.1rem;flex-wrap:wrap}h1{font:clamp(2.1rem,5vw,3.6rem)/1.12 Georgia,serif;max-width:25ch}h2,h3{line-height:1.3}p,li,dd,a{overflow-wrap:anywhere}a{color:var(--link)}.meta{color:var(--muted);font-size:.9rem}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,22rem),1fr));gap:1.5rem}article,section{border-top:1px solid var(--line);padding-top:1rem;margin-top:1.5rem;min-width:0}fieldset{border:1px solid var(--line);margin:1.2rem 0;padding:1rem;min-width:0}legend{font-weight:650;padding:.3rem}label{display:block;margin:.6rem 0}input,textarea,select,button{font:inherit;max-width:100%}input[type=search],textarea,select{width:100%;padding:.5rem}textarea{min-height:8rem}button{padding:.5rem .8rem;cursor:pointer}summary{cursor:pointer;font-weight:650}details{margin:1rem 0}pre{white-space:pre-wrap;overflow-wrap:anywhere;font-size:.9rem}.skip{position:absolute;left:-10000px}.skip:focus{left:1rem;top:1rem;background:var(--bg);padding:.75rem}:focus-visible{outline:3px solid var(--link);outline-offset:4px}table{border-collapse:collapse;width:100%}th,td{border:1px solid var(--line);text-align:left;padding:.5rem;vertical-align:top}.table-scroll{overflow-x:auto}.table-scroll table{min-width:35rem}.pill{display:inline-block;border:1px solid var(--line);padding:.15rem .5rem;border-radius:1rem}footer{font-size:.9rem;color:var(--muted)}@media(prefers-color-scheme:dark){:root{--bg:#121719;--fg:#eeeae1;--muted:#b7c0b6;--line:#45504a;--link:#a9c6ff}}@media print{nav,button,.skip{display:none}body{background:white;color:black}details{display:block}main{max-width:none}}",
+    "ui": "// No network, storage, analytics or shared private-note state.\nfor(const button of document.querySelectorAll('[data-enable]'))button.disabled=false;\nconst text={en:{choose:'Choose a response first.',matches:'This matches the bounded guide.',reconsider:'Reconsider using the guide below.',download:'Downloaded notes; nothing was uploaded.'},es:{choose:'Primero elige una respuesta.',matches:'La respuesta coincide con la guía delimitada.',reconsider:'Reconsidera tu respuesta con la guía siguiente.',download:'Notas descargadas; no se ha enviado nada.'}};\nfor(const form of document.querySelectorAll('[data-study-task]')) form.addEventListener('submit',event=>{event.preventDefault();const choice=new FormData(form).get('choice'),l=text[form.dataset.language];form.querySelector('[data-result]').textContent=!choice?l.choose:choice===form.dataset.answer?l.matches:l.reconsider;});\nfunction download(name,data){const url=URL.createObjectURL(new Blob([JSON.stringify(data,null,2)+'\\n'],{type:'application/json'})),a=document.createElement('a');a.href=url;a.download=name;document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),10000);}\nfor(const button of document.querySelectorAll('[data-export-study]'))button.addEventListener('click',()=>{const {exportStudy:id,revision,language}=button.dataset;download(`${id}-${revision}-${language}-notes.json`,{schemaVersion:1,id,revision,language,notes:document.querySelector('#study-notes').value,scope:'User notes; no assessed outcome or observed mastery.'});document.querySelector('[data-export-status]').textContent=text[language].download;});\nconst search=document.querySelector('[data-catalog-search]'),provider=document.querySelector('[data-catalog-provider]');\nfunction filter(){const q=search.value.trim().toLocaleLowerCase('en'),p=provider.value;let shown=0;for(const card of document.querySelectorAll('[data-provider]')){const visible=(!p||card.dataset.provider===p)&&card.textContent.toLocaleLowerCase('en').includes(q);card.hidden=!visible;if(visible)shown++;}document.querySelector('[data-catalog-count]').textContent=shown+' records shown';}\nsearch?.addEventListener('input',filter);provider?.addEventListener('change',filter);\ndocument.querySelector('[data-practice-form]')?.addEventListener('submit',event=>{event.preventDefault();const form=new FormData(event.currentTarget),data={schemaVersion:1,kind:'self-recorded-practice',activity:form.get('activity'),observation:form.get('observation'),interpretation:form.get('interpretation'),nextAttempt:form.get('nextAttempt'),scope:'User-entered notes; no independent observation, consent, certification or outcome is inferred.'};download('atlas-practice-notes.json',data);document.querySelector('[data-practice-result]').textContent='Downloaded your notes. No data was uploaded or automatically saved.';});\n"
+  },
+  "runtimeDigest": "7797e38fdaa4514a612d38cfd697d67ee69432762a75724bdda6601452576590",
+  "pages": {
+    "en": "<!doctype html><html lang=\"en\"><head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width,initial-scale=1\"><meta name=\"robots\" content=\"noindex,nofollow\"><title>One work, several records · Atlas</title><link rel=\"stylesheet\" href=\"../../../../../assets/program/7797e38fdaa4514a612d38cfd697d67ee69432762a75724bdda6601452576590/style.css\"></head><body><a class=\"skip\" href=\"#main\">Skip to content</a><header><nav aria-label=\"Atlas\"><a href=\"../../../../../start/\">Start</a><a href=\"../../../../../domains/\">Fields</a><a href=\"../../../../../curriculum/\">Starting routes</a><a href=\"../../../../../depth/\">Go deeper</a><a href=\"../../../../../sources/\">Sources</a><a href=\"../../../../../studies/\">New studies</a><a href=\"../../../../../practice/\">Practice notebook</a></nav></header><main id=\"main\" tabindex=\"-1\"><p class=\"meta\">s-information-records · 1.0.0 · Local</p><nav aria-label=\"Language edition\"><a hreflang=\"en\" lang=\"en\" href=\"../en/\" aria-current=\"page\">English</a><a hreflang=\"es\" lang=\"es\" href=\"../es/\">Español</a></nav><h1>One work, several records</h1><p>Distinguish a work, an edition, a subject label and a physical holding.</p><p>The captured Open Library work /works/OL55649W is linked to distinct editions. The edition /books/OL26429580M reports 1854 and two subject labels. The edition /books/OL34549556M reports 2018 and an LC classification value. Neither observation establishes where a physical copy is held.</p><p>A missing classification field means that this captured record omits the field. It does not mean the book has no classification anywhere. The record’s subject strings also provide no inspected authority identifiers.</p><section id=\"task-edition\"><form data-study-task data-answer=\"new\" data-language=\"en\"><fieldset><legend>Which record reports the LC value?</legend><label><input type=\"radio\" name=\"choice\" value=\"old\"> The 1854 edition</label><label><input type=\"radio\" name=\"choice\" value=\"new\"> The 2018 edition</label><label><input type=\"radio\" name=\"choice\" value=\"all\"> All editions automatically</label></fieldset><button type=\"submit\">Check reasoning</button><p data-result role=\"status\" aria-live=\"polite\"></p></form><details><summary>Compare your reasoning</summary><p>Only /books/OL34549556M reports PS3048.A1 2018 in this capture. Do not copy it into other records.</p></details></section><section id=\"task-absence\"><form data-study-task data-answer=\"local\" data-language=\"en\"><fieldset><legend>What follows from an absent field?</legend><label><input type=\"radio\" name=\"choice\" value=\"none\"> No library classified the work</label><label><input type=\"radio\" name=\"choice\" value=\"local\"> This captured record omits the field</label></fieldset><button type=\"submit\">Check reasoning</button><p data-result role=\"status\" aria-live=\"polite\"></p></form><details><summary>Compare your reasoning</summary><p>Absence is record-specific. A present empty array would be a different observation.</p></details></section><section id=\"task-holding\"><form data-study-task data-answer=\"no\" data-language=\"en\"><fieldset><legend>Does a classification value locate an available copy?</legend><label><input type=\"radio\" name=\"choice\" value=\"yes\"> Yes, it is a shelf address</label><label><input type=\"radio\" name=\"choice\" value=\"no\"> No; institution and holdings evidence are missing</label></fieldset><button type=\"submit\">Check reasoning</button><p data-result role=\"status\" aria-live=\"polite\"></p></form><details><summary>Compare your reasoning</summary><p>A classification is not verified holdings or availability. Keep the unknown fields unknown.</p></details></section><section><h2>Take it further</h2><p>Choose two records for another work. Write separately what each reports, what they share and what you still cannot infer.</p></section><section><h2>Your notes</h2><p>Notes stay on this page until you download them. Nothing is sent or automatically saved.</p><label>Your notes<textarea id=\"study-notes\" maxlength=\"10000\"></textarea></label><button type=\"button\" data-export-study=\"s-information-records\" data-revision=\"1.0.0\" data-language=\"en\">Download notes</button><p data-export-status role=\"status\"></p></section><section><h2>Scope and evidence</h2><p lang=\"en\">Original English and Spanish editorial editions checked by the AI author; source titles and provider field values remain in their observed language. No community language validation is claimed.</p><h2>Source</h2><article lang=\"en\"><h3><a href=\"../../../../../sources/catalog/\">Open Library and Crossref: selected metadata</a></h3><p>Four exact provider records, their separate identities and dates. Works themselves are not imported or read.</p><p>Metadata fields only; no abstracts, descriptions, media or source text.</p></article></section></main><footer>Local edition · AI author checked; no human observation implied</footer><script type=\"module\" src=\"../../../../../assets/program/7797e38fdaa4514a612d38cfd697d67ee69432762a75724bdda6601452576590/ui.mjs\"></script></body></html>\n",
+    "es": "<!doctype html><html lang=\"es\"><head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width,initial-scale=1\"><meta name=\"robots\" content=\"noindex,nofollow\"><title>Una obra, varios registros · Atlas</title><link rel=\"stylesheet\" href=\"../../../../../assets/program/7797e38fdaa4514a612d38cfd697d67ee69432762a75724bdda6601452576590/style.css\"></head><body><a class=\"skip\" href=\"#main\">Saltar al contenido</a><header><nav aria-label=\"Atlas\"><a href=\"../../../../../start/\">Inicio</a><a href=\"../../../../../domains/\">Áreas</a><a href=\"../../../../../curriculum/\">Rutas iniciales</a><a href=\"../../../../../depth/\">Profundiza</a><a href=\"../../../../../sources/\">Fuentes</a><a href=\"../../../../../studies/\">Nuevos estudios</a><a href=\"../../../../../practice/\">Cuaderno de práctica</a></nav></header><main id=\"main\" tabindex=\"-1\"><p class=\"meta\">s-information-records · 1.0.0 · Local</p><nav aria-label=\"Edición lingüística\"><a hreflang=\"en\" lang=\"en\" href=\"../en/\">English</a><a hreflang=\"es\" lang=\"es\" href=\"../es/\" aria-current=\"page\">Español</a></nav><h1>Una obra, varios registros</h1><p>Distingue una obra, una edición, una etiqueta temática y un ejemplar localizado.</p><p>La obra /works/OL55649W de Open Library está vinculada a ediciones distintas. La edición /books/OL26429580M indica 1854 y dos etiquetas temáticas. La edición /books/OL34549556M indica 2018 y un valor de clasificación LC. Ninguna observación establece dónde se encuentra un ejemplar físico.</p><p>La ausencia del campo de clasificación significa que el registro capturado no lo incluye. No significa que el libro carezca de clasificación en todos los catálogos. Tampoco se inspeccionaron identificadores de autoridad para sus etiquetas temáticas.</p><section id=\"task-edition\"><form data-study-task data-answer=\"new\" data-language=\"es\"><fieldset><legend>¿Qué registro indica el valor LC?</legend><label><input type=\"radio\" name=\"choice\" value=\"old\"> La edición de 1854</label><label><input type=\"radio\" name=\"choice\" value=\"new\"> La edición de 2018</label><label><input type=\"radio\" name=\"choice\" value=\"all\"> Todas las ediciones automáticamente</label></fieldset><button type=\"submit\">Comprobar razonamiento</button><p data-result role=\"status\" aria-live=\"polite\"></p></form><details><summary>Compara tu razonamiento</summary><p>Solo /books/OL34549556M indica PS3048.A1 2018 en esta captura. No lo copies a otros registros.</p></details></section><section id=\"task-absence\"><form data-study-task data-answer=\"local\" data-language=\"es\"><fieldset><legend>¿Qué se deduce de un campo ausente?</legend><label><input type=\"radio\" name=\"choice\" value=\"none\"> Ninguna biblioteca clasificó la obra</label><label><input type=\"radio\" name=\"choice\" value=\"local\"> Este registro capturado no incluye el campo</label></fieldset><button type=\"submit\">Comprobar razonamiento</button><p data-result role=\"status\" aria-live=\"polite\"></p></form><details><summary>Compara tu razonamiento</summary><p>La ausencia corresponde a este registro. Un arreglo presente pero vacío sería una observación diferente.</p></details></section><section id=\"task-holding\"><form data-study-task data-answer=\"no\" data-language=\"es\"><fieldset><legend>¿Un valor de clasificación localiza un ejemplar disponible?</legend><label><input type=\"radio\" name=\"choice\" value=\"yes\"> Sí, es una ubicación en la estantería</label><label><input type=\"radio\" name=\"choice\" value=\"no\"> No; faltan la institución y los datos de existencias</label></fieldset><button type=\"submit\">Comprobar razonamiento</button><p data-result role=\"status\" aria-live=\"polite\"></p></form><details><summary>Compara tu razonamiento</summary><p>Una clasificación no verifica existencias ni disponibilidad. Conserva como desconocidos los campos que no se han comprobado.</p></details></section><section><h2>Ve más allá</h2><p>Elige dos registros de otra obra. Escribe por separado qué indica cada uno, qué comparten y qué todavía no puedes inferir.</p></section><section><h2>Tus notas</h2><p>Las notas permanecen en esta página hasta que las descargues. No se envían ni se guardan automáticamente.</p><label>Tus notas<textarea id=\"study-notes\" maxlength=\"10000\"></textarea></label><button type=\"button\" data-export-study=\"s-information-records\" data-revision=\"1.0.0\" data-language=\"es\">Descargar notas</button><p data-export-status role=\"status\"></p></section><section><h2>Alcance y evidencia</h2><p lang=\"en\">Original English and Spanish editorial editions checked by the AI author; source titles and provider field values remain in their observed language. No community language validation is claimed.</p><h2>Fuente</h2><article lang=\"en\"><h3><a href=\"../../../../../sources/catalog/\">Open Library and Crossref: selected metadata</a></h3><p>Four exact provider records, their separate identities and dates. Works themselves are not imported or read.</p><p>Metadata fields only; no abstracts, descriptions, media or source text.</p></article></section></main><footer>Edición local · comprobada por el autor de IA; no implica observación humana</footer><script type=\"module\" src=\"../../../../../assets/program/7797e38fdaa4514a612d38cfd697d67ee69432762a75724bdda6601452576590/ui.mjs\"></script></body></html>\n"
+  },
+  "evidence": {
+    "path": "docs/verification/local-program-author-check.md",
+    "sha256": "936ddaee2e60fa5eb0d28d0a329f44919598278e4c544b50727fddb2b055524c",
+    "text": "# Local programme author check — 23 October 2026\n\nFour original studies contain English and Spanish editorial editions and twelve shared reasoning tasks. The author read the stated WWC recommendations/evidence labels, National Gallery account, and OpenStax accounting sections. The selected Crossref record was captured and its publication/deposit/index fields read separately. Earlier Open Library capture hashes matched their retained packet; those are retained observations, not fresh API readings. No source media, abstract or extended quotation is reproduced. The new LOC SRU page timed out and was not retried.\n\nThe first ten offline groups passed: exact accepted depth targets, prerequisite traversal with missing nodes and cycles, language/task completeness, independent study identities and stale-check detection, ledger conservation plus omission/unequal-entry counterexamples, separate provider identities and missing fields, separate Crossref dates and excluded abstracts, bounded retrieval failures without retries, honest practice-note exports, and static/escaped rendering. The original fictional ledger yields cash 810, equipment 240, liabilities 150, equity 900 and assets 1050; omitting the entire borrowing entry still balances and is explicitly wrong.\n\nSpanish is an AI-author editorial edition, not a professionally or community-validated translation. Source metadata remains in its observed language. The National Gallery age discrepancy is excluded from conclusions. The source-reading scope and reuse boundaries are recorded in program/research.json and program/federated-catalog.json.\n\nThese are local author checks, not independent review, certification or observed learning. Native-browser and assembled-delivery evidence will be recorded in a separate delivery receipt after execution. This source receipt is retained unchanged with each new edition.\n"
+  }
+}

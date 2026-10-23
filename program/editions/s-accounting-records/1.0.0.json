@@ -1,0 +1,166 @@
+{
+  "schemaVersion": 1,
+  "study": {
+    "schemaVersion": 1,
+    "id": "s-accounting-records",
+    "revision": "1.0.0",
+    "seriesId": "knowledge-foundations",
+    "domainIds": [
+      "D13",
+      "D14"
+    ],
+    "sourceIds": [
+      "accounting"
+    ],
+    "author": "atlas-editor",
+    "status": "accepted-local",
+    "languages": [
+      "en",
+      "es"
+    ],
+    "title": {
+      "en": "A balanced ledger can still be wrong",
+      "es": "Un registro equilibrado puede contener errores"
+    },
+    "scope": {
+      "en": "A fictional three-event ledger in abstract currency units; no tax, investment or reporting advice.",
+      "es": "Un registro ficticio de tres acontecimientos en unidades monetarias abstractas; no ofrece asesoramiento fiscal, de inversión ni de presentación de cuentas."
+    },
+    "body": {
+      "en": [
+        "Start with zero balances. An owner contributes 900 units in cash. The business buys equipment for 240 cash. It then borrows 150 cash. There is no revenue, expense, interest, depreciation or tax in this deliberately limited period.",
+        "Record the contribution as debit cash 900, credit owner capital 900. Record the purchase as debit equipment 240, credit cash 240. Record borrowing as debit cash 150, credit loan payable 150. Debits and credits are two sides of entries, not general synonyms for good/bad or cash in/out.",
+        "Ending cash is 810; equipment is 240. Assets are 1050, liabilities 150 and equity 900, so assets equal liabilities plus equity. Equal debit and credit totals cannot detect every error: omitting the whole loan transaction leaves both sides balanced but wrong."
+      ],
+      "es": [
+        "Parte de saldos nulos. Una persona propietaria aporta 900 unidades en efectivo. La empresa compra equipo por 240 en efectivo. Después recibe un préstamo de 150 en efectivo. En este período deliberadamente limitado no hay ingresos, gastos, intereses, depreciación ni impuestos.",
+        "Registra el aporte como débito a efectivo de 900 y crédito a capital de 900. Registra la compra como débito a equipo de 240 y crédito a efectivo de 240. Registra el préstamo como débito a efectivo de 150 y crédito a préstamo por pagar de 150. Débito y crédito son lados de los asientos, no sinónimos generales de bueno/malo ni de entrada/salida de efectivo.",
+        "El efectivo final es 810 y el equipo, 240. Los activos son 1050, los pasivos 150 y el patrimonio 900: activos igual a pasivos más patrimonio. La igualdad de débitos y créditos no detecta todos los errores: omitir el préstamo completo mantiene el equilibrio, pero produce un registro incorrecto."
+      ]
+    },
+    "tasks": [
+      {
+        "id": "cash",
+        "answer": "810",
+        "choices": [
+          {
+            "id": "810",
+            "en": "810",
+            "es": "810"
+          },
+          {
+            "id": "1050",
+            "en": "1050",
+            "es": "1050"
+          },
+          {
+            "id": "660",
+            "en": "660",
+            "es": "660"
+          }
+        ],
+        "question": {
+          "en": "What is ending cash?",
+          "es": "¿Cuál es el efectivo final?"
+        },
+        "guide": {
+          "en": "900 − 240 + 150 = 810. Equipment remains a separate asset in this model.",
+          "es": "900 − 240 + 150 = 810. El equipo sigue siendo un activo distinto en este modelo."
+        }
+      },
+      {
+        "id": "assets",
+        "answer": "exchange",
+        "choices": [
+          {
+            "id": "loss",
+            "en": "Total assets fall by 240",
+            "es": "Los activos totales disminuyen en 240"
+          },
+          {
+            "id": "exchange",
+            "en": "One asset falls and another rises by 240",
+            "es": "Un activo disminuye y otro aumenta en 240"
+          }
+        ],
+        "question": {
+          "en": "What changes when equipment is bought for cash?",
+          "es": "¿Qué cambia al comprar equipo en efectivo?"
+        },
+        "guide": {
+          "en": "Cash becomes equipment at the stipulated recorded amount. This exercise does not model depreciation, impairment or measurement disputes.",
+          "es": "El efectivo se convierte en equipo por el importe registrado estipulado. El ejercicio no modela depreciación, deterioro ni disputas de medición."
+        }
+      },
+      {
+        "id": "balance",
+        "answer": "no",
+        "choices": [
+          {
+            "id": "yes",
+            "en": "Yes",
+            "es": "Sí"
+          },
+          {
+            "id": "no",
+            "en": "No",
+            "es": "No"
+          }
+        ],
+        "question": {
+          "en": "Does a balanced trial balance prove all events were recorded correctly?",
+          "es": "¿Un balance de comprobación equilibrado demuestra que todos los acontecimientos se registraron correctamente?"
+        },
+        "guide": {
+          "en": "Omitting both sides of the 150 loan leaves equality intact. Compare records with actual source documents, not just totals.",
+          "es": "Omitir ambos lados del préstamo de 150 mantiene la igualdad. Compara los registros con documentos fuente reales, no solo con los totales."
+        }
+      }
+    ],
+    "transfer": {
+      "en": "Invent one complete omission and one unequal entry. Explain which is detected by balancing and which needs a source-document check.",
+      "es": "Inventa una omisión completa y un asiento desigual. Explica cuál se detecta al comprobar el equilibrio y cuál requiere revisar los documentos fuente."
+    },
+    "translationScope": "Original English and Spanish editorial editions checked by the AI author; source titles and provider field values remain in their observed language. No community language validation is claimed.",
+    "authorVerification": {
+      "kind": "author-check",
+      "scope": "local-only",
+      "checkedOn": "2026-10-23",
+      "contentDigest": "785bf25c58f0b6a1670780f07d49bc32c47ea3c14dcbb3755091012e717ef23b",
+      "evidencePath": "docs/verification/local-program-author-check.md"
+    }
+  },
+  "contentDigest": "785bf25c58f0b6a1670780f07d49bc32c47ea3c14dcbb3755091012e717ef23b",
+  "sources": [
+    {
+      "id": "accounting",
+      "title": "OpenStax, Principles of Accounting, Volume 1, §§3.3–3.5",
+      "url": "https://openstax.org/books/principles-financial-accounting/pages/3-5-use-journal-entries-to-record-transactions-and-post-to-t-accounts",
+      "locator": "Read journal/ledger distinctions, debit-credit equality and account effects in §§3.3, 3.4 and 3.5. Scope excludes other financial-reporting standards and actual business decisions.",
+      "rights": "Original numbers, ledger and questions; no source examples, illustrations or prose copied. Site displays CC BY-NC-SA and additional use notices; no blanket reuse permission asserted.",
+      "language": "en"
+    }
+  ],
+  "codeHashes": {
+    "program/federation.mjs": "7b61347214e74bf75f7a0639eb0f87120babcb61f3502f493ba86f8156aebe5f",
+    "program/learning.mjs": "752365b146b0a8c1f1d83d48048b0a7426efe9e5960820bb908a7aee2e3ba658",
+    "program/render.mjs": "93020e328fe75968e88ec34b99c1288ebe9f1bdb0362582f5262f1a7056c5ddf",
+    "program/ui.mjs": "563ed38e952a6f07b09e69752a4ee8cfe448d25fae0a4a76d735579d1356ba35",
+    "program/archive.mjs": "4507741252509907bf4598e21a7542c66cc753cb401783a834bb9c8103e862bb",
+    "scripts/build-local-program.mjs": "38595afd92f448444bf6c527a45e5203955a608fd72685e36e89423471794874"
+  },
+  "runtime": {
+    "css": ":root{color-scheme:light dark;--bg:#f7f5ef;--fg:#22251f;--muted:#535a52;--line:#c9cec3;--link:#164cad}*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--fg);font:18px/1.65 system-ui,sans-serif}header,main,footer{max-width:74rem;margin:auto;padding:1.3rem}nav{display:flex;gap:.65rem 1.1rem;flex-wrap:wrap}h1{font:clamp(2.1rem,5vw,3.6rem)/1.12 Georgia,serif;max-width:25ch}h2,h3{line-height:1.3}p,li,dd,a{overflow-wrap:anywhere}a{color:var(--link)}.meta{color:var(--muted);font-size:.9rem}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,22rem),1fr));gap:1.5rem}article,section{border-top:1px solid var(--line);padding-top:1rem;margin-top:1.5rem;min-width:0}fieldset{border:1px solid var(--line);margin:1.2rem 0;padding:1rem;min-width:0}legend{font-weight:650;padding:.3rem}label{display:block;margin:.6rem 0}input,textarea,select,button{font:inherit;max-width:100%}input[type=search],textarea,select{width:100%;padding:.5rem}textarea{min-height:8rem}button{padding:.5rem .8rem;cursor:pointer}summary{cursor:pointer;font-weight:650}details{margin:1rem 0}pre{white-space:pre-wrap;overflow-wrap:anywhere;font-size:.9rem}.skip{position:absolute;left:-10000px}.skip:focus{left:1rem;top:1rem;background:var(--bg);padding:.75rem}:focus-visible{outline:3px solid var(--link);outline-offset:4px}table{border-collapse:collapse;width:100%}th,td{border:1px solid var(--line);text-align:left;padding:.5rem;vertical-align:top}.table-scroll{overflow-x:auto}.table-scroll table{min-width:35rem}.pill{display:inline-block;border:1px solid var(--line);padding:.15rem .5rem;border-radius:1rem}footer{font-size:.9rem;color:var(--muted)}@media(prefers-color-scheme:dark){:root{--bg:#121719;--fg:#eeeae1;--muted:#b7c0b6;--line:#45504a;--link:#a9c6ff}}@media print{nav,button,.skip{display:none}body{background:white;color:black}details{display:block}main{max-width:none}}",
+    "ui": "// No network, storage, analytics or shared private-note state.\nfor(const button of document.querySelectorAll('[data-enable]'))button.disabled=false;\nconst text={en:{choose:'Choose a response first.',matches:'This matches the bounded guide.',reconsider:'Reconsider using the guide below.',download:'Downloaded notes; nothing was uploaded.'},es:{choose:'Primero elige una respuesta.',matches:'La respuesta coincide con la guía delimitada.',reconsider:'Reconsidera tu respuesta con la guía siguiente.',download:'Notas descargadas; no se ha enviado nada.'}};\nfor(const form of document.querySelectorAll('[data-study-task]')) form.addEventListener('submit',event=>{event.preventDefault();const choice=new FormData(form).get('choice'),l=text[form.dataset.language];form.querySelector('[data-result]').textContent=!choice?l.choose:choice===form.dataset.answer?l.matches:l.reconsider;});\nfunction download(name,data){const url=URL.createObjectURL(new Blob([JSON.stringify(data,null,2)+'\\n'],{type:'application/json'})),a=document.createElement('a');a.href=url;a.download=name;document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),10000);}\nfor(const button of document.querySelectorAll('[data-export-study]'))button.addEventListener('click',()=>{const {exportStudy:id,revision,language}=button.dataset;download(`${id}-${revision}-${language}-notes.json`,{schemaVersion:1,id,revision,language,notes:document.querySelector('#study-notes').value,scope:'User notes; no assessed outcome or observed mastery.'});document.querySelector('[data-export-status]').textContent=text[language].download;});\nconst search=document.querySelector('[data-catalog-search]'),provider=document.querySelector('[data-catalog-provider]');\nfunction filter(){const q=search.value.trim().toLocaleLowerCase('en'),p=provider.value;let shown=0;for(const card of document.querySelectorAll('[data-provider]')){const visible=(!p||card.dataset.provider===p)&&card.textContent.toLocaleLowerCase('en').includes(q);card.hidden=!visible;if(visible)shown++;}document.querySelector('[data-catalog-count]').textContent=shown+' records shown';}\nsearch?.addEventListener('input',filter);provider?.addEventListener('change',filter);\ndocument.querySelector('[data-practice-form]')?.addEventListener('submit',event=>{event.preventDefault();const form=new FormData(event.currentTarget),data={schemaVersion:1,kind:'self-recorded-practice',activity:form.get('activity'),observation:form.get('observation'),interpretation:form.get('interpretation'),nextAttempt:form.get('nextAttempt'),scope:'User-entered notes; no independent observation, consent, certification or outcome is inferred.'};download('atlas-practice-notes.json',data);document.querySelector('[data-practice-result]').textContent='Downloaded your notes. No data was uploaded or automatically saved.';});\n"
+  },
+  "runtimeDigest": "7797e38fdaa4514a612d38cfd697d67ee69432762a75724bdda6601452576590",
+  "pages": {
+    "en": "<!doctype html><html lang=\"en\"><head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width,initial-scale=1\"><meta name=\"robots\" content=\"noindex,nofollow\"><title>A balanced ledger can still be wrong · Atlas</title><link rel=\"stylesheet\" href=\"../../../../../assets/program/7797e38fdaa4514a612d38cfd697d67ee69432762a75724bdda6601452576590/style.css\"></head><body><a class=\"skip\" href=\"#main\">Skip to content</a><header><nav aria-label=\"Atlas\"><a href=\"../../../../../start/\">Start</a><a href=\"../../../../../domains/\">Fields</a><a href=\"../../../../../curriculum/\">Starting routes</a><a href=\"../../../../../depth/\">Go deeper</a><a href=\"../../../../../sources/\">Sources</a><a href=\"../../../../../studies/\">New studies</a><a href=\"../../../../../practice/\">Practice notebook</a></nav></header><main id=\"main\" tabindex=\"-1\"><p class=\"meta\">s-accounting-records · 1.0.0 · Local</p><nav aria-label=\"Language edition\"><a hreflang=\"en\" lang=\"en\" href=\"../en/\" aria-current=\"page\">English</a><a hreflang=\"es\" lang=\"es\" href=\"../es/\">Español</a></nav><h1>A balanced ledger can still be wrong</h1><p>A fictional three-event ledger in abstract currency units; no tax, investment or reporting advice.</p><p>Start with zero balances. An owner contributes 900 units in cash. The business buys equipment for 240 cash. It then borrows 150 cash. There is no revenue, expense, interest, depreciation or tax in this deliberately limited period.</p><p>Record the contribution as debit cash 900, credit owner capital 900. Record the purchase as debit equipment 240, credit cash 240. Record borrowing as debit cash 150, credit loan payable 150. Debits and credits are two sides of entries, not general synonyms for good/bad or cash in/out.</p><p>Ending cash is 810; equipment is 240. Assets are 1050, liabilities 150 and equity 900, so assets equal liabilities plus equity. Equal debit and credit totals cannot detect every error: omitting the whole loan transaction leaves both sides balanced but wrong.</p><section id=\"task-cash\"><form data-study-task data-answer=\"810\" data-language=\"en\"><fieldset><legend>What is ending cash?</legend><label><input type=\"radio\" name=\"choice\" value=\"810\"> 810</label><label><input type=\"radio\" name=\"choice\" value=\"1050\"> 1050</label><label><input type=\"radio\" name=\"choice\" value=\"660\"> 660</label></fieldset><button type=\"submit\">Check reasoning</button><p data-result role=\"status\" aria-live=\"polite\"></p></form><details><summary>Compare your reasoning</summary><p>900 − 240 + 150 = 810. Equipment remains a separate asset in this model.</p></details></section><section id=\"task-assets\"><form data-study-task data-answer=\"exchange\" data-language=\"en\"><fieldset><legend>What changes when equipment is bought for cash?</legend><label><input type=\"radio\" name=\"choice\" value=\"loss\"> Total assets fall by 240</label><label><input type=\"radio\" name=\"choice\" value=\"exchange\"> One asset falls and another rises by 240</label></fieldset><button type=\"submit\">Check reasoning</button><p data-result role=\"status\" aria-live=\"polite\"></p></form><details><summary>Compare your reasoning</summary><p>Cash becomes equipment at the stipulated recorded amount. This exercise does not model depreciation, impairment or measurement disputes.</p></details></section><section id=\"task-balance\"><form data-study-task data-answer=\"no\" data-language=\"en\"><fieldset><legend>Does a balanced trial balance prove all events were recorded correctly?</legend><label><input type=\"radio\" name=\"choice\" value=\"yes\"> Yes</label><label><input type=\"radio\" name=\"choice\" value=\"no\"> No</label></fieldset><button type=\"submit\">Check reasoning</button><p data-result role=\"status\" aria-live=\"polite\"></p></form><details><summary>Compare your reasoning</summary><p>Omitting both sides of the 150 loan leaves equality intact. Compare records with actual source documents, not just totals.</p></details></section><section><h2>Take it further</h2><p>Invent one complete omission and one unequal entry. Explain which is detected by balancing and which needs a source-document check.</p></section><section><h2>Your notes</h2><p>Notes stay on this page until you download them. Nothing is sent or automatically saved.</p><label>Your notes<textarea id=\"study-notes\" maxlength=\"10000\"></textarea></label><button type=\"button\" data-export-study=\"s-accounting-records\" data-revision=\"1.0.0\" data-language=\"en\">Download notes</button><p data-export-status role=\"status\"></p></section><section><h2>Scope and evidence</h2><p lang=\"en\">Original English and Spanish editorial editions checked by the AI author; source titles and provider field values remain in their observed language. No community language validation is claimed.</p><h2>Source</h2><article lang=\"en\"><h3><a href=\"https://openstax.org/books/principles-financial-accounting/pages/3-5-use-journal-entries-to-record-transactions-and-post-to-t-accounts\">OpenStax, Principles of Accounting, Volume 1, §§3.3–3.5</a></h3><p>Read journal/ledger distinctions, debit-credit equality and account effects in §§3.3, 3.4 and 3.5. Scope excludes other financial-reporting standards and actual business decisions.</p><p>Original numbers, ledger and questions; no source examples, illustrations or prose copied. Site displays CC BY-NC-SA and additional use notices; no blanket reuse permission asserted.</p></article></section></main><footer>Local edition · AI author checked; no human observation implied</footer><script type=\"module\" src=\"../../../../../assets/program/7797e38fdaa4514a612d38cfd697d67ee69432762a75724bdda6601452576590/ui.mjs\"></script></body></html>\n",
+    "es": "<!doctype html><html lang=\"es\"><head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width,initial-scale=1\"><meta name=\"robots\" content=\"noindex,nofollow\"><title>Un registro equilibrado puede contener errores · Atlas</title><link rel=\"stylesheet\" href=\"../../../../../assets/program/7797e38fdaa4514a612d38cfd697d67ee69432762a75724bdda6601452576590/style.css\"></head><body><a class=\"skip\" href=\"#main\">Saltar al contenido</a><header><nav aria-label=\"Atlas\"><a href=\"../../../../../start/\">Inicio</a><a href=\"../../../../../domains/\">Áreas</a><a href=\"../../../../../curriculum/\">Rutas iniciales</a><a href=\"../../../../../depth/\">Profundiza</a><a href=\"../../../../../sources/\">Fuentes</a><a href=\"../../../../../studies/\">Nuevos estudios</a><a href=\"../../../../../practice/\">Cuaderno de práctica</a></nav></header><main id=\"main\" tabindex=\"-1\"><p class=\"meta\">s-accounting-records · 1.0.0 · Local</p><nav aria-label=\"Edición lingüística\"><a hreflang=\"en\" lang=\"en\" href=\"../en/\">English</a><a hreflang=\"es\" lang=\"es\" href=\"../es/\" aria-current=\"page\">Español</a></nav><h1>Un registro equilibrado puede contener errores</h1><p>Un registro ficticio de tres acontecimientos en unidades monetarias abstractas; no ofrece asesoramiento fiscal, de inversión ni de presentación de cuentas.</p><p>Parte de saldos nulos. Una persona propietaria aporta 900 unidades en efectivo. La empresa compra equipo por 240 en efectivo. Después recibe un préstamo de 150 en efectivo. En este período deliberadamente limitado no hay ingresos, gastos, intereses, depreciación ni impuestos.</p><p>Registra el aporte como débito a efectivo de 900 y crédito a capital de 900. Registra la compra como débito a equipo de 240 y crédito a efectivo de 240. Registra el préstamo como débito a efectivo de 150 y crédito a préstamo por pagar de 150. Débito y crédito son lados de los asientos, no sinónimos generales de bueno/malo ni de entrada/salida de efectivo.</p><p>El efectivo final es 810 y el equipo, 240. Los activos son 1050, los pasivos 150 y el patrimonio 900: activos igual a pasivos más patrimonio. La igualdad de débitos y créditos no detecta todos los errores: omitir el préstamo completo mantiene el equilibrio, pero produce un registro incorrecto.</p><section id=\"task-cash\"><form data-study-task data-answer=\"810\" data-language=\"es\"><fieldset><legend>¿Cuál es el efectivo final?</legend><label><input type=\"radio\" name=\"choice\" value=\"810\"> 810</label><label><input type=\"radio\" name=\"choice\" value=\"1050\"> 1050</label><label><input type=\"radio\" name=\"choice\" value=\"660\"> 660</label></fieldset><button type=\"submit\">Comprobar razonamiento</button><p data-result role=\"status\" aria-live=\"polite\"></p></form><details><summary>Compara tu razonamiento</summary><p>900 − 240 + 150 = 810. El equipo sigue siendo un activo distinto en este modelo.</p></details></section><section id=\"task-assets\"><form data-study-task data-answer=\"exchange\" data-language=\"es\"><fieldset><legend>¿Qué cambia al comprar equipo en efectivo?</legend><label><input type=\"radio\" name=\"choice\" value=\"loss\"> Los activos totales disminuyen en 240</label><label><input type=\"radio\" name=\"choice\" value=\"exchange\"> Un activo disminuye y otro aumenta en 240</label></fieldset><button type=\"submit\">Comprobar razonamiento</button><p data-result role=\"status\" aria-live=\"polite\"></p></form><details><summary>Compara tu razonamiento</summary><p>El efectivo se convierte en equipo por el importe registrado estipulado. El ejercicio no modela depreciación, deterioro ni disputas de medición.</p></details></section><section id=\"task-balance\"><form data-study-task data-answer=\"no\" data-language=\"es\"><fieldset><legend>¿Un balance de comprobación equilibrado demuestra que todos los acontecimientos se registraron correctamente?</legend><label><input type=\"radio\" name=\"choice\" value=\"yes\"> Sí</label><label><input type=\"radio\" name=\"choice\" value=\"no\"> No</label></fieldset><button type=\"submit\">Comprobar razonamiento</button><p data-result role=\"status\" aria-live=\"polite\"></p></form><details><summary>Compara tu razonamiento</summary><p>Omitir ambos lados del préstamo de 150 mantiene la igualdad. Compara los registros con documentos fuente reales, no solo con los totales.</p></details></section><section><h2>Ve más allá</h2><p>Inventa una omisión completa y un asiento desigual. Explica cuál se detecta al comprobar el equilibrio y cuál requiere revisar los documentos fuente.</p></section><section><h2>Tus notas</h2><p>Las notas permanecen en esta página hasta que las descargues. No se envían ni se guardan automáticamente.</p><label>Tus notas<textarea id=\"study-notes\" maxlength=\"10000\"></textarea></label><button type=\"button\" data-export-study=\"s-accounting-records\" data-revision=\"1.0.0\" data-language=\"es\">Descargar notas</button><p data-export-status role=\"status\"></p></section><section><h2>Alcance y evidencia</h2><p lang=\"en\">Original English and Spanish editorial editions checked by the AI author; source titles and provider field values remain in their observed language. No community language validation is claimed.</p><h2>Fuente</h2><article lang=\"en\"><h3><a href=\"https://openstax.org/books/principles-financial-accounting/pages/3-5-use-journal-entries-to-record-transactions-and-post-to-t-accounts\">OpenStax, Principles of Accounting, Volume 1, §§3.3–3.5</a></h3><p>Read journal/ledger distinctions, debit-credit equality and account effects in §§3.3, 3.4 and 3.5. Scope excludes other financial-reporting standards and actual business decisions.</p><p>Original numbers, ledger and questions; no source examples, illustrations or prose copied. Site displays CC BY-NC-SA and additional use notices; no blanket reuse permission asserted.</p></article></section></main><footer>Edición local · comprobada por el autor de IA; no implica observación humana</footer><script type=\"module\" src=\"../../../../../assets/program/7797e38fdaa4514a612d38cfd697d67ee69432762a75724bdda6601452576590/ui.mjs\"></script></body></html>\n"
+  },
+  "evidence": {
+    "path": "docs/verification/local-program-author-check.md",
+    "sha256": "936ddaee2e60fa5eb0d28d0a329f44919598278e4c544b50727fddb2b055524c",
+    "text": "# Local programme author check — 23 October 2026\n\nFour original studies contain English and Spanish editorial editions and twelve shared reasoning tasks. The author read the stated WWC recommendations/evidence labels, National Gallery account, and OpenStax accounting sections. The selected Crossref record was captured and its publication/deposit/index fields read separately. Earlier Open Library capture hashes matched their retained packet; those are retained observations, not fresh API readings. No source media, abstract or extended quotation is reproduced. The new LOC SRU page timed out and was not retried.\n\nThe first ten offline groups passed: exact accepted depth targets, prerequisite traversal with missing nodes and cycles, language/task completeness, independent study identities and stale-check detection, ledger conservation plus omission/unequal-entry counterexamples, separate provider identities and missing fields, separate Crossref dates and excluded abstracts, bounded retrieval failures without retries, honest practice-note exports, and static/escaped rendering. The original fictional ledger yields cash 810, equipment 240, liabilities 150, equity 900 and assets 1050; omitting the entire borrowing entry still balances and is explicitly wrong.\n\nSpanish is an AI-author editorial edition, not a professionally or community-validated translation. Source metadata remains in its observed language. The National Gallery age discrepancy is excluded from conclusions. The source-reading scope and reuse boundaries are recorded in program/research.json and program/federated-catalog.json.\n\nThese are local author checks, not independent review, certification or observed learning. Native-browser and assembled-delivery evidence will be recorded in a separate delivery receipt after execution. This source receipt is retained unchanged with each new edition.\n"
+  }
+}

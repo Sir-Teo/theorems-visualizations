@@ -1,0 +1,515 @@
+{
+  "schemaVersion": 1,
+  "studies": [
+    {
+      "schemaVersion": 1,
+      "id": "s-information-records",
+      "revision": "1.0.1",
+      "seriesId": "knowledge-foundations",
+      "domainIds": [
+        "D24",
+        "D28"
+      ],
+      "sourceIds": [
+        "catalog"
+      ],
+      "author": "atlas-editor",
+      "status": "accepted-local",
+      "languages": [
+        "en",
+        "es"
+      ],
+      "title": {
+        "en": "One work, several records",
+        "es": "Una obra, varios registros"
+      },
+      "scope": {
+        "en": "Distinguish a work, an edition, a subject label and a physical holding.",
+        "es": "Distingue una obra, una edición, una etiqueta temática y un ejemplar localizado."
+      },
+      "body": {
+        "en": [
+          "The captured Open Library work /works/OL55649W is linked to distinct editions. The edition /books/OL26429580M reports 1854 and two subject labels. The edition /books/OL34549556M reports 2018 and an LC classification value. Neither observation establishes where a physical copy is held.",
+          "A missing classification field means that this captured record omits the field. It does not mean the book has no classification anywhere. The record’s subject strings also provide no inspected authority identifiers."
+        ],
+        "es": [
+          "La obra /works/OL55649W de Open Library está vinculada a ediciones distintas. La edición /books/OL26429580M indica 1854 y dos etiquetas temáticas. La edición /books/OL34549556M indica 2018 y un valor de clasificación LC. Ninguna observación establece dónde se encuentra un ejemplar físico.",
+          "La ausencia del campo de clasificación significa que el registro capturado no lo incluye. No significa que el libro carezca de clasificación en todos los catálogos. Tampoco se inspeccionaron identificadores de autoridad para sus etiquetas temáticas."
+        ]
+      },
+      "tasks": [
+        {
+          "id": "edition",
+          "answer": "new",
+          "choices": [
+            {
+              "id": "old",
+              "en": "The 1854 edition",
+              "es": "La edición de 1854"
+            },
+            {
+              "id": "new",
+              "en": "The 2018 edition",
+              "es": "La edición de 2018"
+            },
+            {
+              "id": "all",
+              "en": "All editions automatically",
+              "es": "Todas las ediciones automáticamente"
+            }
+          ],
+          "question": {
+            "en": "Which record reports the LC value?",
+            "es": "¿Qué registro indica el valor LC?"
+          },
+          "guide": {
+            "en": "Only /books/OL34549556M reports PS3048.A1 2018 in this capture. Do not copy it into other records.",
+            "es": "Solo /books/OL34549556M indica PS3048.A1 2018 en esta captura. No lo copies a otros registros."
+          }
+        },
+        {
+          "id": "absence",
+          "answer": "local",
+          "choices": [
+            {
+              "id": "none",
+              "en": "No library classified the work",
+              "es": "Ninguna biblioteca clasificó la obra"
+            },
+            {
+              "id": "local",
+              "en": "This captured record omits the field",
+              "es": "Este registro capturado no incluye el campo"
+            }
+          ],
+          "question": {
+            "en": "What follows from an absent field?",
+            "es": "¿Qué se deduce de un campo ausente?"
+          },
+          "guide": {
+            "en": "Absence is record-specific. A present empty array would be a different observation.",
+            "es": "La ausencia corresponde a este registro. Un arreglo presente pero vacío sería una observación diferente."
+          }
+        },
+        {
+          "id": "holding",
+          "answer": "no",
+          "choices": [
+            {
+              "id": "yes",
+              "en": "Yes, it is a shelf address",
+              "es": "Sí, es una ubicación en la estantería"
+            },
+            {
+              "id": "no",
+              "en": "No; institution and holdings evidence are missing",
+              "es": "No; faltan la institución y los datos de existencias"
+            }
+          ],
+          "question": {
+            "en": "Does a classification value locate an available copy?",
+            "es": "¿Un valor de clasificación localiza un ejemplar disponible?"
+          },
+          "guide": {
+            "en": "A classification is not verified holdings or availability. Keep the unknown fields unknown.",
+            "es": "Una clasificación no verifica existencias ni disponibilidad. Conserva como desconocidos los campos que no se han comprobado."
+          }
+        }
+      ],
+      "transfer": {
+        "en": "Choose two records for another work. Write separately what each reports, what they share and what you still cannot infer.",
+        "es": "Elige dos registros de otra obra. Escribe por separado qué indica cada uno, qué comparten y qué todavía no puedes inferir."
+      },
+      "translationScope": "Original English and Spanish editorial editions checked by the AI author; source titles and provider field values remain in their observed language. No community language validation is claimed.",
+      "authorVerification": {
+        "kind": "author-check",
+        "scope": "local-only",
+        "checkedOn": "2026-10-23",
+        "contentDigest": "48afabd2221abcae594934084b2e582e8538b95909a35bfac110daa34d811c36",
+        "evidencePath": "docs/verification/local-program-author-check.md"
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "s-learning-evidence",
+      "revision": "1.0.1",
+      "seriesId": "knowledge-foundations",
+      "domainIds": [
+        "D02",
+        "D19",
+        "D28"
+      ],
+      "sourceIds": [
+        "learning",
+        "catalog"
+      ],
+      "author": "atlas-editor",
+      "status": "accepted-local",
+      "languages": [
+        "en",
+        "es"
+      ],
+      "title": {
+        "en": "A learning recommendation is not your result",
+        "es": "Una recomendación educativa no es tu resultado"
+      },
+      "scope": {
+        "en": "Read evidence labels, distinguish dates and design a fairer comparison.",
+        "es": "Lee las etiquetas de evidencia, distingue fechas y diseña una comparación más justa."
+      },
+      "body": {
+        "en": [
+          "The WWC’s 2007 landing page gives different evidence ratings to different recommendations. It assigns moderate evidence to spreading study over time and strong evidence to using quizzes to revisit important content. Those are the guide’s ratings for its scope, not measured outcomes for this atlas.",
+          "Consider an original fictional example: one class scores 8 out of 10 after a practice activity; another scores 6. Their starting knowledge, teacher, assessment conditions and assignment method are unknown. The difference alone cannot isolate the activity’s effect.",
+          "The selected Crossref record reports a January 2013 publication and a 2026 indexing timestamp. Updating an index does not turn the article into a 2026 study."
+        ],
+        "es": [
+          "La página del WWC de 2007 asigna distintos niveles de evidencia a distintas recomendaciones. Indica evidencia moderada para distribuir el estudio en el tiempo y sólida para usar cuestionarios que permitan volver al contenido importante. Son valoraciones de esa guía dentro de su alcance, no resultados medidos de este atlas.",
+          "Considera un ejemplo ficticio original: una clase obtiene 8 de 10 después de una actividad de práctica; otra obtiene 6. Se desconocen los conocimientos iniciales, el docente, las condiciones de evaluación y el método de asignación. La diferencia no permite aislar el efecto de la actividad.",
+          "El registro seleccionado de Crossref indica una publicación de enero de 2013 y una fecha de indexación de 2026. Actualizar un índice no convierte el artículo en un estudio de 2026."
+        ]
+      },
+      "tasks": [
+        {
+          "id": "effect",
+          "answer": "difference",
+          "choices": [
+            {
+              "id": "cause",
+              "en": "The activity caused a 2-point gain",
+              "es": "La actividad causó una mejora de 2 puntos"
+            },
+            {
+              "id": "difference",
+              "en": "The observed scores differ by 2 points",
+              "es": "Las puntuaciones observadas difieren en 2 puntos"
+            }
+          ],
+          "question": {
+            "en": "What can the fictional scores establish?",
+            "es": "¿Qué permiten establecer las puntuaciones ficticias?"
+          },
+          "guide": {
+            "en": "8 − 6 = 2 describes these scores. Assignment and comparison evidence are needed for a causal conclusion.",
+            "es": "8 − 6 = 2 describe estas puntuaciones. Para una conclusión causal hacen falta datos sobre la asignación y la comparación."
+          }
+        },
+        {
+          "id": "date",
+          "answer": "2013",
+          "choices": [
+            {
+              "id": "2013",
+              "en": "2013",
+              "es": "2013"
+            },
+            {
+              "id": "2026",
+              "en": "2026",
+              "es": "2026"
+            }
+          ],
+          "question": {
+            "en": "Which year describes the article’s reported publication?",
+            "es": "¿Qué año corresponde a la publicación indicada del artículo?"
+          },
+          "guide": {
+            "en": "The publication and indexing fields refer to different events. A metadata refresh is not a new experiment.",
+            "es": "Los campos de publicación e indexación se refieren a acontecimientos distintos. Una actualización de metadatos no es un experimento nuevo."
+          }
+        },
+        {
+          "id": "design",
+          "answer": "design",
+          "choices": [
+            {
+              "id": "likes",
+              "en": "Count which activity people prefer",
+              "es": "Contar qué actividad prefieren las personas"
+            },
+            {
+              "id": "design",
+              "en": "Define a common assessment and document how groups are assigned",
+              "es": "Definir una evaluación común y documentar cómo se asignan los grupos"
+            }
+          ],
+          "question": {
+            "en": "Which next step addresses a comparison problem?",
+            "es": "¿Qué paso aborda un problema de comparación?"
+          },
+          "guide": {
+            "en": "Preference may be useful for a different question. A common outcome and an explicit assignment design help assess a learning-effect claim; they do not automatically remove all bias.",
+            "es": "La preferencia puede servir para otra pregunta. Un resultado común y un diseño de asignación explícito ayudan a evaluar un efecto sobre el aprendizaje; no eliminan automáticamente todo sesgo."
+          }
+        }
+      ],
+      "transfer": {
+        "en": "Write a prediction, a delayed explanation task and two alternative explanations for the result. Do not record a learning gain until an actual comparison exists.",
+        "es": "Escribe una predicción, una tarea de explicación diferida y dos explicaciones alternativas del resultado. No registres una mejora de aprendizaje sin una comparación real."
+      },
+      "translationScope": "Original English and Spanish editorial editions checked by the AI author; source titles and provider field values remain in their observed language. No community language validation is claimed.",
+      "authorVerification": {
+        "kind": "author-check",
+        "scope": "local-only",
+        "checkedOn": "2026-10-23",
+        "contentDigest": "4225f268c8b7a7c79f1f7980b0c18d200a45f0e3a3777c4e44d8ca6bbd10d289",
+        "evidencePath": "docs/verification/local-program-author-check.md"
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "s-accounting-records",
+      "revision": "1.0.1",
+      "seriesId": "knowledge-foundations",
+      "domainIds": [
+        "D13",
+        "D14"
+      ],
+      "sourceIds": [
+        "accounting"
+      ],
+      "author": "atlas-editor",
+      "status": "accepted-local",
+      "languages": [
+        "en",
+        "es"
+      ],
+      "title": {
+        "en": "A balanced ledger can still be wrong",
+        "es": "Un registro equilibrado puede contener errores"
+      },
+      "scope": {
+        "en": "A fictional three-event ledger in abstract currency units; no tax, investment or reporting advice.",
+        "es": "Un registro ficticio de tres acontecimientos en unidades monetarias abstractas; no ofrece asesoramiento fiscal, de inversión ni de presentación de cuentas."
+      },
+      "body": {
+        "en": [
+          "Start with zero balances. An owner contributes 900 units in cash. The business buys equipment for 240 cash. It then borrows 150 cash. There is no revenue, expense, interest, depreciation or tax in this deliberately limited period.",
+          "Record the contribution as debit cash 900, credit owner capital 900. Record the purchase as debit equipment 240, credit cash 240. Record borrowing as debit cash 150, credit loan payable 150. Debits and credits are two sides of entries, not general synonyms for good/bad or cash in/out.",
+          "Ending cash is 810; equipment is 240. Assets are 1050, liabilities 150 and equity 900, so assets equal liabilities plus equity. Equal debit and credit totals cannot detect every error: omitting the whole loan transaction leaves both sides balanced but wrong."
+        ],
+        "es": [
+          "Parte de saldos nulos. Una persona propietaria aporta 900 unidades en efectivo. La empresa compra equipo por 240 en efectivo. Después recibe un préstamo de 150 en efectivo. En este período deliberadamente limitado no hay ingresos, gastos, intereses, depreciación ni impuestos.",
+          "Registra el aporte como débito a efectivo de 900 y crédito a capital de 900. Registra la compra como débito a equipo de 240 y crédito a efectivo de 240. Registra el préstamo como débito a efectivo de 150 y crédito a préstamo por pagar de 150. Débito y crédito son lados de los asientos, no sinónimos generales de bueno/malo ni de entrada/salida de efectivo.",
+          "El efectivo final es 810 y el equipo, 240. Los activos son 1050, los pasivos 150 y el patrimonio 900: activos igual a pasivos más patrimonio. La igualdad de débitos y créditos no detecta todos los errores: omitir el préstamo completo mantiene el equilibrio, pero produce un registro incorrecto."
+        ]
+      },
+      "tasks": [
+        {
+          "id": "cash",
+          "answer": "810",
+          "choices": [
+            {
+              "id": "810",
+              "en": "810",
+              "es": "810"
+            },
+            {
+              "id": "1050",
+              "en": "1050",
+              "es": "1050"
+            },
+            {
+              "id": "660",
+              "en": "660",
+              "es": "660"
+            }
+          ],
+          "question": {
+            "en": "What is ending cash?",
+            "es": "¿Cuál es el efectivo final?"
+          },
+          "guide": {
+            "en": "900 − 240 + 150 = 810. Equipment remains a separate asset in this model.",
+            "es": "900 − 240 + 150 = 810. El equipo sigue siendo un activo distinto en este modelo."
+          }
+        },
+        {
+          "id": "assets",
+          "answer": "exchange",
+          "choices": [
+            {
+              "id": "loss",
+              "en": "Total assets fall by 240",
+              "es": "Los activos totales disminuyen en 240"
+            },
+            {
+              "id": "exchange",
+              "en": "One asset falls and another rises by 240",
+              "es": "Un activo disminuye y otro aumenta en 240"
+            }
+          ],
+          "question": {
+            "en": "What changes when equipment is bought for cash?",
+            "es": "¿Qué cambia al comprar equipo en efectivo?"
+          },
+          "guide": {
+            "en": "Cash becomes equipment at the stipulated recorded amount. This exercise does not model depreciation, impairment or measurement disputes.",
+            "es": "El efectivo se convierte en equipo por el importe registrado estipulado. El ejercicio no modela depreciación, deterioro ni disputas de medición."
+          }
+        },
+        {
+          "id": "balance",
+          "answer": "no",
+          "choices": [
+            {
+              "id": "yes",
+              "en": "Yes",
+              "es": "Sí"
+            },
+            {
+              "id": "no",
+              "en": "No",
+              "es": "No"
+            }
+          ],
+          "question": {
+            "en": "Does a balanced trial balance prove all events were recorded correctly?",
+            "es": "¿Un balance de comprobación equilibrado demuestra que todos los acontecimientos se registraron correctamente?"
+          },
+          "guide": {
+            "en": "Omitting both sides of the 150 loan leaves equality intact. Compare records with actual source documents, not just totals.",
+            "es": "Omitir ambos lados del préstamo de 150 mantiene la igualdad. Compara los registros con documentos fuente reales, no solo con los totales."
+          }
+        }
+      ],
+      "transfer": {
+        "en": "Invent one complete omission and one unequal entry. Explain which is detected by balancing and which needs a source-document check.",
+        "es": "Inventa una omisión completa y un asiento desigual. Explica cuál se detecta al comprobar el equilibrio y cuál requiere revisar los documentos fuente."
+      },
+      "translationScope": "Original English and Spanish editorial editions checked by the AI author; source titles and provider field values remain in their observed language. No community language validation is claimed.",
+      "authorVerification": {
+        "kind": "author-check",
+        "scope": "local-only",
+        "checkedOn": "2026-10-23",
+        "contentDigest": "f8394ad6164f0dd6c36f132271c81272059a55e84b56a1165fd0c8e459c7d2b3",
+        "evidencePath": "docs/verification/local-program-author-check.md"
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "s-art-interpretation",
+      "revision": "1.0.1",
+      "seriesId": "knowledge-foundations",
+      "domainIds": [
+        "D20",
+        "D25"
+      ],
+      "sourceIds": [
+        "art"
+      ],
+      "author": "atlas-editor",
+      "status": "accepted-local",
+      "languages": [
+        "en",
+        "es"
+      ],
+      "title": {
+        "en": "A dated object, a visual effect, an interpretation",
+        "es": "Un objeto fechado, un efecto visual, una interpretación"
+      },
+      "scope": {
+        "en": "Read a museum’s account of one painting without substituting a diagram or a summary for the object.",
+        "es": "Lee el relato de un museo sobre una pintura sin sustituir el objeto por un diagrama o un resumen."
+      },
+      "body": {
+        "en": [
+          "The National Gallery’s account of The Ambassadors attributes the painting to Hans Holbein the Younger and identifies 1533 in the signature. Its text describes an elongated foreground form that becomes a skull from an oblique viewing position. It also offers interpretations of objects in relation to religious and political discord.",
+          "These claims have different evidential roles. A reported inscription supports dating; an account of a viewing effect describes appearance; a symbolic reading proposes meaning in context. None is the same as proof that every viewer or patron held one intention.",
+          "This lesson uses the gallery’s text only. No image, audio or conservation examination is supplied. Its in-depth text and audio transcript give differing age descriptions; that discrepancy is left unresolved and no sitter-age conclusion is used."
+        ],
+        "es": [
+          "El relato de la National Gallery sobre Los embajadores atribuye la pintura a Hans Holbein el Joven e identifica 1533 en la firma. El texto describe una forma alargada en primer plano que se convierte en una calavera desde una posición oblicua. También propone interpretaciones de objetos relacionadas con conflictos religiosos y políticos.",
+          "Estas afirmaciones cumplen funciones probatorias distintas. Una inscripción descrita respalda una fecha; un efecto de observación describe una apariencia; una lectura simbólica propone un significado contextual. Ninguna demuestra que todas las personas que observaron o encargaron la obra compartieran una misma intención.",
+          "Esta lección utiliza solo el texto de la galería. No proporciona imagen, audio ni examen de conservación. El texto detallado y la transcripción de audio describen edades distintas; la discrepancia queda sin resolver y no se usa para concluir la edad de los retratados."
+        ]
+      },
+      "tasks": [
+        {
+          "id": "date",
+          "answer": "inscription",
+          "choices": [
+            {
+              "id": "inscription",
+              "en": "Reported inscription evidence",
+              "es": "Evidencia de una inscripción descrita"
+            },
+            {
+              "id": "intent",
+              "en": "Proof of every patron’s intention",
+              "es": "Prueba de la intención de todas las personas que encargaron la obra"
+            }
+          ],
+          "question": {
+            "en": "What kind of evidence is the reported date in the signature?",
+            "es": "¿Qué tipo de evidencia es la fecha indicada en la firma?"
+          },
+          "guide": {
+            "en": "The textual account reports a dated inscription. We have not independently examined the paint surface.",
+            "es": "El relato textual describe una inscripción fechada. No hemos examinado de forma independiente la superficie pintada."
+          }
+        },
+        {
+          "id": "meaning",
+          "answer": "meaning",
+          "choices": [
+            {
+              "id": "meaning",
+              "en": "An attributed interpretation with context",
+              "es": "Una interpretación atribuida y contextualizada"
+            },
+            {
+              "id": "fact",
+              "en": "An observed mental state of every viewer",
+              "es": "Un estado mental observado de cada espectador"
+            }
+          ],
+          "question": {
+            "en": "How should the discord interpretation be recorded?",
+            "es": "¿Cómo debe registrarse la interpretación sobre la discordia?"
+          },
+          "guide": {
+            "en": "Attribute the interpretation to the account. A visual arrangement does not directly reveal all intentions or responses.",
+            "es": "Atribuye la interpretación al relato. Una disposición visual no revela directamente todas las intenciones ni respuestas."
+          }
+        },
+        {
+          "id": "unknown",
+          "answer": "retain",
+          "choices": [
+            {
+              "id": "choose",
+              "en": "Silently choose the more convenient value",
+              "es": "Elegir en silencio el valor más conveniente"
+            },
+            {
+              "id": "retain",
+              "en": "Keep the discrepancy and omit the unsupported conclusion",
+              "es": "Conservar la discrepancia y omitir la conclusión no respaldada"
+            }
+          ],
+          "question": {
+            "en": "What should we do with the conflicting age descriptions?",
+            "es": "¿Qué debemos hacer con las descripciones de edad contradictorias?"
+          },
+          "guide": {
+            "en": "The present exercise needs no age claim. Resolving it would require additional exact evidence, not averaging the values.",
+            "es": "El ejercicio no necesita afirmar una edad. Resolverla requiere evidencia exacta adicional, no promediar los valores."
+          }
+        }
+      ],
+      "transfer": {
+        "en": "For another object, separate a catalog fact, an observation and an interpretation. Name what you would need to inspect before strengthening each claim.",
+        "es": "Para otro objeto, separa un dato de catálogo, una observación y una interpretación. Indica qué necesitarías examinar antes de reforzar cada afirmación."
+      },
+      "translationScope": "Original English and Spanish editorial editions checked by the AI author; source titles and provider field values remain in their observed language. No community language validation is claimed.",
+      "authorVerification": {
+        "kind": "author-check",
+        "scope": "local-only",
+        "checkedOn": "2026-10-23",
+        "contentDigest": "bf8d09d58a68297b958ac83fd4d6fb5795fb44d7656c30a6ca8b917d42f45a6b",
+        "evidencePath": "docs/verification/local-program-author-check.md"
+      }
+    }
+  ]
+}

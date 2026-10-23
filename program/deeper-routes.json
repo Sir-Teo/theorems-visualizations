@@ -1,0 +1,609 @@
+{
+  "schemaVersion": 1,
+  "version": "1.0.0",
+  "legacySnapshot": "2b156195a22cf85186b8b40fb6c35b8966a478a0c46da155a742b498907c2685",
+  "introductorySha256": "c17b80ef71ac6744a97fee282a3fcdd1c1c49f0e3b44fbab72b821d5319fbf8d",
+  "scope": "Thirty curated extensions with exact accepted targets and computed prerequisite paths. Method-focused links for underrepresented fields are explicitly bounded; no complete field syllabus is claimed.",
+  "routes": [
+    {
+      "domainId": "D01",
+      "title": "Sets, choices and coordinates — extend the inquiry",
+      "task": "Test a set identity with overlapping finite sets, then contrast that discrete representation with barycentric coordinates.",
+      "limits": "Elementary arithmetic, proof writing, mathematical history and non-European traditions need further routes.",
+      "targets": [
+        {
+          "kind": "legacy",
+          "id": "alg-1.3",
+          "title": "De Morgan’s laws",
+          "sha256": "d2fbcd2ed1394ff84670411baca54f2a004d2ee2bd2de5f2d915491c411b72ed"
+        },
+        {
+          "kind": "legacy",
+          "id": "cg-1.6",
+          "title": "Barycentric coordinates",
+          "sha256": "f04222cdd4a6ab64608b1e7afe9fb27ee7cd1b0e3cc3bd76ab15c67c5ae0fd2b"
+        }
+      ]
+    },
+    {
+      "domainId": "D02",
+      "title": "Samples, counterfactuals and measurements — extend the inquiry",
+      "task": "Separate a sampling-distribution calculation from the exchangeability assumption needed for a causal comparison.",
+      "limits": "Qualitative inquiry, research ethics, sampling design and Indigenous research methods remain to broaden.",
+      "targets": [
+        {
+          "kind": "legacy",
+          "id": "stat-1.3",
+          "title": "Moments of the sample mean; unbiasedness of S²",
+          "sha256": "4820565f1ac7ec1a2561a77427ebcbd53461fbb6dfd67a01d242110460bcb863"
+        },
+        {
+          "kind": "legacy",
+          "id": "causal-1.7",
+          "title": "Exchangeability",
+          "sha256": "74a4c0f6fbfdaf2f6d8b8d50be43751cfc1d79e14eb26d038c7a0eb31a9adfbd"
+        }
+      ]
+    },
+    {
+      "domainId": "D03",
+      "title": "Inputs, strings and syntax trees — extend the inquiry",
+      "task": "Write an invariant and an induction argument. Identify the base case and the step where each claim is preserved.",
+      "limits": "Networking practice, databases, security, accessibility and programming projects are further curriculum work.",
+      "targets": [
+        {
+          "kind": "legacy",
+          "id": "algo-1.4",
+          "title": "Loop invariant",
+          "sha256": "5c182b630e16997eda73a820b7d31087a72884ec575b0532ba1c43bec5c8fd4f"
+        },
+        {
+          "kind": "legacy",
+          "id": "pl-1.2",
+          "title": "Structural induction on terms",
+          "sha256": "2ee750ce5524b0cfc06096e7f0ee5dcda4a274b5dce1e0ca04bb24a9643e51c6"
+        }
+      ]
+    },
+    {
+      "domainId": "D04",
+      "title": "Motion, energy and periodic waves — extend the inquiry",
+      "task": "Draw an energy-flow account and an interference example. Explain why a diagram of wave amplitudes is not an energy-flow ledger.",
+      "limits": "Astronomy, experimental uncertainty, quantum theory and regional histories of physical inquiry remain broader topics.",
+      "targets": [
+        {
+          "kind": "legacy",
+          "id": "energy-1.2",
+          "title": "Primary, final and useful energy: the Sankey diagram",
+          "sha256": "f79294fed912681378e2977c385b0e92aad8e64f153a811e8d718b48b95ff5e7"
+        },
+        {
+          "kind": "legacy",
+          "id": "music-1.11",
+          "title": "Superposition and interference",
+          "sha256": "5aafe9d20f303d367d4ce2960362d14bf99cff61782ba39f154eb70cd9494ec0"
+        }
+      ]
+    },
+    {
+      "domainId": "D05",
+      "title": "Gas, reaction and bonding models — extend the inquiry",
+      "task": "Compare a reaction-rate law with structural forms of iron. Separate a kinetic relation from a description of material structure.",
+      "limits": "Laboratory practice, organic chemistry, analytical methods and material histories need distinct safe routes.",
+      "targets": [
+        {
+          "kind": "legacy",
+          "id": "kin-1.2",
+          "title": "Rate law, rate constant and reaction order",
+          "sha256": "f04b72462838bab8743999dfe6352b9c4a1704352dfa58d15d8ff18b34a9df77"
+        },
+        {
+          "kind": "legacy",
+          "id": "mat-1.4",
+          "title": "Polymorphism and allotropy of iron",
+          "sha256": "1d52715704af57c92f38826bb461b5e1d2ff9203f91fb48c6cfd972f17c3ff79"
+        }
+      ]
+    },
+    {
+      "domainId": "D06",
+      "title": "Location, rock transformations and spectral scales — extend the inquiry",
+      "task": "Compare an ellipsoid model with the historical longitude problem. Distinguish coordinate assumptions from evidence about time measurement.",
+      "limits": "Oceans, weather observation, human geography, mapping ethics and situated place knowledge remain underrepresented.",
+      "targets": [
+        {
+          "kind": "legacy",
+          "id": "geog-1.6",
+          "title": "The Earth as an oblate ellipsoid",
+          "sha256": "97fd51b3d234ef703934b66bbb5e15ae52e79a71c7447a6f129b07a0ea357117"
+        },
+        {
+          "kind": "legacy",
+          "id": "geog-1.9",
+          "title": "The marine chronometer and the longitude problem",
+          "sha256": "a9552ace19cdceb214c955165f002f13d634154f7b32b92e49dad46bd2fcfbe6"
+        }
+      ]
+    },
+    {
+      "domainId": "D07",
+      "title": "Gene copies, regulation and populations — extend the inquiry",
+      "task": "Contrast random allele sampling with deterministic local stability. Show why stable expectations do not remove random variation.",
+      "limits": "Organismal diversity, anatomy, evolution beyond the model, field observation and laboratory methods need expansion.",
+      "targets": [
+        {
+          "kind": "legacy",
+          "id": "popgen-2.1",
+          "title": "Wright–Fisher model",
+          "sha256": "d3df97ccd6450b960ba47f28023ecc0d59614d8faefc9adbb2357501c51ad072"
+        },
+        {
+          "kind": "legacy",
+          "id": "mathbio-1.5",
+          "title": "Linear stability of equilibria in one dimension",
+          "sha256": "22690bd515242118dd81f1d964b66b9a4f9590445c3875b4c26c1b4931fc35ba"
+        }
+      ]
+    },
+    {
+      "domainId": "D08",
+      "title": "Niches, population balances and situated outcomes — extend the inquiry",
+      "task": "Distinguish a modeled growth law from evidence about a realized niche. State one observation needed before applying either.",
+      "limits": "Conservation decisions, ecological field data, marine systems and local stewardship are future routes.",
+      "targets": [
+        {
+          "kind": "legacy",
+          "id": "ecol-4.1",
+          "title": "Fundamental and realized niche (Connell’s barnacles)",
+          "sha256": "5a716917055dc50d80cc963d350a2ed025ec29bff884472c53cfcd45a1e39043"
+        },
+        {
+          "kind": "legacy",
+          "id": "mathbio-1.2",
+          "title": "Exponential (Malthusian) growth",
+          "sha256": "6ab54ce9b181f84fe6ed6f4a3733566bb0912de7a9bc894fddbb788f631a2a26"
+        }
+      ]
+    },
+    {
+      "domainId": "D09",
+      "title": "Observation, measurement and communication — extend the inquiry",
+      "task": "Audit a claimed improvement and a confidence-set statement. This is research literacy, not a diagnosis or a clinical recommendation.",
+      "limits": "Public health, social determinants, disability, mental health and care practice need separate evidence and sources.",
+      "targets": [
+        {
+          "kind": "study",
+          "id": "s-learning-evidence",
+          "revision": "1.0.1",
+          "title": "A learning recommendation is not your result"
+        },
+        {
+          "kind": "legacy",
+          "id": "stat-8.1",
+          "title": "Confidence set and coverage probability",
+          "sha256": "0ebd1a532491c41ba8ad4213b6c663fdea8de74a685eb2a46e78a09f1c52e12c"
+        }
+      ]
+    },
+    {
+      "domainId": "D10",
+      "title": "A sample, a water ledger and a farming system — extend the inquiry",
+      "task": "Compare a population-growth projection with an observed farming outcome. List environmental and assignment assumptions before making a causal claim.",
+      "limits": "Food preparation, forestry, fisheries, veterinary knowledge and locally situated agricultural practice remain broader work.",
+      "targets": [
+        {
+          "kind": "legacy",
+          "id": "mathbio-1.2",
+          "title": "Exponential (Malthusian) growth",
+          "sha256": "6ab54ce9b181f84fe6ed6f4a3733566bb0912de7a9bc894fddbb788f631a2a26"
+        },
+        {
+          "kind": "study",
+          "id": "s-learning-evidence",
+          "revision": "1.0.1",
+          "title": "A learning recommendation is not your result"
+        }
+      ]
+    },
+    {
+      "domainId": "D11",
+      "title": "Feedback, energy and stress — extend the inquiry",
+      "task": "Explain feedback in a governor, then identify loads and stress modes in a schematic. These models are not construction instructions.",
+      "limits": "These are models, not building, electrical or machine safety instructions; manufacturing practice needs additional curricula.",
+      "targets": [
+        {
+          "kind": "legacy",
+          "id": "ctrl-1.2",
+          "title": "Watt’s centrifugal governor",
+          "sha256": "ec8c120eb2a86b98b01278d403f2d3d8545705fe65e3cb1f8f771026695bd678"
+        },
+        {
+          "kind": "legacy",
+          "id": "arch-1.6",
+          "title": "Tension, compression and bending",
+          "sha256": "82bca2c6ba6f1edd977ccfc3c3cdbb69835decdd87a1ff71184c4e65904a9a1a"
+        }
+      ]
+    },
+    {
+      "domainId": "D12",
+      "title": "Equilibrium, supports and geometric representation — extend the inquiry",
+      "task": "Follow a load path and an anamorphic viewing construction. Separate structural claims from projection effects.",
+      "limits": "Urban planning, dwelling histories, landscape, access and current building codes are not covered by these three models.",
+      "targets": [
+        {
+          "kind": "legacy",
+          "id": "arch-1.8",
+          "title": "Load paths through a building",
+          "sha256": "b69b0ed17220abbb2183c1b4e8cb94660edb98f6ea52b26c747b851b5230181a"
+        },
+        {
+          "kind": "legacy",
+          "id": "art-2.1",
+          "title": "Oblique anamorphosis (Holbein’s skull)",
+          "sha256": "a65643b43309deeb36570e8972c64c4a44e249823977fd5b379d3e62d98381df"
+        }
+      ]
+    },
+    {
+      "domainId": "D13",
+      "title": "Choice, output and accumulation — extend the inquiry",
+      "task": "Explain one omission from GDP and why arithmetic and geometric returns answer different questions. Do not treat either as a welfare measure.",
+      "limits": "Economic institutions, inequality, labour, political economy and regional histories need additional readings.",
+      "targets": [
+        {
+          "kind": "legacy",
+          "id": "macro-1.9",
+          "title": "What GDP leaves out",
+          "sha256": "9dc9d79e69dc1d8369a8398781f7f8663ab0f8e99437bddb436123e56a26f386"
+        },
+        {
+          "kind": "legacy",
+          "id": "fin-3.1",
+          "title": "Arithmetic versus geometric mean returns",
+          "sha256": "cd665825e07003e3a06bf629d7c5c670c93747038d87b53ea580465a70811267"
+        }
+      ]
+    },
+    {
+      "domainId": "D14",
+      "title": "Resources, finance and consumer obligations — extend the inquiry",
+      "task": "Reconcile a fictional ledger, then distinguish a recorded cash cost from an opportunity cost.",
+      "limits": "Accounting, governance, cooperative organizations, management and local business institutions remain missing subjects.",
+      "targets": [
+        {
+          "kind": "study",
+          "id": "s-accounting-records",
+          "revision": "1.0.1",
+          "title": "A balanced ledger can still be wrong"
+        },
+        {
+          "kind": "legacy",
+          "id": "micro-1.2",
+          "title": "Opportunity cost",
+          "sha256": "104bca837f6c82e378c44ccc50a9fd6a034dba92850337e847911d8a5b40a0bf"
+        }
+      ]
+    },
+    {
+      "domainId": "D15",
+      "title": "Votes and diplomatic claims — extend the inquiry",
+      "task": "Apply alternative voting rules to a fixed preference profile. Explain which change comes from the rule rather than changed voters.",
+      "limits": "Public administration, lawmaking, comparative institutions, political traditions and participation need more situated accounts.",
+      "targets": [
+        {
+          "kind": "legacy",
+          "id": "polsci-1.6",
+          "title": "Condorcet winners and Condorcet methods",
+          "sha256": "ce7fdb9ee865f79173d8f31a89355388fdae6eb23afdd14aaff84a4d87b3873a"
+        },
+        {
+          "kind": "legacy",
+          "id": "polsci-1.12",
+          "title": "One electorate, many winners",
+          "sha256": "7373d00317d62f8d70085539e9e7fd88d1e28f0c08e7677290fe9681fc634e61"
+        }
+      ]
+    },
+    {
+      "domainId": "D16",
+      "title": "Facts, remedies and jurisdiction — extend the inquiry",
+      "task": "Keep authority identity separate from empirical causal assumptions. Neither a catalog field nor a statistical assumption establishes a legal holding.",
+      "limits": "Criminal, constitutional, family, international and customary law need their own jurisdictions and dated sources.",
+      "targets": [
+        {
+          "kind": "study",
+          "id": "s-information-records",
+          "revision": "1.0.1",
+          "title": "One work, several records"
+        },
+        {
+          "kind": "legacy",
+          "id": "causal-1.7",
+          "title": "Exchangeability",
+          "sha256": "74a4c0f6fbfdaf2f6d8b8d50be43751cfc1d79e14eb26d038c7a0eb31a9adfbd"
+        }
+      ]
+    },
+    {
+      "domainId": "D17",
+      "title": "Aggregate patterns, population accounting and situated accounts — extend the inquiry",
+      "task": "Contrast a segregation mechanism with cohort-component accounting. Explain why a plausible simulation is not an observed community history.",
+      "limits": "Ethnography, kinship, institutions, social theory and participant perspectives remain broader needs.",
+      "targets": [
+        {
+          "kind": "legacy",
+          "id": "soc-1.2",
+          "title": "Schelling’s segregation model",
+          "sha256": "20ac4eae372f4229c9d8d3644e23da3cd72af674cbb7dfd1b2ed9984974d07f0"
+        },
+        {
+          "kind": "legacy",
+          "id": "demo-5.3",
+          "title": "Cohort-component projection",
+          "sha256": "06153d34206162cd9f5c0da1dfe19840348861f71d6b17b371fabcbde576fbf4"
+        }
+      ]
+    },
+    {
+      "domainId": "D18",
+      "title": "Detection, comparison and interpretation — extend the inquiry",
+      "task": "Read a psychometric curve and design a comparison with a defined outcome. Separate task performance from broad mental capacity.",
+      "limits": "Development, memory, social psychology, emotion and cross-cultural methods need distinct source-backed routes.",
+      "targets": [
+        {
+          "kind": "legacy",
+          "id": "psych-1.3",
+          "title": "The psychometric function",
+          "sha256": "332dd65016cc5b738c621145ef4b3c51a5d897715d663e364925b4cd67efc91f"
+        },
+        {
+          "kind": "study",
+          "id": "s-learning-evidence",
+          "revision": "1.0.1",
+          "title": "A learning recommendation is not your result"
+        }
+      ]
+    },
+    {
+      "domainId": "D19",
+      "title": "Explanation, teaching offers and checking learning — extend the inquiry",
+      "task": "Draft a delayed explanation task and interpret uncertainty for a defined comparison. No observed learning gain is supplied.",
+      "limits": "Curriculum design, educational history, disability access and formal/informal learning institutions need expansion.",
+      "targets": [
+        {
+          "kind": "study",
+          "id": "s-learning-evidence",
+          "revision": "1.0.1",
+          "title": "A learning recommendation is not your result"
+        },
+        {
+          "kind": "legacy",
+          "id": "stat-8.1",
+          "title": "Confidence set and coverage probability",
+          "sha256": "0ebd1a532491c41ba8ad4213b6c663fdea8de74a685eb2a46e78a09f1c52e12c"
+        }
+      ]
+    },
+    {
+      "domainId": "D20",
+      "title": "Documents, diplomatic voices and material evidence — extend the inquiry",
+      "task": "Compare an attributed museum interpretation with work/edition metadata. Name the source type needed to strengthen each historical claim.",
+      "limits": "Periods, regions, oral histories and archaeological methods remain far broader than these selected cases.",
+      "targets": [
+        {
+          "kind": "study",
+          "id": "s-art-interpretation",
+          "revision": "1.0.1",
+          "title": "A dated object, a visual effect, an interpretation"
+        },
+        {
+          "kind": "study",
+          "id": "s-information-records",
+          "revision": "1.0.1",
+          "title": "One work, several records"
+        }
+      ]
+    },
+    {
+      "domainId": "D21",
+      "title": "Reconstruction, disclosure and institutional claims — extend the inquiry",
+      "task": "Make consistency, interference and comparison assumptions explicit. Discuss which are empirical premises and which define the question.",
+      "limits": "Metaphysics, epistemology, aesthetics and wider intellectual traditions require additional original-language and contextual sources.",
+      "targets": [
+        {
+          "kind": "legacy",
+          "id": "causal-1.5",
+          "title": "Consistency and no interference (SUTVA)",
+          "sha256": "561aa3e50d46c7746346c8c893c83bee941b9118b5d6858a3fef164bcbba5b9d"
+        },
+        {
+          "kind": "study",
+          "id": "s-learning-evidence",
+          "revision": "1.0.1",
+          "title": "A learning recommendation is not your result"
+        }
+      ]
+    },
+    {
+      "domainId": "D22",
+      "title": "Texts, service accounts and situated performance listings — extend the inquiry",
+      "task": "Separate religious interpretation in one historical object from catalog classification. Neither stands in for lived practice or community authority.",
+      "limits": "This is not a survey of religions; lived practice, nonreligious worldviews, regions and original-language traditions remain underrepresented.",
+      "targets": [
+        {
+          "kind": "study",
+          "id": "s-art-interpretation",
+          "revision": "1.0.1",
+          "title": "A dated object, a visual effect, an interpretation"
+        },
+        {
+          "kind": "study",
+          "id": "s-information-records",
+          "revision": "1.0.1",
+          "title": "One work, several records"
+        }
+      ]
+    },
+    {
+      "domainId": "D23",
+      "title": "Contrast, translation and communication — extend the inquiry",
+      "task": "Explain how complementary distribution differs from a distinctive feature. Preserve the language-specific evidence behind each analysis.",
+      "limits": "Signed languages, writing systems, multilingual contexts and community language knowledge need further sources.",
+      "targets": [
+        {
+          "kind": "legacy",
+          "id": "ling-2.2",
+          "title": "Allophones and complementary distribution",
+          "sha256": "2691e0e922c460b7ee3e693cf881f5a71b411c517d26e911f0c79af7ab4aaa9a"
+        },
+        {
+          "kind": "legacy",
+          "id": "ling-2.3",
+          "title": "Distinctive features",
+          "sha256": "80c9a0a8681111cab36f54bd48d041952e8ec87800e78bbbf75017a5efcd263f"
+        }
+      ]
+    },
+    {
+      "domainId": "D24",
+      "title": "Translations, editions and narrative access — extend the inquiry",
+      "task": "Separate edition identity, witness evidence and interpretation. Record what a catalog can establish without having read a work.",
+      "limits": "Genres, periods, regions, oral literatures and additional source languages remain extensive future work.",
+      "targets": [
+        {
+          "kind": "study",
+          "id": "s-information-records",
+          "revision": "1.0.1",
+          "title": "One work, several records"
+        },
+        {
+          "kind": "study",
+          "id": "s-art-interpretation",
+          "revision": "1.0.1",
+          "title": "A dated object, a visual effect, an interpretation"
+        }
+      ]
+    },
+    {
+      "domainId": "D25",
+      "title": "Projection and situated textile accounts — extend the inquiry",
+      "task": "Connect a geometric viewing effect with an attributed historical interpretation while keeping the two evidence claims distinct.",
+      "limits": "Art histories, material processes, criticism, conservation and diverse visual traditions need additional sources.",
+      "targets": [
+        {
+          "kind": "study",
+          "id": "s-art-interpretation",
+          "revision": "1.0.1",
+          "title": "A dated object, a visual effect, an interpretation"
+        },
+        {
+          "kind": "legacy",
+          "id": "art-2.1",
+          "title": "Oblique anamorphosis (Holbein’s skull)",
+          "sha256": "a65643b43309deeb36570e8972c64c4a44e249823977fd5b379d3e62d98381df"
+        }
+      ]
+    },
+    {
+      "domainId": "D26",
+      "title": "Sound quantities and an authored phrase — extend the inquiry",
+      "task": "Compare pitch relations and spectral timbre. Explain why an acoustic representation does not exhaust musical meaning.",
+      "limits": "Music histories, composition, traditions, improvisation and situated listening are not exhausted by acoustics.",
+      "targets": [
+        {
+          "kind": "legacy",
+          "id": "music-1.5",
+          "title": "Pitch is logarithmic: the octave",
+          "sha256": "cf8c67db376b968f149999e35ba73a381517ec99199941a354f3aca5f712900c"
+        },
+        {
+          "kind": "legacy",
+          "id": "music-4.1",
+          "title": "Timbre and the spectra of instruments",
+          "sha256": "a34a12ad94f5936b16a3c3f99b8eed52d97c82cc7efe46a60585ef874854c9f9"
+        }
+      ]
+    },
+    {
+      "domainId": "D27",
+      "title": "A phrase, a staging plan and a repertoire listing — extend the inquiry",
+      "task": "Compare a reported viewing effect with a modeled response curve. Plan an original observation without claiming that an audience study occurred.",
+      "limits": "Dance, film, embodied training, audience studies and additional performance traditions need separate artifacts.",
+      "targets": [
+        {
+          "kind": "study",
+          "id": "s-art-interpretation",
+          "revision": "1.0.1",
+          "title": "A dated object, a visual effect, an interpretation"
+        },
+        {
+          "kind": "legacy",
+          "id": "psych-1.3",
+          "title": "The psychometric function",
+          "sha256": "332dd65016cc5b738c621145ef4b3c51a5d897715d663e364925b4cd67efc91f"
+        }
+      ]
+    },
+    {
+      "domainId": "D28",
+      "title": "Sources, mediation and versions — extend the inquiry",
+      "task": "Trace record identity and timestamps before using a source in a learning claim. Metadata does not substitute for reading the underlying work.",
+      "limits": "Newsroom practice, libraries, records management, media production and platform studies remain wider subjects.",
+      "targets": [
+        {
+          "kind": "study",
+          "id": "s-information-records",
+          "revision": "1.0.1",
+          "title": "One work, several records"
+        },
+        {
+          "kind": "study",
+          "id": "s-learning-evidence",
+          "revision": "1.0.1",
+          "title": "A learning recommendation is not your result"
+        }
+      ]
+    },
+    {
+      "domainId": "D29",
+      "title": "Interlacing, patch plans and situated teaching — extend the inquiry",
+      "task": "Account for fictional material purchases and inspect schematic stress modes. Neither proves a made object is safe or fit for use.",
+      "limits": "Tools, materials, trades, domestic skills and actual situated making require additional evidence and lessons.",
+      "targets": [
+        {
+          "kind": "study",
+          "id": "s-accounting-records",
+          "revision": "1.0.1",
+          "title": "A balanced ledger can still be wrong"
+        },
+        {
+          "kind": "legacy",
+          "id": "arch-1.6",
+          "title": "Tension, compression and bending",
+          "sha256": "82bca2c6ba6f1edd977ccfc3c3cdbb69835decdd87a1ff71184c4e65904a9a1a"
+        }
+      ]
+    },
+    {
+      "domainId": "D30",
+      "title": "Trajectory models and strategic play — extend the inquiry",
+      "task": "Solve a small strategic game and compare equilibrium with iterated elimination of dominated strategies. The model does not establish coaching advice or athletic skill.",
+      "limits": "Sport history, coaching, movement access, recreation, rules and embodied skills remain major gaps; these models do not establish athletic competence.",
+      "targets": [
+        {
+          "kind": "legacy",
+          "id": "game-1.3",
+          "title": "Nash equilibrium",
+          "sha256": "c7bcccbddf2688560ce7a4438d19ca3279fe68e3ac6a1c414efd3a60cb2fb6de"
+        },
+        {
+          "kind": "legacy",
+          "id": "game-1.7",
+          "title": "Dominated strategies and iterated elimination",
+          "sha256": "b413503ecc6147f799208d57c2faf275041a5b32e8cffa786a461aad62365506"
+        }
+      ]
+    }
+  ]
+}

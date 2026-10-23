@@ -1,0 +1,225 @@
+{
+  "schemaVersion": 1,
+  "predecessor": "a89844612f62d6eb4bf5d5a6666357798bcab9b5",
+  "recordedOn": "2026-10-23",
+  "scope": "Finished computer-only local atlas baseline; preserves prior pilot and Wave work.",
+  "selfExcluded": "docs/integration/master-plan-local.json",
+  "files": [
+    {
+      "path": "MASTER_PLAN.md",
+      "operation": "replace",
+      "beforeSha256": "88d34d7d84e2a65fc421c5c9737be6df6c4ef0013c8d44197276fa4f43270ce5",
+      "afterSha256": "658861ef86c60128130604a5092f5262e26336272555b64567dd1256201bd6f2"
+    },
+    {
+      "path": "docs/architecture/local-program.md",
+      "operation": "add",
+      "beforeSha256": null,
+      "afterSha256": "bc7231d8c80345eccc1e74357336089c5a2cde46358b1151c4c97f6aaf264951"
+    },
+    {
+      "path": "docs/integration/master-plan-local-baseline.md",
+      "operation": "add",
+      "beforeSha256": null,
+      "afterSha256": "88d34d7d84e2a65fc421c5c9737be6df6c4ef0013c8d44197276fa4f43270ce5"
+    },
+    {
+      "path": "docs/integration/master-plan-local.md",
+      "operation": "add",
+      "beforeSha256": null,
+      "afterSha256": "da919aa8cfd7ee2805560fa6643e6986a19dc0bd4e7312fa1b42208c4ca6deb8"
+    },
+    {
+      "path": "docs/master-plan-execution.md",
+      "operation": "replace",
+      "beforeSha256": "ccc0eef80aa943066f51cc1984f0c1e67e16846f54e06bb583b9413e4816f03b",
+      "afterSha256": "9bb3b799590cc0f4f760df9e4e292d40a3a2b46e15420f88271ddc23a9f44018"
+    },
+    {
+      "path": "docs/master-plan-handoff.md",
+      "operation": "replace",
+      "beforeSha256": "7ba721406ea8b4a96c394251ba550120f311f96fc4db54faebe633fdf0c14968",
+      "afterSha256": "25209e14c737505451b361fe5db55c70d619ccdaf3ac22711a9c5ee7c9053639"
+    },
+    {
+      "path": "docs/verification/local-program-author-check.md",
+      "operation": "add",
+      "beforeSha256": null,
+      "afterSha256": "936ddaee2e60fa5eb0d28d0a329f44919598278e4c544b50727fddb2b055524c"
+    },
+    {
+      "path": "docs/verification/master-plan-local-delivery.json",
+      "operation": "add",
+      "beforeSha256": null,
+      "afterSha256": "0973c22fac58987addca2ffc2b2923d1961e903d28ef9ce7292d61664a971d8a"
+    },
+    {
+      "path": "docs/verification/master-plan-local-delivery.md",
+      "operation": "add",
+      "beforeSha256": null,
+      "afterSha256": "8e01730da0395a68408654ec9184e99746f798caacd1d1d74dd16524ff9da8f3"
+    },
+    {
+      "path": "program/archive.mjs",
+      "operation": "add",
+      "beforeSha256": null,
+      "afterSha256": "69d8b8649e9f198ca21682c9b58f013256ffdfbe0cc1761751be39d9032d3cc1"
+    },
+    {
+      "path": "program/deeper-routes.json",
+      "operation": "add",
+      "beforeSha256": null,
+      "afterSha256": "9eb50babb8e5380c5c5936a0f625b5b3ed42805cc470096f11bff1a15e7e41d9"
+    },
+    {
+      "path": "program/editions/manifest.json",
+      "operation": "add",
+      "beforeSha256": null,
+      "afterSha256": "b7a56c7400f18da047e7e74c83bedfca6ceaf2ded197bb9e8a99af9978fe1e17"
+    },
+    {
+      "path": "program/editions/s-accounting-records/1.0.0.json",
+      "operation": "add",
+      "beforeSha256": null,
+      "afterSha256": "fb8f529e9234425d5800c07fa3806270ff6fc0421919879ea517f53cf9ed62d1"
+    },
+    {
+      "path": "program/editions/s-accounting-records/1.0.1.json",
+      "operation": "add",
+      "beforeSha256": null,
+      "afterSha256": "00a5971f4b0c8337eee926e4a22ea38a82c1e51236314419d6ed57dc930f931b"
+    },
+    {
+      "path": "program/editions/s-art-interpretation/1.0.0.json",
+      "operation": "add",
+      "beforeSha256": null,
+      "afterSha256": "d66806d4903424f022064cd148f1fe89e381eee31bf1a0589177182a9f31cfc9"
+    },
+    {
+      "path": "program/editions/s-art-interpretation/1.0.1.json",
+      "operation": "add",
+      "beforeSha256": null,
+      "afterSha256": "b71e197f53108eeff812c75212d1ac1974269d628fe866ae160524da5d6dcd50"
+    },
+    {
+      "path": "program/editions/s-information-records/1.0.0.json",
+      "operation": "add",
+      "beforeSha256": null,
+      "afterSha256": "ec657200a2759c1be3cf15886af7facf5417526a998f7a0d6f2e8c899076a04d"
+    },
+    {
+      "path": "program/editions/s-information-records/1.0.1.json",
+      "operation": "add",
+      "beforeSha256": null,
+      "afterSha256": "8ac8a484cef33d51228975e9417620dbdc65aaa8ddbe9af0da43d3f7aa8eea25"
+    },
+    {
+      "path": "program/editions/s-learning-evidence/1.0.0.json",
+      "operation": "add",
+      "beforeSha256": null,
+      "afterSha256": "1eb3f997114df41053512a382ea00166a109f34d2c72d41934b8da8eb1ebb38b"
+    },
+    {
+      "path": "program/editions/s-learning-evidence/1.0.1.json",
+      "operation": "add",
+      "beforeSha256": null,
+      "afterSha256": "697ea29ea71c69822774e0cfec989578021d76b862cd0465117f78560d293046"
+    },
+    {
+      "path": "program/federated-catalog.json",
+      "operation": "add",
+      "beforeSha256": null,
+      "afterSha256": "710c1cbf0881e0446d1fdc5b124673d614a51e3ee3ac4f11d805275e78f1bb52"
+    },
+    {
+      "path": "program/federation.mjs",
+      "operation": "add",
+      "beforeSha256": null,
+      "afterSha256": "7b61347214e74bf75f7a0639eb0f87120babcb61f3502f493ba86f8156aebe5f"
+    },
+    {
+      "path": "program/learning.mjs",
+      "operation": "add",
+      "beforeSha256": null,
+      "afterSha256": "752365b146b0a8c1f1d83d48048b0a7426efe9e5960820bb908a7aee2e3ba658"
+    },
+    {
+      "path": "program/render.mjs",
+      "operation": "add",
+      "beforeSha256": null,
+      "afterSha256": "93020e328fe75968e88ec34b99c1288ebe9f1bdb0362582f5262f1a7056c5ddf"
+    },
+    {
+      "path": "program/research.json",
+      "operation": "add",
+      "beforeSha256": null,
+      "afterSha256": "33189e7b9bd78d2f8fa750d06defcbd6a64be8683ed282aa1dbc5f71ca5e73a4"
+    },
+    {
+      "path": "program/studies.json",
+      "operation": "add",
+      "beforeSha256": null,
+      "afterSha256": "307b5458ee3d6108432ae8255f20ad0002b7e4a906d92cabdd8afd35615f1b40"
+    },
+    {
+      "path": "program/ui.mjs",
+      "operation": "add",
+      "beforeSha256": null,
+      "afterSha256": "563ed38e952a6f07b09e69752a4ee8cfe448d25fae0a4a76d735579d1356ba35"
+    },
+    {
+      "path": "scripts/build-local-program.mjs",
+      "operation": "add",
+      "beforeSha256": null,
+      "afterSha256": "310ed85a096b60a8494c7731fb898e201c08b4ea538e370f6119c7a75285daa3"
+    },
+    {
+      "path": "scripts/check-integration-manifest.mjs",
+      "operation": "add",
+      "beforeSha256": null,
+      "afterSha256": "fe222effde96215b43abf05b1e0673e69b7f04e895bd5664490553c3a149bf00"
+    },
+    {
+      "path": "scripts/freeze-local-studies.mjs",
+      "operation": "add",
+      "beforeSha256": null,
+      "afterSha256": "e6df4f3f0f4e3a5210d50b7c9216492fb3d36b800abc610cd4f0bd5a3837c9c0"
+    },
+    {
+      "path": "scripts/install-local-atlas.mjs",
+      "operation": "add",
+      "beforeSha256": null,
+      "afterSha256": "7018580bf3b6b5f0d4588840b49eb3ec212a508f2dce22d2c1e67bc8de2dedc1"
+    },
+    {
+      "path": "scripts/lookup-source.mjs",
+      "operation": "add",
+      "beforeSha256": null,
+      "afterSha256": "3ae1b4d3adbc10a85da9196dcf163e895322e263cdf77f2ea612f205eb372ab7"
+    },
+    {
+      "path": "scripts/master-plan-status.mjs",
+      "operation": "replace",
+      "beforeSha256": "9d155e17dbe4d5ca48d567c46c7b71c11e01748ee6aac43ce4603779c9e75a2a",
+      "afterSha256": "c74b1ad10e62473eb10f096c2556e71416031041d86881d55991990fa2afe712"
+    },
+    {
+      "path": "scripts/serve-local-atlas.mjs",
+      "operation": "add",
+      "beforeSha256": null,
+      "afterSha256": "b15273d2901d5f2c9c317c312f7d8fb95e7a0741a340514c732f82590bc8f3af"
+    },
+    {
+      "path": "tests/local-program-ui.test.mjs",
+      "operation": "add",
+      "beforeSha256": null,
+      "afterSha256": "d28330a3c341108297563d2f067e5ec5bd881ab31575785ead575cf4c1ee7272"
+    },
+    {
+      "path": "tests/local-program.test.mjs",
+      "operation": "add",
+      "beforeSha256": null,
+      "afterSha256": "4b492d8d03f551b07a9d78950b0ed6b1c10473b2bb040f283f159f80af3e21d1"
+    }
+  ]
+}

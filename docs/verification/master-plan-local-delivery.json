@@ -1,0 +1,378 @@
+{
+  "schemaVersion": 1,
+  "recordedOn": "2026-10-23",
+  "scope": "User-selected computer-only local product baseline. No public deployment or fabricated real-world observations.",
+  "status": {
+    "asOf": "2026-10-23",
+    "localProgram": {
+      "depthRoutes": 30,
+      "depthTargets": 40,
+      "studies": 4,
+      "languageEditions": 8,
+      "acceptedStudies": 4,
+      "providers": 2,
+      "records": 4,
+      "importedWorks": 0,
+      "unresolvedPrerequisites": 0,
+      "cyclicRoutes": 0
+    },
+    "totalCurrentLessons": 28,
+    "scope": "Current local artifacts, not production deployment or a percentage of human knowledge.",
+    "reviewPolicy": "Independent reviews are optional for local work under the user instruction. Author checks and honest evidence remain required.",
+    "counts": {
+      "domains": 30,
+      "pilotFamilies": 8,
+      "currentLessons": 24,
+      "locallyAccepted": 24,
+      "drafts": 0,
+      "retainedEditions": 28,
+      "introductoryRoutes": 30,
+      "introductoryAssociations": 90,
+      "distinctIntroductoryTargets": 65,
+      "locallyAcceptedJourneys": 3,
+      "journeyLessonStops": 11,
+      "journeyExternalReadings": 3,
+      "journeyGapStops": 0,
+      "sourceIssuesOpen": 4,
+      "unassignedSourceIssues": 0,
+      "releaseEvents": 0
+    },
+    "currentInputs": {
+      "curriculumBinding": "dc758f60703aec1aa0993955015a4e14afafec60400deb55190ef7fb3c832a18",
+      "legacySnapshot": "2b156195a22cf85186b8b40fb6c35b8966a478a0c46da155a742b498907c2685"
+    },
+    "nextWork": [
+      {
+        "id": "S001",
+        "target": "P02-L03",
+        "action": "Obtain independently inspectable provenance evidence for the earlier witness, or retain its unresolved status while explicitly using the distinct selected witness.",
+        "accessStops": []
+      },
+      {
+        "id": "S002",
+        "target": "P05-L03",
+        "action": "Obtain authenticated location clarification or separately scoped situated evidence without recovering a stopped work. Preserve the discrepancy until resolved.",
+        "accessStops": [
+          "MSSRF seed-keeper feature: direct capture stopped at HTTP 307; no retry or alternate-copy recovery.",
+          "Earlier FAO Koraput profile timeout remains a stop."
+        ]
+      },
+      {
+        "id": "S003",
+        "target": "P03-L03",
+        "action": "Wait for permitted new evidence or an explicit change to the recorded access boundary; assess current code status and context before asserting freshness.",
+        "accessStops": [
+          "Sikh Coalition FAQ and earlier SGPC English PDF: HTTP 403.",
+          "Official English directory direct HTML: HTTP 403; no alternate recovery."
+        ]
+      },
+      {
+        "id": "S004",
+        "target": "P01-L03",
+        "action": "Assess the newer research only after permitted evidence becomes available; retain the current bounded method claims and open research-update qualification.",
+        "accessStops": [
+          "DOI 10.1126/sciadv.aeg2624: HTTP 403; no alternate recovery.",
+          "Berkeley announcement later direct request: HTTP 403; earlier discovery reading remains historical."
+        ]
+      }
+    ],
+    "ongoingScope": [
+      "Expand each introductory route into deeper and more representative subject coverage.",
+      "Add situated regional/language editions when their actual sources and permissions are available.",
+      "Maintain exact correction, edition, source and distribution records.",
+      "The user selected local-only delivery. Public deployment is outside the current completion scope."
+    ],
+    "notClaimed": [
+      "All human knowledge captured",
+      "Professional certification or observed practical competence",
+      "Human learner or screen-reader sessions",
+      "Public deployment",
+      "Freshness of a source whose access stopped"
+    ]
+  },
+  "tests": {
+    "offline": {
+      "passed": 57,
+      "failed": 0,
+      "log": "integration-final2.log"
+    },
+    "native": {
+      "passed": 6,
+      "failed": 0,
+      "log": "ui-final.log"
+    },
+    "installedNode26InitialGroups": 10
+  },
+  "links": {
+    "baseHTML": 8039,
+    "finalHTML": 8095,
+    "unchangedHTML": 8033,
+    "changedHTML": [
+      "index.html",
+      "domains/index.html",
+      "curriculum/index.html",
+      "explore/index.html",
+      "journeys/index.html",
+      "ideas/index.html"
+    ],
+    "addedHTML": [
+      "depth/D01/index.html",
+      "depth/D02/index.html",
+      "depth/D03/index.html",
+      "depth/D04/index.html",
+      "depth/D05/index.html",
+      "depth/D06/index.html",
+      "depth/D07/index.html",
+      "depth/D08/index.html",
+      "depth/D09/index.html",
+      "depth/D10/index.html",
+      "depth/D11/index.html",
+      "depth/D12/index.html",
+      "depth/D13/index.html",
+      "depth/D14/index.html",
+      "depth/D15/index.html",
+      "depth/D16/index.html",
+      "depth/D17/index.html",
+      "depth/D18/index.html",
+      "depth/D19/index.html",
+      "depth/D20/index.html",
+      "depth/D21/index.html",
+      "depth/D22/index.html",
+      "depth/D23/index.html",
+      "depth/D24/index.html",
+      "depth/D25/index.html",
+      "depth/D26/index.html",
+      "depth/D27/index.html",
+      "depth/D28/index.html",
+      "depth/D29/index.html",
+      "depth/D30/index.html",
+      "depth/index.html",
+      "practice/index.html",
+      "sources/catalog/index.html",
+      "sources/index.html",
+      "start/index.html",
+      "studies/index.html",
+      "studies/s-accounting-records/index.html",
+      "studies/s-accounting-records/versions/1.0.0/en/index.html",
+      "studies/s-accounting-records/versions/1.0.0/es/index.html",
+      "studies/s-accounting-records/versions/1.0.1/en/index.html",
+      "studies/s-accounting-records/versions/1.0.1/es/index.html",
+      "studies/s-art-interpretation/index.html",
+      "studies/s-art-interpretation/versions/1.0.0/en/index.html",
+      "studies/s-art-interpretation/versions/1.0.0/es/index.html",
+      "studies/s-art-interpretation/versions/1.0.1/en/index.html",
+      "studies/s-art-interpretation/versions/1.0.1/es/index.html",
+      "studies/s-information-records/index.html",
+      "studies/s-information-records/versions/1.0.0/en/index.html",
+      "studies/s-information-records/versions/1.0.0/es/index.html",
+      "studies/s-information-records/versions/1.0.1/en/index.html",
+      "studies/s-information-records/versions/1.0.1/es/index.html",
+      "studies/s-learning-evidence/index.html",
+      "studies/s-learning-evidence/versions/1.0.0/en/index.html",
+      "studies/s-learning-evidence/versions/1.0.0/es/index.html",
+      "studies/s-learning-evidence/versions/1.0.1/en/index.html",
+      "studies/s-learning-evidence/versions/1.0.1/es/index.html"
+    ],
+    "localReferencesChecked": 3243,
+    "missing": 0,
+    "scope": "Previously audited predecessor HTML retained byte-for-byte except six declared entry adapters. All new/changed page targets checked. No external URL or general fragment freshness assertion."
+  },
+  "preservation": {
+    "originalFilesChecked": 3222,
+    "originalDifferences": [
+      "docs/master-plan-handoff.md"
+    ],
+    "originalDifferenceScope": "Known preexisting handoff difference; no original-checkout writes in this continuation.",
+    "protectedWorktrees": [
+      {
+        "path": "/Users/teodev/.codex/worktrees/wave-six-expansion/theorems-visualizations",
+        "head": "a5956bb3d2b1634d06644d2fe0361f617f4c4b55",
+        "chapterSha256": "3a53e3ae4a663e1298f411760dd9b633b6e77a8511b50384928858cb427251af"
+      },
+      {
+        "path": "/Users/teodev/.codex/worktrees/wave-visual-redesign/theorems-visualizations",
+        "head": "9c6eec56a867f8e777a778429d0dddc9d01f256a",
+        "chapterSha256": "3a53e3ae4a663e1298f411760dd9b633b6e77a8511b50384928858cb427251af"
+      },
+      {
+        "path": "/Users/teodev/.codex/worktrees/wave-five-shipping/theorems-visualizations",
+        "head": "f0a324f98f5f7f2538f7685b84d1041764a65828",
+        "chapterSha256": "3a53e3ae4a663e1298f411760dd9b633b6e77a8511b50384928858cb427251af"
+      }
+    ],
+    "earlierFilesUnchanged": 199,
+    "base": "a89844612f62d6eb4bf5d5a6666357798bcab9b5"
+  },
+  "installation": {
+    "home": "/Users/teodev/Developer/atlas-local",
+    "bundle": "/Users/teodev/Developer/atlas-local/releases/2026-10-23-final",
+    "launcher": "/Users/teodev/Developer/atlas-local/Start Atlas.command",
+    "files": 10648,
+    "binding": "4257eb53179587a03d5747b0dd9ea724aff2d347c040a9b53efa68023ce83dee"
+  },
+  "installedIntegrity": {
+    "verifiedFiles": 10648,
+    "binding": "4257eb53179587a03d5747b0dd9ea724aff2d347c040a9b53efa68023ce83dee",
+    "root": "/Users/teodev/Developer/atlas-local/releases/2026-10-23-final"
+  },
+  "build": {
+    "schemaVersion": 1,
+    "mode": "local-only",
+    "output": "/Users/teodev/Developer/atlas-local/releases/2026-10-23-final",
+    "binding": "4257eb53179587a03d5747b0dd9ea724aff2d347c040a9b53efa68023ce83dee",
+    "inputHashes": {
+      "program/federation.mjs": "7b61347214e74bf75f7a0639eb0f87120babcb61f3502f493ba86f8156aebe5f",
+      "program/learning.mjs": "752365b146b0a8c1f1d83d48048b0a7426efe9e5960820bb908a7aee2e3ba658",
+      "program/render.mjs": "93020e328fe75968e88ec34b99c1288ebe9f1bdb0362582f5262f1a7056c5ddf",
+      "program/ui.mjs": "563ed38e952a6f07b09e69752a4ee8cfe448d25fae0a4a76d735579d1356ba35",
+      "program/archive.mjs": "69d8b8649e9f198ca21682c9b58f013256ffdfbe0cc1761751be39d9032d3cc1",
+      "scripts/build-local-program.mjs": "310ed85a096b60a8494c7731fb898e201c08b4ea538e370f6119c7a75285daa3",
+      "program/studies.json": "307b5458ee3d6108432ae8255f20ad0002b7e4a906d92cabdd8afd35615f1b40",
+      "program/research.json": "33189e7b9bd78d2f8fa750d06defcbd6a64be8683ed282aa1dbc5f71ca5e73a4",
+      "program/federated-catalog.json": "710c1cbf0881e0446d1fdc5b124673d614a51e3ee3ac4f11d805275e78f1bb52",
+      "program/deeper-routes.json": "9eb50babb8e5380c5c5936a0f625b5b3ed42805cc470096f11bff1a15e7e41d9",
+      "program/editions/manifest.json": "b7a56c7400f18da047e7e74c83bedfca6ceaf2ded197bb9e8a99af9978fe1e17",
+      "program/editions/s-information-records/1.0.0.json": "ec657200a2759c1be3cf15886af7facf5417526a998f7a0d6f2e8c899076a04d",
+      "program/editions/s-learning-evidence/1.0.0.json": "1eb3f997114df41053512a382ea00166a109f34d2c72d41934b8da8eb1ebb38b",
+      "program/editions/s-accounting-records/1.0.0.json": "fb8f529e9234425d5800c07fa3806270ff6fc0421919879ea517f53cf9ed62d1",
+      "program/editions/s-art-interpretation/1.0.0.json": "d66806d4903424f022064cd148f1fe89e381eee31bf1a0589177182a9f31cfc9",
+      "program/editions/s-information-records/1.0.1.json": "8ac8a484cef33d51228975e9417620dbdc65aaa8ddbe9af0da43d3f7aa8eea25",
+      "program/editions/s-learning-evidence/1.0.1.json": "697ea29ea71c69822774e0cfec989578021d76b862cd0465117f78560d293046",
+      "program/editions/s-accounting-records/1.0.1.json": "00a5971f4b0c8337eee926e4a22ea38a82c1e51236314419d6ed57dc930f931b",
+      "program/editions/s-art-interpretation/1.0.1.json": "b71e197f53108eeff812c75212d1ac1974269d628fe866ae160524da5d6dcd50"
+    },
+    "counts": {
+      "depthRoutes": 30,
+      "depthTargets": 40,
+      "studies": 4,
+      "languageEditions": 8,
+      "acceptedStudies": 4,
+      "providers": 2,
+      "records": 4,
+      "importedWorks": 0,
+      "unresolvedPrerequisites": 0,
+      "cyclicRoutes": 0
+    },
+    "generatedFiles": [
+      "assets/program/style.css",
+      "assets/program/ui.mjs",
+      "start/index.html",
+      "depth/index.html",
+      "depth/D01/index.html",
+      "depth/D02/index.html",
+      "depth/D03/index.html",
+      "depth/D04/index.html",
+      "depth/D05/index.html",
+      "depth/D06/index.html",
+      "depth/D07/index.html",
+      "depth/D08/index.html",
+      "depth/D09/index.html",
+      "depth/D10/index.html",
+      "depth/D11/index.html",
+      "depth/D12/index.html",
+      "depth/D13/index.html",
+      "depth/D14/index.html",
+      "depth/D15/index.html",
+      "depth/D16/index.html",
+      "depth/D17/index.html",
+      "depth/D18/index.html",
+      "depth/D19/index.html",
+      "depth/D20/index.html",
+      "depth/D21/index.html",
+      "depth/D22/index.html",
+      "depth/D23/index.html",
+      "depth/D24/index.html",
+      "depth/D25/index.html",
+      "depth/D26/index.html",
+      "depth/D27/index.html",
+      "depth/D28/index.html",
+      "depth/D29/index.html",
+      "depth/D30/index.html",
+      "studies/index.html",
+      "studies/s-information-records/versions/1.0.1/en/index.html",
+      "studies/s-information-records/versions/1.0.1/es/index.html",
+      "studies/s-learning-evidence/versions/1.0.1/en/index.html",
+      "studies/s-learning-evidence/versions/1.0.1/es/index.html",
+      "studies/s-accounting-records/versions/1.0.1/en/index.html",
+      "studies/s-accounting-records/versions/1.0.1/es/index.html",
+      "studies/s-art-interpretation/versions/1.0.1/en/index.html",
+      "studies/s-art-interpretation/versions/1.0.1/es/index.html",
+      "sources/index.html",
+      "sources/catalog/index.html",
+      "practice/index.html",
+      "studies/s-information-records/versions/1.0.0/en/index.html",
+      "studies/s-information-records/versions/1.0.0/es/index.html",
+      "assets/program/7797e38fdaa4514a612d38cfd697d67ee69432762a75724bdda6601452576590/style.css",
+      "assets/program/7797e38fdaa4514a612d38cfd697d67ee69432762a75724bdda6601452576590/ui.mjs",
+      "studies/s-information-records/versions/1.0.0/evidence.json",
+      "studies/s-learning-evidence/versions/1.0.0/en/index.html",
+      "studies/s-learning-evidence/versions/1.0.0/es/index.html",
+      "studies/s-learning-evidence/versions/1.0.0/evidence.json",
+      "studies/s-accounting-records/versions/1.0.0/en/index.html",
+      "studies/s-accounting-records/versions/1.0.0/es/index.html",
+      "studies/s-accounting-records/versions/1.0.0/evidence.json",
+      "studies/s-art-interpretation/versions/1.0.0/en/index.html",
+      "studies/s-art-interpretation/versions/1.0.0/es/index.html",
+      "studies/s-art-interpretation/versions/1.0.0/evidence.json",
+      "studies/s-information-records/versions/1.0.1/evidence.json",
+      "studies/s-learning-evidence/versions/1.0.1/evidence.json",
+      "studies/s-accounting-records/versions/1.0.1/evidence.json",
+      "studies/s-art-interpretation/versions/1.0.1/evidence.json",
+      "studies/s-information-records/index.html",
+      "studies/s-learning-evidence/index.html",
+      "studies/s-accounting-records/index.html",
+      "studies/s-art-interpretation/index.html"
+    ],
+    "replacements": [
+      {
+        "path": "index.html",
+        "beforeSha256": "9c4555f03d318c29daa13d21c22c65140ae005e1aeaaf8e06dbd630d31661662",
+        "afterSha256": "564db675c3d7880c878ee7bab6b4f67107aa6d7779c32c28f99dba9fa128ad75"
+      },
+      {
+        "path": "ideas/index.html",
+        "beforeSha256": "198e406727c947e223dcc69e9e315bbc736c66dc13bc7d37230a45ee5b7eda6b",
+        "afterSha256": "429a559ee6684b2b2bdcdf1e7d99dc68376d63deba9c0cd9a23fd11e2b8f3337"
+      },
+      {
+        "path": "explore/index.html",
+        "beforeSha256": "d34c04b2f54c8f8bbc4870586ba5b4bdbf7d7750554e55e958d30ba115292c54",
+        "afterSha256": "784386f8cc7204e83cdc75115288cb862aa14394ec895098727be2b384b12e49"
+      },
+      {
+        "path": "domains/index.html",
+        "beforeSha256": "c4a3e5f3b56ea9b1dcc06b12844fa979b9aab8af683db7a6c8206b8635d337b9",
+        "afterSha256": "4d28d553f9471ade98f454d6ae7a1ef100b853c8b060ac76d3ad19b4ef926fdd"
+      },
+      {
+        "path": "journeys/index.html",
+        "beforeSha256": "850154b2725239d8755f6b3c10fbfe6b6e4215b1415534d736976edfe812e040",
+        "afterSha256": "637b292001ead68e7ab864faa82bbddd4111a8d8e547fb6359a4242614d967aa"
+      },
+      {
+        "path": "curriculum/index.html",
+        "beforeSha256": "9aac88d0a3148f2605e4cd50c9b4845c775bc8d0c79255ecfe2e44ac07911bab",
+        "afterSha256": "55500b7d26b23abe4dbac312125b7f330fa4cc83b30b7f110d0b66cf4e5d6e5d"
+      }
+    ],
+    "preexistingFilesPreserved": 10573
+  },
+  "logs": [
+    {
+      "path": "/tmp/atlas-local-finish-20261023/integration-final2.log",
+      "sha256": "e726f6bf14ee78d8ccd35d5e5a8f6deb197977066adae19ae39534e4b5302d1f"
+    },
+    {
+      "path": "/tmp/atlas-local-finish-20261023/ui-final.log",
+      "sha256": "a60f65d5b8474191dff181866a4be7baa38c6f2c11202fe7f4feb73e38929e8b"
+    },
+    {
+      "path": "/tmp/atlas-local-finish-20261023/node26-check.log",
+      "sha256": "8eebbb939c713bc3e026b2a8b63c1ccf69505178fd1f4e43e0b723bf7a0bd5c0"
+    },
+    {
+      "path": "/tmp/atlas-local-finish-20261023/reopen.log",
+      "sha256": "e18258ad25fb59e658d9e7ebb349396e12f9df82758defa90a946b1a4af40822"
+    }
+  ]
+}

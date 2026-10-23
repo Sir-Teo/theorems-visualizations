@@ -1,0 +1,161 @@
+{
+  "schemaVersion": 1,
+  "study": {
+    "schemaVersion": 1,
+    "id": "s-art-interpretation",
+    "revision": "1.0.0",
+    "seriesId": "knowledge-foundations",
+    "domainIds": [
+      "D20",
+      "D25"
+    ],
+    "sourceIds": [
+      "art"
+    ],
+    "author": "atlas-editor",
+    "status": "accepted-local",
+    "languages": [
+      "en",
+      "es"
+    ],
+    "title": {
+      "en": "A dated object, a visual effect, an interpretation",
+      "es": "Un objeto fechado, un efecto visual, una interpretación"
+    },
+    "scope": {
+      "en": "Read a museum’s account of one painting without substituting a diagram or a summary for the object.",
+      "es": "Lee el relato de un museo sobre una pintura sin sustituir el objeto por un diagrama o un resumen."
+    },
+    "body": {
+      "en": [
+        "The National Gallery’s account of The Ambassadors attributes the painting to Hans Holbein the Younger and identifies 1533 in the signature. Its text describes an elongated foreground form that becomes a skull from an oblique viewing position. It also offers interpretations of objects in relation to religious and political discord.",
+        "These claims have different evidential roles. A reported inscription supports dating; an account of a viewing effect describes appearance; a symbolic reading proposes meaning in context. None is the same as proof that every viewer or patron held one intention.",
+        "This lesson uses the gallery’s text only. No image, audio or conservation examination is supplied. Its in-depth text and audio transcript give differing age descriptions; that discrepancy is left unresolved and no sitter-age conclusion is used."
+      ],
+      "es": [
+        "El relato de la National Gallery sobre Los embajadores atribuye la pintura a Hans Holbein el Joven e identifica 1533 en la firma. El texto describe una forma alargada en primer plano que se convierte en una calavera desde una posición oblicua. También propone interpretaciones de objetos relacionadas con conflictos religiosos y políticos.",
+        "Estas afirmaciones cumplen funciones probatorias distintas. Una inscripción descrita respalda una fecha; un efecto de observación describe una apariencia; una lectura simbólica propone un significado contextual. Ninguna demuestra que todas las personas que observaron o encargaron la obra compartieran una misma intención.",
+        "Esta lección utiliza solo el texto de la galería. No proporciona imagen, audio ni examen de conservación. El texto detallado y la transcripción de audio describen edades distintas; la discrepancia queda sin resolver y no se usa para concluir la edad de los retratados."
+      ]
+    },
+    "tasks": [
+      {
+        "id": "date",
+        "answer": "inscription",
+        "choices": [
+          {
+            "id": "inscription",
+            "en": "Reported inscription evidence",
+            "es": "Evidencia de una inscripción descrita"
+          },
+          {
+            "id": "intent",
+            "en": "Proof of every patron’s intention",
+            "es": "Prueba de la intención de todas las personas que encargaron la obra"
+          }
+        ],
+        "question": {
+          "en": "What kind of evidence is the reported date in the signature?",
+          "es": "¿Qué tipo de evidencia es la fecha indicada en la firma?"
+        },
+        "guide": {
+          "en": "The textual account reports a dated inscription. We have not independently examined the paint surface.",
+          "es": "El relato textual describe una inscripción fechada. No hemos examinado de forma independiente la superficie pintada."
+        }
+      },
+      {
+        "id": "meaning",
+        "answer": "meaning",
+        "choices": [
+          {
+            "id": "meaning",
+            "en": "An attributed interpretation with context",
+            "es": "Una interpretación atribuida y contextualizada"
+          },
+          {
+            "id": "fact",
+            "en": "An observed mental state of every viewer",
+            "es": "Un estado mental observado de cada espectador"
+          }
+        ],
+        "question": {
+          "en": "How should the discord interpretation be recorded?",
+          "es": "¿Cómo debe registrarse la interpretación sobre la discordia?"
+        },
+        "guide": {
+          "en": "Attribute the interpretation to the account. A visual arrangement does not directly reveal all intentions or responses.",
+          "es": "Atribuye la interpretación al relato. Una disposición visual no revela directamente todas las intenciones ni respuestas."
+        }
+      },
+      {
+        "id": "unknown",
+        "answer": "retain",
+        "choices": [
+          {
+            "id": "choose",
+            "en": "Silently choose the more convenient value",
+            "es": "Elegir en silencio el valor más conveniente"
+          },
+          {
+            "id": "retain",
+            "en": "Keep the discrepancy and omit the unsupported conclusion",
+            "es": "Conservar la discrepancia y omitir la conclusión no respaldada"
+          }
+        ],
+        "question": {
+          "en": "What should we do with the conflicting age descriptions?",
+          "es": "¿Qué debemos hacer con las descripciones de edad contradictorias?"
+        },
+        "guide": {
+          "en": "The present exercise needs no age claim. Resolving it would require additional exact evidence, not averaging the values.",
+          "es": "El ejercicio no necesita afirmar una edad. Resolverla requiere evidencia exacta adicional, no promediar los valores."
+        }
+      }
+    ],
+    "transfer": {
+      "en": "For another object, separate a catalog fact, an observation and an interpretation. Name what you would need to inspect before strengthening each claim.",
+      "es": "Para otro objeto, separa un dato de catálogo, una observación y una interpretación. Indica qué necesitarías examinar antes de reforzar cada afirmación."
+    },
+    "translationScope": "Original English and Spanish editorial editions checked by the AI author; source titles and provider field values remain in their observed language. No community language validation is claimed.",
+    "authorVerification": {
+      "kind": "author-check",
+      "scope": "local-only",
+      "checkedOn": "2026-10-23",
+      "contentDigest": "7693253dc5e32fb41f778146bfeffb5151f6f2f7ce965d289cf7f44cc46e62f9",
+      "evidencePath": "docs/verification/local-program-author-check.md"
+    }
+  },
+  "contentDigest": "7693253dc5e32fb41f778146bfeffb5151f6f2f7ce965d289cf7f44cc46e62f9",
+  "sources": [
+    {
+      "id": "art",
+      "title": "National Gallery, Hans Holbein the Younger, The Ambassadors, NG1314",
+      "url": "https://www.nationalgallery.org.uk/paintings/hans-holbein-the-younger-the-ambassadors",
+      "locator": "Read overview, in-depth and audio-transcript text. Signature date, oblique skull and interpretive language distinguished. Image pixels and audio were not inspected or reused; the two age descriptions differ, so no age claim is adopted.",
+      "rights": "Original short summaries and questions only. No painting reproduction, audio, transcript or extended quotation copied.",
+      "language": "en"
+    }
+  ],
+  "codeHashes": {
+    "program/federation.mjs": "7b61347214e74bf75f7a0639eb0f87120babcb61f3502f493ba86f8156aebe5f",
+    "program/learning.mjs": "752365b146b0a8c1f1d83d48048b0a7426efe9e5960820bb908a7aee2e3ba658",
+    "program/render.mjs": "93020e328fe75968e88ec34b99c1288ebe9f1bdb0362582f5262f1a7056c5ddf",
+    "program/ui.mjs": "563ed38e952a6f07b09e69752a4ee8cfe448d25fae0a4a76d735579d1356ba35",
+    "program/archive.mjs": "4507741252509907bf4598e21a7542c66cc753cb401783a834bb9c8103e862bb",
+    "scripts/build-local-program.mjs": "38595afd92f448444bf6c527a45e5203955a608fd72685e36e89423471794874"
+  },
+  "runtime": {
+    "css": ":root{color-scheme:light dark;--bg:#f7f5ef;--fg:#22251f;--muted:#535a52;--line:#c9cec3;--link:#164cad}*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--fg);font:18px/1.65 system-ui,sans-serif}header,main,footer{max-width:74rem;margin:auto;padding:1.3rem}nav{display:flex;gap:.65rem 1.1rem;flex-wrap:wrap}h1{font:clamp(2.1rem,5vw,3.6rem)/1.12 Georgia,serif;max-width:25ch}h2,h3{line-height:1.3}p,li,dd,a{overflow-wrap:anywhere}a{color:var(--link)}.meta{color:var(--muted);font-size:.9rem}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,22rem),1fr));gap:1.5rem}article,section{border-top:1px solid var(--line);padding-top:1rem;margin-top:1.5rem;min-width:0}fieldset{border:1px solid var(--line);margin:1.2rem 0;padding:1rem;min-width:0}legend{font-weight:650;padding:.3rem}label{display:block;margin:.6rem 0}input,textarea,select,button{font:inherit;max-width:100%}input[type=search],textarea,select{width:100%;padding:.5rem}textarea{min-height:8rem}button{padding:.5rem .8rem;cursor:pointer}summary{cursor:pointer;font-weight:650}details{margin:1rem 0}pre{white-space:pre-wrap;overflow-wrap:anywhere;font-size:.9rem}.skip{position:absolute;left:-10000px}.skip:focus{left:1rem;top:1rem;background:var(--bg);padding:.75rem}:focus-visible{outline:3px solid var(--link);outline-offset:4px}table{border-collapse:collapse;width:100%}th,td{border:1px solid var(--line);text-align:left;padding:.5rem;vertical-align:top}.table-scroll{overflow-x:auto}.table-scroll table{min-width:35rem}.pill{display:inline-block;border:1px solid var(--line);padding:.15rem .5rem;border-radius:1rem}footer{font-size:.9rem;color:var(--muted)}@media(prefers-color-scheme:dark){:root{--bg:#121719;--fg:#eeeae1;--muted:#b7c0b6;--line:#45504a;--link:#a9c6ff}}@media print{nav,button,.skip{display:none}body{background:white;color:black}details{display:block}main{max-width:none}}",
+    "ui": "// No network, storage, analytics or shared private-note state.\nfor(const button of document.querySelectorAll('[data-enable]'))button.disabled=false;\nconst text={en:{choose:'Choose a response first.',matches:'This matches the bounded guide.',reconsider:'Reconsider using the guide below.',download:'Downloaded notes; nothing was uploaded.'},es:{choose:'Primero elige una respuesta.',matches:'La respuesta coincide con la guía delimitada.',reconsider:'Reconsidera tu respuesta con la guía siguiente.',download:'Notas descargadas; no se ha enviado nada.'}};\nfor(const form of document.querySelectorAll('[data-study-task]')) form.addEventListener('submit',event=>{event.preventDefault();const choice=new FormData(form).get('choice'),l=text[form.dataset.language];form.querySelector('[data-result]').textContent=!choice?l.choose:choice===form.dataset.answer?l.matches:l.reconsider;});\nfunction download(name,data){const url=URL.createObjectURL(new Blob([JSON.stringify(data,null,2)+'\\n'],{type:'application/json'})),a=document.createElement('a');a.href=url;a.download=name;document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),10000);}\nfor(const button of document.querySelectorAll('[data-export-study]'))button.addEventListener('click',()=>{const {exportStudy:id,revision,language}=button.dataset;download(`${id}-${revision}-${language}-notes.json`,{schemaVersion:1,id,revision,language,notes:document.querySelector('#study-notes').value,scope:'User notes; no assessed outcome or observed mastery.'});document.querySelector('[data-export-status]').textContent=text[language].download;});\nconst search=document.querySelector('[data-catalog-search]'),provider=document.querySelector('[data-catalog-provider]');\nfunction filter(){const q=search.value.trim().toLocaleLowerCase('en'),p=provider.value;let shown=0;for(const card of document.querySelectorAll('[data-provider]')){const visible=(!p||card.dataset.provider===p)&&card.textContent.toLocaleLowerCase('en').includes(q);card.hidden=!visible;if(visible)shown++;}document.querySelector('[data-catalog-count]').textContent=shown+' records shown';}\nsearch?.addEventListener('input',filter);provider?.addEventListener('change',filter);\ndocument.querySelector('[data-practice-form]')?.addEventListener('submit',event=>{event.preventDefault();const form=new FormData(event.currentTarget),data={schemaVersion:1,kind:'self-recorded-practice',activity:form.get('activity'),observation:form.get('observation'),interpretation:form.get('interpretation'),nextAttempt:form.get('nextAttempt'),scope:'User-entered notes; no independent observation, consent, certification or outcome is inferred.'};download('atlas-practice-notes.json',data);document.querySelector('[data-practice-result]').textContent='Downloaded your notes. No data was uploaded or automatically saved.';});\n"
+  },
+  "runtimeDigest": "7797e38fdaa4514a612d38cfd697d67ee69432762a75724bdda6601452576590",
+  "pages": {
+    "en": "<!doctype html><html lang=\"en\"><head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width,initial-scale=1\"><meta name=\"robots\" content=\"noindex,nofollow\"><title>A dated object, a visual effect, an interpretation · Atlas</title><link rel=\"stylesheet\" href=\"../../../../../assets/program/7797e38fdaa4514a612d38cfd697d67ee69432762a75724bdda6601452576590/style.css\"></head><body><a class=\"skip\" href=\"#main\">Skip to content</a><header><nav aria-label=\"Atlas\"><a href=\"../../../../../start/\">Start</a><a href=\"../../../../../domains/\">Fields</a><a href=\"../../../../../curriculum/\">Starting routes</a><a href=\"../../../../../depth/\">Go deeper</a><a href=\"../../../../../sources/\">Sources</a><a href=\"../../../../../studies/\">New studies</a><a href=\"../../../../../practice/\">Practice notebook</a></nav></header><main id=\"main\" tabindex=\"-1\"><p class=\"meta\">s-art-interpretation · 1.0.0 · Local</p><nav aria-label=\"Language edition\"><a hreflang=\"en\" lang=\"en\" href=\"../en/\" aria-current=\"page\">English</a><a hreflang=\"es\" lang=\"es\" href=\"../es/\">Español</a></nav><h1>A dated object, a visual effect, an interpretation</h1><p>Read a museum’s account of one painting without substituting a diagram or a summary for the object.</p><p>The National Gallery’s account of The Ambassadors attributes the painting to Hans Holbein the Younger and identifies 1533 in the signature. Its text describes an elongated foreground form that becomes a skull from an oblique viewing position. It also offers interpretations of objects in relation to religious and political discord.</p><p>These claims have different evidential roles. A reported inscription supports dating; an account of a viewing effect describes appearance; a symbolic reading proposes meaning in context. None is the same as proof that every viewer or patron held one intention.</p><p>This lesson uses the gallery’s text only. No image, audio or conservation examination is supplied. Its in-depth text and audio transcript give differing age descriptions; that discrepancy is left unresolved and no sitter-age conclusion is used.</p><section id=\"task-date\"><form data-study-task data-answer=\"inscription\" data-language=\"en\"><fieldset><legend>What kind of evidence is the reported date in the signature?</legend><label><input type=\"radio\" name=\"choice\" value=\"inscription\"> Reported inscription evidence</label><label><input type=\"radio\" name=\"choice\" value=\"intent\"> Proof of every patron’s intention</label></fieldset><button type=\"submit\">Check reasoning</button><p data-result role=\"status\" aria-live=\"polite\"></p></form><details><summary>Compare your reasoning</summary><p>The textual account reports a dated inscription. We have not independently examined the paint surface.</p></details></section><section id=\"task-meaning\"><form data-study-task data-answer=\"meaning\" data-language=\"en\"><fieldset><legend>How should the discord interpretation be recorded?</legend><label><input type=\"radio\" name=\"choice\" value=\"meaning\"> An attributed interpretation with context</label><label><input type=\"radio\" name=\"choice\" value=\"fact\"> An observed mental state of every viewer</label></fieldset><button type=\"submit\">Check reasoning</button><p data-result role=\"status\" aria-live=\"polite\"></p></form><details><summary>Compare your reasoning</summary><p>Attribute the interpretation to the account. A visual arrangement does not directly reveal all intentions or responses.</p></details></section><section id=\"task-unknown\"><form data-study-task data-answer=\"retain\" data-language=\"en\"><fieldset><legend>What should we do with the conflicting age descriptions?</legend><label><input type=\"radio\" name=\"choice\" value=\"choose\"> Silently choose the more convenient value</label><label><input type=\"radio\" name=\"choice\" value=\"retain\"> Keep the discrepancy and omit the unsupported conclusion</label></fieldset><button type=\"submit\">Check reasoning</button><p data-result role=\"status\" aria-live=\"polite\"></p></form><details><summary>Compare your reasoning</summary><p>The present exercise needs no age claim. Resolving it would require additional exact evidence, not averaging the values.</p></details></section><section><h2>Take it further</h2><p>For another object, separate a catalog fact, an observation and an interpretation. Name what you would need to inspect before strengthening each claim.</p></section><section><h2>Your notes</h2><p>Notes stay on this page until you download them. Nothing is sent or automatically saved.</p><label>Your notes<textarea id=\"study-notes\" maxlength=\"10000\"></textarea></label><button type=\"button\" data-export-study=\"s-art-interpretation\" data-revision=\"1.0.0\" data-language=\"en\">Download notes</button><p data-export-status role=\"status\"></p></section><section><h2>Scope and evidence</h2><p lang=\"en\">Original English and Spanish editorial editions checked by the AI author; source titles and provider field values remain in their observed language. No community language validation is claimed.</p><h2>Source</h2><article lang=\"en\"><h3><a href=\"https://www.nationalgallery.org.uk/paintings/hans-holbein-the-younger-the-ambassadors\">National Gallery, Hans Holbein the Younger, The Ambassadors, NG1314</a></h3><p>Read overview, in-depth and audio-transcript text. Signature date, oblique skull and interpretive language distinguished. Image pixels and audio were not inspected or reused; the two age descriptions differ, so no age claim is adopted.</p><p>Original short summaries and questions only. No painting reproduction, audio, transcript or extended quotation copied.</p></article></section></main><footer>Local edition · AI author checked; no human observation implied</footer><script type=\"module\" src=\"../../../../../assets/program/7797e38fdaa4514a612d38cfd697d67ee69432762a75724bdda6601452576590/ui.mjs\"></script></body></html>\n",
+    "es": "<!doctype html><html lang=\"es\"><head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width,initial-scale=1\"><meta name=\"robots\" content=\"noindex,nofollow\"><title>Un objeto fechado, un efecto visual, una interpretación · Atlas</title><link rel=\"stylesheet\" href=\"../../../../../assets/program/7797e38fdaa4514a612d38cfd697d67ee69432762a75724bdda6601452576590/style.css\"></head><body><a class=\"skip\" href=\"#main\">Saltar al contenido</a><header><nav aria-label=\"Atlas\"><a href=\"../../../../../start/\">Inicio</a><a href=\"../../../../../domains/\">Áreas</a><a href=\"../../../../../curriculum/\">Rutas iniciales</a><a href=\"../../../../../depth/\">Profundiza</a><a href=\"../../../../../sources/\">Fuentes</a><a href=\"../../../../../studies/\">Nuevos estudios</a><a href=\"../../../../../practice/\">Cuaderno de práctica</a></nav></header><main id=\"main\" tabindex=\"-1\"><p class=\"meta\">s-art-interpretation · 1.0.0 · Local</p><nav aria-label=\"Edición lingüística\"><a hreflang=\"en\" lang=\"en\" href=\"../en/\">English</a><a hreflang=\"es\" lang=\"es\" href=\"../es/\" aria-current=\"page\">Español</a></nav><h1>Un objeto fechado, un efecto visual, una interpretación</h1><p>Lee el relato de un museo sobre una pintura sin sustituir el objeto por un diagrama o un resumen.</p><p>El relato de la National Gallery sobre Los embajadores atribuye la pintura a Hans Holbein el Joven e identifica 1533 en la firma. El texto describe una forma alargada en primer plano que se convierte en una calavera desde una posición oblicua. También propone interpretaciones de objetos relacionadas con conflictos religiosos y políticos.</p><p>Estas afirmaciones cumplen funciones probatorias distintas. Una inscripción descrita respalda una fecha; un efecto de observación describe una apariencia; una lectura simbólica propone un significado contextual. Ninguna demuestra que todas las personas que observaron o encargaron la obra compartieran una misma intención.</p><p>Esta lección utiliza solo el texto de la galería. No proporciona imagen, audio ni examen de conservación. El texto detallado y la transcripción de audio describen edades distintas; la discrepancia queda sin resolver y no se usa para concluir la edad de los retratados.</p><section id=\"task-date\"><form data-study-task data-answer=\"inscription\" data-language=\"es\"><fieldset><legend>¿Qué tipo de evidencia es la fecha indicada en la firma?</legend><label><input type=\"radio\" name=\"choice\" value=\"inscription\"> Evidencia de una inscripción descrita</label><label><input type=\"radio\" name=\"choice\" value=\"intent\"> Prueba de la intención de todas las personas que encargaron la obra</label></fieldset><button type=\"submit\">Comprobar razonamiento</button><p data-result role=\"status\" aria-live=\"polite\"></p></form><details><summary>Compara tu razonamiento</summary><p>El relato textual describe una inscripción fechada. No hemos examinado de forma independiente la superficie pintada.</p></details></section><section id=\"task-meaning\"><form data-study-task data-answer=\"meaning\" data-language=\"es\"><fieldset><legend>¿Cómo debe registrarse la interpretación sobre la discordia?</legend><label><input type=\"radio\" name=\"choice\" value=\"meaning\"> Una interpretación atribuida y contextualizada</label><label><input type=\"radio\" name=\"choice\" value=\"fact\"> Un estado mental observado de cada espectador</label></fieldset><button type=\"submit\">Comprobar razonamiento</button><p data-result role=\"status\" aria-live=\"polite\"></p></form><details><summary>Compara tu razonamiento</summary><p>Atribuye la interpretación al relato. Una disposición visual no revela directamente todas las intenciones ni respuestas.</p></details></section><section id=\"task-unknown\"><form data-study-task data-answer=\"retain\" data-language=\"es\"><fieldset><legend>¿Qué debemos hacer con las descripciones de edad contradictorias?</legend><label><input type=\"radio\" name=\"choice\" value=\"choose\"> Elegir en silencio el valor más conveniente</label><label><input type=\"radio\" name=\"choice\" value=\"retain\"> Conservar la discrepancia y omitir la conclusión no respaldada</label></fieldset><button type=\"submit\">Comprobar razonamiento</button><p data-result role=\"status\" aria-live=\"polite\"></p></form><details><summary>Compara tu razonamiento</summary><p>El ejercicio no necesita afirmar una edad. Resolverla requiere evidencia exacta adicional, no promediar los valores.</p></details></section><section><h2>Ve más allá</h2><p>Para otro objeto, separa un dato de catálogo, una observación y una interpretación. Indica qué necesitarías examinar antes de reforzar cada afirmación.</p></section><section><h2>Tus notas</h2><p>Las notas permanecen en esta página hasta que las descargues. No se envían ni se guardan automáticamente.</p><label>Tus notas<textarea id=\"study-notes\" maxlength=\"10000\"></textarea></label><button type=\"button\" data-export-study=\"s-art-interpretation\" data-revision=\"1.0.0\" data-language=\"es\">Descargar notas</button><p data-export-status role=\"status\"></p></section><section><h2>Alcance y evidencia</h2><p lang=\"en\">Original English and Spanish editorial editions checked by the AI author; source titles and provider field values remain in their observed language. No community language validation is claimed.</p><h2>Fuente</h2><article lang=\"en\"><h3><a href=\"https://www.nationalgallery.org.uk/paintings/hans-holbein-the-younger-the-ambassadors\">National Gallery, Hans Holbein the Younger, The Ambassadors, NG1314</a></h3><p>Read overview, in-depth and audio-transcript text. Signature date, oblique skull and interpretive language distinguished. Image pixels and audio were not inspected or reused; the two age descriptions differ, so no age claim is adopted.</p><p>Original short summaries and questions only. No painting reproduction, audio, transcript or extended quotation copied.</p></article></section></main><footer>Edición local · comprobada por el autor de IA; no implica observación humana</footer><script type=\"module\" src=\"../../../../../assets/program/7797e38fdaa4514a612d38cfd697d67ee69432762a75724bdda6601452576590/ui.mjs\"></script></body></html>\n"
+  },
+  "evidence": {
+    "path": "docs/verification/local-program-author-check.md",
+    "sha256": "936ddaee2e60fa5eb0d28d0a329f44919598278e4c544b50727fddb2b055524c",
+    "text": "# Local programme author check — 23 October 2026\n\nFour original studies contain English and Spanish editorial editions and twelve shared reasoning tasks. The author read the stated WWC recommendations/evidence labels, National Gallery account, and OpenStax accounting sections. The selected Crossref record was captured and its publication/deposit/index fields read separately. Earlier Open Library capture hashes matched their retained packet; those are retained observations, not fresh API readings. No source media, abstract or extended quotation is reproduced. The new LOC SRU page timed out and was not retried.\n\nThe first ten offline groups passed: exact accepted depth targets, prerequisite traversal with missing nodes and cycles, language/task completeness, independent study identities and stale-check detection, ledger conservation plus omission/unequal-entry counterexamples, separate provider identities and missing fields, separate Crossref dates and excluded abstracts, bounded retrieval failures without retries, honest practice-note exports, and static/escaped rendering. The original fictional ledger yields cash 810, equipment 240, liabilities 150, equity 900 and assets 1050; omitting the entire borrowing entry still balances and is explicitly wrong.\n\nSpanish is an AI-author editorial edition, not a professionally or community-validated translation. Source metadata remains in its observed language. The National Gallery age discrepancy is excluded from conclusions. The source-reading scope and reuse boundaries are recorded in program/research.json and program/federated-catalog.json.\n\nThese are local author checks, not independent review, certification or observed learning. Native-browser and assembled-delivery evidence will be recorded in a separate delivery receipt after execution. This source receipt is retained unchanged with each new edition.\n"
+  }
+}

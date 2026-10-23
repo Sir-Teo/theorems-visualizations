@@ -1,0 +1,9 @@
+# Local programme author check — 23 October 2026
+
+Four original studies contain English and Spanish editorial editions and twelve shared reasoning tasks. The author read the stated WWC recommendations/evidence labels, National Gallery account, and OpenStax accounting sections. The selected Crossref record was captured and its publication/deposit/index fields read separately. Earlier Open Library capture hashes matched their retained packet; those are retained observations, not fresh API readings. No source media, abstract or extended quotation is reproduced. The new LOC SRU page timed out and was not retried.
+
+The first ten offline groups passed: exact accepted depth targets, prerequisite traversal with missing nodes and cycles, language/task completeness, independent study identities and stale-check detection, ledger conservation plus omission/unequal-entry counterexamples, separate provider identities and missing fields, separate Crossref dates and excluded abstracts, bounded retrieval failures without retries, honest practice-note exports, and static/escaped rendering. The original fictional ledger yields cash 810, equipment 240, liabilities 150, equity 900 and assets 1050; omitting the entire borrowing entry still balances and is explicitly wrong.
+
+Spanish is an AI-author editorial edition, not a professionally or community-validated translation. Source metadata remains in its observed language. The National Gallery age discrepancy is excluded from conclusions. The source-reading scope and reuse boundaries are recorded in program/research.json and program/federated-catalog.json.
+
+These are local author checks, not independent review, certification or observed learning. Native-browser and assembled-delivery evidence will be recorded in a separate delivery receipt after execution. This source receipt is retained unchanged with each new edition.
