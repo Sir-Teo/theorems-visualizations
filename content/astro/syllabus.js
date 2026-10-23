@@ -168,41 +168,212 @@ export default {
     },
     // ───────────────────────────────────────────────────────────── 6
     {
-      n: 6,
-      title: 'Stellar structure and energy',
-      summary: String.raw`A star is a self-gravitating ball of gas in hydrostatic equilibrium; the virial theorem ties its thermal energy to its gravitational energy, so losing energy makes it hotter. Its structure follows from a few equations — hydrostatics, mass continuity, energy transport by radiation or convection, and nuclear energy generation by the pp chain or CNO cycle, made possible by quantum tunnelling. Polytropes give quick models, the Eddington luminosity caps how bright a star can be, and the standard solar model was vindicated by solar neutrinos once neutrino oscillations were understood.`,
-      items: [
-        { num: '6.1', kind: 'Law', name: 'Hydrostatic equilibrium of a star', deps: ['fluid-2.2', 'mech-8.1'], refs: ['Carroll–Ostlie §10.1'],
-          pic: 'Shells of a model star: pressure gradient and gravity arrows balance in each shell; perturb the balance and the star oscillates back on the dynamical timescale.' },
-        { num: '6.2', kind: 'Theorem', name: 'Virial theorem for stars', deps: ['mech-8.16', 'astro-6.1'], refs: ['Carroll–Ostlie §2.4', 'Carroll–Ostlie §10.3'],
-          pic: 'A contracting gas sphere: the bars for thermal energy K and gravitational energy U keep 2K + U = 0, so half of the energy released by contraction is radiated and half heats the star.' },
-        { num: '6.3', kind: 'Phenomenon', name: 'Negative heat capacity of self-gravitating systems', deps: ['astro-6.2'], refs: ['Carroll–Ostlie §10.3'],
-          pic: 'Remove energy from a star or an N-body star cluster: the simulation heats up and its particles speed up, the opposite of a box of gas, with temperature plotted against total energy.' },
-        { num: '6.4', kind: 'Definition', name: 'Dynamical, Kelvin–Helmholtz and nuclear timescales', deps: ['astro-6.2'], refs: ['Carroll–Ostlie §10.3'],
-          pic: 'For a star of chosen mass, the three timescales are computed and shown on a log axis: about half an hour, tens of millions of years and ten billion years for the Sun.' },
-        { num: '6.5', kind: 'Paradox', name: 'Kelvin’s age-of-the-Sun problem', deps: ['astro-6.4'], refs: ['Carroll–Ostlie §10.3'],
-          pic: 'Gravitational contraction can power the Sun for tens of millions of years, yet geology and evolution need billions; adding nuclear energy extends the lifetime bar to fit.' },
-        { num: '6.6', kind: 'Model', name: 'Polytropes and the Lane–Emden equation', deps: ['astro-6.1', 'thermo-1.16'], refs: ['Carroll–Ostlie §10.5'],
-          pic: 'Integrate the Lane–Emden equation for an index slider n: the first zero gives the stellar radius, the density profile grows more centrally concentrated with n, and n = 5 never reaches zero.' },
-        { num: '6.7', kind: 'Model', name: 'Energy transport by radiative diffusion', deps: ['astro-5.4', 'astro-6.1', 'astro-5.7'], refs: ['Carroll–Ostlie §10.4'],
-          pic: 'The temperature gradient needed to carry the luminosity through opacity κ is computed shell by shell; raising the opacity steepens it until convection takes over.' },
-        { num: '6.8', kind: 'Principle', name: 'Schwarzschild criterion for convection', deps: ['astro-6.7', 'fluid-2.4', 'fluid-2.5'], refs: ['Carroll–Ostlie §10.4'],
-          pic: 'Lift a parcel adiabatically: if it ends up hotter and lighter than its surroundings it keeps rising; sliding the actual gradient past the adiabatic one switches convection on.' },
-        { num: '6.9', kind: 'Law', name: 'Eddington luminosity', deps: ['astro-5.2', 'astro-6.1', 'em-11.6'], refs: ['Carroll–Ostlie §10.6'],
-          pic: 'Radiation pressure on electrons pushes out while gravity on protons pulls in; a mass slider sets L_Edd = 4πGMc/κ, and a star above it loses its outer layers in the simulation.' },
-        { num: '6.10', kind: 'Model', name: 'Proton–proton chain and CNO cycle', deps: ['rel-4.11'], refs: ['Carroll–Ostlie §10.3'],
-          pic: 'The reaction networks are animated with the energy released at each step; energy generation versus central temperature is plotted for both, crossing near 17 million K (about 1.3 solar masses).' },
-        { num: '6.11', kind: 'Phenomenon', name: 'Quantum tunnelling and the Gamow peak', deps: ['astro-6.10', 'qm-3.15', 'thermo-6.15'], refs: ['Carroll–Ostlie §10.3'],
-          pic: 'The falling Maxwell–Boltzmann tail and the rising tunnelling probability multiply into a narrow Gamow peak; a temperature slider shifts and broadens it, showing why fusion works far below the classical barrier.' },
-        { num: '6.12', kind: 'Model', name: 'Standard solar model', deps: ['astro-6.6', 'astro-6.7', 'astro-6.10'], refs: ['Carroll–Ostlie §11.1'],
-          pic: 'A simple structure integration produces the Sun’s temperature, density and luminosity profiles, with the radiative core and convective envelope marked and the predicted surface values compared with observations.' },
-        { num: '6.13', kind: 'Phenomenon', name: 'Solar neutrino problem', deps: ['astro-6.12'], refs: ['Carroll–Ostlie §11.1'],
-          pic: 'Predicted and measured detection rates for chlorine, gallium and water detectors disagree by factors of two to three; switching on neutrino oscillations closes the gap.' },
-        { num: '6.14', kind: 'Paper', name: 'Energy Production in Stars',
-          paper: { authors: 'H. A. Bethe', year: 1939, title: 'Energy Production in Stars', venue: 'Physical Review 55 (5): 434–456', doi: '10.1103/PhysRev.55.434' },
-          introduces: ['astro-6.10'], deps: ['astro-6.11', 'astro-6.4', 'rel-4.11'], refs: [],
-          pic: 'Run the proton–proton chain and the carbon–nitrogen cycle side by side as a core-temperature slider moves: the energy output per gram rises roughly as T⁴ for the chain but as about T¹⁸ for the cycle, so the Sun runs on protons while hotter, heavier main-sequence stars switch to carbon as a catalyst.' },
-      ],
+      "n": 6,
+      "title": "Stellar structure and energy",
+      "summary": "Pressure supports a star against gravity, while energy loss can make its interior hotter. Hydrostatics, transport and nuclear reactions supply the equations of stellar structure. Explicit local models lead to polytropes, fusion windows and dated solar benchmarks; neutrino flavor measurements test the energy source without settling every question about the solar interior.",
+      "items": [
+        {
+          "num": "6.1",
+          "kind": "Law",
+          "name": "Hydrostatic equilibrium of a star",
+          "deps": [
+            "fluid-2.2",
+            "mech-8.1"
+          ],
+          "refs": [
+            "Krumholz, ASTR3007 (2017), notes 2, PDF pp.6–10: dynamical time, hydrostatic balance and virial relation; homologous solution derived here"
+          ],
+          "pic": "Change the initial radius perturbation and advance dimensionless time. The shell pressure and force arrows use the evolving homologous sphere; the radius curve is its exact nonlinear solution. Mass and reference radius set the physical force and time scales."
+        },
+        {
+          "num": "6.2",
+          "kind": "Theorem",
+          "name": "Virial theorem for stars",
+          "deps": [
+            "mech-8.16",
+            "astro-6.1"
+          ],
+          "refs": [
+            "Krumholz, notes 2, PDF pp.8–10: virial theorem and ideal-gas thermal energy"
+          ],
+          "pic": "Vary mass, radius, density-shape factor and surface confinement. Signed energy bars test the virial balance; the second panel shows the corresponding mean gas temperature along a fixed-shape sequence."
+        },
+        {
+          "num": "6.3",
+          "kind": "Phenomenon",
+          "name": "Negative heat capacity of self-gravitating systems",
+          "deps": [
+            "astro-6.2"
+          ],
+          "refs": [
+            "Krumholz, notes 3, PDF p.5 and pp.8–10: global energy evolution and gravitational contraction"
+          ],
+          "pic": "Remove a chosen fraction of the initial thermal energy. Compare the contracting virial sphere with a fixed-volume gas, and follow their opposite temperature responses on the energy-loss graph."
+        },
+        {
+          "num": "6.4",
+          "kind": "Definition",
+          "name": "Dynamical, Kelvin–Helmholtz and nuclear timescales",
+          "deps": [
+            "astro-6.2"
+          ],
+          "refs": [
+            "Krumholz, notes 2, PDF p.6: dynamical collapse time",
+            "Krumholz, notes 3, PDF pp.8–10: thermal and nuclear reservoirs"
+          ],
+          "pic": "Set mass, radius, luminosity and the available hydrogen fraction independently. The logarithmic chart compares the three timescales and marks the uniform-sphere free-fall coefficient separately."
+        },
+        {
+          "num": "6.5",
+          "kind": "Paradox",
+          "name": "Kelvin’s age-of-the-Sun problem",
+          "deps": [
+            "astro-6.4"
+          ],
+          "refs": [
+            "Krumholz, notes 3, PDF pp.8–10: gravitational-age problem and nuclear reservoir",
+            "Vinyoles et al. (2017), arXiv:1611.09867v4, Table 3, PDF p.6: adopted solar age"
+          ],
+          "pic": "Change the structural factor, initial radius and hydrogen fuel fraction. Compare the actual virial contraction budget with the conventional thermal scale, nuclear estimate and adopted solar-age reference."
+        },
+        {
+          "num": "6.6",
+          "kind": "Model",
+          "name": "Polytropes and the Lane–Emden equation",
+          "deps": [
+            "astro-6.1",
+            "thermo-1.16"
+          ],
+          "refs": [
+            "Krumholz, notes 7, PDF pp.2–4: polytropic reduction and Lane–Emden variables; exact checks and numerical scheme supplied here"
+          ],
+          "pic": "Choose the polytropic index and inspect a radius on a logarithmically compressed radial axis. Compare the regular Lane–Emden function, density and enclosed mass. A missed edge in the finite computational window is reported as unresolved."
+        },
+        {
+          "num": "6.7",
+          "kind": "Model",
+          "name": "Energy transport by radiative diffusion",
+          "deps": [
+            "astro-5.4",
+            "astro-6.1",
+            "astro-5.7"
+          ],
+          "refs": [
+            "Krumholz, notes 5, PDF pp.7–8: radiative diffusion and Rosseland opacity; dimensional and angular factors derived explicitly here",
+            "Krumholz, notes 8, PDF pp.3–5: radiative versus adiabatic gradient"
+          ],
+          "pic": "Increase opacity or the imposed flux through a thin layer. Inspect its temperature and required logarithmic gradient, comparing that gradient with 0.4 for a monatomic ideal gas."
+        },
+        {
+          "num": "6.8",
+          "kind": "Principle",
+          "name": "Schwarzschild criterion for convection",
+          "deps": [
+            "astro-6.7",
+            "fluid-2.4",
+            "fluid-2.5"
+          ],
+          "refs": [
+            "Krumholz, notes 8, PDF p.1 and pp.3–5: pressure-balanced adiabatic displacements and convective instability; finite-displacement atmosphere derived here"
+          ],
+          "pic": "Move the parcel upward or downward and vary the environmental gradient and adiabatic index. Compare parcel and ambient temperatures with the signed buoyant acceleration; equality of the gradients is neutral."
+        },
+        {
+          "num": "6.9",
+          "kind": "Law",
+          "name": "Eddington luminosity",
+          "deps": [
+            "astro-5.2",
+            "astro-6.1",
+            "em-11.6"
+          ],
+          "refs": [
+            "Krumholz, notes 7, PDF pp.1–2: radiative force and Eddington scale; photon momentum derivation supplied here"
+          ],
+          "pic": "Vary stellar mass, luminosity, flux-mean opacity and test radius. Opposed force arrows and their radial curves show when the assumed radiation force exceeds gravity."
+        },
+        {
+          "num": "6.10",
+          "kind": "Model",
+          "name": "Proton–proton chain and CNO cycle",
+          "deps": [
+            "rel-4.11"
+          ],
+          "refs": [
+            "Krumholz, notes 6, PDF pp.6–17: charged-particle rates, pp branches and catalytic cycles; inconsistent numerical rate examples not adopted",
+            "Vinyoles et al. (2017), arXiv:1611.09867v4, Table 2, PDF p.5: S11(0) and S114(0)"
+          ],
+          "pic": "Step through the pp I or CN reaction ledger, then change temperature, density and composition. Compare the calculated heat rates and inspect the composition-dependent crossover of this stated proxy."
+        },
+        {
+          "num": "6.11",
+          "kind": "Phenomenon",
+          "name": "Quantum tunnelling and the Gamow peak",
+          "deps": [
+            "astro-6.10",
+            "qm-3.15",
+            "thermo-6.15"
+          ],
+          "refs": [
+            "Krumholz, notes 6, PDF pp.6–9: Gamow factor, Maxwell averaging and peak approximation",
+            "Vinyoles et al. (2017), Table 2, PDF p.5: dated zero-energy S factors"
+          ],
+          "pic": "Choose proton–proton or proton–nitrogen-14 capture and change temperature. Compare thermal suppression and tunnelling on a logarithmic plot, then compare their normalized product with its Gaussian approximation."
+        },
+        {
+          "num": "6.12",
+          "kind": "Model",
+          "name": "Standard solar model",
+          "deps": [
+            "astro-6.6",
+            "astro-6.7",
+            "astro-6.10"
+          ],
+          "refs": [
+            "Vinyoles et al., A New Generation of Standard Solar Models, arXiv:1611.09867v4 (2017), PDF pp.2–3, Tables 2–4 on pp.5–6 and 8",
+            "Krumholz, notes 7, PDF pp.1–4: structure equations and calibration"
+          ],
+          "pic": "Select a published B16 composition model. Compare its convective-envelope boundary and surface helium with the quoted helioseismic marginal intervals; the drawing displays table values and does not solve or interpolate a new solar model."
+        },
+        {
+          "num": "6.13",
+          "kind": "Phenomenon",
+          "name": "Solar neutrino problem",
+          "deps": [
+            "astro-6.12"
+          ],
+          "refs": [
+            "SNO Collaboration, Direct Evidence for Neutrino Flavor Transformation from Neutral-Current Interactions, arXiv:nucl-ex/0204008v2 (2002), abstract and PDF pp.2, 4–6"
+          ],
+          "pic": "Set the total active flux and electron-flavor fraction. Compare predicted CC and NC responses with the dated measurements, keeping statistical and systematic intervals separate. Try the all-electron case and the measured-mixture preset."
+        },
+        {
+          "num": "6.14",
+          "kind": "Paper",
+          "name": "Energy Production in Stars",
+          "paper": {
+            "authors": "H. A. Bethe",
+            "year": 1939,
+            "title": "Energy Production in Stars",
+            "venue": "Physical Review 55 (5): 434–456",
+            "doi": "10.1103/PhysRev.55.434"
+          },
+          "introduces": [
+            "astro-6.10"
+          ],
+          "deps": [
+            "astro-6.11",
+            "astro-6.4",
+            "rel-4.11"
+          ],
+          "refs": [
+            "Bethe, Energy Production in Stars, Physical Review 55 (1939), 434–456: abstract and section 7, PDF pp.12–14",
+            "Krumholz, notes 6, PDF pp.6–17: modern burning networks",
+            "Vinyoles et al. (2017), Table 2, PDF p.5: modern S-factor inputs"
+          ],
+          "pic": "Change temperature and catalyst abundance in the explicitly modern proxy. Compare heat rates and their local logarithmic temperature slopes; the readout verifies that a completed CN ledger returns carbon-12."
+        }
+      ]
     },
     // ───────────────────────────────────────────────────────────── 7
     {
