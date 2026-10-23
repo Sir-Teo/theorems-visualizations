@@ -51,3 +51,8 @@ The first narrow native default pass was 8/16: eight lessons had long rich-text 
 Visual review led to a logarithmic-energy density with its explicit Jacobian for the thermal Bose population, so the integrable singularity does not hide the distribution. The harmonic-trap scene separates the ground fraction from excited-shell populations and averages adjacent shells only when needed to keep the stems resolved; the grouping is disclosed. Helium's small phonon normal fraction is plotted in ppm. These revisions preceded the corresponding lessons' full native matrix runs; production crops were regenerated afterward. All owned browsers and servers are closed. The six code-file hashes are in `/tmp/wave6-thermo-final-manifest.json`.
 
 No new full integration suite is claimed: the preceding CG6/EM6/WAVES6 batch passed3872 tests, and this chapter adds the focused75-test thermodynamics run. Only chapter-local authoring is complete; separate acceptance, the wider Wave6 goal and the visual-redesign project remain unfinished. Next frozen chapter: QM9, Symmetries and conservation laws, 13 new lessons.
+
+
+## THERMO8 / QM9 / CM6 batch integration
+
+After local CM commit0d35fa9b, the meaningful three-chapter integration batch passes **3925/3925 tests**, no failures/skips/cancellations,151.420783917seconds on Node22.23.3. Log:`/tmp/wave6-thermo-qm-cm-integration.log`. This adds53new groups to the preceding3872-test checkpoint. All six code hashes in each chapter's final manifest remain exact. The separately accepted ML8-file, VCALC7-file and PDE7-file manifests also remain exact. All integration-owned browsers and servers closed. This is integration evidence for author-verified chapters; the accepted export remains36/1057 and no separate acceptance is inferred.

@@ -51,3 +51,8 @@ Personal review of the initial narrow scenes found the dipole heatmap's default 
 - **Personal pixel inspection**:52final defaults,36narrow mode captures,104statement/scope/caption/proof/reference crops and4camera orbit views. Eleven light320 defaults were viewed earlier and verified pixel-for-pixel identical; the other final defaults were inspected directly. All final rich crops were inspected in ten native-resolution sheets, with refreshed1/8 wording. Exact paths/hashes are in `/tmp/wave6-qm-pixel-review-receipt.json`. No open visual finding remains.
 
 Six code-file hashes: `/tmp/wave6-qm-final-manifest.json`. All owned browsers and servers are closed. The preceding full CG6/EM6/WAVES6 integration checkpoint remains3872/3872; no new full-suite run is claimed. THERMO8 has its75-test focused run and QM9 its32-test focused run. Authoring verification does not claim independent acceptance or completion of the continuous Wave6 goal. Next frozen chapter: CM6, Superconductivity (14new lessons).
+
+
+## THERMO8 / QM9 / CM6 batch integration
+
+After local CM commit0d35fa9b, the meaningful three-chapter integration batch passes **3925/3925 tests**, no failures/skips/cancellations,151.420783917seconds on Node22.23.3. Log:`/tmp/wave6-thermo-qm-cm-integration.log`. This adds53new groups to the preceding3872-test checkpoint. All six code hashes in each chapter's final manifest remain exact. The separately accepted ML8-file, VCALC7-file and PDE7-file manifests also remain exact. All integration-owned browsers and servers closed. This is integration evidence for author-verified chapters; the accepted export remains36/1057 and no separate acceptance is inferred.
