@@ -1,0 +1,23 @@
+{
+  "schemaVersion": 1,
+  "mode": "domain-navigation-delta",
+  "predecessorCommit": "83ad6c31a3982f3722d7b5550188c1d85668c087",
+  "replacements": [],
+  "additions": [
+    "docs/architecture/domain-navigation.md",
+    "docs/integration/domain-navigation.json",
+    "docs/integration/domain-navigation.md",
+    "docs/verification/universal-domain-navigation-ai-code.md",
+    "docs/verification/universal-domain-navigation-ai-content.md",
+    "docs/verification/universal-domain-navigation.md",
+    "navigation/filter.mjs",
+    "navigation/releases.json",
+    "navigation/style.css",
+    "navigation/ui.mjs",
+    "scripts/build-domain-navigation.mjs",
+    "scripts/check-domain-navigation-integration.mjs",
+    "scripts/domain-navigation.mjs",
+    "tests/domain-navigation-ui.test.mjs",
+    "tests/domain-navigation.test.mjs"
+  ]
+}
