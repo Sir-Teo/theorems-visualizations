@@ -26,6 +26,7 @@ Continue in `/Users/teodev/.codex/worktrees/universal-pilots-integration/theorem
 | --- | --- | --- |
 | Coverage | `docs/coverage/registry.json` and pinned inventories | 30 domains; 85 primary collection homes; eight cross-listings; 217 classification entries; 205 mapped, 11 review and one excluded; 79 previously flagged entries independently AI-reviewed |
 | Research | `docs/pilots/*.md` and `docs/coverage/sources.json` | Eight bounded briefs; named access/rights/reviewer gates |
+| Library/local-context follow-up | [Research packet](coverage/research/library-context-20261022.md); [additive package](integration/library-context.md) | 35 proposed subclass routes, seven archived schedule examples, eight historical local comparisons, six research activities; independent editorial scope only; canonical totals and all 11 gates unchanged |
 | Data and review contract | `explorations/contract.mjs` | Versioned IDs, evidence, claim boundaries, passage hashes, review history and content/artifact review checks |
 | History prototype | `explorations/history.json` | Reviewed for local preview; current AI content/provenance/prototype-rights receipts; human-session gate removed by user |
 | Literature prototype | `explorations/literature.json` | Reviewed for local preview; current AI content/English-language/prototype-rights receipts; human-session gate removed by user |
@@ -55,7 +56,7 @@ P01/P02 are accepted for local preview under the revised requirements. The user 
 | Order / milestone | Work | Dependency and exit condition |
 | --- | --- | --- |
 | Delivered · U1 routing review | 68 ISCED routes resolved; all 79 previously flagged decisions independently AI-reviewed | Exact source/routing digest and separate engineering receipt; navigation homes do not imply taught coverage |
-| Next · U1 stewardship | Follow six FORD and five heritage gates; research detailed library/local/community vocabularies | Eleven entries retain concrete topic/source/context actions; actual specialist/community participation is not inferred |
+| Next · U1 stewardship | Follow six FORD and five heritage gates; develop the six library/local-context research cards using their exact preparation evidence | Eleven entries retain concrete topic/source/context actions; actual specialist/community participation is not inferred |
 | Delivered · U2 AI review | Three independent AI reviewers inspected history, literature/language and code | Two findings repaired and rechecked; six scoped receipts match current digests; professional or original-language expertise is not inferred |
 | Removed by user · P01/P02 human gate | Screen-reader and learner sessions are optional follow-up | Not performed; visible limitation, not a passing observation |
 | Next · U2 contracts | Finalize source/annotation payloads from actual review findings | Changes preserve static text, old state or an explicit migration, and exact-content review validity |
@@ -126,7 +127,7 @@ The draft build writes only `labs/atlas/`. It does not invoke `scripts/build.mjs
 - Before further research, read the [professional-packet source stops](pilots/professional-review/sources.json): the OGL v3 body returned 403 and the OpenStax Clinical Nursing Skills 15.6 response showed a keep-reading login notice. Do not retry or recover those bodies through alternate copies. Earlier receipts remain historical; inherited NCBI and ATS/ERS stops remain in force.
 - The [journey source ledger](journeys/sources.json) records two additional 403 stops: the UN-Water 6.5.1 indicator page and SPJ ethics-code page. Do not retry or recover those bodies through alternate copies. EPA and Reuters are different inspected works, not recovered copies; the Asare readings remain earlier scoped receipts.
 - Final journey packaging/engineering review remains open after the reviewer service rejected its follow-up invocation. Prior scoped engineering findings were repaired and independently rechecked; those earlier receipts do not approve subsequent edits. The current author verification and exact source-content review are recorded separately in the [reader checkpoint](verification/universal-journey-reader.md). Do not retry that rejected reviewer operation through alternate agents.
-- Detailed library schedules, community vocabularies and many place/language traditions remain outside the current crosswalk.
+- The [library/local-context packet](coverage/research/library-context-20261022.md) adds bounded discovery evidence outside canonical totals. Most detailed library schedules, community vocabularies and place/language traditions remain unaudited. Its access stops and text-only evidence limits must travel with future work; no source-body or PDF-image verification is inferred from the editorial audit.
 - Map-performance work stays deferred; it is not reopened through “future readiness.”
 
 When a new source, method or field exposes a limitation, version the contract and record the decision. Readiness means the next step, evidence and preservation boundary are explicit; it does not mean the open-ended master plan is finished.

@@ -1,0 +1,19 @@
+{
+  "schemaVersion": 1,
+  "mode": "library-context-research-delta",
+  "predecessorCommit": "8cef39481d7d111892d54bd8271fdf616261c03f",
+  "replacements": [],
+  "additions": [
+    "docs/coverage/research/library-context-20261022.json",
+    "docs/coverage/research/library-context-20261022.md",
+    "docs/coverage/reviews/library-context-editorial-20261022.md",
+    "docs/integration/library-context.json",
+    "docs/integration/library-context.md",
+    "docs/verification/universal-library-context.md"
+  ],
+  "manualReconciliation": [
+    "MASTER_PLAN.md",
+    "docs/master-plan-execution.md",
+    "docs/master-plan-handoff.md"
+  ]
+}

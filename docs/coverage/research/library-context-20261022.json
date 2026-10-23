@@ -1,0 +1,1087 @@
+{
+  "schemaVersion": 1,
+  "id": "u1-library-context-20261022",
+  "version": "0.1.0",
+  "status": "research-prepared",
+  "author": "codex-root",
+  "updatedOn": "2026-10-22",
+  "baselineCommit": "8cef39481d7d111892d54bd8271fdf616261c03f",
+  "canonicalBindings": {
+    "docs/coverage/registry.json": "8adc6ab70344ff5605f3bc5c6925827603d0a9102799781049c3749137fae2c4",
+    "docs/coverage/classification-inventory.json": "49c7ca646489026f323104802a41a2d3a4b0f843cb49ed12709f1b8dfcf66cda",
+    "docs/coverage/sources.json": "967161839d07d70ce520a81f504db8780a5166e4ab5def0026a5a02b14ee5049"
+  },
+  "scope": "Four LCC subclass lists, seven sampled archived ZA entries, eight examples from a situated local scheme, and a community-governance discovery case. Not a universal taxonomy or a lesson release.",
+  "counting": {
+    "newAcceptedLessons": 0,
+    "newAuthoredLessons": 0,
+    "canonicalMappingsChanged": 0,
+    "canonicalReviewGatesClosed": 0,
+    "includedInCanonicalRegistryTotals": false
+  },
+  "sources": [
+    {
+      "id": "lcc-outline-index",
+      "url": "https://www.loc.gov/catdir/cpso/lcco/",
+      "title": "Library of Congress classification outline index",
+      "edition": "Undated live index, retrieved 2026-10-22",
+      "readOn": "2026-10-22",
+      "access": "web-text-read",
+      "locator": "Introduction and links to classes G, S, T and Z",
+      "findings": "The index distinguishes subclass outlines from complete schedules.",
+      "limits": "Four selected outlines do not audit all LCC classes or provide current item-level cataloging decisions.",
+      "reuse": "Citation and original analysis only; no source PDF, image, label icon, template, song, recording or other asset redistributed."
+    },
+    {
+      "id": "lcco-g",
+      "url": "https://www.loc.gov/aba/cataloging/classification/lcco/lcco_g.pdf",
+      "title": "LCC outline, class G: Geography, anthropology and recreation",
+      "edition": "Undated outline snapshot retrieved 2026-10-22",
+      "readOn": "2026-10-22",
+      "access": "web-text-read",
+      "locator": "PDF page 1: complete subclass list",
+      "findings": "The selected first-page subclass list contains 10 codes.",
+      "limits": "Only the subclass list is projected here. Detailed ranges and full schedules are not inferred from its labels.",
+      "reuse": "Citation and original analysis only; no source PDF, image, label icon, template, song, recording or other asset redistributed.",
+      "pdfPages": 13,
+      "inspectedPdfPagesOneBased": [
+        1
+      ],
+      "visualEvidence": "No page-image observation; text extraction only.",
+      "laterAccessStop": {
+        "channel": "direct PDF download",
+        "reason": "HTTP 403",
+        "action": "No retry, mirror or alternate recovery. Earlier web-text receipt retained; no PDF hash claimed."
+      }
+    },
+    {
+      "id": "lcco-s",
+      "url": "https://www.loc.gov/aba/cataloging/classification/lcco/lcco_s.pdf",
+      "title": "LCC outline, class S: Agriculture",
+      "edition": "Undated outline snapshot retrieved 2026-10-22",
+      "readOn": "2026-10-22",
+      "access": "web-text-read",
+      "locator": "PDF page 1: complete subclass list",
+      "findings": "The selected first-page subclass list contains 6 codes.",
+      "limits": "Only the subclass list is projected here. Detailed ranges and full schedules are not inferred from its labels.",
+      "reuse": "Citation and original analysis only; no source PDF, image, label icon, template, song, recording or other asset redistributed.",
+      "pdfPages": 9,
+      "inspectedPdfPagesOneBased": [
+        1
+      ],
+      "visualEvidence": "No page-image observation; text extraction only.",
+      "laterAccessStop": {
+        "channel": "direct PDF download",
+        "reason": "HTTP 403",
+        "action": "No retry, mirror or alternate recovery. Earlier web-text receipt retained; no PDF hash claimed."
+      }
+    },
+    {
+      "id": "lcco-t",
+      "url": "https://www.loc.gov/aba/cataloging/classification/lcco/lcco_t.pdf",
+      "title": "LCC outline, class T: Technology",
+      "edition": "Undated outline snapshot retrieved 2026-10-22",
+      "readOn": "2026-10-22",
+      "access": "web-text-read",
+      "locator": "PDF page 1: complete subclass list",
+      "findings": "The selected first-page subclass list contains 17 codes.",
+      "limits": "Only the subclass list is projected here. Detailed ranges and full schedules are not inferred from its labels.",
+      "reuse": "Citation and original analysis only; no source PDF, image, label icon, template, song, recording or other asset redistributed.",
+      "pdfPages": 18,
+      "inspectedPdfPagesOneBased": [
+        1
+      ],
+      "visualEvidence": "No page-image observation; text extraction only.",
+      "laterAccessStop": {
+        "channel": "direct PDF download",
+        "reason": "HTTP 403",
+        "action": "No retry, mirror or alternate recovery. Earlier web-text receipt retained; no PDF hash claimed."
+      }
+    },
+    {
+      "id": "lcco-z",
+      "url": "https://www.loc.gov/aba/cataloging/classification/lcco/lcco_z.pdf",
+      "title": "LCC outline, class Z: Bibliography, libraries and information resources",
+      "edition": "Undated outline snapshot retrieved 2026-10-22",
+      "readOn": "2026-10-22",
+      "access": "web-text-read",
+      "locator": "PDF page 1: complete subclass list",
+      "findings": "The selected first-page subclass list contains 2 codes.",
+      "limits": "Only the subclass list is projected here. Detailed ranges and full schedules are not inferred from its labels.",
+      "reuse": "Citation and original analysis only; no source PDF, image, label icon, template, song, recording or other asset redistributed.",
+      "pdfPages": 5,
+      "inspectedPdfPagesOneBased": [
+        1
+      ],
+      "visualEvidence": "No page-image observation; text extraction only.",
+      "laterAccessStop": {
+        "channel": "direct PDF download",
+        "reason": "HTTP 403",
+        "action": "No retry, mirror or alternate recovery. Earlier web-text receipt retained; no PDF hash claimed."
+      }
+    },
+    {
+      "id": "lcc-archive-context",
+      "url": "https://www.loc.gov/aba/publications/FreeLCC/archivedlcc.html",
+      "title": "LCC archived schedule notice",
+      "edition": "Page displays update 2025-09-04",
+      "readOn": "2026-10-22",
+      "access": "web-text-read",
+      "locator": "Archive introduction and 2024 edition link",
+      "findings": "Archived schedules are supplied for research and may be superseded.",
+      "limits": "The search index mentioned a 2025 edition, while the opened page exposed 2024 as its first link. This packet deliberately uses the inspected 2024 edition and makes no latest-edition claim.",
+      "reuse": "Citation and original analysis only; no source PDF, image, label icon, template, song, recording or other asset redistributed."
+    },
+    {
+      "id": "lcc-2024-index",
+      "url": "https://www.loc.gov/aba/publications/Archived-LCC2024/freelcc.html",
+      "title": "Archived LCC 2024 schedule index",
+      "edition": "Data selected May 2024; page displayed update 2026-10-22",
+      "readOn": "2026-10-22",
+      "access": "web-text-read",
+      "locator": "About paragraph and Z Text link",
+      "findings": "The linked schedule is the May 2024 data selection.",
+      "limits": "A webpage update date is not a new schedule edition.",
+      "reuse": "Citation and original analysis only; no source PDF, image, label icon, template, song, recording or other asset redistributed."
+    },
+    {
+      "id": "lcc-z-2024",
+      "url": "https://www.loc.gov/aba/publications/Archived-LCC2024/LCC_Z2024TEXT.pdf",
+      "title": "LCC 2024 schedule Z: selected ZA entries",
+      "edition": "May 2024 archived data selection",
+      "readOn": "2026-10-22",
+      "access": "web-text-read",
+      "locator": "Printed/PDF pp. 404-406; ZA scope notes and seven selected entries",
+      "findings": "The schedule differentiates general information access, metadata, digital-library administration, web archives and using search engines. Subject-specific works and search-engine engineering have separate directions.",
+      "limits": "A seven-entry research sample, not a complete ZA inventory or current cataloging guidance.",
+      "reuse": "Citation and original analysis only; no source PDF, image, label icon, template, song, recording or other asset redistributed.",
+      "pdfPages": 581,
+      "inspectedPdfPagesOneBased": [
+        404,
+        405,
+        406
+      ],
+      "visualEvidence": "Screenshot requests returned citation text only to the agent; no pixels observed. Text-page evidence only."
+    },
+    {
+      "id": "xwi7xwa-context",
+      "url": "https://xwi7xwa.library.ubc.ca/collections/indigenous-knowledge-organization/",
+      "title": "Xwi7xwa Library: Indigenous Knowledge Organization",
+      "edition": "Undated live page, retrieved 2026-10-22",
+      "readOn": "2026-10-22",
+      "access": "web-text-read",
+      "locator": "Classification System; For Libraries; Subject Headings",
+      "findings": "Xwi7xwa describes its local British Columbia variant of Brian Deer classification and a distinct FNHL subject vocabulary. It distinguishes shelf placement from multiple topic headings.",
+      "limits": "Its implementation serves a particular library and audiences. It is not a universal Indigenous taxonomy or an atlas reuse authorization. The page says tours/meetings about the scheme are not currently accepted.",
+      "reuse": "Citation and original analysis only; no source PDF, image, label icon, template, song, recording or other asset redistributed."
+    },
+    {
+      "id": "xwi7xwa-2018",
+      "url": "https://xwi7xwa-library-10nov2016.sites.olt.ubc.ca/files/2021/06/2018-MODIFIED-DEER-Public-version.pdf",
+      "title": "Xwi7xwa classification scheme, public version",
+      "edition": "Updated 28 March 2018; hosting path contains 2021/06",
+      "readOn": "2026-10-22",
+      "access": "web-text-read",
+      "locator": "PDF pp. 1, 6, 7 and 9; eight selected codes",
+      "findings": "The selected codes locate libraries, archives, knowledge systems, health, worldview, music/dance, recreation and study of oral tradition in this local scheme.",
+      "limits": "Sampled historical codes only; no present-day preferred-name verification, full scheme import or equivalence to LCC/atlas domains.",
+      "reuse": "Citation and original analysis only; no source PDF, image, label icon, template, song, recording or other asset redistributed.",
+      "pdfPages": 9,
+      "inspectedPdfPagesOneBased": [
+        1,
+        6,
+        7,
+        9
+      ],
+      "visualEvidence": "No page-image observation; text extraction only.",
+      "laterAccessStop": {
+        "channel": "direct PDF download",
+        "reason": "Response did not begin with PDF bytes",
+        "action": "No retry or alternate recovery; earlier web-text receipt retained. No PDF hash claimed."
+      }
+    },
+    {
+      "id": "local-contexts-labels",
+      "url": "https://localcontexts.org/labels/about-the-labels/",
+      "title": "Local Contexts: About the Labels",
+      "edition": "Undated page; footer 2010-2026",
+      "readOn": "2026-10-22",
+      "access": "web-text-read",
+      "locator": "What are the Labels; categories; Decision Making; footer",
+      "findings": "Labels express community-specific provenance, protocols and permissions. Choosing them follows community decision-making.",
+      "limits": "Reading guidance does not appoint the atlas as a cultural authority. Icons and template texts have separate stated rights; none are copied or applied here.",
+      "reuse": "Citation and original analysis only; no source PDF, image, label icon, template, song, recording or other asset redistributed."
+    },
+    {
+      "id": "whakatohea-project",
+      "url": "https://localcontextshub.org/projects/68ae4264-20b1-4b33-a334-eaca4e58280b/",
+      "title": "Te Whakatohea Waiata App: public Local Contexts project record",
+      "edition": "Project added 7 July 2022; retrieved 2026-10-22",
+      "readOn": "2026-10-22",
+      "access": "web-text-read",
+      "locator": "Project Details and five English label descriptions",
+      "findings": "The public record attributes the project to Te Whakatohea and displays community-voice, creative, non-commercial, outreach and verified labels. Its outreach text calls for protocols with relevant kaitiaki; the contribution invitation is internal.",
+      "limits": "The project metadata is not the app or a selected recording. No song, performance, translation or language competence was assessed. No permission to adapt, republish or relabel an asset is inferred.",
+      "reuse": "Citation and original analysis only; no source PDF, image, label icon, template, song, recording or other asset redistributed.",
+      "sourceLanguages": [
+        "en",
+        "mi"
+      ],
+      "inspectedLanguages": [
+        "en"
+      ],
+      "projectId": "68ae4264-20b1-4b33-a334-eaca4e58280b"
+    }
+  ],
+  "proposedLccRoutes": [
+    {
+      "scheme": "lcc-outline",
+      "snapshot": "2026-10-22",
+      "code": "G",
+      "editorialScope": "General geography and mapped places",
+      "candidateDomainIds": [
+        "D06",
+        "D20"
+      ],
+      "sourceId": "lcco-g",
+      "pdfPageOneBased": 1,
+      "status": "proposed-entry-route"
+    },
+    {
+      "scheme": "lcc-outline",
+      "snapshot": "2026-10-22",
+      "code": "GA",
+      "editorialScope": "Map construction and spatial measurement",
+      "candidateDomainIds": [
+        "D06",
+        "D02"
+      ],
+      "sourceId": "lcco-g",
+      "pdfPageOneBased": 1,
+      "status": "proposed-entry-route"
+    },
+    {
+      "scheme": "lcc-outline",
+      "snapshot": "2026-10-22",
+      "code": "GB",
+      "editorialScope": "Landforms and terrestrial water",
+      "candidateDomainIds": [
+        "D06"
+      ],
+      "sourceId": "lcco-g",
+      "pdfPageOneBased": 1,
+      "status": "proposed-entry-route"
+    },
+    {
+      "scheme": "lcc-outline",
+      "snapshot": "2026-10-22",
+      "code": "GC",
+      "editorialScope": "Ocean study",
+      "candidateDomainIds": [
+        "D06"
+      ],
+      "sourceId": "lcco-g",
+      "pdfPageOneBased": 1,
+      "status": "proposed-entry-route"
+    },
+    {
+      "scheme": "lcc-outline",
+      "snapshot": "2026-10-22",
+      "code": "GE",
+      "editorialScope": "Environmental study",
+      "candidateDomainIds": [
+        "D08"
+      ],
+      "sourceId": "lcco-g",
+      "pdfPageOneBased": 1,
+      "status": "proposed-entry-route"
+    },
+    {
+      "scheme": "lcc-outline",
+      "snapshot": "2026-10-22",
+      "code": "GF",
+      "editorialScope": "Human-environment relations",
+      "candidateDomainIds": [
+        "D06",
+        "D17"
+      ],
+      "sourceId": "lcco-g",
+      "pdfPageOneBased": 1,
+      "status": "proposed-entry-route"
+    },
+    {
+      "scheme": "lcc-outline",
+      "snapshot": "2026-10-22",
+      "code": "GN",
+      "editorialScope": "Human biological and cultural study",
+      "candidateDomainIds": [
+        "D17",
+        "D07",
+        "D20"
+      ],
+      "sourceId": "lcco-g",
+      "pdfPageOneBased": 1,
+      "status": "proposed-entry-route"
+    },
+    {
+      "scheme": "lcc-outline",
+      "snapshot": "2026-10-22",
+      "code": "GR",
+      "editorialScope": "Folk narrative and beliefs",
+      "candidateDomainIds": [
+        "D17",
+        "D24"
+      ],
+      "sourceId": "lcco-g",
+      "pdfPageOneBased": 1,
+      "status": "proposed-entry-route"
+    },
+    {
+      "scheme": "lcc-outline",
+      "snapshot": "2026-10-22",
+      "code": "GT",
+      "editorialScope": "Everyday and ceremonial customs",
+      "candidateDomainIds": [
+        "D17",
+        "D29"
+      ],
+      "sourceId": "lcco-g",
+      "pdfPageOneBased": 1,
+      "status": "proposed-entry-route"
+    },
+    {
+      "scheme": "lcc-outline",
+      "snapshot": "2026-10-22",
+      "code": "GV",
+      "editorialScope": "Recreation, movement and play",
+      "candidateDomainIds": [
+        "D30",
+        "D27"
+      ],
+      "sourceId": "lcco-g",
+      "pdfPageOneBased": 1,
+      "status": "proposed-entry-route"
+    },
+    {
+      "scheme": "lcc-outline",
+      "snapshot": "2026-10-22",
+      "code": "S",
+      "editorialScope": "General agricultural work",
+      "candidateDomainIds": [
+        "D10"
+      ],
+      "sourceId": "lcco-s",
+      "pdfPageOneBased": 1,
+      "status": "proposed-entry-route"
+    },
+    {
+      "scheme": "lcc-outline",
+      "snapshot": "2026-10-22",
+      "code": "SB",
+      "editorialScope": "Cultivating plants",
+      "candidateDomainIds": [
+        "D10",
+        "D12"
+      ],
+      "sourceId": "lcco-s",
+      "pdfPageOneBased": 1,
+      "status": "proposed-entry-route"
+    },
+    {
+      "scheme": "lcc-outline",
+      "snapshot": "2026-10-22",
+      "code": "SD",
+      "editorialScope": "Forested-land study and use",
+      "candidateDomainIds": [
+        "D10",
+        "D08"
+      ],
+      "sourceId": "lcco-s",
+      "pdfPageOneBased": 1,
+      "status": "proposed-entry-route"
+    },
+    {
+      "scheme": "lcc-outline",
+      "snapshot": "2026-10-22",
+      "code": "SF",
+      "editorialScope": "Raising and caring for animals",
+      "candidateDomainIds": [
+        "D10"
+      ],
+      "sourceId": "lcco-s",
+      "pdfPageOneBased": 1,
+      "status": "proposed-entry-route"
+    },
+    {
+      "scheme": "lcc-outline",
+      "snapshot": "2026-10-22",
+      "code": "SH",
+      "editorialScope": "Aquatic production and fishing",
+      "candidateDomainIds": [
+        "D10",
+        "D30"
+      ],
+      "sourceId": "lcco-s",
+      "pdfPageOneBased": 1,
+      "status": "proposed-entry-route"
+    },
+    {
+      "scheme": "lcc-outline",
+      "snapshot": "2026-10-22",
+      "code": "SK",
+      "editorialScope": "Hunting as recreation",
+      "candidateDomainIds": [
+        "D30"
+      ],
+      "sourceId": "lcco-s",
+      "pdfPageOneBased": 1,
+      "status": "proposed-entry-route"
+    },
+    {
+      "scheme": "lcc-outline",
+      "snapshot": "2026-10-22",
+      "code": "T",
+      "editorialScope": "General technology",
+      "candidateDomainIds": [
+        "D11"
+      ],
+      "sourceId": "lcco-t",
+      "pdfPageOneBased": 1,
+      "status": "proposed-entry-route"
+    },
+    {
+      "scheme": "lcc-outline",
+      "snapshot": "2026-10-22",
+      "code": "TA",
+      "editorialScope": "General and civil engineering",
+      "candidateDomainIds": [
+        "D11"
+      ],
+      "sourceId": "lcco-t",
+      "pdfPageOneBased": 1,
+      "status": "proposed-entry-route"
+    },
+    {
+      "scheme": "lcc-outline",
+      "snapshot": "2026-10-22",
+      "code": "TC",
+      "editorialScope": "Water and ocean works",
+      "candidateDomainIds": [
+        "D11",
+        "D06"
+      ],
+      "sourceId": "lcco-t",
+      "pdfPageOneBased": 1,
+      "status": "proposed-entry-route"
+    },
+    {
+      "scheme": "lcc-outline",
+      "snapshot": "2026-10-22",
+      "code": "TD",
+      "editorialScope": "Environmental and sanitation systems",
+      "candidateDomainIds": [
+        "D11",
+        "D08"
+      ],
+      "sourceId": "lcco-t",
+      "pdfPageOneBased": 1,
+      "status": "proposed-entry-route"
+    },
+    {
+      "scheme": "lcc-outline",
+      "snapshot": "2026-10-22",
+      "code": "TE",
+      "editorialScope": "Road systems",
+      "candidateDomainIds": [
+        "D11",
+        "D12"
+      ],
+      "sourceId": "lcco-t",
+      "pdfPageOneBased": 1,
+      "status": "proposed-entry-route"
+    },
+    {
+      "scheme": "lcc-outline",
+      "snapshot": "2026-10-22",
+      "code": "TF",
+      "editorialScope": "Rail systems",
+      "candidateDomainIds": [
+        "D11"
+      ],
+      "sourceId": "lcco-t",
+      "pdfPageOneBased": 1,
+      "status": "proposed-entry-route"
+    },
+    {
+      "scheme": "lcc-outline",
+      "snapshot": "2026-10-22",
+      "code": "TG",
+      "editorialScope": "Bridge systems",
+      "candidateDomainIds": [
+        "D11",
+        "D12"
+      ],
+      "sourceId": "lcco-t",
+      "pdfPageOneBased": 1,
+      "status": "proposed-entry-route"
+    },
+    {
+      "scheme": "lcc-outline",
+      "snapshot": "2026-10-22",
+      "code": "TH",
+      "editorialScope": "Constructing and maintaining buildings",
+      "candidateDomainIds": [
+        "D12",
+        "D11",
+        "D29"
+      ],
+      "sourceId": "lcco-t",
+      "pdfPageOneBased": 1,
+      "status": "proposed-entry-route"
+    },
+    {
+      "scheme": "lcc-outline",
+      "snapshot": "2026-10-22",
+      "code": "TJ",
+      "editorialScope": "Machines and mechanical systems",
+      "candidateDomainIds": [
+        "D11"
+      ],
+      "sourceId": "lcco-t",
+      "pdfPageOneBased": 1,
+      "status": "proposed-entry-route"
+    },
+    {
+      "scheme": "lcc-outline",
+      "snapshot": "2026-10-22",
+      "code": "TK",
+      "editorialScope": "Electrical, electronic and nuclear systems",
+      "candidateDomainIds": [
+        "D11"
+      ],
+      "sourceId": "lcco-t",
+      "pdfPageOneBased": 1,
+      "status": "proposed-entry-route"
+    },
+    {
+      "scheme": "lcc-outline",
+      "snapshot": "2026-10-22",
+      "code": "TL",
+      "editorialScope": "Vehicles and flight systems",
+      "candidateDomainIds": [
+        "D11",
+        "D04"
+      ],
+      "sourceId": "lcco-t",
+      "pdfPageOneBased": 1,
+      "status": "proposed-entry-route"
+    },
+    {
+      "scheme": "lcc-outline",
+      "snapshot": "2026-10-22",
+      "code": "TN",
+      "editorialScope": "Extraction and processing of minerals",
+      "candidateDomainIds": [
+        "D11",
+        "D05",
+        "D06"
+      ],
+      "sourceId": "lcco-t",
+      "pdfPageOneBased": 1,
+      "status": "proposed-entry-route"
+    },
+    {
+      "scheme": "lcc-outline",
+      "snapshot": "2026-10-22",
+      "code": "TP",
+      "editorialScope": "Industrial chemical processes",
+      "candidateDomainIds": [
+        "D11",
+        "D05",
+        "D10"
+      ],
+      "sourceId": "lcco-t",
+      "pdfPageOneBased": 1,
+      "status": "proposed-entry-route"
+    },
+    {
+      "scheme": "lcc-outline",
+      "snapshot": "2026-10-22",
+      "code": "TR",
+      "editorialScope": "Photographic practice and production",
+      "candidateDomainIds": [
+        "D25",
+        "D27"
+      ],
+      "sourceId": "lcco-t",
+      "pdfPageOneBased": 1,
+      "status": "proposed-entry-route"
+    },
+    {
+      "scheme": "lcc-outline",
+      "snapshot": "2026-10-22",
+      "code": "TS",
+      "editorialScope": "Manufacturing work",
+      "candidateDomainIds": [
+        "D11",
+        "D29"
+      ],
+      "sourceId": "lcco-t",
+      "pdfPageOneBased": 1,
+      "status": "proposed-entry-route"
+    },
+    {
+      "scheme": "lcc-outline",
+      "snapshot": "2026-10-22",
+      "code": "TT",
+      "editorialScope": "Making by hand",
+      "candidateDomainIds": [
+        "D29",
+        "D25"
+      ],
+      "sourceId": "lcco-t",
+      "pdfPageOneBased": 1,
+      "status": "proposed-entry-route"
+    },
+    {
+      "scheme": "lcc-outline",
+      "snapshot": "2026-10-22",
+      "code": "TX",
+      "editorialScope": "Household and food-service practice",
+      "candidateDomainIds": [
+        "D29",
+        "D10",
+        "D14"
+      ],
+      "sourceId": "lcco-t",
+      "pdfPageOneBased": 1,
+      "status": "proposed-entry-route"
+    },
+    {
+      "scheme": "lcc-outline",
+      "snapshot": "2026-10-22",
+      "code": "Z",
+      "editorialScope": "Books, libraries and bibliographic work",
+      "candidateDomainIds": [
+        "D28",
+        "D20",
+        "D24"
+      ],
+      "sourceId": "lcco-z",
+      "pdfPageOneBased": 1,
+      "status": "proposed-entry-route"
+    },
+    {
+      "scheme": "lcc-outline",
+      "snapshot": "2026-10-22",
+      "code": "ZA",
+      "editorialScope": "General information-resource access",
+      "candidateDomainIds": [
+        "D28",
+        "D03"
+      ],
+      "sourceId": "lcco-z",
+      "pdfPageOneBased": 1,
+      "status": "proposed-entry-route"
+    }
+  ],
+  "archivedScheduleSamples": [
+    {
+      "scheme": "lcc-schedule",
+      "edition": "May 2024",
+      "code": "ZA3088",
+      "editorialScope": "Finding and evaluating information",
+      "sourceId": "lcc-z-2024",
+      "pdfPageOneBased": 404,
+      "candidateDomainIds": [
+        "D28"
+      ],
+      "status": "research-sample"
+    },
+    {
+      "scheme": "lcc-schedule",
+      "edition": "May 2024",
+      "code": "ZA3274",
+      "editorialScope": "General metadata theory",
+      "sourceId": "lcc-z-2024",
+      "pdfPageOneBased": 405,
+      "candidateDomainIds": [
+        "D28"
+      ],
+      "status": "research-sample"
+    },
+    {
+      "scheme": "lcc-schedule",
+      "edition": "May 2024",
+      "code": "ZA4080",
+      "editorialScope": "Administration of digital libraries",
+      "sourceId": "lcc-z-2024",
+      "pdfPageOneBased": 405,
+      "candidateDomainIds": [
+        "D28"
+      ],
+      "status": "research-sample"
+    },
+    {
+      "scheme": "lcc-schedule",
+      "edition": "May 2024",
+      "code": "ZA4080.4",
+      "editorialScope": "Curating data",
+      "sourceId": "lcc-z-2024",
+      "pdfPageOneBased": 405,
+      "candidateDomainIds": [
+        "D28"
+      ],
+      "status": "research-sample"
+    },
+    {
+      "scheme": "lcc-schedule",
+      "edition": "May 2024",
+      "code": "ZA4197",
+      "editorialScope": "General web archives",
+      "sourceId": "lcc-z-2024",
+      "pdfPageOneBased": 406,
+      "candidateDomainIds": [
+        "D28"
+      ],
+      "status": "research-sample"
+    },
+    {
+      "scheme": "lcc-schedule",
+      "edition": "May 2024",
+      "code": "ZA4230",
+      "editorialScope": "Using information-search interfaces",
+      "sourceId": "lcc-z-2024",
+      "pdfPageOneBased": 406,
+      "candidateDomainIds": [
+        "D28"
+      ],
+      "status": "research-sample"
+    },
+    {
+      "scheme": "lcc-schedule",
+      "edition": "May 2024",
+      "code": "ZA4460",
+      "editorialScope": "Using databases",
+      "sourceId": "lcc-z-2024",
+      "pdfPageOneBased": 406,
+      "candidateDomainIds": [
+        "D28"
+      ],
+      "status": "research-sample"
+    }
+  ],
+  "localSchemeComparisons": [
+    {
+      "scheme": "xwi7xwa-bc-brian-deer",
+      "edition": "2018-03-28",
+      "code": "PA",
+      "editorialScope": "Knowledge systems and intellectual property",
+      "sourceId": "xwi7xwa-2018",
+      "pdfPageOneBased": 6,
+      "candidateDomainIds": [
+        "D17",
+        "D21",
+        "D16",
+        "D28"
+      ],
+      "status": "comparison-only-not-equivalence"
+    },
+    {
+      "scheme": "xwi7xwa-bc-brian-deer",
+      "edition": "2018-03-28",
+      "code": "PD",
+      "editorialScope": "Library collections",
+      "sourceId": "xwi7xwa-2018",
+      "pdfPageOneBased": 6,
+      "candidateDomainIds": [
+        "D28"
+      ],
+      "status": "comparison-only-not-equivalence"
+    },
+    {
+      "scheme": "xwi7xwa-bc-brian-deer",
+      "edition": "2018-03-28",
+      "code": "PDA",
+      "editorialScope": "Archival collections",
+      "sourceId": "xwi7xwa-2018",
+      "pdfPageOneBased": 6,
+      "candidateDomainIds": [
+        "D28",
+        "D20"
+      ],
+      "status": "comparison-only-not-equivalence"
+    },
+    {
+      "scheme": "xwi7xwa-bc-brian-deer",
+      "edition": "2018-03-28",
+      "code": "PS",
+      "editorialScope": "Sport and play",
+      "sourceId": "xwi7xwa-2018",
+      "pdfPageOneBased": 6,
+      "candidateDomainIds": [
+        "D30"
+      ],
+      "status": "comparison-only-not-equivalence"
+    },
+    {
+      "scheme": "xwi7xwa-bc-brian-deer",
+      "edition": "2018-03-28",
+      "code": "S",
+      "editorialScope": "Health",
+      "sourceId": "xwi7xwa-2018",
+      "pdfPageOneBased": 6,
+      "candidateDomainIds": [
+        "D09"
+      ],
+      "status": "comparison-only-not-equivalence"
+    },
+    {
+      "scheme": "xwi7xwa-bc-brian-deer",
+      "edition": "2018-03-28",
+      "code": "T",
+      "editorialScope": "Worldviews",
+      "sourceId": "xwi7xwa-2018",
+      "pdfPageOneBased": 7,
+      "candidateDomainIds": [
+        "D21",
+        "D22"
+      ],
+      "status": "comparison-only-not-equivalence"
+    },
+    {
+      "scheme": "xwi7xwa-bc-brian-deer",
+      "edition": "2018-03-28",
+      "code": "WM",
+      "editorialScope": "Music and dance",
+      "sourceId": "xwi7xwa-2018",
+      "pdfPageOneBased": 7,
+      "candidateDomainIds": [
+        "D26",
+        "D27"
+      ],
+      "status": "comparison-only-not-equivalence"
+    },
+    {
+      "scheme": "xwi7xwa-bc-brian-deer",
+      "edition": "2018-03-28",
+      "code": "YO",
+      "editorialScope": "Study of oral tradition as a genre",
+      "sourceId": "xwi7xwa-2018",
+      "pdfPageOneBased": 9,
+      "candidateDomainIds": [
+        "D24",
+        "D20",
+        "D23"
+      ],
+      "status": "comparison-only-not-equivalence"
+    }
+  ],
+  "researchCards": [
+    {
+      "id": "library-scope",
+      "domainIds": [
+        "D28"
+      ],
+      "sourceIds": [
+        "lcc-archive-context",
+        "lcc-2024-index",
+        "lcc-z-2024"
+      ],
+      "question": "What does a record describe: a topic, a resource, or how to find one?",
+      "proposedActivity": "Compare invented descriptions of a general web archive, a topic-specific archive, and a book about building a search engine. Identify which scope note makes each case different.",
+      "reviewCriterion": "Use the inspected scope directions; do not assign a full call number from a title alone.",
+      "preparationGate": "Obtain current cataloging expertise and a chosen lawful record sample before authoring an assessed lesson."
+    },
+    {
+      "id": "classification-namespace",
+      "domainIds": [
+        "D28",
+        "D17"
+      ],
+      "sourceIds": [
+        "lcco-s",
+        "lcco-t",
+        "xwi7xwa-context",
+        "xwi7xwa-2018"
+      ],
+      "question": "Why is the letter S insufficient to identify a subject?",
+      "proposedActivity": "Compare the S and T examples from the two schemes. Write a reference containing scheme, institution or variant, edition, and code.",
+      "reviewCriterion": "Keep each meaning attached to its own source; candidate atlas homes do not establish equivalence.",
+      "preparationGate": "Confirm the intended local audience and current vocabulary before importing any local scheme."
+    },
+    {
+      "id": "shelves-and-headings",
+      "domainIds": [
+        "D28"
+      ],
+      "sourceIds": [
+        "xwi7xwa-context"
+      ],
+      "question": "How can one item have one shelf location and several subject routes?",
+      "proposedActivity": "Sketch a record with a classification field and several independently sourced subject headings; identify which values change physical location and which support topic discovery.",
+      "reviewCriterion": "Keep controlled headings and classification distinct; do not invent an FNHL term.",
+      "preparationGate": "Choose an actual accessible catalog record and inspect its rights, current names and audience with qualified local input."
+    },
+    {
+      "id": "community-governance",
+      "domainIds": [
+        "D17",
+        "D26",
+        "D27",
+        "D28"
+      ],
+      "sourceIds": [
+        "local-contexts-labels",
+        "whakatohea-project"
+      ],
+      "question": "What does a public project record establish about using a particular recording?",
+      "proposedActivity": "Read the public English project metadata and list the named authority, activity limits and outstanding asset-specific questions.",
+      "reviewCriterion": "Distinguish discovery from permission, and a community-issued label from atlas review. Public metadata does not make an app asset public-domain material.",
+      "preparationGate": "No media selection, reproduction or adaptation until exact asset conditions and the relevant cultural authority/process are settled. No community contact is initiated."
+    },
+    {
+      "id": "making-and-maintaining",
+      "domainIds": [
+        "D11",
+        "D29",
+        "D10"
+      ],
+      "sourceIds": [
+        "lcco-t",
+        "lcco-s"
+      ],
+      "question": "How do industrial production, hand making and household practice connect without being identical?",
+      "proposedActivity": "Outline research paths for a manufactured textile, a hand-made object and its household use. Name the different processes and the evidence each would need.",
+      "reviewCriterion": "Use the class-level distinctions as discovery prompts, not practical instructions or claims that every process is taught.",
+      "preparationGate": "Select material, situated practice, competent reviewer and lawful assets before developing practical content."
+    },
+    {
+      "id": "play-and-performance",
+      "domainIds": [
+        "D30",
+        "D27",
+        "D19"
+      ],
+      "sourceIds": [
+        "lcco-g",
+        "xwi7xwa-2018"
+      ],
+      "question": "What changes when play is studied as rules, movement, learning or performance?",
+      "proposedActivity": "Compare invented descriptions of a game, a movement activity and a performance, then state the additional context needed before choosing a learning route.",
+      "reviewCriterion": "Do not collapse play into mathematical game theory or infer instruction from a shelf category.",
+      "preparationGate": "Choose a bounded activity and appropriately qualified review; actual movement/performance and learner observations remain unperformed."
+    }
+  ],
+  "retainedGates": [
+    {
+      "canonicalKey": "ford:1.7",
+      "disposition": "review-retained",
+      "relatedResearchCards": [],
+      "reason": "The current packet does not establish this residual-topic membership or the needed situated source/community context.",
+      "nextEvidence": "A concrete topic, authorized defining source and explicit comparison with neighboring fields; never infer residual membership from an LCC route."
+    },
+    {
+      "canonicalKey": "ford:2.11",
+      "disposition": "review-retained",
+      "relatedResearchCards": [],
+      "reason": "The current packet does not establish this residual-topic membership or the needed situated source/community context.",
+      "nextEvidence": "A concrete topic, authorized defining source and explicit comparison with neighboring fields; never infer residual membership from an LCC route."
+    },
+    {
+      "canonicalKey": "ford:3.5",
+      "disposition": "review-retained",
+      "relatedResearchCards": [],
+      "reason": "The current packet does not establish this residual-topic membership or the needed situated source/community context.",
+      "nextEvidence": "A concrete topic, authorized defining source and explicit comparison with neighboring fields; never infer residual membership from an LCC route."
+    },
+    {
+      "canonicalKey": "ford:4.5",
+      "disposition": "review-retained",
+      "relatedResearchCards": [],
+      "reason": "The current packet does not establish this residual-topic membership or the needed situated source/community context.",
+      "nextEvidence": "A concrete topic, authorized defining source and explicit comparison with neighboring fields; never infer residual membership from an LCC route."
+    },
+    {
+      "canonicalKey": "ford:5.9",
+      "disposition": "review-retained",
+      "relatedResearchCards": [],
+      "reason": "The current packet does not establish this residual-topic membership or the needed situated source/community context.",
+      "nextEvidence": "A concrete topic, authorized defining source and explicit comparison with neighboring fields; never infer residual membership from an LCC route."
+    },
+    {
+      "canonicalKey": "ford:6.5",
+      "disposition": "review-retained",
+      "relatedResearchCards": [],
+      "reason": "The current packet does not establish this residual-topic membership or the needed situated source/community context.",
+      "nextEvidence": "A concrete topic, authorized defining source and explicit comparison with neighboring fields; never infer residual membership from an LCC route."
+    },
+    {
+      "canonicalKey": "ich:oral-traditions",
+      "disposition": "review-retained",
+      "relatedResearchCards": [
+        "community-governance"
+      ],
+      "reason": "Public community-project metadata supplies a situated discovery example, not permission for a lesson or closure of a whole heritage category.",
+      "nextEvidence": "A selected practice or asset, its source/context, relevant cultural authority and applicable conditions. Do not treat the broad heritage label as a permission."
+    },
+    {
+      "canonicalKey": "ich:performing-arts",
+      "disposition": "review-retained",
+      "relatedResearchCards": [
+        "community-governance"
+      ],
+      "reason": "Public community-project metadata supplies a situated discovery example, not permission for a lesson or closure of a whole heritage category.",
+      "nextEvidence": "A selected practice or asset, its source/context, relevant cultural authority and applicable conditions. Do not treat the broad heritage label as a permission."
+    },
+    {
+      "canonicalKey": "ich:social-practices",
+      "disposition": "review-retained",
+      "relatedResearchCards": [],
+      "reason": "The current packet does not establish the needed situated source/community context for this provisional cultural domain.",
+      "nextEvidence": "A selected practice or asset, its source/context, relevant cultural authority and applicable conditions. Do not treat the broad heritage label as a permission."
+    },
+    {
+      "canonicalKey": "ich:nature-knowledge",
+      "disposition": "review-retained",
+      "relatedResearchCards": [],
+      "reason": "The current packet does not establish the needed situated source/community context for this provisional cultural domain.",
+      "nextEvidence": "A selected practice or asset, its source/context, relevant cultural authority and applicable conditions. Do not treat the broad heritage label as a permission."
+    },
+    {
+      "canonicalKey": "ich:craftsmanship",
+      "disposition": "review-retained",
+      "relatedResearchCards": [],
+      "reason": "The current packet does not establish the needed situated source/community context for this provisional cultural domain.",
+      "nextEvidence": "A selected practice or asset, its source/context, relevant cultural authority and applicable conditions. Do not treat the broad heritage label as a permission."
+    }
+  ],
+  "implementationRequirements": [
+    "Key external codes by scheme, variant and edition; never key by bare letters.",
+    "Keep classification placement distinct from multi-valued subject headings.",
+    "Store source wording/edition separately from atlas editorial labels and candidate relationships.",
+    "Keep source availability, cultural authority, reuse conditions, content review and publication decisions as separate fields.",
+    "Represent exact external project references without copying icons/templates or granting the atlas cultural authority.",
+    "Require fresh scoped review before changing the bound canonical registry or orientation inputs."
+  ],
+  "unavailableCandidates": [
+    {
+      "url": "https://natlib.govt.nz/librarians/nga-upoko-tukutuku",
+      "status": "stopped",
+      "reason": "The opened page exposed an Incapsula security-challenge iframe; its target returned an error.",
+      "action": "No retry or alternate recovery; indexed discovery is not a body receipt."
+    },
+    {
+      "url": "https://www.whakatohea.co.nz/iwi-m%C4%81ori-technologies",
+      "status": "stopped",
+      "reason": "Body request timed out.",
+      "action": "No retry or alternate recovery. The separate public Local Contexts project is a different work, not a copy of this page."
+    },
+    {
+      "url": "https://www.loc.gov/aba/publications/FreeLCC/freelcc.html",
+      "status": "empty-body-for-purpose",
+      "reason": "Opened response contained heading/navigation but no schedule list.",
+      "action": "No current-schedule claim. The explicitly archived May 2024 edition is separately identified."
+    }
+  ]
+}
