@@ -1,0 +1,109 @@
+{
+  "schemaVersion": 1,
+  "acceptedCommit": "facab15e297c645d4826935f2c011a4cf367ee88",
+  "snapshotDigest": "2b156195a22cf85186b8b40fb6c35b8966a478a0c46da155a742b498907c2685",
+  "targets": [
+    {
+      "id": "fluid-2.9",
+      "kind": "legacy-accepted",
+      "title": "Bernoulli’s theorem",
+      "href": "ideas/fluid-2.9/",
+      "projectionDigest": "869173706b75e2d5e91ffa5975ae4e248a959d7e162acef6e29ed856cde06a43",
+      "declaredPrerequisites": [
+        "fluid-2.8",
+        "vcalc-2.7"
+      ]
+    },
+    {
+      "id": "tech-4.3",
+      "kind": "legacy-accepted",
+      "title": "Aqueducts and the inverted siphon",
+      "href": "ideas/tech-4.3/",
+      "projectionDigest": "906c1e6096f760f42cb60b385782900f0811d7ec3d3803ca3b1a4a0b49187b04",
+      "declaredPrerequisites": [
+        "fluid-2.2"
+      ]
+    },
+    {
+      "id": "epi-4.4",
+      "kind": "legacy-accepted",
+      "title": "John Snow and the Broad Street pump (1854)",
+      "href": "ideas/epi-4.4/",
+      "projectionDigest": "26ac72f5c26ed9d5d069d3714a70c5b195e4f7350274f23c24e7562dab90cc2e",
+      "declaredPrerequisites": [
+        "epi-1.11"
+      ]
+    },
+    {
+      "id": "alg-3.5a",
+      "kind": "legacy-accepted",
+      "title": "Symmetries of a figure (rigid motions)",
+      "href": "ideas/alg-3.5a/",
+      "projectionDigest": "7552bd02cf51e274577665ffaf2e6f1274ad658335b9813e3bfbb2d3aae9e84d",
+      "declaredPrerequisites": [
+        "alg-1.14a"
+      ]
+    },
+    {
+      "id": "tech-1.9",
+      "kind": "legacy-accepted",
+      "title": "Spinning and the loom",
+      "href": "ideas/tech-1.9/",
+      "projectionDigest": "0c156ee0669e2030abd6d7eee7d2c9f61d864c164aa69add148a08e61098dffb",
+      "declaredPrerequisites": [
+        "tech-1.6",
+        "tech-1.8"
+      ]
+    },
+    {
+      "id": "x-agriculture-0001",
+      "kind": "locally-accepted-exploration",
+      "title": "What does a soil-water point measure?",
+      "revision": "0.1.0",
+      "href": "explore/x-agriculture-0001/versions/0.1.0/",
+      "bundlePath": "editions/bundles/x-agriculture-0001/0.1.0.json",
+      "bundleSha256": "c8b6b3e1547df53f240ae8d132ea25dd471dd27007df28fe866febfdea9ae49e",
+      "declaredPrerequisites": []
+    },
+    {
+      "id": "micro-1.8",
+      "kind": "legacy-accepted",
+      "title": "Comparative advantage (Ricardo)",
+      "href": "ideas/micro-1.8/",
+      "projectionDigest": "e963aecf5c3942964c6cf9e5ca83107ec8f5cc62e58fd56adbd46b367c758d7b",
+      "declaredPrerequisites": [
+        "micro-1.2",
+        "micro-1.7"
+      ]
+    },
+    {
+      "id": "x-history-0001",
+      "kind": "locally-accepted-exploration",
+      "title": "What can two documents establish?",
+      "revision": "0.1.2",
+      "href": "explore/x-history-0001/versions/0.1.2/",
+      "bundlePath": "editions/bundles/x-history-0001/0.1.2.json",
+      "bundleSha256": "6a98a6138dd8dc19833f6f2a9db87594b44f151a8ca41c25053673dff5ea6530",
+      "declaredPrerequisites": []
+    },
+    {
+      "id": "stat-1.2",
+      "kind": "legacy-accepted",
+      "title": "Random sample and statistic",
+      "href": "ideas/stat-1.2/",
+      "projectionDigest": "79e943b824c640000ed5d336403e61004bff7e5a986e14e2335dd353ad9139f6",
+      "declaredPrerequisites": [
+        "stat-1.1",
+        "prob-2.1.1a"
+      ]
+    },
+    {
+      "id": "causal-1.1",
+      "kind": "legacy-accepted",
+      "title": "Potential outcomes",
+      "href": "ideas/causal-1.1/",
+      "projectionDigest": "ba434a45e858e4b604a0c398e5a335d508194c98bb0053f36604bcd7c4dd2bd6",
+      "declaredPrerequisites": []
+    }
+  ]
+}

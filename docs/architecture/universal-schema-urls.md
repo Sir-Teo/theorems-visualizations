@@ -81,7 +81,8 @@ The prototype builder emits local previews only and rejects `publication: "publi
 | Exploration identity | `explore/x-history-0001/` | Implemented in the local edition candidate; explicit version history, no automatic state redirect |
 | Retained exploration edition | `explore/x-history-0001/versions/0.1.2/` | Implemented locally; source/runtime frozen; public distribution ledger empty |
 | Static legacy reading page | `ideas/pma-4.19/` | Implemented in the [local candidate](static-reading.md); old hash remains functional; no deployment |
-| Future domain/source views | `domains/D20/`, `sources/<receipt-id>/` | Proposed, not generated |
+| Domain orientation | `domains/D20/` | Implemented in the separate local navigation candidate; real release ledger empty |
+| Future source view | `sources/<receipt-id>/` | Proposed, not generated |
 
 All paths must work under both `/` and a static-host project base such as `/theorems-visualizations/`. Generated prototypes use relative asset and collection links; tests load them under an emulated project prefix. No rewrite server is required.
 
@@ -118,3 +119,7 @@ Implementation status and future work are tracked in [the master-plan handoff](.
 `measured-data` carries the frozen projected rows inside the reviewed content. It validates unique source-row identities, positive finite magnitudes, reported percent range, instrument codes and exclusion of density/conductivity columns. Sample plus magnitude is deliberately not a unique key. Public state contains sample/comparison/source-row IDs and bounded synthetic parameters; full text/data tables work without JavaScript. The reproduction script verifies the entire projection against the hash-pinned original CSV. The log10 plot has no connecting/fitted lines; the assumed storage model never consumes measured rows.
 
 All three added method modules are bound into every artifact digest. Extending shared code triggers renewed exact-artifact reviews of existing accepted previews. Review roles, unperformed human observations and release scope remain separate.
+
+## Cross-field journey preparation
+
+The [journey planning contract](../journeys/README.md) is a separate research layer. It pins accepted legacy projections and retained local exploration editions; external readings and unavailable gaps have no lesson identity. Its v1 comparisons are analogy or question-shift, not prerequisite/evidence edges. A future route renderer must resolve targets against the actual delivered inventory, preserve exact edition URLs, and show unavailable/withdrawn targets without leaking their content. The 14 planned stops add no runtime route, accepted lesson, progress key or public release. Formal prerequisite closure and each original pilot’s review conditions remain unchanged.

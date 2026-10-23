@@ -1,0 +1,94 @@
+{
+  "schemaVersion": 1,
+  "sources": [
+    {
+      "id": "journey-epa-planning",
+      "title": "Community Planning and Green Infrastructure",
+      "creator": "US Environmental Protection Agency",
+      "url": "https://www.epa.gov/green-infrastructure/community-planning-and-green-infrastructure",
+      "access": "body-read-scoped",
+      "readAt": "2026-10-22",
+      "edition": "Page displayed last updated May 14, 2026",
+      "locator": "Planning for the Future; Community Engagement to Inform Planning Decisions; planning scales",
+      "finding": "Frames US green-infrastructure planning through goals, measures and participation at multiple scales.",
+      "limits": "Institutional guidance; no selected city decision, consultation or legal interpretation inspected.",
+      "reuse": "Link and original commentary only; no figures, tools or page text republished."
+    },
+    {
+      "id": "journey-nara-analysis",
+      "title": "Document Analysis",
+      "creator": "US National Archives and Records Administration",
+      "url": "https://www.archives.gov/education/lessons/worksheets",
+      "access": "body-read-scoped",
+      "readAt": "2026-10-22",
+      "edition": "Page displayed last reviewed April 6, 2023",
+      "locator": "Introductory progression, worksheet options and materials notice",
+      "finding": "Presents document analysis as preparation for using primary sources as historical evidence.",
+      "limits": "Landing-page prose read; linked worksheets were not newly inspected. It does not authenticate the pilot’s documents.",
+      "reuse": "Link and original commentary only. Page states NARA-created materials are public domain; this is not a blanket clearance of holdings."
+    },
+    {
+      "id": "journey-reuters-standards",
+      "title": "Standards and Values",
+      "creator": "Reuters",
+      "url": "https://reutersagency.com/about/standards-values/",
+      "access": "body-read-scoped",
+      "readAt": "2026-10-22",
+      "edition": "Undated displayed page retrieved October 22, 2026",
+      "locator": "Accuracy; Corrections; Sourcing; Attribution",
+      "finding": "Its stated practice calls for clear sourcing, cross-checks, transparent correction and explicit unknowns; one source must not be presented as multiple sources.",
+      "limits": "One newsroom’s stated practice, not observed adherence, a universal code or legal advice. No current SPJ-code claim is made.",
+      "reuse": "Link and original commentary only; no news stories, images, handbook extracts or licensed feeds copied."
+    },
+    {
+      "id": "journey-asare-context",
+      "title": "Kwasi Asare: practitioner and teaching self-presentation",
+      "creator": "Kwasi Asare website",
+      "url": "https://kwasiasare.com/",
+      "access": "retained-scoped-receipt",
+      "readAt": "2026-10-22",
+      "edition": "Undated page retrieved 22 October 2026",
+      "locator": "Homepage biographical and teaching prose, including Ashanti tradition, father and Dento Mills/Nsawam account.",
+      "finding": "Identifies one practitioner and a named studio/place for a situated research route.",
+      "limits": "Self-presentation; lineage, promotional superlatives and current offers not independently verified. No object, video, course or loom inspected; not representative of all kente.",
+      "reuse": "Links/original commentary only; no course, image, pattern or design reuse permission established.",
+      "retainedRecord": {
+        "path": "docs/pilots/sequences/sources.json",
+        "id": "seq-asare-context",
+        "sha256": "865eceb5c51e1744f4311addb3b5235c68349dfcad607f4bbe3dd26f1b988bac"
+      }
+    },
+    {
+      "id": "journey-asare-workshop",
+      "title": "Kwasi Asare Kente Weaving Handloom Workshop",
+      "creator": "Kwasi Asare website",
+      "url": "https://kwasiasare.com/kwasi-asare-kente-weaving-handloom-workshop/",
+      "access": "retained-scoped-receipt",
+      "readAt": "2026-10-22",
+      "edition": "Undated provider account referring to a handloom developed in 2013",
+      "locator": "Workshop description and advertised format; text only.",
+      "finding": "Provider connects introductory weaving/design teaching with geometry using a teaching handloom.",
+      "limits": "Same provider perspective as homepage, not independent corroboration. Offer is not current availability, observed learning or an equivalence to other practice. Promotional health/uniqueness claims excluded.",
+      "reuse": "Links/original commentary only; no demonstration, course content or loom design copied or cleared.",
+      "retainedRecord": {
+        "path": "docs/pilots/sequences/sources.json",
+        "id": "seq-asare-workshop",
+        "sha256": "718f2416cdaadff4f36ac6a0ba7e9d37571dfd495e73ba16854dc8ee76e3c8a1"
+      }
+    }
+  ],
+  "stoppedCandidates": [
+    {
+      "url": "https://www.unwater.org/our-work/sdg-6-integrated-monitoring-initiative/indicator-651-degree-integrated-water-resources",
+      "observedOn": "2026-10-22",
+      "result": "403 Forbidden",
+      "decision": "Stop; no retry or alternate copy. Search extract is not a body-read receipt and supplies no route claim."
+    },
+    {
+      "url": "https://www.spj.org/spj-code-of-ethics/",
+      "observedOn": "2026-10-22",
+      "result": "403 Forbidden",
+      "decision": "Stop; no retry or alternate copy. Search extract is not a body-read receipt; no claim about the current or revised code."
+    }
+  ]
+}

@@ -1,0 +1,20 @@
+{
+  "schemaVersion": 1,
+  "mode": "journey-planning-research-delta",
+  "predecessorCommit": "7ad07b261e300effde6f900ce38814b1f6474d20",
+  "replacements": [],
+  "additions": [
+    "docs/integration/journey-planning.json",
+    "docs/integration/journey-planning.md",
+    "docs/journeys/README.md",
+    "docs/journeys/plans.json",
+    "docs/journeys/review-cloth.md",
+    "docs/journeys/review-evidence.md",
+    "docs/journeys/review-structure.md",
+    "docs/journeys/sources.json",
+    "docs/journeys/targets.json",
+    "docs/verification/universal-journey-planning.md",
+    "scripts/check-journey-plans.mjs",
+    "tests/journey-plans.test.mjs"
+  ]
+}

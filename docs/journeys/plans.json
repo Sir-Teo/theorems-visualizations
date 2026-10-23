@@ -1,0 +1,380 @@
+{
+  "schemaVersion": 1,
+  "version": "0.1.0",
+  "author": "atlas-editor",
+  "preparedOn": "2026-10-22",
+  "scope": "Editorial route research only. No new lesson, public route, accepted journey, human observation or release decision.",
+  "relationTypes": {
+    "evidence": "A specified source or observation directly supports a bounded claim; requires an explicit claim and locator.",
+    "analogy": "Transfer a representation or question while stating what does not transfer.",
+    "prerequisite": "A directed required learning dependency, supported by actual target declarations; never inferred from sequence order.",
+    "question-shift": "Sequence changes method or object; no evidential or dependency implication."
+  },
+  "routes": [
+    {
+      "id": "water-city",
+      "title": "Water and a city",
+      "status": "research-prepared",
+      "published": false,
+      "acceptedJourney": false,
+      "scope": "A comparison across ideal hydraulics, an authored aqueduct, historical London and contemporary US stormwater planning. These are different cases, not the history or engineering design of one city.",
+      "outcome": "Separate a model output, a historical observation and a public planning choice; say which extra evidence would connect them.",
+      "steps": [
+        {
+          "id": "head",
+          "title": "What can a flow model conserve?",
+          "kind": "accepted-lesson",
+          "targetId": "fluid-2.9",
+          "sourceIds": [],
+          "domainIds": [
+            "D04",
+            "D11"
+          ],
+          "question": "Which quantities trade off in the ideal flow?",
+          "task": "Read the three head terms. Describe what can change when the pipe narrows with friction absent, then explain why the separate friction setting changes the comparison.",
+          "check": "Identify pressure, velocity and elevation head; qualify conservation by steady, inviscid, constant-density flow in uniform gravity along a streamline.",
+          "limit": "The task is conceptual. The derivation needs Euler equations and directional derivatives; this route does not supply that proof or a real network design.",
+          "entrySupport": "Head is energy per unit weight expressed as a height. A streamline follows the direction of flow. Read the statement and scope before the derivation."
+        },
+        {
+          "id": "aqueduct",
+          "title": "What does an infrastructure model leave out?",
+          "kind": "accepted-lesson",
+          "targetId": "tech-4.3",
+          "sourceIds": [],
+          "domainIds": [
+            "D11",
+            "D20"
+          ],
+          "question": "Does arriving at sufficient height establish useful capacity or a safe pipe?",
+          "task": "In the reading page, distinguish the endpoint-height test from pipe capacity and nominal stress. List two excluded effects that would matter to an actual structure.",
+          "check": "Separate height, flow capacity and stress; identify omitted losses, joints or material failure.",
+          "limit": "The terrain and dimensions are authored. The two translations disagree on gradient, and neither supplies a universal measured Roman gradient.",
+          "entrySupport": "Capacity is how much flow the stated model can carry; a height test alone does not determine it. Nominal stress is a model quantity, not a safety certificate."
+        },
+        {
+          "id": "snow",
+          "title": "What can a case map establish?",
+          "kind": "accepted-lesson",
+          "targetId": "epi-4.4",
+          "sourceIds": [],
+          "domainIds": [
+            "D09",
+            "D20"
+          ],
+          "question": "Does a decline after an intervention show what caused it?",
+          "task": "Read the statement and scope. Compare the dated attacks, the digitised map records and the deaths-per-house comparison. Explain why the handle removal cannot be credited from the curve alone.",
+          "check": "Keep the denominators and datasets distinct; mention the pre-removal decline and missing counterfactual.",
+          "limit": "Map locations are rounded, displaced plotting stacks with duplicates; ring density is not population risk. No modern health advice follows.",
+          "entrySupport": "A denominator states what a count is divided by. A counterfactual asks what would have happened without the intervention; it is not observed in this curve."
+        },
+        {
+          "id": "planning",
+          "title": "Who participates in deciding what to build?",
+          "kind": "external-reading",
+          "targetId": null,
+          "sourceIds": [
+            "journey-epa-planning"
+          ],
+          "domainIds": [
+            "D12",
+            "D15",
+            "D17"
+          ],
+          "question": "Which questions survive after a technical option appears feasible?",
+          "task": "Read EPA’s planning and community-engagement sections. For an explicitly fictional stormwater proposal, list a goal, a metric and an affected group whose input is missing.",
+          "check": "Keep feasibility, chosen priorities and evidence of actual participation separate.",
+          "limit": "US green-infrastructure guidance is one institutional approach. A fictional stakeholder list does not establish participation, consent or a legal duty.",
+          "entrySupport": "A metric is an observable way to track a goal. Stormwater planning concerns runoff; it is not the same system as the aqueduct or the London drinking-water case."
+        }
+      ],
+      "transitions": [
+        {
+          "fromStep": "head",
+          "toStep": "aqueduct",
+          "kind": "analogy",
+          "reason": "Both separate elevation, pressure and flow under stated assumptions.",
+          "limit": "The aqueduct comparison adds friction and geometric assumptions; it is not a direct validation of the ideal Bernoulli picture."
+        },
+        {
+          "fromStep": "aqueduct",
+          "toStep": "snow",
+          "kind": "question-shift",
+          "reason": "Move from moving water to evaluating evidence about a historical outbreak.",
+          "limit": "Capacity or pressure says nothing by itself about exposure, infection or the effect of an intervention."
+        },
+        {
+          "fromStep": "snow",
+          "toStep": "planning",
+          "kind": "question-shift",
+          "reason": "Move from explaining a historical observation to choosing and assessing a contemporary planning process.",
+          "limit": "EPA guidance is not evidence of what London officials did in 1854."
+        }
+      ],
+      "gaps": [
+        "No accepted lesson here teaches participatory water governance or a situated account of residents’ experience.",
+        "No single-city archive, contemporary water-quality dataset or real engineering assessment has been selected.",
+        "Actual reader/access observations and an exact route-level acceptance/release decision remain open."
+      ],
+      "transfer": "A town has a convincing flow diagram and a falling illness count. Write one supported conclusion, one causal claim needing more evidence, and one decision that still needs public input."
+    },
+    {
+      "id": "woven-cloth",
+      "title": "A woven cloth",
+      "status": "research-prepared",
+      "published": false,
+      "acceptedJourney": false,
+      "scope": "Follow distinct questions about geometric structure, yarn/interlacing, agricultural measurement, a trade model and a named teaching account. No selected physical cloth or authenticated cultural pattern is supplied.",
+      "outcome": "Explain why a structural model cannot identify a textile’s materials, agricultural footprint, maker, exchange history or cultural meaning.",
+      "steps": [
+        {
+          "id": "geometry",
+          "title": "Which transformations preserve a shape?",
+          "kind": "accepted-lesson",
+          "targetId": "alg-3.5a",
+          "sourceIds": [],
+          "domainIds": [
+            "D01"
+          ],
+          "question": "Does a rectangle fit its own outline after a quarter turn?",
+          "task": "Use the non-square rectangle example. Identify the allowed rigid motions and explain why a quarter turn fails.",
+          "check": "Distinguish a half turn from a quarter turn and the outline from decoration.",
+          "limit": "Polygon symmetry is a comparison tool, not a classification of textile construction or cultural meanings.",
+          "entrySupport": "A rigid motion preserves distances. A symmetry must also place the whole chosen figure back onto itself. You do not need permutation notation for this task."
+        },
+        {
+          "id": "interlacing",
+          "title": "What does a lifting plan specify?",
+          "kind": "accepted-lesson",
+          "targetId": "tech-1.9",
+          "sourceIds": [],
+          "domainIds": [
+            "D11",
+            "D25",
+            "D29"
+          ],
+          "question": "Which part of a woven structure is recorded by an over-under matrix?",
+          "task": "Read the warp, weft and lifting-plan description. State what an entry records and give two things it does not record about a physical cloth.",
+          "check": "An entry describes which thread is above the other; it does not determine fibre quality, tension, strength or provenance.",
+          "limit": "The legacy article also contains historical claims and a simplified yarn model. Those have not received a fresh source audit here. This route uses only the declared structural representation and its limits.",
+          "entrySupport": "Warp runs one direction and weft crosses it. A binary entry has two possibilities. A diagram is not an observed weave or evidence that someone can make it."
+        },
+        {
+          "id": "soil",
+          "title": "What does a measured point describe?",
+          "kind": "accepted-lesson",
+          "targetId": "x-agriculture-0001",
+          "sourceIds": [],
+          "domainIds": [
+            "D02",
+            "D06",
+            "D10"
+          ],
+          "question": "Would a soil-water observation establish the water cost of a cloth?",
+          "task": "Inspect the source identity, sample and instrument for one point. Explain why the synthetic storage calculation and laboratory measurements cannot supply a fibre crop’s water footprint.",
+          "check": "Retain the single-plot and laboratory scope; request crop, place, season, production and processing evidence before a textile footprint claim.",
+          "limit": "These Wisconsin observations are not cotton/flax data, a crop trial, a causal depth comparison or an irrigation recommendation.",
+          "entrySupport": "An observation is a recorded measurement with provenance. A separate synthetic calculation uses chosen assumptions; it does not turn that observation into crop evidence."
+        },
+        {
+          "id": "trade",
+          "title": "Which trade claim belongs to the model?",
+          "kind": "accepted-lesson",
+          "targetId": "micro-1.8",
+          "sourceIds": [],
+          "domainIds": [
+            "D13"
+          ],
+          "question": "What does lower opportunity cost mean in the two-good model?",
+          "task": "Compare the two producers’ food-versus-cloth opportunity costs in the explanation. Identify the resource and constant-productivity assumptions.",
+          "check": "Explain a comparative-cost statement without inferring who benefits in an actual supply chain.",
+          "limit": "The model does not establish wages, coercion, bargaining power, environmental costs or the history of any cloth trade.",
+          "entrySupport": "Opportunity cost is what is given up to produce something else. Absolute output and comparative cost are different comparisons; the task uses ratios, not calculus."
+        },
+        {
+          "id": "practice",
+          "title": "Whose account is this?",
+          "kind": "external-reading",
+          "targetId": null,
+          "sourceIds": [
+            "journey-asare-context",
+            "journey-asare-workshop"
+          ],
+          "domainIds": [
+            "D25",
+            "D29"
+          ],
+          "question": "What can one named provider’s teaching account establish?",
+          "task": "Use the retained Asare/Dento Mills research brief and, if accessible, its linked pages. Separate a self-description and advertised workshop from evidence of a particular object, making session or learner outcome.",
+          "check": "Attribute statements to the provider; leave object, maker, date, material, technique and meaning unknown where no selected object supplies them.",
+          "limit": "The two pages are one provider perspective. No course, loom design, image, pattern, observed practice or current workshop availability is verified here.",
+          "entrySupport": "The earlier source receipt locates a specific practitioner/studio account in Nsawam. It does not represent all Ghanaian kente or provide permission to reproduce patterns."
+        }
+      ],
+      "transitions": [
+        {
+          "fromStep": "geometry",
+          "toStep": "interlacing",
+          "kind": "analogy",
+          "reason": "Both can describe visible structure using a specified representation.",
+          "limit": "Outline symmetry and over-under construction answer different questions; neither identifies cultural meaning."
+        },
+        {
+          "fromStep": "interlacing",
+          "toStep": "soil",
+          "kind": "question-shift",
+          "reason": "Move from a construction representation to asking what agricultural evidence would be needed.",
+          "limit": "The selected soil data do not concern the fibres or agricultural history of a selected cloth."
+        },
+        {
+          "fromStep": "soil",
+          "toStep": "trade",
+          "kind": "question-shift",
+          "reason": "Move from provenance of measurements to assumptions in an exchange model.",
+          "limit": "No measured soil point supplies the model’s labour costs or supports an actual trade history."
+        },
+        {
+          "fromStep": "trade",
+          "toStep": "practice",
+          "kind": "question-shift",
+          "reason": "Move from generic production assumptions to a named practitioner’s situated account.",
+          "limit": "The model provides no evidence about this practitioner’s income, authority, motives or community."
+        }
+      ],
+      "gaps": [
+        "P07 remains an unaccepted prototype and is deliberately not a lesson target.",
+        "No physical sample, maker-approved object/process record, fibre-crop evidence or actual trade chain is selected.",
+        "Practitioner/context, physical reproduction, reader/access and route-level acceptance/release evidence remain open."
+      ],
+      "transfer": "A geometric repeat has been matched to a photograph. Name one structural statement it may support and three claims about the cloth that still require other evidence."
+    },
+    {
+      "id": "account-evidence",
+      "title": "How an account becomes evidence",
+      "status": "research-prepared",
+      "published": false,
+      "acceptedJourney": false,
+      "scope": "Compare document interpretation, sampling, causal questions, an explicit legal gap and one newsroom’s sourcing principles. These are different standards of warrant, not stages of a universal truth score.",
+      "outcome": "Attach each conclusion to a specific claim, source and method; distinguish repeated reporting from independent evidence and statistical assumptions from legal rules.",
+      "steps": [
+        {
+          "id": "archive",
+          "title": "What does a record actually establish?",
+          "kind": "accepted-lesson",
+          "targetId": "x-history-0001",
+          "sourceIds": [
+            "journey-nara-analysis"
+          ],
+          "domainIds": [
+            "D15",
+            "D20",
+            "D28"
+          ],
+          "question": "Does a conditional proposal establish a completed agreement?",
+          "task": "Read the selected documents and classify the proposal, acceptance and rhetoric claims. Use NARA’s linked orientation as an optional account of document analysis.",
+          "check": "Attach a conclusion to a passage; distinguish direct support, interpretation and missing evidence.",
+          "limit": "The US–Germany–Mexico pair does not isolate a single cause of US entry into war; it omits Mexican acceptance evidence and other perspectives.",
+          "entrySupport": "A source can establish that words were written or said without establishing that their proposal was accepted or their prediction true."
+        },
+        {
+          "id": "sample",
+          "title": "When is a pile of accounts a sample?",
+          "kind": "accepted-lesson",
+          "targetId": "stat-1.2",
+          "sourceIds": [],
+          "domainIds": [
+            "D02"
+          ],
+          "question": "Does collecting more records make them independent and identically distributed?",
+          "task": "Read the definition of a random sample. Explain why ten copied reports of one account do not by themselves satisfy that model.",
+          "check": "Separate record count from the assumptions about how information was generated and selected.",
+          "limit": "An archive is not automatically an i.i.d. sample. This step supplies no population inference about the history pilot.",
+          "entrySupport": "Independent means one observation does not change the probabilistic information about another under the model. Identically distributed means the model uses the same distribution for each."
+        },
+        {
+          "id": "cause",
+          "title": "Which outcome is not observed?",
+          "kind": "accepted-lesson",
+          "targetId": "causal-1.1",
+          "sourceIds": [],
+          "domainIds": [
+            "D02"
+          ],
+          "question": "Can an observed outcome supply its own counterfactual?",
+          "task": "Read the potential-outcome definition. For a fictional choice, name the unit, two well-defined alternatives and the one outcome that would actually be observed.",
+          "check": "Distinguish the causal comparison being asked for from the observations available to answer it.",
+          "limit": "Defining a causal effect does not identify it from historical records or prove a treatment effect. Simulated outcomes in the lesson are not real patient data.",
+          "entrySupport": "A unit is the person, plot or other object being compared. The two alternatives must be specified; one observed choice reveals one outcome."
+        },
+        {
+          "id": "law",
+          "title": "What changes when a legal rule controls a claim?",
+          "kind": "gap",
+          "targetId": null,
+          "sourceIds": [],
+          "domainIds": [
+            "D16"
+          ],
+          "question": "Which jurisdiction, remedy, proposition and legal-effective date would a legal evidence task require?",
+          "task": "Inspect the existing legal preparation brief as an editorial prerequisite for future work; do not present it as an accepted lesson or apply it to a personal dispute.",
+          "check": "The missing qualified review and common legal-effective snapshot remain explicit. No legal answer key is supplied.",
+          "limit": "P04 and P04-L02 remain unauthored. A statistical probability or historical reading is not a legal presumption or a decision about a remedy.",
+          "entrySupport": "A jurisdiction and dated authority must be fixed before authoring the legal branch. The preparation packet records these unresolved requirements."
+        },
+        {
+          "id": "newsroom",
+          "title": "How should a report expose its sourcing?",
+          "kind": "external-reading",
+          "targetId": null,
+          "sourceIds": [
+            "journey-reuters-standards"
+          ],
+          "domainIds": [
+            "D28"
+          ],
+          "question": "What should a reader be able to tell about a report’s sources and limits?",
+          "task": "Read the Reuters corrections and sourcing sections. Draft a fictional attribution note that identifies the source, what remains unconfirmed and how a correction would be made.",
+          "check": "Do not inflate one source into several; distinguish corroboration from repetition and make uncertainty explicit.",
+          "limit": "These are Reuters’ stated standards, not an observation that a report followed them or a universal journalism code. No real report is published by this task.",
+          "entrySupport": "Attribution states where information came from. Corroboration requires assessing the source relationship; repetition alone does not establish independence."
+        }
+      ],
+      "transitions": [
+        {
+          "fromStep": "archive",
+          "toStep": "sample",
+          "kind": "question-shift",
+          "reason": "Move from a particular document claim to the assumptions behind aggregating observations.",
+          "limit": "Historical support does not turn the chosen archive into a random sample."
+        },
+        {
+          "fromStep": "sample",
+          "toStep": "cause",
+          "kind": "question-shift",
+          "reason": "Move from a distribution of observations to an intervention-defined question.",
+          "limit": "Random sampling alone does not establish causal exchangeability or reveal both potential outcomes."
+        },
+        {
+          "fromStep": "cause",
+          "toStep": "law",
+          "kind": "question-shift",
+          "reason": "Identify a domain where an applicable dated rule, rather than a causal model alone, controls the task.",
+          "limit": "The legal step is a gap; it cannot be used as a prerequisite, accepted teaching target or legal conclusion."
+        },
+        {
+          "fromStep": "law",
+          "toStep": "newsroom",
+          "kind": "question-shift",
+          "reason": "Move to a publisher’s stated practice for attribution and correction.",
+          "limit": "A newsroom policy neither settles the legal gap nor supplies a general admissibility rule."
+        }
+      ],
+      "gaps": [
+        "No accepted law or journalism lesson is available in this selected route. Reuters is an external reading; the law stop has no runtime target.",
+        "P04-L02’s qualified legal review and common legal-effective snapshot remain required before that lesson is authored.",
+        "Observed reader/access results and exact route-level acceptance/release decisions remain open."
+      ],
+      "transfer": "Three news articles repeat one archive document. Write a supported document claim, a question about source dependence, and a reason neither quantity alone answers a legal or causal question."
+    }
+  ]
+}
