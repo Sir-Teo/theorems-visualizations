@@ -1,0 +1,287 @@
+{
+  "schemaVersion": 1,
+  "id": "p07-patch-plan-preparation",
+  "version": "0.1.0",
+  "updatedOn": "2026-10-23",
+  "predecessorCommit": "e88a1991636e014a60831aa896e6160522d24e5a",
+  "status": "prepared-for-practitioner-review",
+  "scope": "Original geometric proposals and empty physical-evidence forms; no authored lesson or sample.",
+  "existingBindings": {
+    "docs/pilots/sequences/sources.json": "aa728ce4083c7d242484c8f998168f5e61e03e30f312ff12b0bd4e02736b18c6",
+    "docs/pilots/sequences/queue.json": "2ad2477129d1d6aa871a07105c7a209df0ae66eefe452067f9e4acbac97ebcc4",
+    "docs/pilots/sequences/README.md": "589316cf449084627cc28201c9a31c50478c613592f9548d5e6432042197015b",
+    "docs/coverage/registry.json": "8adc6ab70344ff5605f3bc5c6925827603d0a9102799781049c3749137fae2c4",
+    "docs/pilots/sequences/p07-02-repair.md": "1cc0bc52cef3410d0ae871b2a7fd71afd5bf475082de9b2a839224cf3c054b93",
+    "docs/pilots/sequences/p07-03-kente.md": "e7d7a774283bf97ab042a9645cb61891092b2faa6b9548c101d126f1cb92aa42",
+    "docs/pilots/sequences/review-craft.md": "a1babf1e42f2ac59cf3fc78452105db281e5bce512cdc00d76b0f4c8fd4e19b7",
+    "explorations/craft.json": "5afcb728cfdf91c6211a091db87716e9fc8c6ac231d7357d9995893dac64cc61"
+  },
+  "sourceBasis": {
+    "mode": "earlier exact reviewed receipts retained; no fresh source retrieval or source-media inspection in this preparation",
+    "receiptIds": [
+      "seq-ifixit-patch",
+      "seq-sca-basting"
+    ],
+    "boundary": "Earlier source reading distinguishes overlap, layers, tension and limited running-stitch uses. These original schematics do not reproduce a source design or prove an attachment. Earlier rights and physical-review limits remain."
+  },
+  "coordinates": {
+    "units": "dimensionless schematic units, not centimetres, stitch spacing or material dimensions",
+    "xDirection": "right in plan view",
+    "yDirection": "down in plan view",
+    "baseRectangle": [
+      0,
+      0,
+      100,
+      100
+    ],
+    "holeRectangle": [
+      40,
+      40,
+      60,
+      60
+    ],
+    "holeArea": 400,
+    "punctureMeaning": "Proposed through-locations only. Dashed joining lines indicate ordering, not needle motion or an over/under thread path. All points are away from boundaries.",
+    "crossSectionMeaning": "Presence of intended layers at location 1; drawn thickness/gap is arbitrary, not material or assembly guidance."
+  },
+  "plans": [
+    {
+      "id": "through-layers",
+      "label": "Full cover; proposed locations meet both layers",
+      "patch": [
+        30,
+        30,
+        70,
+        70
+      ],
+      "punctures": [
+        [
+          35,
+          35
+        ],
+        [
+          50,
+          35
+        ],
+        [
+          65,
+          35
+        ],
+        [
+          65,
+          50
+        ],
+        [
+          65,
+          65
+        ],
+        [
+          50,
+          65
+        ],
+        [
+          35,
+          65
+        ],
+        [
+          35,
+          50
+        ]
+      ],
+      "pathClosed": true,
+      "expectedCoverageArea": 400,
+      "expectedAllLocationsInBaseAndPatch": true,
+      "crossSectionLocation": [
+        35,
+        35
+      ],
+      "crossSectionBasePresent": true,
+      "asset": "assets/patch-plan-through-layers.svg",
+      "assetSha256": "7205a8064aa87fea0c597413e226a36a0480a05605ffeb85cb21c8cc407eb147",
+      "physicalVerdict": null
+    },
+    {
+      "id": "miss-base",
+      "label": "Full cover; proposed locations miss the base",
+      "patch": [
+        30,
+        30,
+        70,
+        70
+      ],
+      "punctures": [
+        [
+          45,
+          45
+        ],
+        [
+          50,
+          45
+        ],
+        [
+          55,
+          45
+        ],
+        [
+          55,
+          50
+        ],
+        [
+          55,
+          55
+        ],
+        [
+          50,
+          55
+        ],
+        [
+          45,
+          55
+        ],
+        [
+          45,
+          50
+        ]
+      ],
+      "pathClosed": true,
+      "expectedCoverageArea": 400,
+      "expectedAllLocationsInBaseAndPatch": false,
+      "crossSectionLocation": [
+        45,
+        45
+      ],
+      "crossSectionBasePresent": false,
+      "asset": "assets/patch-plan-miss-base.svg",
+      "assetSha256": "5423e30331e53f751801d1cc41669a88e5f3e2966f39e5904b128841469f6e6d",
+      "physicalVerdict": null
+    },
+    {
+      "id": "partial-cover",
+      "label": "Incomplete cover; marked locations meet both layers",
+      "patch": [
+        30,
+        30,
+        50,
+        70
+      ],
+      "punctures": [
+        [
+          45,
+          35
+        ],
+        [
+          35,
+          35
+        ],
+        [
+          35,
+          50
+        ],
+        [
+          35,
+          65
+        ],
+        [
+          45,
+          65
+        ]
+      ],
+      "pathClosed": false,
+      "expectedCoverageArea": 200,
+      "expectedAllLocationsInBaseAndPatch": true,
+      "crossSectionLocation": [
+        45,
+        35
+      ],
+      "crossSectionBasePresent": true,
+      "asset": "assets/patch-plan-partial-cover.svg",
+      "assetSha256": "6a1907417a8497d8cdcf44f483daee9274ea53eeb07c033cd57cc0bf683453c6",
+      "physicalVerdict": null
+    }
+  ],
+  "interpretationLimits": [
+    "Coverage is a planar overlap calculation, not a physical repair pass.",
+    "Passing both drawing predicates does not show that thread is fastened, tension is suitable, edges resist fraying or the sample survives use/washing.",
+    "The partial-cover plan deliberately leaves the right half of the hole uncovered and has an open proposed path; it isolates a coverage question, not a single-variable durability experiment.",
+    "The missing-base plan locates every proposed through-location over the hole. Its local cross-section depicts a gap, not fabric magically remaining beneath the hole."
+  ],
+  "physicalRecordTemplate": {
+    "status": "not-performed",
+    "practitionerReviewId": null,
+    "operatorCode": null,
+    "specimenCode": null,
+    "materials": null,
+    "actualDimensionsAndUnits": null,
+    "approvedToolsAndHandling": null,
+    "selectedPlan": null,
+    "actualStitchAndFasteningMethod": null,
+    "actualSpacingAndTension": null,
+    "deviations": null,
+    "inspectionMethodAgreedBeforeMaking": null,
+    "observations": null,
+    "frontBackEdgeAssets": [],
+    "assetPermissions": [],
+    "secondPersonReproduction": null,
+    "accessAlternativeUsed": null,
+    "claimsSupported": null,
+    "claimsStillUnknown": null
+  },
+  "reviewCards": [
+    {
+      "id": "limited-claim",
+      "question": "Choose the actual material/sample and limited attachment claim; exclude safety-critical or durable-repair claims absent appropriate testing.",
+      "requires": "sewing practitioner",
+      "decision": null
+    },
+    {
+      "id": "construction",
+      "question": "Specify and review stitch type, spacing, intended layers, start/end fastening, tension, tools and handling before any practical instructions are authored.",
+      "requires": "sewing practitioner",
+      "decision": null
+    },
+    {
+      "id": "reproduction",
+      "question": "Agree the sample inspection and second-person reproduction protocol, deviations and failure reporting. Distinguish a drawing predicate from a physical observation.",
+      "requires": "sewing practitioner and actual observers",
+      "decision": null
+    },
+    {
+      "id": "access-and-media",
+      "question": "Review non-sewing analysis and optional making access routes; identify exact sample images, descriptions, permissions and release scope.",
+      "requires": "practitioner/access reviewer and actual asset permissions",
+      "decision": null
+    }
+  ],
+  "activities": [
+    {
+      "id": "separate-predicates",
+      "planIds": [
+        "through-layers",
+        "miss-base",
+        "partial-cover"
+      ],
+      "task": "Compare coverage and layer presence separately. State which facts the drawing establishes and which require a specimen."
+    },
+    {
+      "id": "read-hidden-layer",
+      "planIds": [
+        "through-layers",
+        "miss-base",
+        "partial-cover"
+      ],
+      "task": "Use location 1 and the cross-section to explain whether base material is present; do not infer a real finished stitch."
+    },
+    {
+      "id": "ask-for-evidence",
+      "planIds": [
+        "through-layers"
+      ],
+      "task": "Name the additional fastening, material, inspection and reproduction evidence needed before calling this a successful attachment."
+    }
+  ],
+  "authoredLessonsAdded": 0,
+  "acceptedLessonsAdded": 0,
+  "draftSlotsReleased": 0,
+  "rights": "Original diagrams and original prose; no source figures, photographs, handouts or patterns copied. Public release terms are not granted by this packet.",
+  "remaining": "Practical construction/protocol review, real specimen and second-person reproduction, applicable access/learner observations, final artifact review, capacity and release."
+}

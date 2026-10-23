@@ -1,0 +1,35 @@
+{
+  "schemaVersion": 1,
+  "mode": "craft-performance-original-preparation-delta",
+  "predecessorCommit": "e88a1991636e014a60831aa896e6160522d24e5a",
+  "replacements": [],
+  "additions": [
+    "docs/pilots/sequences/preparation/patch-plans-20261023.json",
+    "docs/pilots/sequences/preparation/patch-plans-20261023.md",
+    "docs/pilots/sequences/preparation/review-patch-plans-20261023.md",
+    "docs/pilots/sequences/preparation/assets/patch-plan-through-layers.svg",
+    "docs/pilots/sequences/preparation/assets/patch-plan-miss-base.svg",
+    "docs/pilots/sequences/preparation/assets/patch-plan-partial-cover.svg",
+    "docs/pilots/sequences/preparation/staging-scores-20261023.json",
+    "docs/pilots/sequences/preparation/staging-scores-20261023.md",
+    "docs/pilots/sequences/preparation/review-staging-scores-20261023.md",
+    "docs/pilots/sequences/preparation/assets/staging-score-facing.svg",
+    "docs/pilots/sequences/preparation/assets/staging-score-offset.svg",
+    "docs/pilots/sequences/preparation/check-studio-preparation-20261023.py",
+    "docs/integration/studio-preparation.json",
+    "docs/integration/studio-preparation.md",
+    "docs/verification/universal-studio-preparation.md"
+  ],
+  "manualReconciliation": [
+    "MASTER_PLAN.md",
+    "docs/master-plan-execution.md",
+    "docs/master-plan-handoff.md",
+    "docs/pilots/sequences/preparation/README.md"
+  ],
+  "manualPreimages": {
+    "MASTER_PLAN.md": "18ad8b31e9bb846fb919096528cb58ba99045d3d0548d8c070fb54ed4d76a588",
+    "docs/master-plan-execution.md": "783cbde523b0236ec918ad173137a2cd1fab335aca3d87c9629c033e52ec8b13",
+    "docs/master-plan-handoff.md": "9be2ff6d60da62bdea22208c0e1ea272f4bbb146e367fb7a037af1b6d820141e",
+    "docs/pilots/sequences/preparation/README.md": "c394c96ac11031787c1a2ced30698de2ff219ede06735df960b24137f26ab71a"
+  }
+}

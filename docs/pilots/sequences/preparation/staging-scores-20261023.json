@@ -1,0 +1,269 @@
+{
+  "schemaVersion": 1,
+  "id": "p08-staging-score-preparation",
+  "version": "0.1.0",
+  "updatedOn": "2026-10-23",
+  "predecessorCommit": "e88a1991636e014a60831aa896e6160522d24e5a",
+  "status": "prepared-for-performer-review",
+  "scope": "Two complete original proposed scores and empty observation records; no performance, authored lesson or audience outcome.",
+  "existingBindings": {
+    "docs/pilots/sequences/sources.json": "aa728ce4083c7d242484c8f998168f5e61e03e30f312ff12b0bd4e02736b18c6",
+    "docs/pilots/sequences/queue.json": "2ad2477129d1d6aa871a07105c7a209df0ae66eefe452067f9e4acbac97ebcc4",
+    "docs/pilots/sequences/README.md": "589316cf449084627cc28201c9a31c50478c613592f9548d5e6432042197015b",
+    "docs/coverage/registry.json": "8adc6ab70344ff5605f3bc5c6925827603d0a9102799781049c3749137fae2c4",
+    "docs/pilots/sequences/p08-02-staging.md": "97a174d60de8df5a666147e19e8737e8aeab79e5084682a43723b9b8b0ec0ea2",
+    "docs/pilots/sequences/p08-03-kutiyattam.md": "2099548aeb116cb44129ca654a6f45aaa4696bc5fc23e28b4c43bd52bd4d8ebb",
+    "docs/pilots/sequences/review-performance.md": "3a483f887dc3b2df4e97f956991f40bac9e25c07cc1f023615db55f70478abf8",
+    "explorations/performance.json": "a1fabdc2445bf0a3621e9a8f11ec4592afe91a9c98f41d03bf511e76fbb5647e"
+  },
+  "sourceBasis": {
+    "mode": "earlier exact reviewed receipts retained; no fresh source retrieval, performance or source-media inspection",
+    "receiptIds": [
+      "seq-rsc-performing",
+      "seq-rsc-kyle"
+    ],
+    "boundary": "The earlier RSC teaching timeout remains a stop, not fresh evidence. The production-caption conflict remains unresolved. This original exchange and these maps are not a reconstruction of Measure for Measure or the Kyle production."
+  },
+  "coordinates": {
+    "units": "dimensionless stage-plan units; physical scale/layout must be reviewed for the actual space and participants",
+    "origin": "fixed envelope centre (0,0)",
+    "xDirection": "right on the overhead diagram, as seen from the audience reference",
+    "yDirection": "away from audience",
+    "audienceReference": [
+      0,
+      -3
+    ],
+    "orientationConvention": "0 degrees points +x; 90 +y; 180 -x; 270 toward -y/audience. Arrow is a proposed orientation reference, not required gaze/eye contact or a personality signal."
+  },
+  "commonPlan": {
+    "prop": "one unmarked envelope, stationary at (0,0); no handling required",
+    "movementDuringScoredInterval": "none prescribed; any actual movement/adaptation is recorded",
+    "events": [
+      {
+        "id": "ready",
+        "targetSeconds": 0,
+        "kind": "setup",
+        "speaker": null,
+        "text": null
+      },
+      {
+        "id": "line-1",
+        "targetSeconds": 2,
+        "kind": "line-onset",
+        "speaker": "A",
+        "text": "Is this for me?"
+      },
+      {
+        "id": "line-2",
+        "targetSeconds": 6,
+        "kind": "line-onset",
+        "speaker": "B",
+        "text": "I left it here."
+      },
+      {
+        "id": "line-3",
+        "targetSeconds": 10,
+        "kind": "line-onset",
+        "speaker": "A",
+        "text": "Then I'll wait."
+      },
+      {
+        "id": "end",
+        "targetSeconds": 14,
+        "kind": "end",
+        "speaker": null,
+        "text": null
+      }
+    ],
+    "plannedControls": [
+      "same original words and speaker order",
+      "same proposed onset targets and end target",
+      "same prop and location"
+    ],
+    "changedFactors": [
+      "A position",
+      "A orientation",
+      "B orientation"
+    ],
+    "notControlled": [
+      "actual speech timing, pace, volume, articulation or dynamics",
+      "performer choices, comfort and adaptations",
+      "audience viewpoint, familiarity, access mode and attention",
+      "order and carryover effects; counterbalancing alone does not remove them"
+    ],
+    "boundary": "Targets are a rehearsal proposal. No strict timing or posture is compulsory before performer/access review; no single-variable causal effect is claimed."
+  },
+  "scores": [
+    {
+      "id": "facing",
+      "label": "Facing across the envelope",
+      "performers": {
+        "A": {
+          "position": [
+            -1,
+            0
+          ],
+          "orientationDegrees": 0
+        },
+        "B": {
+          "position": [
+            1,
+            0
+          ],
+          "orientationDegrees": 180
+        }
+      },
+      "asset": "assets/staging-score-facing.svg",
+      "assetSha256": "a7d03d4ddd25a169dd05ef89c3b53a6826ca8f77ddc696bafd4cac6c94464b65",
+      "eventIds": [
+        "ready",
+        "line-1",
+        "line-2",
+        "line-3",
+        "end"
+      ],
+      "actualPerformanceId": null
+    },
+    {
+      "id": "offset",
+      "label": "Offset positions; both oriented toward audience",
+      "performers": {
+        "A": {
+          "position": [
+            -1,
+            1
+          ],
+          "orientationDegrees": 270
+        },
+        "B": {
+          "position": [
+            1,
+            0
+          ],
+          "orientationDegrees": 270
+        }
+      },
+      "asset": "assets/staging-score-offset.svg",
+      "assetSha256": "22dec25fbeead75b53c9164d9ca51b612936a46677d8d8e06b1faa5bef606f56",
+      "eventIds": [
+        "ready",
+        "line-1",
+        "line-2",
+        "line-3",
+        "end"
+      ],
+      "actualPerformanceId": null
+    }
+  ],
+  "sessionPlan": {
+    "status": "not-performed",
+    "sequenceOptions": [
+      [
+        "facing",
+        "offset"
+      ],
+      [
+        "offset",
+        "facing"
+      ]
+    ],
+    "assignment": null,
+    "promptsBefore": [
+      "Record a prediction or unknown response; identify the plan feature supporting it."
+    ],
+    "promptsAfter": [
+      "What did you first notice? Separate your report from an event description.",
+      "What observable evidence supports your interpretation? Could another interpretation fit?",
+      "What was unclear, unavailable or affected by the access mode?"
+    ],
+    "limits": "A small comparison yields situated reports, not population estimates, isolated causal effects or universal gesture meanings."
+  },
+  "performanceRecordTemplate": {
+    "status": "not-performed",
+    "sessionCode": null,
+    "scoreId": null,
+    "performerCodes": [],
+    "actualPlaceAndDate": null,
+    "reviewedSpaceAndAccessPlan": null,
+    "actualEventTimes": [],
+    "deviations": null,
+    "performerIntentionReport": null,
+    "mediaAssets": [],
+    "transcriptAndDescriptionReview": null,
+    "permissionRecords": [],
+    "intendedDistribution": null
+  },
+  "observerRecordTemplate": {
+    "status": "not-collected",
+    "sessionCode": null,
+    "observerCode": null,
+    "presentationOrder": null,
+    "viewpoint": null,
+    "accessMode": null,
+    "prediction": null,
+    "firstNoticedReport": null,
+    "eventDescription": null,
+    "interpretation": null,
+    "supportingEventLocator": null,
+    "alternativeOrUnknown": null,
+    "limitationsReported": null,
+    "permissionRecord": null
+  },
+  "reviewCards": [
+    {
+      "id": "complete-score",
+      "question": "Review both original scores, targets, spatial scale, participant comfort and actual adaptations; retain deviations rather than claiming perfect control.",
+      "requires": "performer or theatre educator",
+      "decision": null
+    },
+    {
+      "id": "observation-task",
+      "question": "Review neutral prompts, prediction timing, order/viewpoint/carryover records and analysis that permits disagreement or unknown.",
+      "requires": "theatre educator and actual observers",
+      "decision": null
+    },
+    {
+      "id": "access-and-transcript",
+      "question": "Review text/map analysis and actual performance access arrangements, captions, transcript and descriptions without claiming equivalent perception or acting competence.",
+      "requires": "performer/access reviewer with actual session evidence",
+      "decision": null
+    },
+    {
+      "id": "participation-and-assets",
+      "question": "Establish participation and exact recording, transcript, description, storage and distribution permissions before collecting or publishing session media.",
+      "requires": "actual participants and relevant rights decisions",
+      "decision": null
+    }
+  ],
+  "activities": [
+    {
+      "id": "read-plan",
+      "scoreIds": [
+        "facing",
+        "offset"
+      ],
+      "task": "Identify common proposed controls and the three changed spatial factors; distinguish targets from measured events."
+    },
+    {
+      "id": "locate-missing-link",
+      "scoreIds": [
+        "facing",
+        "offset"
+      ],
+      "task": "State what actual event and observer evidence would be needed to test a prediction. Leave interpretation unknown until that evidence exists."
+    },
+    {
+      "id": "compare-reports",
+      "scoreIds": [
+        "facing",
+        "offset"
+      ],
+      "task": "Only after consented observations exist, compare evidence locators, disagreement and access/order limits without forcing a single emotional reading."
+    }
+  ],
+  "authoredLessonsAdded": 0,
+  "acceptedLessonsAdded": 0,
+  "draftSlotsReleased": 0,
+  "rights": "Original three-line exchange and original maps only. No RSC text/critic quotation/photo/prompt book/performance media is bundled. Future performance/recording terms remain ungranted.",
+  "remaining": "Performer/educator review, actual performances and participant observations, applicable access review, exact media permissions, final artifact review, capacity and release."
+}
