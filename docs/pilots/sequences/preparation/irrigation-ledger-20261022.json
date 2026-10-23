@@ -1,0 +1,473 @@
+{
+  "schemaVersion": 1,
+  "id": "p05-irrigation-ledger-preparation",
+  "version": "0.1.0",
+  "status": "prepared-for-qualified-review",
+  "updatedOn": "2026-10-22",
+  "predecessorCommit": "cd676a11b5fb12b2d91ae707e703fc2245740bc2",
+  "scope": "Original fictional arithmetic and review inputs for P05-L02, not an authored lesson or operational irrigation recommendation.",
+  "existingBindings": {
+    "docs/pilots/sequences/p05-02-irrigation.md": "bb68e98ec05fd1150892e9abb00aaeee8720afb40e18b40b5c1e9762c8ba1370",
+    "docs/pilots/sequences/p05-03-koraput.md": "236159dbcd3962657f0cec7a82864e8b611b0a76e97d38f7e56f53d5888653cc",
+    "docs/pilots/sequences/research/irrigation-accounting.json": "abd1554dc7e5f70e3fb256c35c30d8e49eda340f5581b42ba3e17031ac0bcd51",
+    "docs/pilots/sequences/research/irrigation-accounting.py": "bef282ee754742ba5358ff1759d2972289c250e2dfb2c2b280dbc5692be5218d",
+    "docs/pilots/sequences/sources.json": "aa728ce4083c7d242484c8f998168f5e61e03e30f312ff12b0bd4e02736b18c6",
+    "docs/pilots/sequences/queue.json": "2ad2477129d1d6aa871a07105c7a209df0ae66eefe452067f9e4acbac97ebcc4",
+    "docs/pilots/sequences/README.md": "589316cf449084627cc28201c9a31c50478c613592f9548d5e6432042197015b",
+    "explorations/agriculture.json": "33abb92677e6e7698548215f4d90ee6f5682153372d45a6f24f88b4d9d777da6",
+    "docs/coverage/registry.json": "8adc6ab70344ff5605f3bc5c6925827603d0a9102799781049c3749137fae2c4"
+  },
+  "counting": {
+    "authoredLessonsAdded": 0,
+    "acceptedLessonsAdded": 0,
+    "canonicalSourcesAdded": 0,
+    "draftSlotsReleased": 0
+  },
+  "localEvidenceDirectory": "/tmp/atlas-agriculture-preparation-20261022",
+  "sources": [
+    {
+      "id": "umn",
+      "url": "https://extension.umn.edu/natural-resources/conservation/agricultural-soil-and-water/irrigation/irrigation-scheduling-checkbook-method",
+      "finalUrl": "https://extension.umn.edu/natural-resources/conservation/agricultural-soil-and-water/irrigation/irrigation-scheduling-checkbook-method",
+      "file": "umn.html",
+      "bytes": 108524,
+      "sha256": "9a21608d06572f2d5f184301c1f8c682f0c1470e3aaaae9506c87ef47d71007a",
+      "contentType": "text/html; charset=utf-8",
+      "status": "downloaded",
+      "readOn": "2026-10-22",
+      "readScope": "Selected HTML prose/headings on field observations, deficit balance, delivery, roots/stage and crop-use example; no linked spreadsheet, full PDF, image-table or physical protocol validation."
+    },
+    {
+      "id": "ndsu",
+      "url": "https://www.ndsu.edu/agriculture/extension/publications/irrigation-scheduling-checkbook-method",
+      "finalUrl": "https://www.ndsu.edu/agriculture/extension/publications/irrigation-scheduling-checkbook-method",
+      "file": "ndsu.html",
+      "bytes": 84132,
+      "sha256": "03510bda2bb9e2365d8b31e3d2b49dc4f88876371ae19cd68a4ca738a742489e",
+      "contentType": "text/html; charset=utf-8",
+      "status": "downloaded",
+      "readOn": "2026-10-22",
+      "readScope": "Selected HTML prose/headings on field observations, deficit balance, delivery, roots/stage and crop-use example; no linked spreadsheet, full PDF, image-table or physical protocol validation."
+    }
+  ],
+  "sourceNotes": [
+    {
+      "id": "umn-scheduling",
+      "sourceId": "umn",
+      "locator": "Checkbook scheduling; Excess water, discrepancies and interruptions; When to start irrigating",
+      "note": "UMN requires field observations, comparison with estimated deficits and attention to forecasts and crop stage. Field checks may revise the estimate. Its excess-water discussion includes temporarily available surplus during drainage; immediate removal in this toy ledger is a simplification.",
+      "noteSha256": "9aaddbea338f973a44a3b3d5cbfb704e652866d2ee0f3cf67ba3109975892cf0"
+    },
+    {
+      "id": "umn-inputs",
+      "sourceId": "umn",
+      "locator": "Measuring soil water inputs; Irrigation system pumping capacity",
+      "note": "The page distinguishes field-gauge measurements from estimates using pumping capacity, operating time and efficiency. A quantity already measured at the input boundary must not receive the same loss adjustment again.",
+      "noteSha256": "d916d6cbd529319b38eee75d7d0b142362a09136454bcded55e47a83e123224d"
+    },
+    {
+      "id": "ndsu-context",
+      "sourceId": "ndsu",
+      "locator": "AE792 heading; The Root Zone, Table 2; Crop Water Use; Daily Crop Water Use Estimates",
+      "note": "AE792 is marked reviewed February 2024. Corn management depth is 36 inches, distinct from full rooting depth. Its North Dakota example estimates 0.25 inch at 85°F in week nine; stage can matter more than calendar week. Repeating that number below is a fictional constant, not a three-day forecast.",
+      "noteSha256": "dc6d859f61b948a21dc3af6782ab86cb84afbead770c4769a6a04380939bb886"
+    },
+    {
+      "id": "ndsu-delivery",
+      "sourceId": "ndsu",
+      "locator": "Definitions; Water Application Efficiency; Soil Water Balance",
+      "note": "Definitions describe stored-water efficiency, while the application section discusses infiltration and evaporation/wind loss. The source also warns that the last irrigated sector may receive water days later. The new model therefore names its boundary delivery fraction explicitly and compares sector deficits rather than treating a field average as every location.",
+      "noteSha256": "5c3afd884f582d1405ecf46c40d382861ce2f34a8c9fd6fe51bff70473ea2d43"
+    }
+  ],
+  "model": {
+    "units": {
+      "waterDepth": "inch",
+      "soilDepth": "inch",
+      "time": "hour",
+      "grossDeliveryRate": "inch of field-equivalent water per hour"
+    },
+    "managementDepth": "36",
+    "assumedCapacityPerDepth": "0.09",
+    "capacity": "3.24",
+    "boundaryDeliveryFraction": "0.80",
+    "grossDeliveryRate": "0.025",
+    "maximumHoursPerDay": "24",
+    "millimetresPerInch": "25.4",
+    "inputProvenance": {
+      "capacity": "fictional uniform profile assumption, retained from the earlier preparation",
+      "delivery": "original hypothetical constant rate and boundary fraction; not measured application efficiency",
+      "rain": "fictional forecasts or fictional observations, never actual weather",
+      "cropUse": "source-example number repeated as a fictional constant",
+      "fieldCheck": "fictional revised estimate with no actual measurement protocol performed"
+    },
+    "convention": "G is gross delivered water. I=fG crosses the toy input boundary; L=G-I is lost before that boundary. This fraction excludes the separate surplus outflow Q. It is not the source definition of final stored-water application efficiency. Boundary-gauge I is used directly, never multiplied by f again.",
+    "equations": [
+      "raw deficit = starting deficit + crop use - rain - incoming irrigation",
+      "surplus Q = max(0, -raw deficit), only within the toy daily netting convention",
+      "ending deficit = raw deficit + Q, provided raw deficit <= capacity",
+      "available storage = capacity - deficit",
+      "storage end = storage start + rain + gross irrigation - delivery loss - crop use - Q",
+      "required operating hours = gross irrigation / gross delivery rate"
+    ],
+    "limits": [
+      "Fixed profile and illustrative wilting baseline; no capillary rise, root growth, salinity or spatial soil variation.",
+      "Daily netting does not resolve order within a day, peak stress or transient drainage. Instant surplus removal is explicitly artificial.",
+      "An end deficit greater than capacity ends the model with no valid final storage or continuing unstressed-use trajectory.",
+      "Unknown rain does not become zero. Forecasts remain separate from observation records.",
+      "Equal final deficits do not establish equal paths or equally acceptable decisions. No trigger, crop-loss function or optimal schedule is selected.",
+      "The uniform field calculation is only an average toy budget. The two-sector counterexample exposes why that average cannot represent the last sector."
+    ]
+  },
+  "sequences": [
+    {
+      "id": "forecast-early",
+      "initialDeficit": "1.00",
+      "rainProvenance": "fictional-forecast",
+      "actionProvenance": "fictional-schedule",
+      "days": [
+        {
+          "day": 1,
+          "rain": "0.00",
+          "cropUse": "0.25",
+          "grossIrrigation": "0.50",
+          "expectedEndDeficit": "0.85"
+        },
+        {
+          "day": 2,
+          "rain": "0.80",
+          "cropUse": "0.25",
+          "grossIrrigation": "0.00",
+          "expectedEndDeficit": "0.30"
+        },
+        {
+          "day": 3,
+          "rain": "0.00",
+          "cropUse": "0.25",
+          "grossIrrigation": "0.00",
+          "expectedEndDeficit": "0.55"
+        }
+      ],
+      "expectedMaxDailyEndDeficit": "0.85",
+      "expectedTotalGross": "0.50",
+      "expectedTotalDeliveryLoss": "0.10",
+      "expectedTotalCropUse": "0.75"
+    },
+    {
+      "id": "forecast-late",
+      "initialDeficit": "1.00",
+      "rainProvenance": "fictional-forecast",
+      "actionProvenance": "fictional-schedule",
+      "days": [
+        {
+          "day": 1,
+          "rain": "0.00",
+          "cropUse": "0.25",
+          "grossIrrigation": "0.00",
+          "expectedEndDeficit": "1.25"
+        },
+        {
+          "day": 2,
+          "rain": "0.80",
+          "cropUse": "0.25",
+          "grossIrrigation": "0.00",
+          "expectedEndDeficit": "0.70"
+        },
+        {
+          "day": 3,
+          "rain": "0.00",
+          "cropUse": "0.25",
+          "grossIrrigation": "0.50",
+          "expectedEndDeficit": "0.55"
+        }
+      ],
+      "expectedMaxDailyEndDeficit": "1.25",
+      "expectedTotalGross": "0.50",
+      "expectedTotalDeliveryLoss": "0.10",
+      "expectedTotalCropUse": "0.75"
+    },
+    {
+      "id": "observed-early",
+      "initialDeficit": "1.00",
+      "rainProvenance": "fictional-observation",
+      "actionProvenance": "fictional-schedule",
+      "days": [
+        {
+          "day": 1,
+          "rain": "0.00",
+          "cropUse": "0.25",
+          "grossIrrigation": "0.50",
+          "expectedEndDeficit": "0.85"
+        },
+        {
+          "day": 2,
+          "rain": "0.10",
+          "cropUse": "0.25",
+          "grossIrrigation": "0.00",
+          "expectedEndDeficit": "1.00"
+        },
+        {
+          "day": 3,
+          "rain": "0.00",
+          "cropUse": "0.25",
+          "grossIrrigation": "0.00",
+          "expectedEndDeficit": "1.25"
+        }
+      ],
+      "expectedMaxDailyEndDeficit": "1.25",
+      "expectedTotalGross": "0.50",
+      "expectedTotalDeliveryLoss": "0.10",
+      "expectedTotalCropUse": "0.75"
+    },
+    {
+      "id": "observed-late",
+      "initialDeficit": "1.00",
+      "rainProvenance": "fictional-observation",
+      "actionProvenance": "fictional-schedule",
+      "days": [
+        {
+          "day": 1,
+          "rain": "0.00",
+          "cropUse": "0.25",
+          "grossIrrigation": "0.00",
+          "expectedEndDeficit": "1.25"
+        },
+        {
+          "day": 2,
+          "rain": "0.10",
+          "cropUse": "0.25",
+          "grossIrrigation": "0.00",
+          "expectedEndDeficit": "1.40"
+        },
+        {
+          "day": 3,
+          "rain": "0.00",
+          "cropUse": "0.25",
+          "grossIrrigation": "0.50",
+          "expectedEndDeficit": "1.25"
+        }
+      ],
+      "expectedMaxDailyEndDeficit": "1.40",
+      "expectedTotalGross": "0.50",
+      "expectedTotalDeliveryLoss": "0.10",
+      "expectedTotalCropUse": "0.75"
+    }
+  ],
+  "deliveryCases": [
+    {
+      "id": "twenty-hours",
+      "requestedGross": "0.50",
+      "expectedRequiredHours": "20",
+      "expectedStatus": "within-hour-budget",
+      "expectedIncoming": "0.40"
+    },
+    {
+      "id": "full-day-boundary",
+      "requestedGross": "0.60",
+      "expectedRequiredHours": "24",
+      "expectedStatus": "within-hour-budget",
+      "expectedIncoming": "0.48"
+    },
+    {
+      "id": "over-budget",
+      "requestedGross": "0.75",
+      "expectedRequiredHours": "30",
+      "expectedStatus": "infeasible-in-one-day",
+      "expectedIncoming": null,
+      "uncommittedMaximumGross": "0.60",
+      "boundary": "Do not silently deliver the requested amount, shorten the run or treat the maximum as an approved alternative."
+    }
+  ],
+  "gaugeCase": {
+    "id": "already-net-input",
+    "initialDeficit": "1.00",
+    "cropUse": "0.25",
+    "rain": "0.10",
+    "measuredIncomingIrrigation": "0.40",
+    "expectedEndDeficit": "0.75",
+    "incorrectSecondFractionResult": "0.83",
+    "provenance": "Fictional separated incoming-irrigation measurement; actual gauges/protocol and rain separation require field review."
+  },
+  "surplusCase": {
+    "id": "delivery-loss-and-surplus",
+    "initialDeficit": "0.20",
+    "cropUse": "0.10",
+    "rain": "1.00",
+    "grossIrrigation": "0.50",
+    "expectedDeliveryLoss": "0.10",
+    "expectedRawDeficit": "-1.10",
+    "expectedSurplus": "1.10",
+    "expectedEndDeficit": "0.00",
+    "expectedFinalStorage": "3.24",
+    "boundary": "Surplus includes all netted inputs; it is not a second deduction of the 0.10 delivery loss. No empirical partition between drainage/runoff is inferred."
+  },
+  "rangeCase": {
+    "id": "outside-available-range",
+    "initialDeficit": "3.10",
+    "cropUse": "0.25",
+    "rain": "0.00",
+    "grossIrrigation": "0.00",
+    "expectedRawDeficit": "3.35",
+    "expectedStatus": "outside-assumed-range",
+    "expectedEndDeficit": null,
+    "expectedFinalStorage": null
+  },
+  "missingCase": {
+    "id": "unobserved-rain",
+    "initialDeficit": "1.00",
+    "cropUse": "0.25",
+    "rain": null,
+    "grossIrrigation": "0.00",
+    "expectedStatus": "unknown-input",
+    "expectedEndDeficit": null,
+    "boundary": "Retain an incomplete row; obtain evidence or create an explicitly hypothetical branch. Do not turn missing into dry weather."
+  },
+  "correctionCase": {
+    "id": "field-estimate-reconciliation",
+    "basedOnSequence": "observed-late",
+    "afterDay": 2,
+    "priorEndDeficit": "1.40",
+    "revisedEstimate": "1.10",
+    "deficitAdjustment": "-0.30",
+    "storageEstimateAdjustment": "0.30",
+    "rainRecordPreserved": "0.10",
+    "nextDay": {
+      "rain": "0.00",
+      "cropUse": "0.25",
+      "grossIrrigation": "0.50",
+      "expectedEndDeficit": "0.95"
+    },
+    "reason": "A fictional field check disagrees with the ledger. The original estimate and input history remain visible; the revised branch records an explicit estimation adjustment.",
+    "boundary": "The +0.30 change in estimated storage is reconciliation of knowledge, not irrigation, rainfall or an observed water flux. No cause for the discrepancy is established."
+  },
+  "sectorCase": {
+    "id": "last-sector-versus-average",
+    "sectorAreaFractions": {
+      "A": "0.50",
+      "B": "0.50"
+    },
+    "initialDeficitEach": "1.00",
+    "days": [
+      {
+        "day": 1,
+        "rainEach": "0.00",
+        "cropUseEach": "0.25",
+        "grossBySector": {
+          "A": "0.50",
+          "B": "0.00"
+        },
+        "expectedDeficitBySector": {
+          "A": "0.85",
+          "B": "1.25"
+        },
+        "expectedFieldEquivalentGross": "0.25",
+        "expectedOperatingHours": "10",
+        "expectedMeanEndDeficit": "1.05"
+      },
+      {
+        "day": 2,
+        "rainEach": "0.00",
+        "cropUseEach": "0.25",
+        "grossBySector": {
+          "A": "0.00",
+          "B": "0.50"
+        },
+        "expectedDeficitBySector": {
+          "A": "1.10",
+          "B": "1.10"
+        },
+        "expectedFieldEquivalentGross": "0.25",
+        "expectedOperatingHours": "10",
+        "expectedMeanEndDeficit": "1.10"
+      }
+    ],
+    "boundary": "Local-sector depths must be area-weighted before applying the field-equivalent pumping rate. Daily-end values do not establish within-day stress, uniformity or real pivot hydraulics."
+  },
+  "reviewCards": [
+    {
+      "id": "crop-stage-profile",
+      "question": "Is the fixed crop/stage/profile envelope defensible for a teaching case, and what evidence would justify a decision threshold?",
+      "requires": "qualified agronomist",
+      "decision": null
+    },
+    {
+      "id": "water-boundary",
+      "question": "Check the explicit pre-boundary loss and separate surplus convention against the intended field quantities. What measured protocol would distinguish rain, incoming irrigation and stored water?",
+      "requires": "qualified agronomist or irrigation specialist",
+      "decision": null
+    },
+    {
+      "id": "time-and-space",
+      "question": "Review the rate/hours and sector example; identify omitted coverage time, nonuniformity and within-day information before approving any timing rubric.",
+      "requires": "qualified irrigation specialist",
+      "decision": null
+    },
+    {
+      "id": "forecast-and-correction",
+      "question": "Review the forecast/observation split and the basis for replacing a deficit estimate. What uncertainty and documentation should accompany a field check?",
+      "requires": "qualified agronomist",
+      "decision": null
+    },
+    {
+      "id": "assessment",
+      "question": "Approve a rubric that assesses evidence and conservation while withholding a real-world best-action verdict until the missing field conditions are supplied.",
+      "requires": "qualified domain reviewer and final artifact reviewer",
+      "decision": null
+    }
+  ],
+  "activities": [
+    {
+      "id": "compare-paths",
+      "caseIds": [
+        "forecast-early",
+        "forecast-late",
+        "observed-early",
+        "observed-late"
+      ],
+      "task": "Compare final deficits and daily paths. Identify which data are forecasts, observations or assumptions, and why neither path alone establishes the better field action."
+    },
+    {
+      "id": "audit-delivery",
+      "caseIds": [
+        "twenty-hours",
+        "full-day-boundary",
+        "over-budget",
+        "already-net-input",
+        "delivery-loss-and-surplus"
+      ],
+      "task": "Check elapsed delivery time, locate the boundary, and account for every loss once. Explain why an infeasible request is not a delivered observation."
+    },
+    {
+      "id": "preserve-evidence",
+      "caseIds": [
+        "unobserved-rain",
+        "field-estimate-reconciliation",
+        "outside-available-range"
+      ],
+      "task": "Keep missing, revised and out-of-range states distinct. Reconstruct both estimation histories without rewriting rain."
+    },
+    {
+      "id": "find-hidden-location",
+      "caseIds": [
+        "last-sector-versus-average"
+      ],
+      "task": "Use area weights to reconstruct the average, then identify which daily-end location information that average conceals."
+    }
+  ],
+  "adjacentKoraputCheck": {
+    "lesson": "P05-L03",
+    "url": "https://www.mssrf.org/stories-of-change/seed-keepers-odishas-community-seed-banks",
+    "readOn": "2026-10-22",
+    "webToolBodyRead": "Feature body, returned lines 65–87, before the direct capture attempt. Opening and closing still use Nuaguda and Kumbharaguda. No location correction was found in that inspected body.",
+    "rawCaptureAttempt": {
+      "id": "mssrf",
+      "url": "https://www.mssrf.org/stories-of-change/seed-keepers-odishas-community-seed-banks",
+      "status": "stopped",
+      "error": "HTTP Error 307: Temporary Redirect"
+    },
+    "status": "location-gate-still-open",
+    "limits": "The direct request stopped at HTTP 307 and was not retried or recovered through another host. No raw snapshot or content hash exists for that request. Search leads to other accounts were not inspected or adopted; no contemporary substitute, participant permission or independent outcome evaluation is supplied."
+  },
+  "rights": "Original numerical cases and original bounded commentary only; source tables, figures, photos, worksheets and participant quotations are not selected for redistribution. No new publication rights decision.",
+  "preparationStatus": "Multiday arithmetic, finite delivery, missing evidence, reconciliation and a spatial counterexample now have concrete review inputs. Final agronomic/rubric, field, learner/access, capacity and release gates remain open."
+}

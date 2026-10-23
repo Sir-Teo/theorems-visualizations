@@ -1,0 +1,27 @@
+{
+  "schemaVersion": 1,
+  "mode": "agriculture-multiday-preparation-delta",
+  "predecessorCommit": "cd676a11b5fb12b2d91ae707e703fc2245740bc2",
+  "replacements": [],
+  "additions": [
+    "docs/pilots/sequences/preparation/irrigation-ledger-20261022.json",
+    "docs/pilots/sequences/preparation/irrigation-ledger-20261022.md",
+    "docs/pilots/sequences/preparation/check-irrigation-ledger-20261022.py",
+    "docs/pilots/sequences/preparation/review-irrigation-ledger-20261022.md",
+    "docs/integration/irrigation-ledger.json",
+    "docs/integration/irrigation-ledger.md",
+    "docs/verification/universal-irrigation-ledger.md"
+  ],
+  "manualReconciliation": [
+    "MASTER_PLAN.md",
+    "docs/master-plan-execution.md",
+    "docs/master-plan-handoff.md",
+    "docs/pilots/sequences/preparation/README.md"
+  ],
+  "manualPreimages": {
+    "MASTER_PLAN.md": "ea4f81877898d2728a00bf3f0aa1565e215725d9ac9741712afd48aa50c54c71",
+    "docs/master-plan-execution.md": "b7f657a9265dbf0837e4fbfad960866773f95d6f7b59f6baf497225c23d85ac0",
+    "docs/master-plan-handoff.md": "ccc5671e0ff0f4ba96f746eec3f3fac3ffc848e9fed2aa5bc68962bb06c62b9a",
+    "docs/pilots/sequences/preparation/README.md": "13ee48247bfc2a8ed827c956cea3f81ac540de68f593bae71eb1ae60e9ba6091"
+  }
+}
