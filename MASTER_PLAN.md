@@ -240,6 +240,8 @@ The first [U5 source stewardship queue](stewardship/README.md) now tracks four u
 
 The [classification-reference adapter](coverage-references/README.md) now implements scheme/variant/edition identity for the existing 35 outline, seven archived schedule and eight historical local research rows. Classification and subject-heading references remain separate; zero real heading/catalog records are imported. Canonical mappings and all eleven retained gates remain unchanged.
 
+A subsequent [catalog-observation packet](docs/coverage/research/catalog-record-20261023/README.md) tests the library card against three exact work/edition records. It preserves missing fields and unverified authority/holdings instead of merging records. The single-record controlled-heading and shelf-context example remains open; no canonical import or lesson is added.
+
 ### 9.1 Eight pilot briefs for U1
 
 | Pilot | Bounded first exploration | Capability tested |

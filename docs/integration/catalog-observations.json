@@ -1,0 +1,48 @@
+{
+  "schemaVersion": 1,
+  "baseCommit": "895ff198b19e317a3502d49e2584190ff20aada0",
+  "scope": "Three captured catalog observations and offline selection checker; no authority/holdings validation or canonical import.",
+  "additions": [
+    {
+      "path": "docs/coverage/research/catalog-record-20261023/packet.json",
+      "sha256": "a1ae1bc30ed7825626c7a114b9b1ff44c7526faf2fcdeead86ee14df69c480c7"
+    },
+    {
+      "path": "docs/coverage/research/catalog-record-20261023/README.md",
+      "sha256": "550cf65a3ca0b1b5e9d1502a600617da98a7e43755857998f1536100a102717b"
+    },
+    {
+      "path": "scripts/catalog-observations.mjs",
+      "sha256": "3d085167765916e71a9f15fc8839bb1340d9e10ec248015ebb6de1aefcaa7f64"
+    },
+    {
+      "path": "tests/catalog-observations.test.mjs",
+      "sha256": "d0eb676db54962771b66f5405f570b31a5bf97e115aa09d4ae5ca3a952c94c39"
+    },
+    {
+      "path": "docs/verification/universal-catalog-observations.md",
+      "sha256": "71ae5d5ed3586134975c32d09325bba96643108d00a6a187ab8b6719b1e3e8fb"
+    }
+  ],
+  "manualReconciliations": [
+    {
+      "path": "MASTER_PLAN.md",
+      "baseSha256": "618c753a34529e6d60825945974461316ce38e98ae9f457095f2b329f18f6558",
+      "sourceSha256": "2c253d3662af94db7a82bc451ef3d51bd27777f203e9c6c4e66797b7d5b3336b"
+    },
+    {
+      "path": "docs/master-plan-execution.md",
+      "baseSha256": "43b5383944b183d33351d3d4e8856b9c07fbc031577395532198100a6718eacc",
+      "sourceSha256": "78b7cc4e03f99431bf40b47a042a99bca84404cb27f2bdd8977d1102d3266120"
+    },
+    {
+      "path": "docs/master-plan-handoff.md",
+      "baseSha256": "37b88961888d1a65529871f52f094df7368c46ba737e36787c39c5066ce99002",
+      "sourceSha256": "006621f1f16d109547d687085a530912b84a69733c88c46cbcb82d69f9dad07e"
+    }
+  ],
+  "packagingFiles": [
+    "docs/integration/catalog-observations.md",
+    "docs/integration/catalog-observations.json"
+  ]
+}

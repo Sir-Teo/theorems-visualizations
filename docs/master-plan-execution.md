@@ -58,6 +58,8 @@ The [source stewardship queue](../stewardship/README.md) now supplies the first 
 
 The [classification-reference adapter](../coverage-references/README.md) implements the first platform step from the library-context packet: exact scheme/variant/edition identities for all 50 existing reference rows, with source receipts and gates preserved, plus separate subject-heading and resource-link helpers. Seven author tests and a separate source/editorial comparison pass. Real heading/catalog records remain absent; canonical mappings, current-vocabulary/context decisions and the eleven retained gates are unchanged. See [verification](verification/universal-coverage-references.md).
 
+The [catalog-observation preparation](coverage/research/catalog-record-20261023/README.md) now selects three actual Open Library work/edition records, with exact captured bytes, nine selected subject occurrences and one reported LC-classification value. Five author tests and separate source/editorial review support the selections. Authority identities, shelf holdings and a single-record multiple-controlled-heading example remain unfilled; no headings or classifications are promoted into the earlier adapter. New LOC050/item11023889 access stops are recorded. See [verification](verification/universal-catalog-observations.md).
+
 ## Remaining execution queue
 
 | Stage | Concrete next work | Evidence required before marking it delivered |

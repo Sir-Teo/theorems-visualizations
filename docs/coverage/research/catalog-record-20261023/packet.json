@@ -1,0 +1,279 @@
+{
+  "schemaVersion": 1,
+  "status": "research-preparation",
+  "preparedOn": "2026-10-23",
+  "purpose": "Bounded test of shelves-and-headings preparation using distinct work and edition metadata; not a new authored lesson or canonical authority import.",
+  "records": [
+    {
+      "capture": {
+        "name": "walden-work",
+        "url": "https://openlibrary.org/works/OL55649W.json",
+        "finalUrl": "https://openlibrary.org/works/OL55649W.json",
+        "status": 200,
+        "bytes": 4986,
+        "sha256": "38757c8decf141fe59c99a5ddb3641163d6beba0434dc421462b9b727068753e",
+        "filename": "walden-work.body",
+        "readOn": "2026-10-23"
+      },
+      "entryIndex": null,
+      "subjectIndexes": [
+        4,
+        5,
+        6,
+        9,
+        11,
+        13
+      ],
+      "observation": {
+        "catalog": "Open Library",
+        "recordId": "/works/OL55649W",
+        "recordKind": "/type/work",
+        "revision": 82,
+        "title": "Walden",
+        "publishDate": null,
+        "lastModified": "2026-09-01T14:37:18.585973",
+        "linkedWorkIds": [],
+        "classificationField": {
+          "name": "lc_classifications",
+          "state": "absent",
+          "values": null,
+          "schemeEdition": null,
+          "physicalLocation": null,
+          "interpretation": "Reported catalog values only; no independent classification assignment, schedule edition or shelf location is established."
+        },
+        "subjectField": {
+          "name": "subjects",
+          "state": "present",
+          "totalValues": 75,
+          "selected": [
+            {
+              "index": 4,
+              "value": "Solitude",
+              "authority": null,
+              "authorityIdentifier": null,
+              "labelLanguage": null
+            },
+            {
+              "index": 5,
+              "value": "Natural history",
+              "authority": null,
+              "authorityIdentifier": null,
+              "labelLanguage": null
+            },
+            {
+              "index": 6,
+              "value": "Wilderness areas",
+              "authority": null,
+              "authorityIdentifier": null,
+              "labelLanguage": null
+            },
+            {
+              "index": 9,
+              "value": "Wildnerness areas",
+              "authority": null,
+              "authorityIdentifier": null,
+              "labelLanguage": null
+            },
+            {
+              "index": 11,
+              "value": "Fiction",
+              "authority": null,
+              "authorityIdentifier": null,
+              "labelLanguage": null
+            },
+            {
+              "index": 13,
+              "value": "Nonfiction",
+              "authority": null,
+              "authorityIdentifier": null,
+              "labelLanguage": null
+            }
+          ],
+          "interpretation": "Record-local labels; no authority identity, controlled vocabulary or per-label language is inferred."
+        }
+      }
+    },
+    {
+      "capture": {
+        "name": "walden-1854-edition",
+        "url": "https://openlibrary.org/books/OL26429580M.json",
+        "finalUrl": "https://openlibrary.org/books/OL26429580M.json",
+        "status": 200,
+        "bytes": 1831,
+        "sha256": "75a33c040b8d3f0f000a21532e65ac45318b625816225bb002c46e4b31a900cc",
+        "filename": "walden-1854-edition.body",
+        "readOn": "2026-10-23"
+      },
+      "entryIndex": null,
+      "subjectIndexes": [
+        0,
+        1
+      ],
+      "observation": {
+        "catalog": "Open Library",
+        "recordId": "/books/OL26429580M",
+        "recordKind": "/type/edition",
+        "revision": 3,
+        "title": "Walden; or, Life in the woods",
+        "publishDate": "1854",
+        "lastModified": "2025-09-29T22:01:10.752769",
+        "linkedWorkIds": [
+          "/works/OL55649W"
+        ],
+        "classificationField": {
+          "name": "lc_classifications",
+          "state": "absent",
+          "values": null,
+          "schemeEdition": null,
+          "physicalLocation": null,
+          "interpretation": "Reported catalog values only; no independent classification assignment, schedule edition or shelf location is established."
+        },
+        "subjectField": {
+          "name": "subjects",
+          "state": "present",
+          "totalValues": 2,
+          "selected": [
+            {
+              "index": 0,
+              "value": "Natural history",
+              "authority": null,
+              "authorityIdentifier": null,
+              "labelLanguage": null
+            },
+            {
+              "index": 1,
+              "value": "Transcendentalism (New England)",
+              "authority": null,
+              "authorityIdentifier": null,
+              "labelLanguage": null
+            }
+          ],
+          "interpretation": "Record-local labels; no authority identity, controlled vocabulary or per-label language is inferred."
+        }
+      }
+    },
+    {
+      "capture": {
+        "name": "walden-editions",
+        "url": "https://openlibrary.org/works/OL55649W/editions.json?limit=10",
+        "finalUrl": "https://openlibrary.org/works/OL55649W/editions.json?limit=10",
+        "status": 200,
+        "bytes": 7085,
+        "sha256": "37d155394604cc9ceb79452eaf7d5182677040f2680bc19b59ea10969f548f69",
+        "filename": "walden-editions.body",
+        "readOn": "2026-10-23"
+      },
+      "entryIndex": 5,
+      "subjectIndexes": [
+        0
+      ],
+      "observation": {
+        "catalog": "Open Library",
+        "recordId": "/books/OL34549556M",
+        "recordKind": "/type/edition",
+        "revision": 3,
+        "title": "Illustrated Walden",
+        "publishDate": "2018",
+        "lastModified": "2025-09-29T22:05:02.222036",
+        "linkedWorkIds": [
+          "/works/OL55649W"
+        ],
+        "classificationField": {
+          "name": "lc_classifications",
+          "state": "present",
+          "values": [
+            "PS3048.A1 2018"
+          ],
+          "schemeEdition": null,
+          "physicalLocation": null,
+          "interpretation": "Reported catalog values only; no independent classification assignment, schedule edition or shelf location is established."
+        },
+        "subjectField": {
+          "name": "subjects",
+          "state": "present",
+          "totalValues": 1,
+          "selected": [
+            {
+              "index": 0,
+              "value": "American literature",
+              "authority": null,
+              "authorityIdentifier": null,
+              "labelLanguage": null
+            }
+          ],
+          "interpretation": "Record-local labels; no authority identity, controlled vocabulary or per-label language is inferred."
+        }
+      }
+    }
+  ],
+  "decisions": {
+    "canonicalHeadingImport": false,
+    "canonicalClassificationImport": false,
+    "authorityResolution": null,
+    "catalogingReview": null,
+    "learnerObservation": null,
+    "releaseDecision": null
+  },
+  "accessStops": [
+    {
+      "url": "https://www.loc.gov/marc/bibliographic/bd050.html",
+      "result": "HTTP 403 from web open; no retry or alternate recovery."
+    },
+    {
+      "url": "https://www.loc.gov/item/11023889/",
+      "result": "HTTP 403 from web open; search discovery is not an inspected item body; no alternate recovery."
+    }
+  ],
+  "limits": [
+    "The selected 2018 edition has one subject label and one reported LC-classification value. It does not demonstrate multiple controlled headings on the same classified record.",
+    "The selected 1854 edition has two subject labels and no lc_classifications property; absence is not a verified lack of classification elsewhere.",
+    "The work has 75 subject strings; six are selected here, without treating mixed labels or apparent misspellings as validated subject assignments.",
+    "Linked work labels are never inherited into an edition. No holdings or physical shelf location was inspected.",
+    "Only selected factual metadata and original notes are bundled; no covers, book text, descriptive blurbs or scans are included."
+  ],
+  "contextReceipts": [
+    {
+      "name": "marc650",
+      "url": "https://www.loc.gov/marc/bibliographic/bd650.html",
+      "finalUrl": "https://www.loc.gov/marc/bibliographic/bd650.html",
+      "status": 200,
+      "bytes": 37962,
+      "sha256": "9bc17730204548393d8da6488e0fae157c937daa188c0aab33edae8ac330bdef",
+      "contentType": "text/html; charset=UTF-8",
+      "readOn": "2026-10-23",
+      "locator": "Field definition; second indicator; subfields $0 and $2",
+      "finding": "MARC 650 provides heading-source indicators, including source not specified; the selected Open Library subjects arrays do not supply MARC indicators or inspected authority identifiers.",
+      "scope": "Official field-description reading only; no claim that the observed catalog JSON is MARC or conforms to this field."
+    },
+    {
+      "name": "doi-help",
+      "url": "https://www.doi.gov/library/catalog/help",
+      "finalUrl": "https://www.doi.gov/library/catalog/help",
+      "status": 200,
+      "bytes": 74627,
+      "sha256": "7f6d8395d86e22a468366f679d567a83eaf77b4fec28b985230254b45026c91d",
+      "contentType": "text/html; charset=utf-8",
+      "readOn": "2026-10-23",
+      "locator": "Opening search overview and Subject Searches; page updated October 2022",
+      "finding": "This institution distinguishes subject-based discovery from call-number browsing and its Items Available shelf display.",
+      "scope": "Context for a distinction, not evidence of Open Library holdings or current operation of the DOI catalog."
+    },
+    {
+      "url": "https://openlibrary.org/help/faq/using",
+      "readOn": "2026-10-23",
+      "access": "web-body-read",
+      "locator": "Who owns the Open Library catalog?",
+      "finding": "The FAQ describes donated public-domain catalog data and requests CC0 contributions.",
+      "scope": "Metadata policy; no blanket permission for underlying books, covers or third-party contributions."
+    },
+    {
+      "url": "https://openlibrary.org/developers/licensing",
+      "readOn": "2026-10-23",
+      "access": "web-body-read",
+      "locator": "Licensing paragraph; page last edited June 27, 2021",
+      "finding": "Internet Archive asserts no new proprietary rights while noting possible existing rights and jurisdictional issues.",
+      "scope": "Qualification retained alongside the FAQ; no legal clearance or publication decision."
+    }
+  ],
+  "researchOutcome": "Three catalog records selected and pinned. The same-record multiple-controlled-headings plus verified shelf-classification example remains unfilled; no authority identifiers or actual holdings were inspected."
+}
