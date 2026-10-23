@@ -56,6 +56,8 @@ The [craft/performance preparation package](integration/studio-preparation.md) s
 
 The [source stewardship queue](../stewardship/README.md) now supplies the first U5 operational slice: four unresolved follow-up source issues, exact evidence bindings, role/assignment fields, retained access stops, edition triggers and dated history. A read-only CLI detects changed local evidence and compares edits with committed history. Seven author regression groups and a separate source/editorial review pass; all four issues remain open and unassigned. See [verification](verification/universal-stewardship.md). This later addition is outside the pinned complete-candidate rehearsal and does not exhaust the atlas backlog.
 
+The [classification-reference adapter](../coverage-references/README.md) implements the first platform step from the library-context packet: exact scheme/variant/edition identities for all 50 existing reference rows, with source receipts and gates preserved, plus separate subject-heading and resource-link helpers. Seven author tests and a separate source/editorial comparison pass. Real heading/catalog records remain absent; canonical mappings, current-vocabulary/context decisions and the eleven retained gates are unchanged. See [verification](verification/universal-coverage-references.md).
+
 ## Remaining execution queue
 
 | Stage | Concrete next work | Evidence required before marking it delivered |

@@ -1,0 +1,52 @@
+{
+  "schemaVersion": 1,
+  "baseCommit": "4b0f455bb5e08217e250e539b0973867b9872464",
+  "scope": "Research-only classification/heading adapter; no canonical coverage, content acceptance, rights decision or release.",
+  "additions": [
+    {
+      "path": "coverage-references/README.md",
+      "sha256": "00ee9a58172b1503d3549ec88a6717e150ec53a7e890463894ce5342cbb99666"
+    },
+    {
+      "path": "coverage-references/library-context.json",
+      "sha256": "74ed7820f73b847c230f3b5714485a29725068e66ebc00020fccbaa529121b10"
+    },
+    {
+      "path": "scripts/coverage-references.mjs",
+      "sha256": "037974f6cae4091635877bcf670e9def99a0013b5961286ae0563ba8e6afb10a"
+    },
+    {
+      "path": "tests/coverage-references.test.mjs",
+      "sha256": "f16360b28a3da105f756ac1d3a0f5be10a51cd3be8e8a81b0f12915ebeef187b"
+    },
+    {
+      "path": "docs/verification/universal-coverage-references-source-review.md",
+      "sha256": "c9c1247a2b4c48f2f6389b5c38cfa68a26df5d9af236834682467e3137d77ce8"
+    },
+    {
+      "path": "docs/verification/universal-coverage-references.md",
+      "sha256": "4b8b86b4ca881cff31a240e4571dec6e76746359889e0c468bf521b7701bb90b"
+    }
+  ],
+  "manualReconciliations": [
+    {
+      "path": "MASTER_PLAN.md",
+      "baseSha256": "02ba8aebe929e12e42b73b70e3ae35d447b802ccd5aeda86460bedede5aa066a",
+      "sourceSha256": "618c753a34529e6d60825945974461316ce38e98ae9f457095f2b329f18f6558"
+    },
+    {
+      "path": "docs/master-plan-execution.md",
+      "baseSha256": "0557bf3e8734d72307f380eb9b79b21aac871be057eb532579a3ce9cc27fe7ef",
+      "sourceSha256": "43b5383944b183d33351d3d4e8856b9c07fbc031577395532198100a6718eacc"
+    },
+    {
+      "path": "docs/master-plan-handoff.md",
+      "baseSha256": "3bccd4cf7a301815328d3f249c42af4704deeead1b2055a00c4c147104e1ca54",
+      "sourceSha256": "37b88961888d1a65529871f52f094df7368c46ba737e36787c39c5066ce99002"
+    }
+  ],
+  "packagingFiles": [
+    "docs/integration/coverage-references.md",
+    "docs/integration/coverage-references.json"
+  ]
+}

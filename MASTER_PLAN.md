@@ -238,6 +238,8 @@ The [follow-up preparation index](docs/pilots/sequences/preparation/README.md) n
 
 The first [U5 source stewardship queue](stewardship/README.md) now tracks four unresolved follow-up issues with exact evidence, unassigned reviewer roles, retained access stops and explicit edition/review triggers. Its offline audit and history checks provide local workflow support, not freshness certification or issue resolution.
 
+The [classification-reference adapter](coverage-references/README.md) now implements scheme/variant/edition identity for the existing 35 outline, seven archived schedule and eight historical local research rows. Classification and subject-heading references remain separate; zero real heading/catalog records are imported. Canonical mappings and all eleven retained gates remain unchanged.
+
 ### 9.1 Eight pilot briefs for U1
 
 | Pilot | Bounded first exploration | Capability tested |
