@@ -1,0 +1,52 @@
+{
+  "schemaVersion": 1,
+  "baseCommit": "831f7c02a64f55b3d482866a7bcf3cb1c5561d61",
+  "scope": "Additive local U5 source-issue queue; not publication, source retrieval, acceptance or complete backlog coverage.",
+  "additions": [
+    {
+      "path": "stewardship/issues.json",
+      "sha256": "f46aaaa5a0e10652eb179219ece20316e866191d9740abd18f9924a2a91d6adc"
+    },
+    {
+      "path": "stewardship/README.md",
+      "sha256": "685fc8da1d28728d252afdb45d42a7498f5f4c9f327859d3c53f57d1ceddad83"
+    },
+    {
+      "path": "scripts/stewardship.mjs",
+      "sha256": "77ebdb45ba633e484dbc9219c52fabf7fc3c57b7ebbc39f73e6dab55b5cd803c"
+    },
+    {
+      "path": "tests/stewardship.test.mjs",
+      "sha256": "b1d77228ef9564a6b4e0953127d4026ba7a96d4d5c806976ee019c948945d773"
+    },
+    {
+      "path": "docs/verification/universal-stewardship-source-review.md",
+      "sha256": "2db57fcbbb2f52208414cb53879626d015d55d84d85f51783467defdc2258fe1"
+    },
+    {
+      "path": "docs/verification/universal-stewardship.md",
+      "sha256": "44a40b5beb6955639be0b8e7aa82b1d402c114202a2a67823c208f7e1afc749e"
+    }
+  ],
+  "manualReconciliations": [
+    {
+      "path": "MASTER_PLAN.md",
+      "baseSha256": "61733df57004f5a5bd37ddc16518e4bb9dda734fee1ab6126b9b3a0e63e1e4d1",
+      "sourceSha256": "02ba8aebe929e12e42b73b70e3ae35d447b802ccd5aeda86460bedede5aa066a"
+    },
+    {
+      "path": "docs/master-plan-execution.md",
+      "baseSha256": "3e41cccce3a65880222ec152594a261569f8bc5334bc2f0efc4f52a41309398a",
+      "sourceSha256": "0557bf3e8734d72307f380eb9b79b21aac871be057eb532579a3ce9cc27fe7ef"
+    },
+    {
+      "path": "docs/master-plan-handoff.md",
+      "baseSha256": "f2f2fecb20aa0d52313e5bf000efdce3f7803e39c1bcc1633905299e3b5564ab",
+      "sourceSha256": "3bccd4cf7a301815328d3f249c42af4704deeead1b2055a00c4c147104e1ca54"
+    }
+  ],
+  "packagingFiles": [
+    "docs/integration/stewardship.md",
+    "docs/integration/stewardship.json"
+  ]
+}

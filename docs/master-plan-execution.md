@@ -54,6 +54,8 @@ The [agriculture ledger preparation](pilots/sequences/preparation/irrigation-led
 
 The [craft/performance preparation package](integration/studio-preparation.md) supplies three original patch plans with 21 numbered through-locations and local layer sections, plus two complete original staging scores with five shared timing targets. Five SVGs have bounded independent diagram/content reviews; a hidden dashed-border cue was repaired. Blank specimen, performance and observer structures and eight unfilled review cards make the missing actual evidence explicit. The earlier briefs, current P07/P08 drafts and two occupied slots remain unchanged; no source was fetched afresh and no physical or performance outcome was created.
 
+The [source stewardship queue](../stewardship/README.md) now supplies the first U5 operational slice: four unresolved follow-up source issues, exact evidence bindings, role/assignment fields, retained access stops, edition triggers and dated history. A read-only CLI detects changed local evidence and compares edits with committed history. Seven author regression groups and a separate source/editorial review pass; all four issues remain open and unassigned. See [verification](verification/universal-stewardship.md). This later addition is outside the pinned complete-candidate rehearsal and does not exhaust the atlas backlog.
+
 ## Remaining execution queue
 
 | Stage | Concrete next work | Evidence required before marking it delivered |

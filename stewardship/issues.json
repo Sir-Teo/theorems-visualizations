@@ -1,0 +1,136 @@
+{
+  "schemaVersion": 1,
+  "scope": "Initial universal follow-up source issues only; not the complete atlas backlog, a release ledger, or a source-retrieval schedule.",
+  "asOf": "2026-10-23",
+  "issues": [
+    {
+      "id": "S001",
+      "target": "P02-L03",
+      "kind": "witness-provenance",
+      "title": "The earlier Tagore witness remains unresolved",
+      "description": "The earlier 2518 witness reads “band”; selecting the distinct 1918 witness does not correct 2518 or establish the anomaly’s origin.",
+      "responsibility": {
+        "role": "Literature source editor with relevant edition/language expertise",
+        "assignee": null
+      },
+      "nextAction": "Obtain independently inspectable provenance evidence for the earlier witness, or retain its unresolved status while explicitly using the distinct selected witness.",
+      "editionTrigger": "A changed witness, quotation, attribution or claim requires an explicit selection decision and review of the affected lesson version.",
+      "accessStops": [],
+      "evidence": [
+        {
+          "path": "docs/pilots/sequences/preparation/literature-selections-20261022.md",
+          "sha256": "4a926765de2c9d199ee342f8a47482282e127333077e27192adc19b1d883f2ed",
+          "locator": "## Cabuliwallah: change the witness explicitly"
+        }
+      ],
+      "events": [
+        {
+          "sequence": 1,
+          "at": "2026-10-23",
+          "state": "waiting-evidence",
+          "note": "Imported as an unresolved issue from the exact existing preparation record; no fresh source inspection or review decision.",
+          "evidence": []
+        }
+      ]
+    },
+    {
+      "id": "S002",
+      "target": "P05-L03",
+      "kind": "source-discrepancy",
+      "title": "Koraput feature names two villages",
+      "description": "The inspected MSSRF body begins in Nuaguda and ends in Kumbharaguda; no correction or location resolution was established.",
+      "responsibility": {
+        "role": "Situated agriculture/community-context reviewer",
+        "assignee": null
+      },
+      "nextAction": "Obtain authenticated location clarification or separately scoped situated evidence without recovering a stopped work. Preserve the discrepancy until resolved.",
+      "editionTrigger": "A resolved location changes source/context claims and requires a new reviewed preparation record before an affected lesson can be accepted.",
+      "accessStops": [
+        "MSSRF seed-keeper feature: direct capture stopped at HTTP 307; no retry or alternate-copy recovery.",
+        "Earlier FAO Koraput profile timeout remains a stop."
+      ],
+      "evidence": [
+        {
+          "path": "docs/pilots/sequences/preparation/irrigation-ledger-20261022.md",
+          "sha256": "db1b396a394b7548e119ebb1072cf7a29e8b59c5d4efd2f342768d82b376ce22",
+          "locator": "## Adjacent source issue and handoff"
+        }
+      ],
+      "events": [
+        {
+          "sequence": 1,
+          "at": "2026-10-23",
+          "state": "waiting-evidence",
+          "note": "Imported as an unresolved issue from the exact existing preparation record; no fresh source inspection or review decision.",
+          "evidence": []
+        }
+      ]
+    },
+    {
+      "id": "S003",
+      "target": "P03-L03",
+      "kind": "freshness-gap",
+      "title": "Langar current-source refresh is incomplete",
+      "description": "Prior source review remains historical after direct requests for the Sikh Coalition FAQ, SGPC English PDF and official directory returned HTTP 403.",
+      "responsibility": {
+        "role": "Religion source editor and practitioner/context reviewer",
+        "assignee": null
+      },
+      "nextAction": "Wait for permitted new evidence or an explicit change to the recorded access boundary; assess current code status and context before asserting freshness.",
+      "editionTrigger": "Current-code or practice claims require exact selected-body review; a successful access check alone cannot approve those claims.",
+      "accessStops": [
+        "Sikh Coalition FAQ and earlier SGPC English PDF: HTTP 403.",
+        "Official English directory direct HTML: HTTP 403; no alternate recovery."
+      ],
+      "evidence": [
+        {
+          "path": "docs/pilots/sequences/preparation/cicero-selections-20261022.md",
+          "sha256": "b3d466690de7a5764f6489e382dab9c3ca176161d8b842af11b37a38b2e934ec",
+          "locator": "## Adjacent follow-up and remaining work"
+        }
+      ],
+      "events": [
+        {
+          "sequence": 1,
+          "at": "2026-10-23",
+          "state": "waiting-evidence",
+          "note": "Imported as an unresolved issue from the exact existing preparation record; no fresh source inspection or review decision.",
+          "evidence": []
+        }
+      ]
+    },
+    {
+      "id": "S004",
+      "target": "P01-L03",
+      "kind": "research-update",
+      "title": "Newer Pompeii research assessment remains incomplete",
+      "description": "A September 2026 announcement supplied a discovery lead, but the journal paper was not inspected and no technical result was adopted.",
+      "responsibility": {
+        "role": "Archaeology/chronology specialist",
+        "assignee": null
+      },
+      "nextAction": "Assess the newer research only after permitted evidence becomes available; retain the current bounded method claims and open research-update qualification.",
+      "editionTrigger": "New chronology or premise-map claims require exact source assessment and a new reviewed artifact; an announcement is insufficient.",
+      "accessStops": [
+        "DOI 10.1126/sciadv.aeg2624: HTTP 403; no alternate recovery.",
+        "Berkeley announcement later direct request: HTTP 403; earlier discovery reading remains historical."
+      ],
+      "evidence": [
+        {
+          "path": "docs/pilots/sequences/preparation/archaeology-methods-20261022.md",
+          "sha256": "328d169b8ca4b04bad508347e19da7702a761e0a4227168d7d4129ddfc271ee6",
+          "locator": "## Freshness and next decisions"
+        }
+      ],
+      "events": [
+        {
+          "sequence": 1,
+          "at": "2026-10-23",
+          "state": "waiting-evidence",
+          "note": "Imported as an unresolved issue from the exact existing preparation record; no fresh source inspection or review decision.",
+          "evidence": []
+        }
+      ]
+    }
+  ]
+}

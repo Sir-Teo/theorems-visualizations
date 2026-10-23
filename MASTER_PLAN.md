@@ -236,6 +236,8 @@ The subsequent [library/local-context research packet](docs/coverage/research/li
 
 The [follow-up preparation index](docs/pilots/sequences/preparation/README.md) now records exact literature selections, contemporary diplomatic sources, archaeology methods/premises and attributed Cicero selections, with independent bounded source/editorial reviews and explicit next actions. The archaeology preparation adds seven source notes, five activities and eight original conditional cases; its newer-research assessment remains open after a relevant 2026 paper could not be inspected. The Cicero packet adds twelve complete English paragraphs and explicit editorial argument bridges; the adjacent langar freshness check remains incomplete after access denials. The agriculture ledger adds 13 original arithmetic/evidence cases with multiday, finite-delivery, reconciliation and sector comparisons; agronomic decisions and the Koraput location issue remain open. The craft/performance preparation adds three patch diagrams, two complete staging scores and blank specimen/session records; their physical, performer and human evidence remains absent. These additive packets preserve the reviewed briefs, source/queue records and accepted pilots. They create no authored/accepted lesson, release decision or draft slot.
 
+The first [U5 source stewardship queue](stewardship/README.md) now tracks four unresolved follow-up issues with exact evidence, unassigned reviewer roles, retained access stops and explicit edition/review triggers. Its offline audit and history checks provide local workflow support, not freshness certification or issue resolution.
+
 ### 9.1 Eight pilot briefs for U1
 
 | Pilot | Bounded first exploration | Capability tested |
