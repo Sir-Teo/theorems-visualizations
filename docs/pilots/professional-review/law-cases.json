@@ -1,0 +1,212 @@
+{
+  "schemaVersion": 1,
+  "packetVersion": "0.1.0",
+  "pilot": "P04",
+  "runtimeId": null,
+  "status": "review-input-only",
+  "authoredLesson": false,
+  "acceptedLesson": false,
+  "qualifiedReviewer": null,
+  "legalEffectiveDate": null,
+  "scope": "Original fictional single-kettle, paid in-person sale in England and Wales. Arithmetic dates are illustrations, not assertions about applicable law on those dates.",
+  "calendarFixtures": [
+    {
+      "id": "L-D01",
+      "kind": "short-term-calendar",
+      "conditionsComplete": "2026-10-01",
+      "observation": "2026-10-02",
+      "expectedDay1": "2026-10-02",
+      "expectedLastDay": "2026-10-31",
+      "expectedPosition": "within-window"
+    },
+    {
+      "id": "L-D30",
+      "kind": "short-term-calendar",
+      "conditionsComplete": "2026-10-01",
+      "observation": "2026-10-31",
+      "expectedDay1": "2026-10-02",
+      "expectedLastDay": "2026-10-31",
+      "expectedPosition": "last-day"
+    },
+    {
+      "id": "L-D31",
+      "kind": "short-term-calendar",
+      "conditionsComplete": "2026-10-01",
+      "observation": "2026-11-01",
+      "expectedDay1": "2026-10-02",
+      "expectedLastDay": "2026-10-31",
+      "expectedPosition": "after-window"
+    },
+    {
+      "id": "L-DELIVERY",
+      "kind": "short-term-calendar",
+      "purchase": "2026-10-01",
+      "conditionsComplete": "2026-10-05",
+      "observation": "2026-11-04",
+      "expectedDay1": "2026-10-06",
+      "expectedLastDay": "2026-11-04",
+      "expectedPosition": "last-day"
+    },
+    {
+      "id": "L-YEAR",
+      "kind": "short-term-calendar",
+      "conditionsComplete": "2026-12-20",
+      "observation": "2027-01-19",
+      "expectedDay1": "2026-12-21",
+      "expectedLastDay": "2027-01-19",
+      "expectedPosition": "last-day"
+    },
+    {
+      "id": "L-LEAP",
+      "kind": "short-term-calendar",
+      "conditionsComplete": "2024-02-29",
+      "observation": "2024-03-30",
+      "expectedDay1": "2024-03-01",
+      "expectedLastDay": "2024-03-30",
+      "expectedPosition": "last-day"
+    },
+    {
+      "id": "L-EARLY",
+      "kind": "short-term-calendar",
+      "conditionsComplete": "2026-10-05",
+      "observation": "2026-10-03",
+      "expectedDay1": "2026-10-06",
+      "expectedLastDay": "2026-11-04",
+      "expectedPosition": "before-counting-start-not-a-rejection-bar"
+    },
+    {
+      "id": "L-REFUND",
+      "kind": "refund-calendar",
+      "agreement": "2026-10-31",
+      "expectedLastDay": "2026-11-13"
+    },
+    {
+      "id": "L-REFUND-YEAR",
+      "kind": "refund-calendar",
+      "agreement": "2026-12-25",
+      "expectedLastDay": "2027-01-07"
+    }
+  ],
+  "branches": [
+    {
+      "id": "L-B01",
+      "facts": "New domestic kettle from a trader; single paid sale in a shop; s9 nonconformity at delivery stipulated; all trigger conditions complete 1 October; clear rejection communicated 31 October.",
+      "authority": [
+        "prep-cra-2",
+        "prep-cra-9",
+        "prep-cra-19",
+        "prep-cra-20",
+        "prep-cra-22"
+      ],
+      "reviewQuestion": "Does this fully stipulated case support the proposed short-term route, subject to the uncompleted legal snapshot review?",
+      "proposedFeedback": "The calendar is at its last counted day. Entitlement still depends on the stipulated facts and approved statutory scope.",
+      "professionalDecision": null
+    },
+    {
+      "id": "L-B02",
+      "facts": "Same delivery and stipulated defect; communication moved to 1 November; no extension agreement or repair request.",
+      "authority": [
+        "prep-cra-19",
+        "prep-cra-22"
+      ],
+      "reviewQuestion": "Does feedback correctly end only the modelled short-term window, while leaving other remedies unassessed?",
+      "proposedFeedback": "This is after the unextended calendar window; no conclusion about all other remedies follows.",
+      "professionalDecision": null
+    },
+    {
+      "id": "L-B03",
+      "facts": "Payment receipt 1 October; delivery note 5 October; ownership-transfer date not given.",
+      "authority": [
+        "prep-cra-22"
+      ],
+      "reviewQuestion": "Is there enough evidence to determine when every trigger condition was met?",
+      "proposedFeedback": "A purchase date alone does not establish all clock conditions. Obtain the missing transfer fact.",
+      "professionalDecision": null
+    },
+    {
+      "id": "L-B04",
+      "facts": "A video shows malfunction on 10 October; cause and condition at delivery disputed.",
+      "authority": [
+        "prep-cra-19"
+      ],
+      "reviewQuestion": "Does the case avoid extending s19(14) to the short-term route or making the recording prove every issue?",
+      "proposedFeedback": "The stipulated recording shows that event, not its cause or the delivery condition.",
+      "professionalDecision": null
+    },
+    {
+      "id": "L-B05",
+      "facts": "A scratch was specifically disclosed before sale; an unrelated electrical fault is alleged.",
+      "authority": [
+        "prep-cra-9"
+      ],
+      "reviewQuestion": "Are the disclosed condition and separate alleged fault kept distinct?",
+      "proposedFeedback": "Identify which defect was disclosed and which allegation still needs evidence.",
+      "professionalDecision": null
+    },
+    {
+      "id": "L-B06",
+      "facts": "Kettle functions as described; buyer changes preferred colour after an in-person sale.",
+      "authority": [
+        "prep-cra-9",
+        "prep-govuk-returns"
+      ],
+      "reviewQuestion": "Does the scoped quality case avoid inventing a fault or denying any separately promised returns policy?",
+      "proposedFeedback": "A changed preference is not the stipulated quality defect; any separate policy is outside this model.",
+      "professionalDecision": null
+    },
+    {
+      "id": "L-B07",
+      "facts": "Buyer asks whether the shop can repair the kettle; no clear rejection statement is stipulated.",
+      "authority": [
+        "prep-cra-20",
+        "prep-cra-22"
+      ],
+      "reviewQuestion": "Are communication meaning and any repair request assessed instead of inferred from contact alone?",
+      "proposedFeedback": "The record does not establish a clear rejection; repair-request interpretation needs separate review.",
+      "professionalDecision": null
+    },
+    {
+      "id": "L-B08",
+      "facts": "Trader agrees to refund on 31 October; return collection is discussed separately.",
+      "authority": [
+        "prep-cra-20"
+      ],
+      "reviewQuestion": "Are the refund-agreement clock, promptness and return arrangements distinguished?",
+      "proposedFeedback": "The separate illustrative fourteen-day calendar ends 13 November; that outer date does not displace the duty to avoid undue delay.",
+      "professionalDecision": null
+    },
+    {
+      "id": "L-B09",
+      "facts": "Goods have not yet been delivered; a clear rejection is proposed.",
+      "authority": [
+        "prep-cra-22"
+      ],
+      "reviewQuestion": "Does the calendar avoid treating a not-yet-started counting window as a blanket bar under s22(5)?",
+      "proposedFeedback": "Before the counting start is not automatically too early to exercise a right; the substantive route needs review.",
+      "professionalDecision": null
+    },
+    {
+      "id": "L-B10",
+      "facts": "Repair agreed; returned item may still be nonconforming.",
+      "authority": [
+        "prep-cra-22"
+      ],
+      "reviewQuestion": "Keep outside first-case arithmetic until waiting-period start/end and returned-goods conditions receive complete review.",
+      "proposedFeedback": "Repair waiting periods require a separate reviewed case; no unextended deadline is returned.",
+      "professionalDecision": null
+    }
+  ],
+  "outsideFirstCase": [
+    "unknown jurisdiction or consumer/trader status",
+    "contracts before 1 October 2015",
+    "distance-sale cancellation",
+    "installation or digital content",
+    "perishables",
+    "finance, hire or conditional sale",
+    "multiple/severable goods",
+    "consumer-supplied materials",
+    "repair/replacement waiting-period arithmetic",
+    "warranty or store-policy adjudication",
+    "final rejection, deductions, litigation or limitation advice"
+  ]
+}

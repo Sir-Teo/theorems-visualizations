@@ -1,0 +1,21 @@
+{
+  "schemaVersion": 1,
+  "mode": "professional-preparation-research-delta",
+  "predecessorCommit": "0af4a77e7495bba6aacee1950ae982b16bcacd28",
+  "replacements": [],
+  "additions": [
+    "docs/integration/professional-preparation.json",
+    "docs/integration/professional-preparation.md",
+    "docs/pilots/professional-review/README.md",
+    "docs/pilots/professional-review/audit.py",
+    "docs/pilots/professional-review/health-traces.json",
+    "docs/pilots/professional-review/health.md",
+    "docs/pilots/professional-review/law-cases.json",
+    "docs/pilots/professional-review/law.md",
+    "docs/pilots/professional-review/review-health.md",
+    "docs/pilots/professional-review/review-law.md",
+    "docs/pilots/professional-review/review-structure.md",
+    "docs/pilots/professional-review/sources.json",
+    "docs/verification/universal-professional-preparation.md"
+  ]
+}

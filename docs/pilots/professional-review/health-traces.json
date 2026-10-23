@@ -1,0 +1,242 @@
+{
+  "schemaVersion": 1,
+  "packetVersion": "0.1.0",
+  "pilot": "P06",
+  "runtimeId": null,
+  "status": "review-input-only",
+  "authoredLesson": false,
+  "acceptedLesson": false,
+  "qualifiedReviewer": null,
+  "patientData": false,
+  "units": "milliseconds",
+  "cycleColumns": [
+    "inspiration-start",
+    "phase-change",
+    "cycle-end"
+  ],
+  "provenance": "Original arithmetic fixtures. Phase subdivisions are authored timing labels, not physiological calibration or a recorded person.",
+  "countingConvention": "Count only complete cycles wholly contained in the closed observation window. Separately count onset landmarks in the half-open window [start,end). These are different descriptive rules, not a clinical protocol.",
+  "traces": [
+    {
+      "id": "H-REGULAR",
+      "cycles": [
+        [
+          0,
+          1600,
+          4000
+        ],
+        [
+          4000,
+          5600,
+          8000
+        ],
+        [
+          8000,
+          9600,
+          12000
+        ],
+        [
+          12000,
+          13600,
+          16000
+        ],
+        [
+          16000,
+          17600,
+          20000
+        ]
+      ]
+    },
+    {
+      "id": "H-VARIED",
+      "cycles": [
+        [
+          0,
+          800,
+          2000
+        ],
+        [
+          2000,
+          4400,
+          8000
+        ],
+        [
+          8000,
+          9200,
+          11000
+        ],
+        [
+          11000,
+          13400,
+          17000
+        ],
+        [
+          17000,
+          18200,
+          20000
+        ]
+      ]
+    }
+  ],
+  "fixtures": [
+    {
+      "id": "H-FULL-A",
+      "trace": "H-REGULAR",
+      "windowMs": [
+        0,
+        20000
+      ],
+      "completeIds": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "partialIds": [],
+      "onsetIds": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "expectedCompleteRate": "15",
+      "expectedOnsetRate": "15"
+    },
+    {
+      "id": "H-FULL-B",
+      "trace": "H-VARIED",
+      "windowMs": [
+        0,
+        20000
+      ],
+      "completeIds": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "partialIds": [],
+      "onsetIds": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "expectedCompleteRate": "15",
+      "expectedOnsetRate": "15"
+    },
+    {
+      "id": "H-CROP",
+      "trace": "H-REGULAR",
+      "windowMs": [
+        2000,
+        18000
+      ],
+      "completeIds": [
+        2,
+        3,
+        4
+      ],
+      "partialIds": [
+        1,
+        5
+      ],
+      "onsetIds": [
+        2,
+        3,
+        4,
+        5
+      ],
+      "expectedCompleteRate": "45/4",
+      "expectedOnsetRate": "15"
+    },
+    {
+      "id": "H-LEFT",
+      "trace": "H-REGULAR",
+      "windowMs": [
+        0,
+        4000
+      ],
+      "completeIds": [
+        1
+      ],
+      "partialIds": [],
+      "onsetIds": [
+        1
+      ],
+      "expectedCompleteRate": "15",
+      "expectedOnsetRate": "15"
+    },
+    {
+      "id": "H-RIGHT",
+      "trace": "H-REGULAR",
+      "windowMs": [
+        4000,
+        8000
+      ],
+      "completeIds": [
+        2
+      ],
+      "partialIds": [],
+      "onsetIds": [
+        2
+      ],
+      "expectedCompleteRate": "15",
+      "expectedOnsetRate": "15"
+    },
+    {
+      "id": "H-PARTIAL",
+      "trace": "H-REGULAR",
+      "windowMs": [
+        1000,
+        2000
+      ],
+      "completeIds": [],
+      "partialIds": [
+        1
+      ],
+      "onsetIds": [],
+      "expectedCompleteRate": "0",
+      "expectedOnsetRate": "0"
+    },
+    {
+      "id": "H-UNKNOWN",
+      "trace": "H-REGULAR",
+      "windowMs": [
+        20000,
+        24000
+      ],
+      "expectedError": "outside-trace"
+    },
+    {
+      "id": "H-ZERO",
+      "trace": "H-REGULAR",
+      "windowMs": [
+        4000,
+        4000
+      ],
+      "expectedError": "invalid-window"
+    },
+    {
+      "id": "H-REVERSED",
+      "trace": "H-REGULAR",
+      "windowMs": [
+        8000,
+        4000
+      ],
+      "expectedError": "invalid-window"
+    }
+  ],
+  "prohibitedInferences": [
+    "normal/abnormal rate threshold",
+    "diagnosis, triage or treatment",
+    "measured depth, gas exchange or oxygenation",
+    "clinical observation competence",
+    "absence of breathing from zero complete cycles",
+    "current spirometry standard validation"
+  ]
+}
