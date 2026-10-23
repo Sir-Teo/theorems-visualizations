@@ -198,34 +198,154 @@ export default {
     },
     // ───────────────────────────────────────────────────────────── 6
     {
-      n: 6,
-      title: 'Byzantine agreement',
-      summary: String.raw`When faulty processes can lie, agreement requires more than three times as many processes as faults and a network with enough disjoint paths; the classic argument shows three generals cannot tolerate one traitor. Exponential information gathering and the phase-king algorithm achieve the bound; digital signatures remove it. Practical Byzantine fault tolerance adds quorums and partial synchrony, and Nakamoto’s blockchain replaces identities with proof of work.`,
-      items: [
-        { num: '6.1', kind: 'Definition', name: 'The Byzantine generals problem', deps: ['dist-5.1'], refs: ['Lynch §6.3', 'Attiya–Welch ch. 5'],
-          pic: 'A commander sends orders to lieutenants, some of whom may be traitors sending contradictory messages; the reader picks traitors and their lies.' },
-        { num: '6.2', kind: 'Theorem', name: 'Byzantine agreement needs n > 3f', deps: ['dist-6.1', 'dist-1.7'], refs: ['Lynch §6.4'],
-          pic: 'Three generals with one traitor: copies of the processes are arranged in a hexagon so that each loyal pair sees a consistent scenario, yet the scenarios force contradictory decisions.' },
-        { num: '6.3', kind: 'Algorithm', name: 'Exponential information gathering (Lamport–Shostak–Pease)', deps: ['dist-6.2'], refs: ['Lynch §6.3.2'],
-          pic: 'Each process builds a tree of “A said that B said that …” values over f + 1 rounds and resolves it bottom-up by majority; tree size and the resolved decisions are shown for small n.' },
-        { num: '6.4', kind: 'Algorithm', name: 'Phase-king algorithm', deps: ['dist-6.2'], refs: ['Attiya–Welch ch. 5'],
-          pic: 'In each phase a designated king breaks ties; once a loyal king has ruled, all loyal processes hold the same value, highlighted, using polynomial-size messages.' },
-        { num: '6.5', kind: 'Theorem', name: 'Byzantine agreement needs connectivity 2f + 1', deps: ['dist-6.2'], refs: ['Lynch §6.5'],
-          pic: 'On a graph the reader draws, a vertex cut of size 2f lets traitors on the cut tell each side a different story; adding paths restores agreement.' },
-        { num: '6.6', kind: 'Algorithm', name: 'Authenticated Byzantine agreement (Dolev–Strong)', deps: ['dist-6.1', 'crypto-10.1'], refs: ['Lynch §6.2.4'],
-          pic: 'Values travel with growing chains of signatures that cannot be forged; any number of traitors is tolerated in f + 1 rounds, as runs with many traitors confirm.' },
-        { num: '6.7', kind: 'Concept', name: 'Byzantine quorums', deps: ['dist-6.2'], refs: ['Lynch §6.4'],
-          pic: 'With n = 3f + 1, any two sets of 2f + 1 processes overlap in at least f + 1, so in at least one honest process; the reader drags quorums and the overlap is counted.' },
-        { num: '6.8', kind: 'Algorithm', name: 'Practical Byzantine fault tolerance (PBFT)', deps: ['dist-6.7', 'dist-5.12', 'crypto-5.1'], refs: ['Lynch §25.4'],
-          pic: 'Pre-prepare, prepare and commit phases run in a message diagram among four replicas; make the primary lie and the view-change protocol replaces it.' },
-        { num: '6.9', kind: 'Model', name: 'Nakamoto consensus: proof of work and the longest chain', deps: ['dist-6.2', 'crypto-5.6', 'crypto-5.14'], refs: ['Attiya–Welch ch. 14'],
-          pic: 'Miners extend a block tree at rates proportional to hash power; forks resolve to the longest chain, and an attacker with a share the reader sets catches up with probability that falls exponentially in confirmations.' },
-        { num: '6.10', kind: 'Paper', name: 'The Byzantine Generals Problem',
-          paper: { authors: 'Leslie Lamport, Robert Shostak and Marshall Pease', year: 1982, title: 'The Byzantine Generals Problem',
-                   venue: 'ACM Transactions on Programming Languages and Systems 4 (3): 382–401', doi: '10.1145/357172.357176' },
-          introduces: ['dist-6.1'], deps: ['dist-1.3', 'dist-5.1'], refs: [],
-          pic: 'Recreate the paper’s three-general figures: make the commander or a lieutenant a traitor and see why no oral-message algorithm can work, then add a fourth general and run OM(1) to agreement.' },
-      ],
+      "n": 6,
+      "title": "Byzantine agreement",
+      "summary": "A Byzantine process can send a different story to every neighbor. Synchronous oral-message agreement needs both enough processes and enough independent routes; EIG and phase king attain the process bound. Publicly verifiable signatures change the broadcast problem, while PBFT combines authenticated certificates with eventual timing assumptions. Proof of work changes participation and gives a probabilistic chain model with different guarantees.",
+      "items": [
+        {
+          "num": "6.1",
+          "kind": "Definition",
+          "name": "The Byzantine generals problem",
+          "deps": [
+            "dist-5.1",
+            "dist-1.3"
+          ],
+          "refs": [
+            "Lamport–Shostak–Pease (1982), The Byzantine Generals Problem, §§2–3",
+            "Jonathan Katz (2021), Broadcast and Byzantine Agreement, §§1–3, §1"
+          ],
+          "pic": "Choose a faulty process, edit its direct orders and relayed reports, and compare direct obedience with one round of majority forwarding. The counters test agreement and honest-sender validity separately."
+        },
+        {
+          "num": "6.2",
+          "kind": "Theorem",
+          "name": "Byzantine agreement needs n > 3f",
+          "deps": [
+            "dist-6.1",
+            "dist-1.7"
+          ],
+          "refs": [
+            "MIT 6.852 (Fall 2009), lecture 5, slides 3–26",
+            "Jonathan Katz (2021), Broadcast and Byzantine Agreement, §§1–3, §3; LSP §2 explicitly distinguishes its informal illustration from a rigorous proof"
+          ],
+          "pic": "Edit the six initial bits and inspect each neighboring pair. Equal adjacent inputs impose a validity label; agreement propagates around the ring. A contradiction appears only when the obligations force both 0 and 1."
+        },
+        {
+          "num": "6.3",
+          "kind": "Algorithm",
+          "name": "Exponential information gathering (Lamport–Shostak–Pease)",
+          "deps": [
+            "dist-6.2"
+          ],
+          "refs": [
+            "MIT 6.852 (Fall 2009), lecture 5, slides 3–26, slides 3–11; LSP §3 for the related recursive oral-message construction"
+          ],
+          "pic": "Edit the input vector and faulty IDs, then step through all receive rounds and bottom-up resolution. Select an observer and a first reporter to inspect raw and resolved tree entries. Try an unsupported process-to-fault ratio to test the hypothesis."
+        },
+        {
+          "num": "6.4",
+          "kind": "Algorithm",
+          "name": "Phase-king algorithm",
+          "deps": [
+            "dist-6.2"
+          ],
+          "refs": [
+            "Jonathan Katz (2021), Broadcast and Byzantine Agreement, §§1–3, §2, Lemmas 1–2 and Theorem 1; modern exposition, original Berman–Garay–Perry body not read"
+          ],
+          "pic": "Edit proposals, faulty identities and their message policy. Step through endorsement counts and king choices, checking which correct processes keep a strongly supported value and which follow the king."
+        },
+        {
+          "num": "6.5",
+          "kind": "Theorem",
+          "name": "Byzantine agreement needs connectivity 2f + 1",
+          "deps": [
+            "dist-6.2",
+            "graph-3.3.6"
+          ],
+          "refs": [
+            "MIT 6.852 (Fall 2009), lecture 5, slides 3–26, slides 20–26; GRAPH 3.3.6 for Menger; the general cut-to-canonical reduction is an explanatory outline"
+          ],
+          "pic": "Edit the graph's edge list, choose honest terminals and mark faulty internal vertices. Inspect a minimum vertex cut and a maximum family of internally disjoint paths; corrupted paths flip their reports in the channel experiment."
+        },
+        {
+          "num": "6.6",
+          "kind": "Algorithm",
+          "name": "Authenticated Byzantine agreement (Dolev–Strong)",
+          "deps": [
+            "dist-6.1"
+          ],
+          "refs": [
+            "University of Washington CSE422wi24, chapter 3, The Dolev-Strong Protocol, §3.4 and both consistency lemmas; original DS83 body not read",
+            "Jonathan Katz (2021), Broadcast and Byzantine Agreement, §§1,4, for definitions and a separate optimized all-but-one formulation"
+          ],
+          "pic": "Choose a fault budget and an equivocation or delayed-message attack. Inspect each round's accepted sets and rejection reasons. Turn off the chain-length rule or stop early to expose the late-message failure."
+        },
+        {
+          "num": "6.7",
+          "kind": "Concept",
+          "name": "Byzantine quorums",
+          "deps": [
+            "dist-6.2"
+          ],
+          "refs": [
+            "Castro–Liskov (1999), Practical Byzantine Fault Tolerance, §4; direct inclusion–exclusion proof supplied"
+          ],
+          "pic": "Edit both quorum sets and the faulty set. The overlap diagram counts actual honest members and compares them with the worst-case guarantee. Try two simple majorities whose entire overlap is faulty."
+        },
+        {
+          "num": "6.8",
+          "kind": "Algorithm",
+          "name": "Practical Byzantine fault tolerance (PBFT)",
+          "deps": [
+            "dist-6.7",
+            "dist-5.12",
+            "crypto-5.1"
+          ],
+          "refs": [
+            "Castro–Liskov (1999), Practical Byzantine Fault Tolerance, publisher HTML §§2–4 actually read; no later body retrieval after the MIT PDF timeout",
+            "DIST 5.12 for partial-synchrony safety/progress separation, not for the Byzantine quorum threshold"
+          ],
+          "pic": "Edit the primary's equivocation, a faulty backup's votes and the three view-change reporters. Step through preparation, local commitment and the new primary. Try proposing a replacement that contradicts a carried certificate."
+        },
+        {
+          "num": "6.9",
+          "kind": "Model",
+          "name": "Nakamoto consensus: proof of work and the longest chain",
+          "deps": [
+            "dist-6.2",
+            "crypto-5.6",
+            "crypto-5.14"
+          ],
+          "refs": [
+            "Satoshi Nakamoto (2008), Bitcoin: A Peer-to-Peer Electronic Cash System, §§3–6,8,11; all nine pages read before a later direct-download 403 stopped further original retrieval",
+            "Independent derivation supplied for negative-binomial stopping-time comparison"
+          ],
+          "pic": "Edit a sequence of honest blocks, private attacker blocks and releases to grow a real parent-linked tree. Separately vary hash share and deficit to compare fixed-deficit catch-up, a finite horizon, the paper's Poisson approximation and the exact stopping-time model."
+        },
+        {
+          "num": "6.10",
+          "kind": "Paper",
+          "name": "The Byzantine Generals Problem",
+          "paper": {
+            "authors": "Leslie Lamport, Robert Shostak and Marshall Pease",
+            "year": 1982,
+            "title": "The Byzantine Generals Problem",
+            "venue": "ACM Transactions on Programming Languages and Systems 4 (3): 382–401",
+            "doi": "10.1145/357172.357176"
+          },
+          "introduces": [
+            "dist-6.1"
+          ],
+          "deps": [
+            "dist-1.3",
+            "dist-5.1"
+          ],
+          "refs": [
+            "Lamport–Shostak–Pease (1982), complete paper, especially pp. 384–390,392,394; original figures visually inspected"
+          ],
+          "pic": "Reconstruct the oral-message cases with three or four generals. Edit direct orders and false relays, step from sending to forwarding to decision, and compare each honest lieutenant's actual report vector."
+        }
+      ]
     },
     // ───────────────────────────────────────────────────────────── 7
     {
