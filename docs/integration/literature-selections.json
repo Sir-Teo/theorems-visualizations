@@ -1,0 +1,20 @@
+{
+  "schemaVersion": 1,
+  "mode": "literature-source-preparation-delta",
+  "predecessorCommit": "f76aae4d8f34638276932afbe3d0149e87d164a6",
+  "replacements": [],
+  "additions": [
+    "docs/pilots/sequences/preparation/literature-selections-20261022.json",
+    "docs/pilots/sequences/preparation/literature-selections-20261022.md",
+    "docs/pilots/sequences/preparation/review-literature-selections-20261022.md",
+    "docs/pilots/sequences/preparation/verify-literature-selections.py",
+    "docs/integration/literature-selections.json",
+    "docs/integration/literature-selections.md",
+    "docs/verification/universal-literature-selections.md"
+  ],
+  "manualReconciliation": [
+    "MASTER_PLAN.md",
+    "docs/master-plan-execution.md",
+    "docs/master-plan-handoff.md"
+  ]
+}

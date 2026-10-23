@@ -1,0 +1,305 @@
+{
+  "schemaVersion": 1,
+  "id": "literature-selections-20261022",
+  "version": "0.1.0",
+  "status": "source-preparation-only",
+  "author": "codex-root",
+  "updatedOn": "2026-10-22",
+  "predecessorCommit": "f76aae4d8f34638276932afbe3d0149e87d164a6",
+  "existingBindings": {
+    "docs/pilots/sequences/p02-02-editions.md": "3fb0641ae4bcefa400c8a0eddfe4f09b74a9c329bdeb23433b439ded6ca15263",
+    "docs/pilots/sequences/p02-03-narrative.md": "cbf2326551d34c59bfd62ba7ec2faffa21bc31ba63db7c3f717993ed3a6abf14",
+    "docs/pilots/sequences/sources.json": "aa728ce4083c7d242484c8f998168f5e61e03e30f312ff12b0bd4e02736b18c6",
+    "docs/pilots/sequences/queue.json": "2ad2477129d1d6aa871a07105c7a209df0ae66eefe452067f9e4acbac97ebcc4",
+    "explorations/literature.json": "59c3ff3246f7b5ba2b4b8dfe8f529116c134328180ce9f81229c3d3013edd56e",
+    "docs/coverage/registry.json": "8adc6ab70344ff5605f3bc5c6925827603d0a9102799781049c3749137fae2c4"
+  },
+  "counting": {
+    "newAuthoredLessons": 0,
+    "newAcceptedLessons": 0,
+    "newRuntimeIds": 0,
+    "newReleaseDecisions": 0
+  },
+  "normalization": {
+    "input": "UTF-8 HTML bytes pinned by source SHA-256",
+    "paragraphLocator": "One-based order of all explicit p elements in that snapshot, including empty and wrapper paragraphs.",
+    "removed": "Only span elements with exact class pagenum and their page-marker contents; all other HTML markup omitted while retaining visible text.",
+    "whitespace": "Decode HTML character references; collapse Unicode whitespace runs to one ASCII space and trim outer whitespace.",
+    "punctuation": "Retain all remaining characters, capitalization, spelling and punctuation. No Unicode normalization, silent emendation or modernization.",
+    "formatting": "Plain text only; source italics, link styling, paragraph indent and page layout are not reproduced.",
+    "hash": "SHA-256 of normalized paragraph UTF-8 bytes, with no trailing newline."
+  },
+  "sources": [
+    {
+      "id": "shelley-1818-pg41445",
+      "ebookNumber": "41445",
+      "title": "Frankenstein; Or, The Modern Prometheus",
+      "creator": "Mary Wollstonecraft Shelley",
+      "language": "en",
+      "edition": "1818; London: Lackington, Hughes, Harding, Mavor, & Jones",
+      "ebookUpdatedOn": "2026-10-06",
+      "readOn": "2026-10-22",
+      "url": "https://www.gutenberg.org/cache/epub/41445/pg41445-images.html",
+      "catalogUrl": "https://www.gutenberg.org/ebooks/41445",
+      "access": "body-read-and-local-html-snapshot",
+      "snapshotFilename": "41445.html",
+      "htmlSha256": "442588457a297158c93d5e270dfa7d9631f3dbcfe9aa471085a9a67bfb4b6b35",
+      "htmlBytes": 455200,
+      "limits": "Transcriber identifies a photo-reprint of the 1818 edition. Selected witness is the digital transcription; no print image or manuscript inspected.",
+      "reuseScope": "Historical selected text for this local preparation dossier; catalog states public domain in the USA. No illustrations, automatic summaries, modern site apparatus or full ebook are distributed. Actual public distribution and attribution/trademark terms remain to be reviewed."
+    },
+    {
+      "id": "shelley-1831-pg42324",
+      "ebookNumber": "42324",
+      "title": "Frankenstein; Or, The Modern Prometheus",
+      "creator": "Mary Wollstonecraft Shelley",
+      "language": "en",
+      "edition": "1831; London: H. Colburn and R. Bentley",
+      "ebookUpdatedOn": "2024-10-23",
+      "readOn": "2026-10-22",
+      "url": "https://www.gutenberg.org/cache/epub/42324/pg42324-images.html",
+      "catalogUrl": "https://www.gutenberg.org/ebooks/42324",
+      "access": "body-read-and-local-html-snapshot",
+      "snapshotFilename": "42324.html",
+      "htmlSha256": "064d998a86f630e7f6545d821b677f836c2f8e5c8275f2ceda762e7de4f81c92",
+      "htmlBytes": 481811,
+      "limits": "Selected witness is the digital transcription. Local differences do not establish all edition changes, editorial agency or authorial intention.",
+      "reuseScope": "Historical selected text for this local preparation dossier; catalog states public domain in the USA. No illustrations, automatic summaries, modern site apparatus or full ebook are distributed. Actual public distribution and attribution/trademark terms remain to be reviewed."
+    },
+    {
+      "id": "tagore-1918-pg33525",
+      "ebookNumber": "33525",
+      "title": "Stories from Tagore: The Cabuliwallah",
+      "creator": "Rabindranath Tagore; translation attributed to Sister Nivedita in this edition",
+      "language": "en",
+      "edition": "October 1918; New York: The Macmillan Company",
+      "ebookUpdatedOn": "2020-01-28",
+      "readOn": "2026-10-22",
+      "url": "https://www.gutenberg.org/cache/epub/33525/pg33525-images.html",
+      "catalogUrl": "https://www.gutenberg.org/ebooks/33525",
+      "access": "body-read-and-local-html-snapshot",
+      "snapshotFilename": "33525.html",
+      "htmlSha256": "94612df9df6ce26cbdedb0de5dabe084c370bc7a9969eb8356e62f69493d84ba",
+      "htmlBytes": 356795,
+      "limits": "Title/imprint and Notes p.223 inspected in the transcription. Preface describes slight revision of earlier volumes for a school reader; do not equate its wording with the 1912 translation or Gutenberg 2518. Bengali text and print-page pixels not inspected.",
+      "reuseScope": "Historical selected text for this local preparation dossier; catalog states public domain in the USA. No illustrations, automatic summaries, modern site apparatus or full ebook are distributed. Actual public distribution and attribution/trademark terms remain to be reviewed."
+    }
+  ],
+  "selections": [
+    {
+      "id": "f1818-family",
+      "sourceId": "shelley-1818-pg41445",
+      "htmlParagraphOneBased": 96,
+      "locator": "Volume I, chapter I",
+      "kind": "quotation",
+      "language": "en",
+      "text": "My father had a sister, whom he tenderly loved, and who had married early in life an Italian gentleman. Soon after her marriage, she had accompanied her husband into her native country, and for some years my father had very little communication with her. About the time I mentioned she died; and a few months afterwards he received a letter from her husband, acquainting him with his intention of marrying an Italian lady, and requesting my father to take charge of the infant Elizabeth, the only child of his deceased sister. “It is my wish,” he said, “that you should consider her as your own daughter, and educate her thus. Her mother’s fortune is secured to her, the documents of which I will commit to your keeping. Reflect upon this proposition; and decide whether you would prefer educating your niece yourself to her being brought up by a stepmother.”",
+      "textSha256": "6ff35db13344b979ee5fd6e1458dd73592ec3722eb7961db6ce62e9a6e969a3c",
+      "editorialEvidenceNote": "Victor reports his paternal aunt, her death, and her husband's proposed care arrangement; the quoted letter is still mediated by Victor."
+    },
+    {
+      "id": "f1818-arrival",
+      "sourceId": "shelley-1818-pg41445",
+      "htmlParagraphOneBased": 97,
+      "locator": "Volume I, chapter I",
+      "kind": "quotation",
+      "language": "en",
+      "text": "My father did not hesitate, and immediately went to Italy, that he might accompany the little Elizabeth to her future home. I have often heard my mother say, that she was at that time the most beautiful child she had ever seen, and shewed signs even then of a gentle and affectionate disposition. These indications, and a desire to bind as closely as possible the ties of domestic love, determined my mother to consider Elizabeth as my future wife; a design which she never found reason to repent.",
+      "textSha256": "1446ced990a774cf4bcc8a7b96f89b9cc80fa518563bf4a2a6784359f1036037",
+      "editorialEvidenceNote": "Distinguish the father's journey and the mother's reported words/plans from independent authorial explanation."
+    },
+    {
+      "id": "f1818-description",
+      "sourceId": "shelley-1818-pg41445",
+      "htmlParagraphOneBased": 98,
+      "locator": "Volume I, chapter I",
+      "kind": "quotation",
+      "language": "en",
+      "text": "From this time Elizabeth Lavenza became my playfellow, and, as we grew older, my friend. She was docile and good tempered, yet gay and playful as a summer insect. Although she was lively and animated, her feelings were strong and deep, and her disposition uncommonly affectionate. No one could better enjoy liberty, yet no one could submit with more grace than she did to constraint and caprice. Her imagination was luxuriant, yet her capability of application was great. Her person was the image of her mind; her hazel eyes, although as lively as a bird’s, possessed an attractive softness. Her figure was light and airy; and, though capable of enduring great fatigue, she appeared the most fragile creature in the world. While I admired her understanding and fancy, I loved to tend on her, as I should on a favourite animal; and I never saw so much grace both of person and mind united to so little pretension.",
+      "textSha256": "d0aa6d787aa8db3cf68983537cc3bb799371a01fd01c25e46a641470a3dc8506",
+      "editorialEvidenceNote": "Victor's evaluative description includes both admiration and possession-like comparison; retain wording without endorsing it."
+    },
+    {
+      "id": "f1831-encounter",
+      "sourceId": "shelley-1831-pg42324",
+      "htmlParagraphOneBased": 113,
+      "locator": "Chapter I",
+      "kind": "quotation",
+      "language": "en",
+      "text": "For a long time I was their only care. My mother had much desired to have a daughter, but I continued their single offspring. When I was about five years old, while making an excursion beyond the frontiers of Italy, they passed a week on the shores of the Lake of Como. Their benevolent disposition often made them enter the cottages of the poor. This, to my mother, was more than a duty; it was a necessity, a passion,—remembering what she had suffered, and how she had been relieved,—for her to act in her turn the guardian angel to the afflicted. During one of their walks a poor cot in the foldings of a vale attracted their notice, as being singularly disconsolate, while the number of half-clothed children gathered about it, spoke of penury in its worst shape. One day, when my father had gone by himself to Milan, my mother, accompanied by me, visited this abode. She found a peasant and his wife, hard working, bent down by care and labour, distributing a scanty meal to five hungry babes. Among these there was one which attracted my mother far above all the rest. She appeared of a different stock. The four others were dark-eyed, hardy little vagrants; this child was thin, and very fair. Her hair was the brightest living gold, and, despite the poverty of her clothing, seemed to set a crown of distinction on her head. Her brow was clear and ample, her blue eyes cloudless, and her lips and the moulding of her face so expressive of sensibility and sweetness, that none could behold her without looking on her as of a distinct species, a being heaven-sent, and bearing a celestial stamp in all her features.",
+      "textSha256": "e041ea1288bf9ace46b27d9708f7eea453d929a4d45b248dbdce07644ba3bd26",
+      "editorialEvidenceNote": "Appearance/class judgments belong to the narrator's presentation. This whole paragraph supplies the encounter before the origin account."
+    },
+    {
+      "id": "f1831-parentage",
+      "sourceId": "shelley-1831-pg42324",
+      "htmlParagraphOneBased": 114,
+      "locator": "Chapter I",
+      "kind": "quotation",
+      "language": "en",
+      "text": "The peasant woman, perceiving that my mother fixed eyes of wonder and admiration on this lovely girl, eagerly communicated her history. She was not her child, but the daughter of a Milanese nobleman. Her mother was a German, and had died on giving her birth. The infant had been placed with these good people to nurse: they were better off then. They had not been long married, and their eldest child was but just born. The father of their charge was one of those Italians nursed in the memory of the antique glory of Italy,—one among the schiavi ognor frementi, who exerted himself to obtain the liberty of his country. He became the victim of its weakness. Whether he had died, or still lingered in the dungeons of Austria, was not known. His property was confiscated, his child became an orphan and a beggar. She continued with her foster parents, and bloomed in their rude abode, fairer than a garden rose among dark-leaved brambles.",
+      "textSha256": "6f4bbe56bea69000fa43a8496fc68a49a3f42e6b883d527524e1c913cfe91e71",
+      "editorialEvidenceNote": "The peasant woman's account is mediated by Victor. The father's fate is uncertain within the passage; do not silently convert it to a witnessed death."
+    },
+    {
+      "id": "f1831-transfer",
+      "sourceId": "shelley-1831-pg42324",
+      "htmlParagraphOneBased": 115,
+      "locator": "Chapter I",
+      "kind": "quotation",
+      "language": "en",
+      "text": "When my father returned from Milan, he found playing with me in the hall of our villa, a child fairer than pictured cherub—a creature who seemed to shed radiance from her looks, and whose form and motions were lighter than the chamois of the hills. The apparition was soon explained. With his permission my mother prevailed on her rustic guardians to yield their charge to her. They were fond of the sweet orphan. Her presence had seemed a blessing to them; but it would be unfair to her to keep her in poverty and want, when Providence afforded her such powerful protection. They consulted their village priest, and the result was, that Elizabeth Lavenza became the inmate of my parents' house—my more than sister—the beautiful and adored companion of all my occupations and my pleasures.",
+      "textSha256": "cb36d88e9ca35204859c6c1a23010e2d1f3c65630d9d7446ac3cb3aacb8704ab",
+      "editorialEvidenceNote": "The narrator describes negotiations, guardians and priest. An interpretation of agency needs these words, not an invented legal adoption record."
+    },
+    {
+      "id": "f1831-gift",
+      "sourceId": "shelley-1831-pg42324",
+      "htmlParagraphOneBased": 116,
+      "locator": "Chapter I",
+      "kind": "quotation",
+      "language": "en",
+      "text": "Every one loved Elizabeth. The passionate and almost reverential attachment with which all regarded her became, while I shared it, my pride and my delight. On the evening previous to her being brought to my home, my mother had said playfully,—\"I have a pretty present for my Victor—to-morrow he shall have it.\" And when, on the morrow, she presented Elizabeth to me as her promised gift, I, with childish seriousness, interpreted her words literally, and looked upon Elizabeth as mine—mine to protect, love, and cherish. All praises bestowed on her, I received as made to a possession of my own. We called each other familiarly by the name of cousin. No word, no expression could body forth the kind of relation in which she stood to me—my more than sister, since till death she was to be mine only.",
+      "textSha256": "3cc688f33dbbf71a5fc842d17e5d8d5f95232996e63b8b6e975ee7fa401fbc1f",
+      "editorialEvidenceNote": "The familiar term cousin coexists with the different origin account. The gift/possession language supports a bounded reading of Victor, not a proven reason for Shelley's revision."
+    },
+    {
+      "id": "t1918-uncertainty",
+      "sourceId": "tagore-1918-pg33525",
+      "htmlParagraphOneBased": 35,
+      "locator": "The Cabuliwallah; transcribed pp.4-5",
+      "kind": "quotation",
+      "language": "en",
+      "text": "I cannot tell what were my daughter's feelings at the sight of this man, but she began to call him loudly. \"Ah!\" I thought, \"he will come in, and my seventeenth chapter will never be finished!\" At which exact moment the Cabuliwallah turned, and looked up at the child. When she saw this, overcome by terror, she fled to her mother's protection and disappeared. She had a blind belief that inside the bag, which the big man carried, there were perhaps two or three other children like herself. The pedlar meanwhile entered my doorway and greeted me with a smiling face.",
+      "textSha256": "a9feb7305f5691314a810ad2195ab81c59dec2e4d2c78167c6f41618b3fa4a4a",
+      "editorialEvidenceNote": "The father disclaims access to Mini's feelings, then narrates her belief. Allow a supported reading of this tension; do not force the whole paragraph into a single evidence category."
+    },
+    {
+      "id": "t1918-imagination",
+      "sourceId": "tagore-1918-pg33525",
+      "htmlParagraphOneBased": 52,
+      "locator": "The Cabuliwallah; transcribed p.8",
+      "kind": "quotation",
+      "language": "en",
+      "text": "These were autumn mornings, the very time of year when kings of old went forth to conquest; and I, never stirring from my little corner in Calcutta, would let my mind wander over the whole world. At the very name of another country, my heart would go out to it, and at the sight of a foreigner in the streets, I would fall to weaving a network of dreams,—the mountains, the glens, and the forests of his distant home, with his cottage in its setting, and the free and independent life of far-away wilds. Perhaps the scenes of travel conjure themselves up before me and pass and repass in my imagination all the more vividly, because I lead such a vegetable existence that a call to travel would fall upon me like a thunder-bolt. In the presence of this Cabuliwallah I was immediately transported to the foot of arid mountain peaks, with narrow little defiles twisting in and out amongst their towering heights. I could see the string of camels bearing the merchandise, and the company of turbanned merchants carrying some their queer old firearms, and some their spears, journeying downward towards the plains. I could see—. But at some such point Mini's mother would intervene, imploring me to \"beware of that man.\"",
+      "textSha256": "482e310aaef730e5f7febb31c3dfb8852aa3d0989af4f06f232a4749efe7a3ae",
+      "editorialEvidenceNote": "Explicitly imagined travel scenes do not establish actual places visited or generalized facts about traders."
+    },
+    {
+      "id": "t1918-incident",
+      "sourceId": "tagore-1918-pg33525",
+      "htmlParagraphOneBased": 61,
+      "locator": "The Cabuliwallah; transcribed pp.10-11",
+      "kind": "quotation",
+      "language": "en",
+      "text": "One morning, a few days before he had made up his mind to go, I was correcting my proof sheets in my study. It was chilly weather. Through the window the rays of the sun touched my feet, and the slight warmth was very welcome. It was almost eight o'clock, and the early pedestrians were returning home with their heads covered. All at once I heard an uproar in the street, and, looking out, saw Rahmun being led away bound between two policemen, and behind them a crowd of curious boys. There were blood-stains on the clothes of the Cabuliwallah, and one of the policemen carried a knife. Hurrying out, I stopped them, and inquired what it all meant. Partly from one, partly from another, I gathered that a certain neighbour had owed the pedlar something for a Rampuri shawl, but had falsely denied having bought it, and that in the course of the quarrel Rahmun had struck him. Now, in the heat of his excitement, the prisoner began calling his enemy all sorts of names, when suddenly in a verandah of my house appeared my little Mini, with her usual exclamation: \"O Cabuliwallah! Cabuliwallah!\" Rahmun's face lighted up as he turned to her. He had no bag under his arm to-day, so she could not discuss the elephant with him. She at once therefore proceeded to the next question: \"Are you going to the father-in-law's house?\" Rahmun laughed and said: \"Just where I am going, little one!\" Then, seeing that the reply did not amuse the child, he held up his fettered hands. \"Ah!\" he said, \"I would have thrashed that old father-in-law, but my hands are bound!\"",
+      "textSha256": "357a950d69f80890d4b801a9395e9d76de13a2da872ec634aa5333e032763562",
+      "editorialEvidenceNote": "Separate the narrator's hearing/seeing, gathered accounts of a quarrel, and quoted dialogue within one paragraph. He does not narrate witnessing the stabbing."
+    },
+    {
+      "id": "t1918-testimony",
+      "sourceId": "tagore-1918-pg33525",
+      "htmlParagraphOneBased": 75,
+      "locator": "The Cabuliwallah; transcribed p.14",
+      "kind": "quotation",
+      "language": "en",
+      "text": "I took them and was going to pay him, but he caught my hand and said: \"You are very kind, sir! Keep me in your recollection. Do not offer me money!—You have a little girl: I too have one like her in my own home. I think of her, and bring fruits to your child—not to make a profit for myself.\"",
+      "textSha256": "f07dc2ae03689db7701f9416ac5440771c60e7cd32e351d690a9d57a5573aa37",
+      "editorialEvidenceNote": "Rahmun's quoted explanation is speech represented by the narrator. It is distinct from the father's attributed account of another mind."
+    },
+    {
+      "id": "t1918-impression",
+      "sourceId": "tagore-1918-pg33525",
+      "htmlParagraphOneBased": 76,
+      "locator": "The Cabuliwallah; transcribed p.14",
+      "kind": "quotation",
+      "language": "en",
+      "text": "Saying this, he put his hand inside his big loose robe, and brought out a small and dirty piece of paper. With great care he unfolded this, and smoothed it out with both hands on my table. It bore the impression of a little hand. Not a photograph. Not a drawing. The impression of an ink-smeared hand laid flat on the paper. This touch of his own little daughter had been always on his heart, as he had come year after year to Calcutta to sell his wares in the streets.",
+      "textSha256": "c0142bc0531e25bc0d2bda298f8ee963815bc1d213e2f9a6aec6e04ac901c483",
+      "editorialEvidenceNote": "This witness reads hand. The paragraph combines handling an object with narration about its emotional history; a physical mark alone does not verify all that history."
+    },
+    {
+      "id": "t1918-attributed-thought",
+      "sourceId": "tagore-1918-pg33525",
+      "htmlParagraphOneBased": 82,
+      "locator": "The Cabuliwallah; transcribed p.15",
+      "kind": "quotation",
+      "language": "en",
+      "text": "I remembered the day when the Cabuliwallah and my Mini had first met, and I felt sad. When she had gone, Rahmun heaved a deep sigh, and sat down on the floor. The idea had suddenly come to him that his daughter too must have grown in this long time, and that he would have to make friends with her anew. Assuredly he would not find her as he used to know her. And besides, what might not have happened to her in these eight years?",
+      "textSha256": "9bf3931bb1bb8fb356861978aacd619912abcfba363f4ab23381aa3d46bef174",
+      "editorialEvidenceNote": "A sigh is narrated with a mental attribution and rhetorical question. Neither gives direct access outside the fiction to another person's thoughts."
+    },
+    {
+      "id": "t1918-mountains",
+      "sourceId": "tagore-1918-pg33525",
+      "htmlParagraphOneBased": 83,
+      "locator": "The Cabuliwallah; transcribed pp.15-16",
+      "kind": "quotation",
+      "language": "en",
+      "text": "The marriage-pipes sounded, and the mild autumn sun streamed round us. But Rahmun sat in the little Calcutta lane, and saw before him the barren mountains of Afghanistan.",
+      "textSha256": "105e7be6bebb6808469be75c55d1afb3847e8f29880c12650127558b4095b30e",
+      "editorialEvidenceNote": "The narrative locates Rahmun in Calcutta while describing Afghanistan before him; do not treat this as a witnessed journey."
+    },
+    {
+      "id": "t1918-gift",
+      "sourceId": "tagore-1918-pg33525",
+      "htmlParagraphOneBased": 84,
+      "locator": "The Cabuliwallah; transcribed p.16",
+      "kind": "quotation",
+      "language": "en",
+      "text": "I took out a bank-note and gave it to him, saying: \"Go back to your own daughter, Rahmun, in your own country, and may the happiness of your meeting bring good fortune to my child!\"",
+      "textSha256": "7c942c219d017c2061e7edad39082023d0ed1afe0ed683a0cac3820aa8a30151",
+      "editorialEvidenceNote": "Money and the father's spoken wish precede the ending. Preserve this boundary before evaluating the reunion claim."
+    },
+    {
+      "id": "t1918-ending",
+      "sourceId": "tagore-1918-pg33525",
+      "htmlParagraphOneBased": 85,
+      "locator": "The Cabuliwallah; transcribed p.16",
+      "kind": "quotation",
+      "language": "en",
+      "text": "Having made this present, I had to curtail some of the festivities. I could not have the electric lights I had intended, nor the military band, and the ladies of the house were despondent at it. But to me the wedding-feast was all the brighter for the thought that in a distant land a long-lost father met again with his only child.",
+      "textSha256": "29180f0f011784a054f031b3e47531d35155dd47b900ce4300e187c19cbb297c",
+      "editorialEvidenceNote": "The ending gives the father's thought of reunion, without narrating his observation of a reunion in Afghanistan."
+    }
+  ],
+  "editionDecision": {
+    "planningId": "P02-L03",
+    "priorSourceId": "seq-tagore-2518",
+    "selectedSourceId": "tagore-1918-pg33525",
+    "decision": "Select a distinct explicitly attributed 1918 school-reader witness for future preparation. This is not a correction or edition-identification claim about ebook 2518.",
+    "attributionEvidence": {
+      "locator": "Notes, I.—The Cabuliwallah; transcribed p.223; HTML paragraph 873",
+      "statement": "The present translation is by the late Sister Nivedita."
+    },
+    "revisionEvidence": {
+      "locator": "Preface; HTML paragraph 22",
+      "finding": "The edition describes slight revisions from earlier English volumes. Attribution to Nivedita does not identify who made every revision."
+    },
+    "anomalyDecision": "The selected 1918 witness reads hand in selection t1918-impression. The prior 2518 witness reads band; the origin of its anomaly remains unresolved. No silent emendation or merged translation.",
+    "limits": [
+      "Transcribed imprint/notes establish the selected digital witness's represented edition and explicit attribution, not independently observed print-page fidelity.",
+      "No Bengali source, translation equivalence, original authorial wording or community interpretation is certified.",
+      "Modern Review January 1912 discovery confirms a research lead, but its uninspected facsimile is not used to certify this selected wording."
+    ]
+  },
+  "preparationResults": [
+    {
+      "planningId": "P02-L02",
+      "resolved": "Exact selected digital-witness paragraphs, source snapshot hashes, normalization and punctuation-preserving text hashes.",
+      "remaining": "Final authored alignment/rubric and changed artifact review; broader source/print claims need corresponding evidence; authoring waits for draft capacity."
+    },
+    {
+      "planningId": "P02-L03",
+      "resolved": "Different inspected witness selected with explicit translator attribution and represented 1918 imprint; exact paragraphs frozen; band/hand issue avoided by transparent edition change.",
+      "remaining": "Original 2518 provenance and anomaly origin remain unresolved; final source/translation-context scope, artifact review, human observation requirements and authoring capacity remain open."
+    }
+  ],
+  "releaseLimits": [
+    "Local preparation dossier only; no new lesson, runtime identity, acceptance or publication.",
+    "Catalog public-domain-in-USA statements do not establish every jurisdiction or rights in modern assets.",
+    "Use source citations, original editorial notes and selected historical text; no copied illustrations, automatic summaries or study glossaries.",
+    "P01/P02 first-lesson human-check removal is not extended to follow-ups."
+  ],
+  "sourceAccessStops": []
+}

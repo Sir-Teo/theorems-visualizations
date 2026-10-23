@@ -232,6 +232,8 @@ Use **U0–U5** independently of content Wave 6, Wave 7, and later numbered wave
 
 The subsequent [library/local-context research packet](docs/coverage/research/library-context-20261022.md) adds 35 proposed LCC subclass routes, seven archived schedule examples, eight historical local-scheme comparisons and six follow-up research activities. These remain outside canonical totals. It preserves all 11 open gates, exact source-access limits and the distinction between classification, subject headings and community authority. Its [additive integration package](docs/integration/library-context.md) changes no accepted pilot or runtime.
 
+The [literature follow-up selection dossier](docs/pilots/sequences/preparation/literature-selections-20261022.md) now freezes 16 paragraphs across three inspected digital witnesses. It supplies exact 1818/1831 Frankenstein selections and explicitly selects the attributed, revised 1918 school-reader witness for P02-L03. Independent AI source/editorial review verifies the captured texts and limited interpretation; original ebook 2518 provenance remains unresolved. This is source preparation, with no new authored/accepted lesson or draft-slot change.
+
 ### 9.1 Eight pilot briefs for U1
 
 | Pilot | Bounded first exploration | Capability tested |
