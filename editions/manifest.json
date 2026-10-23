@@ -1,0 +1,29 @@
+{
+  "schemaVersion": 1,
+  "bundles": [
+    {
+      "id": "x-history-0001",
+      "revision": "0.1.2",
+      "path": "editions/bundles/x-history-0001/0.1.2.json",
+      "sha256": "6a98a6138dd8dc19833f6f2a9db87594b44f151a8ca41c25053673dff5ea6530"
+    },
+    {
+      "id": "x-literature-0001",
+      "revision": "0.1.2",
+      "path": "editions/bundles/x-literature-0001/0.1.2.json",
+      "sha256": "ffa0b020a06fb25061f3e1c31d70d10ade9ed4aa0e8fcbfdfcdec567e2f0e605"
+    },
+    {
+      "id": "x-philosophy-0001",
+      "revision": "0.1.0",
+      "path": "editions/bundles/x-philosophy-0001/0.1.0.json",
+      "sha256": "532076d58adc072726a860713209a9c838b326b73cf314a45d71a462c3714ac7"
+    },
+    {
+      "id": "x-agriculture-0001",
+      "revision": "0.1.0",
+      "path": "editions/bundles/x-agriculture-0001/0.1.0.json",
+      "sha256": "c8b6b3e1547df53f240ae8d132ea25dd471dd27007df28fe866febfdea9ae49e"
+    }
+  ]
+}

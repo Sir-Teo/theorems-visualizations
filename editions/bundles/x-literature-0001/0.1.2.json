@@ -1,0 +1,603 @@
+{
+  "schemaVersion": 1,
+  "id": "x-literature-0001",
+  "revision": "0.1.2",
+  "record": {
+    "schemaVersion": 1,
+    "revision": "0.1.2",
+    "status": "accepted",
+    "publication": "local-preview",
+    "author": "Atlas authoring task",
+    "updatedOn": "2026-10-22",
+    "prerequisites": [],
+    "relations": [],
+    "reviews": [
+      {
+        "dimension": "content",
+        "result": "passed",
+        "reviewer": {
+          "id": "atlas-ai-literature-review",
+          "role": "Independent AI English text/comparison reviewer; Japanese witness-boundary consistency only, no fresh Koto or specialist verification; text-only US local prototype rights evidence, no legal/public-release clearance",
+          "independent": true
+        },
+        "evidencePath": "docs/verification/universal-pilots-ai-literature.md",
+        "reviewedOn": "2026-10-22",
+        "revision": "0.1.1",
+        "contentDigest": "b562d61ebf5ca44e5e9981c44f24f2203b0b84ba1c5cd975d5a433d9e4084df0",
+        "artifactDigest": "182f56098fe2684c55f6e35d1e9e40c982fb7ebf74fe8be6fa720be464a2b3b2"
+      },
+      {
+        "dimension": "language",
+        "result": "passed",
+        "reviewer": {
+          "id": "atlas-ai-literature-review",
+          "role": "Independent AI English text/comparison reviewer; Japanese witness-boundary consistency only, no fresh Koto or specialist verification; text-only US local prototype rights evidence, no legal/public-release clearance",
+          "independent": true
+        },
+        "evidencePath": "docs/verification/universal-pilots-ai-literature.md",
+        "reviewedOn": "2026-10-22",
+        "revision": "0.1.1",
+        "contentDigest": "b562d61ebf5ca44e5e9981c44f24f2203b0b84ba1c5cd975d5a433d9e4084df0",
+        "artifactDigest": "182f56098fe2684c55f6e35d1e9e40c982fb7ebf74fe8be6fa720be464a2b3b2"
+      },
+      {
+        "dimension": "rights",
+        "result": "passed",
+        "reviewer": {
+          "id": "atlas-ai-literature-review",
+          "role": "Independent AI English text/comparison reviewer; Japanese witness-boundary consistency only, no fresh Koto or specialist verification; text-only US local prototype rights evidence, no legal/public-release clearance",
+          "independent": true
+        },
+        "evidencePath": "docs/verification/universal-pilots-ai-literature.md",
+        "reviewedOn": "2026-10-22",
+        "revision": "0.1.1",
+        "contentDigest": "b562d61ebf5ca44e5e9981c44f24f2203b0b84ba1c5cd975d5a433d9e4084df0",
+        "artifactDigest": "182f56098fe2684c55f6e35d1e9e40c982fb7ebf74fe8be6fa720be464a2b3b2"
+      },
+      {
+        "dimension": "content",
+        "result": "passed",
+        "reviewer": {
+          "id": "atlas-ai-literature-review",
+          "role": "Independent AI English text/comparison reviewer; Japanese witness-boundary consistency only, no fresh Koto or specialist verification; text-only US local prototype rights evidence, no legal/public-release clearance",
+          "independent": true
+        },
+        "evidencePath": "docs/verification/universal-pilots-ai-literature.md",
+        "reviewedOn": "2026-10-22",
+        "revision": "0.1.2",
+        "contentDigest": "f19e81195af44e606595a8d44c7ad16487e29bddbb30ed510e240c0c28416f95",
+        "artifactDigest": "2e550a22fd30abaf6a6f5b4d0795701c0e42927d4a7df1743a55b1291cd537be"
+      },
+      {
+        "dimension": "language",
+        "result": "passed",
+        "reviewer": {
+          "id": "atlas-ai-literature-review",
+          "role": "Independent AI English text/comparison reviewer; Japanese witness-boundary consistency only, no fresh Koto or specialist verification; text-only US local prototype rights evidence, no legal/public-release clearance",
+          "independent": true
+        },
+        "evidencePath": "docs/verification/universal-pilots-ai-literature.md",
+        "reviewedOn": "2026-10-22",
+        "revision": "0.1.2",
+        "contentDigest": "f19e81195af44e606595a8d44c7ad16487e29bddbb30ed510e240c0c28416f95",
+        "artifactDigest": "2e550a22fd30abaf6a6f5b4d0795701c0e42927d4a7df1743a55b1291cd537be"
+      },
+      {
+        "dimension": "rights",
+        "result": "passed",
+        "reviewer": {
+          "id": "atlas-ai-literature-review",
+          "role": "Independent AI English text/comparison reviewer; Japanese witness-boundary consistency only, no fresh Koto or specialist verification; text-only US local prototype rights evidence, no legal/public-release clearance",
+          "independent": true
+        },
+        "evidencePath": "docs/verification/universal-pilots-ai-literature.md",
+        "reviewedOn": "2026-10-22",
+        "revision": "0.1.2",
+        "contentDigest": "f19e81195af44e606595a8d44c7ad16487e29bddbb30ed510e240c0c28416f95",
+        "artifactDigest": "2e550a22fd30abaf6a6f5b4d0795701c0e42927d4a7df1743a55b1291cd537be"
+      },
+      {
+        "dimension": "content",
+        "result": "passed",
+        "reviewer": {
+          "id": "literature_review",
+          "role": "Independent AI textual/English-language and scoped prototype-rights reviewer",
+          "independent": true
+        },
+        "revision": "0.1.2",
+        "contentDigest": "f19e81195af44e606595a8d44c7ad16487e29bddbb30ed510e240c0c28416f95",
+        "artifactDigest": "9597e55409651d2ab0af404cd7d5d9c9ef7b8598e1c21e82ff84a58d39ade0a3",
+        "evidencePath": "docs/verification/universal-pilots-ai-literature.md",
+        "reviewedOn": "2026-10-22"
+      },
+      {
+        "dimension": "language",
+        "result": "passed",
+        "reviewer": {
+          "id": "literature_review",
+          "role": "Independent AI textual/English-language and scoped prototype-rights reviewer",
+          "independent": true
+        },
+        "revision": "0.1.2",
+        "contentDigest": "f19e81195af44e606595a8d44c7ad16487e29bddbb30ed510e240c0c28416f95",
+        "artifactDigest": "9597e55409651d2ab0af404cd7d5d9c9ef7b8598e1c21e82ff84a58d39ade0a3",
+        "evidencePath": "docs/verification/universal-pilots-ai-literature.md",
+        "reviewedOn": "2026-10-22"
+      },
+      {
+        "dimension": "rights",
+        "result": "passed",
+        "reviewer": {
+          "id": "literature_review",
+          "role": "Independent AI textual/English-language and scoped prototype-rights reviewer",
+          "independent": true
+        },
+        "revision": "0.1.2",
+        "contentDigest": "f19e81195af44e606595a8d44c7ad16487e29bddbb30ed510e240c0c28416f95",
+        "artifactDigest": "9597e55409651d2ab0af404cd7d5d9c9ef7b8598e1c21e82ff84a58d39ade0a3",
+        "evidencePath": "docs/verification/universal-pilots-ai-literature.md",
+        "reviewedOn": "2026-10-22"
+      },
+      {
+        "dimension": "content",
+        "result": "passed",
+        "reviewer": {
+          "id": "literature_review",
+          "role": "Independent AI textual/English-language and scoped prototype-rights reviewer",
+          "independent": true
+        },
+        "revision": "0.1.2",
+        "contentDigest": "f19e81195af44e606595a8d44c7ad16487e29bddbb30ed510e240c0c28416f95",
+        "artifactDigest": "04a0e3d355997fe2c55a8af73d3c707c2aefdb51915a83e7cf66403cc6609e95",
+        "evidencePath": "docs/verification/universal-pilots-ai-literature.md",
+        "reviewedOn": "2026-10-22"
+      },
+      {
+        "dimension": "language",
+        "result": "passed",
+        "reviewer": {
+          "id": "literature_review",
+          "role": "Independent AI textual/English-language and scoped prototype-rights reviewer",
+          "independent": true
+        },
+        "revision": "0.1.2",
+        "contentDigest": "f19e81195af44e606595a8d44c7ad16487e29bddbb30ed510e240c0c28416f95",
+        "artifactDigest": "04a0e3d355997fe2c55a8af73d3c707c2aefdb51915a83e7cf66403cc6609e95",
+        "evidencePath": "docs/verification/universal-pilots-ai-literature.md",
+        "reviewedOn": "2026-10-22"
+      },
+      {
+        "dimension": "rights",
+        "result": "passed",
+        "reviewer": {
+          "id": "literature_review",
+          "role": "Independent AI textual/English-language and scoped prototype-rights reviewer",
+          "independent": true
+        },
+        "revision": "0.1.2",
+        "contentDigest": "f19e81195af44e606595a8d44c7ad16487e29bddbb30ed510e240c0c28416f95",
+        "artifactDigest": "04a0e3d355997fe2c55a8af73d3c707c2aefdb51915a83e7cf66403cc6609e95",
+        "evidencePath": "docs/verification/universal-pilots-ai-literature.md",
+        "reviewedOn": "2026-10-22"
+      },
+      {
+        "dimension": "content",
+        "result": "passed",
+        "reviewer": {
+          "id": "literature_review",
+          "role": "Independent AI textual/English-language and scoped prototype-rights reviewer",
+          "independent": true
+        },
+        "revision": "0.1.2",
+        "contentDigest": "f19e81195af44e606595a8d44c7ad16487e29bddbb30ed510e240c0c28416f95",
+        "artifactDigest": "9a7cc8ac0bc6b2cb9df513f40738baf8283c9604cc55a7698c79f1bbcf269b74",
+        "evidencePath": "docs/verification/universal-pilots-ai-literature.md",
+        "reviewedOn": "2026-10-22"
+      },
+      {
+        "dimension": "language",
+        "result": "passed",
+        "reviewer": {
+          "id": "literature_review",
+          "role": "Independent AI textual/English-language and scoped prototype-rights reviewer",
+          "independent": true
+        },
+        "revision": "0.1.2",
+        "contentDigest": "f19e81195af44e606595a8d44c7ad16487e29bddbb30ed510e240c0c28416f95",
+        "artifactDigest": "9a7cc8ac0bc6b2cb9df513f40738baf8283c9604cc55a7698c79f1bbcf269b74",
+        "evidencePath": "docs/verification/universal-pilots-ai-literature.md",
+        "reviewedOn": "2026-10-22"
+      },
+      {
+        "dimension": "rights",
+        "result": "passed",
+        "reviewer": {
+          "id": "literature_review",
+          "role": "Independent AI textual/English-language and scoped prototype-rights reviewer",
+          "independent": true
+        },
+        "revision": "0.1.2",
+        "contentDigest": "f19e81195af44e606595a8d44c7ad16487e29bddbb30ed510e240c0c28416f95",
+        "artifactDigest": "9a7cc8ac0bc6b2cb9df513f40738baf8283c9604cc55a7698c79f1bbcf269b74",
+        "evidencePath": "docs/verification/universal-pilots-ai-literature.md",
+        "reviewedOn": "2026-10-22"
+      }
+    ],
+    "extensions": {},
+    "id": "x-literature-0001",
+    "pilotId": "P02",
+    "title": "One pond, two translations",
+    "subtitle": "Reading choices in Aston and Hearn",
+    "summary": "Compare two historical English versions of Bashō’s poem. Locate a difference, distinguish observation from interpretation, and support a reading without declaring one final meaning.",
+    "domainIds": [
+      "D24",
+      "D23"
+    ],
+    "knowledgeModes": [
+      "interpretive",
+      "historical"
+    ],
+    "methods": [
+      "annotation",
+      "source-comparison"
+    ],
+    "audience": "General readers; Japanese is not required.",
+    "relatedCollectionIds": [
+      "ling",
+      "art"
+    ],
+    "scope": "One poem and two historical English renditions. The Japanese display follows a named modern institutional transcription, not an inspected manuscript.",
+    "reviewRequirements": [
+      "content",
+      "language",
+      "rights"
+    ],
+    "sources": [
+      {
+        "id": "aston-pond",
+        "title": "W. G. Aston’s translation",
+        "url": "https://poets.org/poem/ancient-pond/embed",
+        "locator": "Complete poem; credited to A History of Japanese Literature (William Heinemann, 1899)",
+        "creator": "Matsuo Bashō; English translation by William George Aston",
+        "date": "1899",
+        "language": "en",
+        "rights": {
+          "decision": "usable-for-prototype",
+          "basis": "The Academy of American Poets explicitly marks the selected poem public domain. Only the poem is reproduced, with author/translator/edition attribution.",
+          "scope": "US local prototype; wider distribution requires release-specific review.",
+          "excludedAssets": [
+            "Facsimile images",
+            "Website design and editorial copy",
+            "Audio and video"
+          ]
+        }
+      },
+      {
+        "id": "hearn-pond",
+        "title": "Lafcadio Hearn’s rendition",
+        "url": "https://www.gutenberg.org/files/42735/42735-h/42735-h.htm",
+        "locator": "Exotics and Retrospectives, “Frogs,” printed p. 164; digitized 1914 edition, copyright 1898",
+        "creator": "Matsuo Bashō; English rendition by Lafcadio Hearn",
+        "date": "1914 selected edition; copyright 1898",
+        "language": "en",
+        "rights": {
+          "decision": "usable-for-prototype",
+          "basis": "The Project Gutenberg catalog for ebook 42735 declares public domain in the USA. Only the historical rendition is reproduced; surrounding essay and ebook wrapper are not.",
+          "scope": "US local prototype; wider distribution requires release-specific review.",
+          "excludedAssets": [
+            "Facsimile images",
+            "Website design and editorial copy",
+            "Audio and video"
+          ]
+        }
+      },
+      {
+        "id": "koto-basho",
+        "title": "Japanese text displayed by Koto City for the Bashō Memorial Museum exhibition",
+        "url": "https://www.city.koto.lg.jp/kuse/koho/houdou/r08/r0810/r081002furuike.html",
+        "locator": "Press release dated October 2, 2026, page 40001, first paragraph",
+        "creator": "Matsuo Bashō; modern display transcription by Koto City",
+        "date": "Poem associated with 1686; display source 2026",
+        "language": "ja",
+        "rights": {
+          "decision": "usable-for-prototype",
+          "basis": "Underlying seventeenth-century poem is public domain. The text is reproduced without municipal commentary, photographs or other page assets. Display-source spelling is retained.",
+          "scope": "US local prototype; wider distribution requires release-specific review.",
+          "excludedAssets": [
+            "Facsimile images",
+            "Website design and editorial copy",
+            "Audio and video"
+          ]
+        }
+      }
+    ],
+    "passages": [
+      {
+        "id": "aston",
+        "sourceId": "aston-pond",
+        "title": "Aston · 1899",
+        "text": "An ancient pond!\nWith a sound from the water\nOf the frog as it plunges in.",
+        "context": "Line breaks and punctuation follow the selected Academy of American Poets text.",
+        "language": "en",
+        "form": "quotation",
+        "sha256": "87bade38fb1bae4f96ebb1e83471750a09634c86f5f715a589b13622e829f333"
+      },
+      {
+        "id": "hearn",
+        "sourceId": "hearn-pond",
+        "title": "Hearn · selected 1914 edition",
+        "text": "Old pond—frogs jumping in—sound of water.",
+        "context": "This is one parenthetical rendition in an essay, presented here without the surrounding quotation marks/parentheses. It is not reformatted as three source lines.",
+        "language": "en",
+        "form": "quotation",
+        "sha256": "9a7d19b8ed07af8504e08844a40c12376ff10b0ed748056cdc959f6d73356fd5"
+      },
+      {
+        "id": "japanese",
+        "sourceId": "koto-basho",
+        "title": "Japanese · named display witness",
+        "text": "古池や蛙飛こむ水のおと",
+        "context": "Spelling follows the October 2, 2026 Koto City display. It is not modernized to 飛び込む or 音. No claim is made that this is a facsimile, a critical edition, or proof of every original-language reading.",
+        "language": "ja",
+        "form": "quotation",
+        "sha256": "84ff990a1271f97df8b965f926b34f287f426933dfe37d20eedf7e554ce69195"
+      }
+    ],
+    "claims": [
+      {
+        "id": "l-number",
+        "kind": "textual",
+        "text": "These English versions differ in how they express the frog or frogs.",
+        "passageIds": [
+          "aston",
+          "hearn"
+        ],
+        "qualification": "An English-text observation, not a finding about number in Japanese."
+      },
+      {
+        "id": "l-sound",
+        "kind": "interpretive",
+        "text": "Order and punctuation can invite different experiences of movement and sound.",
+        "passageIds": [
+          "aston",
+          "hearn"
+        ],
+        "qualification": "A possible reading that needs evidence; other readings can be defensible."
+      }
+    ],
+    "context": [
+      "A translation is a particular writer’s rendering, not a transparent replacement for every feature of the source language.",
+      "The Japanese panel preserves a named institutional display text for context. The first task compares English; it does not automatically grade Japanese grammar or fidelity.",
+      "Hearn’s wider essay makes historical and linguistic claims that are not adopted here. This activity uses the selected rendition only."
+    ],
+    "timeline": [],
+    "activity": {
+      "type": "annotation",
+      "lenses": [
+        {
+          "id": "number",
+          "label": "Number",
+          "observation": "Aston writes “the frog”; Hearn writes “frogs”.",
+          "question": "How might one pictured creature differ from a less individually focused scene?",
+          "readings": [
+            "The singular can invite attention to one movement.",
+            "The plural may invite a wider scene, but does not prove simultaneous jumps."
+          ],
+          "boundary": "The English wording alone cannot determine how many frogs the Japanese poem denotes."
+        },
+        {
+          "id": "order",
+          "label": "Movement and sound",
+          "observation": "Aston names sound before the plunging phrase; Hearn puts jumping before sound.",
+          "question": "Does the order alter what you imagine noticing first?",
+          "readings": [
+            "One reader may hear the event before reconstructing the movement.",
+            "Another may experience the movement and its sound as one compact event."
+          ],
+          "boundary": "Reading order is observable; the reader’s imagined sequence is an interpretation."
+        },
+        {
+          "id": "punctuation",
+          "label": "Punctuation and pace",
+          "observation": "The selected Aston display uses an exclamation mark and three lines; the Hearn display uses dashes without authored line breaks.",
+          "question": "What pauses do you hear or imagine, and which marks support them?",
+          "readings": [
+            "The exclamation can emphasize an opening perception.",
+            "The dashes can suggest cuts or connections; they do not force one emotional response."
+          ],
+          "boundary": "These are features of the selected English web transcriptions. This activity does not establish the original books’ page layouts or reconstruct Bashō’s punctuation."
+        }
+      ],
+      "transfer": "Someone says Hearn’s plural proves that Bashō saw several frogs. Which part is observable in the English text, and which part needs evidence beyond it?",
+      "rubric": [
+        "Point to exact wording in the named version.",
+        "Separate observation, possible effect and original-language claim.",
+        "Allow a different reading when it accounts for the same evidence."
+      ]
+    },
+    "previousRevisions": [
+      "0.1.0",
+      "0.1.1"
+    ],
+    "reviewLimitations": [
+      "Screen-reader and learner sessions have not been performed."
+    ]
+  },
+  "context": {
+    "domainIds": [
+      "D01",
+      "D02",
+      "D03",
+      "D04",
+      "D05",
+      "D06",
+      "D07",
+      "D08",
+      "D09",
+      "D10",
+      "D11",
+      "D12",
+      "D13",
+      "D14",
+      "D15",
+      "D16",
+      "D17",
+      "D18",
+      "D19",
+      "D20",
+      "D21",
+      "D22",
+      "D23",
+      "D24",
+      "D25",
+      "D26",
+      "D27",
+      "D28",
+      "D29",
+      "D30"
+    ],
+    "collectionIds": [
+      "pma",
+      "rca",
+      "fa",
+      "ode",
+      "pde",
+      "vcalc",
+      "ladr",
+      "alg",
+      "rep",
+      "top",
+      "dg",
+      "mfd",
+      "prob",
+      "stoch",
+      "graph",
+      "comb",
+      "nt",
+      "logic",
+      "num",
+      "nla",
+      "opt",
+      "stat",
+      "ml",
+      "deep",
+      "causal",
+      "algo",
+      "toc",
+      "cplx",
+      "info",
+      "crypto",
+      "dist",
+      "pl",
+      "cg",
+      "mech",
+      "em",
+      "waves",
+      "thermo",
+      "qm",
+      "cm",
+      "qinfo",
+      "rel",
+      "astro",
+      "fluid",
+      "pchem",
+      "kin",
+      "qchem",
+      "xtal",
+      "mat",
+      "geol",
+      "geo",
+      "climate",
+      "geog",
+      "popgen",
+      "mathbio",
+      "ecol",
+      "neuro",
+      "bioinf",
+      "sysbio",
+      "physio",
+      "pharm",
+      "epi",
+      "imaging",
+      "sig",
+      "ctrl",
+      "circ",
+      "energy",
+      "solid",
+      "robot",
+      "aero",
+      "micro",
+      "macro",
+      "fin",
+      "game",
+      "behav",
+      "psych",
+      "soc",
+      "polsci",
+      "demo",
+      "music",
+      "art",
+      "arch",
+      "ling",
+      "phil",
+      "tech",
+      "bighist"
+    ],
+    "sourceIds": [
+      "isced2013",
+      "isced-finnish",
+      "ford2015",
+      "agrovoc",
+      "mesh",
+      "getty",
+      "telegram",
+      "wilson1917",
+      "archive-analysis",
+      "aston-pond",
+      "hearn-pond",
+      "ndl-pond",
+      "legge-analects",
+      "web-matthew",
+      "cra9",
+      "cra19",
+      "cra20",
+      "cra22",
+      "govuk-refunds",
+      "ogl",
+      "fao-soil",
+      "reesh-data",
+      "nhlbi-breathing",
+      "openstax-breathing",
+      "openstax-respiration",
+      "textile-techniques",
+      "carnegie-expression",
+      "wcag-keyboard",
+      "wcag-dragging",
+      "wcag-nontext",
+      "koto-basho",
+      "nara-reuse",
+      "gutenberg42735",
+      "copyright-basics",
+      "eno-analects",
+      "sep-confucius",
+      "web-rights"
+    ],
+    "knownItemIds": []
+  },
+  "collectionTitles": {
+    "ling": "Linguistics",
+    "art": "Visual Art & Color"
+  },
+  "runtimeDigest": "860f837c7c5bc55c077ec10ee235e326b01a1074104b10f953b7c182ad4f1c53",
+  "contentDigest": "f19e81195af44e606595a8d44c7ad16487e29bddbb30ed510e240c0c28416f95",
+  "artifactDigest": "9a7cc8ac0bc6b2cb9df513f40738baf8283c9604cc55a7698c79f1bbcf269b74",
+  "previewHTML": "<!doctype html>\n<html lang=\"en\"><head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width,initial-scale=1\">\n<meta name=\"robots\" content=\"noindex,nofollow\"><meta name=\"description\" content=\"Draft source-based explorations for Ideas, Visualized.\">\n<title>One pond, two translations · Ideas, Visualized</title><link rel=\"stylesheet\" href=\"../../../explorations/style.css\"></head>\n<body><a class=\"skip\" href=\"#main\">Skip to the exploration</a>\n<header class=\"site-header\"><a href=\"../../../#/\">Ideas, Visualized</a><span>Exploration workshop</span></header>\n<main id=\"main\" tabindex=\"-1\"><nav aria-label=\"Workshop\"><a href=\"../\">← All pilot explorations</a></nav>\n    <section class=\"hero\"><p class=\"eyebrow\">Reviewed · local preview</p><h1>One pond, two translations</h1>\n    <p class=\"subtitle\">Reading choices in Aston and Hearn</p><p class=\"lede\">Compare two historical English versions of Bashō’s poem. Locate a difference, distinguish observation from interpretation, and support a reading without declaring one final meaning.</p>\n    <p class=\"muted\">Screen-reader and learner sessions have not been performed.</p>\n    <p class=\"scope\">One poem and two historical English renditions. The Japanese display follows a named modern institutional transcription, not an inspected manuscript.</p><ol class=\"steps\"><li>Read the sources</li><li>Explore the evidence</li><li>Explain a limitation</li></ol></section>\n    <section aria-labelledby=\"source-heading\"><div class=\"section-heading\"><span>01</span><h2 id=\"source-heading\">Read closely</h2></div>\n    <div class=\"sources\"><article class=\"source-card\" id=\"passage-aston\" data-passage=\"aston\">\n      <p class=\"eyebrow\">Matsuo Bashō; English translation by William George Aston</p><h3>Aston · 1899</h3>\n      <p class=\"source-form\">Quotation</p>\n      <blockquote lang=\"en\">An ancient pond!\nWith a sound from the water\nOf the frog as it plunges in.</blockquote>\n      <p><strong>Editorial context:</strong> Line breaks and punctuation follow the selected Academy of American Poets text.</p><details><summary>Source and reuse details</summary>\n      <p><a href=\"https://poets.org/poem/ancient-pond/embed\">W. G. Aston’s translation</a></p><p>Complete poem; credited to A History of Japanese Literature (William Heinemann, 1899) · 1899</p>\n      <p>The Academy of American Poets explicitly marks the selected poem public domain. Only the poem is reproduced, with author/translator/edition attribution.</p><p class=\"muted\">US local prototype; wider distribution requires release-specific review.</p></details></article><article class=\"source-card\" id=\"passage-hearn\" data-passage=\"hearn\">\n      <p class=\"eyebrow\">Matsuo Bashō; English rendition by Lafcadio Hearn</p><h3>Hearn · selected 1914 edition</h3>\n      <p class=\"source-form\">Quotation</p>\n      <blockquote lang=\"en\">Old pond—frogs jumping in—sound of water.</blockquote>\n      <p><strong>Editorial context:</strong> This is one parenthetical rendition in an essay, presented here without the surrounding quotation marks/parentheses. It is not reformatted as three source lines.</p><details><summary>Source and reuse details</summary>\n      <p><a href=\"https://www.gutenberg.org/files/42735/42735-h/42735-h.htm\">Lafcadio Hearn’s rendition</a></p><p>Exotics and Retrospectives, “Frogs,” printed p. 164; digitized 1914 edition, copyright 1898 · 1914 selected edition; copyright 1898</p>\n      <p>The Project Gutenberg catalog for ebook 42735 declares public domain in the USA. Only the historical rendition is reproduced; surrounding essay and ebook wrapper are not.</p><p class=\"muted\">US local prototype; wider distribution requires release-specific review.</p></details></article><article class=\"source-card\" id=\"passage-japanese\" data-passage=\"japanese\">\n      <p class=\"eyebrow\">Matsuo Bashō; modern display transcription by Koto City</p><h3>Japanese · named display witness</h3>\n      <p class=\"source-form\">Quotation</p>\n      <blockquote lang=\"ja\">古池や蛙飛こむ水のおと</blockquote>\n      <p><strong>Editorial context:</strong> Spelling follows the October 2, 2026 Koto City display. It is not modernized to 飛び込む or 音. No claim is made that this is a facsimile, a critical edition, or proof of every original-language reading.</p><details><summary>Source and reuse details</summary>\n      <p><a href=\"https://www.city.koto.lg.jp/kuse/koho/houdou/r08/r0810/r081002furuike.html\">Japanese text displayed by Koto City for the Bashō Memorial Museum exhibition</a></p><p>Press release dated October 2, 2026, page 40001, first paragraph · Poem associated with 1686; display source 2026</p>\n      <p>Underlying seventeenth-century poem is public domain. The text is reproduced without municipal commentary, photographs or other page assets. Display-source spelling is retained.</p><p class=\"muted\">US local prototype; wider distribution requires release-specific review.</p></details></article></div></section>\n    <section class=\"context\"><h2>What this exploration can establish</h2><ul><li>A translation is a particular writer’s rendering, not a transparent replacement for every feature of the source language.</li><li>The Japanese panel preserves a named institutional display text for context. The first task compares English; it does not automatically grade Japanese grammar or fidelity.</li><li>Hearn’s wider essay makes historical and linguistic claims that are not adopted here. This activity uses the selected rendition only.</li></ul>\n\n    </section>\n\n    <section class=\"activity\" aria-labelledby=\"activity-heading\"><div class=\"section-heading\"><span>02</span><h2 id=\"activity-heading\">Explore the evidence</h2></div>\n    <noscript><p>The source text, comparison guides and transfer task work without JavaScript. Use the guides below and write your notes separately.</p></noscript>\n    <div class=\"interactive\" hidden><label for=\"lens\">Choose a reading focus</label>\n    <select id=\"lens\"><option value=\"number\">Number</option><option value=\"order\">Movement and sound</option><option value=\"punctuation\">Punctuation and pace</option></select>\n    <div id=\"lens-detail\" class=\"lens-detail\" aria-live=\"polite\"></div>\n    <label for=\"category\">What kind of note are you writing?</label>\n    <select id=\"category\"><option value=\"observation\">An observation about these words</option><option value=\"interpretation\">A possible interpretation</option><option value=\"needs-language-evidence\">A claim needing original-language evidence</option></select></div>\n    <details class=\"static-guide\"><summary>Read all three comparison guides</summary>\n    <section><h3>Number</h3><p>Aston writes “the frog”; Hearn writes “frogs”.</p><p>How might one pictured creature differ from a less individually focused scene?</p><ul><li>The singular can invite attention to one movement.</li><li>The plural may invite a wider scene, but does not prove simultaneous jumps.</li></ul><p>The English wording alone cannot determine how many frogs the Japanese poem denotes.</p></section><section><h3>Movement and sound</h3><p>Aston names sound before the plunging phrase; Hearn puts jumping before sound.</p><p>Does the order alter what you imagine noticing first?</p><ul><li>One reader may hear the event before reconstructing the movement.</li><li>Another may experience the movement and its sound as one compact event.</li></ul><p>Reading order is observable; the reader’s imagined sequence is an interpretation.</p></section><section><h3>Punctuation and pace</h3><p>The selected Aston display uses an exclamation mark and three lines; the Hearn display uses dashes without authored line breaks.</p><p>What pauses do you hear or imagine, and which marks support them?</p><ul><li>The exclamation can emphasize an opening perception.</li><li>The dashes can suggest cuts or connections; they do not force one emotional response.</li></ul><p>These are features of the selected English web transcriptions. This activity does not establish the original books’ page layouts or reconstruct Bashō’s punctuation.</p></section></details><div class=\"interactive notes\" hidden><label for=\"notes\">Your evidence and explanation</label>\n    <textarea id=\"notes\" rows=\"5\" maxlength=\"1500\" aria-describedby=\"notes-help\" placeholder=\"Name the words, then explain what they support and what they do not.\"></textarea>\n    <p id=\"notes-help\" class=\"muted\">One notebook for this exploration revision, up to 1,500 characters. Notes stay in this browser. Shared links contain selections only. Nothing is sent to a server.</p>\n    <p id=\"save-status\" role=\"status\" class=\"muted\"></p>\n    <div class=\"actions\"><button id=\"share\" type=\"button\">Copy a link to these selections</button><button id=\"export\" type=\"button\">Export notes</button><button id=\"previous-notes\" type=\"button\" hidden>Export earlier notes</button><button id=\"reset\" type=\"button\">Reset and erase this revision’s notes</button></div>\n    <label id=\"share-label\" for=\"share-url\" hidden>Shareable link (notes excluded)</label><input id=\"share-url\" readonly hidden>\n    <p id=\"state-status\" role=\"status\"></p></div></section>\n    <section class=\"transfer\" aria-labelledby=\"transfer-heading\"><div class=\"section-heading\"><span>03</span><h2 id=\"transfer-heading\">Try the idea elsewhere</h2></div>\n    <p>Someone says Hearn’s plural proves that Bashō saw several frogs. Which part is observable in the English text, and which part needs evidence beyond it?</p><details><summary>What a careful explanation includes</summary><ul><li>Point to exact wording in the named version.</li><li>Separate observation, possible effect and original-language claim.</li><li>Allow a different reading when it accounts for the same evidence.</li></ul></details>\n    <p>There is no automatic score for your written interpretation. Use the guide to inspect your reasoning.</p></section>\n    <section class=\"related\"><h2>Connections into the atlas</h2><p>Optional collection routes; these are not prerequisites or independent evidence for this task.</p>\n    <div class=\"actions\"><a href=\"../../../#/c/ling\">Linguistics</a><a href=\"../../../#/c/art\">Visual Art &amp; Color</a></div></section>\n    </main><footer><p>Local previews. Review scope and public release are separate.</p><a href=\"../../../docs/master-plan-handoff.md\">Editorial status and next work</a></footer><script id=\"exploration-data\" type=\"application/json\">{\"schemaVersion\":1,\"revision\":\"0.1.2\",\"status\":\"accepted\",\"publication\":\"local-preview\",\"author\":\"Atlas authoring task\",\"updatedOn\":\"2026-10-22\",\"prerequisites\":[],\"relations\":[],\"reviews\":[{\"dimension\":\"content\",\"result\":\"passed\",\"reviewer\":{\"id\":\"atlas-ai-literature-review\",\"role\":\"Independent AI English text/comparison reviewer; Japanese witness-boundary consistency only, no fresh Koto or specialist verification; text-only US local prototype rights evidence, no legal/public-release clearance\",\"independent\":true},\"evidencePath\":\"docs/verification/universal-pilots-ai-literature.md\",\"reviewedOn\":\"2026-10-22\",\"revision\":\"0.1.1\",\"contentDigest\":\"b562d61ebf5ca44e5e9981c44f24f2203b0b84ba1c5cd975d5a433d9e4084df0\",\"artifactDigest\":\"182f56098fe2684c55f6e35d1e9e40c982fb7ebf74fe8be6fa720be464a2b3b2\"},{\"dimension\":\"language\",\"result\":\"passed\",\"reviewer\":{\"id\":\"atlas-ai-literature-review\",\"role\":\"Independent AI English text/comparison reviewer; Japanese witness-boundary consistency only, no fresh Koto or specialist verification; text-only US local prototype rights evidence, no legal/public-release clearance\",\"independent\":true},\"evidencePath\":\"docs/verification/universal-pilots-ai-literature.md\",\"reviewedOn\":\"2026-10-22\",\"revision\":\"0.1.1\",\"contentDigest\":\"b562d61ebf5ca44e5e9981c44f24f2203b0b84ba1c5cd975d5a433d9e4084df0\",\"artifactDigest\":\"182f56098fe2684c55f6e35d1e9e40c982fb7ebf74fe8be6fa720be464a2b3b2\"},{\"dimension\":\"rights\",\"result\":\"passed\",\"reviewer\":{\"id\":\"atlas-ai-literature-review\",\"role\":\"Independent AI English text/comparison reviewer; Japanese witness-boundary consistency only, no fresh Koto or specialist verification; text-only US local prototype rights evidence, no legal/public-release clearance\",\"independent\":true},\"evidencePath\":\"docs/verification/universal-pilots-ai-literature.md\",\"reviewedOn\":\"2026-10-22\",\"revision\":\"0.1.1\",\"contentDigest\":\"b562d61ebf5ca44e5e9981c44f24f2203b0b84ba1c5cd975d5a433d9e4084df0\",\"artifactDigest\":\"182f56098fe2684c55f6e35d1e9e40c982fb7ebf74fe8be6fa720be464a2b3b2\"},{\"dimension\":\"content\",\"result\":\"passed\",\"reviewer\":{\"id\":\"atlas-ai-literature-review\",\"role\":\"Independent AI English text/comparison reviewer; Japanese witness-boundary consistency only, no fresh Koto or specialist verification; text-only US local prototype rights evidence, no legal/public-release clearance\",\"independent\":true},\"evidencePath\":\"docs/verification/universal-pilots-ai-literature.md\",\"reviewedOn\":\"2026-10-22\",\"revision\":\"0.1.2\",\"contentDigest\":\"f19e81195af44e606595a8d44c7ad16487e29bddbb30ed510e240c0c28416f95\",\"artifactDigest\":\"2e550a22fd30abaf6a6f5b4d0795701c0e42927d4a7df1743a55b1291cd537be\"},{\"dimension\":\"language\",\"result\":\"passed\",\"reviewer\":{\"id\":\"atlas-ai-literature-review\",\"role\":\"Independent AI English text/comparison reviewer; Japanese witness-boundary consistency only, no fresh Koto or specialist verification; text-only US local prototype rights evidence, no legal/public-release clearance\",\"independent\":true},\"evidencePath\":\"docs/verification/universal-pilots-ai-literature.md\",\"reviewedOn\":\"2026-10-22\",\"revision\":\"0.1.2\",\"contentDigest\":\"f19e81195af44e606595a8d44c7ad16487e29bddbb30ed510e240c0c28416f95\",\"artifactDigest\":\"2e550a22fd30abaf6a6f5b4d0795701c0e42927d4a7df1743a55b1291cd537be\"},{\"dimension\":\"rights\",\"result\":\"passed\",\"reviewer\":{\"id\":\"atlas-ai-literature-review\",\"role\":\"Independent AI English text/comparison reviewer; Japanese witness-boundary consistency only, no fresh Koto or specialist verification; text-only US local prototype rights evidence, no legal/public-release clearance\",\"independent\":true},\"evidencePath\":\"docs/verification/universal-pilots-ai-literature.md\",\"reviewedOn\":\"2026-10-22\",\"revision\":\"0.1.2\",\"contentDigest\":\"f19e81195af44e606595a8d44c7ad16487e29bddbb30ed510e240c0c28416f95\",\"artifactDigest\":\"2e550a22fd30abaf6a6f5b4d0795701c0e42927d4a7df1743a55b1291cd537be\"},{\"dimension\":\"content\",\"result\":\"passed\",\"reviewer\":{\"id\":\"literature_review\",\"role\":\"Independent AI textual/English-language and scoped prototype-rights reviewer\",\"independent\":true},\"revision\":\"0.1.2\",\"contentDigest\":\"f19e81195af44e606595a8d44c7ad16487e29bddbb30ed510e240c0c28416f95\",\"artifactDigest\":\"9597e55409651d2ab0af404cd7d5d9c9ef7b8598e1c21e82ff84a58d39ade0a3\",\"evidencePath\":\"docs/verification/universal-pilots-ai-literature.md\",\"reviewedOn\":\"2026-10-22\"},{\"dimension\":\"language\",\"result\":\"passed\",\"reviewer\":{\"id\":\"literature_review\",\"role\":\"Independent AI textual/English-language and scoped prototype-rights reviewer\",\"independent\":true},\"revision\":\"0.1.2\",\"contentDigest\":\"f19e81195af44e606595a8d44c7ad16487e29bddbb30ed510e240c0c28416f95\",\"artifactDigest\":\"9597e55409651d2ab0af404cd7d5d9c9ef7b8598e1c21e82ff84a58d39ade0a3\",\"evidencePath\":\"docs/verification/universal-pilots-ai-literature.md\",\"reviewedOn\":\"2026-10-22\"},{\"dimension\":\"rights\",\"result\":\"passed\",\"reviewer\":{\"id\":\"literature_review\",\"role\":\"Independent AI textual/English-language and scoped prototype-rights reviewer\",\"independent\":true},\"revision\":\"0.1.2\",\"contentDigest\":\"f19e81195af44e606595a8d44c7ad16487e29bddbb30ed510e240c0c28416f95\",\"artifactDigest\":\"9597e55409651d2ab0af404cd7d5d9c9ef7b8598e1c21e82ff84a58d39ade0a3\",\"evidencePath\":\"docs/verification/universal-pilots-ai-literature.md\",\"reviewedOn\":\"2026-10-22\"},{\"dimension\":\"content\",\"result\":\"passed\",\"reviewer\":{\"id\":\"literature_review\",\"role\":\"Independent AI textual/English-language and scoped prototype-rights reviewer\",\"independent\":true},\"revision\":\"0.1.2\",\"contentDigest\":\"f19e81195af44e606595a8d44c7ad16487e29bddbb30ed510e240c0c28416f95\",\"artifactDigest\":\"04a0e3d355997fe2c55a8af73d3c707c2aefdb51915a83e7cf66403cc6609e95\",\"evidencePath\":\"docs/verification/universal-pilots-ai-literature.md\",\"reviewedOn\":\"2026-10-22\"},{\"dimension\":\"language\",\"result\":\"passed\",\"reviewer\":{\"id\":\"literature_review\",\"role\":\"Independent AI textual/English-language and scoped prototype-rights reviewer\",\"independent\":true},\"revision\":\"0.1.2\",\"contentDigest\":\"f19e81195af44e606595a8d44c7ad16487e29bddbb30ed510e240c0c28416f95\",\"artifactDigest\":\"04a0e3d355997fe2c55a8af73d3c707c2aefdb51915a83e7cf66403cc6609e95\",\"evidencePath\":\"docs/verification/universal-pilots-ai-literature.md\",\"reviewedOn\":\"2026-10-22\"},{\"dimension\":\"rights\",\"result\":\"passed\",\"reviewer\":{\"id\":\"literature_review\",\"role\":\"Independent AI textual/English-language and scoped prototype-rights reviewer\",\"independent\":true},\"revision\":\"0.1.2\",\"contentDigest\":\"f19e81195af44e606595a8d44c7ad16487e29bddbb30ed510e240c0c28416f95\",\"artifactDigest\":\"04a0e3d355997fe2c55a8af73d3c707c2aefdb51915a83e7cf66403cc6609e95\",\"evidencePath\":\"docs/verification/universal-pilots-ai-literature.md\",\"reviewedOn\":\"2026-10-22\"},{\"dimension\":\"content\",\"result\":\"passed\",\"reviewer\":{\"id\":\"literature_review\",\"role\":\"Independent AI textual/English-language and scoped prototype-rights reviewer\",\"independent\":true},\"revision\":\"0.1.2\",\"contentDigest\":\"f19e81195af44e606595a8d44c7ad16487e29bddbb30ed510e240c0c28416f95\",\"artifactDigest\":\"9a7cc8ac0bc6b2cb9df513f40738baf8283c9604cc55a7698c79f1bbcf269b74\",\"evidencePath\":\"docs/verification/universal-pilots-ai-literature.md\",\"reviewedOn\":\"2026-10-22\"},{\"dimension\":\"language\",\"result\":\"passed\",\"reviewer\":{\"id\":\"literature_review\",\"role\":\"Independent AI textual/English-language and scoped prototype-rights reviewer\",\"independent\":true},\"revision\":\"0.1.2\",\"contentDigest\":\"f19e81195af44e606595a8d44c7ad16487e29bddbb30ed510e240c0c28416f95\",\"artifactDigest\":\"9a7cc8ac0bc6b2cb9df513f40738baf8283c9604cc55a7698c79f1bbcf269b74\",\"evidencePath\":\"docs/verification/universal-pilots-ai-literature.md\",\"reviewedOn\":\"2026-10-22\"},{\"dimension\":\"rights\",\"result\":\"passed\",\"reviewer\":{\"id\":\"literature_review\",\"role\":\"Independent AI textual/English-language and scoped prototype-rights reviewer\",\"independent\":true},\"revision\":\"0.1.2\",\"contentDigest\":\"f19e81195af44e606595a8d44c7ad16487e29bddbb30ed510e240c0c28416f95\",\"artifactDigest\":\"9a7cc8ac0bc6b2cb9df513f40738baf8283c9604cc55a7698c79f1bbcf269b74\",\"evidencePath\":\"docs/verification/universal-pilots-ai-literature.md\",\"reviewedOn\":\"2026-10-22\"}],\"extensions\":{},\"id\":\"x-literature-0001\",\"pilotId\":\"P02\",\"title\":\"One pond, two translations\",\"subtitle\":\"Reading choices in Aston and Hearn\",\"summary\":\"Compare two historical English versions of Bashō’s poem. Locate a difference, distinguish observation from interpretation, and support a reading without declaring one final meaning.\",\"domainIds\":[\"D24\",\"D23\"],\"knowledgeModes\":[\"interpretive\",\"historical\"],\"methods\":[\"annotation\",\"source-comparison\"],\"audience\":\"General readers; Japanese is not required.\",\"relatedCollectionIds\":[\"ling\",\"art\"],\"scope\":\"One poem and two historical English renditions. The Japanese display follows a named modern institutional transcription, not an inspected manuscript.\",\"reviewRequirements\":[\"content\",\"language\",\"rights\"],\"sources\":[{\"id\":\"aston-pond\",\"title\":\"W. G. Aston’s translation\",\"url\":\"https://poets.org/poem/ancient-pond/embed\",\"locator\":\"Complete poem; credited to A History of Japanese Literature (William Heinemann, 1899)\",\"creator\":\"Matsuo Bashō; English translation by William George Aston\",\"date\":\"1899\",\"language\":\"en\",\"rights\":{\"decision\":\"usable-for-prototype\",\"basis\":\"The Academy of American Poets explicitly marks the selected poem public domain. Only the poem is reproduced, with author/translator/edition attribution.\",\"scope\":\"US local prototype; wider distribution requires release-specific review.\",\"excludedAssets\":[\"Facsimile images\",\"Website design and editorial copy\",\"Audio and video\"]}},{\"id\":\"hearn-pond\",\"title\":\"Lafcadio Hearn’s rendition\",\"url\":\"https://www.gutenberg.org/files/42735/42735-h/42735-h.htm\",\"locator\":\"Exotics and Retrospectives, “Frogs,” printed p. 164; digitized 1914 edition, copyright 1898\",\"creator\":\"Matsuo Bashō; English rendition by Lafcadio Hearn\",\"date\":\"1914 selected edition; copyright 1898\",\"language\":\"en\",\"rights\":{\"decision\":\"usable-for-prototype\",\"basis\":\"The Project Gutenberg catalog for ebook 42735 declares public domain in the USA. Only the historical rendition is reproduced; surrounding essay and ebook wrapper are not.\",\"scope\":\"US local prototype; wider distribution requires release-specific review.\",\"excludedAssets\":[\"Facsimile images\",\"Website design and editorial copy\",\"Audio and video\"]}},{\"id\":\"koto-basho\",\"title\":\"Japanese text displayed by Koto City for the Bashō Memorial Museum exhibition\",\"url\":\"https://www.city.koto.lg.jp/kuse/koho/houdou/r08/r0810/r081002furuike.html\",\"locator\":\"Press release dated October 2, 2026, page 40001, first paragraph\",\"creator\":\"Matsuo Bashō; modern display transcription by Koto City\",\"date\":\"Poem associated with 1686; display source 2026\",\"language\":\"ja\",\"rights\":{\"decision\":\"usable-for-prototype\",\"basis\":\"Underlying seventeenth-century poem is public domain. The text is reproduced without municipal commentary, photographs or other page assets. Display-source spelling is retained.\",\"scope\":\"US local prototype; wider distribution requires release-specific review.\",\"excludedAssets\":[\"Facsimile images\",\"Website design and editorial copy\",\"Audio and video\"]}}],\"passages\":[{\"id\":\"aston\",\"sourceId\":\"aston-pond\",\"title\":\"Aston · 1899\",\"text\":\"An ancient pond!\\nWith a sound from the water\\nOf the frog as it plunges in.\",\"context\":\"Line breaks and punctuation follow the selected Academy of American Poets text.\",\"language\":\"en\",\"form\":\"quotation\",\"sha256\":\"87bade38fb1bae4f96ebb1e83471750a09634c86f5f715a589b13622e829f333\"},{\"id\":\"hearn\",\"sourceId\":\"hearn-pond\",\"title\":\"Hearn · selected 1914 edition\",\"text\":\"Old pond—frogs jumping in—sound of water.\",\"context\":\"This is one parenthetical rendition in an essay, presented here without the surrounding quotation marks/parentheses. It is not reformatted as three source lines.\",\"language\":\"en\",\"form\":\"quotation\",\"sha256\":\"9a7d19b8ed07af8504e08844a40c12376ff10b0ed748056cdc959f6d73356fd5\"},{\"id\":\"japanese\",\"sourceId\":\"koto-basho\",\"title\":\"Japanese · named display witness\",\"text\":\"古池や蛙飛こむ水のおと\",\"context\":\"Spelling follows the October 2, 2026 Koto City display. It is not modernized to 飛び込む or 音. No claim is made that this is a facsimile, a critical edition, or proof of every original-language reading.\",\"language\":\"ja\",\"form\":\"quotation\",\"sha256\":\"84ff990a1271f97df8b965f926b34f287f426933dfe37d20eedf7e554ce69195\"}],\"claims\":[{\"id\":\"l-number\",\"kind\":\"textual\",\"text\":\"These English versions differ in how they express the frog or frogs.\",\"passageIds\":[\"aston\",\"hearn\"],\"qualification\":\"An English-text observation, not a finding about number in Japanese.\"},{\"id\":\"l-sound\",\"kind\":\"interpretive\",\"text\":\"Order and punctuation can invite different experiences of movement and sound.\",\"passageIds\":[\"aston\",\"hearn\"],\"qualification\":\"A possible reading that needs evidence; other readings can be defensible.\"}],\"context\":[\"A translation is a particular writer’s rendering, not a transparent replacement for every feature of the source language.\",\"The Japanese panel preserves a named institutional display text for context. The first task compares English; it does not automatically grade Japanese grammar or fidelity.\",\"Hearn’s wider essay makes historical and linguistic claims that are not adopted here. This activity uses the selected rendition only.\"],\"timeline\":[],\"activity\":{\"type\":\"annotation\",\"lenses\":[{\"id\":\"number\",\"label\":\"Number\",\"observation\":\"Aston writes “the frog”; Hearn writes “frogs”.\",\"question\":\"How might one pictured creature differ from a less individually focused scene?\",\"readings\":[\"The singular can invite attention to one movement.\",\"The plural may invite a wider scene, but does not prove simultaneous jumps.\"],\"boundary\":\"The English wording alone cannot determine how many frogs the Japanese poem denotes.\"},{\"id\":\"order\",\"label\":\"Movement and sound\",\"observation\":\"Aston names sound before the plunging phrase; Hearn puts jumping before sound.\",\"question\":\"Does the order alter what you imagine noticing first?\",\"readings\":[\"One reader may hear the event before reconstructing the movement.\",\"Another may experience the movement and its sound as one compact event.\"],\"boundary\":\"Reading order is observable; the reader’s imagined sequence is an interpretation.\"},{\"id\":\"punctuation\",\"label\":\"Punctuation and pace\",\"observation\":\"The selected Aston display uses an exclamation mark and three lines; the Hearn display uses dashes without authored line breaks.\",\"question\":\"What pauses do you hear or imagine, and which marks support them?\",\"readings\":[\"The exclamation can emphasize an opening perception.\",\"The dashes can suggest cuts or connections; they do not force one emotional response.\"],\"boundary\":\"These are features of the selected English web transcriptions. This activity does not establish the original books’ page layouts or reconstruct Bashō’s punctuation.\"}],\"transfer\":\"Someone says Hearn’s plural proves that Bashō saw several frogs. Which part is observable in the English text, and which part needs evidence beyond it?\",\"rubric\":[\"Point to exact wording in the named version.\",\"Separate observation, possible effect and original-language claim.\",\"Allow a different reading when it accounts for the same evidence.\"]},\"previousRevisions\":[\"0.1.0\",\"0.1.1\"],\"reviewLimitations\":[\"Screen-reader and learner sessions have not been performed.\"]}</script><script type=\"module\" src=\"../../../explorations/ui.mjs\"></script></body></html>\n",
+  "previewDigest": "172268a4ce53287ae960f9bdb58e5e8fa98b822fda3a826ec43e66424d17ba47",
+  "receipts": {
+    "docs/verification/universal-pilots-ai-literature.md": {
+      "text": "# Independent AI review: literature pilot 0.1.1\n\nDate: 2026-10-22. Reviewer: Codex literature_review subagent, a separate AI review process commissioned by the integration owner under the user's authorization. Role: bounded source/text and English close-reading reviewer. This reviewer did not author or edit the pilot. No professional Japanese-literature, legal or accessibility credential is asserted.\n\n## Exact candidate\n\nRepository: `/Users/teodev/.codex/worktrees/universal-pilots-integration/theorems-visualizations`.\nBaseline supplied: `d638f2ec39435b5ef04439f72d46f5be5da6f54c`.\nRecord: `x-literature-0001`, revision `0.1.1`, draft/local-preview.\nContent digest: `b562d61ebf5ca44e5e9981c44f24f2203b0b84ba1c5cd975d5a433d9e4084df0`.\nArtifact digest: `70c9d0d487e0fc4d5f55a99a058ab20e2295794b2fd868c68a49257d53cf7385`.\n\nThe read-only builder check (`/tmp/atlas-ci-node22-20261020/node scripts/build-explorations.mjs --check`) independently returned these digests and succeeded. No repository files were modified and no browser was launched. The report itself is outside the repository.\n\n## Methods and independently accessed evidence\n\nRead the canonical JSON, selected source receipts, source/reuse decisions, review-session protocol, authoring guide and schema/URL contract. Inspected the renderer's source-card labels and annotation-guide construction as text, without claiming browser or assistive-technology observation.\n\nIndependently opened the following allowed sources with the web tool on this review date:\n\n1. [Academy of American Poets selected Aston display](https://poets.org/poem/ancient-pond/embed): poem body, translator credit, edition credit and explicit public-domain statement. Returned source lines 12–24 supply these elements.\n2. [Project Gutenberg Hearn HTML](https://www.gutenberg.org/files/42735/42735-h/42735-h.htm): title-page date/copyright information (returned lines 24–32), and the rendition in “Frogs” at printed page 164 (returned lines 1291–1296).\n3. [Project Gutenberg catalog 42735](https://www.gutenberg.org/ebooks/42735): catalog title/author, ebook number and US public-domain field (returned lines 38–54). The automatically generated catalog summary was not used as literary evidence.\n\nThe Koto URL was deliberately NOT requested. Its retained receipt records an earlier body reading, then a failed recheck and a binding retrieval stop. This review inspected the local receipt and selected text only; it supplies no new remote verification of the Japanese display. No denied, timed-out or CAPTCHA source was retried, and no alternate-host recovery was used.\n\n## Findings\n\nNo actionable defect was found within the bounded, independently checked English-text and selected-source scope. The following are observations supporting that conclusion, rather than claims of general acceptance.\n\n| Checked feature | Observation and evidence |\n| --- | --- |\n| Aston wording and attribution | `explorations/literature.json:45` and `:103` identify the Academy display, translator and credited 1899 work. The selected three-line text and punctuation at `:106` match the displayed poem. The context explicitly attributes formatting to this selected web display rather than to an inspected print facsimile. |\n| Hearn wording and edition | `:66`–`:73` and `:113`–`:120` distinguish the selected 1914 edition from the 1898 copyright date. The word “jumping” and the punctuation inside the quotation match the primary HTML text at printed p. 164. The omission of enclosing quotation marks and parentheses is disclosed. No source-authored three-line layout is invented. |\n| English number comparison | `:167` is a direct observation of the two selected English forms. The readings at `:170`–`:173` use modal language, do not force a simultaneous scene and explicitly withhold a Japanese-number conclusion. This is defensible as an English close-reading task. |\n| Movement/sound comparison | `:178` accurately describes phrase order in the selected renderings. The guide distinguishes order of wording from a reader's imagined event sequence; both proposed responses remain possibilities. |\n| Punctuation comparison | `:189`–`:195` accurately distinguish the selected displays, qualify possible effects and disclaim reconstruction of print layouts or Bashō's punctuation. |\n| Transfer and rubric | `:198`–`:202` require evidence and separation of textual observation from original-language/biographical inference. The text does not claim that an English plural proves the number of animals Bashō saw. The response remains open rather than auto-scored. |\n| Historical Hearn context | `:158` excludes the surrounding essay's historical and linguistic assertions from adopted claims. The source excerpt indeed sits amid broad historical/linguistic generalizations; this pilot does not require treating them as established facts. |\n| Japanese witness boundary | `:125`–`:129` agree with the retained local receipt's exact selected string and hash. The pilot labels it a modern institutional display, distinguishes it from a facsimile/critical edition, and makes no Japanese grammar, pronunciation, mora/syllable or translation-fidelity determination. This review confirms internal consistency of those limits only. |\n| Bounded prototype reuse | `:52`–`:60` and `:73`–`:81` restrict reuse to selected historical text and explicitly exclude contemporary site/media assets. The Academy statement and Gutenberg US status support the stated US text-only prototype basis. `:90`–`:97` similarly exclude municipal modern commentary/media. This is a bounded evidence check, not legal clearance for public distribution or all territories. |\n\nNo content or source-text repair is requested on this version. Retain the existing Koto stop and witness limitations. If original-language interpretation, manuscript history, a pronunciation recording, a modern translation, an image, a public route or a wider distribution territory is added, review that new scope before claiming it is covered by this receipt.\n\n## Results and open gates\n\n- English quotation/edition/source check: PASS within the selected web texts inspected above.\n- English comparison/language reasoning: PASS within the English-only task and its explicit limits.\n- Selected-text rights-evidence check: PASS for the stated bounded US local prototype evidence. This is not a legal opinion or public-release authorization.\n- Japanese display's fresh source verification: NOT OBSERVED; retained prior receipt only, binding stop preserved.\n- Japanese specialist review: NOT PERFORMED; no professional specialist credentials claimed.\n- Actual screen-reader task review: NOT OBSERVED.\n- Formative learner task/transfer observation: NOT OBSERVED.\n- Public-distribution rights review: NOT PERFORMED.\n\nThis supplemental AI receipt can document the user-authorized independent AI review. It must not silently satisfy screen-reader or formative-learning requirements, claim recruited specialist approval, or change the pilot to accepted. Keep those unobserved gates explicit. Any change to the content digest or bound artifact requires a fresh exact-version check before this review is used to support that changed candidate.\n\n## Recheck after collection-label artifact binding\n\nDate: 2026-10-22. Same independent AI reviewer and role/scope as above. Inspected the final diff against the supplied baseline for `explorations/contract.mjs`, `scripts/build-explorations.mjs` and `explorations/literature.json`. The literature JSON has no authored-content diff. The two code changes add the rendered related-collection title mapping (including the renderer's ID fallback) to the artifact digest and use that same mapping for validation, reporting and rendering. This closes a version-binding gap without changing the selected passages, activity or source/rights decisions. No defect was found in this delta within this review's scope.\n\nRead-only `scripts/build-explorations.mjs --check` succeeded again using Node 22.23.3 and independently returned:\n\n- ID: `x-literature-0001`; revision: `0.1.1`; status: `draft`.\n- Unchanged content digest: `b562d61ebf5ca44e5e9981c44f24f2203b0b84ba1c5cd975d5a433d9e4084df0`.\n- Current artifact digest: `182f56098fe2684c55f6e35d1e9e40c982fb7ebf74fe8be6fa720be464a2b3b2`.\n\nThe findings and limits above now apply to this current artifact digest. The earlier digest is retained as review history and must not be used for the current candidate.\n\nExplicit bounded dimension conclusions:\n\n- **Content: passed** for the selected text, edition attribution, source labels, English comparison claims, interpretive openness and stated task boundaries reviewed here.\n- **Language: passed** for observable English wording/order/punctuation and the handling of Japanese witness limits. This is not fresh source verification of Koto, a Japanese-language specialist review, or approval of original-language interpretation. The retained Koto receipt remains the only inspected evidence for that display; its retrieval stop remains binding.\n- **Rights: passed** for the selected historical text and documented text-only US local-prototype evidence and exclusions. This is not legal clearance or approval for public distribution, new assets or wider territories.\n\nIt is honest to record these three narrowly scoped passes with this AI identity/role and this report as durable evidence, provided their limits remain visible. They do not support an unrestricted claim of professional specialist or legal approval. Accessibility and learning receipts must remain absent until the required actual observations exist. Both pilots remain drafts and unaccepted. No additional sources were retrieved, no browser was launched, and no repository file was modified by this recheck.\n\n## Final 0.1.2 recheck under the user-revised review requirements\n\nDate: 2026-10-22. Same separate AI reviewer, independence and bounded role. The integration owner reports the user's explicit removal of screen-reader and learner acceptance requirements. This recheck does not invent those observations or treat the removal as evidence of usability or learning outcomes.\n\nInspected the current diff for the literature JSON, contract, renderer and builder. Selected passages, their hashes, activities, claims and source/rights decisions are unchanged from the reviewed 0.1.1 text. The changed fields are the revision, declared requirements (content/language/rights), an appended previous revision for explicit old-note export, and a review-limitations statement. Existing review history is retained. The contract still mandates content/rights and checks every declared dimension. The renderer visibly displays the unperformed-session limitation on both the individual page and workshop index, and describes accepted records as reviewed local previews. Nothing in this delta turns AI review into professional Japanese or legal credentials or into public-release permission.\n\nRead-only Node 22.23.3 builder `--check` succeeds and returns:\n\n- ID `x-literature-0001`, revision `0.1.2`, currently `in-review`.\n- Content digest `f19e81195af44e606595a8d44c7ad16487e29bddbb30ed510e240c0c28416f95`.\n- Artifact digest `2e550a22fd30abaf6a6f5b4d0795701c0e42927d4a7df1743a55b1291cd537be`.\n\nNo actionable defect found in this delta. For this exact 0.1.2 candidate:\n\n- **Content: passed** within the selected text/edition/source-label and English close-reading task scope documented above.\n- **Language: passed** within English observations and handling of Japanese witness/interpretation boundaries. No fresh Koto retrieval, original-language verification or professional Japanese-specialist approval is asserted.\n- **Rights: passed** within documented selected-text evidence for a text-only US local prototype and its asset exclusions. No legal opinion or wider/public distribution clearance is asserted.\n\nScreen-reader and learner sessions remain **not performed**, now limitations rather than acceptance gates under the user's revised instruction. No observation-based accessibility or learning pass is issued. The Koto stop remains binding. No new source retrieval, browser use or repository edit occurred in this recheck. Earlier sections remain historical receipts; this section binds the conclusions to the current candidate and revised declared scope.\n\n\n# P02 shared-method additions: independent AI recheck\n\nDate: 2026-10-22. Reviewer: separate Codex `literature_review` AI agent. Role: English text, comparison claims, Japanese witness-boundary consistency and bounded selected-text reuse review. No professional Japanese-specialist, legal, accessibility or learner-observer credential is asserted. The reviewer did not author the additions or edit repository files.\n\nCandidate: `x-literature-0001`, revision `0.1.2`, local preview.\nContent digest: `f19e81195af44e606595a8d44c7ad16487e29bddbb30ed510e240c0c28416f95`.\nArtifact digest: `654876ddfa53635aa5cdd74e124a6d8d9eae693f6ba591ba395b39995cf2c186`.\nRelated collection titles bound into this artifact: `ling` = “Linguistics”; `art` = “Visual Art & Color”.\n\n## Method and evidence\n\nInspected `git diff e3b85eb1` for literature JSON and shared contract, renderer, UI, route-state, stylesheet and builder. Read the newly imported method modules, with attention to the branches reached by the existing annotation activity. Read the supplied static page `/tmp/atlas-next-review-pages/x-literature-0001.html` as HTML/text. No browser was launched and no visual, screen-reader or learner observation is claimed.\n\nIndependently recomputed content and artifact hashes using Node 22.23.3 `node:crypto`, a locally defined recursive canonical serializer, the nine current builder-bound code files and current production collection titles. These reproduce the digests above and agree with `/tmp/atlas-next-pair-digests.json`. Each of the three selected-text hashes independently matches its canonical passage. Re-rendering the canonical record with current collection titles produces exactly the supplied review HTML. A first scratch computation had a syntax error before executing and was corrected; the successful computation is the evidence for these values. The stale acceptance receipts are expected to block a complete builder pass until exact-artifact reviews are appended; this report does not claim that the complete builder has already passed.\n\nNo source retrieval was needed for this unchanged-content recheck. Earlier English-source checks are recorded in the independent literature receipt. The Koto retrieval stop was preserved: no request or alternate-host recovery was attempted and no fresh Japanese display verification is asserted.\n\n## Findings\n\nNo actionable defect found within this bounded P02 recheck.\n\n- `explorations/literature.json` has no diff against `e3b85eb1`. Its quotations, source/edition attribution, rights decisions, review limitations, activity, claims and transfer rubric remain exactly the reviewed 0.1.2 content. No expansion into Japanese grammar, pronunciation or textual history is introduced.\n- Shared renderer headings change “comparison” to “exploration/evidence” and the navigation label changes “Both” to “All”. These remain accurate for the literature task. The substantive English comparison guides and transfer question remain present. The workshop's broader index introduction accommodates the new methods without changing what P02 claims to teach.\n- The new supplemental-reference rendering is conditional; P02's three source records all have selected passages, so that branch introduces no extra attribution or rights claim on its page.\n- New method rendering, assessment and state logic are reached only for their declared activity types. P02 stays on its annotation branch. Independently evaluated default state remains number/observation; an explicit punctuation/interpretation selection remains those selected values. This is a pure-state check, not an interactive browser test.\n- The rendered source cards still distinguish quotation from editorial context and retain the exact three passage texts, language tags, translator/edition labels and limited rights statements. The Japanese display remains a named modern institutional witness with explicit manuscript/critical-edition and interpretation boundaries.\n- The plural, phrase-order and punctuation guides retain modal interpretations and allow multiple readings. The transfer task continues to distinguish an English observation from a claim about what Bashō saw. No new causal, biographical or original-language conclusion appears.\n- The page visibly retains “Screen-reader and learner sessions have not been performed.” The page/footer describes review and public release separately. Broader domain/method additions create no new public-distribution clearance for P02.\n\n## Exact-candidate decisions\n\n**Content: passed**, within unchanged selected-text, source/edition labels, English comparison claims, task and interpretive-boundary scope.\n\n**Language: passed**, within English wording/order/punctuation observations and honest handling of Japanese witness boundaries. This is not fresh verification of Koto, a Japanese-specialist approval, or an evaluation of original-language fidelity.\n\n**Rights: passed**, within the previously inspected evidence for the selected historical texts in a text-only US local prototype, with contemporary site/municipal media excluded. This is not a legal opinion or permission for public release, additional assets or wider territories.\n\nThese decisions bind only the exact digests above. Screen-reader and learner sessions remain unperformed limitations under the user's revised requirements; no such pass is fabricated. Existing historical receipts should be retained. Append current bounded AI review receipts rather than altering old digests. No new source access, browser use, other-chat message, nested delegation or repository edit was performed.\n\n## Final shared-validation repair recheck\n\nDate: 2026-10-22. Same independent AI reviewer and bounded role. Read the current measured-data validation additions, including malformed omitted-column handling and retained-data projection checks. These checks are confined to the measured-data branch; the annotation validation path and literary task remain unchanged. No literature JSON diff exists against `e3b85eb1`. No additional P02 defect found.\n\nIndependently recomputed the current content and artifact hashes using Node 22.23.3, a separate canonical serializer and `node:crypto`, current bound files and related collection titles. Results agree with the refreshed digest manifest:\n\n- P02 `x-literature-0001`, revision `0.1.2`.\n- Content digest: `f19e81195af44e606595a8d44c7ad16487e29bddbb30ed510e240c0c28416f95`.\n- Current artifact digest: `9597e55409651d2ab0af404cd7d5d9c9ef7b8598e1c21e82ff84a58d39ade0a3`.\n\nThe canonical re-render exactly matches the refreshed supplied review HTML. Earlier hashes above remain historical. For this exact current candidate, **content passed**, **language passed** (English observations and Japanese boundary handling only), and **rights passed** (selected-text evidence for the US text-only local prototype only), under all previously stated limits. No fresh Koto verification, Japanese-specialist/legal/public-release approval or screen-reader/learner observation is asserted. No source request, browser use or repository edit occurred in this recheck.\n\n\n## Readable chart final recheck\n\nDate: 2026-10-22. Same independent AI reviewer and bounded review scope. Inspected current shared additions: the soil plot now has a named, focusable horizontal-scroll region and targeted 700px SVG minimum width; the argument interface includes complete selected premise/action text. These changes are confined to method-specific markup, IDs/styles and activity branches that P02 does not use. No change to the literary content, claims, tasks, attribution, rights scope or limitations was found.\n\nIndependently recomputed hashes using Node 22.23.3, a separate canonical serializer, `node:crypto`, current builder-bound files and related collection titles. Current candidate:\n\n- `x-literature-0001`, revision `0.1.2`.\n- Content digest: `f19e81195af44e606595a8d44c7ad16487e29bddbb30ed510e240c0c28416f95`.\n- Artifact digest: `04a0e3d355997fe2c55a8af73d3c707c2aefdb51915a83e7cf66403cc6609e95`.\n\nThe recomputed values match the refreshed manifest; a canonical re-render exactly matches the refreshed review HTML. This section supersedes earlier artifact bindings for the current candidate while preserving their history. No actionable P02 defect found. **Content passed; language passed within English observations and Japanese boundary handling; prototype rights passed within selected-text US local use and asset exclusions.** All earlier professional/Japanese-source/legal/public-release limits remain. No actual screen-reader or learner observation is claimed. No browser, source retrieval, other-chat message, nested agent or repository edit occurred.\n\n\n---\n\n# P02 recheck after studio-method additions\n\nDate: 2026-10-22. Reviewer: separate Codex `literature_review` AI textual/English-language and scoped prototype-rights reviewer. No professional Japanese, legal or accessibility credential is claimed.\n\nExact candidate: `x-literature-0001`, revision `0.1.2`, local-preview.\nContent digest: `f19e81195af44e606595a8d44c7ad16487e29bddbb30ed510e240c0c28416f95`.\nArtifact digest: `9a7cc8ac0bc6b2cb9df513f40738baf8283c9604cc55a7698c79f1bbcf269b74`.\n\nIndependently recomputed both hashes with Node 22.23.3, a separate canonical serializer and `node:crypto`, current bound-file contents and collection titles. The values agree with the supplied studio manifest; canonical rendering exactly matches the refreshed literature review HTML. The literature diff since `e3b85eb1` contains appended review receipts only; authored text/source/activity/rights content remains unchanged, as its stable content digest confirms.\n\nRead the shared studio additions and refreshed static P02 output. Weave and phrase playback/provenance changes remain confined to their respective activity branches. The existing annotation path retains the selected quotations and their attribution, English number/order/punctuation guides, Japanese witness/interpretation limits, open-ended transfer task, private-note explanation and unperformed-session limitation. No new source/asset or perceptual claim appears in P02. No actionable defect found within this scope.\n\nFor this exact current artifact:\n\n- **Content: passed** within the selected-text/source/edition and English comparison task scope.\n- **Language: passed** within observable English differences and honest handling of Japanese display limitations. No fresh Koto verification or original-language/specialist approval is asserted.\n- **Rights: passed** within the previously inspected selected historical texts for the text-only US local prototype and stated asset exclusions. No public/wider-territory or legal clearance is asserted.\n\nEarlier independent reports retain the source-inspection details. Koto's retrieval stop remains binding; no source request or workaround occurred. No browser, human learner/screen-reader observation, repository edit, other-chat message or nested agent was used. These bounded AI passes do not fabricate professional or observation-based approval.\n",
+      "sha256": "39f9a585717d1eff6a564519ac3333afb62012d6fb4a4eefec0dfe12a8b4d531"
+    }
+  },
+  "supplements": {}
+}

@@ -1,0 +1,25 @@
+{
+  "schemaVersion": 1,
+  "mode": "exploration-editions-additive",
+  "files": [
+    "assets/css/exploration-delivery.css",
+    "docs/architecture/exploration-editions.md",
+    "docs/integration/exploration-editions.json",
+    "docs/integration/exploration-editions.md",
+    "docs/verification/universal-exploration-editions-ai-code.md",
+    "docs/verification/universal-exploration-editions.md",
+    "editions/bundles/x-agriculture-0001/0.1.0.json",
+    "editions/bundles/x-history-0001/0.1.2.json",
+    "editions/bundles/x-literature-0001/0.1.2.json",
+    "editions/bundles/x-philosophy-0001/0.1.0.json",
+    "editions/manifest.json",
+    "editions/releases.json",
+    "editions/runtimes/860f837c7c5bc55c077ec10ee235e326b01a1074104b10f953b7c182ad4f1c53.json",
+    "scripts/build-exploration-editions.mjs",
+    "scripts/check-edition-integration.mjs",
+    "scripts/exploration-editions.mjs",
+    "scripts/freeze-exploration-editions.mjs",
+    "tests/exploration-editions-ui.test.mjs",
+    "tests/exploration-editions.test.mjs"
+  ]
+}

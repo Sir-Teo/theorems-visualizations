@@ -66,7 +66,7 @@ Historical receipts remain in the append-only array. They do not block rendering
 
 Scoped AI review is identified explicitly in the reviewer role and linked evidence; it does not imply professional credentials, fresh inspection of a stopped source, actual screen-reader use or learner observation. Prototype rights review is separate from public-distribution clearance. A code validator cannot certify a person's qualifications, independence or the truth of a review. The integration owner must inspect the named receipt and reviewer credentials/context. The builder must also verify that receipt paths exist before treating an accepted record as integrable. Test-fixture reviewer names are never production approvals.
 
-The current builder emits local previews only and rejects `publication: "published"`. A withdrawn local record renders an identity-reserving stub. It does not implement public release or withdraw an already published page. Public withdrawal, translations and public-version retention are production contracts still to implement. No general permission to publish follows from passing prototype tests.
+The prototype builder emits local previews only and rejects `publication: "published"`. A withdrawn local record renders an identity-reserving stub. The separate [edition-delivery contract](exploration-editions.md) now freezes reviewed sources and implements candidate catalogs, immutable version paths, retained versions and publication/withdrawal decisions. Its real release ledger is empty. Source JSON keeps its local-preview review scope; a distinct exact distribution/delivery decision is required for release-mode assembly. Deployment, translations and explicit note migration remain open. No general permission to publish follows from passing prototype tests.
 
 ## URL plan
 
@@ -78,7 +78,8 @@ The current builder emits local previews only and rejects `publication: "publish
 | Existing field/map/path/bridge/search | Current hash routes | Unchanged; no blanket redirect |
 | Prototype index | `labs/atlas/` | Implemented, static HTML, noindex |
 | Prototype | `labs/atlas/x-history-0001/` | Implemented, refresh-safe static directory |
-| Future public exploration | `explore/x-history-0001/` | Reserved proposal; no fabricated live URL |
+| Exploration identity | `explore/x-history-0001/` | Implemented in the local edition candidate; explicit version history, no automatic state redirect |
+| Retained exploration edition | `explore/x-history-0001/versions/0.1.2/` | Implemented locally; source/runtime frozen; public distribution ledger empty |
 | Static legacy reading page | `ideas/pma-4.19/` | Implemented in the [local candidate](static-reading.md); old hash remains functional; no deployment |
 | Future domain/source views | `domains/D20/`, `sources/<receipt-id>/` | Proposed, not generated |
 
@@ -94,7 +95,7 @@ An alias maps once to a canonical identity, with provenance and no cycles. It mu
 
 The implemented fragment contract is `#v=1&task=…&evidence=…&category=…` for history, or `#v=1&lens=…&category=…` for literature. Only known enum values survive normalization. Unsupported versions and fragments over 1,000 characters restore defaults with a visible explanation.
 
-Private notes never enter a share link. Local storage uses `atlas.exploration.v1.<id>.<revision>` so a new revision cannot silently overwrite old notes. Export includes identity, revision, selections and notes. Reset affects only that pilot revision. Existing atlas progress keys are untouched. A future migration must be explicit and reversible; there is no account or server synchronization.
+Private notes never enter a share link. Local storage uses `atlas.exploration.v1.<id>.<revision>` so a new revision cannot silently overwrite old notes. Export includes identity, revision, selections and notes. Reset affects only that pilot revision. Existing atlas progress keys are untouched. The edition candidate preserves those keys and shares the matching store with the old preview on the same browser origin; a different origin has a separate store. New shares use immutable edition paths. A future migration must be explicit and reversible; there is no account or server synchronization.
 
 Revision 0.1.1 adds explicit export of listed earlier-revision stores. Unreadable current data is preserved and included in the reader's export, rather than overwritten by new typing. Failed deletion is reported accurately. Native page/source anchors preserve current work. A changed selection invalidates an old displayed share link; a delayed clipboard response cannot restore its stale instructions.
 

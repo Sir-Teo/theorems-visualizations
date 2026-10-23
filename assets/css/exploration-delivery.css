@@ -1,0 +1,12 @@
+/* Candidate delivery chrome; the frozen exploration styles and interaction code remain unchanged. */
+:root{color-scheme:light dark;--delivery-bg:light-dark(#f7f5f0,#0e1014);--delivery-ink:light-dark(#1c1a16,#ebe8e1);--delivery-line:light-dark(#d4cebf,#343b47);--delivery-accent:light-dark(#3557d4,#9bb1ff)}
+*{box-sizing:border-box}body{margin:0;background:var(--delivery-bg);color:var(--delivery-ink);font:16px/1.65 system-ui,sans-serif;overflow-wrap:anywhere}
+a{color:var(--delivery-accent);text-underline-offset:4px}a:focus-visible{outline:3px solid currentColor;outline-offset:4px}
+main{max-width:1120px;min-width:0;width:100%;margin:auto;padding:2rem 1.25rem 4rem}
+.delivery-header,.delivery-footer{max-width:1120px;margin:auto;padding:1.25rem;display:flex;flex-wrap:wrap;gap:1.5rem}.delivery-footer{border-top:1px solid var(--delivery-line);font-size:.9rem}
+h1,h2{font-family:Georgia,serif;font-weight:400;line-height:1.2}h1{font-size:clamp(2rem,5vw,4rem)}h2{font-size:1.65rem}
+main>article{padding:1.5rem 0;border-top:1px solid var(--delivery-line)}.eyebrow{font-size:.8rem;letter-spacing:.1em;text-transform:uppercase}
+.edition-notice{border:1px solid var(--delivery-line);padding:1rem;margin:0 0 1.5rem;font-size:.9rem}.edition-notice p{margin:.4rem 0}
+.edition-notice details{border:0;padding:.3rem 0 0}.edition-notice summary{min-height:28px}
+.delivery-start{display:inline-block;padding:.7rem 1rem;border:1px solid var(--delivery-line);border-radius:6px}.skip{position:absolute;top:-100px;left:1rem;padding:.75rem;background:var(--delivery-bg)}.skip:focus{top:1rem}
+pre{white-space:pre-wrap;overflow-wrap:anywhere}
