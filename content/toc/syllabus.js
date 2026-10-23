@@ -390,41 +390,197 @@ export default {
     },
     // ───────────────────────────────────────────────────────────── 6
     {
-      n: 6,
-      title: 'Pushdown automata and the limits of context-free languages',
-      summary: String.raw`Adding a stack to a finite automaton gives exactly the power of context-free grammars. A pumping lemma for parse trees shows what that power cannot do — match three counts, or copy a string — and explains why context-free languages are closed under union but not under intersection or complement. Determinism matters here, unlike for finite automata: deterministic pushdown automata, the basis of practical parsers, recognize a strictly smaller class.`,
-      items: [
-        { num: '6.1', kind: 'Definition', name: 'Pushdown automaton', deps: ['toc-3.1'], refs: ['Sipser §2.2'],
-          pic: 'Run a PDA for 0ⁿ1ⁿ on typed input: the stack grows with each 0 and shrinks with each 1; for even palindromes the computation branches at every possible guess of the middle.' },
-        { num: '6.2', kind: 'Theorem', name: 'From grammar to pushdown automaton', deps: ['toc-6.1', 'toc-5.2'], refs: ['Sipser §2.2'],
-          pic: 'The PDA simulates a leftmost derivation: its stack holds the unexpanded part of the sentential form, matched against the input as the reader steps.' },
-        { num: '6.3', kind: 'Theorem', name: 'From pushdown automaton to grammar', deps: ['toc-6.1', 'toc-5.1'], refs: ['Sipser §2.2'],
-          pic: 'A variable A_pq is created for each pair of states; a run of the PDA from p to q that starts and ends with an empty stack is shown split into the rule that generates it.' },
-        { num: '6.4', kind: 'Theorem', name: 'PDAs recognize exactly the context-free languages', deps: ['toc-6.2', 'toc-6.3'], refs: ['Sipser §2.2'],
-          pic: 'Round trip: grammar → PDA → grammar; strings up to a chosen length are checked to have the same membership in all three descriptions.' },
-        { num: '6.5', kind: 'Theorem', name: 'Pumping lemma for context-free languages', deps: ['toc-5.9', 'comb-1.2'], refs: ['Sipser §2.3'],
-          pic: 'A tall parse tree must repeat a variable on some root-to-leaf path; the repeated subtree is highlighted and pumping it derives uvⁱxyⁱz for the i the reader chooses.' },
-        { num: '6.6', kind: 'Theorem', name: 'aⁿbⁿcⁿ and ww are not context-free', deps: ['toc-6.5'], refs: ['Sipser §2.3'],
-          pic: 'Play the pumping game for aⁿbⁿcⁿ: wherever the opponent places the window vxy, pumping unbalances at least one letter count, shown by three bars.' },
-        { num: '6.7', kind: 'Theorem', name: 'Ogden’s lemma', deps: ['toc-6.5'], refs: ['Sipser §2.3'],
-          pic: 'Mark positions in a string; the pumped pieces are forced to contain marked positions, defeating a language that the plain pumping lemma cannot rule out.' },
-        { num: '6.8', kind: 'Theorem', name: 'No closure under intersection or complement', deps: ['toc-6.6', 'toc-5.8'], refs: ['Sipser §2.3'],
-          pic: 'Two grammars generate {aⁿbⁿcᵐ} and {aᵐbⁿcⁿ} in two panels; the strings in both are exactly aⁿbⁿcⁿ, the non-context-free language just proved.' },
-        { num: '6.9', kind: 'Theorem', name: 'Context-free ∩ regular is context-free', deps: ['toc-6.4', 'toc-2.6'], refs: ['Sipser §2.2'],
-          pic: 'A PDA and a DFA run in lockstep inside a product machine: the stack belongs to the PDA, the extra state coordinate to the DFA, and verdicts are checked on test strings.' },
-        { num: '6.10', kind: 'Definition', name: 'Deterministic pushdown automata', deps: ['toc-6.1'], refs: ['Sipser §2.4'],
-          pic: 'A DPDA for balanced brackets runs with never more than one possible move; the tool flags any state where the reader’s machine has a choice.' },
-        { num: '6.11', kind: 'Theorem', name: 'Deterministic CFLs are closed under complement', deps: ['toc-6.10'], refs: ['Sipser §2.4'],
-          pic: 'A DPDA is completed so it always reads its whole input, then its accept states are flipped; the verdicts on test strings invert, unlike the same trick on a nondeterministic PDA.' },
-        { num: '6.12', kind: 'Theorem', name: 'Palindromes need nondeterminism', deps: ['toc-6.11', 'toc-6.8'], refs: ['Sipser §2.4'],
-          pic: 'Every deterministic attempt at even palindromes is shown failing on some input because it must commit to a middle point; the nondeterministic PDA succeeds by guessing.' },
-        { num: '6.13', kind: 'Theorem', name: 'Parikh’s theorem', deps: ['toc-6.5'], refs: ['Sipser §2.3'],
-          pic: 'Letter-count vectors of all strings of a context-free language up to some length are plotted in the plane; they form a finite union of linear sets, the same shapes a regular language produces.' },
-        { num: '6.14', kind: 'Theorem', name: 'Chomsky–Schützenberger theorem', deps: ['toc-5.3', 'toc-6.9'], refs: ['Sipser §2.2'],
-          pic: 'A context-free language is shown as the image of bracket words intersected with a regular language; pick a string and the bracketed word it came from is displayed.' },
-      ],
+      "n": 6,
+      "title": "Pushdown automata and the limits of context-free languages",
+      "summary": "A stack turns finite-state control into exactly the power of a context-free grammar. Parse-tree repetition proves limitations that finite simulations cannot establish. Determinism changes the closure laws, while letter counts and decorated brackets reveal two different ways to represent every context-free language.",
+      "items": [
+        {
+          "num": "6.1",
+          "kind": "Definition",
+          "name": "Pushdown automaton",
+          "deps": [
+            "toc-3.1"
+          ],
+          "refs": [
+            "Claus–Olderog, Foundations of Theoretical Computer Science (winter2010/11), PDF pp52–56, PDA definition and acceptance conversion; top-of-stack induction supplied here"
+          ],
+          "pic": "Edit the input word and switch between equal counts, balanced brackets and even palindromes. Step through an actual accepting witness when one is found, or the final explored branch otherwise. The stack, consumed position and selected transition come from the same run."
+        },
+        {
+          "num": "6.2",
+          "kind": "Theorem",
+          "name": "From grammar to pushdown automaton",
+          "deps": [
+            "toc-6.1",
+            "toc-5.2"
+          ],
+          "refs": [
+            "Claus–Olderog, PDF pp56–59, Theorem3.6 and two induction invariants; MIT18.404 Fall2020 Lecture4, CFG/PDA construction"
+          ],
+          "pic": "Edit the grammar and terminal word. The actual grammar productions become stack transitions, and the player follows one searched run. Compare its consumed prefix and pending stack with the leftmost-derivation invariant."
+        },
+        {
+          "num": "6.3",
+          "kind": "Theorem",
+          "name": "From pushdown automaton to grammar",
+          "deps": [
+            "toc-6.1",
+            "toc-5.1"
+          ],
+          "refs": [
+            "Claus–Olderog, PDF pp59–62, Theorem3.7, triple variables and stack-summary induction"
+          ],
+          "pic": "Select a small PDA and a word. Browse the actual generated productions and the state endpoints associated with the selected transition. Compare exact grammar membership with the PDA’s searched witness."
+        },
+        {
+          "num": "6.4",
+          "kind": "Theorem",
+          "name": "PDAs recognize exactly the context-free languages",
+          "deps": [
+            "toc-6.2",
+            "toc-6.3"
+          ],
+          "refs": [
+            "Claus–Olderog, PDF pp56–62, the two constructive inclusions"
+          ],
+          "pic": "Edit a grammar, choose a length bound and inspect every word in the exact bounded languages of the original and round-trip grammars. Select a word to inspect the intervening PDA’s actual search."
+        },
+        {
+          "num": "6.5",
+          "kind": "Theorem",
+          "name": "Pumping lemma for context-free languages",
+          "deps": [
+            "toc-5.9",
+            "toc-5.2",
+            "comb-1.2"
+          ],
+          "refs": [
+            "Watrous, Theory of Computation Lecture10 (2020), PDF pp1–5, CNF pumping proof; selected-tree extraction implemented directly"
+          ],
+          "pic": "Edit a grammar and accepted word, select an actual repeated-variable pair, and change the pump power. The highlighted nested tree nodes determine all five pieces. The resulting word is checked by the actual grammar recognizer."
+        },
+        {
+          "num": "6.6",
+          "kind": "Theorem",
+          "name": "aⁿbⁿcⁿ and ww are not context-free",
+          "deps": [
+            "toc-6.5",
+            "toc-6.9"
+          ],
+          "refs": [
+            "Watrous Lecture10, PDF pp5–6, three-count counterexample; regular-intersection copying argument supplied here"
+          ],
+          "pic": "Choose the three-count witness or the copy language’s regular intersection, set a proposed pumping bound, and select any legal decomposition. Pump up or down and inspect the actual pieces and symbol counts."
+        },
+        {
+          "num": "6.7",
+          "kind": "Theorem",
+          "name": "Ogden’s lemma",
+          "deps": [
+            "toc-6.5",
+            "toc-5.9",
+            "comb-1.2"
+          ],
+          "refs": [
+            "Jean Gallier, CIS262 notes (5March2020), PDF pp175–178, Proposition7.12 and marked-branch argument; standard weaker CNF form and separating example proved here"
+          ],
+          "pic": "Compare the ordinary first-symbol split with every legal marked split of a bᵖcᵖdᵖ. The colored marks force the pumped pieces away from a harmless choice. Change the pump power and inspect actual language membership."
+        },
+        {
+          "num": "6.8",
+          "kind": "Theorem",
+          "name": "No closure under intersection or complement",
+          "deps": [
+            "toc-6.6",
+            "toc-5.8"
+          ],
+          "refs": [
+            "Watrous, Theory of Computation Lecture10 (2020), PDF pp9–10, CFL intersection/complement counterexamples"
+          ],
+          "pic": "Change the three block counts and compare membership in both actual grammars and their intersection. The selected c-count gives a slice through the count grid; the diagonal marks simultaneous equality."
+        },
+        {
+          "num": "6.9",
+          "kind": "Theorem",
+          "name": "Context-free ∩ regular is context-free",
+          "deps": [
+            "toc-6.4",
+            "toc-2.6"
+          ],
+          "refs": [
+            "Claus–Olderog, PDF pp62–63 and68–69, CFL/DCFL intersection with regular languages; explicit epsilon-aware product supplied here"
+          ],
+          "pic": "Edit the input and the small DFA’s transition table and final-state list. Step through the product’s actual run, watching the DFA coordinate stay fixed during stack-only moves."
+        },
+        {
+          "num": "6.10",
+          "kind": "Definition",
+          "name": "Deterministic pushdown automata",
+          "deps": [
+            "toc-6.1"
+          ],
+          "refs": [
+            "Claus–Olderog, PDF p66, DPDA definition; Taskin–Nipkow, DPDA_Complement_HU outline (24September2026), PDF pp1–2, exact determinism conditions"
+          ],
+          "pic": "Edit actual transition rules, final states and the input alphabet. Inspect every conflicting state/top pair, then follow the unique run when the machine is deterministic. Presets include a partial machine, a final visit followed by ε, and an infinite growing-stack ε-run."
+        },
+        {
+          "num": "6.11",
+          "kind": "Theorem",
+          "name": "Deterministic CFLs are closed under complement",
+          "deps": [
+            "toc-6.10"
+          ],
+          "refs": [
+            "Taskin–Nipkow, Deterministic Context-Free Languages are Closed Under Complementation (Hopcroft and Ullman), AFP outline dated24September2026, PDF pp1–12; finite epsilon-summary algorithm and work/checkpoint construction supplied here"
+          ],
+          "pic": "Edit a deterministic machine and compare its raw run, normalized run, correct complement and naive final-state flip. Inspect the actual ε-summary table and step through the selected constructed machine."
+        },
+        {
+          "num": "6.12",
+          "kind": "Theorem",
+          "name": "Palindromes need nondeterminism",
+          "deps": [
+            "toc-6.10",
+            "toc-6.9",
+            "toc-6.5",
+            "toc-5.1"
+          ],
+          "refs": [
+            "Claus–Olderog, PDF pp68–70, Min closure and nonempty palindrome separation; full doubled-boundary pumping case analysis supplied here"
+          ],
+          "pic": "Inspect the prefix-minimal palindrome witness and every legal pumping split. Compare the two inner and outer block counts, and find the actual shorter palindrome prefix when pumping preserves symmetry but breaks minimality."
+        },
+        {
+          "num": "6.13",
+          "kind": "Theorem",
+          "name": "Parikh’s theorem",
+          "deps": [
+            "toc-5.2",
+            "toc-3.9",
+            "comb-1.2"
+          ],
+          "refs": [
+            "Esparza–Ganty–Kiefer–Luttenberger, Parikh’s theorem: A simple and direct construction, arXiv1006.3825v3, main proof through conclusion opening; regular-image semilinear closure supplied here. Two stronger sentences on PDF p3 are not adopted."
+          ],
+          "pic": "Edit a grammar and construct its actual bounded-variable automaton. Compare the complete count-vector sets through the chosen length, inspect a lattice point and follow a corresponding regular-language path. The default aⁿbⁿ grammar produces the regular representative (ab)*."
+        },
+        {
+          "num": "6.14",
+          "kind": "Theorem",
+          "name": "Chomsky–Schützenberger theorem",
+          "deps": [
+            "toc-5.9",
+            "toc-5.3",
+            "toc-6.9"
+          ],
+          "refs": [
+            "Roos–Nipkow, AFP Chomsky_Schuetzenberger outline dated6February2026, overview PDF pp1–4, actual P1–P5 definitions pp7–11, finite-alphabet regularity and final theorem statements; own reconstruction induction"
+          ],
+          "pic": "Edit a grammar and word to encode an actual CNF parse tree, or enter bracket tokens directly. Step through stack matching and inspect the independent regular-filter checks and erased output. Change a child-production type to preserve balanced nesting while breaking the grammar filter."
+        }
+      ]
     },
-    // ───────────────────────────────────────────────────────────── 7
     {
       n: 7,
       title: 'Turing machines',

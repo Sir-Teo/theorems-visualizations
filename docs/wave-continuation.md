@@ -2,7 +2,7 @@
 
 ## Continuation — 2026-10-22
 
-Wave 5 is complete. Continue Wave 6 in the isolated expansion worktree below. The branch now contains **331 frozen new ideas: 36 accepted and 295 author-verified awaiting separate acceptance**. The accepted export remains 36/1,057. Preserve the 34 unaccepted ODE6/ALG9 drafts in the shipping worktree and all frozen assignments, source flags and access restrictions.
+Wave 5 is complete. Continue Wave 6 in the isolated expansion worktree below. The branch now contains **345 frozen new ideas: 36 accepted and 309 author-verified awaiting separate acceptance**. The accepted export remains 36/1,057. Preserve the 34 unaccepted ODE6/ALG9 drafts in the shipping worktree and all frozen assignments, source flags and access restrictions.
 
 Author-verified additions, with detailed evidence and retained failure logs:
 
@@ -25,12 +25,13 @@ Author-verified additions, with detailed evidence and retained failure logs:
 | DEEP 7 | 10 | [Report](verification/wave6-deep.md) |
 | CAUSAL 6 | 12 | [Report](verification/wave6-causal.md) |
 | ALGO 13 | 13 | [Report](verification/wave6-algo.md) |
+| TOC 6 | 14 | [Report](verification/wave6-toc.md) |
 
-The latest ALGO checkpoint passes 12 focused groups, 24,518 independent exact comparisons across 180 cases, strict build/static, 52 native layouts/2,324 actions/316 replays, both all-mode themes and all 18 routes. All 62 final mode captures, 26 mobile defaults, 26 narrow statement/proof pairs and 46 boundary captures were inspected. The combined CAUSAL/ALGO full suite passes 3,740 tests in 315.780 seconds, with no failures, skips or cancellations. Both chapters’ seven-file source/test manifests match their final freezes; all chapter browsers and servers are closed.
+The latest TOC checkpoint passes12 focused groups,3,964 independent comparisons, strict build/static,56 native layouts/2,040 actions/360 replays, both all-mode themes and all19 routes. All60 final mode captures,28 mobile defaults,28 rich statement/proof/scope captures and76 boundary captures were inspected, including complete recaptures of two initially clipped max-pump readouts on unchanged source. The full suite passes3,752 tests in318.914 seconds, with no failures, skips or cancellations. Its seven-file source/test manifest matches before and after integration; all chapter browsers and servers are closed.
 
-**Next: TOC 6 (14 ideas), Pushdown Automata and the Limits of Context-Free Languages.** Primary-source research is underway for grammar/PDA conversions, pumping and closure, deterministic complementation, Parikh images and the bracket-language representation. The source diary and frozen chapter are under `/tmp/wave6-toc-research/`. Preserve the distinction between bounded execution and language-wide proofs; infinite epsilon runs and resource limits must remain inconclusive. No TOC 6 implementation or verification is claimed yet.
+**Next: CPLX 6 (11 ideas), Interactive Proofs.** Primary-source research is underway for private/public coins, graph non-isomorphism, arithmetization, sum-check, IP=PSPACE, MIP=NEXP and program checking. Frozen metadata, source receipts and actual reading boundaries are under `/tmp/wave6-cplx-research/`. The Arora–Barak author draft chapter8 and the main BFL manuscript throughPDF26 have been read; unfinished passages are recorded separately. No CPLX6 implementation or verification is claimed yet.
 
-Original-body stops remain binding: DEEP Lee2018 OpenReview verification; CAUSAL BMJ Davies–Holmes–Davey Smith2018 and NBER Lee–Lemieux PDFs (403); ALGO Princeton substring chapter (403), original Aho–Corasick and Kasai PDFs (timeout), and Erickson strings PDF after its opening epigraph (timeout). No alternate-host/cache recovery. TOC Berstel’s original transductions PDF returned 502 and is also stopped. Preserve all earlier source stops. These author checkpoints do not claim separate acceptance or completion of the separate visual redesign.
+Original-body stops remain binding: DEEP Lee2018 OpenReview verification; CAUSAL BMJ Davies–Holmes–Davey Smith2018 and NBER Lee–Lemieux PDFs (403); ALGO Princeton substring chapter (403), original Aho–Corasick and Kasai PDFs (timeout), and Erickson strings PDF after its opening epigraph (timeout). No alternate-host/cache recovery. TOC Berstel’s original transductions PDF returned 502 and is also stopped. CPLX Goldwasser–Sipser original MIT PDF returned502 and the distinct Goldreich round-efficient exposition returned403; neither body may be recovered via another host/cache. Preserve all earlier source stops. These author checkpoints do not claim separate acceptance or completion of the separate visual redesign.
 
 ## Authorization and workspace
 
