@@ -18,7 +18,8 @@ function network(s,q,{currents=q.currents,path=[],grid=false}={}){
   if(grid)s.setView([-1,q.size],[-1,q.size]);else s.setView([-1.5,1.5],[-1.5,1.5]);
   const max=Math.max(1e-20,...currents.map(Math.abs));q.edges.forEach(([a,b],i)=>s.segment(points[a],points[b],{color:Math.abs(currents[i])<max*1e-9?'muted':'blue',width:1+3*Math.abs(currents[i])/max}));
   if(path.length>1)s.path(path.map(i=>points[i]),{color:'gold',width:4});
-  points.forEach((p,i)=>{s.dot(...p,{r:grid?i===q.a||i===q.b?5:2.2:11,color:i===q.a?'orange':i===q.b?'green':'panel'});if(!grid)text(s,String(i),...p,i===q.a||i===q.b?'#101820':'blue',11);});
+  const darkInk=['ink','bg'].sort((a,b)=>s.rt.api.rgb(a).slice(0,3).reduce((u,x)=>u+x,0)-s.rt.api.rgb(b).slice(0,3).reduce((u,x)=>u+x,0))[0];
+  points.forEach((p,i)=>{s.dot(...p,{r:grid?i===q.a||i===q.b?5:2.2:11,color:i===q.a?'orange':i===q.b?'green':'panel'});if(!grid)text(s,String(i),...p,i===q.a||i===q.b?darkInk:'blue',11);});
   return points;
 }
 
