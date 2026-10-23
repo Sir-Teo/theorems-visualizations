@@ -1,8 +1,8 @@
 # Content waves: compact execution handoff
 
-## Continuation — 2026-10-22
+## Continuation — 2026-10-23
 
-Wave 5 is complete. Continue Wave 6 in the isolated expansion worktree below. The branch now contains **345 frozen new ideas: 36 accepted and 309 author-verified awaiting separate acceptance**. The accepted export remains 36/1,057. Preserve the 34 unaccepted ODE6/ALG9 drafts in the shipping worktree and all frozen assignments, source flags and access restrictions.
+Wave 5 is complete. Continue Wave 6 in the isolated expansion worktree below. The branch now contains **356 frozen new ideas: 36 accepted and 320 author-verified awaiting separate acceptance**. The accepted export remains 36/1,057. Preserve the 34 unaccepted ODE6/ALG9 drafts in the shipping worktree and all frozen assignments, source flags and access restrictions.
 
 Author-verified additions, with detailed evidence and retained failure logs:
 
@@ -26,10 +26,11 @@ Author-verified additions, with detailed evidence and retained failure logs:
 | CAUSAL 6 | 12 | [Report](verification/wave6-causal.md) |
 | ALGO 13 | 13 | [Report](verification/wave6-algo.md) |
 | TOC 6 | 14 | [Report](verification/wave6-toc.md) |
+| CPLX 6 | 11 | [Report](verification/wave6-cplx.md) |
 
-The latest TOC checkpoint passes12 focused groups,3,964 independent comparisons, strict build/static,56 native layouts/2,040 actions/360 replays, both all-mode themes and all19 routes. All60 final mode captures,28 mobile defaults,28 rich statement/proof/scope captures and76 boundary captures were inspected, including complete recaptures of two initially clipped max-pump readouts on unchanged source. The full suite passes3,752 tests in318.914 seconds, with no failures, skips or cancellations. Its seven-file source/test manifest matches before and after integration; all chapter browsers and servers are closed.
+The latest CPLX checkpoint passes 12 focused groups, 38,372 independent comparisons, strict build/static, 44 native layouts/2,112 physical actions/322 replays, both all-mode themes and all 16 routes. All 80 final mode captures, 22 mobile defaults, 22 rich statement/proof/scope captures and 74 boundary captures were inspected, including replacements for the leaked-policy and early-rejection displays. The final full serial suite passes 3,764 tests in 319.555 seconds, with no failures, skips or cancellations. Its seven-file source/test manifest matches before and after integration; chapter-owned browsers and servers are closed.
 
-**Next: CPLX 6 (11 ideas), Interactive Proofs.** Primary-source research is underway for private/public coins, graph non-isomorphism, arithmetization, sum-check, IP=PSPACE, MIP=NEXP and program checking. Frozen metadata, source receipts and actual reading boundaries are under `/tmp/wave6-cplx-research/`. The Arora–Barak author draft chapter8 and the main BFL manuscript throughPDF26 have been read; unfinished passages are recorded separately. No CPLX6 implementation or verification is claimed yet.
+**Next: INFO 6 (9 ideas), Continuous Sources and the Gaussian Channel.** Primary-source reading covers differential entropy, entropy maximization, the entropy-power inequality, constrained Gaussian coding, Shannon–Hartley, energy per bit and water filling. Frozen metadata, receipts, actual reading boundaries and prerequisite snapshots are under `/tmp/wave6-info-research/`. An exact histogram/quantization/convolution prototype exists only in `/tmp/wave6-info-prototype.mjs`; no repository INFO6 implementation or verification is claimed yet.
 
 Original-body stops remain binding: DEEP Lee2018 OpenReview verification; CAUSAL BMJ Davies–Holmes–Davey Smith2018 and NBER Lee–Lemieux PDFs (403); ALGO Princeton substring chapter (403), original Aho–Corasick and Kasai PDFs (timeout), and Erickson strings PDF after its opening epigraph (timeout). No alternate-host/cache recovery. TOC Berstel’s original transductions PDF returned 502 and is also stopped. CPLX Goldwasser–Sipser original MIT PDF returned502 and the distinct Goldreich round-efficient exposition returned403; neither body may be recovered via another host/cache. Preserve all earlier source stops. These author checkpoints do not claim separate acceptance or completion of the separate visual redesign.
 

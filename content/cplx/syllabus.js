@@ -372,33 +372,159 @@ export default {
     },
     // ───────────────────────────────────────────────────────────── 6
     {
-      n: 6,
-      title: 'Interactive proofs',
-      summary: String.raw`An interactive proof lets a powerful prover convince a randomized, polynomial-time verifier through conversation. Graph non-isomorphism, not known to be in NP, has a simple interactive proof; public coins turn out to be as good as private ones. Arithmetization — reading a Boolean formula as a polynomial — and the sum-check protocol show that interaction captures all of PSPACE, and with two non-communicating provers, all of nondeterministic exponential time.`,
-      items: [
-        { num: '6.1', kind: 'Definition', name: 'Interactive proof systems and IP', deps: ['toc-12.10', 'cplx-5.1'], refs: ['Arora–Barak ch. 8'],
-          pic: 'A message diagram between prover and verifier steps through rounds; the reader plays a cheating prover and watches the verifier’s acceptance rate stay below the soundness bound.' },
-        { num: '6.2', kind: 'Algorithm', name: 'Interactive proof for graph non-isomorphism', deps: ['cplx-6.1'], refs: ['Arora–Barak ch. 8'],
-          pic: 'The verifier secretly permutes one of two graphs and asks which it was; for isomorphic graphs the reader, as prover, can only guess, and the success rate settles at one half.' },
-        { num: '6.3', kind: 'Definition', name: 'Arthur–Merlin games: AM and MA', deps: ['cplx-6.1'], refs: ['Arora–Barak ch. 8'],
-          pic: 'Arthur’s coins are shown face up to Merlin; message diagrams for MA (Merlin first) and AM (Arthur first) are compared on the same problem.' },
-        { num: '6.4', kind: 'Theorem', name: 'Goldwasser–Sipser: public coins suffice', deps: ['cplx-6.3', 'cplx-6.2'], refs: ['Arora–Barak ch. 8'],
-          pic: 'Set lower-bound protocol: a random hash function maps a large set onto a target and a small set rarely hits it; the reader resizes the set and watches the hit rate separate.' },
-        { num: '6.5', kind: 'Theorem', name: 'Graph isomorphism is not NP-complete unless PH collapses', deps: ['cplx-6.4', 'cplx-3.6'], refs: ['Arora–Barak ch. 8'],
-          pic: 'Graph non-isomorphism in AM would put coNP in AM if GI were NP-complete, and the chain of inclusions animates the polynomial hierarchy collapsing to level two.' },
-        { num: '6.6', kind: 'Method', name: 'Arithmetization', deps: ['toc-1.9'], refs: ['Arora–Barak ch. 8'],
-          pic: 'Type a Boolean formula: AND becomes multiplication, NOT x becomes 1 − x, and the resulting polynomial agrees with the formula on every 0/1 input in the table.' },
-        { num: '6.7', kind: 'Algorithm', name: 'Sum-check protocol', deps: ['cplx-6.6', 'cplx-5.5'], refs: ['Arora–Barak ch. 8'],
-          pic: 'The prover sends a univariate polynomial each round and the verifier checks it at a random point; a lying prover is caught with high probability, tallied over repeated runs.' },
-        { num: '6.8', kind: 'Theorem', name: 'coNP ⊆ IP (Lund–Fortnow–Karloff–Nisan)', deps: ['cplx-6.7', 'cplx-3.1'], refs: ['Arora–Barak ch. 8'],
-          pic: 'Counting satisfying assignments of a formula becomes a sum of its arithmetization over the cube; the sum-check rounds certify the count zero for an unsatisfiable formula.' },
-        { num: '6.9', kind: 'Theorem', name: 'IP = PSPACE (Shamir)', deps: ['cplx-6.8', 'toc-14.7'], refs: ['Arora–Barak ch. 8'],
-          pic: 'Quantifiers become products and sums, and degree-reduction steps keep polynomials small; the degree of each round’s polynomial is plotted with and without linearization.' },
-        { num: '6.10', kind: 'Theorem', name: 'MIP = NEXP (Babai–Fortnow–Lund)', deps: ['cplx-6.9'], refs: ['Arora–Barak ch. 8'],
-          pic: 'Two provers are questioned in separate rooms; cross-checking their answers catches inconsistent strategies, as a match-rate meter shows for strategies the reader designs.' },
-        { num: '6.11', kind: 'Method', name: 'Program checking (Blum–Kannan)', deps: ['cplx-6.1'], refs: ['Arora–Barak ch. 8'],
-          pic: 'A buggy sorting or gcd routine is wrapped in a checker that tests its outputs on random self-related inputs; planted bugs are detected at the predicted rate.' },
-      ],
+      "n": 6,
+      "title": "Interactive proofs",
+      "summary": "A verifier can learn more from a conversation than from a single certificate. The order of messages and random choices determines what a cheating prover can exploit. Polynomial identities turn enormous computations into short checks, while a second isolated prover lets the verifier test consistency of an exponentially large object.",
+      "items": [
+        {
+          "num": "6.1",
+          "kind": "Definition",
+          "name": "Interactive proof systems and IP",
+          "deps": [
+            "cplx-5.1",
+            "cplx-5.4"
+          ],
+          "refs": [
+            "Arora–Barak author draft (8January2007), chapter8, PDF163–166; quantifier and private-information conventions stated explicitly"
+          ],
+          "pic": "Edit a four-bit response policy and inspect all eight verifier tapes. Step through one transcript, then leak the hidden tape to see exactly which information restriction made the soundness bound possible."
+        },
+        {
+          "num": "6.2",
+          "kind": "Algorithm",
+          "name": "Interactive proof for graph non-isomorphism",
+          "deps": [
+            "cplx-6.1"
+          ],
+          "refs": [
+            "Arora–Barak author draft, PDF165–166, graph non-isomorphism protocol; explicit orbit multiplicity and adaptive repetition argument"
+          ],
+          "pic": "Edit the two graphs and step through a relabeled challenge. Compare the exact distributions over every permutation, including repeated copies caused by automorphisms, with a prover that only sees H."
+        },
+        {
+          "num": "6.3",
+          "kind": "Definition",
+          "name": "Arthur–Merlin games: AM and MA",
+          "deps": [
+            "cplx-6.1",
+            "cplx-5.4"
+          ],
+          "refs": [
+            "Arora–Barak author draft, PDF166–169; Cai, Lectures in Computational Complexity (12December2003), PDF115–116, amplification and union bound"
+          ],
+          "pic": "Edit the actual acceptance matrix and compare the two orders. In AM the response may change from row to row; in MA one column must be chosen before the random row is known."
+        },
+        {
+          "num": "6.4",
+          "kind": "Theorem",
+          "name": "Goldwasser–Sipser: public coins suffice",
+          "deps": [
+            "cplx-6.3",
+            "cplx-6.9"
+          ],
+          "refs": [
+            "Arora–Barak author draft, PDF168–172, public coins and set lower bounds; polynomial-round equality proved here via6.9. Goldwasser–Sipser original MIT PDF inaccessible, body not read."
+          ],
+          "pic": "Edit a small set and an affine binary hash. Inspect actual preimages of zero and the exact hit rate over the entire hash family, alongside the two probability bounds."
+        },
+        {
+          "num": "6.5",
+          "kind": "Theorem",
+          "name": "Graph isomorphism is not NP-complete unless PH collapses",
+          "deps": [
+            "cplx-6.4",
+            "cplx-3.4",
+            "cplx-3.6",
+            "cplx-5.4"
+          ],
+          "refs": [
+            "Arora–Barak author draft, PDF171–173, automorphism-weighted set and GI collapse; Cai, PDF113–118, shifted intersections, MAM collapse and AM⊆Π₂. Strict density constants and complete arguments supplied here."
+          ],
+          "pic": "Edit a finite accepting-coin set and its public shifts. Inspect every possible common witness and the exact success rate, then follow how perfect completeness enters the conditional hierarchy argument."
+        },
+        {
+          "num": "6.6",
+          "kind": "Method",
+          "name": "Arithmetization",
+          "deps": [
+            "toc-1.9"
+          ],
+          "refs": [
+            "Arora–Barak author draft, PDF174–177, arithmetization and linearization; explicit Boolean-OR convention and degree induction"
+          ],
+          "pic": "Type a Boolean formula, check all its cube rows and inspect a finite-field slice through an off-cube point. Repeated variables make the difference between Boolean agreement and formal polynomial equality visible."
+        },
+        {
+          "num": "6.7",
+          "kind": "Algorithm",
+          "name": "Sum-check protocol",
+          "deps": [
+            "cplx-6.6",
+            "cplx-5.5",
+            "cplx-6.1"
+          ],
+          "refs": [
+            "Arora–Barak author draft, PDF174–176, sum-check and root-bound soundness; explicit degree validation and adaptive conditional argument"
+          ],
+          "pic": "Choose a true or false claim, edit the first polynomial or use an adaptive cheating policy, and step through the actual checks. The two field plots show where a submitted polynomial can agree with the honest one after it has been committed."
+        },
+        {
+          "num": "6.8",
+          "kind": "Theorem",
+          "name": "coNP ⊆ IP (Lund–Fortnow–Karloff–Nisan)",
+          "deps": [
+            "cplx-6.7",
+            "cplx-3.1",
+            "cplx-3.2"
+          ],
+          "refs": [
+            "Arora–Barak author draft, PDF174–176, #SAT sum-check; prime-certificate check and integer-residue qualification supplied here. No original LFKN paper-body claim."
+          ],
+          "pic": "Try to certify count zero, then inspect the actual sum-check rounds. Switch to a small field to see a positive integer count become residue zero and why the field-size condition matters."
+        },
+        {
+          "num": "6.9",
+          "kind": "Theorem",
+          "name": "IP = PSPACE (Shamir)",
+          "deps": [
+            "cplx-6.1",
+            "cplx-6.6",
+            "cplx-6.7",
+            "cplx-3.8"
+          ],
+          "refs": [
+            "Arora–Barak author draft, PDF176–178, IP=PSPACE and linearization sketch. Full operator protocol, polynomial-size reachability reduction and private-transcript space evaluation supplied here; no original Shamir paper-body claim."
+          ],
+          "pic": "Edit a quantified formula and reverse its actual elimination and degree-reduction steps. Compare true restrictions with a cheating prover's messages, and inspect every individual degree as the operators are applied."
+        },
+        {
+          "num": "6.10",
+          "kind": "Theorem",
+          "name": "MIP = NEXP (Babai–Fortnow–Lund)",
+          "deps": [
+            "cplx-6.1",
+            "cplx-6.7",
+            "cplx-6.9"
+          ],
+          "refs": [
+            "Babai–Fortnow–Lund, Two-Prover Interactive Protocols for NEXPTIME, author-hosted manuscript, PDF1–26 actually read; main paper Computational Complexity1(1991),3–40. Robust-test proof and cited expansion lemma are distinguished."
+          ],
+          "pic": "Design two local response rules for a small clause-versus-variable game. Compute the exact best separated strategy, then reveal the other prover's question and answer to see how communication removes the consistency obstruction."
+        },
+        {
+          "num": "6.11",
+          "kind": "Method",
+          "name": "Program checking (Blum–Kannan)",
+          "deps": [
+            "cplx-6.1",
+            "cplx-5.5"
+          ],
+          "refs": [
+            "Arora–Barak author draft, PDF178–180 and184–186, checker definition and permanent recursion. Correct n-point interpolation degree and dimension accounting supplied here. No original Blum–Kannan paper-body claim."
+          ],
+          "pic": "Edit a matrix and choose a deliberately faulty permanent program. Step through the actual minor queries, interpolated polynomial and recursive matrices; inspect where a random curve point could conceal a wrong answer."
+        }
+      ]
     },
     // ───────────────────────────────────────────────────────────── 7
     {
