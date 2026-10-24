@@ -92,3 +92,5 @@ Run `node scripts/plan-content-wave.mjs --wave 6` to refresh. Only an explicit `
 | phil | 6 · Bayesian epistemology | 11 | 0 | 0 |
 | tech | 7 · Steam, iron and the Industrial Revolution | 14 | 0 | 0 |
 | bighist | 6 · The Malthusian world | 11 | 0 | 3 |
+
+Latest local integration: [BIOINF6/SYSBIO6](verification/wave6-bioinf-sysbio-integration.md) passes4,636 full tests and272 production routes in each theme; reading8,410 ideas/76 aliases preserves all earlier content. Independent acceptance remains the historical36.
