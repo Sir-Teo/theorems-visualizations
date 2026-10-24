@@ -1,0 +1,11 @@
+# BIOINF6 / SYSBIO6 local integration — 24 October 2026
+
+The continuous content goal authorizes this local17-lesson batch: BIOINF6 at33f5aea2 and SYSBIO6 atdd3af67c. Chapter author reports retain45 focused groups and313 independent cases. Their disjoint native matrices cover68 layouts,1848 physical actions,740 actual Share links,68 invalid-state rejections,68 raw fractional restores and204 exact critical restores. Historical independent acceptance remains36/1057; author-available content is695. No push, merge, release or independent review is claimed.
+
+Source reconciliation retains all8393 earlier reading projections and76 aliases and adds exactly BIOINF6.1–6.9 and SYSBIO6.1–6.8. All individual target, source, task and ordered route arrays remain exact; only parent snapshot metadata/digests change. Receipts: [content](../integration/wave6-bioinf-sysbio-content.json), [bindings](../integration/wave6-bioinf-sysbio-bindings.json). The newly admitted original-access flag is BIOINF6.9; all historical source-access stops remain binding.
+
+The source reading snapshot is `dd3af67c865f1287f257555b860b5ff0e70c88ed`; projection digest `be47c90cc257cd17ec09519b4637f0b4784424d7780736169e965f5ea9e20f96`; generated-data digest `7bf165c53826da4a82b349bf005f7c28d9dfb63bdaf7a234e1bb3f74decb96d4`. Direct source and regenerated-data checks reproduce both digests.
+
+Scoped reconciliation checks pass23/23 core groups plus24/24 route/program groups,47 total. Strict build8410 written/5164 planned/577 chapters/85 collections is clean, all8347 static visualizations pass, coverage validation passes and the24-record read-only local-continuation check passes. Logs: `/tmp/wave6-bioinf-sysbio-{reconciliation-tests,reconciliation-routes,build,static,coverage,local}.log`. A copied temporary script initially expected the new8410 count for the old8393 roster; its assertion stopped before any mutation. Correcting that bookkeeping fixture gave the exact17-lesson reconciliation; failed log remains `reconciliation-v1.log`.
+
+Full integration checks are pending. The previous completed global checkpoint remains4590 tests and272 production routes per theme. This document will record actual final outcomes after checks complete; no pending result is represented as passing.

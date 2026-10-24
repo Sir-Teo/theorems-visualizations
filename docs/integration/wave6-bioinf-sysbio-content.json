@@ -1,0 +1,42 @@
+{
+  "checkedOn": "2026-10-24",
+  "baseIntegrationCommit": "6fa7d904674c29a28b72c8f766def96eaab7b95f",
+  "baseManifestSha256": "7c319f0401497bae2abac47f0d4732c07592641b039a8d49834afa9771f41df8",
+  "baseCommit": "0fd715ad845e4550a27c4b4f871ac57b36cd0fd8",
+  "sourceCommit": "dd3af67c865f1287f257555b860b5ff0e70c88ed",
+  "baseIdeas": 8393,
+  "retainedIdeas": 8393,
+  "addedIdeas": 17,
+  "mergedIdeas": 8410,
+  "addedIds": [
+    "bioinf-6.1",
+    "bioinf-6.2",
+    "bioinf-6.3",
+    "bioinf-6.4",
+    "bioinf-6.5",
+    "bioinf-6.6",
+    "bioinf-6.7",
+    "bioinf-6.8",
+    "bioinf-6.9",
+    "sysbio-6.1",
+    "sysbio-6.2",
+    "sysbio-6.3",
+    "sysbio-6.4",
+    "sysbio-6.5",
+    "sysbio-6.6",
+    "sysbio-6.7",
+    "sysbio-6.8"
+  ],
+  "changedRetainedItems": [],
+  "baseSnapshotDigest": "0b3426b7a61f31e2b4d71c24896bec0cf3dc5a039aa37f6d9026594bb326cc1f",
+  "baseDataDigest": "2abba808ea90df609acc5ae7aa54df0325d351793a33df828da64bed83179b50",
+  "snapshotDigest": "be47c90cc257cd17ec09519b4637f0b4784424d7780736169e965f5ea9e20f96",
+  "dataDigest": "7bf165c53826da4a82b349bf005f7c28d9dfb63bdaf7a234e1bb3f74decb96d4",
+  "aliasesUnchanged": true,
+  "chapterReports": [
+    "docs/verification/wave6-bioinf.md",
+    "docs/verification/wave6-sysbio.md"
+  ],
+  "scope": "User-directed continuous local content work; chapter author gates, no new independent review or deployment. Historical Wave6 accepted36/1057 remains unchanged.",
+  "result": "PASS"
+}
