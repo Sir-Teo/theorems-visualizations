@@ -184,45 +184,265 @@ export default {
       ],
     },
     {
-      n: 6,
-      title: 'Food webs and community stability',
-      summary: String.raw`Communities are webs of who eats whom. Removing a keystone predator or adding a top carnivore can cascade down to plants, and the size of these effects depends on productivity. May showed that randomly assembled large communities are unlikely to be stable, overturning the intuition that diversity breeds stability; the resolution lies in the non-random structure of real webs — weak links, compartments and characteristic connectance — and in the insurance that diversity gives ecosystem functions.`,
-      items: [
-        { num: '6.1', kind: 'Concept', name: 'Food webs and trophic levels', deps: [], refs: ['Begon ch. 20'],
-          pic: 'An editable food web is drawn with species stacked by trophic level, computed from the average path length to basal resources; adding an omnivory link shifts a species to a fractional level.' },
-        { num: '6.2', kind: 'Concept', name: 'Keystone species (Paine)', deps: ['ecol-6.1'], refs: ['Begon ch. 20'],
-          pic: 'Remove the starfish Pisaster from a simulated intertidal web; mussels monopolize space and diversity collapses, while removing other species of similar biomass changes little.' },
-        { num: '6.3', kind: 'Phenomenon', name: 'Trophic cascades', deps: ['ecol-6.1'], refs: ['Begon ch. 20'],
-          pic: 'Add or remove the top predator in a three- or four-level food chain; biomass alternates up and down the levels, as with wolves, elk and willows or sea otters, urchins and kelp.' },
-        { num: '6.4', kind: 'Model', name: 'Exploitation ecosystems and the green-world hypothesis', deps: ['ecol-6.3', 'mathbio-3.9'], refs: ['Begon ch. 20'],
-          pic: 'Raise primary productivity in a food-chain model; new trophic levels are added one by one and equilibrium plant biomass rises in steps only when the number of levels is odd.' },
-        { num: '6.5', kind: 'Concept', name: 'Community matrix and local stability', deps: ['mathbio-3.21'], refs: ['Begon ch. 20'],
-          pic: 'Compute the Jacobian of a multispecies equilibrium and display its eigenvalues; perturb the community and watch it return or diverge as predicted by the rightmost eigenvalue.' },
-        { num: '6.6', kind: 'Theorem', name: 'May’s stability–complexity criterion', deps: ['ecol-6.5'], refs: ['Begon ch. 20'],
-          pic: 'Fill a random community matrix with S species, connectance C and interaction strength σ; the eigenvalues fill a disc of radius σ√(SC), and stability is lost as soon as the disc crosses the self-regulation line.' },
-        { num: '6.7', kind: 'Paradox', name: 'Diversity–stability paradox', deps: ['ecol-6.6'], refs: ['Begon ch. 20'],
-          pic: 'Plot the probability of stability against species richness for random webs (falling) alongside field observations of more stable diverse grasslands (rising), the tension May’s result created.' },
-        { num: '6.8', kind: 'Phenomenon', name: 'Weak interactions stabilize food webs', deps: ['ecol-6.6'], refs: ['Begon ch. 20'],
-          pic: 'Shift the distribution of interaction strengths toward many weak links and few strong ones at fixed mean; the fraction of stable random webs rises sharply, as McCann argued.' },
-        { num: '6.9', kind: 'Model', name: 'Niche model of food-web structure', deps: ['ecol-6.1'], refs: ['Begon ch. 20'],
-          pic: 'Species get niche values on a line and eat everything in a range below them; generated webs reproduce the chain lengths and omnivory of real webs better than random graphs.' },
-        { num: '6.10', kind: 'Concept', name: 'Connectance and food-chain length', deps: ['ecol-6.1'], refs: ['Begon ch. 20'],
-          pic: 'Compare real food webs on a plot of links against species; links per species stays nearly constant, and food chains rarely exceed four or five links.' },
-        { num: '6.11', kind: 'Phenomenon', name: 'Intraguild predation and omnivory', deps: ['ecol-6.1'], refs: ['Begon ch. 20'],
-          pic: 'A predator eats both a prey and that prey’s competitor; coexistence requires the intraguild prey to be the better resource competitor, mapped as a band in productivity space.' },
-        { num: '6.12', kind: 'Phenomenon', name: 'Biodiversity and ecosystem function: the insurance effect', deps: ['ecol-6.7'], refs: ['Begon ch. 20'],
-          pic: 'Communities of species with asynchronous responses to environmental noise give total biomass whose coefficient of variation falls with richness, the portfolio effect.' },
-        { num: '6.13', kind: 'Paper', name: 'Food Web Complexity and Species Diversity',
-          paper: { authors: 'Robert T. Paine', year: 1966, title: 'Food Web Complexity and Species Diversity',
-                   venue: 'The American Naturalist 100 (910): 65–75', doi: '10.1086/282400' },
-          introduces: ['ecol-6.2'], deps: ['ecol-6.1'], refs: [],
-          pic: 'Paine’s removal experiment at Mukkaw Bay: take the starfish Pisaster out of a rocky-shore food web and the mussels and barnacles it ate take over the space, shrinking a 15-species system to 8 — remove or restore the top predator in a simulated intertidal patch and watch diversity respond.' },
-        { num: '6.14', kind: 'Paper', name: 'Will a Large Complex System be Stable?',
-          paper: { authors: 'Robert M. May', year: 1972, title: 'Will a Large Complex System be Stable?',
-                   venue: 'Nature 238 (5364): 413–414', doi: '10.1038/238413a0' },
-          introduces: ['ecol-6.6'], deps: ['ecol-6.5', 'mathbio-3.21'], refs: [],
-          pic: 'May’s random communities: draw an S-species community matrix with connectance C and interaction strength σ and plot its eigenvalues — they fill a disc of radius σ√(SC) — and watch the system flip from almost surely stable to almost surely unstable as σ√(SC) crosses 1.' },
-      ],
+      "n": 6,
+      "title": "Food webs and community stability",
+      "summary": "Food-web structure, local equilibrium stability and variability of ecosystem function answer different questions. Declared competition and trophic modules expose predator-mediated coexistence, cascades, invasion thresholds and context-dependent weak-link effects. Finite random matrices, interval niche generators and exact covariance constructions make the assumptions and limits of complexity–stability claims inspectable.",
+      "items": [
+        {
+          "num": "6.1",
+          "kind": "Concept",
+          "name": "Food webs and trophic levels",
+          "deps": [],
+          "refs": [
+            "Williams, Anandanadesan & Purves (2010), The Probabilistic Niche Model Reveals the Niche Structure and Role of Body Size in a Complex Food Web, PLoS ONE5:e12092, selected Introduction and Distributions of parameters; PDFpp.3,5 inspected",
+            "Stephen Stearns, Open Yale Courses EEB122, Lecture28 Ecological Communities, selected transcript Chapter3 (04:42–23:08), trophic cascades and predator-mediated coexistence",
+            "Direct solution of the declared dietary recursion"
+          ],
+          "links": {
+            "niche": "https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0012092",
+            "lecture": "https://oyc.yale.edu/ecology-and-evolutionary-biology/eeb-122/lecture-28"
+          },
+          "pic": "Change the recycling fraction and compare the feeding arrows with the computed trophic levels. A fully closed consumer cycle is explicitly undefined; nearly closed cycles retain large finite levels."
+        },
+        {
+          "num": "6.2",
+          "kind": "Concept",
+          "name": "Keystone species (Paine)",
+          "deps": [
+            "ecol-6.1"
+          ],
+          "refs": [
+            "Stephen Stearns, Open Yale Courses EEB122, Lecture28 Ecological Communities, selected transcript Chapter3 (04:42–23:08), trophic cascades and predator-mediated coexistence",
+            "Direct hierarchical-colonization and equilibrium calculation"
+          ],
+          "links": {
+            "lecture": "https://oyc.yale.edu/ecology-and-evolutionary-biology/eeb-122/lecture-28"
+          },
+          "pic": "Vary external predator pressure. Compare the equilibrium coverages with the continuous response of each competitor, including branches where a species cannot invade. The model illustrates a mechanism of predator-mediated coexistence."
+        },
+        {
+          "num": "6.3",
+          "kind": "Phenomenon",
+          "name": "Trophic cascades",
+          "deps": [
+            "ecol-6.1"
+          ],
+          "refs": [
+            "Stephen Stearns, Open Yale Courses EEB122, Lecture28 Ecological Communities, selected transcript Chapter3 (04:42–23:08), trophic cascades and predator-mediated coexistence",
+            "Direct equilibrium and invasion calculation"
+          ],
+          "links": {
+            "lecture": "https://oyc.yale.edu/ecology-and-evolutionary-biology/eeb-122/lecture-28"
+          },
+          "pic": "Change top-consumer density and resource carrying capacity. The response panel tracks the resource and herbivore branches, including herbivore loss, while the compartment panel shows the selected equilibrium."
+        },
+        {
+          "num": "6.4",
+          "kind": "Model",
+          "name": "Exploitation ecosystems and the green-world hypothesis",
+          "deps": [
+            "ecol-6.3",
+            "mathbio-3.9"
+          ],
+          "refs": [
+            "Stephen Stearns, Open Yale Courses EEB122, Lecture28 Ecological Communities, selected transcript Chapter3 (04:42–23:08), trophic cascades and predator-mediated coexistence",
+            "Written MATHBIO3.9; direct type-I chain derivation"
+          ],
+          "links": {
+            "lecture": "https://oyc.yale.edu/ecology-and-evolutionary-biology/eeb-122/lecture-28"
+          },
+          "pic": "Choose the maximum chain length and increase carrying capacity. Compare selected equilibrium densities with all branches across K, and read the two consumer-invasion thresholds."
+        },
+        {
+          "num": "6.5",
+          "kind": "Concept",
+          "name": "Community matrix and local stability",
+          "deps": [
+            "mathbio-3.21"
+          ],
+          "refs": [
+            "Dougoud, Vinckenbosch, Rohr, Bersier & Mazza (2018), The feasibility of equilibria in large ecosystems: A primary but neglected concept in the complexity-stability debate, PLoS Computational Biology14:e1005988, selected Introduction",
+            "Written MATHBIO3.21; direct GLV differentiation and two-species calculation"
+          ],
+          "links": {
+            "feasibility": "https://journals.plos.org/ploscompbiol/article?id=10.1371/journal.pcbi.1005988"
+          },
+          "pic": "Change symmetric or asymmetric competition and inspect the actual positive trajectory, feasible equilibrium marker and local spectrum. Move the time marker without treating an infeasible algebraic candidate as an ecological rest state."
+        },
+        {
+          "num": "6.6",
+          "kind": "Theorem",
+          "name": "May’s stability–complexity criterion",
+          "deps": [
+            "ecol-6.5"
+          ],
+          "refs": [
+            "Dougoud, Vinckenbosch, Rohr, Bersier & Mazza (2018), The feasibility of equilibria in large ecosystems: A primary but neglected concept in the complexity-stability debate, PLoS Computational Biology14:e1005988, selected Introduction",
+            "Written MATHBIO3.21; declared Gaussian-mixture ensemble and direct finite eigenvalues"
+          ],
+          "links": {
+            "feasibility": "https://journals.plos.org/ploscompbiol/article?id=10.1371/journal.pcbi.1005988"
+          },
+          "pic": "Vary richness, inclusion probability, interaction standard deviation and self-regulation. Compare the actual matrix and computed eigenvalues with the nominal asymptotic disk; the classification follows the finite spectrum."
+        },
+        {
+          "num": "6.7",
+          "kind": "Paradox",
+          "name": "Diversity–stability paradox",
+          "deps": [
+            "ecol-6.6"
+          ],
+          "refs": [
+            "Dougoud, Vinckenbosch, Rohr, Bersier & Mazza (2018), The feasibility of equilibria in large ecosystems: A primary but neglected concept in the complexity-stability debate, PLoS Computational Biology14:e1005988, selected Introduction",
+            "Bouvier et al. (2012), Contrasted Effects of Diversity and Immigration on Ecological Insurance in Marine Bacterioplankton Communities, PLoS ONE7:e37620, selected Introduction, Results and Discussion",
+            "Direct covariance identity; independent finite-matrix calculation"
+          ],
+          "links": {
+            "feasibility": "https://journals.plos.org/ploscompbiol/article?id=10.1371/journal.pcbi.1005988",
+            "insurance": "https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0037620"
+          },
+          "pic": "Compare a finite seeded matrix family with a separate exact aggregation calculation. Change interaction strength and response correlation, and inspect how the two meanings of stability respond to richness."
+        },
+        {
+          "num": "6.8",
+          "kind": "Phenomenon",
+          "name": "Weak interactions stabilize food webs",
+          "deps": [
+            "ecol-6.6"
+          ],
+          "refs": [
+            "Caskenette & McCann (2017), Biomass Reallocation between Juveniles and Adults Mediates Food Web Stability by Distributing Energy Away from Strong Interactions, PLoS ONE12:e0170725, selected Abstract/Introduction",
+            "Dougoud, Vinckenbosch, Rohr, Bersier & Mazza (2018), The feasibility of equilibria in large ecosystems: A primary but neglected concept in the complexity-stability debate, PLoS Computational Biology14:e1005988, selected Introduction",
+            "Written MATHBIO3.9; direct saturating-predation linearization"
+          ],
+          "links": {
+            "weak": "https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0170725",
+            "feasibility": "https://journals.plos.org/ploscompbiol/article?id=10.1371/journal.pcbi.1005988"
+          },
+          "pic": "Reduce attack and compare the same module’s phase trajectory and population traces. Read its local trace/determinant and finite late-window ranges, with all other coefficients fixed."
+        },
+        {
+          "num": "6.9",
+          "kind": "Model",
+          "name": "Niche model of food-web structure",
+          "deps": [
+            "ecol-6.1"
+          ],
+          "refs": [
+            "Williams, Anandanadesan & Purves (2010), The Probabilistic Niche Model Reveals the Niche Structure and Role of Body Size in a Complex Food Web, PLoS ONE5:e12092, selected Introduction and Distributions of parameters; PDFpp.3,5 inspected",
+            "Direct beta-mean and interval construction"
+          ],
+          "links": {
+            "niche": "https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0012092"
+          },
+          "pic": "Generate new webs, compare permitted feeding spans with their actual binary matrix, and read realized connectance, basal nodes and self-feeding links. Species are retained even if isolated; no pruning tunes the result."
+        },
+        {
+          "num": "6.10",
+          "kind": "Concept",
+          "name": "Connectance and food-chain length",
+          "deps": [
+            "ecol-6.1"
+          ],
+          "refs": [
+            "Williams, Anandanadesan & Purves (2010), The Probabilistic Niche Model Reveals the Niche Structure and Role of Body Size in a Complex Food Web, PLoS ONE5:e12092, selected Introduction and Distributions of parameters; PDFpp.3,5 inspected",
+            "Direct graph counts, acyclic dynamic programming and dietary recursion"
+          ],
+          "links": {
+            "niche": "https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0012092"
+          },
+          "pic": "Compare a chain, a star and a random acyclic cascade at the same richness. Inspect the feeding matrix, longest-chain marker and species-level diet-weighted positions; change optional-link density only in the random construction."
+        },
+        {
+          "num": "6.11",
+          "kind": "Phenomenon",
+          "name": "Intraguild predation and omnivory",
+          "deps": [
+            "ecol-6.1"
+          ],
+          "refs": [
+            "Caskenette & McCann (2017), Biomass Reallocation between Juveniles and Adults Mediates Food Web Stability by Distributing Energy Away from Strong Interactions, PLoS ONE12:e0170725, selected Abstract/Introduction",
+            "Stephen Stearns, Open Yale Courses EEB122, Lecture28 Ecological Communities, selected transcript Chapter3 (04:42–23:08), trophic cascades and predator-mediated coexistence",
+            "Direct declared three-species model"
+          ],
+          "links": {
+            "weak": "https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0170725",
+            "lecture": "https://oyc.yale.edu/ecology-and-evolutionary-biology/eeb-122/lecture-28"
+          },
+          "pic": "Add the top consumer’s basal-resource attack and compare all three population traces with a two-coordinate projection of the same trajectory. Move the selected-time marker and inspect actual finite densities."
+        },
+        {
+          "num": "6.12",
+          "kind": "Phenomenon",
+          "name": "Biodiversity and ecosystem function: the insurance effect",
+          "deps": [
+            "ecol-6.7"
+          ],
+          "refs": [
+            "Bouvier et al. (2012), Contrasted Effects of Diversity and Immigration on Ecological Insurance in Marine Bacterioplankton Communities, PLoS ONE7:e37620, selected Introduction, Results and Discussion",
+            "Direct covariance identity and positive orthogonal-response construction"
+          ],
+          "links": {
+            "insurance": "https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0037620"
+          },
+          "pic": "Change richness, response correlation and individual CV. Compare up to four individual curves with the aggregate of all species, read the independently sampled period-grid CV, and inspect the exact richness response."
+        },
+        {
+          "num": "6.13",
+          "kind": "Paper",
+          "name": "Food Web Complexity and Species Diversity",
+          "paper": {
+            "authors": "Robert T. Paine",
+            "year": 1966,
+            "title": "Food Web Complexity and Species Diversity",
+            "venue": "The American Naturalist 100 (910): 65–75",
+            "doi": "10.1086/282400"
+          },
+          "introduces": [
+            "ecol-6.2"
+          ],
+          "deps": [
+            "ecol-6.1"
+          ],
+          "refs": [
+            "Stephen Stearns, Open Yale Courses EEB122, Lecture28 Ecological Communities, selected transcript Chapter3 (04:42–23:08), trophic cascades and predator-mediated coexistence",
+            "Direct authored space-competition illustration; original bibliography retained"
+          ],
+          "links": {
+            "lecture": "https://oyc.yale.edu/ecology-and-evolutionary-biology/eeb-122/lecture-28"
+          },
+          "verify": true,
+          "pic": "Remove or partly suppress predation and optionally restore it. Follow occupied space through time, inspect the selected-time composition, and distinguish the declared mechanism illustration from a historical quantitative reconstruction."
+        },
+        {
+          "num": "6.14",
+          "kind": "Paper",
+          "name": "Will a Large Complex System be Stable?",
+          "paper": {
+            "authors": "Robert M. May",
+            "year": 1972,
+            "title": "Will a Large Complex System be Stable?",
+            "venue": "Nature 238 (5364): 413–414",
+            "doi": "10.1038/238413a0"
+          },
+          "introduces": [
+            "ecol-6.6"
+          ],
+          "deps": [
+            "ecol-6.5",
+            "mathbio-3.21"
+          ],
+          "refs": [
+            "Dougoud, Vinckenbosch, Rohr, Bersier & Mazza (2018), The feasibility of equilibria in large ecosystems: A primary but neglected concept in the complexity-stability debate, PLoS Computational Biology14:e1005988, selected Introduction",
+            "Written MATHBIO3.21; original publisher abstract only; direct finite-ensemble calculation"
+          ],
+          "links": {
+            "feasibility": "https://journals.plos.org/ploscompbiol/article?id=10.1371/journal.pcbi.1005988"
+          },
+          "verify": true,
+          "pic": "Inspect a reproducible finite-ensemble stability curve and its nominal sampling interval. Vary richness, interaction density, self-regulation and trial count, and compare actual draws with the asymptotic guide."
+        }
+      ]
     },
     {
       n: 7,
