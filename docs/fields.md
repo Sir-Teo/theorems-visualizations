@@ -173,6 +173,7 @@ an eigen-direction, an orthonormal frame, an ellipse's axes) with live numbers.
 ## Biology
 
 - Initialize a finite diploid sample on its actual count grid K/(2N), and compare it with a deterministic trajectory starting at that same frequency. A finite positive mutation matrix retains positive equilibrium frequencies; a sharp long-sequence error threshold does not make a finite displayed genotype vanish exactly. See the [mutation/migration review](verification/wave5-popgen-review.md).
+- For selection with drift, state the per-copy advantage and ploidy convention; census size sets a new copy’s starting frequency, while variance-effective size sets drift. Establishment, finite fixation, conditional absorption time and deterministic endpoint passage are separate calculations. Normalize effect mixtures in log space when raw probabilities underflow, and distinguish conditional standing-lineage rescue counts from rescue by any origin. See the [selection/drift report](verification/wave6-popgen.md).
 
 - **Populations of individuals**: the `agents` kit (individual-based models) beside the
   deterministic equation they converge to — Hardy–Weinberg proportions, logistic growth,

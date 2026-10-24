@@ -1,0 +1,126 @@
+{
+  "date": "2026-10-24",
+  "baseCommit": "147d3c29ca4364f92d2c8cb293d039eac315bf48",
+  "prerequisitesRead": [
+    "popgen-2.11",
+    "popgen-3.10",
+    "popgen-3.8",
+    "popgen-4.2",
+    "popgen-4.3",
+    "popgen-5.1",
+    "prob-4.3.8a",
+    "stoch-3.9"
+  ],
+  "laterPrerequisites": [
+    "mathbio-11.2: unwritten; rare-lineage and resident-decline arguments supplied locally, frozen dependencies retained"
+  ],
+  "acquisitionReceipts": [
+    {
+      "id": "felsenstein",
+      "url": "https://felsenst.github.io/pgbook/pgbook.pdf",
+      "bytes": 2874881,
+      "sha256": "c205439d1efed09521ac1fceb092d4c9bd465a4fac1d835179015f727cc2e88e",
+      "status": 200
+    },
+    {
+      "id": "kimura1962",
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC1210364/",
+      "stop": true,
+      "reason": "Explicit browser-check/reCAPTCHA; no original body read or alternative recovery"
+    },
+    {
+      "id": "lynch2012",
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC3494944/",
+      "stop": true,
+      "reason": "Explicit browser-check/reCAPTCHA; no original body read or alternative recovery"
+    },
+    {
+      "id": "haldane1927",
+      "url": "https://www.cambridge.org/core/journals/mathematical-proceedings-of-the-cambridge-philosophical-society/article/abs/mathematical-theory-of-natural-and-artificial-selection-part-v-selection-and-mutation/9B6F4FE68136A70E06133E2E389EFA5B",
+      "stop": true,
+      "reason": "Publisher extract/get-access boundary. Only bibliographic record and introductory extract were read; no original equation/body retrieval or alternate recovery."
+    },
+    {
+      "id": "desai2007",
+      "url": "https://www.desai-lab.com/publications/PDFs/desaifisher07.pdf",
+      "status": 200,
+      "bytes": 1190274,
+      "sha256": "f8207bc75d2ffa690c9ab37417ce900f043bf20eb52c30f91b9b46f78e349640",
+      "type": "application/pdf"
+    },
+    {
+      "id": "orr2014",
+      "url": "https://journals.plos.org/plosgenetics/article/file?id=10.1371%2Fjournal.pgen.1004551&type=printable",
+      "status": 200,
+      "bytes": 2078045,
+      "sha256": "6281be7f163de9637554ed423b42bb602b7a967a982223b75865ce6d474d524e",
+      "type": "application/pdf"
+    },
+    {
+      "id": "lynch2013",
+      "url": "https://www.on.kitp.ucsb.edu/online/multicell13/lynch/pdf/Lynch_Multicell13_KITP.pdf",
+      "stop": true,
+      "reason": "HTTP Error 503: Service Unavailable"
+    },
+    {
+      "id": "ohta1993page",
+      "url": "https://www.jstage.jst.go.jp/article/jjg/68/6/68_6_529/_article",
+      "status": 200,
+      "bytes": 73796,
+      "sha256": "b11947d378e6fb9a595b064fe3965a2d117f85de9c4e15a3270394175b2d12c2",
+      "type": "text/html"
+    },
+    {
+      "id": "ohta1993",
+      "url": "https://www.jstage.jst.go.jp/article/jjg/68/6/68_6_529/_pdf/-char/en",
+      "status": 200,
+      "bytes": 1185921,
+      "sha256": "7e863d924cd90e7123b8f8f8fb65ad5f9b3439eede8a05b44713165394d6ba7b"
+    },
+    {
+      "id": "lynch2011-direct-stop",
+      "url": "https://pubmed.ncbi.nlm.nih.gov/21821597/",
+      "status": 203,
+      "bytes": 5590,
+      "sha256": "992aeb68e6a864929dd864a0ff290b49eece7c2ecf8c3632a03f87a426b007c1",
+      "scope": "Direct response was an HTTP203 cookie/proof-of-work challenge, not the article abstract. The actual PubMed abstract had already been read through the web tool before this direct request; no retry, challenge execution, full-text or alternate recovery after the stop.",
+      "stop": true,
+      "reason": "Explicit cookie/browser proof-of-work challenge"
+    }
+  ],
+  "readSources": [
+    {
+      "url": "https://felsenst.github.io/pgbook/pgbook.pdf",
+      "scope": "December2019 edition. Selected VII.7 Probability of Fixation of a Mutant, printed pp.314–330: Poisson branching/least root/2s, Table7.4, finite diploid transition and absorption equations, multiplicative-selection diffusion, variance effective number, weak-scaled-selection expansion and branching comparison. Printed p.325 (PDF page343) equation pixels inspected. Printed p.397 Muller ratchet and Fisher–Muller argument read. Not the complete545-page book."
+    },
+    {
+      "url": "https://www.jstage.jst.go.jp/article/jjg/68/6/68_6_529/_article",
+      "scope": "Ohta1993 actual abstract plus PDF pages1–5 (printed529–533) read visually because PDF is image-only. Introduction; rate discussion; §3 supply×fixation, neutral cancellation and scaled-selection equation; Fig.1 continuous effect curve; Fig.2 classification; weakly harmful effects/population-size argument. Later empirical analyses and original data were not reproduced."
+    },
+    {
+      "url": "https://www.desai-lab.com/publications/PDFs/desaifisher07.pdf",
+      "scope": "Actual abstract/opening and Fig.1 discussion on pp.1759–1761: successional/concurrent origins, competing clones versus multiple mutations on the same background. Selected pp.1768–1769 rare-lineage conditioning and fixation-time caution read as text. Its birth–death coefficients are not used as an exact Wright–Fisher sweep-time formula. Not the full40-page theory."
+    },
+    {
+      "url": "https://journals.plos.org/plosgenetics/article?id=10.1371/journal.pgen.1004551",
+      "scope": "Orr–Unckless2014 abstract, Introduction, Model and new/standing rescue argument, printed pp.1–3; actual pp.3–4 equation pixels and conditioning/oversampling argument read. No supplement or complete later paper inspection is claimed. Production uses a separately specified Poisson-branching/thinned-hazard model, with an explicitly derived exact standing-survival conditional mean."
+    },
+    {
+      "url": "https://pubmed.ncbi.nlm.nih.gov/21821597/",
+      "scope": "Lynch2011 actual PubMed abstract was read through the web tool before the later direct HTTP203 cookie/proof-of-work response. Only the qualitative drift-barrier hypothesis is used; no full-text link was followed and no cross-taxon measurements or regressions were transcribed. The later challenge stopped further retrieval."
+    },
+    {
+      "url": "https://www.cambridge.org/core/journals/mathematical-proceedings-of-the-cambridge-philosophical-society/article/abs/mathematical-theory-of-natural-and-artificial-selection-part-v-selection-and-mutation/9B6F4FE68136A70E06133E2E389EFA5B",
+      "scope": "Haldane1927 publisher bibliographic record and introductory extract only. Exact frozen Paper metadata retained. Body and original equations were beyond a Get-access boundary; no PDF, mirror, collected-papers or cache recovery. POPGEN6.13 remains verify:true and explicitly uses an independent modern reconstruction."
+    }
+  ],
+  "limits": [
+    "Kimura1962 and Lynch2012 PMC browser-check/reCAPTCHA stops remain binding. No original-body recovery from author copies, other hosts or caches.",
+    "Lynch2013 KITP lecture failed with502 via web and503 on the same direct endpoint; no alternate retrieval.",
+    "The later direct Lynch2011 abstract request returned a browser/cookie proof-of-work challenge. Its challenge HTML hash is not an article-body hash. Prior actual web-tool abstract reading is retained without subsequent recovery.",
+    "Earlier Haldane1957, Nunney reviewer and Berger–Cerf theorem source stops in wave5-popgen.md remain binding. No collected Haldane papers were downloaded.",
+    "No Ewens, Gillespie or Nielsen–Slatkin chapter body is claimed as read in this pass. Frozen names/dependencies/bibliography remain; chapter references cite the actual independent sources.",
+    "No species, measured fitness-effect distribution, empirical mutation-rate floor, click-rate calibration or conservation/clinical forecast is supplied.",
+    "Existing global source restrictions, including the BIGHIST3.5→PMA8.6 semantic-review stop, remain unchanged. No upstream visualization/semantic-edge traversal was used."
+  ]
+}
