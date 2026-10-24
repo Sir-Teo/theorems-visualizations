@@ -1,0 +1,179 @@
+{
+  "date": "2026-10-24",
+  "status": "Research/design only: fifteen frozen PHYSIO6 lessons, no production files or count. BIOINF6+SYSBIO6 full4636-test/272-route-per-theme integration is complete; all browser slots released.",
+  "baseCommit": "cb26fc5680b85bd5e1d785aca7626072f0cec0c0",
+  "prerequisitesRead": "All eight actual written statement/idea/scope bodies read from prerequisites.json: physio5.7,mathbio5.8,mathbio5.9,mathbio5.2,physio3.6,physio1.3,physio1.2,mathbio1.17. No planned external dependency.",
+  "acquisitionReceipts": [
+    {
+      "id": "bohr1904-translation",
+      "url": "https://www1.udel.edu/chem/white/C342/Bohr%281904%29.html",
+      "status": 200,
+      "finalUrl": "https://www1.udel.edu/chem/white/C342/Bohr%281904%29.html",
+      "type": "text/html",
+      "bytes": 51729,
+      "sha256": "c2ea885498aaf2e09fc974c5ba6867c957cc2559ad3c35453fb3c0ade87d27a2",
+      "path": "/tmp/wave6-physio-research/bohr1904-translation.html",
+      "readScope": "UDel CHEM3421997 UlfMarquardt English translation of Bohr–Hasselbalch–Krogh1904, actualHTML200 sha c2ea885498aaf2e09fc974c5ba6867c957cc2559ad3c35453fb3c0ade87d27a2. Actual selected introductory/method paragraphs, normalization, TableI selectedfirstexperiments, interpolation/correction paragraphs, TableIII comparison and complete TableIV16x5cells plus dog38°C/horse qualification read. Both linked Fig1/Fig2 JPEGs200 personally inspected. German original not acquired/claimed read; Wiley body not attempted, no original stop. Translation header401–412 conflicts with frozen venue402–412; preserve frozen paper metadata and record discrepancy. No wholetranslation claim. Important TableIV values are authors graphical interpolation/correction summary, NOT80 independent raw observations. Oxygenuptake has physically dissolved plasmaO2 subtracted and is relative to nearCO2free150mmHg reference, NOT absolute clinical SaO2. Figure2 dog solid vs horse dashed; do NOT apply dog curves tohuman. Do not repeat historical last paragraph as modern treatment advice."
+    },
+    {
+      "id": "keener-author",
+      "url": "https://www.math.utah.edu/~keener/books/control.pdf",
+      "status": 200,
+      "finalUrl": "https://www.math.utah.edu/~keener/books/control.pdf",
+      "type": "application/pdf",
+      "bytes": 21222828,
+      "sha256": "3de17c026391fc2f224b7f60f9e0a895014787c7bba956f8273015491a1b2978",
+      "path": "/tmp/wave6-physio-research/keener-author.pdf",
+      "readScope": "Keener author-hosted control.pdf200,21,222,828 bytes sha3de17c026391fc2f224b7f60f9e0a895014787c7bba956f8273015491a1b2978. Exact1194-page author artifact, do NOT infer commercial edition/year. Actual selected §13.3.1–13.3.3 printed653–662 text read: single-site Mb pressure K2.6, HbHill2.5/26 vs all-or-none4, nonmonotone four-step Adair constants45.9,23.9,243.1,1.52, independent-site statistical factors, concerted MWCvsKNF, Bohr H+ four-state equilibrium, detailed-balance Haldane reciprocity and bicarbonate proton conservation. Its empirical CO2 fractions6/7/87 differ from OpenStax7–10/20/70; do not combine them or claim universal fixed percentages. Its nprotons factor13.59 is ad hoc/not fully included in partition; own model should be consistent. Keener actual selected printed642 erythropoiesis physiology paragraph read: kidney/EPO feedback,5–7day maturation; selected pp650–653 distributed-delay gamma/filter and characteristic/stability qualifications read. It explicitly says peripheral feedback model does not capture cyclical-neutropenia period. Do not transfer its old renal tubular-epithelial source claim (modern cellular identity not verified here). Own EPO model only states kidney releases EPO, no clinical/neutropenia fit."
+    },
+    {
+      "id": "openstax-gas",
+      "url": "https://openstax.org/books/anatomy-and-physiology-2e/pages/22-5-transport-of-gases",
+      "status": 200,
+      "finalUrl": "https://openstax.org/books/anatomy-and-physiology-2e/pages/22-5-transport-of-gases",
+      "type": "text/html",
+      "bytes": 360529,
+      "sha256": "a21784c9a7e23fdc3220f8292a90f14ea70679005f2e2eef5fcd3fb08bc97851",
+      "path": "/tmp/wave6-physio-research/openstax-gas.html",
+      "readScope": "OpenStax A&P2e22.5 exact mainHTML200 sha a21784c9a7e23fdc3220f8292a90f14ea70679005f2e2eef5fcd3fb08bc97851. Actual selected text paragraphs oxygen bound/dissolved, Hbcooperativity, pH/BPG/fetal transfer, and dissolved/bicarbonate/carbamino/chloride-shift/Haldane sections read. No actual figures inspected/reproduced. Fractionscontextual, not fixed laws. Broader known physiology must not be reduced to affinity-alone flux."
+    },
+    {
+      "id": "popel1989",
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC5445261/",
+      "status": 200,
+      "stop": true,
+      "reason": "challenge/interstitial; body not read"
+    },
+    {
+      "id": "bohr-fig1",
+      "url": "https://www1.udel.edu/chem/white/C342/BohrFig1.jpg",
+      "status": 200,
+      "finalUrl": "https://www1.udel.edu/chem/white/C342/BohrFig1.jpg",
+      "type": "image/jpeg",
+      "bytes": 80035,
+      "sha256": "fc97db3e3f942a6198e6b1fb608c000ecc0b311d6d269357e11f5b75c0d9ca7d",
+      "path": "/tmp/wave6-physio-research/bohr-fig1.jpg",
+      "readScope": "Actual source JPEG personally viewed; no digitized points or source image reproduction yet."
+    },
+    {
+      "id": "bohr-fig2",
+      "url": "https://www1.udel.edu/chem/white/C342/BohrFig2.jpg",
+      "status": 200,
+      "finalUrl": "https://www1.udel.edu/chem/white/C342/BohrFig2.jpg",
+      "type": "image/jpeg",
+      "bytes": 213416,
+      "sha256": "c2f1d655b674e80f4ea0ada769172850d0a40d1f01139de03fbbd55e4211e86d",
+      "path": "/tmp/wave6-physio-research/bohr-fig2.jpg",
+      "readScope": "Actual source JPEG personally viewed; no digitized points or source image reproduction yet."
+    },
+    {
+      "id": "mit-krogh2007",
+      "url": "https://ocw.mit.edu/courses/10-37-chemical-and-biological-reaction-engineering-spring-2007/85477ce30129fae080056a95bf5b3cdd_lec19_04202007_w.pdf",
+      "status": 200,
+      "finalUrl": "https://ocw.mit.edu/courses/10-37-chemical-and-biological-reaction-engineering-spring-2007/85477ce30129fae080056a95bf5b3cdd_lec19_04202007_w.pdf",
+      "type": "application/pdf",
+      "bytes": 55567,
+      "sha256": "e7c71b43b52bd2aea9d41ed2150196c380214ea8ea089ca20517b945b341ba60",
+      "path": "/tmp/wave6-physio-research/mit-krogh2007.pdf",
+      "readScope": "MIT10.37Spring2007 K.DaneWittrup Lecture19 exact55567-byte PDF200 sha e7c71b43b52bd2aea9d41ed2150196c380214ea8ea089ca20517b945b341ba60. Actual complete4-page text read, focuspp3–4 cylindrical zero-order diffusion equation/no-fluxouter/fixedcapillary boundary/integratedprofile. Page3 personally rendered/inspected. SourcePhi critical~.2 atRc/Rt~.05 approximate consistent with1/(2ln(1/R*)−1+R*²). No originalKrogh1919 body/empiricaltumor inference used."
+    },
+    {
+      "id": "statpearls-oxygen",
+      "url": "https://www.ncbi.nlm.nih.gov/books/NBK538336/",
+      "status": 200,
+      "stop": true,
+      "reason": "challenge/interstitial; body not read"
+    },
+    {
+      "id": "pittman-tissue-web",
+      "url": "https://www.ncbi.nlm.nih.gov/books/NBK54110/",
+      "stop": true,
+      "reason": "Actual web open returned browser/reCAPTCHA challenge. No original book-body chapter/reader/print/cache/alternate recovery."
+    },
+    {
+      "id": "mit-hst-assignments",
+      "url": "https://ocw.mit.edu/courses/hst-542j-quantitative-physiology-organ-transport-systems-spring-2004/pages/assignments/",
+      "status": 200,
+      "finalUrl": "https://ocw.mit.edu/courses/hst-542j-quantitative-physiology-organ-transport-systems-spring-2004/pages/assignments/",
+      "type": "text/html",
+      "bytes": 71989,
+      "sha256": "d6d6382e95dea24e00113eace7de971a4ccfe2be8d647992ec5bf4d46c027d6b",
+      "path": "/tmp/wave6-physio-research/mit-hst-assignments.html",
+      "readScope": "acquired only, body not yet claimed read"
+    },
+    {
+      "id": "mit-hst-ps9-page",
+      "url": "https://ocw.mit.edu/courses/hst-542j-quantitative-physiology-organ-transport-systems-spring-2004/resources/ps9/",
+      "status": 200,
+      "finalUrl": "https://ocw.mit.edu/courses/hst-542j-quantitative-physiology-organ-transport-systems-spring-2004/resources/ps9/",
+      "type": "text/html",
+      "bytes": 71313,
+      "sha256": "a7b4b72805e7661a876739f0324458fcaae8b4eaa205ef2ff8ff653fe68c7e55",
+      "path": "/tmp/wave6-physio-research/mit-hst-ps9-page.html",
+      "readScope": "acquired only, body not yet claimed read"
+    },
+    {
+      "id": "mit-hst-ps9",
+      "url": "https://ocw.mit.edu/courses/hst-542j-quantitative-physiology-organ-transport-systems-spring-2004/f7d0ae9d00a3f6239395410f6605ddad_ps9.pdf",
+      "status": 200,
+      "finalUrl": "https://ocw.mit.edu/courses/hst-542j-quantitative-physiology-organ-transport-systems-spring-2004/f7d0ae9d00a3f6239395410f6605ddad_ps9.pdf",
+      "type": "application/pdf",
+      "bytes": 46286,
+      "sha256": "4bcff527cfc2a9c2cd2f1ca606a51c60df6b789422c023d19bc70a1167f24eb2",
+      "path": "/tmp/wave6-physio-research/mit-hst-ps9.pdf",
+      "readScope": "MIT HST542J Spring2004 assignmentindex and actualps9 resourcepage read for exactPDF link. ExactProblemSet9 PDF200 acquired, actualProblem3printedp5 read: Hb carries1.36mLO2/gHb, Fick/shunt content balance, dissolvedO2ignored in that problem. Source contextualconstant1.36 can be used with declared illustrative gas-volume reference. Other historical clinical questions not reused as diagnosis."
+    }
+  ],
+  "actualSelectedReading": [
+    "Keener author-hosted control.pdf200,21,222,828 bytes sha3de17c026391fc2f224b7f60f9e0a895014787c7bba956f8273015491a1b2978. Exact1194-page author artifact, do NOT infer commercial edition/year. Actual selected §13.3.1–13.3.3 printed653–662 text read: single-site Mb pressure K2.6, HbHill2.5/26 vs all-or-none4, nonmonotone four-step Adair constants45.9,23.9,243.1,1.52, independent-site statistical factors, concerted MWCvsKNF, Bohr H+ four-state equilibrium, detailed-balance Haldane reciprocity and bicarbonate proton conservation. Its empirical CO2 fractions6/7/87 differ from OpenStax7–10/20/70; do not combine them or claim universal fixed percentages. Its nprotons factor13.59 is ad hoc/not fully included in partition; own model should be consistent.",
+    "Keener actual selected printed642 erythropoiesis physiology paragraph read: kidney/EPO feedback,5–7day maturation; selected pp650–653 distributed-delay gamma/filter and characteristic/stability qualifications read. It explicitly says peripheral feedback model does not capture cyclical-neutropenia period. Do not transfer its old renal tubular-epithelial source claim (modern cellular identity not verified here). Own EPO model only states kidney releases EPO, no clinical/neutropenia fit.",
+    "UDel CHEM3421997 UlfMarquardt English translation of Bohr–Hasselbalch–Krogh1904, actualHTML200 sha c2ea885498aaf2e09fc974c5ba6867c957cc2559ad3c35453fb3c0ade87d27a2. Actual selected introductory/method paragraphs, normalization, TableI selectedfirstexperiments, interpolation/correction paragraphs, TableIII comparison and complete TableIV16x5cells plus dog38°C/horse qualification read. Both linked Fig1/Fig2 JPEGs200 personally inspected. German original not acquired/claimed read; Wiley body not attempted, no original stop. Translation header401–412 conflicts with frozen venue402–412; preserve frozen paper metadata and record discrepancy. No wholetranslation claim.",
+    "Important TableIV values are authors graphical interpolation/correction summary, NOT80 independent raw observations. Oxygenuptake has physically dissolved plasmaO2 subtracted and is relative to nearCO2free150mmHg reference, NOT absolute clinical SaO2. Figure2 dog solid vs horse dashed; do NOT apply dog curves tohuman. Do not repeat historical last paragraph as modern treatment advice.",
+    "OpenStax A&P2e22.5 exact mainHTML200 sha a21784c9a7e23fdc3220f8292a90f14ea70679005f2e2eef5fcd3fb08bc97851. Actual selected text paragraphs oxygen bound/dissolved, Hbcooperativity, pH/BPG/fetal transfer, and dissolved/bicarbonate/carbamino/chloride-shift/Haldane sections read. No actual figures inspected/reproduced. Fractionscontextual, not fixed laws. Broader known physiology must not be reduced to affinity-alone flux.",
+    "MIT10.37Spring2007 K.DaneWittrup Lecture19 exact55567-byte PDF200 sha e7c71b43b52bd2aea9d41ed2150196c380214ea8ea089ca20517b945b341ba60. Actual complete4-page text read, focuspp3–4 cylindrical zero-order diffusion equation/no-fluxouter/fixedcapillary boundary/integratedprofile. Page3 personally rendered/inspected. SourcePhi critical~.2 atRc/Rt~.05 approximate consistent with1/(2ln(1/R*)−1+R*²). No originalKrogh1919 body/empiricaltumor inference used.",
+    "MIT HST542J Spring2004 assignmentindex and actualps9 resourcepage read for exactPDF link. ExactProblemSet9 PDF200 acquired, actualProblem3printedp5 read: Hb carries1.36mLO2/gHb, Fick/shunt content balance, dissolvedO2ignored in that problem. Source contextualconstant1.36 can be used with declared illustrative gas-volume reference. Other historical clinical questions not reused as diagnosis."
+  ],
+  "bindingBoundaries": [
+    "All PHYSIO5 earlier stops binding: APS2024 surfactant official403; Andreassen PMC2980374 reCAPTCHA; original West–Dollery–Naimark1964 official403; VirginiaTech pulmonary-flow body403; redirected UCL URL without physiologybody. Old /tmp access-stops file absent, durable docs/verification/wave5-physio.md and review retain scope. Do not recover bodies via another host/cache.",
+    "NEW Pittman Regulation of Tissue Oxygenation/TissueGasTransport NBK54110 actualweb browser/reCAPTCHA challenge. Treat original book-body recovery via reader/print/otherchapter/cache/alternate as stopped.",
+    "NEW Popel1989 Theory of oxygen transport to tissue PMC5445261 normalrequest200 challenge. Only earliersearchsnippet/contextread, nooriginalbody/PDF/mirror/cache recovery. MIT2007 lecture is a DISTINCT work, not recovery.",
+    "NEW StatPearls Physiology,OxygenTransport NBK538336 normalrequest200 challenge. Searchsnippet1.34/.003only, nooriginalbody/print/cache/alternate recovery. Do not claimsourcebodyread."
+  ],
+  "scientificCorrectionsBeforeAuthoring": [
+    "Four sites alone do not imply sigmoid; independent sites give hyperbola. Hill exponentnotautomaticallysitecount.",
+    "Adair step constants include statistical degeneracy and need not increase monotonically. Do not repeat frozenpic monotonic-successiveconstants claim. MWC exact expansion is one restricted positive Adair polynomial, not distinguishable from its own bindingcurve; compare state weights/mechanistic non-identifiability, no inventedexperimentalfit.",
+    "Affinitydifference at equal freePO2 does NOT cause net oxygen diffusion. Fetal view must show fluxdrivenbyactualpartialpressuregradient; samepressure/different saturation haszeroflux.",
+    "Rightshift ataltitude doesnotalwaysimprovereleasedcontent becauseitcanimpairloading. FixedPa>Pv Hillunloading optimumP50=sqrt(PaPv); showconditionaltradeoff.",
+    "CO loss of capacity and unoccupied-site affinity separate; equilibrium fixedPCO2 doesnotkeepCO sitefractionfixed asPO2varies. Chooseexplicit fixedCO occupancy/slowexchange conditionalMWC toy or clearlydifferent exposuremodel; no clinicaldose.",
+    "FickQ inverse assumessteadystate/true mixedvenoussample/positivecontentgradient; zero/negativegradientundefined. No-flow and demandexceedingsupply distinct.",
+    "O2extractionlimit/criticaldelivery isdeclaredtoyclosure, notuniversalclinicalthreshold.",
+    "Krogh negativezeroorderP ismodelinfeasibility, notclippedoxygenorprovednecrosis. Axial bloodcontent can bedepleted beforelengthend; do notinventpressurebeyondunphysicalnegativecontent.",
+    "Carbonicanhydrasechangesbothforward/reverseratesnotthermodynamicequilibrium. Chlorideexchange preserveschargeandcarbon; no fixed70/20/10fractions.",
+    "RBCmodel withErlangtransit stageshasdistributedlag includingearliesttail, notfixed5dayonset. Stabilitycrossingnotproofstablelimitcycle/clinicaldynamicaldisease. Avoidperfectadaptationclaimforfiniteproportionalfeedback."
+  ],
+  "modelDesigns": "/tmp/wave6-physio-research/design-notes.json",
+  "next": "Verify candidate pure models against independent references, author15 distinct visualizations and complete native/modes/Share/critical/personal pixel gates before counting. Continue the frozen wave after PHYSIO6.",
+  "researchPrototypeVerification": {
+    "linkedEquilibrium": {
+      "cases": 72,
+      "covarianceCases": 9,
+      "scalarComparisons": 723,
+      "result": "PASS",
+      "method": "Independent explicit42-microstate120-digit sums,300-step physical hydrogen bracketing with residual<1e-90; covariance mixed responses",
+      "log": "/tmp/wave6-physio-research/check-linked.log"
+    },
+    "epoStability": {
+      "cases": 100,
+      "result": "PASS",
+      "method": "IndependentSciPyphysicalsteadyroots andNumPy5x5Jacobian eigenvalues vsderiveduniquephasegainthreshold",
+      "log": "/tmp/wave6-physio-research/epo-stability-prototype.log"
+    },
+    "productionLessons": 0,
+    "authorAvailableIncrement": 0
+  },
+  "clarificationsAfterDesign": [
+    "Linked proton inventory uses concentrations consistently: h inM, bicarbonate/netHb-boundprotons inmM, so free-proton difference is multiplied by1000. Carbamateformation releasesH+: inventory is Hbound−carbamate. The own42-state grandpartition includes both effects.",
+    "Candidate four-stage EPO maturation is an Erlang-distributed filter, not a hard minimum5-day delay. Its simple exponential red-cell loss has120-day mean, not a fixed red-cell age.",
+    "MITproblem3uses1.36mLO2/gHb. A .003dissolved-gas coefficient would be explicitly an illustrative common-reference assumption, not precisionrecalibration of PHYSIO5.7’s unspecified-temperaturemolarplasmacoefficient."
+  ]
+}
