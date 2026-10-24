@@ -172,6 +172,8 @@ an eigen-direction, an orthonormal frame, an ellipse's axes) with live numbers.
 
 ## Biology
 
+- For spike trains, distinguish trial averages, count-window variability and complete-interval statistics. Start stationary renewal observations with the equilibrium residual law; separate continuous spectra from DC atoms, and use actual lag/bin exposure. Specify STA covariance, fitting penalties and held-out data. A zero population vector has no angle, a local real-parameter Cramér–Rao bound does not constrain every decoder, and discrete MAP optimality needs a loss function. Preserve positive numerical underflow status and keep synthetic receptive fields separate from unread historical recordings. See the [neural-coding report](verification/wave6-neuro.md).
+
 - Initialize a finite diploid sample on its actual count grid K/(2N), and compare it with a deterministic trajectory starting at that same frequency. A finite positive mutation matrix retains positive equilibrium frequencies; a sharp long-sequence error threshold does not make a finite displayed genotype vanish exactly. See the [mutation/migration review](verification/wave5-popgen-review.md).
 - For selection with drift, state the per-copy advantage and ploidy convention; census size sets a new copy’s starting frequency, while variance-effective size sets drift. Establishment, finite fixation, conditional absorption time and deterministic endpoint passage are separate calculations. Normalize effect mixtures in log space when raw probabilities underflow, and distinguish conditional standing-lineage rescue counts from rescue by any origin. See the [selection/drift report](verification/wave6-popgen.md).
 

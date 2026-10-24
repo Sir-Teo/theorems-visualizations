@@ -1,0 +1,189 @@
+{
+  "date": "2026-10-24",
+  "baseCommit": "180e6e90c2f0ec6fea8a5160523a089d3cb00a6f",
+  "status": "author verified; no independent acceptance or original-paper-body verification claimed",
+  "prerequisitesRead": [
+    "rca-8.13",
+    "stat-4.4",
+    "info-2.5",
+    "neuro-5.1",
+    "psych-4.6"
+  ],
+  "prerequisiteScope": "Actual complete written statement/idea/scope read. STOCH9.3 and11.1 remain planned, not fabricated written prerequisites; supply needed Poisson/renewal arguments locally. Frozen ordered edges retained.",
+  "acquisitionReceipts": [
+    {
+      "id": "gerstner-index",
+      "url": "https://neuronaldynamics.epfl.ch/online/index.html",
+      "finalUrl": "https://neuronaldynamics.epfl.ch/online/index.html",
+      "status": 200,
+      "bytes": 175193,
+      "sha256": "7504ee9fdcf9309fe66c55e47558926a5cc3ed7d9fdedf156d7bf36fec97efdc",
+      "type": "text/html",
+      "readScope": "Actual official table of contents read; not a full-book reading claim."
+    },
+    {
+      "id": "dayan-book-index",
+      "url": "https://www.gatsby.ucl.ac.uk/~dayan/book/",
+      "finalUrl": "https://www.gatsby.ucl.ac.uk/~dayan/book/",
+      "status": 200,
+      "bytes": 11132,
+      "sha256": "f08202e0a9586d59e4971e8d9f58b4e26a19694f815d8c5c46cd072af10d523c",
+      "type": "text/html; charset=UTF-8",
+      "readScope": "Actual author index, UTF16 BOM decoded normally; only linked sample ch7 offered. Coding chapters1–4 not read; no guessed chapter URLs or alternate-body recovery."
+    },
+    {
+      "id": "hubel-wiesel1962",
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC1359523/",
+      "finalUrl": "https://pmc.ncbi.nlm.nih.gov/articles/PMC1359523/",
+      "status": 200,
+      "bytes": 122416,
+      "sha256": "5c80fbbcde1d86c80369309ff6b91272549b76ed988b25d3eb1250e6fb477f7e",
+      "type": "text/html; charset=utf-8",
+      "readScope": "Actual archive bibliography/title/DOI/PMCID/PMID and scan-page index read before the PDF access stop. Original body/pixels unread."
+    },
+    {
+      "id": "hubel-wiesel1962-pdf",
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC1359523/pdf/jphysiol01247-0121.pdf",
+      "finalUrl": "https://pmc.ncbi.nlm.nih.gov/articles/PMC1359523/pdf/jphysiol01247-0121.pdf",
+      "status": 200,
+      "bytes": 1817,
+      "sha256": "ba2981c92b0820d470c7b7f9676f4bc27f6e0407f7a7ad68dece015a2caa23b3",
+      "type": "text/html; charset=utf-8",
+      "stop": true,
+      "reason": "HTTP200 returned Preparing to download HTML with explicit POW_CHALLENGE/cloudpmc-viewer-pow and secure-cookie scripts, not PDF. No challenge execution, original scan-page/image retrieval or alternate recovery after this stop. The original archive index/bibliography had already been read; no original body pixels/text read."
+    },
+    {
+      "id": "gerstner-7.S2",
+      "url": "https://neuronaldynamics.epfl.ch/online/Ch7.S2.html",
+      "finalUrl": "https://neuronaldynamics.epfl.ch/online/Ch7.S2.html",
+      "status": 200,
+      "bytes": 71256,
+      "sha256": "d27478ed3ee89023e4ede1e44fd1f47ae6ec1ea7bdb8d6235c96528e79224c0e",
+      "type": "text/html",
+      "readScope": "Actual text of7.2.1–7.2.3 and equations1–11 read: temporal/trial/population averaging, Fano and Poisson/PSTH. Own derivations and models; no source figures reproduced."
+    },
+    {
+      "id": "gerstner-7.S3",
+      "url": "https://neuronaldynamics.epfl.ch/online/Ch7.S3.html",
+      "finalUrl": "https://neuronaldynamics.epfl.ch/online/Ch7.S3.html",
+      "status": 200,
+      "bytes": 38009,
+      "sha256": "5c58a6d3815c63c5f401ca50b6565befc023193e6d5077ccf55ffe02d08ac6bc",
+      "type": "text/html",
+      "readScope": "Actual text/equations12–17 read, interval distribution, CV and dead-time example."
+    },
+    {
+      "id": "gerstner-7.S4",
+      "url": "https://neuronaldynamics.epfl.ch/online/Ch7.S4.html",
+      "finalUrl": "https://neuronaldynamics.epfl.ch/online/Ch7.S4.html",
+      "status": 200,
+      "bytes": 35744,
+      "sha256": "d24334dfc73fb27df9ccc43fe836d36779530753cff9564382f928fafee901f0",
+      "type": "text/html",
+      "readScope": "Actual text/equations18–21 read, autocorrelation and finite spectrum. Own finite-periodogram interpretation; no pointwise convergence claim for an unsmoothed random periodogram."
+    },
+    {
+      "id": "gerstner-7.S5",
+      "url": "https://neuronaldynamics.epfl.ch/online/Ch7.S5.html",
+      "finalUrl": "https://neuronaldynamics.epfl.ch/online/Ch7.S5.html",
+      "status": 200,
+      "bytes": 160814,
+      "sha256": "0d7b2a0817660b67d6b35ba3de70bae5b9f35d9591007a70df57b15e641f76fc",
+      "type": "text/html",
+      "readScope": "Selected actual introduction/7.5.1 equations22–31 and7.5.2 equations37–48 read, hazard/survival/renewal pair and spectrum derivation. Later nonstationary examples not claimed."
+    },
+    {
+      "id": "gerstner-9.S1",
+      "url": "https://neuronaldynamics.epfl.ch/online/Ch9.S1.html",
+      "finalUrl": "https://neuronaldynamics.epfl.ch/online/Ch9.S1.html",
+      "status": 200,
+      "bytes": 72220,
+      "sha256": "be8236f8792ea7af75749b42dad0ae86aefe0e3d21a5fa3a09eb08d48b888eb8",
+      "type": "text/html",
+      "readScope": "Actual9.1.1–9.1.2 text/equations1–8 read, escape intensity and discretization. Own thinning simulation avoids a binary plotting-bin approximation."
+    },
+    {
+      "id": "gerstner-9.S4",
+      "url": "https://neuronaldynamics.epfl.ch/online/Ch9.S4.html",
+      "finalUrl": "https://neuronaldynamics.epfl.ch/online/Ch9.S4.html",
+      "status": 200,
+      "bytes": 88390,
+      "sha256": "4218b4132462e385ce381d99fac7b64f09e8f0aa4b9d2d863f6b5db7769d2c02",
+      "type": "text/html",
+      "readScope": "Selected actual9.4.1 equations28–31 and9.4.2 discussion/equations32–35 read. Distinguish phenomenological approximation and source-specific SNR from our separately derived binary-detector information model."
+    },
+    {
+      "id": "gerstner-10.S1",
+      "url": "https://neuronaldynamics.epfl.ch/online/Ch10.S1.html",
+      "finalUrl": "https://neuronaldynamics.epfl.ch/online/Ch10.S1.html",
+      "status": 200,
+      "bytes": 79769,
+      "sha256": "4768d2248f5e0398ddf63e6fd7a69595a20f81800e0f1ae0ae30676fecca38ee",
+      "type": "text/html",
+      "readScope": "Selected actual10.1.1–10.1.2 text/equations1–14 read, linearity/GLM/exponential likelihood."
+    },
+    {
+      "id": "gerstner-10.S2",
+      "url": "https://neuronaldynamics.epfl.ch/online/Ch10.S2.html",
+      "finalUrl": "https://neuronaldynamics.epfl.ch/online/Ch10.S2.html",
+      "status": 200,
+      "bytes": 125234,
+      "sha256": "988a0c7db7799abdfa1414ae97eae479f113cee6182a8a35ace638a5f304186c",
+      "type": "text/html",
+      "readScope": "Selected actual10.2.1–10.2.2 equations15–33 read, likelihood/Poisson counts/convexity/MAP/Gaussian penalty.10.2.3 not claimed."
+    },
+    {
+      "id": "gerstner-10.S3",
+      "url": "https://neuronaldynamics.epfl.ch/online/Ch10.S3.html",
+      "finalUrl": "https://neuronaldynamics.epfl.ch/online/Ch10.S3.html",
+      "status": 200,
+      "bytes": 98002,
+      "sha256": "c2d359ea991418ddbf641dcf8481cdf3e86c9d98062253cd0383a014cd199ebd",
+      "type": "text/html",
+      "readScope": "Selected actual introduction (held-out evaluation) and10.3.3 equations42–45 read, time rescaling, independence and marginal KS. Other sections not relied on."
+    },
+    {
+      "id": "gerstner-11.S2",
+      "url": "https://neuronaldynamics.epfl.ch/online/Ch11.S2.html",
+      "finalUrl": "https://neuronaldynamics.epfl.ch/online/Ch11.S2.html",
+      "status": 200,
+      "bytes": 68767,
+      "sha256": "7c6d5305f030596350846b3fcf301195da7af63e87dc76f86faad6afd6ae6f7c",
+      "type": "text/html",
+      "readScope": "Selected actual11.2.1 equations5–11 and reverse-correlation discussion read. Our Gaussian exponential STA=Σw derived explicitly, not a blanket finite-ratio unbiasedness claim."
+    },
+    {
+      "id": "gerstner-11.S3",
+      "url": "https://neuronaldynamics.epfl.ch/online/Ch11.S3.html",
+      "finalUrl": "https://neuronaldynamics.epfl.ch/online/Ch11.S3.html",
+      "status": 200,
+      "bytes": 61549,
+      "sha256": "eb919c7d20f87fcac15ee8006e52e12dd081bc602f90f8412f32f0b7b0864ed5",
+      "type": "text/html",
+      "readScope": "Selected actual introduction and11.3.1 MAP discussion/equations13–14 read. Own finite discrete posterior and decision-loss qualification."
+    },
+    {
+      "id": "gerstner-12.S1",
+      "url": "https://neuronaldynamics.epfl.ch/online/Ch12.S1.html",
+      "finalUrl": "https://neuronaldynamics.epfl.ch/online/Ch12.S1.html",
+      "status": 200,
+      "bytes": 28211,
+      "sha256": "d2d3f43a21cd6a39da8326297d8f9a20e55023fe335a12a4f0d335158d212e25",
+      "type": "text/html",
+      "readScope": "Selected actual12.1.1 text on simple receptive fields and column/maps read, excluding figure/caption recovery of original Hubel work. No claim to original figures or actual recorded maps."
+    },
+    {
+      "id": "simoncelli-olshausen2001",
+      "url": "https://www.cns.nyu.edu/pub/lcv/simoncelli01-reprint.pdf",
+      "finalUrl": "https://www.cns.nyu.edu/pub/lcv/simoncelli01-reprint.pdf",
+      "status": 200,
+      "bytes": 496884,
+      "sha256": "f454c17f076f56bb580dac0a9d56c5a3942299fc83b8c57c8769e07f7f3a39ea",
+      "type": "application/pdf",
+      "readScope": "Actual PDF title/authors/year/page range confirmed. Selected textpp.1195–1196 on constraints/noise/single-neuron entropy andp.1200 intensity/Laughlin secondary discussion read. Original Laughlin body not read. No data or source figures reproduced."
+    }
+  ],
+  "sourceBoundary": "No attempt to solve Hubel-Wiesel linked-PDF proof-of-work/cookie challenge or recover original body through page images, plates, retries, mirrors or modern reprinted figures. Archive bibliography alone does not verify original body. Dayan chapters1–4 unread; no unlinked URL guessing. All prior chapter access stops remain binding.",
+  "data": "All new inputs, spikes, receptive fields, rate curves and population decoders are declared synthetic constructions. No external measured dataset, original neural response, receptive-field fit or historical electrode track is claimed.",
+  "brief": "Seventeen frozen identities and ordered dependencies; teach distinct averaging/window/hazard assumptions, exact event counts and exposures, stationary first intervals, Gaussian-covariance STA, specified penalized exponential fit with separate test data, zero vectors, local calibrated real-parameter CRB, discrete MAP ties/loss, constrained entropy, complete-interval rescaling, different noise mechanisms and approximate quadrature invariance. Native matrix both themes at1200/320, exact share replay, invalid/raw states and personally inspected pixels; model/reference and source audits before any author-available count."
+}
