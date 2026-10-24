@@ -93,6 +93,8 @@ an eigen-direction, an orthonormal frame, an ellipse's axes) with live numbers.
 
 - Climate heat capacities must declare their reference area: a global-area equivalent depth is different from a physical ocean-only column. Distinguish constant concentrations from zero emissions, global mean sea level from local relative level, and sea-ice area from extent. A reinforcing air–sea feedback alone does not produce ENSO phase reversal. See the [ocean and sea-level author record](verification/wave6-climate.md).
 
+- For spatial statistics, specify the metric and weight normalization. Row-standardized lags can have nonzero means, so include the regression intercept. Separate an unfitted kriging variance from measured accuracy, and a nearest-pump assignment from a historical exposure. Preserve distinct nearby sites instead of merging tiny positive distances. See the [spatial-analysis author record](verification/wave6-geog.md).
+
 ## Statistics & data science
 
 - **Simulate, don't assert**: every claim about estimators, tests or intervals is shown by repeated
