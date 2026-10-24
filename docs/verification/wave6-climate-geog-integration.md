@@ -1,8 +1,8 @@
 # CLIMATE6 / GEOG8 local integration — 24 October 2026
 
-The continuous content goal authorizes local expansion and reviewable commits. This batch combines CLIMATE6 at `2f37674a` and GEOG8 at `642359f6`, adding17 frozen lessons to the merged8,321-item atlas. It preserves unfinished desktop GEO6/ODE6/ALG9 drafts and the historical Wave6 accepted36/1,057 payload. No independent review, push, merge or deployment is claimed.
+The continuous content goal authorizes local expansion and reviewable commits. This batch combines CLIMATE6 at `2f37674a` and GEOG8 at `642359f6`, adding 17 frozen lessons to the merged 8,321-item atlas. It preserves unfinished desktop GEO6/ODE6/ALG9 drafts and the historical Wave6 accepted36/1,057 payload. No independent review, push, merge or deployment is claimed.
 
-Both chapter author records retain their exact source, numerical, native and visual evidence. The batch has30passing focused groups and296independent reference cases; its disjoint production coverage is68layouts with1,272native actions,412actual Share-link replays,68invalid-state rejections and60raw fractional restores. These chapter checks precede the global integration checkpoint below.
+Both chapter author records retain their exact source, numerical, native and visual evidence. The batch has 30 passing focused groups and 296 independent reference cases; its disjoint production coverage is 68 layouts with 1,272 native actions, 412 actual Share-link replays, 68 invalid-state rejections and 60 raw fractional restores. These chapter checks precede the global integration checkpoint below.
 
 ## Reconciliation
 
@@ -14,4 +14,16 @@ The historical merge test now reads the exact original merged manifest from its 
 
 ## Integration verification
 
-**In progress.** Strict build and scoped chapter checks pass. Combined static, coverage, route/export and full-suite results will be recorded here after they complete; none is claimed in advance. Source/test manifests remain in the chapter reports.
+Completed on Node 22.23.3 at local commit `f6d477e0`, after reading/route reconciliation at `cab2819c`:
+
+- Strict build: **8,338 written / 5,236 planned / 571 chapters / 85 collections**, zero errors and warnings. Log: `/tmp/wave6-climate-geog-build.log`.
+- Complete static visualization check: **8,275 visualizations**, zero errors and warnings. Log: `/tmp/wave6-climate-geog-static.log`.
+- Coverage validation and the 24-record local continuation check pass. Logs: `/tmp/wave6-climate-geog-{coverage,local}.log`.
+- Scoped reading, route and export reconciliation tests: **34/34 pass**. Historical/new projection-preservation tests also pass. Logs: `/tmp/wave6-climate-geog-reconciliation-tests.log` and `/tmp/wave6-climate-geog-preservation-tests.log`.
+- Final full suite: **4,489/4,489 pass**, no failures, skips, cancellations or todos; 735.094 seconds. Log: `/tmp/wave6-climate-geog-full-suite-final.log`.
+- Production page smoke: **272 routes in light and 272 in dark**, zero errors in both. Logs: `/tmp/wave6-climate-geog-smoke-{light,dark}.log`.
+- Final direct rechecks reproduce both the generated-data and reading-projection digests and every CLIMATE6/GEOG8 chapter/test hash. No chapter source changed during the integration run.
+
+The first full run had 4,485 passes and four failures because three older Wave5 test files used a Python executable under `/Users/teodev`. The tests now honor `PYTHON` when supplied and otherwise invoke `python3` on PATH. The repair changes only those four runner expressions, leaving their independent numerical calculations and assertions intact. All 53 groups in the three affected files pass, followed by the clean full-suite result above. Initial and scoped repair logs remain at `/tmp/wave6-climate-geog-full-suite.log` and `/tmp/wave6-climate-geog-python-portability.log`; repair commit: `f6d477e0`.
+
+The current reading snapshot contains **8,338 ideas and 76 aliases**, with source commit `642359f6d8a7c303dd396ebd19e1105522e86e10`, projection digest `993b7f0a3579c1377065b2cbe2e6613d72dc70789f2751c24b4c4c79e7a88915`, and generated-data digest `e8ddebc9601522fcd05fb10f422ebae512e7ccbeaeb5b5223cbaa088bdb7e91c`. Route arrays remain unchanged. This is a local integrated author checkpoint; no independent source acceptance, publication, push or merge is claimed. Historical Wave6 acceptance remains 36/1,057. Continue with POPGEN6, preserving the unfinished desktop GEO6 drafts and all source-access stops.
