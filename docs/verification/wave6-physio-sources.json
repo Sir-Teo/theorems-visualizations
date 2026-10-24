@@ -1,6 +1,6 @@
 {
   "date": "2026-10-24",
-  "status": "Research/design only: fifteen frozen PHYSIO6 lessons, no production files or count. BIOINF6+SYSBIO6 full4636-test/272-route-per-theme integration is complete; all browser slots released.",
+  "status": "Chapter-local pure-model draft exists atcontent/physio/ch06.shared.js; no main chapter/viz/syllabus changes or PHYSIO author-available count. Previous17-lesson integration complete; all browser slots free.",
   "baseCommit": "cb26fc5680b85bd5e1d785aca7626072f0cec0c0",
   "prerequisitesRead": "All eight actual written statement/idea/scope bodies read from prerequisites.json: physio5.7,mathbio5.8,mathbio5.9,mathbio5.2,physio3.6,physio1.3,physio1.2,mathbio1.17. No planned external dependency.",
   "acquisitionReceipts": [
@@ -152,7 +152,7 @@
     "RBCmodel withErlangtransit stageshasdistributedlag includingearliesttail, notfixed5dayonset. Stabilitycrossingnotproofstablelimitcycle/clinicaldynamicaldisease. Avoidperfectadaptationclaimforfiniteproportionalfeedback."
   ],
   "modelDesigns": "/tmp/wave6-physio-research/design-notes.json",
-  "next": "Verify candidate pure models against independent references, author15 distinct visualizations and complete native/modes/Share/critical/personal pixel gates before counting. Continue the frozen wave after PHYSIO6.",
+  "next": "Author all15complete explanations and purpose-specific interactive views, preservefrozenmetadata, synchronizeonlysyllabus6, thenstrict/static/allmodes/nativeShare/critical/personalpixelgates; noauthor-availableincrementyet.",
   "researchPrototypeVerification": {
     "linkedEquilibrium": {
       "cases": 72,
@@ -175,5 +175,55 @@
     "Linked proton inventory uses concentrations consistently: h inM, bicarbonate/netHb-boundprotons inmM, so free-proton difference is multiplied by1000. Carbamateformation releasesH+: inventory is Hbound−carbamate. The own42-state grandpartition includes both effects.",
     "Candidate four-stage EPO maturation is an Erlang-distributed filter, not a hard minimum5-day delay. Its simple exponential red-cell loss has120-day mean, not a fixed red-cell age.",
     "MITproblem3uses1.36mLO2/gHb. A .003dissolved-gas coefficient would be explicitly an illustrative common-reference assumption, not precisionrecalibration of PHYSIO5.7’s unspecified-temperaturemolarplasmacoefficient."
-  ]
+  ],
+  "pureModelDraft": {
+    "path": "content/physio/ch06.shared.js",
+    "sha256": "3556a55d1d2591728e76f818d0aba495e61650d1a20d587c006df3611b3a15e5",
+    "independentCases": 717,
+    "additionalCovarianceCases": 9,
+    "families": [
+      "oxygencontent/Hill288",
+      "inversepressure64",
+      "contentdifferences12",
+      "AdairMWC63",
+      "conditionalCO90",
+      "linkedbuffer72+9covariance",
+      "chloride9",
+      "maturationODE10",
+      "Krogh9",
+      "maturationstability100"
+    ],
+    "logs": [
+      "check-first.log",
+      "check-linked-production.log",
+      "check-transport.log",
+      "epo-stability-prototype.log"
+    ],
+    "directComparisons": {
+      "firstFamilies": 4750,
+      "linkedIncludingCovariance": 723,
+      "transportODEPDEandInvariants": 12541,
+      "stabilityProductionAssertions": 300
+    },
+    "observedODEmaxAbsError": 4.629427952096421e-10,
+    "independentBVPmaxDifference": 4.149569576838985e-12,
+    "referenceRepair": "Initial radialBVP oracle linear101-point mesh/max2000 nodes failed strict1e-10 residual. Geometric201-point startingmesh with20000 adaptive budget succeeds; MPfluxquadrature and independentBVP agree within4.15e-12. Failedtransport-reference-v1.log retained; no productchange needed.",
+    "modelReviewRepairs": [
+      "Inverse pressure now solves inlogpressure with global linearboundbracket and exposes positive roots belowbinary64 instead of fabricatingMIN pressure.",
+      "Unloadingoptimumusesloggeometricmean, fetalfluxretains sign/logmagnitude for positiveunderflow.",
+      "ChlorideinitialexternalCO2preserves exactdose0 via deviationsfrominitialamounts; no fabricatedsmallpool.",
+      "Kroghkeepsunresolvednearzeroaxialbudgets uncomputed and flags near tissuezero; no clippednegativepressure or inventeddepletedtrajectory.",
+      "EPOinitialResolved explicitly identifies positiveinitialdeficits too small tochange unitmass inbinary64."
+    ],
+    "focusedGroups": 24,
+    "failed": 0,
+    "referenceSha256": "591c1ac66a3902a09ad58ce666327d7a5435ee2ff2f89acba6dc561b22373aac",
+    "repeatByteIdentical": true,
+    "durableArtifacts": [
+      "tests/wave6-physio-reference.py",
+      "tests/fixtures/wave6-physio-reference.json",
+      "tests/wave6-physio.test.mjs"
+    ],
+    "focusLog": "/tmp/wave6-physio-focused-prototypes.log"
+  }
 }
