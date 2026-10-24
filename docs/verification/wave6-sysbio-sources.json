@@ -1,0 +1,139 @@
+{
+  "date": "2026-10-24",
+  "status": "Research only: eight frozen lessons; no production chapter, no SYSBIO author-available count",
+  "prerequisitesRead": [
+    "mathbio5.2 Langmuir: free vs total ligand and depletion; half total Kd+RT/2",
+    "mathbio5.11 conserved left nullspace vectors, algebraic reduction distinct from QSSA",
+    "mathbio5.12 three-state detailed balance vs stationary circulation, affinity requires actual fuel/temperature to infer chemical work",
+    "sysbio4.9 actual reduced ultrasensitive cascade and chain-rule local log sensitivities; no exact multiplication of global Hill coefficients"
+  ],
+  "laterPrerequisite": "pchem7.4 planned: supply local probability/thermodynamic assumptions, do not fabricate body",
+  "acquisitionReceipts": [
+    {
+      "id": "shinar2010",
+      "url": "https://www.weizmann.ac.il/mcb/alon/sites/mcb.UriAlon/files/structuralsourcesofrobustnessinbiochemicalreactionnetworks.pdf",
+      "stop": true,
+      "reason": "HTTP Error 503: Service Unavailable"
+    },
+    {
+      "id": "savir2007",
+      "url": "https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0000468",
+      "status": 200,
+      "finalUrl": "https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0000468",
+      "type": "text/html;charset=UTF-8",
+      "bytes": 191983,
+      "sha256": "fa4c7b429490d7a385f0e5c47ad4aa1b51581502fbdeadbd126b1ea3491fe6f4",
+      "path": "/tmp/wave6-sysbio-research/savir2007.html",
+      "readScope": "acquired only, body not yet claimed read"
+    },
+    {
+      "id": "feinberg-index",
+      "url": "https://cbe.osu.edu/chemical-reaction-network-theory",
+      "status": 200,
+      "finalUrl": "https://cbe.osu.edu/chemical-reaction-network-theory",
+      "type": "text/html; charset=utf-8",
+      "bytes": 137658,
+      "sha256": "8ecc455cd19e20319df3626117c0fcd5c94995d8152060551287a1f835ba07aa",
+      "path": "/tmp/wave6-sysbio-research/feinberg-index.html",
+      "readScope": "acquired only, body not yet claimed read"
+    },
+    {
+      "id": "feinberg1979",
+      "url": "https://zenodo.org/records/10631900/files/LecturesOnChemicalReactionNetworks_Feinberg.pdf?download=1",
+      "stop": true,
+      "reason": "HTTP Error 403: Forbidden"
+    },
+    {
+      "id": "shinar2011",
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC3086454/",
+      "status": 200,
+      "stop": true,
+      "reason": "challenge/interstitial; body not read"
+    },
+    {
+      "id": "gunawardena2003",
+      "url": "https://www.jeremy-gunawardena.com/papers/crnt.pdf",
+      "status": 200,
+      "finalUrl": "https://www.jeremy-gunawardena.com/papers/crnt.pdf",
+      "type": "application/pdf",
+      "bytes": 368118,
+      "sha256": "f191f4cdfe12d2a6bf5f91ce1e3358a12780f12a4b6f296b0b095f0fa42fd530",
+      "path": "/tmp/wave6-sysbio-research/gunawardena2003.pdf",
+      "readScope": "acquired only, body not yet claimed read"
+    },
+    {
+      "id": "alon-ex10",
+      "url": "https://www.weizmann.ac.il/mcb/alon/sites/mcb.UriAlon/files/uploads/ex10.pdf",
+      "stop": true,
+      "reason": "HTTP Error 503: Service Unavailable"
+    },
+    {
+      "id": "alon-course2018",
+      "url": "https://www.weizmann.ac.il/mcb/alon/courses/systems-biology-2018",
+      "stop": true,
+      "reason": "HTTP Error 503: Service Unavailable"
+    },
+    {
+      "id": "anderson-index",
+      "url": "https://people.math.wisc.edu/~dfanderson/",
+      "status": 200,
+      "finalUrl": "https://people.math.wisc.edu/~dfanderson/",
+      "type": "text/html",
+      "bytes": 35282,
+      "sha256": "27aff9c1cec6c4f47e1f85414eb5bc8c0b479a05ecda503aeabf88f531e7a2a6",
+      "path": "/tmp/wave6-sysbio-research/anderson-index.html",
+      "readScope": "acquired only, body not yet claimed read"
+    },
+    {
+      "id": "anderson2014",
+      "url": "https://people.math.wisc.edu/~dfanderson/papers/StochACR_Main.pdf",
+      "status": 200,
+      "finalUrl": "https://people.math.wisc.edu/~dfanderson/papers/StochACR_Main.pdf",
+      "type": "application/pdf",
+      "bytes": 496913,
+      "sha256": "b0e2b6fcadbcedfddb38be83b28f92a7b34d8231fc7cb6fa1344603447792194",
+      "path": "/tmp/wave6-sysbio-research/anderson2014.pdf",
+      "readScope": "acquired only, body not yet claimed read"
+    },
+    {
+      "id": "anderson2014-supp",
+      "url": "https://people.math.wisc.edu/~dfanderson/papers/StochACR_Supp.pdf",
+      "status": 200,
+      "finalUrl": "https://people.math.wisc.edu/~dfanderson/papers/StochACR_Supp.pdf",
+      "type": "application/pdf",
+      "bytes": 543269,
+      "sha256": "572272b232a0cedd745431fbdd4d0c8792fd41852b36bd528441b222cad9f727",
+      "path": "/tmp/wave6-sysbio-research/anderson2014-supp.pdf",
+      "readScope": "acquired only, body not yet claimed read"
+    },
+    {
+      "id": "helsinki2009",
+      "url": "https://www.cs.helsinki.fi/u/lmsalmel/cmsb09/lectures/CompMSysBio2009-Lecture10.pdf",
+      "stop": true,
+      "reason": "HTTP Error 503: Service Unavailable"
+    }
+  ],
+  "actualSelectedReading": [
+    "Anderson\u2013Enciso\u2013Johnston2014 author-linked mainPDF200 sha b0e2b6fcadbcedfddb38be83b28f92a7b34d8231fc7cb6fa1344603447792194; actual\u00a73 printed3\u20134 definitions/theorem1 read: \u03b4=n\u2212linkage\u2212rank; nonterminalcomplexesdiffernonzeromultipleonespecies; assumespositiveequilibrium, deficiency1. ACR is valueequalityatpositiveequilibria, NOT stability or existenceeveryclass. ActualunstableACRexampleA+B\u21922B,2A+B\u21923A withA*=k1/k2 read. This2014paper isdistinctfromstoppedShinar2010/2011; nooriginalbodyrecovery.",
+    "Anderson corrected author-linked supplementaryPDF200sha572272b232a0cedd745431fbdd4d0c8792fd41852b36bd528441b222cad9f727 acquirednotyetread; authorindexerratumrequiresnonzero difference inDef3.1.",
+    "Gunawardena2003 actualcurrentauthorPDF200sha inreceipts; firstintroduction/contents andsearchlocationsread, full\u00a7\u00a75\u20137pending. NoFeinberg1979lecturebodyrecovery.",
+    "Gunawardena2003 actualselected\u00a76 pp17\u201322 (cosetstructure, convexuniqueness, entropy-likeLyapunov/localstability) and\u00a77 p23\u201324 Theorem7.1/linearalgebraargumentread. Theorem6.4: complexbalancedpositiveequilibrium=>weakreversibility/allpositiveeqcomplexbalanced/uniqueperclass/strictclassLyapunov/localasymptoticstability. Theorem7.1 \u03b40iffweakreversibleforcomplexbalancedpositiveexistence. Important: this2003expositiondefines\u03b4=dim(kerY\u2229ImA\u03ba), whose equalityto modernn\u2212l\u2212s isconditionalononeterminalSCCperlinkage (automaticunderWR). Do notuseitsconditionalformulaasuniversaldefinition;2014Anderson\u00a73givesmodern\u03b4=n\u2212l\u2212s. Notclaimingwholebook/proofparagraphsreadbeyondselectedpassages."
+  ],
+  "otherSelectedReading": [
+    "Savir\u2013Tlusty2007 actualPLOS HTML200, sha fa4c7b429490d7a385f0e5c47ad4aa1b51581502fbdeadbd126b1ea3491fe6f4; selected introduction/fig1\u20132captions read, equations pending",
+    "Feinberg officialOSU index200; selectedactual1979lecturehistory/links read; authorlinkpointsZenodo10631900, metadataonlyread; distinct1980paperrecord10632656 also metadataonlyread"
+  ],
+  "bindingBoundaries": [
+    "Original Shinar\u2013Feinberg2010 author-hosted PDF URL returned503 during direct acquisition; STOP. No originalbodyread beyond earlier search snippet. Do not recover via publisher/author-indexmirror/cache/alternatehost. Distinct2011 design-principles paper and1979Feinberg lectures are separate works, not original2010recovery.",
+    "Feinberg1979author-linkedZenodoPDF403; metadataonly, nolecturebodyread/noalternate recovery",
+    "Shinar\u2013Feinberg2011 PMC3086454 challenge/interstitial; bodyunread/noalternateoriginal2011recovery",
+    "Alon2014exercise10PDF503; Alon2018courseindex503; Helsinki2009Lecture10PDF503. Do not recover those stopped works viaotherhosts/cache. Onlysearchsnippetsseen."
+  ],
+  "qualityCorrectionsBeforeAuthoring": [
+    "ACR theorem neverasserts stability/existenceeachtotal; showpositiveequilibriumthresholdandboundary/unstablecase",
+    "Deficiencyzero theorem normallycomplexbalance/existenceuniquepositiveeqperclass+localasymptoticstability; do notattributeallglobaltrajectoryconvergencewithoutseparatetheoremhypotheses",
+    "Proofreadingf\u00b2 isslowprogressstrongdriveasymptote, notexactuniversalerror; fuel/workneeddeclaredmodel, irreversibleidealdoesnotjustifyfiniteexactthermodynamicaffinity",
+    "Conformationalelasticenergyisequilibriumcost, notautomaticdissipatedfuel; specificityoptimumcanbegone/flatwhencompetitoridentical"
+  ],
+  "next": "Finish BIOINF6 local verification checkpoint; then complete proofreading/signalling sources and derive eight own models. Do not retrieve any stopped original through another host/cache."
+}
