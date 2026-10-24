@@ -52,7 +52,7 @@ const sorted = f => f.decision.materials.sort((a, b) => a.id < b.id ? -1 : a.id 
 const materialError = /Distribution decision must cover/;
 
 test('exact per-material decisions work for every retained edition, supplement and single or combined domain selection', () => {
-  assert.equal(editionCases.length, 4); assert.equal(domainCases.length, 32);
+  assert.equal(editionCases.length, 28); assert.equal(domainCases.length, 32);
   assert.ok(editionCases.some(([, s]) => Object.keys(s.bundle.supplements).length > 0));
   for (const args of cases) {
     const f = fixture(...args), expected = args[0] === 'edition' ? 1 : args[1].length;

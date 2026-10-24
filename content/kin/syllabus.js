@@ -191,39 +191,177 @@ export default {
     },
     // ───────────────────────────────────────────────────────────── 6
     {
-      n: 6,
-      title: 'Catalysis and enzyme kinetics',
-      summary: String.raw`A catalyst opens a lower-barrier pathway without changing the equilibrium it accelerates toward. Enzymes are the supreme example: the Michaelis–Menten mechanism explains their saturation kinetics, kcat/KM measures their efficiency against the diffusion limit, and inhibitors and cooperativity modulate them. On solid catalysts, adsorption isotherms feed Langmuir–Hinshelwood and Eley–Rideal rate laws.`,
-      items: [
-        { num: '6.1', kind: 'Principle', name: 'Catalysts lower barriers but leave equilibrium unchanged', deps: ['kin-3.2', 'kin-1.12'], refs: ['Houston'],
-          pic: 'Add a catalytic pathway with a lower barrier to A ⇌ B: both forward and backward rates rise by the same factor, so the approach to equilibrium speeds up while the final ratio stays fixed.' },
-        { num: '6.2', kind: 'Model', name: 'Michaelis–Menten kinetics', deps: ['kin-4.3'], refs: ['Houston', 'Steinfeld et al.'],
-          pic: 'Raise substrate concentration: the initial rate climbs linearly and then saturates at V_max, half reached at K_M, while a stochastic single-enzyme panel shows the enzyme spending more and more time occupied.' },
-        { num: '6.3', kind: 'Paradox', name: 'Lineweaver–Burk plots and error distortion', deps: ['kin-6.2'], refs: ['Houston'],
-          pic: 'Fit noisy Michaelis–Menten data by the double-reciprocal plot and by direct nonlinear fitting: the reciprocal transform magnifies errors at low substrate and biases the parameters, shown by repeated simulated experiments.' },
-        { num: '6.4', kind: 'Definition', name: 'Catalytic efficiency kcat/KM and catalytic perfection', deps: ['kin-6.2', 'kin-5.2'], refs: ['Houston'],
-          pic: 'Plot kcat/KM for a collection of enzymes against the diffusion limit: a few, like triosephosphate isomerase and carbonic anhydrase, sit right at the ceiling, where every encounter leads to reaction.' },
-        { num: '6.5', kind: 'Model', name: 'Competitive inhibition', deps: ['kin-6.2'], refs: ['Houston'],
-          pic: 'Add an inhibitor that competes for the active site: the saturation curve stretches to the right with V_max unchanged, and enough substrate always wins back full speed.' },
-        { num: '6.6', kind: 'Model', name: 'Uncompetitive and noncompetitive inhibition', deps: ['kin-6.5'], refs: ['Houston'],
-          pic: 'Switch the inhibitor’s binding target to the enzyme–substrate complex or to both forms: double-reciprocal lines become parallel or intersect on the axis, diagnosing each mechanism.' },
-        { num: '6.7', kind: 'Model', name: 'Hill equation and cooperativity', deps: ['kin-6.2'], refs: ['Houston'],
-          pic: 'Raise the Hill coefficient from 1 to 4: the binding curve sharpens from hyperbolic to sigmoidal, the Hill plot slope reads n, and haemoglobin’s oxygen curve is fitted with n ≈ 2.8.' },
-        { num: '6.8', kind: 'Phenomenon', name: 'Temperature optimum of enzymes', deps: ['kin-6.2', 'kin-2.1'], refs: ['Houston'],
-          pic: 'Heat an enzyme: catalytic rate rises along an Arrhenius curve while a two-state unfolding equilibrium removes active enzyme, and their product gives the bell-shaped activity profile.' },
-        { num: '6.9', kind: 'Model', name: 'Langmuir–Hinshelwood mechanism', deps: ['pchem-11.4', 'kin-4.3'], refs: ['Houston', 'Steinfeld et al.'],
-          pic: 'Two gases compete for surface sites and react when adsorbed neighbours meet: the rate rises and then falls as one gas floods the surface, with a maximum at a computed partial-pressure ratio.' },
-        { num: '6.10', kind: 'Model', name: 'Eley–Rideal mechanism', deps: ['pchem-11.4'], refs: ['Steinfeld et al.'],
-          pic: 'Let a gas-phase molecule strike an adsorbed one directly: the rate saturates with coverage instead of passing through a maximum, distinguishing it from Langmuir–Hinshelwood on the same axes.' },
-        { num: '6.11', kind: 'Method', name: 'Temperature-programmed desorption', deps: ['pchem-11.6', 'kin-2.1'], refs: ['Steinfeld et al.'],
-          pic: 'Heat a covered surface at a steady ramp: the desorption signal peaks at a temperature set by the binding energy (Redhead analysis), and changing the desorption order changes the peak shape.' },
-        { num: '6.12', kind: 'Paper', name: 'Die Kinetik der Invertinwirkung',
-          paper: { authors: 'L. Michaelis and Maud L. Menten', year: 1913, title: 'Die Kinetik der Invertinwirkung', venue: 'Biochemische Zeitschrift 49: 333–369' },
-          introduces: ['kin-6.2'], deps: ['kin-1.2', 'kin-1.8', 'kin-4.4'], refs: [],
-          pic: 'Fit Michaelis and Menten’s invertase measurements — initial rates of sucrose hydrolysis at a range of sucrose concentrations — with v = V[S]/(K + [S]), dragging V and K, and set their logarithmic-concentration plot beside the double-reciprocal plot that later became standard.' },
-      ],
+      "n": 6,
+      "title": "Catalysis and enzyme kinetics",
+      "summary": "Catalytic pathways obey thermodynamic constraints while changing relaxation rates. Declared enzyme models separate transient occupancy, saturation, inhibition, specificity and cooperative response from the mechanisms that might produce them. Surface models and temperature ramps connect site populations to measurable rates, with synthetic data and historical bibliography clearly distinguished.",
+      "items": [
+        {
+          "num": "6.1",
+          "kind": "Principle",
+          "name": "Catalysts lower barriers but leave equilibrium unchanged",
+          "deps": [
+            "kin-3.2",
+            "kin-1.12"
+          ],
+          "refs": [
+            "MIT 10.37 Spring 2007, W. Green, Lecture 16, complete PDF 1–4: catalysts, barriers and bound intermediates"
+          ],
+          "pic": "Change the transition levels and state-energy difference, then advance the clock in baseline relaxation times. Both exact trajectories approach the same equilibrium; the readout also reports physical seconds."
+        },
+        {
+          "num": "6.2",
+          "kind": "Model",
+          "name": "Michaelis–Menten kinetics",
+          "deps": [
+            "kin-4.3"
+          ],
+          "refs": [
+            "NC-IUB Recommendation 1981 web version, §4.1–4.2: limiting rate, specificity constant and Michaelis kinetics",
+            "MIT 10.492 Fall 2004, K. Prather, Lecture 3/4, PDF 2–3: mechanism and enzyme conservation; balance rederived here"
+          ],
+          "pic": "Vary substrate and microscopic rate constants. Compare the stationary saturation curve with the exact startup from initially free enzyme, including the integrated product formed."
+        },
+        {
+          "num": "6.3",
+          "kind": "Paradox",
+          "name": "Lineweaver–Burk plots and error distortion",
+          "deps": [
+            "kin-6.2"
+          ],
+          "refs": [
+            "MIT 10.492 Fall 2004, Lecture 3/4, PDF 3–4: reciprocal plots and low-substrate sensitivity; objectives derived explicitly here"
+          ],
+          "pic": "Change the true curve, noise amplitude and integer seed. Both plots use the same seven observations; compare fitted parameters and both residual objectives."
+        },
+        {
+          "num": "6.4",
+          "kind": "Definition",
+          "name": "Catalytic efficiency kcat/KM and catalytic perfection",
+          "deps": [
+            "kin-6.2",
+            "kin-5.2"
+          ],
+          "refs": [
+            "NC-IUB Recommendation 1981 web version, §4.1–4.2: specificity and catalytic constants",
+            "MIT 10.492 Fall 2004, Lecture 3/4, PDF 3: catalytic constants; encounter conversion uses written KIN5.2"
+          ],
+          "pic": "Change encounter radius, relative diffusion and the two success factors. Compare the computed molar efficiency with its own model encounter limit."
+        },
+        {
+          "num": "6.5",
+          "kind": "Model",
+          "name": "Competitive inhibition",
+          "deps": [
+            "kin-6.2"
+          ],
+          "refs": [
+            "NC-IUB Recommendation 1981 web version, §6.1–6.4: reversible inhibition and operational competitive classification"
+          ],
+          "pic": "Add inhibitor and vary substrate. Compare the inhibited curve with the baseline and inspect the enzyme fractions computed from the same denominator."
+        },
+        {
+          "num": "6.6",
+          "kind": "Model",
+          "name": "Uncompetitive and noncompetitive inhibition",
+          "deps": [
+            "kin-6.5"
+          ],
+          "refs": [
+            "NC-IUB Recommendation 1981 web version, §6.2–6.4: linear, uncompetitive, mixed and pure noncompetitive inhibition"
+          ],
+          "pic": "Switch inhibition class and adjust the active binding controls. Both saturation and reciprocal plots are computed from one common rate law."
+        },
+        {
+          "num": "6.7",
+          "kind": "Model",
+          "name": "Hill equation and cooperativity",
+          "deps": [
+            "kin-6.2"
+          ],
+          "refs": [
+            "NC-IUB Recommendation 1981 web version, §10–11: Hill slopes, operational cooperativity and limits of mechanism identification"
+          ],
+          "pic": "Compare a Hill response with independent identical sites. The second mode reports expected ligand count separately from per-site probability and retains a Hill slope of one."
+        },
+        {
+          "num": "6.8",
+          "kind": "Phenomenon",
+          "name": "Temperature optimum of enzymes",
+          "deps": [
+            "kin-6.2",
+            "kin-2.1"
+          ],
+          "refs": [
+            "MIT 10.492 Fall 2004, Lecture 3/4, PDF 5–6: Arrhenius activity, reversible/irreversible deactivation and assay-duration dependence"
+          ],
+          "pic": "Change catalytic activation energy, unfolding enthalpy and transition temperature. Compare the actual effective activity with the active fraction, and locate an optimum only when the model supplies one."
+        },
+        {
+          "num": "6.9",
+          "kind": "Model",
+          "name": "Langmuir–Hinshelwood mechanism",
+          "deps": [
+            "pchem-11.4",
+            "kin-4.3"
+          ],
+          "refs": [
+            "MIT 10.37 Spring 2007, Lecture 16, PDF 3: Langmuir–Hinshelwood definition and bound-state competition",
+            "P. Ghosh, NPTEL Interfacial Engineering Module 4/Lecture 4, PDF 7–8: Langmuir site assumptions"
+          ],
+          "pic": "Change the two adsorption strengths and the surface reaction coefficient. Compare site competition with the actual fixed-B rate maximum."
+        },
+        {
+          "num": "6.10",
+          "kind": "Model",
+          "name": "Eley–Rideal mechanism",
+          "deps": [
+            "pchem-11.4"
+          ],
+          "refs": [
+            "NPTEL Heterogeneous Catalysis Module 2/Lecture 19, page 7: reaction-limited irreversible Eley–Rideal assumptions; equation images not used",
+            "MIT 10.37 Spring 2007, Lecture 16, PDF 3: LH/ER distinction"
+          ],
+          "pic": "Vary gas pressures and adsorption constants. Compare the two computed rates and their corresponding site populations at the same chosen pressures."
+        },
+        {
+          "num": "6.11",
+          "kind": "Method",
+          "name": "Temperature-programmed desorption",
+          "deps": [
+            "pchem-11.6",
+            "kin-2.1"
+          ],
+          "refs": [
+            "P. Ghosh, NPTEL Interfacial Engineering Module 4/Lecture 4, complete PDF 13–15 and PDF 14 pixels: first-order TPD and exact implicit peak condition"
+          ],
+          "pic": "Switch desorption order, heating rate and binding energy. Compare signal with remaining inventory, including an empty-surface example and finite-window peak status."
+        },
+        {
+          "num": "6.12",
+          "kind": "Paper",
+          "name": "Die Kinetik der Invertinwirkung",
+          "paper": {
+            "authors": "L. Michaelis and Maud L. Menten",
+            "year": 1913,
+            "title": "Die Kinetik der Invertinwirkung",
+            "venue": "Biochemische Zeitschrift 49: 333–369"
+          },
+          "introduces": [
+            "kin-6.2"
+          ],
+          "deps": [
+            "kin-1.2",
+            "kin-1.8",
+            "kin-4.4"
+          ],
+          "refs": [
+            "NC-IUB Recommendation 1981 web version, §4.1–4.2: operational Michaelis concentration and mechanism limitations",
+            "MIT 10.492 Fall 2004, Lecture 3/4, PDF 2–3: modern stationary mechanism; pre-equilibrium comparison derived here"
+          ],
+          "pic": "Vary the catalytic-to-release ratio and substrate. Compare the two calculated bound fractions and their actual approximation error, with physical turnover rates shown separately."
+        }
+      ]
     },
-    // ───────────────────────────────────────────────────────────── 7
     {
       n: 7,
       title: 'Photochemical kinetics',

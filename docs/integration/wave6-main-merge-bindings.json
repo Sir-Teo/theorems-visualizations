@@ -1,0 +1,77 @@
+{
+  "schemaVersion": 1,
+  "checkedOn": "2026-10-24",
+  "scope": "Rebind unchanged exact lesson targets and route tasks to the reconciled merged reading snapshot; retain old author receipt as history",
+  "changes": [
+    {
+      "path": "curriculum/introductory.json",
+      "fields": [
+        "legacySnapshot"
+      ],
+      "before": {
+        "legacySnapshot": "2b156195a22cf85186b8b40fb6c35b8966a478a0c46da155a742b498907c2685"
+      },
+      "after": {
+        "legacySnapshot": "ec3f27e836ca57bcd83d0e788de47fc0de71bacd5af36c55a8566167886dae93"
+      }
+    },
+    {
+      "path": "program/deeper-routes.json",
+      "fields": [
+        "legacySnapshot",
+        "introductorySha256"
+      ],
+      "before": {
+        "legacySnapshot": "2b156195a22cf85186b8b40fb6c35b8966a478a0c46da155a742b498907c2685",
+        "introductorySha256": "c17b80ef71ac6744a97fee282a3fcdd1c1c49f0e3b44fbab72b821d5319fbf8d"
+      },
+      "after": {
+        "legacySnapshot": "ec3f27e836ca57bcd83d0e788de47fc0de71bacd5af36c55a8566167886dae93",
+        "introductorySha256": "5d685a7dadf8b078b88e126ee431c506cd0cdfcbbe99bfee339dc2dcacdf4231"
+      }
+    },
+    {
+      "path": "docs/journeys/targets.json",
+      "fields": [
+        "acceptedCommit",
+        "snapshotDigest"
+      ],
+      "before": {
+        "acceptedCommit": "facab15e297c645d4826935f2c011a4cf367ee88",
+        "snapshotDigest": "2b156195a22cf85186b8b40fb6c35b8966a478a0c46da155a742b498907c2685"
+      },
+      "after": {
+        "acceptedCommit": "84d784cb8a1d67eac40e32ffc1c97c9d1ddb3e14",
+        "snapshotDigest": "ec3f27e836ca57bcd83d0e788de47fc0de71bacd5af36c55a8566167886dae93"
+      }
+    },
+    {
+      "path": "docs/journeys/plans.json",
+      "fields": [
+        "authorVerification"
+      ],
+      "before": {
+        "authorVerification": {
+          "kind": "author-check",
+          "scope": "local-preview",
+          "author": "atlas-editor",
+          "checkedOn": "2026-10-23",
+          "contentDigest": "84c0573931b1269284090a6f0fc2e719373cb95faae3ce1e7d416473882ad87b",
+          "artifactDigest": "ff19c4a9828fd3b260c199c4963c1f85265be51d9cf59bd0c7e9e94aadd9f56e",
+          "evidencePath": "docs/verification/universal-author-delivery.md"
+        }
+      },
+      "after": {
+        "authorVerification": {
+          "kind": "author-check",
+          "scope": "local-preview",
+          "author": "atlas-editor",
+          "checkedOn": "2026-10-24",
+          "contentDigest": "1db62d4ec20cd79d5d616d6dfd97f2a1cec02a25e43c279a9d033769c958cc9b",
+          "artifactDigest": "ff19c4a9828fd3b260c199c4963c1f85265be51d9cf59bd0c7e9e94aadd9f56e",
+          "evidencePath": "docs/verification/wave6-main-merge.md"
+        }
+      }
+    }
+  ]
+}

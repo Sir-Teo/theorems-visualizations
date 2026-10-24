@@ -319,7 +319,7 @@ For a dilute ideal placement model, the choices of vacancy sites and partner sit
       deps: ['xtal-1.7', 'mat-1.4'],
       refs: ['Callister §4.3'],
       tags: ['interstitials', 'iron', 'steel'],
-      scope: String.raw`Hard-sphere geometry with $a_\gamma\approx3.65$ Å and $a_\alpha\approx2.866$ Å; real atoms are soft and the solubility limits (at $1147\,^\circ$C for austenite, $727\,^\circ$C for ferrite) are measured values rounded to two figures.`,
+      scope: String.raw`Hard-sphere geometry with $a_\gamma\approx3.65$ Å and $a_\alpha\approx2.866$ Å; real atoms are soft and the solubility limits (at $1147\,{}^\circ\mathrm{C}$ for austenite, $727\,{}^\circ\mathrm{C}$ for ferrite) are measured values rounded to two figures.`,
       viz(v) {
         const A = { fcc: { a: 3.65, R: 3.65 / (2 * Math.SQRT2), roct: 3.65 / 2 - 3.65 / (2 * Math.SQRT2), rtet: (3.65 * Math.sqrt(3)) / 4 - 3.65 / (2 * Math.SQRT2) }, bcc: { a: 2.866, R: (2.866 * Math.sqrt(3)) / 4, roct: 2.866 / 2 - (2.866 * Math.sqrt(3)) / 4, rtet: (2.866 * Math.sqrt(5)) / 4 - (2.866 * Math.sqrt(3)) / 4 } };
         const host = v.select('host', [{ value: 'fcc', label: 'γ-Fe (fcc)' }, { value: 'bcc', label: 'α-Fe (bcc)' }], 'fcc');

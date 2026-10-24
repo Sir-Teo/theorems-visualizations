@@ -193,43 +193,211 @@ export default {
     },
     // ───────────────────────────────────────────────────────────── 6
     {
-      n: 6,
-      title: 'Superconductivity',
-      summary: String.raw`Below a critical temperature some metals lose all resistance and expel magnetic fields. London’s equations confine the field to a thin surface layer, and flux through a ring is quantized in units of h/2e, revealing paired electrons. Ginzburg–Landau theory distinguishes type I from type II superconductors with their vortex lattices. BCS theory builds the pairs from a phonon-mediated attraction, predicting an energy gap and the isotope effect; the condensate’s phase coherence gives the Josephson effects behind SQUIDs and superconducting qubits, and the cuprates remain a challenge.`,
-      items: [
-        { num: '6.1', kind: 'Phenomenon', name: 'Zero resistance and the critical temperature', deps: ['em-6.4'], refs: ['Ashcroft–Mermin ch. 34', 'Kittel ch. 10'],
-          pic: 'Cool a mercury wire: its resistance drops abruptly to zero at 4.2 K, as in Kamerlingh Onnes’s data, and a current set running in a superconducting ring shows no decay on any timescale you choose.' },
-        { num: '6.2', kind: 'Model', name: 'London equations and the penetration depth', deps: ['em-8.15', 'em-10.3'], refs: ['Ashcroft–Mermin ch. 34', 'Kittel ch. 10'],
-          pic: 'The magnetic field inside a superconducting slab decays as e^{−x/λ_L} with λ_L of tens of nanometres; a superfluid-density slider sets λ_L and thin films let field through.' },
-        { num: '6.3', kind: 'Phenomenon', name: 'Flux quantization in units of h/2e', deps: ['cm-6.2', 'qm-6.7'], refs: ['Ashcroft–Mermin ch. 34', 'Kittel ch. 10'],
-          pic: 'Thread flux through a superconducting ring: single-valuedness of the condensate phase allows only multiples of h/2e, and the measured steps are compared with the h/e that single electrons would give.' },
-        { num: '6.4', kind: 'Model', name: 'Ginzburg–Landau theory', deps: ['cm-6.2', 'thermo-11.15'], refs: ['Ashcroft–Mermin ch. 34', 'Kittel ch. 10'],
-          pic: 'A free energy in the order parameter with a temperature slider: above T_c the minimum is at zero, below it a ring of minima appears, and the coherence length and penetration depth are computed.' },
-        { num: '6.5', kind: 'Phenomenon', name: 'Type I and type II superconductors', deps: ['cm-6.4'], refs: ['Ashcroft–Mermin ch. 34', 'Kittel ch. 10'],
-          pic: 'The Ginzburg–Landau ratio κ = λ/ξ decides the sign of the interface energy: below 1/√2 the field is expelled until a single critical field, above it flux enters gradually between H_c1 and H_c2.' },
-        { num: '6.6', kind: 'Phenomenon', name: 'Abrikosov vortex lattice', deps: ['cm-6.5', 'cm-6.3'], refs: ['Kittel ch. 10'],
-          pic: 'Raise the field on a type II film: vortices each carrying one flux quantum enter and arrange into a triangular lattice whose spacing shrinks as √(Φ₀/B).' },
-        { num: '6.7', kind: 'Model', name: 'Cooper pairs', deps: ['cm-1.1', 'cm-3.5'], refs: ['Ashcroft–Mermin ch. 34', 'Kittel ch. 10'],
-          pic: 'Two electrons above a filled Fermi sea with an attraction slider: a bound state below 2E_F exists for any attraction, however weak, with binding energy vanishing as e^{−2/(N(0)V)}.' },
-        { num: '6.8', kind: 'Model', name: 'BCS theory and the energy gap', deps: ['cm-6.7'], refs: ['Ashcroft–Mermin ch. 34', 'Kittel ch. 10'],
-          pic: 'Solve the BCS gap equation self-consistently versus temperature: Δ(T) vanishes at T_c with 2Δ(0)/kT_c ≈ 3.53, compared with tunnelling data.' },
-        { num: '6.9', kind: 'Phenomenon', name: 'Isotope effect', deps: ['cm-6.8', 'thermo-9.13'], refs: ['Ashcroft–Mermin ch. 34', 'Kittel ch. 10'],
-          pic: 'Change the ionic mass of mercury isotopes: the computed and measured critical temperatures fall as M^{−1/2}, pointing to phonons as the glue.' },
-        { num: '6.10', kind: 'Phenomenon', name: 'Josephson effects', deps: ['cm-6.3', 'cm-6.4'], refs: ['Ashcroft–Mermin ch. 34', 'Kittel ch. 10'],
-          pic: 'Two superconductors across a thin barrier: a phase-difference slider drives a supercurrent I_c sin φ with no voltage, and a fixed voltage makes the current oscillate at 2eV/h.' },
-        { num: '6.11', kind: 'Invention', name: 'SQUID magnetometer', deps: ['cm-6.10'], refs: ['Kittel ch. 10'],
-          pic: 'Two Josephson junctions in a ring: the maximum supercurrent oscillates with the threaded flux with period h/2e, so counting fringes measures fields far weaker than the Earth’s.' },
-        { num: '6.12', kind: 'Phenomenon', name: 'High-temperature cuprate superconductors', deps: ['cm-6.8', 'cm-5.5'], refs: ['Kittel ch. 10'],
-          pic: 'A doping slider walks across the cuprate phase diagram: an antiferromagnetic Mott insulator at zero doping gives way to a superconducting dome peaking above 90 K, far beyond the phonon-mediated BCS estimate shown for comparison.' },
-        { num: '6.13', kind: 'Paper', name: 'The resistance of pure mercury at helium temperatures',
-          paper: { authors: 'H. Kamerlingh Onnes', year: 1911, title: 'Further experiments with liquid helium. C. On the change of electric resistance of pure metals at very low temperatures etc. IV. The resistance of pure mercury at helium temperatures', venue: 'Proceedings of the Section of Sciences, KNAW 13 (II): 1274–1276', url: 'https://dwc.knaw.nl/DL/publications/PU00013358.pdf' },
-          introduces: ['cm-6.1'], deps: ['em-6.5', 'em-6.4'], refs: [],
-          pic: 'Cool a mercury thread in the liquid-helium cryostat and plot its resistance against temperature: it follows the smooth fall expected of a pure metal and then, near 4.2 K, drops abruptly to an unmeasurably small value — the first superconductor, recreated from the Leiden measurements.' },
-        { num: '6.14', kind: 'Paper', name: 'Theory of Superconductivity',
-          paper: { authors: 'J. Bardeen, L. N. Cooper and J. R. Schrieffer', year: 1957, title: 'Theory of Superconductivity', venue: 'Physical Review 108 (5): 1175–1204', doi: '10.1103/PhysRev.108.1175' },
-          introduces: ['cm-6.8'], deps: ['cm-6.7', 'cm-6.9', 'cm-3.5', 'cm-6.13'], refs: [],
-          pic: 'Solve the BCS gap equation as the temperature falls: the gap opens at T_c and grows to Δ(0) = 1.76 kT_c, the electronic specific heat jumps by a factor 2.43 at T_c and then dies away exponentially, and the reader sets the coupling to match measured gaps and specific heats of real superconductors.' },
-      ],
+      "n": 6,
+      "title": "Superconductivity",
+      "summary": "From ideal DC transport to magnetic screening and quantized fluxoid, superconductivity combines collective phase coherence with microscopic pairing. Finite slabs, rings, vortices and Josephson circuits expose different roles of fields and phase. Self-consistent finite-cutoff BCS calculations reveal the gap, isotope assumptions and electronic heat jump, while a separately labeled cuprate guide shows the limits of this elementary picture.",
+      "items": [
+        {
+          "num": "6.1",
+          "kind": "Phenomenon",
+          "name": "Zero resistance and the critical temperature",
+          "deps": [
+            "em-6.4"
+          ],
+          "refs": [
+            "Arovas, UCSD Physics239 (2023), C11 §11.1, historical opening and zero-DC-resistance phenomenology"
+          ],
+          "pic": "Cool an idealized wire through its transition, then compare a zero-resistance ring with a positive residual-resistance alternative. Vary the elapsed time and read the actual fractional current loss."
+        },
+        {
+          "num": "6.2",
+          "kind": "Model",
+          "name": "London equations and the penetration depth",
+          "deps": [
+            "em-8.15",
+            "em-10.3"
+          ],
+          "refs": [
+            "Arovas C11 §11.3, printed8–9; SI conversion and slab boundary solution supplied here"
+          ],
+          "pic": "Change slab thickness and superconducting electron density. Inspect the exact finite-slab field and its screening-current derivative, including the field at the center and the spatial mean."
+        },
+        {
+          "num": "6.3",
+          "kind": "Phenomenon",
+          "name": "Flux quantization in units of h/2e",
+          "deps": [
+            "cm-6.2",
+            "qm-6.7"
+          ],
+          "refs": [
+            "Arovas C11 §11.3, printed9; QM6.7 loop phase; lumped fluxoid derivation supplied here"
+          ],
+          "pic": "Thread a ring with external flux and choose its winding sector. Vary the kinetic share of its inductance, then compare the actual magnetic flux with the kinetic contribution and the integer fluxoid."
+        },
+        {
+          "num": "6.4",
+          "kind": "Model",
+          "name": "Ginzburg–Landau theory",
+          "deps": [
+            "cm-6.2",
+            "thermo-11.15"
+          ],
+          "refs": [
+            "Arovas C11 §§11.4.1–11.4.3, printed12–14"
+          ],
+          "pic": "Move temperature through the transition and inspect the radial free-energy curve alongside the circle of complex order-parameter minima. Change the phase along that circle and compare the computed amplitude and length scales."
+        },
+        {
+          "num": "6.5",
+          "kind": "Phenomenon",
+          "name": "Type I and type II superconductors",
+          "deps": [
+            "cm-6.4"
+          ],
+          "refs": [
+            "Arovas C11 §11.5.1, printed22–23; §§11.5.4–11.5.5, printed29–32"
+          ],
+          "pic": "Change κ and the coherence length. Compare the thermodynamic and upper-instability field scales as they cross at the type boundary. At large κ, add a clearly labeled leading-log London estimate of the lower critical field."
+        },
+        {
+          "num": "6.6",
+          "kind": "Phenomenon",
+          "name": "Abrikosov vortex lattice",
+          "deps": [
+            "cm-6.5",
+            "cm-6.3"
+          ],
+          "refs": [
+            "Arovas C11 §11.5.6, printed32–38; reciprocal sum and regularized London field supplied here"
+          ],
+          "pic": "Raise the mean induction and compare triangular and square vortex cells. Watch the computed spacing shrink, inspect a periodic field cross-section, and compare the converged lattice sums and flux per cell."
+        },
+        {
+          "num": "6.7",
+          "kind": "Model",
+          "name": "Cooper pairs",
+          "deps": [
+            "cm-1.1",
+            "cm-3.5"
+          ],
+          "refs": [
+            "Arovas C12 §12.2, printed3–6; per-spin coupling convention stated here"
+          ],
+          "pic": "Vary the attraction and compare exact binding with its weak-coupling exponential. Inspect the actual pair-energy probability per logarithmic energy interval, or turn the attraction off and lose the bound state."
+        },
+        {
+          "num": "6.8",
+          "kind": "Model",
+          "name": "BCS theory and the energy gap",
+          "deps": [
+            "cm-6.7"
+          ],
+          "refs": [
+            "Arovas C12 §§12.4–12.6, printed9–15; §12.9, printed18–19"
+          ],
+          "pic": "Change coupling and temperature, solve the gap equation, and inspect the actual quasiparticle dispersion or a broadened density of states. Compare the calculated finite-cutoff gap ratio with its weak-coupling limit."
+        },
+        {
+          "num": "6.9",
+          "kind": "Phenomenon",
+          "name": "Isotope effect",
+          "deps": [
+            "cm-6.8",
+            "thermo-9.13"
+          ],
+          "refs": [
+            "Arovas C12 §12.9.1, printed20; local harmonic-frequency and finite-cutoff derivative arguments"
+          ],
+          "pic": "Vary isotope mass and compare the conditional half-power curve with the recalculated critical temperature. Allow a small mass dependence of the coupling and read its actual logarithmic isotope exponent."
+        },
+        {
+          "num": "6.10",
+          "kind": "Phenomenon",
+          "name": "Josephson effects",
+          "deps": [
+            "cm-6.3",
+            "cm-6.4"
+          ],
+          "refs": [
+            "Arovas C13 §13.3.1, printed21–22; sign orientation chosen explicitly here"
+          ],
+          "pic": "Set the initial phase and a signed fixed voltage. Move through time, inspect the actual phase phasor and current trace, and compare the frequency and Josephson energy."
+        },
+        {
+          "num": "6.11",
+          "kind": "Invention",
+          "name": "SQUID magnetometer",
+          "deps": [
+            "cm-6.10"
+          ],
+          "refs": [
+            "Arovas C13 §13.3.3, printed23; Orlando MIT6.763 Lecture12, actual PDFpage2"
+          ],
+          "pic": "Thread flux through two unequal junctions and rotate their common phase. Compare their vector sum and actual current with the maximum-current envelope; change loop area to convert flux period into a field period."
+        },
+        {
+          "num": "6.12",
+          "kind": "Phenomenon",
+          "name": "High-temperature cuprate superconductors",
+          "deps": [
+            "cm-6.8",
+            "cm-5.5"
+          ],
+          "refs": [
+            "Keimer et al., arXiv1409.4673, printed1–7 and Figure2/4 captions, printed17/19"
+          ],
+          "pic": "Move through doping and temperature on a clearly labeled schematic phase guide. Compare a positive s-wave angular gap with the sign-changing d-wave form, and locate its four nodal directions."
+        },
+        {
+          "num": "6.13",
+          "kind": "Paper",
+          "name": "The resistance of pure mercury at helium temperatures",
+          "paper": {
+            "authors": "H. Kamerlingh Onnes",
+            "year": 1911,
+            "title": "Further experiments with liquid helium. C. On the change of electric resistance of pure metals at very low temperatures etc. IV. The resistance of pure mercury at helium temperatures",
+            "venue": "Proceedings of the Section of Sciences, KNAW 13 (II): 1274–1276",
+            "url": "https://dwc.knaw.nl/DL/publications/PU00013358.pdf"
+          },
+          "introduces": [
+            "cm-6.1"
+          ],
+          "deps": [
+            "em-6.5",
+            "em-6.4"
+          ],
+          "refs": [
+            "Arovas C11 §11.1, opening historical paragraph; resistance-bound derivations supplied here"
+          ],
+          "pic": "Change a voltage floor, a test current and a persistent-current observation time. Compare the two calculated resistance bounds, then inspect which positive resistances would remain undetected by each protocol."
+        },
+        {
+          "num": "6.14",
+          "kind": "Paper",
+          "name": "Theory of Superconductivity",
+          "paper": {
+            "authors": "J. Bardeen, L. N. Cooper and J. R. Schrieffer",
+            "year": 1957,
+            "title": "Theory of Superconductivity",
+            "venue": "Physical Review 108 (5): 1175–1204",
+            "doi": "10.1103/PhysRev.108.1175"
+          },
+          "introduces": [
+            "cm-6.8"
+          ],
+          "deps": [
+            "cm-6.7",
+            "cm-6.9",
+            "cm-3.5",
+            "cm-6.13"
+          ],
+          "refs": [
+            "Arovas C12 §§12.4–12.6, printed9–15; §12.9, printed18–22"
+          ],
+          "pic": "Solve the finite-cutoff BCS model as temperature changes. Switch between the gap and electronic heat capacity, and compare the computed transition ratios with their weak-coupling limits."
+        }
+      ]
     },
   ],
 };

@@ -47,7 +47,7 @@ test('all source content and navigation remain available with JavaScript disable
  await page.locator('[data-domain="D20"] h2 a').click();
  assert.ok(await page.getByRole('heading',{name:'What this field asks'}).isVisible());assert.match(await page.locator('.source').textContent(),/Reading scope/);
  await page.getByText('Reuse scope',{exact:true}).click();assert.match(await page.locator('.source details').textContent(),/summary|summaries/);
- assert.match(await page.locator('aside').textContent(),/locally accepted under scoped AI review/);
+ assert.match(await page.locator('aside').textContent(),/locally accepted; see lesson for check scope/);
 },{javaScriptEnabled:false}));
 test('index and all 30 domain pages fit phone width in both themes and enlarged text',async()=>{
  for(const colorScheme of ['light','dark'])await run(async page=>{

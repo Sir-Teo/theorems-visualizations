@@ -192,53 +192,398 @@ export default {
     },
     // ───────────────────────────────────────────────────────────── 6
     {
-      n: 6,
-      title: 'Bonding in polyatomic molecules',
-      summary: String.raw`Beyond diatomics, chemists use a ladder of models of rising cost: VSEPR to guess shapes, hybrid orbitals to describe localized bonds, Walsh diagrams to explain why water is bent, and Hückel theory to turn π systems into graph eigenvalue problems. Frontier orbitals and orbital symmetry then predict which reactions go, and crystal-field and Jahn–Teller arguments carry the same ideas to transition-metal complexes.`,
-      items: [
-        { num: '6.1', kind: 'Model', name: 'VSEPR model of molecular shape', deps: ['qchem-5.8'], refs: ['McQuarrie ch. 11'],
-          pic: 'Place electron domains (bonds and lone pairs) on a sphere and let them repel numerically: two, three, four, five and six domains settle into line, triangle, tetrahedron, bipyramid and octahedron, and making lone pairs bulkier squeezes the bond angles below 109.5°.' },
-        { num: '6.2', kind: 'Model', name: 'Hybrid orbitals', deps: ['qchem-2.5', 'qchem-6.1'], refs: ['McQuarrie ch. 11'],
-          pic: 'Mix an s orbital with p orbitals using a slider for the s fraction: the lobe swings and fattens, and the angle between equivalent hybrids follows cos θ = −s/(1−s), passing 180°, 120° and 109.5° at sp, sp² and sp³.' },
-        { num: '6.3', kind: 'Model', name: 'Walsh diagrams: why water is bent', deps: ['qchem-5.8', 'qchem-6.2'], refs: ['McQuarrie ch. 11'],
-          pic: 'Bend an AH₂ molecule from 180° to 90° and watch the MO energies shift; fill four or eight valence electrons and the total energy curve picks linear BeH₂ or bent H₂O.' },
-        { num: '6.4', kind: 'Model', name: 'Hückel molecular orbital theory', deps: ['qchem-4.2', 'qchem-5.5', 'ladr-7.29'], refs: ['McQuarrie ch. 11'],
-          pic: 'Draw a carbon skeleton as a graph; its adjacency matrix is diagonalized live, the π levels appear as α + xβ with the eigenvector coefficients drawn as lobes on each atom.' },
-        { num: '6.5', kind: 'Model', name: 'Ethylene, allyl and butadiene in Hückel theory', deps: ['qchem-6.4'], refs: ['McQuarrie ch. 11'],
-          pic: 'Step through chains of two, three and four carbons: the levels are 2cos(kπ/(n+1)), and the delocalization energy of butadiene is read out against two isolated double bonds.' },
-        { num: '6.6', kind: 'Phenomenon', name: 'Aromatic stabilization of benzene', deps: ['qchem-6.4'], refs: ['McQuarrie ch. 11'],
-          pic: 'Close a six-carbon chain into a ring and compare the π energy with three localized ethylenes; the extra 2β of stabilization appears, and distorting the ring into alternating bonds shows how it is lost.' },
-        { num: '6.7', kind: 'Theorem', name: 'Hückel’s 4n + 2 rule', deps: ['qchem-6.6'], refs: ['McQuarrie ch. 11'],
-          pic: 'Choose ring sizes from 3 to 10: the Frost circle (a polygon inscribed vertex-down) gives the levels, and filling electrons shows closed shells for 2, 6, 10 and half-filled degenerate pairs — antiaromatic — for 4 and 8.' },
-        { num: '6.8', kind: 'Definition', name: 'Coulson charges and π bond orders', deps: ['qchem-6.4'], refs: ['McQuarrie ch. 11'],
-          pic: 'For any Hückel molecule the occupied coefficients are summed into charges on atoms and orders on bonds, drawn as bond thickness; bond orders are plotted against measured bond lengths for a set of hydrocarbons.' },
-        { num: '6.9', kind: 'Theorem', name: 'Coulson–Rushbrooke pairing theorem', deps: ['qchem-6.4'], refs: ['McQuarrie ch. 11'],
-          pic: 'Colour the atoms of a skeleton alternately: when the graph is bipartite the levels come in ±x pairs and the charges are uniform; add an odd ring and the mirror symmetry of the spectrum breaks.' },
-        { num: '6.10', kind: 'Concept', name: 'Frontier orbitals: HOMO and LUMO', deps: ['qchem-6.4'], refs: ['McQuarrie ch. 11'],
-          pic: 'Bring a nucleophile toward different atoms of a conjugated molecule; the predicted site of attack follows the largest LUMO coefficient, shown as a heat map that changes as you edit the skeleton.' },
-        { num: '6.11', kind: 'Principle', name: 'Woodward–Hoffmann rules', deps: ['qchem-6.10', 'qchem-6.5'], refs: ['McQuarrie'],
-          pic: 'Close butadiene and hexatriene into rings by conrotation or disrotation: the orbital lobes at the termini either meet in phase or out of phase, and a thermal/photochemical toggle flips which motion is allowed.' },
-        { num: '6.12', kind: 'Model', name: 'Crystal-field splitting', deps: ['qchem-2.3', 'qchem-3.8'], refs: ['McQuarrie'],
-          pic: 'Surround a metal ion with six point charges and compute the d-orbital energies: they split into t₂g and e_g; switch to four charges in a tetrahedron and the pattern inverts and shrinks to about 4/9.' },
-        { num: '6.13', kind: 'Phenomenon', name: 'High-spin and low-spin complexes', deps: ['qchem-6.12', 'qchem-3.8'], refs: ['McQuarrie'],
-          pic: 'Slide the field strength for a d⁶ ion: electrons spread out (four unpaired) while the splitting is below the pairing energy, then collapse into the t₂g set, and the magnetic moment readout drops to zero.' },
-        { num: '6.14', kind: 'Theorem', name: 'Jahn–Teller theorem', deps: ['qchem-6.12', 'qchem-4.7'], refs: ['McQuarrie'],
-          pic: 'Stretch an octahedral Cu²⁺ complex along one axis: for a degenerate d⁹ ground state the energy falls linearly with the distortion, so the symmetric shape is never the minimum, while for d⁸ nothing is gained.' },
-        { num: '6.15', kind: 'Phenomenon', name: 'Peierls distortion and bond alternation in polyenes', deps: ['qchem-6.5', 'qchem-1.5'], refs: ['McQuarrie ch. 11'],
-          pic: 'Lengthen a polyene with equal or alternating resonance integrals: with equal bonds the HOMO–LUMO gap closes as 1/N, but alternation keeps a finite gap — which is why β-carotene is orange rather than metallic.' },
-        { num: '6.16', kind: 'Paper', name: 'The Nature of the Chemical Bond',
-          paper: { authors: 'Linus Pauling', year: 1931, title: 'The Nature of the Chemical Bond. Application of Results Obtained from the Quantum Mechanics and from a Theory of Paramagnetic Susceptibility to the Structure of Molecules', venue: 'Journal of the American Chemical Society 53 (4): 1367–1400', doi: '10.1021/ja01355a027' },
-          introduces: ['qchem-6.2'], deps: ['qchem-5.6', 'qchem-2.3', 'qchem-5.14'], refs: [],
-          pic: 'Mix one s and three p orbitals with adjustable weights: as the bond strength (Pauling’s measure, 2 for sp³ against 1.732 for a pure p orbital) is maximized, four lobes swing to the tetrahedral angle of 109.5°; switch to dsp² and get the square-planar complexes the paper predicted.' },
-        { num: '6.17', kind: 'Paper', name: 'Quantentheoretische Beiträge zum Benzolproblem',
-          paper: { authors: 'Erich Hückel', year: 1931, title: 'Quantentheoretische Beiträge zum Benzolproblem. I. Die Elektronenkonfiguration des Benzols und verwandter Verbindungen', venue: 'Zeitschrift für Physik 70 (3–4): 204–286', doi: '10.1007/BF01339530' },
-          introduces: ['qchem-6.4', 'qchem-6.6', 'qchem-6.7'], deps: ['qchem-4.2', 'qchem-5.3'], refs: [],
-          pic: 'Draw a ring of n carbon atoms and solve the Hückel determinant: levels α + 2β cos(2πk/n) fill pair by pair, closed shells and extra delocalization energy appear for 2, 6, 10, … π electrons, and the reader compares benzene with cyclobutadiene and cyclooctatetraene.' },
-        { num: '6.18', kind: 'Paper', name: 'Stereochemistry of Electrocyclic Reactions',
-          paper: { authors: 'R. B. Woodward and Roald Hoffmann', year: 1965, title: 'Stereochemistry of Electrocyclic Reactions', venue: 'Journal of the American Chemical Society 87 (2): 395–397', doi: '10.1021/ja01080a054' },
-          introduces: ['qchem-6.11'], deps: ['qchem-6.10', 'qchem-6.5', 'qchem-6.17'], refs: [],
-          pic: 'Close a substituted butadiene or hexatriene into a ring by heat or by light: the symmetry of the relevant HOMO decides whether the ends turn the same way (conrotatory) or opposite ways (disrotatory), and the reader checks the predicted cis or trans product for 4n and 4n + 2 electron systems.' },
-      ],
+      "n": 6,
+      "title": "Bonding in polyatomic molecules",
+      "summary": "Polyatomic bonding uses several models with different purposes: domain geometry, localized angular orbitals and finite π-electron Hamiltonians. Orbital filling and symmetry connect these constructions to cyclic shells, reaction selection and metal d-level splitting. Each visualization computes its declared quantities while keeping empirical geometry, interacting-electron claims and historical source access separate.",
+      "items": [
+        {
+          "num": "6.1",
+          "kind": "Model",
+          "name": "VSEPR model of molecular shape",
+          "deps": [
+            "qchem-5.8"
+          ],
+          "refs": [
+            "NPTEL, Principles of Inorganic Chemistry, module 1 lecture 2 §§1.3–1.4; independent domain optimization"
+          ],
+          "links": {
+            "source": "https://archive.nptel.ac.in/content/storage2/courses/104101006/modules/module1/lec2/1.3.html"
+          },
+          "tags": [
+            "molecular shape",
+            "domain repulsion"
+          ],
+          "pic": "Change the number and size of domains, then inspect actual accepted optimization steps. Distinguish the full domain arrangement from the attached-atom angles and compare the final energy with its force residual."
+        },
+        {
+          "num": "6.2",
+          "kind": "Model",
+          "name": "Hybrid orbitals",
+          "deps": [
+            "qchem-2.5",
+            "qchem-6.1"
+          ],
+          "refs": [
+            "Pauling (1931), selected printed pp.1376–1379; self-contained overlap derivation"
+          ],
+          "links": {
+            "source": "https://boscoh.com/pdf/pauling.pdf"
+          },
+          "tags": [
+            "hybrid orbitals",
+            "orthogonality"
+          ],
+          "pic": "Vary the s fraction of two orthogonal hybrids. Use the three exact family presets, inspect their overlap and follow the angle relation. The signed polar radius depicts an angular slice of each function."
+        },
+        {
+          "num": "6.3",
+          "kind": "Model",
+          "name": "Walsh diagrams: why water is bent",
+          "deps": [
+            "qchem-5.8",
+            "qchem-6.2"
+          ],
+          "refs": [
+            "Self-contained six-function AH₂ calculation; Walsh (1953) historical metadata only, original body not read"
+          ],
+          "tags": [
+            "Walsh diagram",
+            "orbital filling"
+          ],
+          "pic": "Bend the declared AH₂ model and switch the electron count. Compare orbital branches, the occupied total and the bounded numerical minimum while changing H–H repulsion."
+        },
+        {
+          "num": "6.4",
+          "kind": "Model",
+          "name": "Hückel molecular orbital theory",
+          "deps": [
+            "qchem-4.2",
+            "qchem-5.5",
+            "ladr-7.29"
+          ],
+          "refs": [
+            "MIT 5.61, Robert Field, Fall 2017 Lecture 26, selected PDF 1–10; independent matrix calculation"
+          ],
+          "links": {
+            "source": "https://ocw.mit.edu/courses/5-61-physical-chemistry-fall-2017/0d3d7427e4180c2e1b59bb0c09827092_MIT5_61F17_lec26.pdf"
+          },
+          "tags": [
+            "Hückel theory",
+            "graph spectra"
+          ],
+          "pic": "Switch six-site skeletons and inspect an orbital’s signed coefficients beside the actual Hamiltonian matrix. Compare graph topology, level energies and the numerical eigen residual."
+        },
+        {
+          "num": "6.5",
+          "kind": "Model",
+          "name": "Ethylene, allyl and butadiene in Hückel theory",
+          "deps": [
+            "qchem-6.4"
+          ],
+          "refs": [
+            "MIT 5.61Fall 2017 Lecture 26, selected chain treatment; independent discrete-sine derivation"
+          ],
+          "links": {
+            "source": "https://ocw.mit.edu/courses/5-61-physical-chemistry-fall-2017/0d3d7427e4180c2e1b59bb0c09827092_MIT5_61F17_lec26.pdf"
+          },
+          "tags": [
+            "conjugated chains",
+            "normal modes"
+          ],
+          "pic": "Compare two-, three- and four-site chains, choose a valid orbital and change the π charge. See exact normal modes, energies and electron occupations, including allyl’s singly occupied zero mode."
+        },
+        {
+          "num": "6.6",
+          "kind": "Phenomenon",
+          "name": "Aromatic stabilization of benzene",
+          "deps": [
+            "qchem-6.4"
+          ],
+          "refs": [
+            "MIT 5.61Fall 2017 Lecture 26, PDF 7–9; independent alternating-ring derivation"
+          ],
+          "links": {
+            "source": "https://ocw.mit.edu/courses/5-61-physical-chemistry-fall-2017/0d3d7427e4180c2e1b59bb0c09827092_MIT5_61F17_lec26.pdf"
+          },
+          "tags": [
+            "benzene",
+            "energy reference"
+          ],
+          "pic": "Alternate the ring’s hopping strengths. Follow the ring energy, the changing strong-dimer reference and their difference separately; compare them with the lowering from the uniform ring."
+        },
+        {
+          "num": "6.7",
+          "kind": "Theorem",
+          "name": "Hückel’s 4n + 2 rule",
+          "deps": [
+            "qchem-6.6"
+          ],
+          "refs": [
+            "MIT 5.61Fall 2017 Lecture 26, selected benzene and cyclic-shell argument; independent Fourier derivation"
+          ],
+          "links": {
+            "source": "https://ocw.mit.edu/courses/5-61-physical-chemistry-fall-2017/0d3d7427e4180c2e1b59bb0c09827092_MIT5_61F17_lec26.pdf"
+          },
+          "tags": [
+            "aromaticity",
+            "cyclic shells"
+          ],
+          "pic": "Choose a valid cyclic shell and compare its Frost construction with actual orbital occupations. Distinguish a closed-shell gap from a partially occupied exact degeneracy."
+        },
+        {
+          "num": "6.8",
+          "kind": "Definition",
+          "name": "Coulson charges and π bond orders",
+          "deps": [
+            "qchem-6.4"
+          ],
+          "refs": [
+            "MIT 5.61Fall 2017 Lecture 26, PDF 9–10 bond-order discussion; independent density-matrix identities"
+          ],
+          "links": {
+            "source": "https://ocw.mit.edu/courses/5-61-physical-chemistry-fall-2017/0d3d7427e4180c2e1b59bb0c09827092_MIT5_61F17_lec26.pdf"
+          },
+          "tags": [
+            "Coulson bond order",
+            "π density"
+          ],
+          "pic": "Change graph, π charge and one site energy. Inspect the full density matrix beside site populations and check both electron-count and total-charge identities."
+        },
+        {
+          "num": "6.9",
+          "kind": "Theorem",
+          "name": "Coulson–Rushbrooke pairing theorem",
+          "deps": [
+            "qchem-6.4"
+          ],
+          "refs": [
+            "Self-contained bipartite matrix proof; Coulson–Rushbrooke (1940) bibliographic metadata only"
+          ],
+          "links": {
+            "model": "https://ocw.mit.edu/courses/5-61-physical-chemistry-fall-2017/0d3d7427e4180c2e1b59bb0c09827092_MIT5_61F17_lec26.pdf"
+          },
+          "tags": [
+            "alternant hydrocarbons",
+            "spectral pairing"
+          ],
+          "pic": "Change a bipartite graph to an odd-cycle graph or add site bias. Compare the actual spectrum with its reflected partner and inspect both the input hypotheses and the anticommutator residual."
+        },
+        {
+          "num": "6.10",
+          "kind": "Concept",
+          "name": "Frontier orbitals: HOMO and LUMO",
+          "deps": [
+            "qchem-6.4"
+          ],
+          "refs": [
+            "Self-contained spectral-projector and two-state derivation; modern Hückel setup from MIT 5.61Fall 2017Lecture 26"
+          ],
+          "links": {
+            "source": "https://ocw.mit.edu/courses/5-61-physical-chemistry-fall-2017/0d3d7427e4180c2e1b59bb0c09827092_MIT5_61F17_lec26.pdf"
+          },
+          "tags": [
+            "frontier orbitals",
+            "spectral projector"
+          ],
+          "pic": "Choose an acceptor and valid coupling site. Compare the LUMO projector weights, exact donor lowering and weak-coupling estimate, including the benzene degeneracy."
+        },
+        {
+          "num": "6.11",
+          "kind": "Principle",
+          "name": "Woodward–Hoffmann rules",
+          "deps": [
+            "qchem-6.10",
+            "qchem-6.5"
+          ],
+          "refs": [
+            "Timothy F. Jamison, MIT 5.13 Organic Chemistry II, October 17, 2003 Lecture 16, complete one-page handout; independent phase/expectation calculation"
+          ],
+          "links": {
+            "source": "https://ocw.mit.edu/courses/5-13-organic-chemistry-ii-fall-2003/49cdb778f30678b8d5519e9ade744f15_lec16_handout.pdf"
+          },
+          "tags": [
+            "orbital symmetry",
+            "electrocyclic reactions"
+          ],
+          "pic": "Switch four and six π electrons, change the initial occupation and compare conrotatory with disrotatory motion. Inspect terminal phase geometry and the actual initial-density expectation."
+        },
+        {
+          "num": "6.12",
+          "kind": "Model",
+          "name": "Crystal-field splitting",
+          "deps": [
+            "qchem-2.3",
+            "qchem-3.8"
+          ],
+          "refs": [
+            "Drennan/Taylor, MIT 5.111Fall 2008 Lecture Summary 28, complete handout and PDF 5 figure; independent exact angular projection"
+          ],
+          "links": {
+            "source": "https://ocw.mit.edu/courses/5-111-principles-of-chemical-science-fall-2008/c1c824f9d56c6b89055adfa31d7a2c82_lecnotes28.pdf"
+          },
+          "tags": [
+            "crystal field",
+            "angular projection"
+          ],
+          "pic": "Switch octahedral and tetrahedral point ligands and vary their common radius. Follow the computed d-level pattern, its zero trace and R⁻⁵ splitting."
+        },
+        {
+          "num": "6.13",
+          "kind": "Phenomenon",
+          "name": "High-spin and low-spin complexes",
+          "deps": [
+            "qchem-6.12",
+            "qchem-3.8"
+          ],
+          "refs": [
+            "MIT 5.111Fall 2008 Lecture Summary 28, field-versus-pairing discussion; independent full occupation enumeration"
+          ],
+          "links": {
+            "source": "https://ocw.mit.edu/courses/5-111-principles-of-chemical-science-fall-2008/c1c824f9d56c6b89055adfa31d7a2c82_lecnotes28.pdf"
+          },
+          "tags": [
+            "spin crossover",
+            "pairing energy"
+          ],
+          "pic": "Vary octahedral splitting and pairing cost. Inspect the ground occupations and their possible unpaired counts, especially the nonunique crossing, against the two candidate energy curves."
+        },
+        {
+          "num": "6.14",
+          "kind": "Theorem",
+          "name": "Jahn–Teller theorem",
+          "deps": [
+            "qchem-6.12",
+            "qchem-4.7"
+          ],
+          "refs": [
+            "MIT 5.73 Introductory Quantum Mechanics I Fall 2005, problem set 7 solutions, selected scientific text and PDF 3–4; independent E⊗e diagonalization"
+          ],
+          "links": {
+            "source": "https://ocw.mit.edu/courses/5-73-introductory-quantum-mechanics-i-fall-2005/2842546132cb04e435063e18ade2d2fb_s7.pdf"
+          },
+          "tags": [
+            "Jahn–Teller",
+            "vibronic coupling"
+          ],
+          "pic": "Change coupling and elasticity, then move around the lower potential surface. Compare a selected distortion with the computed radial branches, minimum radius and energy lowering."
+        },
+        {
+          "num": "6.15",
+          "kind": "Phenomenon",
+          "name": "Peierls distortion and bond alternation in polyenes",
+          "deps": [
+            "qchem-6.5",
+            "qchem-1.5"
+          ],
+          "refs": [
+            "Self-contained alternating-chain Bloch and finite-matrix derivation; Hückel setup from MIT 5.61Fall 2017Lecture 26"
+          ],
+          "links": {
+            "model": "https://ocw.mit.edu/courses/5-61-physical-chemistry-fall-2017/0d3d7427e4180c2e1b59bb0c09827092_MIT5_61F17_lec26.pdf"
+          },
+          "tags": [
+            "Peierls distortion",
+            "finite-size gap"
+          ],
+          "pic": "Alternate hopping, change finite size and switch boundaries. Compare the actual finite gap with 4tδ while reading electronic energy and the separate elastic cost."
+        },
+        {
+          "num": "6.16",
+          "kind": "Paper",
+          "name": "The Nature of the Chemical Bond",
+          "paper": {
+            "authors": "Linus Pauling",
+            "year": 1931,
+            "title": "The Nature of the Chemical Bond. Application of Results Obtained from the Quantum Mechanics and from a Theory of Paramagnetic Susceptibility to the Structure of Molecules",
+            "venue": "Journal of the American Chemical Society 53 (4): 1367–1400",
+            "doi": "10.1021/ja01355a027"
+          },
+          "introduces": [
+            "qchem-6.2"
+          ],
+          "deps": [
+            "qchem-5.6",
+            "qchem-2.3",
+            "qchem-5.14"
+          ],
+          "refs": [
+            "Pauling (1931), selected original scan passages as scoped; independent Gram and Cauchy–Schwarz calculations"
+          ],
+          "links": {
+            "source": "https://boscoh.com/pdf/pauling.pdf"
+          },
+          "tags": [
+            "Pauling (1931)",
+            "directional orbitals"
+          ],
+          "pic": "Switch the canonical tetrahedral and square-planar angular quartets, then rotate two hybrids orthogonally. Inspect the Gram matrix and directional amplitudes while the total angular density stays invariant."
+        },
+        {
+          "num": "6.17",
+          "kind": "Paper",
+          "name": "Quantentheoretische Beiträge zum Benzolproblem",
+          "paper": {
+            "authors": "Erich Hückel",
+            "year": 1931,
+            "title": "Quantentheoretische Beiträge zum Benzolproblem. I. Die Elektronenkonfiguration des Benzols und verwandter Verbindungen",
+            "venue": "Zeitschrift für Physik 70 (3–4): 204–286",
+            "doi": "10.1007/BF01339530"
+          },
+          "introduces": [
+            "qchem-6.4",
+            "qchem-6.6",
+            "qchem-6.7"
+          ],
+          "deps": [
+            "qchem-4.2",
+            "qchem-5.3"
+          ],
+          "refs": [
+            "Hückel (1931) historical bibliography; original body not read",
+            "MIT 5.61Fall 2017Lecture 26, selected PDF 1–10; independent finite graph experiment"
+          ],
+          "links": {
+            "model": "https://ocw.mit.edu/courses/5-61-physical-chemistry-fall-2017/0d3d7427e4180c2e1b59bb0c09827092_MIT5_61F17_lec26.pdf"
+          },
+          "tags": [
+            "Hückel (1931)",
+            "ring closure"
+          ],
+          "pic": "Close neutral four-, six-, eight- and ten-site skeletons. Compare the actual occupied energy, finite frontier status, open-chain shift and isolated-dimer reference."
+        },
+        {
+          "num": "6.18",
+          "kind": "Paper",
+          "name": "Stereochemistry of Electrocyclic Reactions",
+          "paper": {
+            "authors": "R. B. Woodward and Roald Hoffmann",
+            "year": 1965,
+            "title": "Stereochemistry of Electrocyclic Reactions",
+            "venue": "Journal of the American Chemical Society 87 (2): 395–397",
+            "doi": "10.1021/ja01080a054"
+          },
+          "introduces": [
+            "qchem-6.11"
+          ],
+          "deps": [
+            "qchem-6.10",
+            "qchem-6.5",
+            "qchem-6.17"
+          ],
+          "refs": [
+            "Woodward–Hoffmann (1965) historical bibliography; original body not read",
+            "Jamison, MIT 5.13 Organic Chemistry II, October 17, 2003 Lecture 16, complete handout; independent phase calculation"
+          ],
+          "links": {
+            "model": "https://ocw.mit.edu/courses/5-13-organic-chemistry-ii-fall-2003/49cdb778f30678b8d5519e9ade744f15_lec16_handout.pdf"
+          },
+          "tags": [
+            "Woodward–Hoffmann (1965)",
+            "orbital symmetry"
+          ],
+          "pic": "Choose four or six electrons and rotate the two ends independently. Compare the initial frontier amplitudes, facing phases and complete-density expectation, then recover the conrotatory and disrotatory limits."
+        }
+      ]
     },
     // ───────────────────────────────────────────────────────────── 7
     {

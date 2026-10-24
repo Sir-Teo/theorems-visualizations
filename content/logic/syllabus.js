@@ -428,35 +428,170 @@ export default {
     },
     // ───────────────────────────────────────────────────────────── 8
     {
-      n: 8,
-      title: 'Axiomatic set theory',
-      summary: String.raw`Zermelo–Fraenkel set theory avoids the paradoxes by letting sets be formed only by specific operations: pairing, union, power set, and carving subsets out of sets already known. From these axioms and the axiom of infinity one builds the natural numbers, ordered pairs, functions and eventually all of ordinary mathematics. Foundation says every set is built in stages from the empty set.`,
-      items: [
-        { num: '8.1', kind: 'Postulate', name: 'Extensionality, pairing, union and power set', deps: ['logic-1.6'], refs: ['Kunen Ch. I'],
-          pic: 'Sets drawn as nested boxes: apply pairing, union and power set to small sets and see the results, with extensionality merging boxes that have identical contents.' },
-        { num: '8.2', kind: 'Postulate', name: 'Separation and replacement schemas', deps: ['logic-8.1', 'logic-3.4'], refs: ['Kunen Ch. I'],
-          pic: 'Pick a set and a formula to carve out a subset (separation), or a definable operation to apply elementwise (replacement); the result is computed and shown to stay inside the universe of sets.' },
-        { num: '8.3', kind: 'Theorem', name: 'There is no set of all sets', deps: ['logic-8.2', 'logic-1.6'], refs: ['Kunen Ch. I'],
-          pic: 'Given any set A you build, separation forms {x ∈ A : x ∉ x}, and the checker proves this new set is not a member of A — so A could never have contained everything.' },
-        { num: '8.4', kind: 'Definition', name: 'Ordered pairs, relations and functions as sets', deps: ['logic-8.1'], refs: ['Kunen Ch. I'],
-          pic: 'The Kuratowski pair {{a},{a,b}} is drawn as nested boxes; swap a and b and the boxes change unless a = b, and a function appears as a set of pairs with one pair per input.' },
-        { num: '8.5', kind: 'Postulate', name: 'Infinity and the von Neumann natural numbers', deps: ['logic-8.1'], refs: ['Kunen Ch. I'],
-          pic: 'Build 0 = ∅, 1 = {0}, 2 = {0, 1}, … as nested boxes; each number is literally the set of smaller numbers, and the successor operation adds one more box.' },
-        { num: '8.6', kind: 'Definition', name: 'Transitive sets', deps: ['logic-8.1'], refs: ['Kunen Ch. I'],
-          pic: 'Draw a membership diagram; the checker tests whether every member’s members are already members, and offers the transitive closure that would make it so.' },
-        { num: '8.7', kind: 'Postulate', name: 'Axiom of foundation', deps: ['logic-8.1'], refs: ['Kunen Ch. III'],
-          pic: 'Draw membership arrows among a few sets; for each nonempty collection the checker finds an ∈-minimal element, and an attempt to draw x ∈ x or an infinite descending chain is rejected.' },
-        { num: '8.8', kind: 'Definition', name: 'Classes versus sets', deps: ['logic-8.3'], refs: ['Kunen Ch. I'],
-          pic: 'Formulas define collections; the tool sorts examples (all sets, all ordinals, all singletons, the subsets of ω) into sets and proper classes, with the Russell-style argument shown for each proper class.' },
-        { num: '8.9', kind: 'Proposition', name: 'Building ℕ, ℤ, ℚ and ℝ inside set theory', deps: ['logic-8.5', 'logic-8.4', 'pma-1.19'], refs: ['Kunen Ch. I'],
-          pic: 'Follow one number through the tower: integers as classes of pairs of naturals, rationals as classes of pairs of integers, reals as Dedekind cuts; a cut for √2 is drawn on the rational line.' },
-        { num: '8.10', kind: 'Definition', name: 'Hereditarily finite sets and Ackermann coding', deps: ['logic-8.5', 'logic-8.7'], refs: ['Kunen Ch. III'],
-          pic: 'Each natural number codes a hereditarily finite set through its binary digits; toggle bits and the nested-box picture updates, so membership becomes “the k-th bit is 1”.' },
-        { num: '8.11', kind: 'Paper', name: 'Untersuchungen über die Grundlagen der Mengenlehre I',
-          paper: { authors: 'E. Zermelo', year: 1908, title: 'Untersuchungen über die Grundlagen der Mengenlehre. I', venue: 'Mathematische Annalen 65 (2): 261–281', doi: '10.1007/BF01449999' },
-          introduces: ['logic-8.1', 'logic-8.2', 'logic-8.3'], deps: ['logic-1.6', 'logic-11.2'], refs: [],
-          pic: 'Zermelo’s seven axioms as switches: the reader builds sets from ∅ by pairing, union, power set and separation, and the universe grows level by level; switch Separation back to unrestricted comprehension and Russell’s {x : x ∉ x} is formed and the contradiction lights up, while with the axioms on Zermelo’s argument shows every set has a subset that is not a member — so there is no set of all sets.' },
-      ],
+      "n": 8,
+      "title": "Axiomatic set theory",
+      "summary": "Set formation needs explicit licenses. The Zermelo–Fraenkel axioms support ordered pairs, natural numbers and the usual number systems while excluding a universal set. Exact finite examples illustrate these constructions; the accompanying arguments explain assertions no finite picture can establish. The final lesson returns to Zermelo’s actual 1908 axioms.",
+      "items": [
+        {
+          "num": "8.1",
+          "kind": "Postulate",
+          "name": "Extensionality, pairing, union and power set",
+          "deps": [
+            "logic-1.6"
+          ],
+          "refs": [
+            "Open Logic Project, Set Theory: An Open Introduction, F21 remix, §§2.1, 9.1–9.6, printed pp.14–15,119–125"
+          ],
+          "pic": "Select a construction and small input sets. Labels $h_n$ name the hereditarily finite set with code $n$; they are not von Neumann numerals. Compare membership, then inspect the exact output."
+        },
+        {
+          "num": "8.2",
+          "kind": "Postulate",
+          "name": "Separation and replacement schemas",
+          "deps": [
+            "logic-8.1",
+            "logic-3.4"
+          ],
+          "refs": [
+            "Open Logic Project, Set Theory: An Open Introduction, §§9.2,10.7, printed pp.120–122,143–144"
+          ],
+          "pic": "Filter a finite set by a chosen predicate, or map each member to its singleton or union. Try the two-output relation and locate the failed uniqueness premise."
+        },
+        {
+          "num": "8.3",
+          "kind": "Theorem",
+          "name": "There is no set of all sets",
+          "deps": [
+            "logic-8.2",
+            "logic-1.6"
+          ],
+          "refs": [
+            "Open Logic Project, Set Theory: An Open Introduction, Theorem 9.1, printed pp.120–121; Zermelo 1908, Theorem 10, pp.264–265"
+          ],
+          "pic": "Change the finite example and inspect the two possible self-membership values under the proposed hypothesis. The truth constraints show why the hypothesis cannot hold."
+        },
+        {
+          "num": "8.4",
+          "kind": "Definition",
+          "name": "Ordered pairs, relations and functions as sets",
+          "deps": [
+            "logic-8.1",
+            "logic-8.2"
+          ],
+          "refs": [
+            "Open Logic Project, Set Theory: An Open Introduction, §§2.5,3.1,4.3,9.6, printed pp.22–23,27–28,44–45,125"
+          ],
+          "pic": "Change the two coordinates and compare the nested membership levels. Switch the relation between a function, a missing input and conflicting outputs."
+        },
+        {
+          "num": "8.5",
+          "kind": "Postulate",
+          "name": "Infinity and the von Neumann natural numbers",
+          "deps": [
+            "logic-8.1",
+            "logic-8.2"
+          ],
+          "refs": [
+            "Open Logic Project, Set Theory: An Open Introduction, §§9.7–9.8, printed pp.126–129"
+          ],
+          "pic": "Grow a finite prefix and select a number. The membership matrix shows its predecessors and the next successor missing from the prefix."
+        },
+        {
+          "num": "8.6",
+          "kind": "Definition",
+          "name": "Transitive sets",
+          "deps": [
+            "logic-8.1",
+            "logic-8.2",
+            "logic-8.5"
+          ],
+          "refs": [
+            "Open Logic Project, Set Theory: An Open Introduction, Definition 10.13 and §11.4, printed pp.138,155–156"
+          ],
+          "pic": "Choose a hereditarily finite set, inspect its membership arrows and add the members forced by transitivity. Compare each stage with the final closure."
+        },
+        {
+          "num": "8.7",
+          "kind": "Postulate",
+          "name": "Axiom of foundation",
+          "deps": [
+            "logic-8.1"
+          ],
+          "refs": [
+            "Open Logic Project, Set Theory: An Open Introduction, §§11.4–11.5, printed pp.155–158; the text distinguishes its rank-coverage “Regularity” formulation from Foundation"
+          ],
+          "pic": "Edit membership arrows among four labelled vertices. Inspect all 15 nonempty subsets and a witness when no minimal vertex exists. The separate extensionality check catches labels with identical members."
+        },
+        {
+          "num": "8.8",
+          "kind": "Definition",
+          "name": "Classes versus sets",
+          "deps": [
+            "logic-8.3",
+            "logic-8.5",
+            "logic-8.6"
+          ],
+          "refs": [
+            "Open Logic Project, Set Theory: An Open Introduction, §§9.2,10.5–10.7, Theorem 10.20, printed pp.120–121,138–144; finite-stage construction derived here"
+          ],
+          "pic": "Compare five named collections and their proofs. Increase the finite sample of hereditarily finite objects; observe that a finite sample cannot decide whether the full collection is a set."
+        },
+        {
+          "num": "8.9",
+          "kind": "Proposition",
+          "name": "Building ℕ, ℤ, ℚ and ℝ inside set theory",
+          "deps": [
+            "logic-8.5",
+            "logic-8.4",
+            "logic-8.2",
+            "pma-1.19"
+          ],
+          "refs": [
+            "Open Logic Project, Set Theory: An Open Introduction, §§6.1–6.6, printed pp.73–88; PMA 1.19, actual written cut construction"
+          ],
+          "pic": "Switch between finite ordinals, integer representatives, rational representatives and sampled cuts. Equivalent pairs are highlighted using exact integer equalities; cut membership uses exact comparisons."
+        },
+        {
+          "num": "8.10",
+          "kind": "Definition",
+          "name": "Hereditarily finite sets and Ackermann coding",
+          "deps": [
+            "logic-8.5",
+            "logic-8.7"
+          ],
+          "refs": [
+            "Paul Tarau, A Functional Hitchhiker’s Guide to Hereditarily Finite Sets, Ackermann Encodings and Pairing Functions, arXiv:0808.0754v1, unpublished draft, 6 August 2008, §3.1, pp.2–3; independent pure-set implementation"
+          ],
+          "pic": "Choose a code or flip a selected bit. Watch the corresponding member enter or leave, and inspect the shared membership diagram and the exact decode–encode check."
+        },
+        {
+          "num": "8.11",
+          "kind": "Paper",
+          "name": "Untersuchungen über die Grundlagen der Mengenlehre I",
+          "paper": {
+            "authors": "E. Zermelo",
+            "year": 1908,
+            "title": "Untersuchungen über die Grundlagen der Mengenlehre. I",
+            "venue": "Mathematische Annalen 65 (2): 261–281",
+            "doi": "10.1007/BF01449999"
+          },
+          "introduces": [
+            "logic-8.1",
+            "logic-8.2",
+            "logic-8.3"
+          ],
+          "deps": [
+            "logic-8.1",
+            "logic-8.2",
+            "logic-8.3",
+            "logic-8.5"
+          ],
+          "refs": [
+            "Zermelo, original 1908 German text, Mathematische Annalen 65, pp.261–269, especially axioms I–VII and Theorem 10, pp.263–267; GDZ digitized journal scans"
+          ],
+          "pic": "Inspect the seven historical axioms and the direct licenses used by selected recipes. Compare finite singleton stages and a finite choice example with the contradictory condition of unrestricted comprehension."
+        }
+      ]
     },
     // ───────────────────────────────────────────────────────────── 9
     {

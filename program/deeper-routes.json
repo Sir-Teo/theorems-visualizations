@@ -1,8 +1,8 @@
 {
   "schemaVersion": 1,
   "version": "1.0.0",
-  "legacySnapshot": "2b156195a22cf85186b8b40fb6c35b8966a478a0c46da155a742b498907c2685",
-  "introductorySha256": "c17b80ef71ac6744a97fee282a3fcdd1c1c49f0e3b44fbab72b821d5319fbf8d",
+  "legacySnapshot": "ec3f27e836ca57bcd83d0e788de47fc0de71bacd5af36c55a8566167886dae93",
+  "introductorySha256": "5d685a7dadf8b078b88e126ee431c506cd0cdfcbbe99bfee339dc2dcacdf4231",
   "scope": "Thirty curated extensions with exact accepted targets and computed prerequisite paths. Method-focused links for underrepresented fields are explicitly bounded; no complete field syllabus is claimed.",
   "routes": [
     {

@@ -228,29 +228,200 @@ export default {
     // ───────────────────────────────────────────────────────────── 7
     {
       n: 7,
-      title: 'Infinite width: Gaussian processes and kernels',
-      summary: String.raw`As the width of a randomly initialized network grows, its output at any finite set of inputs becomes jointly Gaussian, so the network prior is a Gaussian process. Under the standard parametrization, training then barely moves the weights: the network stays close to its linearization, governed by a fixed neural tangent kernel, and gradient descent reduces to kernel regression with a spectral bias toward smooth functions. Other parametrizations keep features learning in the limit — the mean-field picture of two-layer networks and the maximal-update parametrization that lets hyperparameters transfer across widths.`,
+      title: "Infinite width: Gaussian processes and kernels",
+      summary: "Random initialization can converge to a Gaussian process while training, under a different set of assumptions, follows a nearly fixed tangent kernel. Finite matrix formulas expose the role of initialization and the kernel spectrum. Random features, moving neuron distributions and maximal-update scaling show what changes when features are approximated or allowed to learn.",
       items: [
-        { num: '7.1', kind: 'Theorem', name: 'Wide random networks are Gaussian processes', deps: ['deep-1.3', 'stat-1.19'], refs: ['Prince §20'],
-          pic: 'Thousands of random shallow networks of growing width are sampled and their outputs at two inputs scattered: the cloud becomes a bivariate normal ellipse whose covariance matches the limiting kernel.' },
-        { num: '7.2', kind: 'Method', name: 'Gaussian process regression', deps: ['deep-7.1', 'stat-10.6'], refs: ['Prince §8'],
-          pic: 'Click to add observations: the posterior mean and 95% band of a Gaussian process with the network-limit kernel update instantly, pinching at the data and widening between them.' },
-        { num: '7.3', kind: 'Definition', name: 'Neural tangent kernel', deps: ['deep-3.3', 'deep-7.1'], refs: ['Prince §20'],
-          pic: 'For a chosen network, the inner products of parameter gradients at pairs of inputs are drawn as a kernel heat map; at large width, different random seeds give nearly identical maps.' },
-        { num: '7.4', kind: 'Theorem', name: 'Lazy training: the NTK freezes at infinite width', deps: ['deep-7.3', 'pma-5.15'], refs: ['Prince §20'],
-          pic: 'Networks of growing width are trained and the relative change of their weights and of their NTK is tracked; both shrink like 1/√width, so wide networks stay close to their linearization.' },
-        { num: '7.5', kind: 'Theorem', name: 'Wide-network training is kernel regression', deps: ['deep-7.4', 'deep-6.11'], refs: ['Prince §20'],
-          pic: 'The function learned by a very wide trained network is overlaid with kernel regression using its NTK: the curves coincide, while a narrow network departs visibly from the kernel prediction.' },
-        { num: '7.6', kind: 'Method', name: 'Random features (random Fourier features)', deps: ['fa-11.33', 'rca-9.1'], refs: ['Prince §8'],
-          pic: 'A Gaussian kernel is approximated by averaging cosines with random frequencies drawn from its Fourier transform; the maximum error of the approximate kernel matrix falls like 1/√D as features are added.' },
-        { num: '7.7', kind: 'Phenomenon', name: 'Spectral bias toward low frequencies', deps: ['deep-7.5'], refs: ['Prince §20'],
-          pic: 'A target made of low- and high-frequency sines is fitted while the Fourier amplitudes of the network output are tracked: low frequencies are learned first, in the order of the kernel’s eigenvalues.' },
-        { num: '7.8', kind: 'Concept', name: 'Lazy versus feature learning', deps: ['deep-7.4'], refs: ['Prince §20'],
-          pic: 'Scale the network’s output multiplier: in the lazy regime hidden representations barely move and the kernel is frozen, in the rich regime the first-layer features visibly rotate toward the target’s relevant direction.' },
-        { num: '7.9', kind: 'Theorem', name: 'Mean-field limit of two-layer networks', deps: ['deep-7.8'], refs: ['Prince §20'],
-          pic: 'Each hidden unit is a particle in (input weight, output weight) space; as width grows, the particle cloud trained by gradient descent follows a smooth density flow that is reproducible across seeds.' },
-        { num: '7.10', kind: 'Concept', name: 'Maximal-update parametrization and transfer', deps: ['deep-7.8', 'deep-5.2'], refs: ['Prince §20'],
-          pic: 'The learning rate is swept for widths 64 to 4096: under the standard parametrization the optimal rate drifts with width, while under μP the loss-versus-rate curves line up at the same optimum.' },
+        {
+          "num": "7.1",
+          "kind": "Theorem",
+          "name": "Wide random networks are Gaussian processes",
+          "deps": [
+            "deep-1.3",
+            "prob-3.10.7",
+            "stat-1.19",
+            "prob-2.1.21",
+            "prob-7.1.3"
+          ],
+          "refs": [
+            "Jacot–Gabriel–Hongler 2018, §4 Proposition 1; shallow sine covariance and CLT proof supplied here"
+          ],
+          "tags": [
+            "Gaussian process",
+            "infinite width"
+          ],
+          "pic": "Sample independent networks and compare their two-input cloud and a one-dimensional projection with the limiting Gaussian. Change width, seed and inputs, including coincident inputs. Covariance has a Monte Carlo standard error; Gaussian shape is a separate assertion."
+        },
+        {
+          "num": "7.2",
+          "kind": "Method",
+          "name": "Gaussian process regression",
+          "deps": [
+            "deep-7.1",
+            "stat-1.19",
+            "stat-2.1"
+          ],
+          "refs": [
+            "Rasmussen–Williams 2006, chapter 2 Eqs 2.18–2.27, Algorithm 2.1 and noisy-future discussion"
+          ],
+          "see": [
+            "stat-10.6"
+          ],
+          "tags": [
+            "Gaussian process",
+            "conditioning"
+          ],
+          "pic": "Click to add labels to the network-limit GP, remove observations or change noise. Compare latent and future-observation intervals and inspect prior/posterior variances. Repeated inputs remain valid because observation noise stays positive."
+        },
+        {
+          "num": "7.3",
+          "kind": "Definition",
+          "name": "Neural tangent kernel",
+          "deps": [
+            "deep-3.3",
+            "deep-7.1",
+            "prob-2.2.3"
+          ],
+          "refs": [
+            "Jacot–Gabriel–Hongler 2018, §§2–4 and Theorem 1; supplied shallow-model calculation"
+          ],
+          "tags": [
+            "tangent kernel",
+            "gradient flow"
+          ],
+          "pic": "Inspect an actual finite gradient Gram matrix at five inputs. Compare its infinite-width limit or their signed difference; change the random seed and width. Color scales and the smallest Gram eigenvalue are reported explicitly."
+        },
+        {
+          "num": "7.4",
+          "kind": "Theorem",
+          "name": "Lazy training: the NTK freezes at infinite width",
+          "deps": [
+            "deep-7.3",
+            "ode-2.4",
+            "ode-2.5"
+          ],
+          "refs": [
+            "Jacot–Gabriel–Hongler 2018, §4 Theorem 2; finite-horizon shallow sine proof supplied here"
+          ],
+          "tags": [
+            "lazy training",
+            "infinite width"
+          ],
+          "pic": "Actually train networks of several widths with RK4. Compare them with exact frozen empirical-kernel flow and inspect kernel drift, the largest neuron displacement and the total displacement separately. Edit training labels and vary the fixed time horizon."
+        },
+        {
+          "num": "7.5",
+          "kind": "Theorem",
+          "name": "Wide-network training is kernel regression",
+          "deps": [
+            "deep-7.4",
+            "ladr-7.29"
+          ],
+          "refs": [
+            "Jacot–Gabriel–Hongler 2018, §5 least-squares flow; initialized finite-matrix derivation supplied here"
+          ],
+          "see": [
+            "deep-6.11",
+            "deep-7.2"
+          ],
+          "tags": [
+            "kernel regression",
+            "initialization"
+          ],
+          "pic": "Change time and switch between a random initial function and zero. Edit the training labels; the exact flow and signed residual coefficients update. Duplicate inputs can create a null mode, and conflicting duplicate labels cannot both be fitted."
+        },
+        {
+          "num": "7.6",
+          "kind": "Method",
+          "name": "Random features (random Fourier features)",
+          "deps": [
+            "stat-1.19",
+            "prob-2.2.3"
+          ],
+          "refs": [
+            "Rahimi–Recht 2007, §3 sine/cosine feature construction; exact Gaussian variance supplied here"
+          ],
+          "see": [
+            "fa-11.33",
+            "rca-9.1"
+          ],
+          "tags": [
+            "random features",
+            "kernel approximation"
+          ],
+          "pic": "Approximate the Gaussian kernel with actual nested frequency samples. Compare realized grid RMSE and maximum error with the square root of expected grid MSE. Change length scale and seed to see that random error paths can rise."
+        },
+        {
+          "num": "7.7",
+          "kind": "Phenomenon",
+          "name": "Spectral bias toward low frequencies",
+          "deps": [
+            "deep-7.5"
+          ],
+          "refs": [
+            "Jacot–Gabriel–Hongler 2018, §5 kernel eigenmode rates; periodic counterexample supplied here"
+          ],
+          "tags": [
+            "spectral bias",
+            "kernel eigenvalues"
+          ],
+          "pic": "Fit a three-frequency target with an exact periodic kernel flow. Reverse the spectrum and watch which relative amplitude rises first; compare the learned function and exact integrated error."
+        },
+        {
+          "num": "7.8",
+          "kind": "Concept",
+          "name": "Lazy versus feature learning",
+          "deps": [
+            "deep-7.4",
+            "pma-5.15"
+          ],
+          "refs": [
+            "Chizat–Oyallon–Bach 2019, Assumption 2.1 and Theorems 2.2–2.3; centered sine experiment supplied here"
+          ],
+          "tags": [
+            "lazy training",
+            "feature learning"
+          ],
+          "pic": "Keep width 32 fixed and change alpha. Train the centered nonlinear model and compare it with the same frozen-kernel flow; the second panel tracks each hidden input weight and bias from initialization. Edit labels to change what is being learned."
+        },
+        {
+          "num": "7.9",
+          "kind": "Theorem",
+          "name": "Mean-field limit of two-layer networks",
+          "deps": [
+            "deep-7.8",
+            "ode-2.4",
+            "ode-2.5",
+            "prob-2.2.3"
+          ],
+          "refs": [
+            "Mei–Misiakiewicz–Montanari 2019, §§1–2 and Theorem 1 for context; bounded-feature deterministic coupling theorem proved here"
+          ],
+          "tags": [
+            "mean field",
+            "particle dynamics"
+          ],
+          "pic": "Train actual particles and compare their average prediction with a 512-particle numerical run from the same nested initial sample. Track positions, edit labels and vary width/time. The comparison is finite; the particles remain atoms."
+        },
+        {
+          "num": "7.10",
+          "kind": "Concept",
+          "name": "Maximal-update parametrization and transfer",
+          "deps": [
+            "deep-7.8",
+            "deep-5.2"
+          ],
+          "refs": [
+            "Yang et al., Tensor Programs V, NeurIPS 2021 version, PDF p.5 Table 3 and Eqs 3–4; shallow finite SGD experiment supplied here"
+          ],
+          "see": [
+            "deep-7.9"
+          ],
+          "tags": [
+            "parameterization",
+            "hyperparameter transfer"
+          ],
+          "pic": "Sweep 11 base rates at four widths using actual full-batch SGD. Switch parameterization, change seed or step count and inspect a selected run. Add labels in the second panel; all validation curves are recomputed from those observations."
+        }
       ],
     },
     // ───────────────────────────────────────────────────────────── 8

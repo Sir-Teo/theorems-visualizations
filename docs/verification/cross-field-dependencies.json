@@ -4147,14 +4147,14 @@
           "prerequisite": "pde-6.6",
           "prerequisiteField": "math",
           "itemWritten": false,
-          "prerequisiteWritten": false
+          "prerequisiteWritten": true
         },
         {
           "item": "em-13.3",
           "prerequisite": "pde-6.9",
           "prerequisiteField": "math",
           "itemWritten": false,
-          "prerequisiteWritten": false
+          "prerequisiteWritten": true
         }
       ]
     },
@@ -4162,7 +4162,7 @@
       "collection": "waves",
       "field": "physics",
       "target": 25,
-      "writtenToWritten": 27,
+      "writtenToWritten": 29,
       "writtenToKnown": 33,
       "wholeSyllabus": 40,
       "publishedShortfall": 0,
@@ -4180,14 +4180,14 @@
           "prerequisite": "pde-6.10",
           "prerequisiteField": "math",
           "itemWritten": true,
-          "prerequisiteWritten": false
+          "prerequisiteWritten": true
         },
         {
           "item": "waves-1.13",
           "prerequisite": "pde-6.5",
           "prerequisiteField": "math",
           "itemWritten": true,
-          "prerequisiteWritten": false
+          "prerequisiteWritten": true
         },
         {
           "item": "waves-1.1",
@@ -4767,7 +4767,7 @@
       "collection": "qm",
       "field": "physics",
       "target": 25,
-      "writtenToWritten": 28,
+      "writtenToWritten": 29,
       "writtenToKnown": 31,
       "wholeSyllabus": 46,
       "publishedShortfall": 0,
@@ -4799,7 +4799,7 @@
           "prerequisite": "pde-6.8",
           "prerequisiteField": "math",
           "itemWritten": true,
-          "prerequisiteWritten": false
+          "prerequisiteWritten": true
         },
         {
           "item": "qm-2.3",
@@ -6046,7 +6046,7 @@
           "prerequisite": "pde-6.3",
           "prerequisiteField": "math",
           "itemWritten": false,
-          "prerequisiteWritten": false
+          "prerequisiteWritten": true
         }
       ]
     },
@@ -8515,7 +8515,7 @@
           "prerequisite": "pde-6.1",
           "prerequisiteField": "math",
           "itemWritten": false,
-          "prerequisiteWritten": false
+          "prerequisiteWritten": true
         },
         {
           "item": "geol-7.3",

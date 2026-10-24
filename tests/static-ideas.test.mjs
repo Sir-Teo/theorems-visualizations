@@ -44,9 +44,9 @@ test('degree-spacing normalization renders both original failed expressions with
 test('builder refuses absent, existing and source-checkout output directories before writes',async()=>{
  await assert.rejects(buildStaticIdeas(),/explicit/);await assert.rejects(buildStaticIdeas({out:ROOT}),/outside/);await assert.rejects(buildStaticIdeas({out:'/tmp'}),/exists/);await assert.rejects(buildStaticIdeas({out:join(ROOT,'reading-output')}),/outside/);
 });
-test('real 7,751-item accepted freeze matches unchanged authoritative content',async()=>{
+test('real 8,321-item merged reading freeze matches the reconciled source',async()=>{
  const m=JSON.parse(await readFile(join(ROOT,'static-pages/accepted.json'),'utf8')),selected=selectFrozenIdeas(await loadAll(),m);
- assert.equal(selected.selected.length,7751);assert.equal(selected.aliases.length,76);assert.ok(!selected.selected.some(p=>p.item.id.startsWith('x-')));
+ assert.equal(selected.selected.length,8321);assert.equal(selected.aliases.length,76);assert.ok(!selected.selected.some(p=>p.item.id.startsWith('x-')));
 });
 test('copied data binding ignores only generation timestamps and rejects stale fields or extra files',async()=>{
  const dir=await mkdtemp(join(tmpdir(),'atlas-static-data-'));

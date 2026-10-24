@@ -425,39 +425,186 @@ export default {
       ]
     },
     {
-      n: 6,
-      title: 'Phase diagrams of mixtures',
-      summary: String.raw`With more than one component, the Gibbs phase rule counts how many variables can change while phases coexist. Binary liquid–vapour diagrams explain distillation and azeotropes, partially miscible liquids show upper and lower critical solution temperatures, and solid–liquid diagrams show eutectics and compounds. The lever rule reads phase amounts off a tie line, and the common-tangent construction on the Gibbs energy curve explains it all.`,
-      items: [
-        { num: '6.1', kind: 'Theorem', name: 'Gibbs phase rule', deps: ['pchem-4.2', 'pchem-5.2', 'thermo-4.8'], refs: ['Atkins 4A', 'M–S ch. 23'],
-          pic: 'Choose the number of components and coexisting phases: the app counts unknowns and equilibrium conditions to give F = C − P + 2, and on a diagram shows areas, lines and points with 2, 1 and 0 degrees of freedom.' },
-        { num: '6.2', kind: 'Concept', name: 'Pressure–composition diagram of an ideal binary', deps: ['pchem-5.5', 'pchem-6.1'], refs: ['Atkins 5C', 'M–S ch. 24'],
-          pic: 'Lower the pressure over a liquid mixture: bubbles appear at the bubble-point line with a vapour richer in the volatile component, and the liquid and vapour compositions are joined by a tie line.' },
-        { num: '6.3', kind: 'Theorem', name: 'Lever rule', deps: ['pchem-6.2'], refs: ['Atkins 5C', 'M–S ch. 24'],
-          pic: 'Drag the overall composition along a tie line like a fulcrum on a see-saw: the amounts of the two phases are read out in inverse proportion to the lever arms, checked by a mass balance.' },
-        { num: '6.4', kind: 'Method', name: 'Fractional distillation and theoretical plates', deps: ['pchem-6.3'], refs: ['Atkins 5C', 'M–S ch. 24'],
-          pic: 'Step up a temperature–composition diagram plate by plate: each vaporize–condense cycle enriches the vapour, and a column-height slider shows how many plates a given separation needs.' },
-        { num: '6.5', kind: 'Phenomenon', name: 'Azeotropes', deps: ['pchem-6.4', 'pchem-5.9'], refs: ['Atkins 5C', 'M–S ch. 24'],
-          pic: 'Raise the non-ideality parameter: the boiling curve develops a maximum or minimum where liquid and vapour compositions coincide, and the distillation simulation stalls there — why ethanol cannot be distilled past 96 %.' },
-        { num: '6.6', kind: 'Phenomenon', name: 'Partially miscible liquids and consolute points', deps: ['pchem-5.9', 'pchem-6.3'], refs: ['Atkins 5C'],
-          pic: 'Shake hexane and nitrobenzene at different temperatures: two layers form inside a dome whose top is the upper critical solution temperature, and a water–triethylamine preset shows a lower one instead.' },
-        { num: '6.7', kind: 'Method', name: 'Common-tangent construction on G(x)', deps: ['pchem-5.9', 'pchem-6.3', 'rca-3.1'], refs: ['Atkins 5C'],
-          pic: 'Roll a straight line under a double-well ΔG_mix curve until it touches twice: the touching points are the coexisting compositions, the convex hull of the curve is the true Gibbs energy, and the inflection points mark the spinodal.' },
-        { num: '6.8', kind: 'Concept', name: 'Eutectic phase diagrams', deps: ['pchem-6.1', 'pchem-5.12'], refs: ['Atkins Focus 5', 'M–S ch. 25'],
-          pic: 'Cool a lead–tin melt of chosen composition: the cooling curve shows a slope change at the liquidus and a halt at the eutectic temperature, and the microstructure panel fills with primary crystals then lamellae.' },
-        { num: '6.9', kind: 'Phenomenon', name: 'Compound formation and incongruent melting', deps: ['pchem-6.8'], refs: ['Atkins Focus 5'],
-          pic: 'Add a compound to a binary system: with congruent melting the diagram looks like two eutectic systems side by side; slide its stability down and a peritectic appears where the compound decomposes before melting.' },
-        { num: '6.10', kind: 'Method', name: 'Zone refining', deps: ['pchem-6.8'], refs: ['Atkins Focus 5'],
-          pic: 'Pass a molten zone along a rod repeatedly: impurities with distribution coefficient k < 1 ride along with the zone, and the computed impurity profile drops by orders of magnitude after a few passes.' },
-        { num: '6.11', kind: 'Method', name: 'Ternary phase diagrams', deps: ['pchem-6.1', 'pchem-6.3'], refs: ['Atkins Focus 5'],
-          pic: 'Drag a point in a triangle whose corners are three pure components: the distances to the sides read out the three mole fractions, and a two-phase region with tie lines shows the lever rule in two dimensions.' },
-        { num: '6.12', kind: 'Paper', name: 'On the Equilibrium of Heterogeneous Substances',
-          paper: { authors: 'J. Willard Gibbs', year: 1876, title: 'On the Equilibrium of Heterogeneous Substances', venue: 'Transactions of the Connecticut Academy of Arts and Sciences 3: 108–248 (1876) and 343–524 (1878)', url: 'https://archive.org/details/transactionsconn03conn' },
-          introduces: ['pchem-6.1', 'pchem-5.2', 'pchem-5.3'], deps: ['thermo-2.9', 'thermo-1.11', 'thermo-3.4', 'thermo-2.19'], refs: [],
-          pic: 'Build a phase diagram from free-energy surfaces: the reader shapes G for each phase of a binary system, Gibbs’ tangent construction picks out the coexisting phases, and counting components and phases anywhere on the diagram confirms F = C − P + 2.' },
-      ],
+      "n": 6,
+      "title": "Phase diagrams of mixtures",
+      "summary": "Bulk phase diagrams connect intensive constraints, component conservation and globally stable free-energy envelopes. Declared binary and ternary models distinguish phase compositions from phase amounts, trace distillation and miscibility, and compute eutectics, compound decomposition and a complete one-pass zone-refining balance.",
+      "items": [
+        {
+          "num": "6.1",
+          "kind": "Theorem",
+          "name": "Gibbs phase rule",
+          "deps": [
+            "pchem-4.2",
+            "pchem-5.2",
+            "thermo-4.8"
+          ],
+          "refs": [
+            "MIT5.60 (2008), Lecture20, scientific pp.1–3: regular phase-rule count",
+            "Gibbs, original memoir, printed152–153: On Coexistent Phases; selected OCR read"
+          ],
+          "pic": "Choose integer numbers of components and phases, then impose temperature and/or pressure. Compare the constraint count with the grid of generic freedoms."
+        },
+        {
+          "num": "6.2",
+          "kind": "Concept",
+          "name": "Pressure–composition diagram of an ideal binary",
+          "deps": [
+            "pchem-5.5",
+            "pchem-6.1"
+          ],
+          "refs": [
+            "MIT5.60 (2008), Lecture20, scientific pp.3–5: pressure–composition diagrams",
+            "MIT5.60 (2008), Lecture21, scientific pp.1–5: tie lines and chemical-potential derivation"
+          ],
+          "pic": "Change the pure-pressure ratio, the pressure coordinate and the bulk composition. The tie line is drawn only when both phases are feasible."
+        },
+        {
+          "num": "6.3",
+          "kind": "Theorem",
+          "name": "Lever rule",
+          "deps": [
+            "pchem-6.2"
+          ],
+          "refs": [
+            "MIT5.60 (2008), Lecture21, scientific pp.1–2: lever-rule construction",
+            "MIT3.012 (2005), lec17t.pdf, PDF3–7: free energy, coexistence and lever-rule prompts"
+          ],
+          "pic": "Move the bulk composition through and beyond a physically computed ideal-mixture tie interval. Watch the actual mole and component balances, including infeasible negative algebraic weights."
+        },
+        {
+          "num": "6.4",
+          "kind": "Method",
+          "name": "Fractional distillation and theoretical plates",
+          "deps": [
+            "pchem-6.3"
+          ],
+          "refs": [
+            "M. Mazzotti, ETH Thermische Verfahrenstechnik I, Fenske derivation, complete3-page undated handout"
+          ],
+          "pic": "Change the volatility excess and the integer number of contacts. Compare the actual equilibrium staircase and stage compositions with the contact bound."
+        },
+        {
+          "num": "6.5",
+          "kind": "Phenomenon",
+          "name": "Azeotropes",
+          "deps": [
+            "pchem-6.4",
+            "pchem-5.9"
+          ],
+          "refs": [
+            "MIT5.60 (2008), Lecture22 actual PDF III, scientific pp.1–6: nonideal solutions and azeotropes"
+          ],
+          "pic": "Vary the interaction through both azeotrope thresholds. The pressure curves and actual vapour-minus-liquid composition locate the interior equality."
+        },
+        {
+          "num": "6.6",
+          "kind": "Phenomenon",
+          "name": "Partially miscible liquids and consolute points",
+          "deps": [
+            "pchem-5.9",
+            "pchem-6.3"
+          ],
+          "refs": [
+            "MIT3.012 (2005), lec18t.pdf, PDF3–7: regular solutions and miscibility gap",
+            "MIT3.012 (2005), lec20t.pdf, PDF3–4: metastability and spinodal"
+          ],
+          "pic": "Switch upper/lower consolute behavior, vary reduced temperature and move the bulk order. Compare binodal, spinodal, the actual free-energy curve and the phase amounts."
+        },
+        {
+          "num": "6.7",
+          "kind": "Method",
+          "name": "Common-tangent construction on G(x)",
+          "deps": [
+            "pchem-5.9",
+            "pchem-6.3",
+            "rca-3.1"
+          ],
+          "refs": [
+            "MIT3.012 (2005), lec17t.pdf, PDF3–7: common tangents and phase amounts",
+            "R. N. Ghosh, NPTEL Module19, PDF13–15: Gibbs-energy construction; molar derivation supplied here"
+          ],
+          "pic": "Change χ, a linear reference bias and the overall composition. Compare the Gibbs curve with its actual common tangent and the stable gain over the homogeneous branch."
+        },
+        {
+          "num": "6.8",
+          "kind": "Concept",
+          "name": "Eutectic phase diagrams",
+          "deps": [
+            "pchem-6.1",
+            "pchem-5.12"
+          ],
+          "refs": [
+            "MIT3.012 (2005), lec18t.pdf, PDF8–12: eutectic Gibbs-energy/phase-diagram construction"
+          ],
+          "pic": "Move temperature and bulk composition; at the eutectic, vary an explicit transformation fraction. The phase diagram, Gibbs curve and amounts all come from the same free-energy model."
+        },
+        {
+          "num": "6.9",
+          "kind": "Phenomenon",
+          "name": "Compound formation and incongruent melting",
+          "deps": [
+            "pchem-6.8"
+          ],
+          "refs": [
+            "MIT3.012 (2005), lec19t.pdf, PDF5–8: intermediate compounds and congruent/incongruent melting",
+            "R. N. Ghosh, NPTEL Module19, PDF13–15: stability constructions"
+          ],
+          "pic": "Change the compound’s formation strength and the explicitly selected transformed fraction at its disappearance temperature. Weak and strong binding select different actual competing assemblages."
+        },
+        {
+          "num": "6.10",
+          "kind": "Method",
+          "name": "Zone refining",
+          "deps": [
+            "pchem-6.8"
+          ],
+          "refs": [
+            "UGC ePGPathshala, Crystallographic Growth, Module32, complete§32.3.2.2: moving-zone balance and terminal freezing"
+          ],
+          "pic": "Move the zone front and the proposed cut. Compare the physical solid/melt/unmelted snapshot, the complete first-pass profile and its integrated impurity mass."
+        },
+        {
+          "num": "6.11",
+          "kind": "Method",
+          "name": "Ternary phase diagrams",
+          "deps": [
+            "pchem-6.1",
+            "pchem-6.3"
+          ],
+          "refs": [
+            "MIT3.012 (2005), lec19t.pdf, PDF14–15: fixed-T,p ternary sections and phase amounts"
+          ],
+          "pic": "Vary A and B independently, including infeasible combinations. Compare the equilateral composition geometry with the solved phase amounts and reconstructed component balances."
+        },
+        {
+          "num": "6.12",
+          "kind": "Paper",
+          "name": "On the Equilibrium of Heterogeneous Substances",
+          "paper": {
+            "authors": "J. Willard Gibbs",
+            "year": 1876,
+            "title": "On the Equilibrium of Heterogeneous Substances",
+            "venue": "Transactions of the Connecticut Academy of Arts and Sciences 3: 108–248 (1876) and 343–524 (1878)",
+            "url": "https://archive.org/details/transactionsconn03conn"
+          },
+          "introduces": [
+            "pchem-6.1",
+            "pchem-5.2",
+            "pchem-5.3"
+          ],
+          "deps": [
+            "thermo-2.9",
+            "thermo-1.11",
+            "thermo-3.4",
+            "thermo-2.19"
+          ],
+          "refs": [
+            "Gibbs, original memoir, selected printed108–114,119–121,151–153; OCR body consulted"
+          ],
+          "pic": "Change the branch separation, bias and bulk composition. The exact common tangent, stable phase amounts and free-energy deficit are recomputed from the two declared branches."
+        }
+      ]
     },
-    // ───────────────────────────────────────────────────────────── 7
     {
       n: 7,
       title: 'Chemical equilibrium',

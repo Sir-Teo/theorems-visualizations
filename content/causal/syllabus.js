@@ -204,33 +204,223 @@ export default {
     // ───────────────────────────────────────────────────────────── 6
     {
       n: 6,
-      title: 'Instruments, bounds and natural experiments',
-      summary: String.raw`An instrument moves the treatment without otherwise touching the outcome, so its effects on the two can be divided to recover a causal effect even with unmeasured confounding — exactly under homogeneity, and for the compliers under monotonicity. Weak instruments make this fragile, and without such extra assumptions only bounds are available, which the instrumental inequality can sometimes refute outright. Natural experiments — parallel trends, sharp cutoffs and genetic variants — supply the instruments and comparisons in practice.`,
+      title: "Instruments, bounds and natural experiments",
+      summary: "An instrument changes treatment while satisfying exclusion and exchangeability assumptions. A constant-effect model identifies one causal effect; monotonicity identifies an effect in a particular principal stratum. Without these extra assumptions, compatible counterfactual populations give bounds. Difference-in-differences, cutoff designs and genetic instruments use different identifying assumptions, which the examples make explicit.",
       items: [
-        { num: '6.1', kind: 'Definition', name: 'Instrumental variable', deps: ['causal-3.5'], refs: ['Hernán–Robins §16.1', 'Pearl §7.4'],
-          pic: 'On an editable DAG a candidate instrument is checked against the three conditions — it moves treatment, shares no cause with the outcome, and reaches the outcome only through treatment — with violating paths highlighted.' },
-        { num: '6.2', kind: 'Theorem', name: 'The Wald (IV) estimand under homogeneity', deps: ['causal-6.1', 'stat-12.2'], refs: ['Hernán–Robins §16.2', 'Hernán–Robins §16.3'],
-          pic: 'The instrument’s effect on the outcome divided by its effect on treatment recovers the true effect in a simulated linear model with a hidden confounder, while ordinary regression is biased; an exclusion-violation slider biases the ratio.' },
-        { num: '6.3', kind: 'Method', name: 'Two-stage least squares', deps: ['causal-6.2', 'stat-12.3'], refs: ['Hernán–Robins §16.2'],
-          pic: 'Treatment is regressed on the instrument, then the outcome on the fitted treatment; both stages are drawn as scatters, and the second-stage slope matches the true effect over repeats.' },
-        { num: '6.4', kind: 'Phenomenon', name: 'Weak instruments', deps: ['causal-6.3'], refs: ['Hernán–Robins §16.5'],
-          pic: 'Shrink the instrument’s effect on treatment: the 2SLS estimates spread out, drift toward the confounded OLS estimate and lose interval coverage, with the first-stage F-statistic shown alongside.' },
-        { num: '6.5', kind: 'Concept', name: 'Compliance types and principal strata', deps: ['causal-6.1', 'causal-2.10'], refs: ['Hernán–Robins §16.4'],
-          pic: 'A population is split into compliers, always-takers, never-takers and defiers by their potential treatments under each assignment; the observed cells are mixtures of these strata, which the reader can see but the data cannot.' },
-        { num: '6.6', kind: 'Theorem', name: 'Local average treatment effect (LATE)', deps: ['causal-6.5', 'causal-6.2'], refs: ['Hernán–Robins §16.4'],
-          pic: 'Under monotonicity the Wald ratio equals the compliers’ average effect, as the simulated strata confirm; allowing defiers breaks the equality.' },
-        { num: '6.7', kind: 'Theorem', name: 'Manski’s no-assumption bounds', deps: ['causal-1.3'], refs: ['Pearl §8.2', 'Hernán–Robins §16.1'],
-          pic: 'With no assumptions, the average effect of a binary treatment on a binary outcome is only bounded to an interval of width one; the bounds are drawn from simulated data and shrink as assumptions such as monotone response are added.' },
-        { num: '6.8', kind: 'Theorem', name: 'Balke–Pearl bounds with an instrument', deps: ['causal-6.7', 'causal-6.1', 'algo-11.15'], refs: ['Pearl §8.2'],
-          pic: 'A linear program over response types gives the tightest bounds on the effect consistent with the observed instrument–treatment–outcome table; the interval shrinks as the instrument strengthens, drawn against the true effect.' },
-        { num: '6.9', kind: 'Theorem', name: 'The instrumental inequality', deps: ['causal-6.8'], refs: ['Pearl §8.4'],
-          pic: 'Edit the observed joint distribution of instrument, treatment and outcome; once the inequality is violated a warning shows that no valid instrumental model could have produced the data.' },
-        { num: '6.10', kind: 'Method', name: 'Difference-in-differences', deps: ['causal-1.9', 'stat-12.2'], refs: ['Hernán–Robins §7.6'],
-          pic: 'Treated and control groups are tracked before and after a policy; the counterfactual trend copied from the controls yields the effect, and a slider that bends the pre-trends shows the estimate absorbing the difference.' },
-        { num: '6.11', kind: 'Method', name: 'Regression discontinuity design', deps: ['causal-1.9', 'stat-14.8'], refs: ['Hernán–Robins §16.6'],
-          pic: 'Treatment switches on at a cutoff of a running variable; local linear fits on each side measure the jump, a bandwidth slider shows the bias–variance trade-off, and bunching of units just past the cutoff breaks the design.' },
-        { num: '6.12', kind: 'Method', name: 'Mendelian randomization', deps: ['causal-6.3'], refs: ['Hernán–Robins §16.1'],
-          pic: 'Genetic variants serve as instruments for an exposure; per-variant ratio estimates are plotted as slopes through the origin, and adding a pleiotropic variant with a direct effect pulls it visibly off the common line.' },
+        {
+          "num": "6.1",
+          "kind": "Definition",
+          "name": "Instrumental variable",
+          "deps": [
+            "causal-1.1",
+            "causal-3.5"
+          ],
+          "refs": [
+            "Hernán–Robins, What If (19 Aug 2026), §16.1 and Technical Point 16.1, printed pp209–211"
+          ],
+          "tags": [
+            "instrument",
+            "identification"
+          ],
+          "pic": "Change the instrument’s treatment effect and add a direct outcome path or a shared cause. The exact finite population computes both observed contrasts and their ratio. The arrows describe this model’s assumptions, not a test that certifies a real instrument."
+        },
+        {
+          "num": "6.2",
+          "kind": "Theorem",
+          "name": "The Wald (IV) estimand under homogeneity",
+          "deps": [
+            "causal-6.1",
+            "causal-1.3"
+          ],
+          "refs": [
+            "Hernán–Robins, What If, §§16.2–16.3 and Technical Points 16.3–16.5; constant-effect derivation supplied here"
+          ],
+          "tags": [
+            "Wald ratio",
+            "homogeneity"
+          ],
+          "pic": "Compare exact population contrasts with the first sampled pair of group means, then inspect repeated Wald estimates. Change hidden confounding, first-stage strength, a direct effect and the noise law. A finite sample need not recover the population ratio exactly."
+        },
+        {
+          "num": "6.3",
+          "kind": "Method",
+          "name": "Two-stage least squares",
+          "deps": [
+            "causal-6.2",
+            "nla-2.8",
+            "nla-2.9"
+          ],
+          "refs": [
+            "Hernán–Robins, What If, §16.2, printed p213; projection derivation supplied here"
+          ],
+          "tags": [
+            "two-stage least squares",
+            "projection"
+          ],
+          "pic": "Follow actual treatment observations through the first-stage projection and the second-stage regression. The lower panel repeats the two-stage experiment. Both stages include an intercept, and the small horizontal jitter in the first panel is only for visibility."
+        },
+        {
+          "num": "6.4",
+          "kind": "Phenomenon",
+          "name": "Weak instruments",
+          "deps": [
+            "causal-6.3",
+            "stat-1.9",
+            "stat-1.10"
+          ],
+          "refs": [
+            "Hernán–Robins, What If, §16.5 and Fine Point 16.2",
+            "Mikusheva–Poi, author-hosted draft, §§2–3 (known covariance); restricted unknown-variance Gaussian t inversion proved here"
+          ],
+          "tags": [
+            "weak instruments",
+            "confidence sets"
+          ],
+          "pic": "Shrink first-stage strength and inspect the ratio histogram, first-stage F and empirical coverage of two interval procedures. The second panel inverts the first sample’s AR test; its readout retains unbounded parts outside the plotted window."
+        },
+        {
+          "num": "6.5",
+          "kind": "Concept",
+          "name": "Compliance types and principal strata",
+          "deps": [
+            "causal-6.1",
+            "causal-2.10"
+          ],
+          "refs": [
+            "Hernán–Robins, What If, §16.4, printed pp217–220"
+          ],
+          "tags": [
+            "principal strata",
+            "compliance"
+          ],
+          "pic": "Change the four latent weights and compare them with the observed assignment–treatment cells. Each observed cell is a mixture of the colored principal strata. Set all weights to zero to see that no population distribution is then defined."
+        },
+        {
+          "num": "6.6",
+          "kind": "Theorem",
+          "name": "Local average treatment effect (LATE)",
+          "deps": [
+            "causal-6.5",
+            "causal-1.3"
+          ],
+          "refs": [
+            "Hernán–Robins, What If, §16.4 and Technical Point 16.7, printed p224"
+          ],
+          "see": [
+            "causal-6.2"
+          ],
+          "tags": [
+            "LATE",
+            "monotonicity"
+          ],
+          "pic": "Compare signed stratum contributions, the Wald ratio, the complier effect and the population ATE. Change complier and defier effects or masses. Defiers can break the equality; zero net first stage or no compliers makes the corresponding quantity unavailable."
+        },
+        {
+          "num": "6.7",
+          "kind": "Theorem",
+          "name": "Manski’s no-assumption bounds",
+          "deps": [
+            "causal-1.3"
+          ],
+          "refs": [
+            "Supplied missing-potential-outcome proof; Hernán–Robins, What If, Technical Point 16.2 for the role of bounds; Balke–Pearl 1997, §1 historical context"
+          ],
+          "tags": [
+            "partial identification",
+            "Manski bounds"
+          ],
+          "pic": "Edit the observed cell weights, then slide between counterfactual completions without changing any observation. Compare the unrestricted interval with the additional monotone-response assumption. The gold point is the ATE of an actual completed population."
+        },
+        {
+          "num": "6.8",
+          "kind": "Theorem",
+          "name": "Balke–Pearl bounds with an instrument",
+          "deps": [
+            "causal-6.1",
+            "causal-6.7",
+            "opt-6.2",
+            "opt-6.6"
+          ],
+          "refs": [
+            "Balke–Pearl 1997, Bounds on Treatment Effects from Studies with Imperfect Compliance, §§2–3, pp1171–1173; response-type sharpness construction supplied here"
+          ],
+          "tags": [
+            "Balke–Pearl bounds",
+            "linear programming"
+          ],
+          "pic": "Edit the two conditional tables and compute exact rational bounds. The stacked bars show a feasible population formed by mixing the two attaining extremes. Try a perfect-compliance table, an incompatible table, or the additional no-defiers assumption."
+        },
+        {
+          "num": "6.9",
+          "kind": "Theorem",
+          "name": "The instrumental inequality",
+          "deps": [
+            "causal-6.1"
+          ],
+          "refs": [
+            "Balke–Pearl 1997, §3 Eq6 and its generalized form, p1173; event-inclusion proof supplied here"
+          ],
+          "see": [
+            "causal-6.8"
+          ],
+          "tags": [
+            "instrumental inequality",
+            "falsification"
+          ],
+          "pic": "Edit the conditional probabilities through nonnegative cell weights. Compare each treatment-specific sum of maxima with one. The incompatible preset keeps treatment fixed while flipping outcome with the instrument, creating a direct violation."
+        },
+        {
+          "num": "6.10",
+          "kind": "Method",
+          "name": "Difference-in-differences",
+          "deps": [
+            "causal-1.3",
+            "stat-1.3"
+          ],
+          "refs": [
+            "Roth–Sant’Anna–Bilinski–Poe, 9 Jan 2023, What’s Trending in Difference-in-Differences?, §2, pp5–9"
+          ],
+          "tags": [
+            "difference-in-differences",
+            "parallel trends"
+          ],
+          "pic": "Follow two groups over four periods and copy the control change to construct a counterfactual. Change trend differences, a hidden post-period shock or anticipation. Repeated samples compare measured estimator moments with the exact sampling calculation for this model."
+        },
+        {
+          "num": "6.11",
+          "kind": "Method",
+          "name": "Regression discontinuity design",
+          "deps": [
+            "causal-1.1",
+            "nla-2.8",
+            "nla-2.9"
+          ],
+          "refs": [
+            "Hernán–Robins, What If, Fine Point 16.3, printed p225; conditional-mean and local-fit derivations supplied here"
+          ],
+          "tags": [
+            "regression discontinuity",
+            "local identification"
+          ],
+          "pic": "Change the bandwidth, right-side curvature, input density or an explicit untreated jump. Inspect the two actual triangular-weighted fits and their repeated-noise sampling distribution. Narrow windows can leave too few local inputs to fit a line."
+        },
+        {
+          "num": "6.12",
+          "kind": "Method",
+          "name": "Mendelian randomization",
+          "deps": [
+            "causal-6.2",
+            "causal-6.3"
+          ],
+          "refs": [
+            "Hernán–Robins, What If, Fine Point 16.1 and §16.5; synthetic genotype/ancestry model and covariance calculation supplied here"
+          ],
+          "tags": [
+            "Mendelian randomization",
+            "genetic instruments"
+          ],
+          "pic": "Compare five synthetic variant associations, their first-sample estimates and repeated ratios for one selected variant. Change genetic strength, add a direct effect or shared ancestry. The green line gives the known exposure effect of the model."
+        }
       ],
     },
     // ───────────────────────────────────────────────────────────── 7

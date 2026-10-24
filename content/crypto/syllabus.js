@@ -200,35 +200,167 @@ export default {
     },
     // ───────────────────────────────────────────────────────────── 6
     {
-      n: 6,
-      title: 'One-way functions and the foundations',
-      summary: String.raw`Almost all of private-key cryptography rests on a single assumption: functions that are easy to compute but hard to invert. From any one-way function one can extract a hard-core bit (Goldreich–Levin), build pseudorandom generators, stretch them arbitrarily, turn them into pseudorandom functions (GGM) and permutations (Luby–Rackoff). Conversely each of these implies one-way functions, and their existence would imply P ≠ NP — mapping cryptography onto Impagliazzo’s possible worlds.`,
-      items: [
-        { num: '6.1', kind: 'Definition', name: 'One-way functions', deps: ['crypto-3.2'], refs: ['Katz–Lindell §8.1.1'],
-          pic: 'Multiply two random primes instantly, then try to factor the product by trial division; the times are plotted against bit length, one flat and one exploding.' },
-        { num: '6.2', kind: 'Concept', name: 'Candidate one-way functions', deps: ['crypto-6.1', 'toc-13.11'], refs: ['Katz–Lindell §8.1.2'],
-          pic: 'Integer multiplication, modular exponentiation and subset sum are each computed forward and attacked backward by the best simple algorithms, with timings on a log scale.' },
-        { num: '6.3', kind: 'Theorem', name: 'One-way functions imply P ≠ NP', deps: ['crypto-6.1', 'toc-12.14'], refs: ['Katz–Lindell §8.1'],
-          pic: 'Inverting a function is an NP search problem: with a hypothetical fast SAT solver the reader inverts a toy one-way function bit by bit via self-reduction.' },
-        { num: '6.4', kind: 'Definition', name: 'Hard-core predicates', deps: ['crypto-6.1'], refs: ['Katz–Lindell §8.1.3'],
-          pic: 'For a toy permutation, the reader tries predictors for candidate bits of x given f(x); success rates stay near ½ for the hard-core bit and climb for leaky bits.' },
-        { num: '6.5', kind: 'Theorem', name: 'Goldreich–Levin theorem', deps: ['crypto-6.4', 'info-9.11'], refs: ['Katz–Lindell §8.3'],
-          pic: 'A predictor for ⟨x, r⟩ that is right only slightly more than half the time is turned, by local list decoding of the Hadamard code, into a short list of candidates containing x.' },
-        { num: '6.6', kind: 'Theorem', name: 'Pseudorandom generators from one-way permutations', deps: ['crypto-6.5', 'crypto-3.5'], refs: ['Katz–Lindell §8.4.1'],
-          pic: 'Output f(s) followed by the hard-core bit of s: one bit of stretch, with a distinguisher for the output shown converted into a predictor for the hard-core bit.' },
-        { num: '6.7', kind: 'Theorem', name: 'Increasing the expansion of a generator', deps: ['crypto-6.6', 'crypto-3.8'], refs: ['Katz–Lindell §8.4.2'],
-          pic: 'Iterate a one-bit-stretch generator, emitting one bit per step; a hybrid argument across the output positions is drawn as a row of panels.' },
-        { num: '6.8', kind: 'Theorem', name: 'Generators from any one-way function (HILL)', deps: ['crypto-6.6'], refs: ['Katz–Lindell §8.7'],
-          pic: 'A one-way function that is not a permutation is turned into a generator by hashing and entropy accumulation; the pipeline is drawn with the entropy of each stage annotated.' },
-        { num: '6.9', kind: 'Algorithm', name: 'GGM pseudorandom functions from generators', deps: ['crypto-6.7', 'crypto-3.11'], refs: ['Katz–Lindell §8.5'],
-          pic: 'A length-doubling generator is applied down a binary tree; the input bits choose left or right halves, and the leaf reached is the output, with the path highlighted.' },
-        { num: '6.10', kind: 'Theorem', name: 'Luby–Rackoff: three Feistel rounds give a pseudorandom permutation', deps: ['crypto-6.9', 'crypto-4.4'], refs: ['Katz–Lindell §8.6'],
-          pic: 'Distinguishers that break one- and two-round Feistel networks are run and win; against three rounds with independent random functions their advantage collapses toward zero.' },
-        { num: '6.11', kind: 'Theorem', name: 'Private-key cryptography is equivalent to one-way functions', deps: ['crypto-6.8', 'crypto-6.10'], refs: ['Katz–Lindell §8.7'],
-          pic: 'A graph of primitives — one-way functions, generators, pseudorandom functions and permutations, MACs, CPA-secure encryption — with arrows for each construction showing they stand or fall together.' },
-        { num: '6.12', kind: 'Concept', name: 'Impagliazzo’s five worlds', deps: ['crypto-6.11', 'cplx-13.1', 'toc-12.14'], refs: ['Katz–Lindell §8.7'],
-          pic: 'Algorithmica, Heuristica, Pessiland, Minicrypt and Cryptomania are drawn as regions; toggling hypotheses (P = NP, average-case hardness, one-way functions, public-key) moves a marker between them.' },
-      ],
+      "n": 6,
+      "title": "One-way functions and the foundations",
+      "summary": "A one-way function is easy to evaluate but hard to invert on a random input. Hard-core predicates turn this search difficulty into unpredictable bits; generator and function constructions then support reusable private-key cryptography. The reductions distinguish worst-case difficulty, average-case difficulty and the additional structure needed for public communication.",
+      "items": [
+        {
+          "num": "6.1",
+          "kind": "Definition",
+          "name": "One-way functions",
+          "deps": [
+            "crypto-3.2"
+          ],
+          "refs": [
+            "Arora–Barak, Computational Complexity, author draft 8January2007, chapter10, printed187–202, Definition10.1; HRV2012, Definition2.2"
+          ],
+          "pic": "Edit the function table, select a sampled input and give sequential search a budget. Step through actual evaluations and compare recovery of any preimage with recovery of the original input."
+        },
+        {
+          "num": "6.2",
+          "kind": "Concept",
+          "name": "Candidate one-way functions",
+          "deps": [
+            "crypto-6.1"
+          ],
+          "refs": [
+            "Arora–Barak, Computational Complexity, author draft 8January2007, chapter10, printed187–202, §10.1 candidates and distribution-sensitive assumptions"
+          ],
+          "pic": "Compute a small product, modular power or subset sum, then inspect a real elementary reverse search. The counters name the operations being counted and the witness actually returned."
+        },
+        {
+          "num": "6.3",
+          "kind": "Theorem",
+          "name": "One-way functions imply P ≠ NP",
+          "deps": [
+            "crypto-6.1"
+          ],
+          "refs": [
+            "Arora–Barak, Computational Complexity, author draft 8January2007, chapter10, printed187–202, §10.1; Kabanets–Andrews, Lecture8 (2011), Algorithmica discussion; direct prefix proof supplied"
+          ],
+          "pic": "Edit the function and choose a target output. A finite exact prefix oracle answers each question; watch the candidate set shrink to a preimage or detect a target outside the image."
+        },
+        {
+          "num": "6.4",
+          "kind": "Definition",
+          "name": "Hard-core predicates",
+          "deps": [
+            "crypto-6.1"
+          ],
+          "refs": [
+            "Arora–Barak, Computational Complexity, author draft 8January2007, chapter10, printed187–202, §10.2 hard-core predicates"
+          ],
+          "pic": "Edit both the predicate and the predictor. Exact per-input scores reveal what the predictor can infer from each fiber; the best finite predictor button performs exhaustive majority decoding."
+        },
+        {
+          "num": "6.5",
+          "kind": "Theorem",
+          "name": "Goldreich–Levin theorem",
+          "deps": [
+            "crypto-6.4",
+            "prob-1.6.4"
+          ],
+          "refs": [
+            "Arora–Barak, Computational Complexity, author draft 8January2007, chapter10, printed187–202, §10.2.2, with sample-size inequality corrected; noninjective extension and candidate verification supplied"
+          ],
+          "pic": "Edit a predictor's eight replies, choose reproducible basis shifts and step through guesses for their inner products. The model actually majority-decodes candidates and verifies them against the received function value."
+        },
+        {
+          "num": "6.6",
+          "kind": "Theorem",
+          "name": "Pseudorandom generators from one-way permutations",
+          "deps": [
+            "crypto-6.5",
+            "crypto-3.5"
+          ],
+          "refs": [
+            "Arora–Barak, Computational Complexity, author draft 8January2007, chapter10, printed187–202, §10.2.3; exact signed predictor reduction supplied"
+          ],
+          "pic": "Edit a permutation, a predicate and a full distinguisher truth table. Compute the exact real-versus-uniform gap and the prediction success produced by the reduction."
+        },
+        {
+          "num": "6.7",
+          "kind": "Theorem",
+          "name": "Increasing the expansion of a generator",
+          "deps": [
+            "crypto-6.6",
+            "crypto-3.8"
+          ],
+          "refs": [
+            "Boneh–Shoup, A Graduate Course in Applied Cryptography, v0.6 (January2023), §3.4, Theorems3.2–3.3, printed54–62"
+          ],
+          "pic": "Edit the one-bit generator and step through exact hybrid distributions. Change the distinguisher and output length; the readout shows the actual emitted bits, terminal state and telescoping probabilities."
+        },
+        {
+          "num": "6.8",
+          "kind": "Theorem",
+          "name": "Generators from any one-way function (HILL)",
+          "deps": [
+            "crypto-6.5",
+            "crypto-6.7",
+            "info-1.2"
+          ],
+          "refs": [
+            "Haitner–Reingold–Vadhan, Efficiency Improvements in Constructing Pseudorandom Generators from One-way Functions, 24May2012, §§2–6 and AppendixA; Theorems4.1,5.1,6.1 and Corollary6.2; uniform-fiber hashing argument supplied"
+          ],
+          "pic": "Edit a many-to-one function and a binary linear hash. Exact fiber entropies and exhaustive hash-family distances reveal what statistical extraction can and cannot supply to the general generator construction."
+        },
+        {
+          "num": "6.9",
+          "kind": "Algorithm",
+          "name": "GGM pseudorandom functions from generators",
+          "deps": [
+            "crypto-6.7",
+            "crypto-3.11"
+          ],
+          "refs": [
+            "Boneh–Shoup, A Graduate Course in Applied Cryptography, v0.6 (January2023), §4.6, printed147–153; §3.4.1 parallel-composition proof"
+          ],
+          "pic": "Edit the doubling generator and type equal-length binary queries. Step along the actual paths and see which generator calls are new and which prefixes reuse cached labels."
+        },
+        {
+          "num": "6.10",
+          "kind": "Theorem",
+          "name": "Luby–Rackoff: three Feistel rounds give a pseudorandom permutation",
+          "deps": [
+            "crypto-6.9",
+            "crypto-4.4",
+            "crypto-3.8"
+          ],
+          "refs": [
+            "Boneh–Shoup, A Graduate Course in Applied Cryptography, v0.6 (January2023), §4.5, printed141–147, forward-only proof; explicit inverse attack derived here"
+          ],
+          "pic": "Edit three separate round tables and inspect actual round states. Compare forward-query relations with an adaptive inverse-query attack, using exact random-permutation probabilities at the toy block size."
+        },
+        {
+          "num": "6.11",
+          "kind": "Theorem",
+          "name": "Private-key cryptography is equivalent to one-way functions",
+          "deps": [
+            "crypto-6.8",
+            "crypto-6.10",
+            "crypto-5.2",
+            "crypto-3.12"
+          ],
+          "refs": [
+            "Boneh–Shoup, A Graduate Course in Applied Cryptography, v0.6 (January2023), §§3.4,4.5–4.6 for the construction chain; Barak, An Intensive Introduction to Cryptography, 17November2021, §24.1, printed401–402, necessity overview (full distributional-inversion proof not supplied there)"
+          ],
+          "pic": "Choose a source and target primitive to trace actual implication edges. Separately, edit a tiny GGM-based MAC, observe tags, and calculate the exact posterior key set and best fresh-message forgery probability."
+        },
+        {
+          "num": "6.12",
+          "kind": "Concept",
+          "name": "Impagliazzo’s five worlds",
+          "deps": [
+            "crypto-6.3",
+            "crypto-6.11"
+          ],
+          "refs": [
+            "Kabanets–Andrews, SFU CMPT881 Lecture8 (header16March2011), pp.1–3; Kabanets–Chen Lecture7 (27January2011), randomized samplable-distribution reduction and OWF consequence; Barak2021 §24.1 (historical framing only)"
+          ],
+          "pic": "Select a logically consistent hypothesis profile. In a separate finite example, edit a function and change the probability of a costly instance to see the difference between average and maximum search work."
+        }
+      ]
     },
     // ───────────────────────────────────────────────────────────── 7
     {

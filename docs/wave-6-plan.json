@@ -18359,9 +18359,9 @@
   "started": "2026-10-22T10:26:01.661Z",
   "progress": {
     "total": 1057,
-    "written": 26,
-    "remaining": 1031,
-    "writtenChapters": 2,
+    "written": 36,
+    "remaining": 1021,
+    "writtenChapters": 3,
     "chapters": [
       {
         "collection": "ode",
@@ -18376,10 +18376,21 @@
         "collection": "pde",
         "chapter": 6,
         "total": 10,
-        "written": 0,
-        "remaining": 10,
-        "writtenItems": [],
-        "status": "planned"
+        "written": 10,
+        "remaining": 0,
+        "writtenItems": [
+          "pde-6.1",
+          "pde-6.2",
+          "pde-6.3",
+          "pde-6.4",
+          "pde-6.5",
+          "pde-6.6",
+          "pde-6.7",
+          "pde-6.8",
+          "pde-6.9",
+          "pde-6.10"
+        ],
+        "status": "written"
       },
       {
         "collection": "vcalc",

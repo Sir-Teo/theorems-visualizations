@@ -11,6 +11,8 @@
 
 > **Integration checkpoint · 2026-10-23:** [The complete candidate](docs/integration/master-plan-candidate.md) pins all seventeen feature/research packages through `e61efc42`, with passing combined builds and 181 offline tests. This is local integration evidence; the full U0–U5 roadmap and recorded acceptance/release gaps remain open.
 
+> **Wave integration · 2026-10-24:** The user explicitly requested pushing `codex/wave-six-expansion` and merging its committed work into `main`. This integration combines that branch through `84d784cb` with the existing universal-atlas delivery. Uncommitted GEO 6 drafts and other worktree changes remain local. This specific authorization supersedes earlier local-only instructions for this merge; it does not authorize deployment. See [integration verification](docs/verification/wave6-main-merge.md).
+
 ## 0. The mission
 
 Build a living, explorable atlas of human knowledge: **what people know, how they know it, how they use it, how ideas connect, and where uncertainty and disagreement remain—across disciplines, cultures, places, and time.**
@@ -39,7 +41,7 @@ Do not publish a percentage of “all human knowledge.” Publish coverage again
 | Wave 6 accepted | 36 / 1,057 new ideas: ML 6 (16), VCALC 6 (10), PDE 6 (10). Accepted source `facab15e297c645d4826935f2c011a4cf367ee88`; continuation base `f0a324f9` | 1,021 frozen new ideas still require acceptance; 80 chapter assignments and two preserved entries stay fixed |
 | Accepted atlas | 7,751 written / 5,823 planned ideas, 531 written chapters, 85 collections, 13 fields | This 13,574-item inventory is the existing syllabus, not the boundary of knowledge |
 | Accepted integration | Recorded 3,457 passing tests, strict build/static clean; 123,750-byte gzipped home JSON; 15 bridges / 182 steps / 179 unique written ideas / no unresolved steps | Historical evidence for that source, not current drafts |
-| Active expansion | 102 frozen new ideas present: 36 accepted + 66 author-verified awaiting peer acceptance: REP 6 (12), TOP 6 (17), DG 6 (17), MFD 6 (20). PROB 7 in progress | Do not count the 66 as accepted or count unfinished PROB work. The 3,497-test integration checkpoint predates MFD |
+| Active expansion (updated 2026-10-24) | 606 frozen new ideas present through GEOL 6 at `84d784cb`: 36 in the accepted export + 570 additional author-verified ideas. GEO 6 has unfinished local drafts, excluded from this merge | The accepted export remains 36/1,057. Preserve exact author-verification evidence in [the Wave 6 handoff](docs/wave-continuation.md); no additional independent review is claimed |
 | Preserved shipping drafts | ODE 6 (17) and ALG 9 (17), unaccepted | Preserve and reconcile through their review pipeline; do not duplicate authorship |
 | Visual redesign | 55 verified / 1,101 scoped items; 1,046 pending | Scope includes Wave 5, 36 accepted Wave 6 items, and 34 shipping drafts. The 66 newer expansion items are outside its denominator |
 | Flagship proof curation | 2 / 100 accepted | Separate from the historical 102-player control audit and visual redesign |

@@ -188,34 +188,183 @@ export default {
     {
       n: 6,
       title: 'Viscous flow and the Navier–Stokes equations',
-      summary: String.raw`Real fluids resist shearing: in a Newtonian fluid the stress is linear in the rate of strain, the fluid sticks to walls, and Euler’s equation gains a diffusion term to become the Navier–Stokes equations. The Reynolds number measures inertia against viscosity, and dimensional analysis shows that flows with the same Reynolds number are scaled copies of one another. Exact solutions — Couette, Poiseuille, the impulsively started plate, the Stokes layer, decaying and stretched vortices — show vorticity diffusing and energy being dissipated.`,
+      summary: "Viscous stress responds to deformation, while momentum and energy balances determine how that stress changes a flow. Exact shear flows and diffusion layers expose wall forces, similarity and dissipation. Gaussian vortices then show the competition between viscous spreading and imposed stretching; the existing Reynolds paper connects these equations to experiments.",
       items: [
-        { num: '6.1', kind: 'Law', name: 'Newtonian viscosity', deps: ['fluid-1.10'], refs: ['Kundu §4.5', 'Acheson ch. 2'],
-          pic: 'Slide the top plate of a fluid layer: the velocity profile becomes linear, the drag on the plate equals μU/h, and a shear-thinning toggle shows a non-Newtonian fluid departing from the line.' },
-        { num: '6.2', kind: 'Definition', name: 'Stress tensor in a moving fluid', deps: ['fluid-2.1', 'fluid-1.10'], refs: ['Kundu §4.4', 'Acheson ch. 6'],
-          pic: 'Rotate a small square cut from a sheared flow: the traction on each face is computed from the stress tensor, normal and tangential parts change with angle, and the principal directions appear as eigenvectors.' },
-        { num: '6.3', kind: 'Principle', name: 'No-slip condition', deps: ['fluid-6.1'], refs: ['Kundu §4.10', 'Acheson ch. 2'],
-          pic: 'Flow past a plate with a slip/no-slip toggle: with no slip a thin layer of vorticity forms at the wall and diffuses outward; with slip the flow stays irrotational and frictionless.' },
-        { num: '6.4', kind: 'Law', name: 'Navier–Stokes equations', deps: ['fluid-2.8', 'fluid-6.1', 'fluid-6.2'], refs: ['Kundu §4.6', 'Acheson ch. 6'],
-          pic: 'A lid-driven square cavity is solved live: lowering the viscosity strengthens the primary vortex, shifts its centre and spawns secondary corner eddies.' },
-        { num: '6.5', kind: 'Definition', name: 'Reynolds number and dynamic similarity', deps: ['fluid-6.4'], refs: ['Kundu §4.11', 'Acheson ch. 2'],
-          pic: 'Three flows past cylinders with different sizes, speeds and viscosities but equal Reynolds number are simulated: rescaled, their streamlines coincide exactly; change one Re and they part.' },
-        { num: '6.6', kind: 'Method', name: 'Dimensional analysis: the Buckingham Π theorem', deps: ['fluid-6.5', 'ladr-3.21'], refs: ['Kundu §1.11'],
-          pic: 'List the variables of a problem (drag on a sphere, period of a pendulum): their dimension matrix is shown, its null space gives the Π groups, and scattered data collapse onto one curve when replotted in those groups.' },
-        { num: '6.7', kind: 'Model', name: 'Couette and Poiseuille flow', deps: ['fluid-6.4', 'fluid-6.3'], refs: ['Kundu §9.2', 'Acheson ch. 2'],
-          pic: 'Sliders for wall speed and pressure gradient: the exact profile — a line plus a parabola — is drawn beside a numerical solution that converges onto it from rest.' },
-        { num: '6.8', kind: 'Law', name: 'Hagen–Poiseuille law', deps: ['fluid-6.7'], refs: ['Kundu §9.2', 'Acheson ch. 2'],
-          pic: 'Flow through a pipe with a radius slider: the volume flux scales as R⁴Δp/(μL), so halving a blood vessel’s radius cuts the flow sixteenfold at the same pressure.' },
-        { num: '6.9', kind: 'Theorem', name: 'Viscous dissipation of energy', deps: ['fluid-6.4', 'fluid-1.10'], refs: ['Kundu §4.8', 'Acheson ch. 6'],
-          pic: 'A decaying vortex flow in a box: the kinetic energy falls at a rate equal to the integrated dissipation 2μ e_ij e_ij, both computed from the simulation and plotted together.' },
-        { num: '6.10', kind: 'Model', name: 'Impulsively started plate (Rayleigh’s problem)', deps: ['fluid-6.4', 'fluid-6.3', 'pde-3.3'], refs: ['Kundu §9.4', 'Acheson ch. 2'],
-          pic: 'A plate is jerked into motion: vorticity diffuses into the fluid with an error-function profile whose thickness grows as √(νt), and profiles at different times collapse when plotted against y/√(νt).' },
-        { num: '6.11', kind: 'Model', name: 'Oscillating plate: the Stokes layer', deps: ['fluid-6.10'], refs: ['Kundu §9.5', 'Acheson ch. 2'],
-          pic: 'An oscillating plate sends damped shear waves into the fluid; a frequency slider shows the penetration depth √(2ν/ω) and the phase lag growing with distance.' },
-        { num: '6.12', kind: 'Model', name: 'Lamb–Oseen vortex', deps: ['fluid-6.10', 'fluid-3.6'], refs: ['Kundu §9.4'],
-          pic: 'A line vortex released into viscous fluid spreads its core as √(4νt); the peak swirl speed decays while the circulation far away is unchanged, matching the simulation.' },
-        { num: '6.13', kind: 'Model', name: 'Burgers vortex', deps: ['fluid-3.3', 'fluid-6.12'], refs: ['Acheson ch. 5'],
-          pic: 'Impose an axial stretching strain on a diffusing vortex: the core stops spreading at a radius of order √(ν/α) where stretching balances diffusion, and the strain slider sets the steady core size.' },
+        {
+          "num": "6.1",
+          "kind": "Law",
+          "name": "Newtonian viscosity",
+          "deps": [
+            "fluid-1.10"
+          ],
+          "refs": [
+            "Hinch, Fluid Dynamics II, draft 18 September 2020, PDF pp.11–16 and 24–25: viscosity, strain, constitutive law and Couette traction"
+          ],
+          "pic": "Change viscosity, plate separation and both wall velocities. Compare the actual linear velocity profile with the stress–shear-rate relation. A common wall-velocity shift changes transport without changing the stress."
+        },
+        {
+          "num": "6.2",
+          "kind": "Definition",
+          "name": "Stress tensor in a moving fluid",
+          "deps": [
+            "fluid-2.1",
+            "fluid-1.10"
+          ],
+          "refs": [
+            "Hinch, PDF pp.12–17: strain, traction, stress symmetry and incompressible constitutive law",
+            "Sonin, Equation of Motion for Viscous Flow, 2003 ninth edition with 2005 notation modifications, PDF p.2 and pp.21–23: stress and pressure conventions"
+          ],
+          "pic": "Rotate a surface normal and vary pressure, viscosity, extension, symmetric shear and rigid spin. Inspect the traction decomposition and its Mohr circle; spin changes the local velocity gradient while leaving the stress unchanged."
+        },
+        {
+          "num": "6.3",
+          "kind": "Principle",
+          "name": "No-slip condition",
+          "deps": [
+            "fluid-6.1"
+          ],
+          "refs": [
+            "Lauga, Brenner and Stone, Microfluidics: The No-Slip Boundary Condition, arXiv:cond-mat/0501557v3 (28 September 2005), PDF pp.1–3: assumption, Navier relation and slip terminology; Couette solution derived here"
+          ],
+          "pic": "Compare no-slip with finite flat-wall slip lengths. Move either wall and inspect both boundary velocity differences, the resulting profile and the transmitted shear force."
+        },
+        {
+          "num": "6.4",
+          "kind": "Law",
+          "name": "Navier–Stokes equations",
+          "deps": [
+            "fluid-2.8",
+            "fluid-6.1",
+            "fluid-6.2"
+          ],
+          "refs": [
+            "Hinch, PDF pp.16–22: Cauchy momentum, Newtonian stress, energy and governing equations",
+            "Sonin, PDF pp.22–23: incompressible Navier–Stokes; periodic example derived and checked here"
+          ],
+          "pic": "Change viscosity, wavelength, initial speed and time in the exact periodic flow. Move the probe to compare pressure, advection, viscous acceleration and time change. The displayed field is computed from the stated solution."
+        },
+        {
+          "num": "6.5",
+          "kind": "Definition",
+          "name": "Reynolds number and dynamic similarity",
+          "deps": [
+            "fluid-6.4"
+          ],
+          "refs": [
+            "Hinch, PDF pp.20–22: nondimensionalization and Reynolds/time groups",
+            "MIT Unified Engineering, Fluids Lecture 4 (2005/2006), PDF pp.1–3: dimensionless parameters and dynamic similarity"
+          ],
+          "pic": "Rescale the second experiment and switch between matched and independently changed viscosity. Compare physical scales with the dimensionless profile collapse at the same dimensionless age."
+        },
+        {
+          "num": "6.6",
+          "kind": "Method",
+          "name": "Dimensional analysis: the Buckingham Π theorem",
+          "deps": [
+            "fluid-6.5",
+            "ladr-3.21"
+          ],
+          "refs": [
+            "MIT Unified Engineering, Fluids Lecture 4, PDF pp.1–3: Pi products and their role in similarity; exponent-matrix argument supplied from rank–nullity"
+          ],
+          "pic": "Select either basis product or edit its five exponents. Change mass, length and time units and inspect the actual dimension residual and monomial change; an invalid product changes under unit conversion."
+        },
+        {
+          "num": "6.7",
+          "kind": "Model",
+          "name": "Couette and Poiseuille flow",
+          "deps": [
+            "fluid-6.4",
+            "fluid-6.3"
+          ],
+          "refs": [
+            "Hinch, PDF pp.23–26: unidirectional reduction, plane shear/pressure flow and work balance",
+            "MIT 2.25, Couette & Poiseuille Flows (15 October 2008), PDF pp.1–2; flux obtained by integrating the stated profile"
+          ],
+          "pic": "Move both walls and reverse the pressure gradient. Inspect the combined velocity, its components and true extrema; compare force and energy balances with the actual profile integrals."
+        },
+        {
+          "num": "6.8",
+          "kind": "Law",
+          "name": "Hagen–Poiseuille law",
+          "deps": [
+            "fluid-6.7"
+          ],
+          "refs": [
+            "MIT 2.25, Couette & Poiseuille Flows, PDF p.2: circular-pipe profile, flux and Fanning convention",
+            "Hinch, PDF pp.25–26: pressure work and dissipation; circular derivation supplied here"
+          ],
+          "pic": "Change radius, viscosity, length and signed pressure drop. Compare the parabolic profile, actual flux and radius-to-the-fourth scaling; the readout checks pressure work and wall drag."
+        },
+        {
+          "num": "6.9",
+          "kind": "Theorem",
+          "name": "Viscous dissipation of energy",
+          "deps": [
+            "fluid-6.4",
+            "fluid-1.10"
+          ],
+          "refs": [
+            "Hinch, PDF pp.19–20: mechanical energy flux and strain dissipation; pp.24–25: Couette wall-power balance"
+          ],
+          "pic": "Compare freely decaying periodic motion with wall-driven steady shear. Inspect the actual energy history, instantaneous strain dissipation and supplied wall power rather than assuming every viscous flow must lose kinetic energy."
+        },
+        {
+          "num": "6.10",
+          "kind": "Model",
+          "name": "Impulsively started plate (Rayleigh’s problem)",
+          "deps": [
+            "fluid-6.4",
+            "fluid-6.3",
+            "pde-3.3"
+          ],
+          "refs": [
+            "Hinch, PDF pp.27–28: impulsive plate, diffusion similarity and wall shear",
+            "MIT 2.25, Stokes First Problem ATP, Fall 2008, PDF pp.1–3: setup and dimensional stress/penetration scales"
+          ],
+          "pic": "Advance time from the ideal start and inspect velocity and signed wall loading. Compare physical heights with the diffusion width; the initial corner is left undefined and the integrated momentum/energy remain explicit."
+        },
+        {
+          "num": "6.11",
+          "kind": "Model",
+          "name": "Oscillating plate: the Stokes layer",
+          "deps": [
+            "fluid-6.10"
+          ],
+          "refs": [
+            "Hinch, PDF p.29: oscillatory diffusion solution, depth and average dissipation",
+            "MIT 2.25, Stokes Second Problem ATP, Fall 2008, PDF pp.1–3: periodic versus initial-value problem and stress scaling"
+          ],
+          "pic": "Change frequency, viscosity, amplitude and phase. Inspect the signed velocity profile within its exponential envelopes and compare wall velocity, traction and energy exchange through a complete cycle."
+        },
+        {
+          "num": "6.12",
+          "kind": "Model",
+          "name": "Lamb–Oseen vortex",
+          "deps": [
+            "fluid-6.10",
+            "fluid-3.6"
+          ],
+          "refs": [
+            "Gallay and Wayne, arXiv:math/0402449v1 (2004), PDF pp.1–2, equation (7): exact Oseen fields, circulation and infinite-energy caveat",
+            "Hinch, PDF p.73, exercise 6.3: point-vorticity similarity solution"
+          ],
+          "pic": "Change viscosity, vortex age and signed circulation. Compare the smooth vorticity core with the actual azimuthal velocity and enclosed circulation; reversing circulation reverses the swirl without changing its width."
+        },
+        {
+          "num": "6.13",
+          "kind": "Model",
+          "name": "Burgers vortex",
+          "deps": [
+            "fluid-3.3",
+            "fluid-6.12"
+          ],
+          "refs": [
+            "Gallay and Maekawa, arXiv:1002.2489v1 (2010), PDF pp.1–3, equations (1.1)–(1.9): strain convention and explicit Burgers fields",
+            "Hinch, PDF pp.70–73: steady balance and transient Gaussian exercise; width equation derived and checked here"
+          ],
+          "pic": "Vary imposed strain, viscosity, initial width, age and circulation. Watch the computed core width approach its steady value when strain is positive, and compare the separate vorticity-budget terms with their actual time derivative."
+        },
         { num: '6.14', kind: 'Paper', name: 'Whether the motion of water shall be direct or sinuous',
           paper: { authors: 'Osborne Reynolds', year: 1883, title: 'An Experimental Investigation of the Circumstances Which Determine Whether the Motion of Water Shall Be Direct or Sinuous, and of the Law of Resistance in Parallel Channels', venue: 'Philosophical Transactions of the Royal Society of London 174: 935–982', doi: '10.1098/rstl.1883.0029' },
           introduces: ['fluid-6.5', 'fluid-10.10'], deps: ['fluid-6.4', 'fluid-6.8'], refs: [],

@@ -1,0 +1,27 @@
+# Wave 6 merge into main — 24 October 2026
+
+The user explicitly requested pushing the committed expansion branch, then merging it into `main`. This merge combines universal-atlas delivery `3889bff88a4447b50ce15eff03ea86e805bd67f8` with Wave 6 expansion `84d784cb8a1d67eac40e32ffc1c97c9d1ddb3e14`. It excludes unfinished GEO6 drafts and every unrelated dirty or untracked file in the expansion worktree. No independent review or deployment is claimed.
+
+## Reconciliation
+
+`MASTER_PLAN.md` was the only file changed differently on both parents. Its current Revision 4, local delivery, source restrictions and author-verification direction are retained. The active expansion row now records606 frozen new ideas:36 in the accepted export plus570 additional author-verified ideas through GEOL6. The frozen Wave6 assignment/progress payload remains unchanged.
+
+The reading exporter previously pinned7,751 ideas and rejected both the570 additions and the already verified MAT2.4 degree-symbol repair. Its explicit snapshot now contains8,321 ideas/76aliases from the committed expansion content. This admits the author-verified additions to the merged reading export; it does not claim570 new independent acceptances or rewrite the historical36/1,057 Wave6 export. [Exact reconciliation](../integration/wave6-main-merge-content.json) lists all570 added frozen identities and the sole retained-item change:MAT2.4's scope now renders the two Celsius temperatures correctly. Reconstructing the old projection reproduces its original SHA-256 digest exactly. All original identities, ordered dependencies, source flags and access stops survive.
+
+[Route-binding reconciliation](../integration/wave6-main-merge-bindings.json) records the old and new reading-snapshot pointers for journeys, introductory routes and deeper routes. Every individual target digest, declared prerequisite and authored task remains unchanged. The prior journey author receipt is retained in that record; the refreshed author receipt binds the new target metadata and this verification. All36focused route/model tests pass,0failures/skips/cancellations,in12.467540167seconds. A second intermediate full-suite attempt was stopped when these dependent bindings were identified; its log is `/tmp/wave6-main-merge-tests-before-route-rebinding.log`.
+
+The historical coverage dashboard remains byte-for-byte unchanged. Its test now reproduces the exact `b2f8e03398658979bca78b2303b1b1371f5445e6` checkpoint, including original local evidence, compiled sidecar and source bindings. The live dashboard checker still rejects changed local inputs. Other test reconciliations cover the existing28retained editions, the current local-acceptance label, the8,321-item/8,407-canonical-page reading export, and automatic disposable local-program and introductory-curriculum assembly when no external candidate is supplied. No test is skipped and no source-binding guard is removed.
+
+Before resolving the export, an initial full-suite diagnostic found these incompatibilities and was deliberately stopped after the failures were understood. The retained log is `/tmp/wave6-main-merge-tests.log`; it is not a passing full-suite claim. Two temporary preservation-oracle attempts used an incorrect MAT field/normalization expectation; the corrected comparison checks the exact scope-string replacement before recording the reconciliation.
+
+## Verification
+
+- Strict production build:8,321written/5,253planned,569chapters,85collections;0errors/0warnings; home JSON124,951bytes gzip. Rebuilt generated data exactly matches the new reading snapshot digest.
+- Full static check:8,258visualizations;0errors/0warnings.
+- Coverage registry validation and read-only local-continuation checks pass;24local exploration records and their model checks remain valid. Current exploration artifact bindings pass.
+- Focused reconciliation suite:28/28tests pass,0failures/skips/cancellations,7.229218875seconds.
+- Original page smoke sweep:272/272routes pass,0errors. Log:`/tmp/wave6-main-merge-smoke.log`.
+- Added merge sweep:82/82routes pass,0errors;39newly merged chapters, first/last new identities plus home/status/evidence/MAT2.4, 82routes. Log:`/tmp/wave6-main-merge-added-smoke.log`.
+- Full suite:4,456/4,458pass in645.516043625seconds,0skips/cancellations. Its only two failures are the missing-candidate setup in the original curriculum UI fixture. The repaired final file passes2/2 in38.316018792seconds,0failures/skips/cancellations (`/tmp/wave6-main-merge-curriculum-ui-final.log`). Those exact two case names are checked against the full-run failures. All4,458unique cases therefore have passing final results across the full run and this scoped replacement; no pristine full-suite rerun is claimed. Final gate receipt:`/tmp/wave6-main-merge-final-gates.json`. Node22.23.3, test-file concurrency1; full log:`/tmp/wave6-main-merge-tests-final.log`.
+
+All6,556parent files outside the13explicit plan/export/route-binding/test reconciliations retain their parent bytes. Four new merge evidence/test files bring the staged tree to6,573files. All `content/` files exactly match the committed expansion parent. The main-only universal runtime remains unchanged. `/tmp/wave6-main-merge-preservation.json` records the pre-reconciliation union check. Final preservation verification additionally checks the explicitly reconciled metadata/test files; its receipt is `/tmp/wave6-main-merge-final-preservation.json`. The original expansion worktree remains on its own branch with its unfinished drafts untouched.

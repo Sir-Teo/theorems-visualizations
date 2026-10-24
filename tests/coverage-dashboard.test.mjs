@@ -3,6 +3,8 @@ import assert from 'node:assert/strict';
 import {readFile,writeFile,mkdir,mkdtemp,rm} from 'node:fs/promises';
 import {tmpdir} from 'node:os';
 import {join} from 'node:path';
+import {execFileSync} from 'node:child_process';
+import {fileURLToPath} from 'node:url';
 import {buildCoverageModel,reviewAge} from '../scripts/coverage-dashboard-model.mjs';
 import {dashboardSnapshot} from '../scripts/build-coverage-dashboard-data.mjs';
 import {checkDashboard,validateBundle} from '../scripts/build-coverage-dashboard.mjs';
@@ -54,7 +56,15 @@ test('review queue retains eleven concrete unresolved classification actions',()
  const m=buildCoverageModel(inputs);assert.equal(m.classificationRows.length,11);assert.ok(m.classificationRows.every(r=>r.nextAction));
  assert.throws(()=>buildCoverageModel(altered(d=>d.classifications.find(c=>c.disposition==='review').nextAction=null)),/lacks next action/);
 });
-test('reviewed source, reproducible model, compiled sidecar and artifact bindings agree',async()=>{assert.equal((await checkDashboard()).result,'PASS');});
+test('historical dashboard source, model, compiled sidecar and artifact bindings agree at their exact checkpoint',async()=>{
+ const dir=await mkdtemp(join(tmpdir(),'coverage-historical-test-'));
+ try{
+  const tar=join(dir,'source.tar');
+  execFileSync('git',['archive','--format=tar','--output',tar,'b2f8e03398658979bca78b2303b1b1371f5445e6'],{cwd:fileURLToPath(new URL('..',import.meta.url))});
+  execFileSync('tar',['-xf',tar,'-C',dir]);await rm(tar);
+  assert.equal((await checkDashboard({root:dir})).result,'PASS');
+ }finally{await rm(dir,{recursive:true,force:true});}
+});
 test('bundle checker rejects changed bytes and unsafe sidecar paths before staging',async()=>{
  const dir=await mkdtemp(join(tmpdir(),'coverage-bundle-test-'));
  try{const manifest=JSON.parse(await readFile(new URL('../labs/atlas/coverage/data-app-build.json',import.meta.url),'utf8'));await writeFile(join(dir,'data-app-build.json'),JSON.stringify({...manifest,snapshot:{...manifest.snapshot,path:'../escape.json'}}));await assert.rejects(validateBundle(dir),/Invalid dashboard build/);
