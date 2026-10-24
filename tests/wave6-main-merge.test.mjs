@@ -5,9 +5,11 @@ import { createHash } from 'node:crypto';
 import { loadAll, ROOT } from '../scripts/lib.mjs';
 import { projectIdeas, selectFrozenIdeas, digest } from '../scripts/static-ideas.mjs';
 import { join } from 'node:path';
+import { execFileSync } from 'node:child_process';
 
 test('merged reading roster retains the exact old projection plus 570 frozen author-verified ideas', async () => {
-  const manifest = JSON.parse(await readFile(join(ROOT, 'static-pages/accepted.json'), 'utf8'));
+  // This receipt describes the historical merge, not the moving reading roster.
+  const manifest = JSON.parse(execFileSync('git', ['show', 'a5c0d50be3dcd37fbb7dcac48ca1676db5f64417:static-pages/accepted.json'], { cwd: ROOT, encoding: 'utf8' }));
   const bytes = await readFile(join(ROOT, manifest.sourceReconciliation.evidencePath));
   assert.equal(createHash('sha256').update(bytes).digest('hex'), manifest.sourceReconciliation.evidenceSha256);
   const receipt = JSON.parse(bytes), data = await loadAll();

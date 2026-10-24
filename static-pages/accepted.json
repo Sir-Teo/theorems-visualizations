@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
-  "acceptedCommit": "84d784cb8a1d67eac40e32ffc1c97c9d1ddb3e14",
-  "snapshotDigest": "ec3f27e836ca57bcd83d0e788de47fc0de71bacd5af36c55a8566167886dae93",
+  "acceptedCommit": "642359f6d8a7c303dd396ebd19e1105522e86e10",
+  "snapshotDigest": "993b7f0a3579c1377065b2cbe2e6613d72dc70789f2751c24b4c4c79e7a88915",
   "ids": [
     "aero-1.1",
     "aero-1.2",
@@ -1046,6 +1046,15 @@
     "climate-5.7",
     "climate-5.8",
     "climate-5.9",
+    "climate-6.1",
+    "climate-6.2",
+    "climate-6.3",
+    "climate-6.4",
+    "climate-6.5",
+    "climate-6.6",
+    "climate-6.7",
+    "climate-6.8",
+    "climate-6.9",
     "climate-7.15",
     "climate-7.16",
     "climate-8.13",
@@ -2611,6 +2620,14 @@
     "geog-7.6",
     "geog-7.7",
     "geog-7.8",
+    "geog-8.1",
+    "geog-8.2",
+    "geog-8.3",
+    "geog-8.4",
+    "geog-8.5",
+    "geog-8.6",
+    "geog-8.7",
+    "geog-8.8",
     "geol-1.1",
     "geol-1.10",
     "geol-1.2",
@@ -8631,12 +8648,12 @@
       "to": "sig-4.4"
     }
   ],
-  "dataDigest": "6b3c7838c51784c97133d804de430ba67cd5f6249cb8b1958b1a5509cc240645",
+  "dataDigest": "e8ddebc9601522fcd05fb10f422ebae512e7ccbeaeb5b5223cbaa088bdb7e91c",
   "sourceReconciliation": {
     "checkedOn": "2026-10-24",
-    "basis": "User-authorized merge of the author-verified Wave 6 expansion; no new independent review claimed",
-    "evidencePath": "docs/integration/wave6-main-merge-content.json",
-    "evidenceSha256": "9a70b3b01da6efe10b8218e99307f0d535729dbedeaf5052319ed31520bfaa15",
-    "verificationPath": "docs/verification/wave6-main-merge.md"
+    "basis": "Source-backed author verification of CLIMATE6 and GEOG8 under the continuous content goal; no additional independent review claimed",
+    "evidencePath": "docs/integration/wave6-climate-geog-content.json",
+    "evidenceSha256": "5b8e211928ff04bda4cc9b050892b792bf5c8892717893d0be3a9fd32afb8508",
+    "verificationPath": "docs/verification/wave6-climate-geog-integration.md"
   }
 }
