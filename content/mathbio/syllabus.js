@@ -217,34 +217,199 @@ export default {
       ],
     },
     {
-      n: 6,
-      title: 'Oscillators, switches and excitability',
-      summary: String.raw`Biology is full of clocks and toggles: glycolysis pulses, genes switch on and stay on, hearts and neurons fire and recover. This chapter collects the phase-plane machinery for proving and ruling out cycles, the canonical relaxation oscillator, feedback-loop oscillators with their gain requirements, positive-feedback switches and excitable systems. Phase response curves then describe how oscillators are reset, entrained and synchronized — including Winfree’s strange stimuli that stop a clock dead.`,
-      items: [
-        { num: '6.1', kind: 'Theorem', name: 'Bendixson–Dulac criterion', deps: ['mathbio-3.10', 'pma-10.45', 'ode-7.4'], refs: ['Edelstein-Keshet ch. 8'],
-          pic: 'Shade the divergence of a planar vector field (optionally multiplied by a Dulac function); where it keeps one sign on a simply connected region, every attempted closed orbit you draw shows a nonzero net flux and fails.' },
-        { num: '6.2', kind: 'Model', name: 'Van der Pol oscillator and relaxation oscillations', deps: ['mathbio-3.10', 'mathbio-3.12', 'ode-7.6', 'ode-7.8'], refs: ['Murray I ch. 7', 'Edelstein-Keshet ch. 8'],
-          pic: 'Raise the stiffness parameter μ and the near-sinusoidal cycle turns into slow crawls along the cubic nullcline punctuated by fast jumps; the period readout grows linearly with μ as predicted.' },
-        { num: '6.3', kind: 'Model', name: 'Sel’kov model of glycolytic oscillations', deps: ['mathbio-3.11', 'mathbio-5.1'], refs: ['Murray I ch. 7'],
-          pic: 'Vary the substrate supply rate; within a window bounded by two Hopf points the ATP–ADP concentrations oscillate, and a trapping region drawn on the phase plane shows why a cycle must exist.' },
-        { num: '6.4', kind: 'Model', name: 'Goodwin oscillator', deps: ['mathbio-5.8', 'mathbio-3.12'], refs: ['Murray I ch. 7'],
-          pic: 'A gene represses itself through two intermediate steps; increase the Hill coefficient of repression and the steady state gives way to sustained oscillations of mRNA, protein and repressor in staggered phase.' },
-        { num: '6.5', kind: 'Theorem', name: 'Secant condition for feedback-loop oscillators', deps: ['mathbio-6.4'], refs: ['Murray I ch. 7'],
-          pic: 'For a loop of n identical stages the loop gain needed for instability is sec(π/n)ⁿ; drag n and the gain and watch the simulation start oscillating exactly as the point crosses the plotted curve (gain 8 for three stages).' },
-        { num: '6.6', kind: 'Model', name: 'Bistable switch from positive feedback', deps: ['mathbio-5.8', 'mathbio-1.11'], refs: ['Murray I ch. 7', 'Edelstein-Keshet ch. 7'],
-          pic: 'A self-activating gene with sigmoidal feedback has production and degradation curves crossing three times; pulse the input and the system jumps to the high state and stays there after the pulse ends.' },
-        { num: '6.7', kind: 'Phenomenon', name: 'Excitability', deps: ['mathbio-6.2'], refs: ['Edelstein-Keshet ch. 8', 'Murray I ch. 7'],
-          pic: 'Kick a resting system with stimuli of increasing size: small kicks decay at once, but beyond a threshold the trajectory makes a large excursion around the phase plane before returning — an all-or-none response.' },
-        { num: '6.8', kind: 'Model', name: 'Oregonator model of the Belousov–Zhabotinsky reaction', deps: ['mathbio-6.2', 'mathbio-5.13', 'kin-8.7'], refs: ['Murray I ch. 8'],
-          pic: 'The three-variable Oregonator is integrated with a stiff solver; bromide and bromous acid concentrations show relaxation oscillations, and a colour swatch flips between red and blue at each cycle as in the beaker.' },
-        { num: '6.9', kind: 'Concept', name: 'Phase and the phase response curve', deps: ['mathbio-3.10'], refs: ['Murray I ch. 9'],
-          pic: 'Deliver a brief pulse to a limit-cycle oscillator at a chosen phase; the measured advance or delay of the next peak is plotted, and sweeping the pulse timing builds the whole phase response curve.' },
-        { num: '6.10', kind: 'Phenomenon', name: 'Phase singularities and type 0 resetting (Winfree)', deps: ['mathbio-6.9'], refs: ['Murray I ch. 9'],
-          pic: 'Map the new phase against old phase for weak and strong pulses; at a critical strength and timing the pulse lands in the “black hole” near the unstable focus and the rhythm stops, as Winfree found for circadian clocks.' },
-        { num: '6.11', kind: 'Phenomenon', name: 'Entrainment and Arnold tongues', deps: ['mathbio-6.9'], refs: ['Murray I ch. 9'],
-          pic: 'Force an oscillator periodically and scan forcing frequency and amplitude; regions of 1:1, 1:2 and 2:3 locking appear as tongues computed from the circle map, with quasi-periodic gaps between them.' },
-        { num: '6.12', alias: 'ode-8.17', name: 'Kuramoto model of synchronization' },
-      ],
+      "n": 6,
+      "title": "Oscillators, switches and excitability",
+      "summary": "Explicit models separate stable cycles, finite oscillatory transients, bistability and excitable excursions. A strict Dulac argument rules out planar cycles, an invariant Sel’kov polygon supplies an existence proof, and the secant bound identifies a local feedback instability. Exact radial phase geometry then exposes resetting singularities, while finite circle-map searches make the limits of numerical entrainment evidence visible.",
+      "items": [
+        {
+          "num": "6.1",
+          "kind": "Theorem",
+          "name": "Bendixson–Dulac criterion",
+          "deps": [
+            "mathbio-3.10",
+            "pma-10.45",
+            "ode-7.4"
+          ],
+          "refs": [
+            "Written Green’s theorem PMA10.45 and limit-cycle definition MATHBIO3.10; direct flux and divergence calculation"
+          ],
+          "links": {},
+          "pic": "Compare an unweighted field with a Dulac-weighted predator–prey field, or use a damped rotation. Change the candidate-circle radius and compare its line-integral flux with a separately derived area formula. Blue and orange tiles show the sign of the weighted divergence."
+        },
+        {
+          "num": "6.2",
+          "kind": "Model",
+          "name": "Van der Pol oscillator and relaxation oscillations",
+          "deps": [
+            "mathbio-3.10",
+            "mathbio-3.12",
+            "ode-7.6",
+            "ode-7.8"
+          ],
+          "refs": [
+            "Ermentrout & Terman, university-hosted draft of Foundations of Mathematical Neuroscience, §§4.7,9.1–9.2; page references use the draft’s printed numbering; §4.7 pp.78–79, circuit reduction",
+            "Written MATHBIO3.10; direct coordinate and slow-branch calculation"
+          ],
+          "links": {
+            "draft": "https://neurophysics.ucsd.edu/courses/physics_171/Ermentrout_Therman.pdf"
+          },
+          "pic": "Increase μ and inspect the same trajectory in the Liénard plane and in time. Compare the measured late-window upward-crossing period with its large-μ asymptote. A time marker moves through both panels."
+        },
+        {
+          "num": "6.3",
+          "kind": "Model",
+          "name": "Sel’kov model of glycolytic oscillations",
+          "deps": [
+            "mathbio-3.11",
+            "mathbio-5.1"
+          ],
+          "refs": [
+            "NIH/NSR JSim model 0341, Selkov: actual equations, nullclines and parameter description",
+            "Written Poincaré–Bendixson result MATHBIO3.11; direct equilibrium and invariant-bound proof"
+          ],
+          "links": {
+            "modelArchive": "https://www.imagwiki.nibib.nih.gov/physiome/jsim/models/webmodel/NSR/selkov"
+          },
+          "pic": "Vary substrate supply with a fixed a=0.1. Compare the orbit with its nullclines, then switch to the explicit invariant outer bound. The time panel makes slow near-boundary transients visible."
+        },
+        {
+          "num": "6.4",
+          "kind": "Model",
+          "name": "Goodwin oscillator",
+          "deps": [
+            "mathbio-5.8",
+            "mathbio-3.12"
+          ],
+          "refs": [
+            "Arcak & Sontag (2006), Diagonal stability of a class of cyclic systems and its connection with the secant criterion, Introduction Eqs.(1)–(3) and Theorem 1, pp.1531–1532",
+            "Written Hill-law interpretation MATHBIO5.8; direct linearization and boundedness calculation"
+          ],
+          "links": {
+            "primary": "https://sontaglab.org/FTPDIR/arcak_sontag_automatica06.pdf"
+          },
+          "pic": "Change repression steepness and compare the three stage traces. The second panel is a projection of the same three-dimensional trajectory. Late-window ranges report what the finite run resolves without imposing a cycle amplitude."
+        },
+        {
+          "num": "6.5",
+          "kind": "Theorem",
+          "name": "Secant condition for feedback-loop oscillators",
+          "deps": [
+            "mathbio-6.4"
+          ],
+          "refs": [
+            "Arcak & Sontag (2006), Diagonal stability of a class of cyclic systems and its connection with the secant criterion, Introduction Eqs.(1)–(3) and Theorem 1, pp.1531–1532",
+            "Direct characteristic-polynomial and convexity argument"
+          ],
+          "links": {
+            "primary": "https://sontaglab.org/FTPDIR/arcak_sontag_automatica06.pdf"
+          },
+          "pic": "Move stage count and loop gain. Inspect the actual equal-loss eigenvalues and an exact dominant linear mode, including neutral oscillations at the threshold. Growing modes are allowed to grow instead of being forced into a saturated cycle."
+        },
+        {
+          "num": "6.6",
+          "kind": "Model",
+          "name": "Bistable switch from positive feedback",
+          "deps": [
+            "mathbio-5.8",
+            "mathbio-1.11"
+          ],
+          "refs": [
+            "Edelstein-Keshet, MCB2012 lecture 3, positive/negative feedback concepts, especially slides 9–10",
+            "Written MATHBIO5.8 and 1.11; direct factorization and pulse model"
+          ],
+          "links": {
+            "lecture": "https://personal.math.ubc.ca/~keshet/MCB2012/SlidesLEK/Lect3.pdf"
+          },
+          "pic": "Compare baseline production with linear degradation, then change pulse height and duration. The time trace highlights the pulse interval and the unstable threshold. Move the time marker to inspect the finite state."
+        },
+        {
+          "num": "6.7",
+          "kind": "Phenomenon",
+          "name": "Excitability",
+          "deps": [
+            "mathbio-6.2"
+          ],
+          "refs": [
+            "Ermentrout & Terman, university-hosted draft of Foundations of Mathematical Neuroscience, §§4.7,9.1–9.2; page references use the draft’s printed numbering; §4.7 pp.78–79, cubic activation and recovery",
+            "Direct equilibrium and Jacobian calculation"
+          ],
+          "links": {
+            "draft": "https://neurophysics.ucsd.edu/courses/physics_171/Ermentrout_Therman.pdf"
+          },
+          "pic": "Compare a fixed small kick with a selected kick, inspect the nullclines and move along the resulting trajectory. Change the recovery rate and read the sampled peak and the finite endpoint distance from rest."
+        },
+        {
+          "num": "6.8",
+          "kind": "Model",
+          "name": "Oregonator model of the Belousov–Zhabotinsky reaction",
+          "deps": [
+            "mathbio-6.2",
+            "mathbio-5.13",
+            "kin-8.7"
+          ],
+          "refs": [
+            "Liu, Pérez-Mercader & Kiss (2022), Synchronization of Belousov–Zhabotinsky oscillators with electrochemical coupling in a spontaneous process, model Eqs.(3)–(10), DOI 10.1063/5.0096689",
+            "Independent positive-subflow derivation; adaptive composition checked with SciPy Radau"
+          ],
+          "links": {
+            "primary": "https://par.nsf.gov/servlets/purl/10436523"
+          },
+          "pic": "Change the fast time scales and stoichiometric factor. Compare the normalized chemical pulses with a raw activator/catalyst projection and read the actual selected concentrations. Each curve’s normalization is stated explicitly."
+        },
+        {
+          "num": "6.9",
+          "kind": "Concept",
+          "name": "Phase and the phase response curve",
+          "deps": [
+            "mathbio-3.10"
+          ],
+          "refs": [
+            "Ermentrout & Terman, university-hosted draft of Foundations of Mathematical Neuroscience, §§4.7,9.1–9.2; page references use the draft’s printed numbering; §9.1 pp.172–179, isochrons, resetting and λ–ω models",
+            "Direct radial solution and phase-gradient calculation"
+          ],
+          "links": {
+            "draft": "https://neurophysics.ucsd.edu/courses/physics_171/Ermentrout_Therman.pdf"
+          },
+          "pic": "Choose pulse phase, amplitude and isochron shear. Compare the actual post-pulse trajectory with its asymptotically matching cycle point, and compare the exact finite response with the infinitesimal prediction multiplied by pulse amplitude."
+        },
+        {
+          "num": "6.10",
+          "kind": "Phenomenon",
+          "name": "Phase singularities and type 0 resetting (Winfree)",
+          "deps": [
+            "mathbio-6.9"
+          ],
+          "refs": [
+            "Ermentrout & Terman, university-hosted draft of Foundations of Mathematical Neuroscience, §§4.7,9.1–9.2; page references use the draft’s printed numbering; §9.1.1 pp.174–175, weak/strong resetting and the Hopf normal form",
+            "Direct translated-circle and radial-recovery derivation"
+          ],
+          "links": {
+            "draft": "https://neurophysics.ucsd.edu/courses/physics_171/Ermentrout_Therman.pdf"
+          },
+          "pic": "Move pulse amplitude across one and set the old phase near one half. Inspect the translated cycle, the exact landing radius, recovery time and reset map. At the exact singularity the phase and recovery readouts are undefined."
+        },
+        {
+          "num": "6.11",
+          "kind": "Phenomenon",
+          "name": "Entrainment and Arnold tongues",
+          "deps": [
+            "mathbio-6.9"
+          ],
+          "refs": [
+            "Ermentrout & Terman, university-hosted draft of Foundations of Mathematical Neuroscience, §§4.7,9.1–9.2; page references use the draft’s printed numbering; §9.2.2 pp.188–190, forced phase maps, rotation number and periodic stability",
+            "Direct monotone-lift displacement bound and derivative product"
+          ],
+          "links": {
+            "draft": "https://neurophysics.ucsd.edu/courses/physics_171/Ermentrout_Therman.pdf"
+          },
+          "pic": "Select 1:1, 1:2 or 2:3 and inspect a finite-grid search for attracting periodic candidates. At the selected parameters, compare the return equation, multiplier and a finite rotation estimate rather than assigning a locking label from a rounded average."
+        },
+        {
+          "num": "6.12",
+          "alias": "ode-8.17",
+          "name": "Kuramoto model of synchronization"
+        }
+      ]
     },
     {
       n: 7,

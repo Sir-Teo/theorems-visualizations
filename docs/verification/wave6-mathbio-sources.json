@@ -1,0 +1,103 @@
+{
+  "date": "2026-10-24",
+  "baseCommit": "a649e2c605065b1723193197237423541bf5fb9c",
+  "prerequisitesRead": [
+    "mathbio-1.11",
+    "mathbio-3.10",
+    "mathbio-3.11",
+    "mathbio-3.12",
+    "mathbio-5.13",
+    "mathbio-5.8",
+    "pma-10.45"
+  ],
+  "laterPrerequisites": [
+    "mathbio-5.1 is an existing alias to unwritten pchem-7.4; alias inspected, no written body claimed. Existing6.3 ordered dependency correction retained.",
+    "ode-7.4, ode-7.6, ode-7.8 and kin-8.7 remain unwritten; required flux/coordinate/slow-branch/chemical arguments supplied locally."
+  ],
+  "acquisitionReceipts": [
+    {
+      "id": "oregonator",
+      "url": "https://www.scholarpedia.org/article/Oregonator",
+      "stop": true,
+      "reason": "HTTP Error 503: Service Unavailable"
+    },
+    {
+      "id": "vdp",
+      "url": "https://www.scholarpedia.org/article/Van_der_Pol_oscillator",
+      "stop": true,
+      "reason": "HTTP Error 503: Service Unavailable"
+    },
+    {
+      "id": "arcak",
+      "url": "https://sontaglab.org/FTPDIR/arcak_sontag_automatica06.pdf",
+      "status": 200,
+      "bytes": 208060,
+      "sha256": "73653eeaa97bfb3763577960e9df2c0c19057bfa65c1754fe882c5ed951d1f9c",
+      "type": "application/pdf"
+    },
+    {
+      "id": "ermentrout-terman-draft",
+      "url": "https://neurophysics.ucsd.edu/courses/physics_171/Ermentrout_Therman.pdf",
+      "status": 200,
+      "bytes": 9152185,
+      "sha256": "3de3d188cc1f93e4817ed831359d3d242e23e2e7e041fb9b3e0764a478bded99",
+      "type": "application/pdf"
+    },
+    {
+      "id": "keshet-lecture3",
+      "url": "https://personal.math.ubc.ca/~keshet/MCB2012/SlidesLEK/Lect3.pdf",
+      "status": 200,
+      "bytes": 2236385,
+      "sha256": "b4746225f2d5b3e919733a2e866b376390700d8a401f5d4c2f7c4c6f00dc5427",
+      "type": "application/pdf"
+    },
+    {
+      "id": "liu-perez-mercader-kiss-2022",
+      "url": "https://par.nsf.gov/servlets/purl/10436523",
+      "status": 200,
+      "bytes": 5689308,
+      "sha256": "f19a1817db32c11020b4189b6b5ca2bf50389cb90e24c4fbb26a13e8e7b5c94d",
+      "type": "application/pdf",
+      "bibliographicCorrection": "Actual primary PDF is Chaos32,093128(2022), DOI10.1063/5.0096689; search-year2023 was not adopted."
+    },
+    {
+      "id": "selkov-source",
+      "url": "https://www.imagwiki.nibib.nih.gov/sites/default/files/Selkov_0.mod",
+      "status": 200,
+      "bytes": 3875,
+      "sha256": "891b9b7bb83b08492a3e930e8d142fd4ade10eba609b58c7558a8eee4ecf2b16",
+      "type": "text/plain"
+    }
+  ],
+  "readSources": [
+    {
+      "id": "arcak",
+      "scope": "Actual author-hosted Automatica42(2006)1531–1537 PDF. Selected Introduction pp1531–1532 Eqs1–3, Theorem1 and beginning proof through Eq9 read; both page pixels inspected. Equal decay makes the secant threshold necessary/sufficient Hurwitz; unequal decay retains sufficiency and the exact diagonal-stability equivalence. Global nonlinear conclusions require additional sector/passivity hypotheses. No full-proof or whole-paper reading claim."
+    },
+    {
+      "id": "ermentrout-terman-draft",
+      "scope": "University-hosted440-page draft titled Foundations of Mathematical Neuroscience; no final-edition/year claim. Selected §4.7 printed78–79 circuit reduction and FHN; §9.1 printed172–175 phase/isochrons/type0–1; lambda–omega example printed179; §9.2.2 printed188–190 forced maps, rotation and periodic multipliers. Printed78 and179 pixels inspected. The draft prints lambda(0)=0 beside a unit-cycle discussion; our independently proved lambda(r)=1−r² uses lambda(1)=0. Our normalized cubic and shear sign are explicitly chosen models, not transcriptions. Original Winfree/FitzHugh/van-der-Pol papers were not read."
+    },
+    {
+      "id": "selkov-source",
+      "url": "https://www.imagwiki.nibib.nih.gov/physiome/jsim/models/webmodel/NSR/selkov",
+      "scope": "Actual NIH/NSR JSim model0341 description and linked plain-text MML read: equations, nullclines, a=.1 and approximate Hopf boundaries. Independent algebra/invariant polygon/RK4 implementation; no archive software copied. Original Selkov1968 paper not fetched."
+    },
+    {
+      "id": "keshet-lecture3",
+      "scope": "Actual MCB2012lecture3 selected conceptual slides9,10,12,13,20,28; slides9/10 pixels inspected. Only feedback/switch motivation is used; the displayed one-variable Hill switch is independently declared and derived. No Murray or Edelstein-Keshet textbook chapter-body reading claim."
+    },
+    {
+      "id": "liu-perez-mercader-kiss-2022",
+      "scope": "Actual2022 primary PDF selected model section B.1, printed093128-6 (PDF7), Eqs3–10 and species/constant-feed versus batch-depletion explanation. Complete model-page pixels inspected. Holding feed variables a=b=1 gives our chemostatted system. q=.0008 retained; offered epsilon/delta ranges are illustrative, not the paper’s calibrated values. No experimental-data replication, electrochemical coupling, batch depletion or literal beaker color claim."
+    }
+  ],
+  "additionalAccessBoundaries": [
+    {
+      "url": "https://www.scholarpedia.org/article/Phase_response_curve",
+      "scope": "Reader timeout; no source body read or claimed."
+    }
+  ],
+  "accessPolicy": "Oregonator and Van_der_Pol Scholarpedia503 stops remain binding; no alternate URL, mirror/cache or other recovery of those works. Distinct successful sources are recorded separately. All earlier continuation stops remain binding. Reader capability/timeouts on Keshet and NSF were followed by successful normal fetches of the exact same URL, before any source denial; no denied-body recovery.",
+  "preservation": "Eleven frozen identities/kinds/names/paper/introduces and existing base dependency arrays retained. Existing MATHBIO6.12 alias to ode-8.17 retained exactly, uncounted as a new lesson. All other syllabus chapters/root fields unchanged. Frozen plan JSON and historical accepted36/1057 untouched."
+}
