@@ -6,4 +6,10 @@ The reading roster admits precisely POPGEN6.1–6.13 and MATHBIO6.1–6.11 from 
 
 Scoped reconciliation tests pass30/30. Strict build passes8,362 written/5,212 planned/573 chapters/85 collections with zero errors/warnings. The complete static check passes8,299 visualizations, and coverage validation plus the24-record local continuation check pass. Direct rechecks reproduce reading and generated-data digests. Logs: `/tmp/wave6-popgen-mathbio-{reconciliation-tests,build,static,coverage,local}.log`.
 
-The global integration suite and production smoke checks are pending; this draft does not claim their completion. The preceding global checkpoint remains [CLIMATE6/GEOG8](wave6-climate-geog-integration.md), with4,489 passing tests and272 routes in each theme. Preserve unfinished desktop GEO6/ODE6/ALG9 drafts and all source-access stops. Continue ECOL6 after this batch checkpoint.
+Completed on Node22.23.3 after source reconciliation at `43e0f6f8`:
+
+- Full suite: **4,525/4,525 pass**, no failures, skips, cancellations or todos;747.571609722 seconds, test-file concurrency1. This adds35 chapter groups and one reading-preservation regression to the prior4,489-test checkpoint. Log: `/tmp/wave6-popgen-mathbio-full-suite.log`.
+- Production smoke: **272 routes in light and272 in dark**, zero errors in both. Logs: `/tmp/wave6-popgen-mathbio-smoke-{light,dark}.log`.
+- Both chapter manifests retain all20 source/test/gate hashes. Final direct rechecks reproduce generated data, the complete reading projection, every alias and every route array. The frozen Wave6 plan remains byte-identical to the preceding checkpoint. No chapter source changed during integration.
+
+The current reading snapshot contains **8,362 ideas and76 aliases**, with source commit `bcee210ec01c72dd937e8361377866e6bab5fac7`, projection digest `017579f7fb2b69c682f0091a99948d8a1bf7980a3bfcde0193a279a7d34594f4`, and generated-data digest `4ac0de058df85175cc837f69b05e9793ba38f3c507cb252d179b28310c3c97bb`. All integration-owned browsers/servers are closed. This is a local integrated author checkpoint; historical acceptance remains36/1,057. Continue ECOL6, preserving unfinished desktop GEO6/ODE6/ALG9 drafts and every source-access stop.
