@@ -380,8 +380,8 @@
     "scope": "local-preview",
     "author": "atlas-editor",
     "checkedOn": "2026-10-24",
-    "contentDigest": "0d35f0fc680999d8122f8a777991744b94031b812a0392c0a51ddfdb0ae534c1",
+    "contentDigest": "afdbf3e08602aad5a66700bca931a9455df52bb418dc3823a6e29ff617270f77",
     "artifactDigest": "ff19c4a9828fd3b260c199c4963c1f85265be51d9cf59bd0c7e9e94aadd9f56e",
-    "evidencePath": "docs/verification/wave6-popgen-mathbio-integration.md"
+    "evidencePath": "docs/verification/wave6-ecol-neuro-integration.md"
   }
 }
