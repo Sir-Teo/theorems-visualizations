@@ -328,31 +328,173 @@ export default {
     },
     // ───────────────────────────────────────────────────────────── 6
     {
-      n: 6,
-      title: 'The ocean, transient warming and sea level',
-      summary: String.raw`The ocean holds most of the climate system's heat capacity, so warming lags forcing. A two-layer model — a fast mixed layer over a slow deep ocean — explains the difference between transient and equilibrium response and the warming still in the pipeline. The measured energy imbalance confirms the planet is gaining heat, and that heat raises sea level through thermal expansion while melting ice adds more. El Niño shows the ocean and atmosphere coupled on interannual time scales.`,
-      items: [
-        { num: '6.1', kind: 'Model', name: 'Mixed-layer response time', deps: ['climate-3.4', 'sig-6.8'], refs: ['Archer ch. 6', 'Pierrehumbert'],
-          pic: 'Apply a step forcing to a slab ocean of adjustable depth: temperature relaxes exponentially with time constant C/λ, a few years for a 50 m mixed layer, plotted against the equilibrium line.' },
-        { num: '6.2', kind: 'Model', name: 'Two-layer model of transient climate response', deps: ['climate-6.1', 'climate-3.6'], refs: ['IPCC AR6 WG1 ch. 7'],
-          pic: 'Couple the mixed layer to a deep ocean: warming shows a fast rise to a quasi-equilibrium and a slow creep over centuries, with the two time scales read off the eigenvalues of the 2×2 system.' },
-        { num: '6.3', kind: 'Phenomenon', name: 'Committed warming and the zero-emissions commitment', deps: ['climate-6.2', 'climate-3.6'], refs: ['IPCC AR6 WG1 ch. 4'],
-          pic: 'Hold concentrations constant or stop emissions entirely: constant concentrations give continued warming as the deep ocean catches up, while zero emissions give a near-flat temperature as falling CO₂ offsets the lag.' },
-        { num: '6.4', kind: 'Phenomenon', name: 'Earth’s energy imbalance', deps: ['climate-6.2'], refs: ['IPCC AR6 WG1 ch. 7'],
-          pic: 'Integrate ocean heat content measurements over time: the slope gives a planetary imbalance of roughly 0.5–1 W/m², and the model shows the imbalance equals forcing minus feedback times warming.' },
-        { num: '6.5', kind: 'Phenomenon', name: 'Sea-level rise from thermal expansion', deps: ['climate-6.4', 'geo-1.9'], refs: ['IPCC AR6 WG1 ch. 9'],
-          pic: 'Warm an ocean column with depth-dependent warming: expansion is computed from the equation of state, larger in warm water than near freezing, and the column height change is summed.' },
-        { num: '6.6', kind: 'Phenomenon', name: 'Sea-level contributions from glaciers and ice sheets', deps: ['climate-6.5', 'climate-5.9'], refs: ['IPCC AR6 WG1 ch. 9'],
-          pic: 'Stack contributions to sea-level rise since 1900 and under scenarios: thermal expansion, mountain glaciers, Greenland and Antarctica, with Antarctica’s deep uncertainty shown as a widening band.' },
-        { num: '6.7', kind: 'Model', name: 'El Niño and the Bjerknes feedback', deps: ['geo-8.8', 'geo-6.2'], refs: ['IPCC AR6 WG1 ch. 2'],
-          pic: 'Run a recharge-oscillator model: a warm anomaly weakens the trades, which deepens the thermocline in the east and amplifies the anomaly, while slow Kelvin and Rossby wave adjustment turns it around every few years.' },
-        { num: '6.8', kind: 'Phenomenon', name: 'Arctic sea-ice decline', deps: ['climate-4.4', 'climate-4.7'], refs: ['IPCC AR6 WG1 ch. 9'],
-          pic: 'Plot September Arctic sea-ice extent since 1979 against cumulative CO₂ emissions: a near-linear decline of about 3 m² of ice per tonne of CO₂, extrapolated to an ice-free summer.' },
-        { num: '6.9', kind: 'Paper', name: 'Atmospheric Teleconnections from the Equatorial Pacific',
-          paper: { authors: 'J. Bjerknes', year: 1969, title: 'Atmospheric Teleconnections from the Equatorial Pacific', venue: 'Monthly Weather Review 97 (3): 163–172', doi: '10.1175/1520-0493(1969)097<0163:ATFTEP>2.3.CO;2' },
-          introduces: ['climate-6.7'], deps: ['geo-8.8', 'geo-4.6'], refs: [],
-          pic: 'Couple a toy equatorial Pacific: warm the east and the trade winds slacken, upwelling weakens and the east warms further — Bjerknes’ positive feedback — while the Walker circulation he named shifts east; the reader compares the model’s swing with the 1957–58 El Niño the paper analysed.' },
-      ],
+      "n": 6,
+      "title": "The ocean, transient warming and sea level",
+      "summary": "Ocean heat storage separates the rate of warming from its eventual magnitude. Explicit one- and two-reservoir balances connect forcing, temperature and heat gain, while mass and density budgets separate sea-level contributions. Carefully scoped feedback models explain what El Niño and a cumulative-emissions relationship reveal, and what they cannot predict.",
+      "items": [
+        {
+          "num": "6.1",
+          "kind": "Model",
+          "name": "Mixed-layer response time",
+          "deps": [
+            "climate-3.4",
+            "sig-6.8"
+          ],
+          "refs": [
+            "Rose, The Climate Laboratory, “Toy models of transient warming”, sections on heat capacity, ocean uptake and committed warming"
+          ],
+          "links": {
+            "teaching": "https://brian-rose.github.io/ClimateLaboratoryBook/courseware/transient-toy"
+          },
+          "pic": "Deepen the mixed layer and watch the temperature response slow. Move the time marker to compare incoming forcing with heat radiated away and heat still being stored. Set the forcing to zero to recover the unperturbed state."
+        },
+        {
+          "num": "6.2",
+          "kind": "Model",
+          "name": "Two-layer model of transient climate response",
+          "deps": [
+            "climate-6.1",
+            "climate-3.6"
+          ],
+          "refs": [
+            "Rose, The Climate Laboratory, “Toy models of transient warming”, sections on heat capacity, ocean uptake and committed warming",
+            "CLIMATE3.6: two-reservoir matrix and modal argument"
+          ],
+          "links": {
+            "teaching": "https://brian-rose.github.io/ClimateLaboratoryBook/courseware/transient-toy"
+          },
+          "pic": "Change reservoir depths, restoring and exchange. Compare their temperature curves with the heat each reservoir stores. Turn exchange all the way off to see why the deep ocean then has no finite adjustment time."
+        },
+        {
+          "num": "6.3",
+          "kind": "Phenomenon",
+          "name": "Committed warming and the zero-emissions commitment",
+          "deps": [
+            "climate-6.2",
+            "climate-3.6"
+          ],
+          "refs": [
+            "Jones et al. (2019), ZECMIP protocol, §1, especially the distinction between fixed concentration and zero emissions",
+            "Rose, The Climate Laboratory, “Toy models of transient warming”, sections on heat capacity, ocean uptake and committed warming"
+          ],
+          "links": {
+            "protocol": "https://gmd.copernicus.org/articles/12/4375/2019/gmd-12-4375-2019.html",
+            "teaching": "https://brian-rose.github.io/ClimateLaboratoryBook/courseware/transient-toy"
+          },
+          "pic": "Both curves start with a 70-year linear forcing ramp. Compare fixed concentration with a toy zero-emissions reservoir whose excess CO₂ declines toward a chosen permanent fraction. Adjust its sink time and retained fraction to see further warming or cooling after cessation."
+        },
+        {
+          "num": "6.4",
+          "kind": "Phenomenon",
+          "name": "Earth’s energy imbalance",
+          "deps": [
+            "climate-6.2"
+          ],
+          "refs": [
+            "NASA Earth Observatory, “Climate and Earth’s Energy Budget” (2009), radiative equilibrium and climate forcing",
+            "Rose, The Climate Laboratory, “Toy models of transient warming”, sections on heat capacity, ocean uptake and committed warming"
+          ],
+          "links": {
+            "energy": "https://science.nasa.gov/earth/earth-observatory/climate-and-earths-energy-budget/",
+            "teaching": "https://brian-rose.github.io/ClimateLaboratoryBook/courseware/transient-toy"
+          },
+          "pic": "Compare the heat inventory's growing curve with the instantaneous forcing, radiative response and remaining heat gain. Change deep-ocean exchange to see substantial storage accompany slow surface warming. At zero elapsed time an interval-average imbalance is undefined."
+        },
+        {
+          "num": "6.5",
+          "kind": "Phenomenon",
+          "name": "Sea-level rise from thermal expansion",
+          "deps": [
+            "climate-6.4",
+            "geo-1.9"
+          ],
+          "refs": [
+            "GEO1.9: EOS-80 at one atmosphere, Millero & Poisson (1981); Fofonoff & Millard (1983)"
+          ],
+          "pic": "Warm the upper layer and choose how much of that warming reaches the deep layer. Compare initial and final temperatures by depth, then inspect each layer's contribution to height. Lower salinity to explore why cold fresh water can contract as it warms."
+        },
+        {
+          "num": "6.6",
+          "kind": "Phenomenon",
+          "name": "Sea-level contributions from glaciers and ice sheets",
+          "deps": [
+            "climate-6.5",
+            "climate-5.9"
+          ],
+          "refs": [
+            "NASA Earth Observatory (2020), “Taking a Measure of Sea Level Rise: Ice Height”, land-ice mass conversion"
+          ],
+          "links": {
+            "measurement": "https://science.nasa.gov/earth/earth-observatory/taking-a-measure-of-sea-level-rise-ice-height-147438/"
+          },
+          "pic": "Set independent constant rates for thermal expansion, glaciers, Greenland and Antarctica. The curves stack their accumulated contributions, and bars separate them at the selected time. Widen the Antarctic rate bracket to see how it affects the total."
+        },
+        {
+          "num": "6.7",
+          "kind": "Model",
+          "name": "El Niño and the Bjerknes feedback",
+          "deps": [
+            "geo-8.8",
+            "geo-6.2"
+          ],
+          "refs": [
+            "McPhaden, Zebiak & Glantz (2006), ENSO as an Integrating Concept in Earth Science, “ENSO Physics”",
+            "Vialard et al. (2025), ENSO recharge oscillator review, NOAA/PMEL abstract: two-variable heat-content/SST framework"
+          ],
+          "links": {
+            "physics": "https://www.pmel.noaa.gov/pubs/outstand/mcph2969/mcph2969.shtml",
+            "review": "https://pmel.noaa.gov/public/pmel/publications-search/search_abstract.php?fmContributionNum=5662"
+          },
+          "pic": "Vary positive feedback, switch the delayed ocean feedback off, and start from surface warmth or an ocean recharge anomaly. Follow both time series and the phase portrait. A damped loop, neutral oscillation and growing loop are different outcomes."
+        },
+        {
+          "num": "6.8",
+          "kind": "Phenomenon",
+          "name": "Arctic sea-ice decline",
+          "deps": [
+            "climate-4.4",
+            "climate-4.7"
+          ],
+          "refs": [
+            "Max Planck Society (4 November 2016), “My contribution to Arctic sea ice melt”, institutional account of Notz & Stroeve (2016)",
+            "NSIDC, Science of sea ice, sections on albedo, seasonal change and observation"
+          ],
+          "links": {
+            "study": "https://www.mpg.de/10817029/my-contribution-to-arctic-sea-ice-melt",
+            "background": "https://nsidc.org/learn/parts-cryosphere/sea-ice/science-sea-ice"
+          },
+          "pic": "Choose a reference September area and sensitivity, then add cumulative CO₂ emissions. Inspect both remaining area and calculated loss. Compare the zero-area crossing with a separate 1 million km² area reference; neither is an exact calendar forecast."
+        },
+        {
+          "num": "6.9",
+          "kind": "Paper",
+          "name": "Atmospheric Teleconnections from the Equatorial Pacific",
+          "paper": {
+            "authors": "J. Bjerknes",
+            "year": 1969,
+            "title": "Atmospheric Teleconnections from the Equatorial Pacific",
+            "venue": "Monthly Weather Review 97 (3): 163–172",
+            "doi": "10.1175/1520-0493(1969)097<0163:ATFTEP>2.3.CO;2"
+          },
+          "introduces": [
+            "climate-6.7"
+          ],
+          "deps": [
+            "geo-8.8",
+            "geo-4.6"
+          ],
+          "refs": [
+            "McPhaden, Zebiak & Glantz (2006), ENSO as an Integrating Concept in Earth Science, “ENSO Physics”",
+            "NOAA/PMEL, “What is El Niño?”, normal and El Niño thermocline/upwelling descriptions"
+          ],
+          "links": {
+            "physics": "https://www.pmel.noaa.gov/pubs/outstand/mcph2969/mcph2969.shtml",
+            "explanation": "https://www.pmel.noaa.gov/elnino/what-is-el-nino/"
+          },
+          "verify": true,
+          "pic": "Adjust wind, thermocline and surface response gains, then close or open the feedback loop. Read the response at each link and compare the actual anomaly growth with unit damping. This modern pathway does not simulate remote atmospheric teleconnections."
+        }
+      ]
     },
     // ───────────────────────────────────────────────────────────── 7
     {

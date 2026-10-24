@@ -91,6 +91,8 @@ an eigen-direction, an orthonormal frame, an ellipse's axes) with live numbers.
 
 - For central quantum Hamiltonians, a joint separated basis does not mean every degenerate superposition factors. Keep operator domains distinct from the Hilbert space and radial probability distinct from volume density. Evaluate whole nodal slices exactly before applying relative colour scaling; a tiny trigonometric residue must not become a bright orbital. Near a binding threshold, solve for a stable decay quantity instead of subtracting nearly equal energies. See the [QM review](verification/wave5-qm-review.md).
 
+- Climate heat capacities must declare their reference area: a global-area equivalent depth is different from a physical ocean-only column. Distinguish constant concentrations from zero emissions, global mean sea level from local relative level, and sea-ice area from extent. A reinforcing air–sea feedback alone does not produce ENSO phase reversal. See the [ocean and sea-level author record](verification/wave6-climate.md).
+
 ## Statistics & data science
 
 - **Simulate, don't assert**: every claim about estimators, tests or intervals is shown by repeated

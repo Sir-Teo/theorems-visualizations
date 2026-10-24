@@ -1,0 +1,35 @@
+# CLIMATE6 author verification — 24 October 2026
+
+Nine frozen lessons6.1–6.9 are authored and locally verified. Identities, ordered dependencies, the Bjerknes1969 bibliography and introduces list are preserved. Every non-6 climate syllabus chapter and collection-level field is deeply equal to the base. This is author verification, with the original Bjerknes source limitation explicit; no independent review, deployment or refreshed historical accepted export is claimed.
+
+## Sources and interpretation
+
+[Exact reading scopes and acquisition receipts](wave6-climate-sources.json) record the seven actual written prerequisite bodies and the distinct public teaching, research and institutional sources. The useful arguments were read, rather than inferred from a citation list.
+
+- Rose's actual *Toy models of transient warming* discusses heat capacity, a diffusive ocean column and delayed warming. Our two-box reduction is separately derived from the written CLIMATE3.6 equations; it does not reproduce or calibrate that diffusive column.
+- Jones et al2019 ZECMIP: abstract and Introduction, including different concentration/emissions experiments and carbon/heat-uptake compensation. The complete two-page corrigendum was read: the Python integer-division issue concerns bell-shaped B1–B3 emissions, which this lesson does not reproduce. No MacDougall2020 body is claimed as read.
+- NASA2009 energy budget: radiative equilibrium, forcing and heat redistribution. NASA2020 Ice Height: actual land-ice mass and approximate360Gt/mm conversion passages. No current measured heat inventory, historical sea-level series or future scenario is fabricated.
+- McPhaden/Zebiak/Glantz2006 NOAA-hosted research: opening ENSO Physics paragraphs. NOAA/PMEL El Niño teaching page: normal/El Niño trade, upwelling and thermocline mechanisms. Vialard et al2025: actual NOAA abstract only, not its full review.
+- Max Planck Society2016: institutional account of Notz/Stroeve's approximately3m² per tonne September **area** relationship, not the Science body or supplement. NSIDC: actual albedo, melt and observation sections. Area, extent and a calendar forecast remain distinct.
+
+IPCC AR6 chapters2/7/9, Climate.gov global sea level and Bjerknes1969 publisher body returned direct403; no original-body/cache/alternate recovery was attempted. The older IPCC4 and Rose lecture18 stops remain binding. A guessed Rose two-layer route and wrong GMD13/2985/2020 route returned404; these are retained as failed acquisitions. The actual Rose catalogue linked the distinct `transient-toy` chapter. Bjerknes6.9 explicitly has `verify:true` and explains that its original body, equations and1957–58 analysis remain uninspected.
+
+## Models and repairs
+
+Heat capacities use a declared global-area equivalent depth, years and positive restoring. The two-layer step uses stable positive decay roots, analytic modal integrals and a small-time divided-integral series; weak coupling and tiny initial deep uptake remain visible. Zero exchange isolates the deep box rather than inventing a finite slow time.
+
+The commitment lesson uses a prescribed atmospheric excess reservoir after a70-year forcing ramp, logarithmic forcing and a0.0625-year fourth-order Runge–Kutta step split at cessation. It can warm or cool after cessation; it does not estimate real ZEC. The initial0.125-year choice missed the independent tight early-time tolerance and was refined. A three-point finite-difference derivative probe also had truncation error; a five-point probe supplies the stronger derivative check without weakening its tolerance. Initial failure evidence is `/tmp/wave6-climate-tests.log`.
+
+The heat inventory conserves the total box energy with whole-Earth area normalization. The expansion lesson conserves layer mass using the existing one-atmosphere EOS-80 polynomial, retaining sub-roundoff temperature increments via divided differences. Its deep layer is explicitly a zero-pressure illustration, not a realistic steric reconstruction. The land-ice budget uses independently chosen constant rates and a nonprobabilistic Antarctic bracket. Recharge uses an exact2×2 matrix exponential, including the repeated-root limit. The Bjerknes pathway separates loop reinforcement from oscillation.
+
+The first browser run exposed an incorrect chart API call (`band` instead of `between`), now repaired. Narrow equations6.1/6.7 were split;6.2 uses an explicit exchange flux to keep its balances legible. Early native runs had a **fixture** mistake: `qaTheme` was not applied to localStorage, so their dark labels were inaccurate and are not counted as dark evidence. The repaired fixture asserts the actual production theme. Initial locator screenshots could clip the bottom of6.9; settled full-page/absolute-clip captures now include the complete readout. Scrolling the visualization into view before invalidating also ensures its responsive axes are painted before measurement. These capture repairs did not change the shared runtime.
+
+## Final local checks
+
+- `node --test tests/wave6-climate.test.mjs`:15/15 groups, no failures/skips/cancellations. The committed153-case/306-component independent reference uses SciPy augmented matrix exponentials and adaptive DOP853. Its generator is retained; additional tests check conservation, derivative residuals, step refinement, exact boundaries and unit conversions.
+- Strict build:8,330written/5,244planned,570chapters,85collections;0errors/0warnings. Scoped static:9visualizations,0errors/0warnings. Build log:`/tmp/wave6-climate-build-final.log`.
+- Both all-mode themes:9/9 each, no runtime, TeX, blank-canvas or quality warnings. Logs:`/tmp/wave6-climate-modes-{light,dark}-final.log`.
+- Final production matrix:36layouts at actual1200/320px, both verified themes;724native actions,224actual Create-link/replay pairs,36invalid-state rejections,36exact raw fractional restores and1,128state/layout checks. All visible sliders receive Home/End and a physical intermediate click; selects/toggles and revealed values are exercised. Rich text, finite geometry, viewport bounds, model/DOM values and exact Share readouts pass. Log:`/tmp/wave6-climate-verified.log`; captures/result:`/tmp/wave6-climate-verified/`.
+- All36 default plots were visually reviewed through full-size narrow and desktop contact sheets, with final complete6.9 narrow captures inspected separately. Selected alternate modes and whole rich pages remain in the capture directories. The automated geometry fixture checks path vertices/endpoints and panel bounds; it does **not** claim an exhaustive glyph-overlap or stroke-raster proof.
+
+[Source/test hashes](wave6-climate-manifest.json) pin the final chapter, syllabus and focused/native/reference fixtures. Shared renderer, old content, frozen assignments and accepted36/1,057 progress payload are unchanged. The global suite and reading-export rebinding belong to the next integrated batch; they have not been represented as passing for this new chapter. All chapter-owned browsers and servers are closed.
