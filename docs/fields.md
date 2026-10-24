@@ -192,6 +192,8 @@ an eigen-direction, an orthonormal frame, an ellipse's axes) with live numbers.
 
 - For probabilistic trees, sum hidden ancestral states and distinguish conditional pruning vectors from posteriors. Root invariance needs a stationary reversible process; share a rate across each whole site before mixing. Bootstrap clades need a declared root, and tied replicates retain their denominator. State finite-grid and fixed-pendant inference limits; preserve unresolved stars, positive-underflow status and original-body access flags. See the [probabilistic phylogeny report](verification/wave6-bioinf.md).
 
+- Proofreading fidelity and work require a declared locally detailed-balanced driven model; elastic discrimination is an equilibrium penalty. Competitive binding can shift both yield and specificity optima. ACR fixes positive-equilibrium coordinates, not stability or feasibility in every inventory class; deficiency zero needs weak reversibility for the positive-equilibrium conclusion. Separate kinase peak height, area and timing, and define receptor EC50 against the actual response maximum. See the [robust-signalling report](verification/wave6-sysbio.md).
+
 ## Medicine & health
 
 - Declare whether a metabolized fraction refers to total clearance or hepatic clearance before computing an interaction ratio. Separate reversible binding from elimination, and distinguish an integrated trajectory's sampled maximum from a proved continuous maximum. Keep genotype activity conventions and copy-phase ambiguity separate from a measured exposure prediction. See the [nonlinear pharmacokinetics review](verification/wave5-pharm-review.md).

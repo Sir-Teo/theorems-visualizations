@@ -1,6 +1,6 @@
 {
   "date": "2026-10-24",
-  "status": "Research and chapter-local pure-model prototypes only;21 focused groups pass; no production chapter/visualization gate or SYSBIO author-available count",
+  "status": "Eight lessons author-verified after scientific, interaction, saved-state and personal presentation gates; no independent review or public release.",
   "prerequisitesRead": [
     "mathbio5.2 Langmuir: free vs total ligand and depletion; half total Kd+RT/2",
     "mathbio5.11 conserved left nullspace vectors, algebraic reduction distinct from QSSA",
@@ -24,7 +24,7 @@
       "bytes": 191983,
       "sha256": "fa4c7b429490d7a385f0e5c47ad4aa1b51581502fbdeadbd126b1ea3491fe6f4",
       "path": "/tmp/wave6-sysbio-research/savir2007.html",
-      "readScope": "acquired only, body not yet claimed read"
+      "readScope": "Actual selected HTML kinetics/introduction/fig1–2 captions read; exact body reading supplemented by printable PDF scope below."
     },
     {
       "id": "feinberg-index",
@@ -35,7 +35,7 @@
       "bytes": 137658,
       "sha256": "8ecc455cd19e20319df3626117c0fcd5c94995d8152060551287a1f835ba07aa",
       "path": "/tmp/wave6-sysbio-research/feinberg-index.html",
-      "readScope": "acquired only, body not yet claimed read"
+      "readScope": "Actual selected official lecture history/links read; original1979/1980 Zenodo records metadata only. Linked1979 body denied403 and stopped."
     },
     {
       "id": "feinberg1979",
@@ -59,7 +59,7 @@
       "bytes": 368118,
       "sha256": "f191f4cdfe12d2a6bf5f91ce1e3358a12780f12a4b6f296b0b095f0fa42fd530",
       "path": "/tmp/wave6-sysbio-research/gunawardena2003.pdf",
-      "readScope": "acquired only, body not yet claimed read"
+      "readScope": "Actual selected §6 pp17–22 coset/convex uniqueness/entropy-like Lyapunov/local stability, Theorem6.4; §7 pp23–24 Theorem7.1 and linear algebra argument read. Modern n−ℓ−s definition from distinct2014 source; conditional2003 counting equality not generalized."
     },
     {
       "id": "alon-ex10",
@@ -82,7 +82,7 @@
       "bytes": 35282,
       "sha256": "27aff9c1cec6c4f47e1f85414eb5bc8c0b479a05ecda503aeabf88f531e7a2a6",
       "path": "/tmp/wave6-sysbio-research/anderson-index.html",
-      "readScope": "acquired only, body not yet claimed read"
+      "readScope": "Actual author-linked publication/erratum entries read, including nonzero complex-difference correction."
     },
     {
       "id": "anderson2014",
@@ -93,7 +93,7 @@
       "bytes": 496913,
       "sha256": "b0e2b6fcadbcedfddb38be83b28f92a7b34d8231fc7cb6fa1344603447792194",
       "path": "/tmp/wave6-sysbio-research/anderson2014.pdf",
-      "readScope": "acquired only, body not yet claimed read"
+      "readScope": "Actual §3 printed pp3–4 definitions, modern deficiency, Theorem1 and unstable ACR example read. Distinct work from denied2010/2011 originals."
     },
     {
       "id": "anderson2014-supp",
@@ -104,7 +104,7 @@
       "bytes": 543269,
       "sha256": "572272b232a0cedd745431fbdd4d0c8792fd41852b36bd528441b222cad9f727",
       "path": "/tmp/wave6-sysbio-research/anderson2014-supp.pdf",
-      "readScope": "acquired only, body not yet claimed read"
+      "readScope": "Acquired only; body not claimed read."
     },
     {
       "id": "helsinki2009",
@@ -121,7 +121,7 @@
       "bytes": 32019,
       "sha256": "329e5afb7c0180746b66d7722cc110895acd915fbc6ad719cbf4228860abf9d8",
       "path": "/tmp/wave6-sysbio-research/murugan-index.html",
-      "readScope": "acquired only, body not yet claimed read"
+      "readScope": "Actual selected2012/2014 author summaries read. Original2012 PMC body subsequently challenged; stop remains binding."
     },
     {
       "id": "shinar2007",
@@ -138,7 +138,7 @@
       "bytes": 375713,
       "sha256": "3c6104c9285b15bcc48aa46b18bc3c3ae8e41d13849890ec47c509e2ef84b81b",
       "path": "/tmp/wave6-sysbio-research/savir2007-print.pdf",
-      "readScope": "acquired only, body not yet claimed read"
+      "readScope": "Actual selected printed pp1–3 introduction/production ratio/lowest-elastic-mode/Eq5 and p4Eq6 discussion/p5 no-functional-background limit read; printed p3 pixels personally inspected. Eq8 noisy targets not used; no whole-paper or original figure reconstruction claim."
     },
     {
       "id": "murugan2012-web",
@@ -161,50 +161,60 @@
       "bytes": 2051209,
       "sha256": "d9088abf3cefbe4a1a0fe74b9272793edfb9e2397d94a07096efe7da015c03c8",
       "path": "/tmp/wave6-sysbio-research/murugan2014.pdf",
-      "readScope": "acquired only, body not yet claimed read"
+      "readScope": "Actual introduction and §I printed pp1–2 through Eq4 read: equilibrium error, local detailed balance, common drive, particular f² kinetic window. Distinct2014 work, no recovery of challenged2012 original."
     }
   ],
   "actualSelectedReading": [
-    "Anderson\u2013Enciso\u2013Johnston2014 author-linked mainPDF200 sha b0e2b6fcadbcedfddb38be83b28f92a7b34d8231fc7cb6fa1344603447792194; actual\u00a73 printed3\u20134 definitions/theorem1 read: \u03b4=n\u2212linkage\u2212rank; nonterminalcomplexesdiffernonzeromultipleonespecies; assumespositiveequilibrium, deficiency1. ACR is valueequalityatpositiveequilibria, NOT stability or existenceeveryclass. ActualunstableACRexampleA+B\u21922B,2A+B\u21923A withA*=k1/k2 read. This2014paper isdistinctfromstoppedShinar2010/2011; nooriginalbodyrecovery.",
-    "Anderson corrected author-linked supplementaryPDF200sha572272b232a0cedd745431fbdd4d0c8792fd41852b36bd528441b222cad9f727 acquirednotyetread; authorindexerratumrequiresnonzero difference inDef3.1.",
-    "Gunawardena2003 actualcurrentauthorPDF200sha inreceipts; firstintroduction/contents andsearchlocationsread, full\u00a7\u00a75\u20137pending. NoFeinberg1979lecturebodyrecovery.",
-    "Gunawardena2003 actualselected\u00a76 pp17\u201322 (cosetstructure, convexuniqueness, entropy-likeLyapunov/localstability) and\u00a77 p23\u201324 Theorem7.1/linearalgebraargumentread. Theorem6.4: complexbalancedpositiveequilibrium=>weakreversibility/allpositiveeqcomplexbalanced/uniqueperclass/strictclassLyapunov/localasymptoticstability. Theorem7.1 \u03b40iffweakreversibleforcomplexbalancedpositiveexistence. Important: this2003expositiondefines\u03b4=dim(kerY\u2229ImA\u03ba), whose equalityto modernn\u2212l\u2212s isconditionalononeterminalSCCperlinkage (automaticunderWR). Do notuseitsconditionalformulaasuniversaldefinition;2014Anderson\u00a73givesmodern\u03b4=n\u2212l\u2212s. Notclaimingwholebook/proofparagraphsreadbeyondselectedpassages.",
-    "MuruganLabactualpub_descriptionsHTML200sha329e5afb7c0180746b66d7722cc110895acd915fbc6ad719cbf4228860abf9d8; selected2012paragraphread (catastrophes/rescues speed-fidelity), 2014paragraphalsoseen; original2012paperbodyNOTread; linkedPNASDOIavailablebutnotyetattempted, no2012stopcurrently.",
-    "Savir\u2013Tlusty2007 originalPLOSprintablePDF200sha3c6104c9285b15bcc48aa46b18bc3c3ae8e41d13849890ec47c509e2ef84b81b; equationscanbenowreadfromactualPDF, selectedintroandfig1\u20132captionsonlyreadsofar; mainHTMLselectedkineticsparagraphsaroundeq1\u20134read: specificfluxratio, quasi-equilibriumcomplexes, ensembleweightedturnovers, mismatchvsflexibility.",
-    "Actual distinctMurugan\u2013Huse\u2013Leibler2014 arXiv1312.2286v2PDF200sha d9088abf3cefbe4a1a0fe74b9272793edfb9e2397d94a07096efe7da015c03c8. Actualintroductionand\u00a7Iprintedpp1\u20132throughEq4read: equilibriumBoltzmannerror, energy-raisedwrongoffrates, localdetailedbalanceratioexp(\u2212\u0394V+\u03bcij), commonexternaldrive, particularf\u00b2kineticlimitnotuniversal, finiteenergywindowthenworsens. Separate2014paperNOTrecoveryofstopped2012body.",
-    "ActualSavir2007printedpp1\u20133selectedintro/production-rate-ratio/lowestelasticmode/Eq5read; printedp3personallyrendered/imageinspected. Selectedprintedp4Eq6discussionandp5limitread: specificGaussianplusuniformnonspecificproduction; finiteoff-targetoptimumwhenrecognitionwindowsoverlap; nonspecificfunctionalr0limitgivesexponentiallyincreasingspecificityandvanishingyield. OriginalcontinuousmodelNOTtobereproduced; ownfinitepartitionensemblewillbederived. Noise-targetequation8isnotused."
+    "Actual §3 printed pp3–4 definitions, modern deficiency, Theorem1 and unstable ACR example read. Distinct work from denied2010/2011 originals.",
+    "Acquired only; body not claimed read.",
+    "Actual selected §6 pp17–22 coset/convex uniqueness/entropy-like Lyapunov/local stability, Theorem6.4; §7 pp23–24 Theorem7.1 and linear algebra argument read. Modern n−ℓ−s definition from distinct2014 source; conditional2003 counting equality not generalized.",
+    "Actual selected2012/2014 author summaries read. Original2012 PMC body subsequently challenged; stop remains binding.",
+    "Actual selected HTML kinetics/introduction/fig1–2 captions read; exact body reading supplemented by printable PDF scope below.",
+    "Actual selected printed pp1–3 introduction/production ratio/lowest-elastic-mode/Eq5 and p4Eq6 discussion/p5 no-functional-background limit read; printed p3 pixels personally inspected. Eq8 noisy targets not used; no whole-paper or original figure reconstruction claim.",
+    "Actual introduction and §I printed pp1–2 through Eq4 read: equilibrium error, local detailed balance, common drive, particular f² kinetic window. Distinct2014 work, no recovery of challenged2012 original."
   ],
   "otherSelectedReading": [
-    "Savir\u2013Tlusty2007 actualPLOS HTML200, sha fa4c7b429490d7a385f0e5c47ad4aa1b51581502fbdeadbd126b1ea3491fe6f4; selected introduction/fig1\u20132captions read, equations pending",
-    "Feinberg officialOSU index200; selectedactual1979lecturehistory/links read; authorlinkpointsZenodo10631900, metadataonlyread; distinct1980paperrecord10632656 also metadataonlyread"
+    "Actual selected official lecture history/links read; original1979/1980 Zenodo records metadata only. Linked1979 body denied403 and stopped.",
+    "Actual author-linked publication/erratum entries read, including nonzero complex-difference correction."
   ],
   "bindingBoundaries": [
-    "Original Shinar\u2013Feinberg2010 author-hosted PDF URL returned503 during direct acquisition; STOP. No originalbodyread beyond earlier search snippet. Do not recover via publisher/author-indexmirror/cache/alternatehost. Distinct2011 design-principles paper and1979Feinberg lectures are separate works, not original2010recovery. Later separateoriginals also STOP: Murugan\u2013Huse\u2013Leibler2012 PMC3409783 reCAPTCHA; Heinrichetal2002ScienceDirect403; Shinar2007authorPDF503. NoPNAS/PDF/alternate/cache recoveryofthese works.",
+    "Original Shinar–Feinberg2010 author-hosted PDF URL returned503 during direct acquisition; STOP. No originalbodyread beyond earlier search snippet. Do not recover via publisher/author-indexmirror/cache/alternatehost. Distinct2011 design-principles paper and1979Feinberg lectures are separate works, not original2010recovery. Later separateoriginals also STOP: Murugan–Huse–Leibler2012 PMC3409783 reCAPTCHA; Heinrichetal2002ScienceDirect403; Shinar2007authorPDF503. NoPNAS/PDF/alternate/cache recoveryofthese works.",
     "Feinberg1979author-linkedZenodoPDF403; metadataonly, nolecturebodyread/noalternate recovery",
-    "Shinar\u2013Feinberg2011 PMC3086454 challenge/interstitial; bodyunread/noalternateoriginal2011recovery",
+    "Shinar–Feinberg2011 PMC3086454 challenge/interstitial; bodyunread/noalternateoriginal2011recovery",
     "Alon2014exercise10PDF503; Alon2018courseindex503; Helsinki2009Lecture10PDF503. Do not recover those stopped works viaotherhosts/cache. Onlysearchsnippetsseen.",
-    "Shinar\u2013Milo\u2013Martinez\u2013Alon2007 author-hosted shinar_pnas_2007.pdf returned503; only priorsearchsnippet/bibliography read, nooriginalbody/alternate recovery.",
-    "Heinrich\u2013Neel\u2013Rapoport2002 ScienceDirect S1097276502005282 webopen403; bodyunread beyondpriorsearchsnippet/abstract. NooriginalPDF/mirror/cache recovery."
+    "Shinar–Milo–Martinez–Alon2007 author-hosted shinar_pnas_2007.pdf returned503; only priorsearchsnippet/bibliography read, nooriginalbody/alternate recovery.",
+    "Heinrich–Neel–Rapoport2002 ScienceDirect S1097276502005282 webopen403; bodyunread beyondpriorsearchsnippet/abstract. NooriginalPDF/mirror/cache recovery."
   ],
   "qualityCorrectionsBeforeAuthoring": [
     "ACR theorem neverasserts stability/existenceeachtotal; showpositiveequilibriumthresholdandboundary/unstablecase",
     "Deficiencyzero theorem normallycomplexbalance/existenceuniquepositiveeqperclass+localasymptoticstability; do notattributeallglobaltrajectoryconvergencewithoutseparatetheoremhypotheses",
-    "Proofreadingf\u00b2 isslowprogressstrongdriveasymptote, notexactuniversalerror; fuel/workneeddeclaredmodel, irreversibleidealdoesnotjustifyfiniteexactthermodynamicaffinity",
+    "Proofreadingf² isslowprogressstrongdriveasymptote, notexactuniversalerror; fuel/workneeddeclaredmodel, irreversibleidealdoesnotjustifyfiniteexactthermodynamicaffinity",
     "Conformationalelasticenergyisequilibriumcost, notautomaticdissipatedfuel; specificityoptimumcanbegone/flatwhencompetitoridentical"
   ],
-  "next": "Author eight purpose-specific visualizations and complete explanations; preserve frozen IDs/deps, qualify theorem conditions, then pass native/endpoints/modes/Share/critical-state and personal both-theme pixel gates. BIOINF6 committed33f5aea2 is complete.",
+  "next": "Reconcile the17-lesson BIOINF6+SYSBIO6 batch, then full-suite and both-theme route integration. Continue frozen Wave6 afterward.",
   "prototypeVerification": {
     "cases": 180,
     "families": 8,
-    "focusedGroups": 21,
-    "pass": 21,
+    "focusedGroups": 23,
+    "pass": 23,
     "failed": 0,
-    "focusedLog": "/tmp/wave6-sysbio-focused-second.log",
-    "referenceLog": "/tmp/wave6-sysbio-reference-second.log",
+    "focusedLog": "/tmp/wave6-sysbio-focused-final.log",
+    "referenceLog": "/tmp/wave6-sysbio-reference-yield-repeat.log",
     "observedReferenceRepairs": [
       "First nonlinear steady-root secant iteration chose a mathematically valid root with negative AP and BP beyondtotal; fixed referencephysicalbracketing, no productchange.",
-      "SciPy optimizedtriangularexpm gave~9%wrong nearcoincident\u03b2=1+epsilon (documentedfailedreference/fixture). Replacedcascadeoraclewithindependent120-digitErlang-convolution hyp1f1 formula A\u03b1^i t^i/i! exp(-t) 1F1(i;i+1;(1\u2212\u03b2)t), no productchange; productpositiveuniformizationwasright. Firstfailedfixture/tmp/wave6-sysbio-research/reference-scipy-near-rate-v1.json and/tmp/wave6-sysbio-focused-draft.log retained."
+      "SciPy optimizedtriangularexpm gave~9%wrong nearcoincidentβ=1+epsilon (documentedfailedreference/fixture). Replacedcascadeoraclewithindependent120-digitErlang-convolution hyp1f1 formula Aα^i t^i/i! exp(-t) 1F1(i;i+1;(1−β)t), no productchange; productpositiveuniformizationwasright. Firstfailedfixture/tmp/wave6-sysbio-research/reference-scipy-near-rate-v1.json and/tmp/wave6-sysbio-focused-draft.log retained."
     ],
-    "newNumericalRepairs": "Log receptor binding/response rescues representable MINresponse from underflowedboundinventory; normalizedresponsehaslogmetric/zero-receptorundefined. Cascadepulseamplitudesandareascomputedinlogs toavoidunderflowbeforedivision, positive area belowrange retainsstatus. Bifunctional equilibriumAPunderflowkeepsfinite logAP."
-  }
+    "newNumericalRepairs": "Log receptor binding/response rescues representable MINresponse from underflowedboundinventory; normalizedresponsehaslogmetric/zero-receptorundefined. Cascadepulseamplitudesandareascomputedinlogs toavoidunderflowbeforedivision, positive area belowrange retainsstatus. Bifunctional equilibriumAPunderflowkeepsfinite logAP.",
+    "referenceSha256": "4ce3b39309832995ca2f0410feb13fadf95c6ff03e577c09856473c81892506b",
+    "model": "Finite-affinity local-detailed-balance generator with reversible activation and rare reporters. Supersedes irreversible bookkeeping prototype. Concentrations inµM; reporter/fuel/work rates per enzyme."
+  },
+  "presentationRepairs": [
+    "Short axis labels and split display equations fit320px; inner overlay glyph and data-gutter ring bounds checked.",
+    "Proofreading log/linear scale update is atomic, with padded limits; zero work is omitted from logarithmic coordinates.",
+    "Cascade summary units set on every render including zero output; scientific pulse ticks replace repeated rounded decimal labels.",
+    "The f^(n+1) theorem explicitly variesε with fixedσ; positive fuel-current claim requires at least one checkpoint.",
+    "Per-enzyme reporter/fuel/dissipation units divide out the declared enzyme inventory; no missing molecule/Avogadro factor.",
+    "Personal review found that competition also shifts the correct-yield optimum above perfect match. Corrected the claim, derived its separate unique optimum, independently checked quotient-rule roots at1000 digits, and displayed both optima. Default yield optimum1.64382089885 vs specificity2.89566370273.",
+    "Element screenshots truncated final scope lines despite complete full-page rendering. Captures now use padded page-coordinate clips; complete scope text and vertical glyph bounds were rechecked. Native mode captures avoid sticky-header artifacts."
+  ]
 }
