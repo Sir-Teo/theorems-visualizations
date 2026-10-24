@@ -190,6 +190,8 @@ an eigen-direction, an orthonormal frame, an ellipse's axes) with live numbers.
 
 - Tree distance diagnostics must separate a metric from an additive tree certificate; a zero diagnostic internal edge alone does not establish a star tree. Preserve signed NJ limbs, exact equal-rate limits and all optimal assignments separately from one traceback. A historical evidence explorer must not invent the unread original data. See the [phylogeny review](verification/wave5-bioinf-review.md).
 
+- For probabilistic trees, sum hidden ancestral states and distinguish conditional pruning vectors from posteriors. Root invariance needs a stationary reversible process; share a rate across each whole site before mixing. Bootstrap clades need a declared root, and tied replicates retain their denominator. State finite-grid and fixed-pendant inference limits; preserve unresolved stars, positive-underflow status and original-body access flags. See the [probabilistic phylogeny report](verification/wave6-bioinf.md).
+
 ## Medicine & health
 
 - Declare whether a metabolized fraction refers to total clearance or hepatic clearance before computing an interaction ratio. Separate reversible binding from elimination, and distinguish an integrated trajectory's sampled maximum from a proved continuous maximum. Keep genotype activity conventions and copy-phase ambiguity separate from a measured exposure prediction. See the [nonlinear pharmacokinetics review](verification/wave5-pharm-review.md).
