@@ -183,27 +183,140 @@ export default {
     },
     // ───────────────────────────────────────────────────────────── 6
     {
-      n: 6,
-      title: 'Stress, rheology and faulting',
-      summary: String.raw`Rocks are elastic for seconds, brittle in the cold upper crust and viscous over millions of years. The stress tensor and Mohr's circle describe the loads; the Mohr–Coulomb criterion and Byerlee's law say when rocks break and slide; Anderson's theory predicts which faults form in which stress regimes; and pore-fluid pressure can trigger slip. At depth, power-law creep takes over, which together with friction gives the strength envelope of the lithosphere.`,
-      items: [
-        { num: '6.1', kind: 'Concept', name: 'Stress in the Earth: lithostatic and tectonic stress', deps: ['solid-3.2', 'geol-5.2'], refs: ['Turcotte–Schubert ch. 2'],
-          pic: 'Decompose the stress at depth into an isotropic lithostatic part ρgz and a deviatoric tectonic part: principal axes are drawn as arrows on a cube that rotates with the tectonic setting.' },
-        { num: '6.2', kind: 'Method', name: 'Mohr’s circle for rock stress', deps: ['geol-6.1', 'solid-3.3'], refs: ['Turcotte–Schubert ch. 2'],
-          pic: 'Rotate a plane through a stressed rock: its normal and shear stresses trace Mohr’s circle, and the plane with the largest shear is shown at 45° to the principal axes.' },
-        { num: '6.3', kind: 'Law', name: 'Mohr–Coulomb failure criterion', deps: ['geol-6.2', 'solid-4.4'], refs: ['Turcotte–Schubert ch. 8'],
-          pic: 'Grow the Mohr circle until it touches the failure line τ = c + μσ: the touching point gives the fracture plane at about 30° to the maximum compression for μ ≈ 0.6.' },
-        { num: '6.4', kind: 'Law', name: 'Byerlee’s law of rock friction', deps: ['geol-6.3', 'mech-1.15'], refs: ['Turcotte–Schubert ch. 8'],
-          pic: 'Plot shear against normal stress for frictional sliding on faults in many rock types: data collapse onto τ ≈ 0.85σ at low stress and 50 MPa + 0.6σ at high stress, regardless of rock type.' },
-        { num: '6.5', kind: 'Theorem', name: 'Anderson’s theory of faulting', deps: ['geol-6.3'], refs: ['Turcotte–Schubert ch. 8'],
-          pic: 'Choose which principal stress is vertical: normal, thrust or strike-slip faults form at the Mohr–Coulomb angle, drawn in 3D with their typical dips of 60°, 30° and 90°.' },
-        { num: '6.6', kind: 'Principle', name: 'Pore pressure and fault weakening (Hubbert–Rubey)', deps: ['geol-6.3', 'fluid-7.10'], refs: ['Turcotte–Schubert ch. 8', 'Turcotte–Schubert ch. 9'],
-          pic: 'Inject fluid into a stressed fault: the effective normal stress drops, the Mohr circle slides left toward failure, and earthquakes are triggered without any change in tectonic load, as at injection wells.' },
-        { num: '6.7', kind: 'Law', name: 'Power-law creep of mantle rocks', deps: ['mat-5.11'], refs: ['Turcotte–Schubert ch. 7'],
-          pic: 'Plot olivine strain rate against stress at mantle temperatures: a slope near 3.5 on log axes with an Arrhenius temperature dependence, giving effective viscosities of 10¹⁹–10²² Pa·s.' },
-        { num: '6.8', kind: 'Model', name: 'Strength envelope and the brittle–ductile transition', deps: ['geol-6.4', 'geol-6.7', 'geol-4.1'], refs: ['Turcotte–Schubert ch. 7', 'Turcotte–Schubert ch. 8'],
-          pic: 'Combine frictional strength increasing with depth and creep strength decreasing with temperature: the weaker of the two traces a Christmas-tree profile whose peak marks the brittle–ductile transition, deepening as the geotherm cools.' },
-      ],
+      "n": 6,
+      "title": "Stress, rheology and faulting",
+      "summary": "Compression, friction and temperature connect rock loads to deformation. A stress tensor resolves traction on each plane; friction and pore pressure define conditional slip thresholds, while thermally activated creep supplies a competing rate-dependent strength. Their combination gives an illustrative depth profile whose shape depends on the assumed stress regime, geotherm and rheology.",
+      "items": [
+        {
+          "num": "6.1",
+          "kind": "Concept",
+          "name": "Stress in the Earth: lithostatic and tectonic stress",
+          "deps": [
+            "solid-3.2",
+            "geol-5.2"
+          ],
+          "refs": [
+            "Turcotte–Schubert ch. 2; symmetric-tensor and column-balance derivation here"
+          ],
+          "links": {
+            "context": "https://ocw.mit.edu/courses/12-113-structural-geology-fall-2005/56cf7281941e834f8d1e1f7b8cbb4911_part2_faults.pdf"
+          },
+          "pic": "Choose a stress regime, depth and horizontal contrast. Rotate the horizontal axes on the 3D cube, then compare actual mean compression with the overburden reference. Inward arrow lengths use one common current stress scale; the matrix readout shows the same constructed tensor."
+        },
+        {
+          "num": "6.2",
+          "kind": "Method",
+          "name": "Mohr’s circle for rock stress",
+          "deps": [
+            "geol-6.1",
+            "solid-3.3"
+          ],
+          "refs": [
+            "Turcotte–Schubert ch. 2; MIT12.113 Part2, printed pp5–8; traction resolution derived here"
+          ],
+          "links": {
+            "source": "https://ocw.mit.edu/courses/12-113-structural-geology-fall-2005/56cf7281941e834f8d1e1f7b8cbb4911_part2_faults.pdf"
+          },
+          "pic": "Rotate the plane normal and watch the corresponding signed Mohr point. The companion panel draws the physical normal traction, the shear addition and their vector sum on that same plane. Set the differential compression to zero to collapse the circle."
+        },
+        {
+          "num": "6.3",
+          "kind": "Law",
+          "name": "Mohr–Coulomb failure criterion",
+          "deps": [
+            "geol-6.2",
+            "solid-4.4"
+          ],
+          "refs": [
+            "Turcotte–Schubert ch. 8; MIT12.113 Part2, printed pp5–8; compressive-circle derivation here"
+          ],
+          "links": {
+            "source": "https://ocw.mit.edu/courses/12-113-structural-geology-fall-2005/56cf7281941e834f8d1e1f7b8cbb4911_part2_faults.pdf"
+          },
+          "pic": "Grow the differential compression or use “Set first tangency.” Change cohesion and friction, and compare the optimal contact with a separately selected plane. The physical plane and traction panel makes the normal-angle convention visible."
+        },
+        {
+          "num": "6.4",
+          "kind": "Law",
+          "name": "Byerlee’s law of rock friction",
+          "deps": [
+            "geol-6.3",
+            "mech-1.15"
+          ],
+          "refs": [
+            "Turcotte–Schubert ch. 8; Byerlee1978 publisher abstract (roughness and weak-gouge exceptions); USGS Open-File86-417 indexed equations1a–1b (piecewise approximation)"
+          ],
+          "links": {
+            "abstract": "https://doi.org/10.1007/BF00876528",
+            "context": "https://topex.ucsd.edu/geodynamics/burgmann_dresen.08anrev.pdf"
+          },
+          "pic": "Move the effective normal compression through the branch junction and compare local slope with the secant friction ratio. Optionally show a deliberately weak straight-line comparison. All curves are calculated formulas; no experimental scatter is reconstructed."
+        },
+        {
+          "num": "6.5",
+          "kind": "Theorem",
+          "name": "Anderson’s theory of faulting",
+          "deps": [
+            "geol-6.3"
+          ],
+          "refs": [
+            "Turcotte–Schubert ch. 8; MIT12.113 Part2, printed pp8–10; plane-normal construction here"
+          ],
+          "links": {
+            "source": "https://ocw.mit.edu/courses/12-113-structural-geology-fall-2005/56cf7281941e834f8d1e1f7b8cbb4911_part2_faults.pdf"
+          },
+          "pic": "Choose which principal stress is vertical and rotate the 3D view of both conjugate planes. Change friction to see their dips change. Select one conjugate plane at a time; the companion Mohr plot identifies the two optimal normal directions."
+        },
+        {
+          "num": "6.6",
+          "kind": "Principle",
+          "name": "Pore pressure and fault weakening (Hubbert–Rubey)",
+          "deps": [
+            "geol-6.3",
+            "fluid-7.10"
+          ],
+          "refs": [
+            "Turcotte–Schubert chs8–9; MIT12.113 Part2, printed pp7–8; Bürgmann–Dresen2008, printed pp536–537 (friction and instability limits)"
+          ],
+          "links": {
+            "source": "https://ocw.mit.edu/courses/12-113-structural-geology-fall-2005/56cf7281941e834f8d1e1f7b8cbb4911_part2_faults.pdf",
+            "context": "https://topex.ucsd.edu/geodynamics/burgmann_dresen.08anrev.pdf"
+          },
+          "pic": "Vary prescribed pore pressure while keeping the total tectonic stress fixed. Watch the circle translate and compare resistance on one selected plane with its unchanged shear demand. The resistance curve ends at contact loss rather than continuing into a fictitious tensile friction branch."
+        },
+        {
+          "num": "6.7",
+          "kind": "Law",
+          "name": "Power-law creep of mantle rocks",
+          "deps": [
+            "mat-5.11"
+          ],
+          "refs": [
+            "Turcotte–Schubert ch. 7; Bürgmann–Dresen2008, printed pp535–539, constitutive and olivine discussion; normalized example derived here"
+          ],
+          "links": {
+            "source": "https://topex.ucsd.edu/geodynamics/burgmann_dresen.08anrev.pdf"
+          },
+          "pic": "Change temperature, stress and exponent to move on the calculated log-rate curve. Compare an n=1 reference with the same anchor, and inspect the viscosity change at the selected stress. The plots evaluate the declared law and contain no fabricated laboratory measurements."
+        },
+        {
+          "num": "6.8",
+          "kind": "Model",
+          "name": "Strength envelope and the brittle–ductile transition",
+          "deps": [
+            "geol-6.4",
+            "geol-6.7",
+            "geol-4.1"
+          ],
+          "refs": [
+            "Turcotte–Schubert chs7–8; Bürgmann–Dresen2008, printed pp533–537 (strength envelopes and heterogeneity); threshold derivation here"
+          ],
+          "links": {
+            "source": "https://topex.ucsd.edu/geodynamics/burgmann_dresen.08anrev.pdf"
+          },
+          "pic": "Change pore-pressure ratio, geotherm, imposed rate and stress regime. Move the depth marker to compare the two calculated thresholds. The display maximum changes only the horizontal view; raw strengths remain in the readout even when a curve lies outside it."
+        }
+      ]
     },
     // ───────────────────────────────────────────────────────────── 7
     {
