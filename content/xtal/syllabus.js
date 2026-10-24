@@ -147,43 +147,263 @@ export default {
     },
     // ───────────────────────────────────────────────────────────── 6
     {
-      n: 6,
-      title: 'Diffraction geometry',
-      summary: String.raw`Waves scattered by a periodic array reinforce only in special directions. Bragg's picture of reflection from lattice planes, von Laue's three equations and Ewald's sphere in reciprocal space are three views of the same condition. They explain the Laue, rotating-crystal and powder methods, how X-rays are made, and why small crystallites give broad peaks.`,
-      items: [
-        { num: '6.1', kind: 'Phenomenon', name: 'Diffraction by a grating', deps: ['pma-8.10', 'waves-7.9'], refs: ['Hammond ch. 7'],
-          pic: 'Shine light on a grating with an adjustable number of slits: principal maxima stay at sin θ = nλ/d while sharpening as N grows, with N − 2 weak subsidiary peaks between them.' },
-        { num: '6.2', kind: 'Law', name: 'Bragg’s law', deps: ['xtal-4.4'], refs: ['Hammond ch. 8'],
-          pic: 'Reflect X-rays off a stack of planes and rotate the crystal: the path difference 2d sin θ is drawn and the reflected intensity spikes only when it equals a whole number of wavelengths.' },
-        { num: '6.3', kind: 'Theorem', name: 'Laue equations', deps: ['xtal-6.1', 'xtal-1.2'], refs: ['Hammond ch. 8'],
-          pic: 'Treat each row of atoms as a grating: each row allows scattering on a cone, and only directions where three cones meet survive, drawn as intersecting cones in 3D.' },
-        { num: '6.4', kind: 'Theorem', name: 'Bragg and Laue conditions are equivalent', deps: ['xtal-6.2', 'xtal-6.3', 'xtal-5.2'], refs: ['Hammond ch. 8'],
-          pic: 'Toggle between the plane-reflection and scattering-vector views of one reflection: the condition k′ − k = g is shown to be exactly 2d sin θ = λ, with the same reflections lighting up in both.' },
-        { num: '6.5', kind: 'Method', name: 'Ewald sphere construction', deps: ['xtal-6.4'], refs: ['Hammond ch. 8', 'Giacovazzo ch. 3'],
-          pic: 'Rotate a reciprocal lattice through a sphere of radius 1/λ: a reflection flashes each time a reciprocal point touches the sphere, and changing the wavelength resizes the sphere.' },
-        { num: '6.6', kind: 'Concept', name: 'Limiting sphere and resolution', deps: ['xtal-6.5'], refs: ['Hammond ch. 8'],
-          pic: 'Show the sphere of radius 2/λ: reciprocal points outside it can never diffract, so shorter wavelengths reach finer d-spacings, and the number of measurable reflections is counted.' },
-        { num: '6.7', kind: 'Method', name: 'Laue method', deps: ['xtal-6.5'], refs: ['Hammond ch. 8'],
-          pic: 'Illuminate a stationary crystal with white X-rays: a range of Ewald spheres captures many reflections at once, and the spot pattern on a flat film shows the crystal’s symmetry as you rotate it.' },
-        { num: '6.8', kind: 'Method', name: 'Powder diffraction and Debye–Scherrer cones', deps: ['xtal-6.5', 'xtal-4.6'], refs: ['Hammond ch. 10'],
-          pic: 'Average over randomly oriented crystallites: each reflection becomes a cone and a ring on the detector, and the 1D pattern of 2θ peaks is indexed for cubic lattices by the ratios of h² + k² + l².' },
-        { num: '6.9', kind: 'Law', name: 'Moseley’s law and characteristic X-rays', deps: ['qchem-2.9'], refs: ['Hammond ch. 9'],
-          pic: 'Bombard targets of increasing atomic number: Kα lines appear on top of the bremsstrahlung continuum, and √ν against Z falls on Moseley’s straight line, which predicted missing elements.' },
-        { num: '6.10', kind: 'Law', name: 'Scherrer equation for crystallite size', deps: ['xtal-6.8', 'xtal-6.1'], refs: ['Hammond ch. 10'],
-          pic: 'Shrink the crystallites in a simulated powder: peaks broaden as λ/(L cos θ), and adding microstrain broadens them with a different angular dependence, separated on a Williamson–Hall plot.' },
-        { num: '6.11', kind: 'Paper', name: 'Interferenzerscheinungen bei Röntgenstrahlen',
-          paper: { authors: 'W. Friedrich, P. Knipping and M. Laue', year: 1913, title: 'Interferenzerscheinungen bei Röntgenstrahlen', venue: 'Annalen der Physik 346 (10): 971–988', doi: '10.1002/andp.19133461004' },
-          introduces: ['xtal-6.3', 'xtal-6.7'], deps: ['xtal-1.1', 'waves-7.9'], refs: [],
-          pic: 'Send a white X-ray beam through a zinc-blende crystal and watch the photographic plate fill with Laue spots; turn the crystal to bring the cube axis along the beam and see the fourfold pattern, and find which wavelengths satisfy the three Laue conditions at each spot.' },
-        { num: '6.12', kind: 'Paper', name: 'The Diffraction of Short Electromagnetic Waves by a Crystal',
-          paper: { authors: 'W. L. Bragg', year: 1913, title: 'The Diffraction of Short Electromagnetic Waves by a Crystal', venue: 'Proceedings of the Cambridge Philosophical Society 17: 43–57', url: 'https://archive.org/details/proceedingsofcam1718191316camb' },
-          introduces: ['xtal-6.2', 'xtal-6.4', 'waves-7.10'], deps: ['xtal-6.3', 'xtal-4.2', 'xtal-6.11'], refs: [],
-          pic: 'Explain each spot of the zinc-blende Laue photograph as a mirror reflection of white X-rays from a family of lattice planes: pick a plane (hkl), see which wavelength nλ = 2d sin θ selects, and find that a face-centred cubic lattice, not the simple cubic one first assumed, accounts for the spots that are missing.' },
-        { num: '6.13', kind: 'Paper', name: 'The high-frequency spectra of the elements',
-          paper: { authors: 'H. G. J. Moseley', year: 1913, title: 'The high-frequency spectra of the elements', venue: 'Philosophical Magazine (6th series) 26 (156): 1024–1034', doi: '10.1080/14786441308635052' },
-          introduces: ['xtal-6.9'], deps: ['xtal-6.2', 'qm-1.5', 'xtal-6.12', 'qm-1.16'], refs: [],
-          pic: 'Plot the square root of the Kα frequency for Moseley’s elements from calcium to zinc against their place in the periodic table: the points fall on a straight line, so each element gets a whole number N, and cobalt and nickel take the order their N demands rather than the order of their atomic weights.' },
-      ],
+      "n": 6,
+      "title": "Diffraction geometry",
+      "summary": "Finite coherent arrays connect grating peaks with Bragg paths, Laue equations and the Ewald sphere. Reciprocal geometry predicts accessible directions, while crystal structure and detector coverage determine which can appear as spots or powder rings. Characteristic X-rays and finite-domain widths complete the experimental picture, with an inspected 1913 Moseley table kept distinct from modern model calculations.",
+      "items": [
+        {
+          "num": "6.1",
+          "kind": "Phenomenon",
+          "name": "Diffraction by a grating",
+          "deps": [
+            "pma-8.10",
+            "waves-7.9"
+          ],
+          "refs": [
+            "Hammond ch. 7; finite geometric sum derived locally"
+          ],
+          "pic": "Change the slit count, phase and slit width. Follow the actual phasor polygon and the selected intensity; narrow principal peaks retain unit array-factor height.",
+          "links": {
+            "geometry": "https://journals.iucr.org/j/issues/2018/06/00/gj5217/"
+          }
+        },
+        {
+          "num": "6.2",
+          "kind": "Law",
+          "name": "Bragg’s law",
+          "deps": [
+            "xtal-4.4"
+          ],
+          "refs": [
+            "Hammond ch. 8",
+            "Moseley (1913), printed p.1026, equation (1)"
+          ],
+          "pic": "Rotate the plane stack and change wavelength, spacing and order. Compare the two path contributions with the computed finite-stack intensity and the accessible Bragg angle.",
+          "links": {
+            "source": "https://zenodo.org/record/1430926/files/article.pdf"
+          }
+        },
+        {
+          "num": "6.3",
+          "kind": "Theorem",
+          "name": "Laue equations",
+          "deps": [
+            "xtal-6.1",
+            "xtal-1.2"
+          ],
+          "refs": [
+            "Hammond ch. 8; dual-basis and sphere-section derivation"
+          ],
+          "pic": "Skew the cell and change the wavelength or indices. Rotate the three true row cones and inspect the elastic residual; tune to the computed positive wavelength to make them meet.",
+          "links": {
+            "geometry": "https://journals.iucr.org/j/issues/2018/06/00/gj5217/"
+          }
+        },
+        {
+          "num": "6.4",
+          "kind": "Theorem",
+          "name": "Bragg and Laue conditions are equivalent",
+          "deps": [
+            "xtal-6.2",
+            "xtal-6.3",
+            "xtal-5.2"
+          ],
+          "refs": [
+            "Hammond ch. 8",
+            "Barbour (2018), selected reciprocal/Ewald construction"
+          ],
+          "pic": "Switch between plane and vector pictures of one candidate reflection. Change the angle and compare both residuals; the exact Bragg setting makes both vanish together.",
+          "links": {
+            "geometry": "https://journals.iucr.org/j/issues/2018/06/00/gj5217/"
+          }
+        },
+        {
+          "num": "6.5",
+          "kind": "Method",
+          "name": "Ewald sphere construction",
+          "deps": [
+            "xtal-6.4"
+          ],
+          "refs": [
+            "Hammond ch. 8",
+            "Giacovazzo ch. 3",
+            "Barbour (2018), selected §2.3"
+          ],
+          "pic": "Rotate the reciprocal lattice, resize the sphere with wavelength, and vary the declared point width. Compare the nearest point's radial residual with its computed excitation weight.",
+          "links": {
+            "geometry": "https://journals.iucr.org/j/issues/2018/06/00/gj5217/"
+          }
+        },
+        {
+          "num": "6.6",
+          "kind": "Concept",
+          "name": "Limiting sphere and resolution",
+          "deps": [
+            "xtal-6.5"
+          ],
+          "refs": [
+            "Hammond ch. 8; chord and finite enumeration argument"
+          ],
+          "pic": "Shorten the wavelength and change the angular aperture. Compare the complete limiting-sphere count with the smaller detector-angle count and the two minimum spacings.",
+          "links": {
+            "geometry": "https://journals.iucr.org/j/issues/2018/06/00/gj5217/"
+          }
+        },
+        {
+          "num": "6.7",
+          "kind": "Method",
+          "name": "Laue method",
+          "deps": [
+            "xtal-6.5"
+          ],
+          "refs": [
+            "Hammond ch. 8",
+            "Dauter (1999), selected §2.1; wavelength solved locally"
+          ],
+          "pic": "Rotate a stationary crystal, adjust the wavelength band and move the film. Inspect the wavelengths and unit-ray residual of reflections that actually reach the detector.",
+          "links": {
+            "source": "https://journals.iucr.org/d/issues/1999/10/00/ba0020/"
+          }
+        },
+        {
+          "num": "6.8",
+          "kind": "Method",
+          "name": "Powder diffraction and Debye–Scherrer cones",
+          "deps": [
+            "xtal-6.5",
+            "xtal-4.6"
+          ],
+          "refs": [
+            "Hammond ch. 10; cubic orbit, centering and cone geometry derived locally"
+          ],
+          "pic": "Choose SC, BCC or FCC and change wavelength and cell edge. Select a family to compare its actual cone angle, multiplicity, extinction and forward-film ring.",
+          "links": {
+            "geometry": "https://journals.iucr.org/j/issues/2018/06/00/gj5217/"
+          }
+        },
+        {
+          "num": "6.9",
+          "kind": "Law",
+          "name": "Moseley’s law and characteristic X-rays",
+          "deps": [
+            "qchem-2.9"
+          ],
+          "refs": [
+            "Hammond ch. 9",
+            "Moseley (1913), printed pp.1030–1033",
+            "MIT X-Ray Physics lab, selected pp.1–2"
+          ],
+          "pic": "Change target atomic number, screening and accelerating voltage. Compare the model Kα energy, K-vacancy threshold and continuum cutoff with the square-root frequency line.",
+          "links": {
+            "historical": "https://zenodo.org/record/1430926/files/article.pdf",
+            "teaching": "https://ocw.mit.edu/courses/8-13-14-experimental-physics-i-ii-junior-lab-fall-2016-spring-2017/117b61a707a6de754e07b60c28b38665_MIT8_13-14F16-S17exp31.pdf"
+          }
+        },
+        {
+          "num": "6.10",
+          "kind": "Law",
+          "name": "Scherrer equation for crystallite size",
+          "deps": [
+            "xtal-6.8",
+            "xtal-6.1"
+          ],
+          "refs": [
+            "Hammond ch. 10",
+            "Gesing and Robben (2024), selected size/width discussion; finite-stack calculation derived locally"
+          ],
+          "pic": "Shrink the coherent stack, add microstrain and choose the profile convention. Compare exact half-height points, the finite-N shape factor and the actual corrected Williamson–Hall coordinates.",
+          "links": {
+            "source": "https://journals.iucr.org/j/issues/2024/05/00/oc5037/"
+          }
+        },
+        {
+          "num": "6.11",
+          "kind": "Paper",
+          "name": "Interferenzerscheinungen bei Röntgenstrahlen",
+          "paper": {
+            "authors": "W. Friedrich, P. Knipping and M. Laue",
+            "year": 1913,
+            "title": "Interferenzerscheinungen bei Röntgenstrahlen",
+            "venue": "Annalen der Physik 346 (10): 971–988",
+            "doi": "10.1002/andp.19133461004"
+          },
+          "introduces": [
+            "xtal-6.3",
+            "xtal-6.7"
+          ],
+          "deps": [
+            "xtal-1.1",
+            "waves-7.9"
+          ],
+          "refs": [
+            "Friedrich, Knipping and Laue (1913), historical bibliography; original body not used",
+            "Modern finite translation/motif sum derived locally"
+          ],
+          "pic": "Turn the cubic axis toward the beam and vary the two scattering factors. Watch the computed Laue pattern and compare the 200 and 220 motif amplitudes.",
+          "links": {
+            "geometry": "https://journals.iucr.org/j/issues/2018/06/00/gj5217/"
+          }
+        },
+        {
+          "num": "6.12",
+          "kind": "Paper",
+          "name": "The Diffraction of Short Electromagnetic Waves by a Crystal",
+          "paper": {
+            "authors": "W. L. Bragg",
+            "year": 1913,
+            "title": "The Diffraction of Short Electromagnetic Waves by a Crystal",
+            "venue": "Proceedings of the Cambridge Philosophical Society 17: 43–57",
+            "url": "https://archive.org/details/proceedingsofcam1718191316camb"
+          },
+          "introduces": [
+            "xtal-6.2",
+            "xtal-6.4",
+            "waves-7.10"
+          ],
+          "deps": [
+            "xtal-6.3",
+            "xtal-4.2",
+            "xtal-6.11"
+          ],
+          "refs": [
+            "W. L. Bragg (1913), historical bibliography; original body not used",
+            "Barbour (2018), selected reciprocal/Ewald construction; independent centering sum"
+          ],
+          "pic": "Select a plane and rotate the crystal. Compare its selected wavelength, angle and amplitude in SC and FCC, then inspect the associated forward-film pattern.",
+          "links": {
+            "geometry": "https://journals.iucr.org/j/issues/2018/06/00/gj5217/"
+          }
+        },
+        {
+          "num": "6.13",
+          "kind": "Paper",
+          "name": "The high-frequency spectra of the elements",
+          "paper": {
+            "authors": "H. G. J. Moseley",
+            "year": 1913,
+            "title": "The high-frequency spectra of the elements",
+            "venue": "Philosophical Magazine (6th series) 26 (156): 1024–1034",
+            "doi": "10.1080/14786441308635052"
+          },
+          "introduces": [
+            "xtal-6.9"
+          ],
+          "deps": [
+            "xtal-6.2",
+            "qm-1.5",
+            "xtal-6.12",
+            "qm-1.16"
+          ],
+          "refs": [
+            "Moseley (1913), Table I p.1028 and printed pp.1024–1034, selected source scan",
+            "Independent ordinary-least-squares calculation of the transcribed α columns"
+          ],
+          "pic": "Switch between the two measured diffraction orders and atomic-number or atomic-weight rank. Inspect each historical wavelength and compare the fitted slope, screening intercept and actual residuals.",
+          "links": {
+            "source": "https://zenodo.org/record/1430926/files/article.pdf"
+          }
+        }
+      ]
     },
     // ───────────────────────────────────────────────────────────── 7
     {
