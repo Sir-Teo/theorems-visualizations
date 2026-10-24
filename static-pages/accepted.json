@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
-  "acceptedCommit": "642359f6d8a7c303dd396ebd19e1105522e86e10",
-  "snapshotDigest": "993b7f0a3579c1377065b2cbe2e6613d72dc70789f2751c24b4c4c79e7a88915",
+  "acceptedCommit": "bcee210ec01c72dd937e8361377866e6bab5fac7",
+  "snapshotDigest": "017579f7fb2b69c682f0091a99948d8a1bf7980a3bfcde0193a279a7d34594f4",
   "ids": [
     "aero-1.1",
     "aero-1.2",
@@ -3863,6 +3863,17 @@
     "mathbio-5.7",
     "mathbio-5.8",
     "mathbio-5.9",
+    "mathbio-6.1",
+    "mathbio-6.10",
+    "mathbio-6.11",
+    "mathbio-6.2",
+    "mathbio-6.3",
+    "mathbio-6.4",
+    "mathbio-6.5",
+    "mathbio-6.6",
+    "mathbio-6.7",
+    "mathbio-6.8",
+    "mathbio-6.9",
     "mathbio-7.15",
     "mathbio-7.16",
     "mech-1.1",
@@ -5892,6 +5903,19 @@
     "popgen-5.6",
     "popgen-5.7",
     "popgen-5.8",
+    "popgen-6.1",
+    "popgen-6.10",
+    "popgen-6.11",
+    "popgen-6.12",
+    "popgen-6.13",
+    "popgen-6.2",
+    "popgen-6.3",
+    "popgen-6.4",
+    "popgen-6.5",
+    "popgen-6.6",
+    "popgen-6.7",
+    "popgen-6.8",
+    "popgen-6.9",
     "prob-1.1.1",
     "prob-1.1.10",
     "prob-1.1.11",
@@ -8648,12 +8672,12 @@
       "to": "sig-4.4"
     }
   ],
-  "dataDigest": "e8ddebc9601522fcd05fb10f422ebae512e7ccbeaeb5b5223cbaa088bdb7e91c",
+  "dataDigest": "4ac0de058df85175cc837f69b05e9793ba38f3c507cb252d179b28310c3c97bb",
   "sourceReconciliation": {
     "checkedOn": "2026-10-24",
-    "basis": "Source-backed author verification of CLIMATE6 and GEOG8 under the continuous content goal; no additional independent review claimed",
-    "evidencePath": "docs/integration/wave6-climate-geog-content.json",
-    "evidenceSha256": "5b8e211928ff04bda4cc9b050892b792bf5c8892717893d0be3a9fd32afb8508",
-    "verificationPath": "docs/verification/wave6-climate-geog-integration.md"
+    "basis": "Source-backed author verification of POPGEN6 and MATHBIO6 under the continuous content goal; no additional independent review claimed",
+    "evidencePath": "docs/integration/wave6-popgen-mathbio-content.json",
+    "evidenceSha256": "f4609800cc5693671da117066e168ac1116ba470601c55b125842db2e9136c42",
+    "verificationPath": "docs/verification/wave6-popgen-mathbio-integration.md"
   }
 }

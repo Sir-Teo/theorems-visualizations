@@ -380,8 +380,8 @@
     "scope": "local-preview",
     "author": "atlas-editor",
     "checkedOn": "2026-10-24",
-    "contentDigest": "e1dd9b4dd016b5da465935b54279d83b94c6ddf9595eeb7d3b423f8e84c71b89",
+    "contentDigest": "0d35f0fc680999d8122f8a777991744b94031b812a0392c0a51ddfdb0ae534c1",
     "artifactDigest": "ff19c4a9828fd3b260c199c4963c1f85265be51d9cf59bd0c7e9e94aadd9f56e",
-    "evidencePath": "docs/verification/wave6-climate-geog-integration.md"
+    "evidencePath": "docs/verification/wave6-popgen-mathbio-integration.md"
   }
 }
