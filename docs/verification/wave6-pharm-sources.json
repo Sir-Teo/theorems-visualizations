@@ -1,6 +1,6 @@
 {
   "started": "2026-10-25",
-  "status": "Research only. Frozen16 identities and all5 external written prerequisite bodies read; no PHARM6 product draft or availability increment.",
+  "status": "Chapter-local pure-model draft now exists with19 passing focused groups and1608 independent parameter cases across13 families. No main PHARM6 chapter, viz module, syllabus change or availability increment yet. Author availability710; all browsers free.",
   "actualRead": [
     {
       "url": "https://pharmacologyeducation.org/pharmacodynamics/",
@@ -101,5 +101,54 @@
     "Explicit allosteric joint-weight multiplier is reciprocal of Jakubik2019 dissociation-factor convention; preserve microscopic reversibility.",
     "Loewe/Bliss are different reference definitions; use own declared synthetic departure, never invented empirical synergy.",
     "Both historical Paper bodies unread/stopped; original metadata and uncertainty remain; no original figures/data reconstructed."
-  ]
+  ],
+  "scientificPrototype": {
+    "helper": "content/pharm/ch06.shared.js",
+    "sha256": "39b91b36cba732806ee16c9514935598cd3bcec4153c37b9c043025444197d0d",
+    "focusedGroups": 19,
+    "failed": 0,
+    "independentCases": 1608,
+    "families": {
+      "binding": 144,
+      "effect": 225,
+      "constitutive": 180,
+      "operational": 180,
+      "inactivation": 48,
+      "gating": 75,
+      "competitive": 48,
+      "tracer": 480,
+      "allosteric": 96,
+      "kinetic": 9,
+      "adaptation": 10,
+      "loewe": 33,
+      "inverse": 80
+    },
+    "recordedPrototypeComparisons": 32553,
+    "referenceSha256": "18c53326d236aefc6f1b3040efb36811368c32a68349ef47e5397f879624418c",
+    "repeatByteIdentical": true,
+    "referenceMethods": "1000-digit arithmetic; labelled-state and physical species enumeration; independent free-receptor bisection (1300 steps, bracket RT*2^-1300), full two-state Markov matrix exponentials, broad logit bisection (260 steps, bracket20000*2^-260). Working precision is not a claim of1000 accurate root digits. No JS imported by Python.",
+    "durableArtifacts": [
+      "tests/wave6-pharm.test.mjs",
+      "tests/wave6-pharm-reference.py",
+      "tests/fixtures/wave6-pharm-reference.json"
+    ],
+    "logs": [
+      "/tmp/wave6-pharm-check-first.log",
+      "/tmp/wave6-pharm-check-extra.log",
+      "/tmp/wave6-pharm-focused-prototypes.log",
+      "/tmp/wave6-pharm-reference-final.log",
+      "/tmp/wave6-pharm-reference-repeat.log"
+    ],
+    "referenceRepairs": [
+      "1000-digit subtraction of mathematically equal neutral/zero-inhibitor observables left rounding residuals; exact defining zero cases used without clipping positive signals. Failed first-reference-v1.log retained.",
+      "Inverse target concentration can be mathematically finite above binary64; reference JSON now uses null ordinary value with finite log, rather than non-JSON infinity. Failed reference-v1.log retained."
+    ],
+    "modelRepairs": [
+      "Signed change has zero sign only for a true zero (log=-infinity); positive underflow keeps its sign.",
+      "Closed ligand roots, tracer-inhibition odds and receptor-inactivation products retain logarithmic small inventories rather than subtracting nearly equal rounded quantities.",
+      "Pulse input paths retain exact corners and observation-horizon cases.",
+      "Exact no-flux availability states remain fixed; positive tiny desensitization remains distinguishable from no desensitization.",
+      "Availability-model pulse/gap domains are1\u201360 model minutes and continuous duration1\u2013360, avoiding unresolved absolute-time gaps; zero-exposure/no-desensitization/no-recovery hypotheses remain testable."
+    ]
+  }
 }
