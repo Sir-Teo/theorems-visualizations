@@ -196,6 +196,8 @@ an eigen-direction, an orthonormal frame, an ellipse's axes) with live numbers.
 
 ## Medicine & health
 
+- MRI views must declare a consistent precession sign and angular/cyclic gamma units. Keep finite spin/phase averages distinct from continuous predictions, small-tip RF from full Bloch evolution, and real-object Fourier completion from phase-bearing data. Disclose inverse normalization and fixed image transfer functions; preserve rank loss, numerical conditioning and positive quantities below arithmetic range. BOLD and diffusion illustrations do not uniquely identify neural activity or fibres.
+
 - Expose the exact participation or recording mechanism on one declared population. Qualify binary nondifferential attenuation, preserve empty groups and zero/unbounded ratios, and keep standardized counterfactual comparisons separate from crude identification. Label synthetic survivor damage, distinguish finite samples from expectations, retain tiny signed effects, and draw filled points above coincident hollow rings. See the [bias verification](verification/wave6-epi.md).
 
 - Separate binding, activation and transduction; preserve free-ligand conditions in Cheng–Prusoff and molar units in Schild plots. Declare allosteric parameter conventions, receptor-reserve effects on both maximum and EC50, and residence time versus effect duration. Keep descriptive mixture departures separate from empirical synergy; resolve fast transitions and place status text outside plotted data. See the [receptor-pharmacodynamics report](verification/wave6-pharm.md).

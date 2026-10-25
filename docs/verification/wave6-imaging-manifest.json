@@ -1,19 +1,19 @@
 {
-  "baseCommit": "8cafaee5789e47e35834a72190cc793b246868cf",
-  "status": "Scientific prototype checkpoint; native/personal pixel acceptance pending; zero availability increment.",
+  "baseCommit": "06dbea2b081254bd9b85f62f18fa32f739857550",
+  "status": "All16 author-verified locally; no independent acceptance/release/deploy claim.",
   "sha256": {
     "content/imaging/ch06.js": "c5b660799dfcd55b229bbdc7766f51548c2d1a7e6e417cb9849d813d22367bc0",
     "content/imaging/ch06.shared.js": "16c0d96d8878db262e7fb5f2cb05dbaa381cb899bba4162d1e8e88da258f52b1",
     "content/imaging/ch06.reconstruction.shared.js": "0f9356884ab4062ef2b00ab48d094bb341e1148cb8714affb854d4cd3f9bfb88",
     "content/imaging/ch06.dynamic.shared.js": "c3a19b58edc3993f050fa27e40293948a6930f47a0e719b0a65936dc9835aff4",
-    "content/imaging/ch06.viz.js": "af6f0eb65e9e2ae9081b7fc1e67f2ea3dede353a612dba8bc7fa7bf731c581ea",
+    "content/imaging/ch06.viz.js": "dcdf2a79861079c0dec9b54c37997929aa87b65eb8b7a50420fdaec08de1eed0",
     "content/imaging/syllabus.js": "2a5edb41ea1fdb191c67ff241d21b0aa6d59528801338f615e83fbf0b729dabf",
     "tests/wave6-imaging.test.mjs": "25f5e2c87c0901b30559b6daf4724079d786590b284e28ae724906b8f28d5c90",
-    "tests/wave6-imaging-browser.mjs": "583f6a283dfa79d058255d3f960334f5dd3a698e59d44d5bcba59b0b99b46111",
+    "tests/wave6-imaging-browser.mjs": "953bdae0f222cf505fd76ceb78294bd6c4f39da18dd98668b54984a89625e9c2",
     "tests/wave6-imaging-reference.py": "b9fa7dfb7ab672e783099773629e2440815aab307681a3959821931b94bacf22",
     "tests/fixtures/wave6-imaging-reference.json": "ac8e20be67a848c6ebc8fefdd1ab59a4389d940452925e5cef00100615383bb4",
     "tests/fixtures/wave6-imaging-linear-stimuli.json": "aeab31bafc12a7fd27dfe15988ddbf624a8acf14056c6660358411b479e9daf4",
-    "docs/verification/wave6-imaging-sources.json": "7afafb811bc576078b58ba94d4b19c163862d6362e271ac7368c93ccba456888",
-    "docs/verification/wave6-imaging-gates.json": "e2febfd9ea92f453e5140d69c5fa9d6aa0192a0590e6ae15ebcc84413448189c"
+    "docs/verification/wave6-imaging-sources.json": "955737423faa2a148998783650888d20558a934e87ca36b2e87e1f2d9bb1a644",
+    "docs/verification/wave6-imaging-gates.json": "4fda5e37843283b91ad4235de096ded2dc16ed9315645d874d19a3a2726be74d"
   }
 }
