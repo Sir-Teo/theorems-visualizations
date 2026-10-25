@@ -1,0 +1,13 @@
+# ENERGY6 Storage — preparation
+
+Twelve frozen lessons are in source/model preparation. No ENERGY6 main, visualization or syllabus6 change is installed, and no author availability is added:782/1057 remains36 historical independently accepted plus746 additional author-verified.
+
+All seven actual written prerequisite bodies were read. PCHEM8.5/8.6/8.10/8.14 remain unwritten; Gibbs-work/Nernst and hydrogen accounting require explicit local derivations with declared hypotheses. The [source ledger](wave6-energy-sources.json) records normally acquired MIT10.626 notes, Sandia flywheel material, a manufacturer Peukert example and separate DOE electrolysis/pumped-hydro explainers. Eight selected rendered source pages were personally inspected. Commercial bodies and original Peukert/Goodenough–Park bodies remain unread.
+
+Source cautions affect the implementation: a capacitor voltage balance prints Q/V_C rather than Q/C; a Peukert example confuses charge/current and A/A-per-hour; a Nernst standard-state expression omits an electron-count factor under its stated convention. Own dimensional/electrochemical derivations avoid importing those errors. The Nernst index labels2011 while the actual PDF is rewritten/dated2014. A copyrighted Li-ion schematic explicitly removed from the MIT notes is not recovered.
+
+New binding stops are the Sandia handbook PHS and hydrogen chapter-body clicks, each returning an internal error with no body. Their exact normally linked URLs are retained without retry or alternate recovery. The separate DOE explainers are different works, not recoveries of those chapters. Tester publisher403, MacKay/withouthotair403 and every older original-body/figure stop remain binding.
+
+The working design at `/tmp/wave6-energy-research/design.md` fixes several consequential distinctions: charge versus energy, open-circuit activity models versus measured curves, an empirical depth/life exponent versus a universal shallow-cycle benefit, a closed gas parcel versus a rigid cavern, cooling heat versus lost work, rotor versus whole-system mass, capacitor cutoff energy, and compressor auxiliary electricity versus hydrogen chemical losses. The first four candidate helpers are under `/tmp/wave6-energy-research/draft`; independent references and complete browser/personal gates are still pending. Shared math/renderer/map/FPS work and frozen assignments remain unchanged.
+
+Continue the12 models, complete actual-source statement/idea/scope/caption drafts, then implement and verify purposeful views under the user’s highest-visualization-quality gate. Do not stop at preparation or chapter boundaries.
