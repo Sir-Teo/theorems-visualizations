@@ -1,0 +1,105 @@
+{
+  "started": "2026-10-25",
+  "status": "Research only. Frozen16 identities and all5 external written prerequisite bodies read; no PHARM6 product draft or availability increment.",
+  "actualRead": [
+    {
+      "url": "https://pharmacologyeducation.org/pharmacodynamics/",
+      "scope": "Actual HTML body sections introductory PD/dose-response, receptor affinity and potency/efficacy read, plus figure captions; figures themselves not yet inspected. General pedagogic statements require model-specific qualifications: do not infer kinetics from Kd alone, receptor saturation from response Emax, or universal initial Emax depression under receptor inactivation with reserve. No clinical dosing/selection advice reused."
+    },
+    {
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC1514867/",
+      "scope": "Actual original Clark1926 archive bibliography read and exact full-text scan/PDF links available. The body itself has NOT yet been read. Frozen metadata agrees with actual archive: JPhysiol61(4):530\u2013546 DOI10.1113/jphysiol.1926.sp002314."
+    },
+    {
+      "url": "https://pharmacologyeducation.org/receptors/",
+      "scope": "Actual introductory receptor passages and Agonists/antagonists/partial/inverse agonists section read, including spare-receptor and constitutive-activity qualifications. No selected receptor drug/clinical examples or downloaded slides reused."
+    },
+    {
+      "url": "https://pharmacologyeducation.org/desensitisation-and-tachyphylaxis/",
+      "scope": "Actual complete short explanatory body by Simon Maxwell, desensitization/tachyphylaxis/tolerance timescale and PK-vs-PD mechanisms read. Own availability feedback will be explicitly a chosen example, not a universal clinical mechanism or cessation advice."
+    },
+    {
+      "url": "https://journals.plos.org/ploscompbiol/article?id=10.1371/journal.pcbi.1008529",
+      "work": "Kav\u010di\u010d, Tka\u010dik & Bollenbach2021, Minimal biophysical model of combined antibiotic action",
+      "scope": "Actual selected abstract/Introduction drug-interaction and Loewe-vs-Bliss paragraphs, Figure1 caption, and Results no-double-bound competition/isobole derivation paragraphs through eq9 read. The displayed equations are images; their images have NOT yet been personally inspected. No full-paper or empirical-antibiotic/model reproduction claim; this distinct work supports the explicitly chosen additive reference and its drug-with-itself condition."
+    },
+    {
+      "work": "Buchwald2019, Frontiers10:605, distinct from stopped2017 paper",
+      "url": "https://www.frontiersin.org/journals/pharmacology/articles/10.3389/fphar.2019.00605/full",
+      "scope": "Actual selected Introduction/MainConcepts/Parametrization/constitutive-activity body paragraphs, and operational/minimal-two-state comparison/footnote2 paragraphs read. Text gives operational maximum tau/(1+tau), EC50 K/(1+tau) and states same rational shape from distinct microscopic meanings. Source figures/formula images not personally inspected (figure click invalid arguments); no full-paper/data fit/SABRE implementation or2017-original verification. Do not repeat broad induced-fit-vs-selection structural claims, source free-energy sign convention or opinions about all fitted operational affinities as universal facts."
+    },
+    {
+      "work": "CSPT official Cheng\u2013Prusoff glossary",
+      "url": "https://pharmacologycanada.org/Cheng-Prusoff-equation",
+      "scope": "Actual complete short definition/hypotheses/relevance body read. It uses substrate/Km terminology; own receptor displacement derivation must explicitly use free tracer and binding Kd, not silently equate an enzyme Km with affinity. No CP conversion of arbitrary functional IC50 or total-dose/depleted assays."
+    },
+    {
+      "work": "Jakubik et al2019 PLOSOne14:e0214255",
+      "url": "https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0214255",
+      "scope": "Actual selected Intro and Methods one-orthosteric/one-allosteric ligand model body plus Figure1 caption read. Their dissociation-constant cooperativity factor alpha<1 is positive, alpha>1 negative; own joint-statistical-weight multiplier alpha is reciprocal and MUST be explicitly defined. Both reciprocal binding paths use the same coupling by microscopic reversibility. Formula/figure images not inspected; no two-modulator empirical/model reproduction claimed."
+    }
+  ],
+  "stops": [
+    {
+      "work": "Arunlakshana & Schild1959, Some quantitative uses of drug antagonists",
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC1481829/",
+      "result": "Actual web open returned Checking your browser/reCAPTCHA. Original body unread. No PDF/page/reader/mirror/cache recovery, including the1997 reprint of the same original body PMC3224288 or publisher route. Prior search snippets/bibliography only; distinct1997 commentary is a separate work but has not been opened/read."
+    },
+    {
+      "work": "Strelow et al., Mechanism of Action Assays for Enzymes, Assay Guidance Manual",
+      "url": "https://www.ncbi.nlm.nih.gov/books/NBK92001/",
+      "result": "Inherited MATHBIO5 official-reader reCAPTCHA stop; only earlier indexed scheme descriptions read. No recovery of this stopped original for PHARM6."
+    },
+    {
+      "work": "Clark1926, The reaction between acetyl choline and muscle cells",
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/instance/1514867/pdf/jphysiol02525-0068.pdf",
+      "result": "Actual normal click of archive PDF returned Checking your browser/reCAPTCHA. Only archive bibliography was read. Stop original body, including previously listed scan images/page routes, publisher, reprints, mirrors and cache; no original graph/data reconstruction."
+    },
+    {
+      "work": "Buchwald2017, A three-parameter two-state model of receptor function",
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC5464340/",
+      "result": "Actual normal open returned Checking your browser/reCAPTCHA. Prior search abstract/introduction snippets only. No publisher/author repository/PDF/cache/alternate-body recovery of this2017 work."
+    },
+    {
+      "work": "Tulane basic-principles teaching page linked by IUPHAR receptor page",
+      "route": "Actual IUPHAR receptors link45",
+      "result": "Web click returned Internal Error with no body. Body unread; do not recover through a cache/alternate route."
+    },
+    {
+      "work": "NC-IUPHAR Terms and Symbols report, exact PDF",
+      "url": "https://www.guidetopharmacology.org/pdfs/termsAndSymbols.pdf",
+      "result": "Actual normal open redirected to login.jsp requiring registration/access. Body unread; stop PDF/cache/alternate-original recovery. Prior search snippet only; public PEP educational pages are distinct works already read."
+    },
+    {
+      "work": "Kavcic et al2021 PLOS1008529 Figure1 image",
+      "route": "Actual larger-PNG link74 from publisher article",
+      "result": "Tool reported non-retryable inaccessible500 after redirect to signed plos-corpus storage. Stop recovery of this figure via TIFF/PDF/alternate/cached image. Actual selected article text/caption read before this stop remains distinguished; no figure inspected/reproduced."
+    },
+    {
+      "work": "PLOS2021 Figure1 PNG redirect and Frontiers2019 Figure2 image tool boundary",
+      "result": "PLOS Figure1 larger PNG was explicitly non-retryable/inaccessible; no figure recovery. Frontiers Figure2 click returned invalid-argument tool error before any image body, so no image inspection is claimed. Selected actual article text/captions are distinguished from unviewed figures."
+    }
+  ],
+  "previousRestrictions": "All PHYSIO and earlier chapter source stops remain binding; do not retry them.",
+  "evidence": "/tmp/wave6-pharm-research/first-web-opens.txt",
+  "prerequisitesRead": [
+    "mathbio-5.2",
+    "sysbio-1.3",
+    "sysbio-6.8",
+    "mathbio-5.7",
+    "mathbio-5.9"
+  ],
+  "authorAvailable": 710,
+  "historicalAccepted": 36,
+  "PHYSIOCheckpoint": "5ea82418, all15 author-verified; all browsers closed",
+  "baseCommit": "5ea82418",
+  "designNotes": "/tmp/wave6-pharm-research/design-notes.json",
+  "importantModelDecisions": [
+    "Use free concentration; dose, tracer depletion and receptor occupancy are distinct.",
+    "General receptor active-state probabilities can explain full/partial/neutral/inverse activity; minimal delCastilloKatz lacks active unbound state.",
+    "Operational and minimal gating rational curves can match while microscopic parameter meanings differ; no mechanism identification from one curve.",
+    "Explicit allosteric joint-weight multiplier is reciprocal of Jakubik2019 dissociation-factor convention; preserve microscopic reversibility.",
+    "Loewe/Bliss are different reference definitions; use own declared synthetic departure, never invented empirical synergy.",
+    "Both historical Paper bodies unread/stopped; original metadata and uncertainty remain; no original figures/data reconstructed."
+  ]
+}
