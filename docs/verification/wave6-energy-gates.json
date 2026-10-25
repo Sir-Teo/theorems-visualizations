@@ -77,10 +77,18 @@
     {
       "kind": "personal presentation review",
       "detail": "Nernst sentence left a leading period after a wrapped equation; cycle-life condition left a lone1; reservoir caption promised a head curve rather than its actual readout. Local statement2/6 and caption7 fixes, plus a visual separator between hydrogen budget and battery comparison, are followed by complete post-presentation geometry/mode checks and scoped personal replacement."
+    },
+    {
+      "kind": "personal ink collision",
+      "detail": "The first hydrogen separator at data y.19 touched the battery label on mobile. It is now at y.205 inside the real gap. Four-layout/28-state scoped replacement passes with actual glyph/bar clearance assertions; affected personal11 widgets are pending replacement."
+    },
+    {
+      "kind": "illustrative default",
+      "detail": "Original hydro head contribution was only about1%, leaving curves nearly coincident. UI defaults now use area.02km\u00b2 and initial head50m; an extra1,000,000m\u00b3 nonlinear critical example is checked. Four-layout native replacement passes164actions/68Shares/302checks/28critical/28,000comparisons; complete current audit passes48groups/348states."
     }
   ],
   "sourceStops": "See wave6-energy-sources.json; all new/inherited original-body and removed-figure stops remain binding",
-  "personalStatus": "In progress:24 complete current critical widgets (ENERGY6.1/6.2 both themes),22 current default widgets and80 current rich fields via exact RGBA preservation;26defaults/16rich replacements/124critical widgets pending. Personal progress and exact gallery scopes are retained under /tmp/wave6-energy-research.",
+  "personalStatus": "All48 current complete default widgets and96 rich fields personally reviewed at original CSS pixels, with80 unchanged field images retained by exact RGBA comparison. Critical galleries01\u201310 cover40 complete current narrow widgets;110 critical widgets remain pending. See /tmp/wave6-energy-research/personal-progress.json.",
   "nativeFirstLesson": {
     "layouts": 4,
     "actions": 128,
@@ -103,32 +111,58 @@
   "nativeCurrent": {
     "snapshotCommit": "c7fe7cc9",
     "layouts": 48,
-    "actions": 1408,
-    "actualShares": 636,
-    "checks": 2816,
+    "actions": 1412,
+    "actualShares": 640,
+    "checks": 2830,
     "invalidRestores": 72,
     "rawRestores": 48,
-    "criticalRestores": 296,
-    "scientificRenderComparisons": 363780,
+    "criticalRestores": 300,
+    "scientificRenderComparisons": 365082,
     "logs": [
       "/tmp/wave6-energy-research/native-final-a.log",
-      "/tmp/wave6-energy-research/native-final-b.log"
+      "/tmp/wave6-energy-research/native-final-b.log",
+      "/tmp/wave6-energy-research/native-hydro-final.log"
     ],
     "results": [
       "/tmp/wave6-energy-native-final-a/result.json",
-      "/tmp/wave6-energy-native-final-b/result.json"
+      "/tmp/wave6-energy-native-final-b/result.json",
+      "/tmp/wave6-energy-native-hydro-final/result.json"
     ],
-    "followupScope": "Only statement2/6 line breaks, caption7 wording and hydrogen budget separator/title/row label change afterwards. All control inventories/domains/model math and Share behavior remain exact; complete post-presentation geometry/mode and personal gates follow."
+    "followupScope": "Only statement2/6 line breaks, caption7 wording and hydrogen budget separator/title/row label change afterwards. All control inventories/domains/model math and Share behavior remain exact; complete post-presentation geometry/mode and personal gates follow.",
+    "hydroReplacement": {
+      "subtract": {
+        "layouts": 4,
+        "actions": 160,
+        "actualShares": 64,
+        "checks": 288,
+        "invalid": 4,
+        "raw": 4,
+        "critical": 24,
+        "modelChecks": 26698
+      },
+      "add": {
+        "layouts": 4,
+        "actions": 164,
+        "replays": 68,
+        "checks": 302,
+        "invalidReplays": 4,
+        "rawReplays": 4,
+        "criticalReplays": 28,
+        "modelChecks": 28000
+      },
+      "scope": "Replaces the previous four ENERGY6.7 layouts, including the extra strong variable-head case."
+    }
   },
   "postPresentationAudit": {
     "groups": 48,
-    "distinctStates": 344,
-    "criticalStates": 296,
-    "checks": 588,
-    "scientificRenderComparisons": 74796,
+    "distinctStates": 348,
+    "criticalStates": 300,
+    "checks": 594,
+    "scientificRenderComparisons": 75450,
     "failures": 0,
-    "log": "/tmp/wave6-energy-research/audit-final.log",
-    "images": "/tmp/wave6-energy-audit-final"
+    "log": "/tmp/wave6-energy-research/current-audit.log",
+    "images": "/tmp/wave6-energy-current-audit",
+    "scope": "Current complete source, including exact gamma endpoint, log1p transition, hydrogen ink clearance and more illustrative hydro defaults/strong nonlinear case."
   },
   "modeChecks": {
     "lightItems": 12,
@@ -136,6 +170,16 @@
     "errors": 0,
     "blankWarnings": 0,
     "texWarnings": 0,
-    "qualityWarnings": 0
+    "qualityWarnings": 0,
+    "postHydroScope": "All pump/release choices, control extremes, raw/invalid/critical cases and actual Shares rechecked in the four-layout native hydro replacement."
+  },
+  "hydrogenSeparatorReplacement": {
+    "groups": 4,
+    "distinctStates": 28,
+    "checks": 48,
+    "scientificComparisons": 1152,
+    "failures": 0,
+    "scope": "Overlapping replacement of ENERGY6.11 in the48-group audit; do not add layout/state counts. Actual raw label ink and bar clearances are asserted. Other44 groups and all model/control behavior unchanged.",
+    "log": "/tmp/wave6-energy-research/hydrogen-separator-final.log"
   }
 }
