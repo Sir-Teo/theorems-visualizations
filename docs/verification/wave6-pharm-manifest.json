@@ -1,0 +1,15 @@
+{
+  "baseCommit": "1b360d31",
+  "sha256": {
+    "content/pharm/ch06.js": "f8268b1872df43366210cf47e5efa2ec77b9f89963033df9c5c7829e80ea0db2",
+    "content/pharm/ch06.shared.js": "d97b5ce17430c9992bad1fc921527ee7f7441ac30fb20fcf54f875d2be591ded",
+    "content/pharm/ch06.viz.js": "b42cf9f8a077c5b0e1849e0f9768064ffb01b3d64cbf843c0836d78be7d21936",
+    "content/pharm/syllabus.js": "b00380890d3383feb839acc88807015771fa3fdeb89a01d7a8f03d8498aab3db",
+    "tests/wave6-pharm.test.mjs": "2e89118d8fa2a7fdbefdcf7ba8ce9db52ab7fc5dff98db21920b51eb12910bac",
+    "tests/wave6-pharm-browser.mjs": "23a72a1244cf86114027c4aa25a3e6421b01769c974c7373dc0d6ab86aa4e453",
+    "tests/wave6-pharm-reference.py": "08005357cfe8f040b2563b52ab7d7ce26008093ede37b6badbc7df6742b47324",
+    "tests/fixtures/wave6-pharm-reference.json": "3a65b7ae2ce838756528bb2d8555d2c806507b4b4d27856463343b9bd1081cab",
+    "docs/verification/wave6-pharm-sources.json": "2152cf41502694c24873284e38f310ed7f0ddba7a1dd6e97cb9eb019a8e78787",
+    "docs/verification/wave6-pharm-gates.json": "b500a47a500dbb98e7198458a22a33369a4a7f7ddedf0d9875c803da48e17ab5"
+  }
+}

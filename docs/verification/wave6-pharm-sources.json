@@ -1,6 +1,6 @@
 {
   "started": "2026-10-25",
-  "status": "Chapter-local pure-model draft now exists with19 passing focused groups and1608 independent parameter cases across13 families. No main PHARM6 chapter, viz module, syllabus change or availability increment yet. Author availability710; all browsers free.",
+  "status": "All16 frozen PHARM6 lessons are author-verified locally:21 focused groups;1608 independent cases plus143 adaptive-time probes and33 mixture half scales; strict/static/all-mode and64 final production/native layouts clean. All64 default layouts,16 complete narrow rich pairs in both themes,150 narrow critical plot regions and important modes personally inspected. No independent acceptance or release claim. All chapter browsers and servers closed.",
   "actualRead": [
     {
       "url": "https://pharmacologyeducation.org/pharmacodynamics/",
@@ -89,7 +89,7 @@
     "mathbio-5.7",
     "mathbio-5.9"
   ],
-  "authorAvailable": 710,
+  "authorAvailable": 726,
   "historicalAccepted": 36,
   "PHYSIOCheckpoint": "5ea82418, all15 author-verified; all browsers closed",
   "baseCommit": "5ea82418",
@@ -150,5 +150,33 @@
       "Exact no-flux availability states remain fixed; positive tiny desensitization remains distinguishable from no desensitization.",
       "Availability-model pulse/gap domains are1\u201360 model minutes and continuous duration1\u2013360, avoiding unresolved absolute-time gaps; zero-exposure/no-desensitization/no-recovery hypotheses remain testable."
     ]
+  },
+  "authorDraft": {
+    "lessons": 16,
+    "focusedGroups": 21,
+    "independentCases": 1608,
+    "additionalAdaptiveTimeProbes": 143,
+    "referenceSha256": "3a65b7ae2ce838756528bb2d8555d2c806507b4b4d27856463343b9bd1081cab",
+    "originalPrototypeReferenceValuesExact": true,
+    "repeatByteIdentical": true,
+    "notes": "Completed author chapter. Exact original prototype expected values retained; repeated final reference bytes identical. Complete64-layout final matrix passed against frozen source. Status headings, accurate adaptive sampling, meaningful native controls and personal pixels are author gates.",
+    "additionalIndependentMixtureHalfScales": 33
+  },
+  "authorVerification": {
+    "completed": "2026-10-25",
+    "frozenItems": 16,
+    "focusedGroups": 21,
+    "native": {
+      "layouts": 64,
+      "actions": 1736,
+      "replays": 728,
+      "checks": 3286,
+      "invalidReplays": 64,
+      "rawReplays": 64,
+      "criticalReplays": 300,
+      "modelChecks": 4588002
+    },
+    "report": "docs/verification/wave6-pharm.md",
+    "allBrowsersClosed": true
   }
 }

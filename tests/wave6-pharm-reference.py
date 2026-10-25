@@ -78,7 +78,13 @@ def kinetic(p):
   if t<=tp:return (mp.expm(Q*t)*initial)[1]
   return (mp.expm(off*(t-tp))*(mp.expm(Q*tp)*initial))[1]
  Tfloat=p['T'];times=sorted(set([Tfloat*i/240 for i in range(241)]+([p['pulse']]if 0<p['pulse']<Tfloat else[])));indices=sorted(set([0,min(1,len(times)-1),len(times)//4,len(times)//2,max(0,len(times)-2),len(times)-1]+([times.index(p['pulse'])]if p['pulse'] in times else[])))
- return {'selected':[{'index':i,'t':times[i],'occupancy':metric(at(times[i]))}for i in indices],'peak':metric(at(min(T,tp))),'residence':float(1/koff),'onTime':float(1/(on+koff)),'exposure':metric(L*min(T,tp))}
+ points=[]
+ for start,window,scale in [(0,min(float(T),float(tp)),float(1/(on+koff))),(float(tp),max(0,float(T-tp)),float(1/koff))]:
+  for exponent in [-5,-1,0,1,2]:
+   elapsed=scale*10**exponent
+   if 0<elapsed<window:
+    t=start+elapsed;points.append({'t':t,'occupancy':metric(at(t))})
+ return {'selected':[{'index':i,'t':times[i],'occupancy':metric(at(times[i]))}for i in indices],'adaptivePlot':points,'peak':metric(at(min(T,tp))),'residence':float(1/koff),'onTime':float(1/(on+koff)),'exposure':metric(L*min(T,tp))}
 R['kinetic']=cases(kinetic,[dict(L=1,Kd=1,koff=.2,pulse=20,T=120),dict(L=100,Kd=.001,koff=2,pulse=.001,T=1),dict(L=.1,Kd=10,koff=.0001,pulse=200,T=1200),dict(L=0,Kd=1,koff=.2,pulse=20,T=120),dict(L=100,Kd=1,koff=.2,pulse=0,T=120),dict(L=1,Kd=1,koff=.2,pulse=20,T=0),dict(L=tiny,Kd=1,koff=.2,pulse=20,T=120),dict(L=1,Kd=1,koff=.2,pulse=tiny,T=1),dict(L=tiny,Kd=1,koff=.2,pulse=tiny,T=1)])
 print('kinetic reference complete',flush=True)
 def adaptation(p):
@@ -89,15 +95,21 @@ def adaptation(p):
   for i in range(p['pulses']):
    segments.append((p['pulse'],True))
    if i<p['pulses']-1:segments.append((p['gap'],False))
- segments.append((60,False));initial=mp.matrix([1,0]);clock=0;selected=[];peaks=[]
+ segments.append((60,False));initial=mp.matrix([1,0]);clock=0;selected=[];peaks=[];plot=[]
  for j,(length,on)in enumerate(segments):
   des=kd*theta if on else M(0);Q=mp.matrix([[-des,kr],[des,-kr]])
   if on:peaks.append(metric(initial[0]*theta))
   for k in [0,1,15,30,60]:
    elapsed=length*k/60;z=mp.expm(Q*M(elapsed))*initial
    selected.append({'index':j*61+k,'t':clock+elapsed,'availability':metric(z[0]),'desensitized':metric(z[1]),'response':metric(z[0]*theta if on else M(0))})
+  rate=des+kr
+  if rate>0:
+   for exponent in [-5,-1,0,1,2]:
+    elapsed=float(1/rate)*10**exponent
+    if 0<elapsed<length:
+     t=clock+elapsed;z=mp.expm(Q*(M(t)-M(clock)))*initial;plot.append({'t':t,'availability':metric(z[0]),'response':metric(z[0]*theta if on else M(0))})
   initial=mp.expm(Q*M(length))*initial;clock+=length
- return {'selected':selected,'peaks':peaks,'finalAvailability':metric(initial[0]),'finalDesensitized':metric(initial[1])}
+ return {'selected':selected,'adaptivePlot':plot,'peaks':peaks,'finalAvailability':metric(initial[0]),'finalDesensitized':metric(initial[1])}
 adap=[dict(L=1,Kd=1,desensitization=.2,recovery=.04,pulse=20,gap=20,pulses=3,duration=120,mode='repeated pulses')]
 for overrides in [dict(mode='continuous exposure'),dict(L=0),dict(desensitization=0),dict(recovery=0,pulses=6,pulse=60),dict(desensitization=0,recovery=0),dict(L=tiny,desensitization=tiny,recovery=0),dict(L=tiny,desensitization=tiny,recovery=tiny),dict(mode='continuous exposure',L=100,Kd=.001,desensitization=2,recovery=0,duration=360),dict(pulse=1,gap=1,pulses=6,recovery=1,desensitization=2)]:adap.append({**adap[0],**overrides})
 R['adaptation']=cases(adaptation,adap);print('adaptation reference complete',flush=True)
@@ -121,7 +133,8 @@ def loewe(p):
   else:
    b=(2+c)*u-1;const=u*(u-1);v=(-b+mp.sqrt(b*b-4*const))/2
   iso.append([float(u*DA),float(v*DB)])
- return {'response':metric(response),'reference':metric(reference),'combinationIndex':None if idx is None else metric(idx),'doseA':float(DA),'doseB':float(DB),'isobole':iso}
+ u=A/KA;v=B/KB;half=None if u+v==0 else 1/(u+v+c*u*v/(u+v))
+ return {'response':metric(response),'reference':metric(reference),'combinationIndex':None if idx is None else metric(idx),'doseA':float(DA),'doseB':float(DB),'isobole':iso,'halfMultiplier':None if half is None else metric(half)}
 params=[]
 for A,B,na,nb,c in [(0,0,1,2,0),(.5,.5,1,2,0),(1,2,1,1,0),(tiny,tiny,4,4,0),(tiny,tiny,4,4,2),(tiny,1,1,4,-.8),(1,tiny,4,1,2),(0,tiny,1,4,0),(1,0,4,1,-.8)]:params.append(dict(A=A,B=B,KA=1,KB=2,nA=na,nB=nb,interaction=c,target=.5))
 for _ in range(24):params.append(dict(A=rng.choice([.01,.1,1,20]),B=rng.choice([.01,.1,1,20]),KA=rng.choice([.001,1,10]),KB=rng.choice([.001,1,10]),nA=rng.choice([1,2.7,4]),nB=rng.choice([1,2.7,4]),interaction=rng.choice([-.8,0,2]),target=rng.choice([.01,.5,.99])))
