@@ -379,9 +379,9 @@
     "kind": "author-check",
     "scope": "local-preview",
     "author": "atlas-editor",
-    "checkedOn": "2026-10-24",
-    "contentDigest": "f3c31e96bb848c320fa163ff0c2d029815c1a81526f7b01ec87d5407d1c0c761",
+    "checkedOn": "2026-10-25",
+    "contentDigest": "93816e2fa97ee4368447f8fdf7fb1daac4fc74c58f8f3ed502f010b731da129a",
     "artifactDigest": "ff19c4a9828fd3b260c199c4963c1f85265be51d9cf59bd0c7e9e94aadd9f56e",
-    "evidencePath": "docs/verification/wave6-bioinf-sysbio-integration.md"
+    "evidencePath": "docs/verification/wave6-physio-pharm-integration.md"
   }
 }

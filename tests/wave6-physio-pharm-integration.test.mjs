@@ -1,0 +1,20 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import fs from 'node:fs';
+import {execFileSync} from 'node:child_process';
+import {createHash} from 'node:crypto';
+import {loadAll,ROOT} from '../scripts/lib.mjs';
+import {projectIdeas,selectFrozenIdeas,digest} from '../scripts/static-ideas.mjs';
+test('PHYSIO6/PHARM6 reading integration adds exactly thirty-one frozen lessons and retains every earlier projection',async()=>{
+ const old=JSON.parse(execFileSync('git',['show','cb26fc5680b85bd5e1d785aca7626072f0cec0c0:static-pages/accepted.json'],{cwd:ROOT,encoding:'utf8'}));
+ const current=JSON.parse(fs.readFileSync(ROOT+'/static-pages/accepted.json'));
+ const evidence=JSON.parse(fs.readFileSync(ROOT+'/docs/integration/wave6-physio-pharm-content.json'));
+ const bytes=fs.readFileSync(ROOT+'/docs/integration/wave6-physio-pharm-content.json');
+ assert.equal(createHash('sha256').update(bytes).digest('hex'),'acc5fb87743080bd1ef9c9b442758e2cbed3d206015a1ed5d3b26353fdb28ff1');
+ const data=await loadAll();assert.equal(digest(projectIdeas(data,old.ids,old.aliases)),old.snapshotDigest);assert.ok(old.aliases.every(a=>current.aliases.some(b=>a.id===b.id&&a.to===b.to)));
+ const expected=[...Array.from({length:15},(_,i)=>'physio-6.'+(i+1)),...Array.from({length:16},(_,i)=>'pharm-6.'+(i+1))].sort();
+ assert.deepEqual(evidence.addedIds,expected);assert.deepEqual(evidence.changedRetainedItems,[]);assert.equal(evidence.retainedIdeas,8410);assert.equal(evidence.mergedIdeas,8441);
+ const selected=selectFrozenIdeas(data,{schemaVersion:1,acceptedCommit:evidence.sourceCommit,ids:[...old.ids,...expected].sort(),aliases:old.aliases,snapshotDigest:evidence.snapshotDigest});assert.equal(selected.selected.length,8441);assert.ok(expected.every(id=>current.ids.includes(id)));
+ assert.ok(old.ids.every(id=>current.ids.includes(id)));assert.equal(evidence.sourceCommit,'e6efd3c7a88782367418b80f89e236a695235cac');assert.match(evidence.dataDigest,/^[a-f0-9]{64}$/);
+ const flags=selected.selected.filter(p=>expected.includes(p.item.id)&&p.item.verify).map(p=>p.item.id);assert.deepEqual(flags.sort(),['pharm-6.15','pharm-6.16','physio-6.15']);
+});
