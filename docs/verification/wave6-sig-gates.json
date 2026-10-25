@@ -1,0 +1,48 @@
+{
+  "status": "Scientific prototype passes; native, Share, raw canvas and personal pixel gates pending. No SIG6 author-count promotion.",
+  "frozenItems": 13,
+  "referenceCases": 1480,
+  "referenceFamilies": 15,
+  "prototypeComparisonsIncludingInvariants": 3497,
+  "focusedGroups": 18,
+  "referenceRegeneration": "canonical generator byte-identical",
+  "referenceSHA256": "d06220ecba6dcafb6583d9bf6c494926a26a0827bcd744fc57ffa555ea57f3e2",
+  "scientificHelperSHA256": "c96544cde3ba1f47423ca4f2595a336c2df3835cfb5a64808e384cc9107c47e6",
+  "strictCatalogue": {
+    "written": 8476,
+    "planned": 5098,
+    "chapters": 582,
+    "collections": 85,
+    "errors": 0,
+    "warnings": 0
+  },
+  "static": {
+    "items": 13,
+    "errors": 0,
+    "warnings": 0
+  },
+  "preliminaryNarrowModeRuns": {
+    "light": {
+      "items": 13,
+      "errors": 0,
+      "TeXBlankWarnings": 0,
+      "qualityWarnings": 0
+    },
+    "dark": {
+      "items": 13,
+      "errors": 0,
+      "TeXBlankWarnings": 0,
+      "qualityWarnings": 0
+    }
+  },
+  "visualLimit": "Preliminary mode runs do not establish native state replay, complete text/glyph fit or personal pixel quality.",
+  "logs": [
+    "/tmp/wave6-sig-research/focused-first.log",
+    "/tmp/wave6-sig-research/prototype-result.json",
+    "/tmp/wave6-sig-research/reference-canonical-regen.log",
+    "/tmp/wave6-sig-research/build-first.log",
+    "/tmp/wave6-sig-research/static-first.log",
+    "/tmp/wave6-sig-research/modes-first-light.log",
+    "/tmp/wave6-sig-research/modes-first-dark.log"
+  ]
+}
