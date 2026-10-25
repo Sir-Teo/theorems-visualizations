@@ -14,7 +14,7 @@ const server=createServer();await new Promise(r=>server.listen(0,r));const base=
 const browser=await chromium.launch({executablePath:findBrowser(),headless:true}),page=await browser.newPage({viewport:{width:320,height:1200},deviceScaleFactor:1});
 await installRobotProbe(page);const errors=[];page.on('pageerror',e=>errors.push(e.message));
 const totals={layouts:0,actions:0,shares:0,invalid:0,raw:0,critical:0,checks:0,modelComparisons:0};const rows=[];
-const sources=['../content/robot/ch06.js','../content/robot/ch06.viz.js','../content/robot/ch06.shared.js','../content/robot/ch06.exact.shared.js','../content/robot/syllabus.js','../assets/js/viz/core.js','../assets/js/share-state.js','./wave6-robot-native.mjs','./wave6-robot-native-science.mjs','./wave6-robot-native-cases.mjs','./wave6-robot-browser.shared.mjs'];
+const sources=['../content/robot/ch06.js','../content/robot/ch06.viz.js','../content/robot/ch06.shared.js','../content/robot/ch06.exact.shared.js','../content/robot/syllabus.js','../assets/js/viz/core.js','../assets/js/share-state.js','../data/col/robot.json','../data/index.json','./wave6-robot-native.mjs','./wave6-robot-native-science.mjs','./wave6-robot-native-cases.mjs','./wave6-robot-browser.shared.mjs'];
 const sourceHashes=Object.fromEntries(sources.map(p=>[p,createHash('sha256').update(fs.readFileSync(new URL(p,import.meta.url))).digest('hex')]));
 const bindings={
  'ellipsoid mass / kg':'mass','equatorial radius / m':'radius','axial radius / m':'axialRadius','initial transverse spin / rad per s':'transverseSpin','initial axial spin / rad per s':'axialSpin','coaxial applied torque / N m':'torque','world x force / N':'force',

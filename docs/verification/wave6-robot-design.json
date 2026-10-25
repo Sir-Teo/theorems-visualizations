@@ -1,5 +1,5 @@
 {
-  "status": "Complete researched9-lesson/25-panel draft; pure models pass, native and personal visual gates open",
+  "status": "All9 lessons/25 panels authored and author-verified; final evidence in wave6-robot-gates.json and visual/native receipts",
   "frozenIdentityRule": "Preserve all nine frozen num/kind/name/deps and flags; refine pictures honestly around actual computations.",
   "visualSystem": {
     "model": "Consistent planar two-link arm: two uniform slender rods; q1 measured CCW from world +x, q2 relative; world y up; m in kg, length m, time s, torque N m.",

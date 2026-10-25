@@ -1,5 +1,5 @@
 {
-  "status": "Personal visual review in progress; no availability promotion",
+  "status": "Closed by final visual receipt and gates; earlier snapshots remain historical",
   "reviewedSheets": {
     "b-defaults": [
       1,
@@ -108,7 +108,43 @@
       27,
       28,
       29,
-      30
+      30,
+      31,
+      32,
+      33,
+      34,
+      35,
+      36,
+      37,
+      38,
+      39,
+      40,
+      41,
+      42,
+      43,
+      44,
+      45,
+      46,
+      47,
+      48,
+      49,
+      50,
+      51,
+      52,
+      53,
+      54,
+      55,
+      56,
+      57,
+      58,
+      59,
+      60,
+      61,
+      62,
+      63,
+      64,
+      65,
+      66
     ],
     "final-force-polish": [
       1,
@@ -119,20 +155,58 @@
       2,
       3,
       4
+    ],
+    "frozen-type-polish": [
+      1,
+      2
+    ],
+    "frozen-default-differences": [
+      1,
+      2,
+      3
+    ],
+    "final-rigid-modes": [
+      1,
+      2
+    ],
+    "final-arm-modes": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14,
+      15,
+      16,
+      17,
+      18,
+      19,
+      20
     ]
   },
   "qualifiedScope": "Only sheets actually returned by view_image and personally inspected; native pixels and crop scopes remain explicit.",
-  "pending": [
-    "final-arm-critical sheets31\u201366",
-    "all20 final-arm-modes sheets",
-    "final frozen rich/default continuity and changed-field review",
-    "full final receipts and chapter availability reconciliation"
-  ],
+  "pending": [],
   "notes": [
     "final-rich72 complete fields reviewed, then2 wording fixes; stale light3 capture detected in intermediate type-final run while build was active. Latest rich-final-frozen hashes built data and asserts statements/refs agree with author source.",
     "final-rigid-critical reviewed24narrow states; force cases3/6 superseded by4 reviewed final-force-polish captures.",
     "final-arm-defaults all32widgets reviewed; desktop2 superseded by4 reviewed final-torque-defaults captures.",
     "Final native full matrix passes36disjoint layouts,1692actions,732actualShares,320critical restores,1739916model-render comparisons.",
-    "No claim that all36 native/default rich screenshots match bytes: attempted equality failed;32/36 pixels exact and4 narrow1/4 label-region differences qualified in temp comparison."
-  ]
+    "No claim that all36 native/default rich screenshots match bytes: attempted equality failed;32/36 pixels exact and4 narrow1/4 label-region differences qualified in temp comparison.",
+    "Personal free-elbow review exposed negative sub-range compact labels missing their minus sign despite correct signed bars and readouts. New native assertion reproduces defect in /tmp/wave6-robot-label-sign-defect/failure.txt. Compact formatter repaired; both full native lanes rerunning with source+data hash guards. No pure-model arithmetic changed."
+  ],
+  "finalReceipt": "wave6-robot-visual-receipt.json",
+  "finalCoverageCounts": {
+    "defaults": 36,
+    "critical": 160,
+    "modes": 48,
+    "rich": 72
+  }
 }

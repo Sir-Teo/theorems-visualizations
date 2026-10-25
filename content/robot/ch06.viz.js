@@ -3,7 +3,7 @@ const {Q}=H;
 const n=x=>typeof x==='number'?x:x.value;
 const f=x=>x===0?'0':Math.abs(x)<.001||Math.abs(x)>=1e6?x.toExponential(3).replace(/-/g,'−'):Number(x.toPrecision(5)).toString().replace(/-/g,'−');
 const qf=x=>x===null?'undefined':x.belowRange||x.aboveRange?(x.sign<0?'negative':'positive')+' finite; ln magnitude '+f(x.logMagnitude)+' ('+(x.belowRange?'below':'above')+' numeric range)':f(n(x));
-const compact=x=>x===null?'undefined':x.belowRange||x.aboveRange?'≈ 10^'+f(x.logMagnitude/Math.LN10):f(n(x));
+const compact=x=>x===null?'undefined':x.belowRange||x.aboveRange?'≈ '+(x.sign<0?'−':'')+'10^'+f(x.logMagnitude/Math.LN10):f(n(x));
 const q=x=>typeof x==='number'?H.quantity(x):x;
 const absq=x=>H.quantity(x.sign<0?Q.neg(x.exact):x.exact);
 const maxq=xs=>{let a=H.quantity(0);for(const x of xs.filter(Boolean))if(Q.sign(Q.sub(absq(x).exact,a.exact))>0)a=absq(x);return a;};
