@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
-  "acceptedCommit": "e6efd3c7a88782367418b80f89e236a695235cac",
-  "snapshotDigest": "e10fcd1732464282011b812966312a452b63a6af5fa8a335f9e0a7faf3af0cfc",
+  "acceptedCommit": "41830b9374e22fb6b7cf5ded24930b88c09a9b41",
+  "snapshotDigest": "f74d6e37898c864ebe7accc447978b310c71b352ea93e834a7621de204ae61a1",
   "ids": [
     "aero-1.1",
     "aero-1.2",
@@ -2024,6 +2024,12 @@
     "epi-5.6",
     "epi-5.7",
     "epi-5.8",
+    "epi-6.1",
+    "epi-6.2",
+    "epi-6.3",
+    "epi-6.4",
+    "epi-6.5",
+    "epi-6.8",
     "epi-7.10",
     "epi-9.11",
     "fa-1.10",
@@ -3010,6 +3016,22 @@
     "imaging-5.7",
     "imaging-5.8",
     "imaging-5.9",
+    "imaging-6.10",
+    "imaging-6.11",
+    "imaging-6.12",
+    "imaging-6.13",
+    "imaging-6.14",
+    "imaging-6.15",
+    "imaging-6.16",
+    "imaging-6.17",
+    "imaging-6.2",
+    "imaging-6.3",
+    "imaging-6.4",
+    "imaging-6.5",
+    "imaging-6.6",
+    "imaging-6.7",
+    "imaging-6.8",
+    "imaging-6.9",
     "info-1.1",
     "info-1.10",
     "info-1.11",
@@ -8751,12 +8773,12 @@
       "to": "sig-4.4"
     }
   ],
-  "dataDigest": "4b26c8bd9c47ae0176111f6df4bc8f9cee558ad721f8bf4b620bd1bd228d61ca",
+  "dataDigest": "b81210079487bb833d80a8d60bcf993c58303a64d257dbaf9c5130f9c2d3a3e8",
   "sourceReconciliation": {
     "checkedOn": "2026-10-25",
-    "basis": "Source-backed author verification of PHYSIO6 and PHARM6 under the continuous content goal; no additional independent review claimed",
-    "evidencePath": "docs/integration/wave6-physio-pharm-content.json",
-    "evidenceSha256": "acc5fb87743080bd1ef9c9b442758e2cbed3d206015a1ed5d3b26353fdb28ff1",
-    "verificationPath": "docs/verification/wave6-physio-pharm-integration.md"
+    "basis": "Source-backed author verification of EPI6 and IMAGING6 under the continuous content goal; no additional independent review claimed",
+    "evidencePath": "docs/integration/wave6-epi-imaging-content.json",
+    "evidenceSha256": "df98d7b983414d64123d08e4841d3a1b9010de2cbefc2032fd38767657189feb",
+    "verificationPath": "docs/verification/wave6-epi-imaging-integration.md"
   }
 }

@@ -1,0 +1,148 @@
+{
+  "checkedOn": "2026-10-25",
+  "scope": "Snapshot metadata only; all existing individual target digests, tasks, sources and ordered prerequisites are unchanged.",
+  "files": [
+    {
+      "path": "docs/journeys/targets.json",
+      "before": {
+        "schemaVersion": 1,
+        "acceptedCommit": "e6efd3c7a88782367418b80f89e236a695235cac",
+        "snapshotDigest": "e10fcd1732464282011b812966312a452b63a6af5fa8a335f9e0a7faf3af0cfc"
+      },
+      "after": {
+        "schemaVersion": 1,
+        "acceptedCommit": "41830b9374e22fb6b7cf5ded24930b88c09a9b41",
+        "snapshotDigest": "f74d6e37898c864ebe7accc447978b310c71b352ea93e834a7621de204ae61a1"
+      },
+      "unchangedArrays": {
+        "targets": {
+          "sha256": "b138474532bfee317a9f785fa19a0ce3520bccfcaacc1f00feaaee7fede5db3f",
+          "length": 11
+        }
+      },
+      "beforeFileSha256": "810a88455429e415188e2274e349406bcc2c6ac8c6fecf747690c5aa39b4d6a5",
+      "afterFileSha256": "af2137770ee2ed2518ae7bcb8fa74c7d65af2d278a178e9712ede27f38adf360"
+    },
+    {
+      "path": "docs/journeys/plans.json",
+      "before": {
+        "schemaVersion": 1,
+        "version": "0.2.0",
+        "author": "atlas-editor",
+        "preparedOn": "2026-10-23",
+        "scope": "Three locally author-checked routes with exact retained lesson targets and clearly labeled external readings. No public distribution, professional approval or observed learning is claimed.",
+        "relationTypes": {
+          "evidence": "A specified source or observation directly supports a bounded claim; requires an explicit claim and locator.",
+          "analogy": "Transfer a representation or question while stating what does not transfer.",
+          "prerequisite": "A directed required learning dependency, supported by actual target declarations; never inferred from sequence order.",
+          "question-shift": "Sequence changes method or object; no evidential or dependency implication."
+        },
+        "authorVerification": {
+          "kind": "author-check",
+          "scope": "local-preview",
+          "author": "atlas-editor",
+          "checkedOn": "2026-10-25",
+          "contentDigest": "93816e2fa97ee4368447f8fdf7fb1daac4fc74c58f8f3ed502f010b731da129a",
+          "artifactDigest": "ff19c4a9828fd3b260c199c4963c1f85265be51d9cf59bd0c7e9e94aadd9f56e",
+          "evidencePath": "docs/verification/wave6-physio-pharm-integration.md"
+        }
+      },
+      "after": {
+        "schemaVersion": 1,
+        "version": "0.2.0",
+        "author": "atlas-editor",
+        "preparedOn": "2026-10-23",
+        "scope": "Three locally author-checked routes with exact retained lesson targets and clearly labeled external readings. No public distribution, professional approval or observed learning is claimed.",
+        "relationTypes": {
+          "evidence": "A specified source or observation directly supports a bounded claim; requires an explicit claim and locator.",
+          "analogy": "Transfer a representation or question while stating what does not transfer.",
+          "prerequisite": "A directed required learning dependency, supported by actual target declarations; never inferred from sequence order.",
+          "question-shift": "Sequence changes method or object; no evidential or dependency implication."
+        },
+        "authorVerification": {
+          "kind": "author-check",
+          "scope": "local-preview",
+          "author": "atlas-editor",
+          "checkedOn": "2026-10-25",
+          "contentDigest": "92545ae41dace52ccfc5ec5450f6f311eb1b4982577c0f41a6785448cb1adf35",
+          "artifactDigest": "ff19c4a9828fd3b260c199c4963c1f85265be51d9cf59bd0c7e9e94aadd9f56e",
+          "evidencePath": "docs/verification/wave6-epi-imaging-integration.md"
+        }
+      },
+      "unchangedArrays": {
+        "routes": {
+          "sha256": "286ab69eca3c4f9fe8e1cb97a5557463cb8d9e3c0d23eccce5f1d77c9c984338",
+          "length": 3
+        }
+      },
+      "beforeFileSha256": "e442985d8da4c8991e051b5c75af8396c30b70e815d9758a1dcf2efcdb44ce34",
+      "afterFileSha256": "3545f9eed04cddd03d75d9e4267d9220c79aff444b995cc69385b838752693ee"
+    },
+    {
+      "path": "curriculum/introductory.json",
+      "before": {
+        "schemaVersion": 1,
+        "version": "0.1.0",
+        "author": "atlas-editor",
+        "checkedOn": "2026-10-23",
+        "scope": "Thirty scoped introductory routes, three exact accepted targets each. Routes add tasks and entry support, not 90 new lessons or complete subject coverage.",
+        "publication": "local-preview",
+        "acceptance": "author-checked-local",
+        "legacySnapshot": "e10fcd1732464282011b812966312a452b63a6af5fa8a335f9e0a7faf3af0cfc"
+      },
+      "after": {
+        "schemaVersion": 1,
+        "version": "0.1.0",
+        "author": "atlas-editor",
+        "checkedOn": "2026-10-23",
+        "scope": "Thirty scoped introductory routes, three exact accepted targets each. Routes add tasks and entry support, not 90 new lessons or complete subject coverage.",
+        "publication": "local-preview",
+        "acceptance": "author-checked-local",
+        "legacySnapshot": "f74d6e37898c864ebe7accc447978b310c71b352ea93e834a7621de204ae61a1"
+      },
+      "unchangedArrays": {
+        "routes": {
+          "sha256": "f64018d1437e51db1b0da06696a2c08ee3f8be1335e98d992a751a44e46e63e3",
+          "length": 30
+        }
+      },
+      "beforeFileSha256": "12c871b8dd6f3dece9f84e346469210532ebbfdd898166143fb7410be638e13f",
+      "afterFileSha256": "5da31352f28820316267c8148506eaac121f2fd3f8a3da1f5b3cd75a276dcf77"
+    },
+    {
+      "path": "program/deeper-routes.json",
+      "before": {
+        "schemaVersion": 1,
+        "version": "1.0.0",
+        "legacySnapshot": "e10fcd1732464282011b812966312a452b63a6af5fa8a335f9e0a7faf3af0cfc",
+        "introductorySha256": "12c871b8dd6f3dece9f84e346469210532ebbfdd898166143fb7410be638e13f",
+        "scope": "Thirty curated extensions with exact accepted targets and computed prerequisite paths. Method-focused links for underrepresented fields are explicitly bounded; no complete field syllabus is claimed."
+      },
+      "after": {
+        "schemaVersion": 1,
+        "version": "1.0.0",
+        "legacySnapshot": "f74d6e37898c864ebe7accc447978b310c71b352ea93e834a7621de204ae61a1",
+        "introductorySha256": "5da31352f28820316267c8148506eaac121f2fd3f8a3da1f5b3cd75a276dcf77",
+        "scope": "Thirty curated extensions with exact accepted targets and computed prerequisite paths. Method-focused links for underrepresented fields are explicitly bounded; no complete field syllabus is claimed."
+      },
+      "unchangedArrays": {
+        "routes": {
+          "sha256": "ee871582e7293379c7008d15b665c189046be4cd2947dcaa144a945eadaab431",
+          "length": 30
+        }
+      },
+      "beforeFileSha256": "cccadf9aaafa21ed44d46ad020851af5ac0aed2770ab192020e5dbf537e9cd97",
+      "afterFileSha256": "26670364a27ed076cce2be3752c822c02ef781bd970af5cb51cd68c1d08777ee"
+    }
+  ],
+  "priorJourneyAuthorVerification": {
+    "kind": "author-check",
+    "scope": "local-preview",
+    "author": "atlas-editor",
+    "checkedOn": "2026-10-25",
+    "contentDigest": "93816e2fa97ee4368447f8fdf7fb1daac4fc74c58f8f3ed502f010b731da129a",
+    "artifactDigest": "ff19c4a9828fd3b260c199c4963c1f85265be51d9cf59bd0c7e9e94aadd9f56e",
+    "evidencePath": "docs/verification/wave6-physio-pharm-integration.md"
+  },
+  "result": "PASS"
+}
