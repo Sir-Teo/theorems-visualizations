@@ -1,6 +1,9 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
+import crypto from 'node:crypto';
+import chapter from '../content/circ/ch06.js';
+import syllabus from '../content/circ/syllabus.js';
 import * as H from '../content/circ/ch06.shared.js';
 const {Q}=H;
 const F=JSON.parse(fs.readFileSync(new URL('./fixtures/wave6-circ-reference.json',import.meta.url))).families;
@@ -67,3 +70,32 @@ test('finite rational magnitudes and the declared physical domains remain explic
 });
 
 test('late critical free voltage and current slope retain their decaying terms after absolute step voltage rounds to the source',()=>{const free=H.seriesState({R:2,L:1,C:1},100,{v0:1,source:0}),step=H.seriesState({R:2,L:1,C:1},100);near(free.v.value,101*Math.exp(-100),'free voltage tail',{relative:3e-12,absolute:0});near(step.derivative.i,-99*Math.exp(-100),'current slope tail',{relative:3e-12,absolute:0});assert.equal(step.v.value,1);near(step.error.value,-101*Math.exp(-100),'sub-rounding voltage error',{relative:3e-12,absolute:0});});
+
+test('78 exact SI-prefix edge cases cover offered L/C/rise corners and fractional times below physical numeric range',()=>{
+ assert.equal(F.edgeUnits.length,78);
+ for(const{args:a,expect:e}of F.edgeUnits){const parameters={R:a.R,L:Q.div(a.LnH,1e9),C:Q.div(a.CpF,1e12),rise:Q.div(a.riseNs,1e9),amplitude:a.amplitude},p=H.seriesParameters(parameters),time='fraction'in a?Q.mul(40/p.omega,a.fraction):a.normalizedTime/p.omega,z=H.edgeState(parameters,time);assert.equal(z.parameters.regime,e.regime);for(const k of ['v','i','input','error'])scalar(z[k],e[k],k+' in exact SI units');scalar(H.quantity(Q.mul(time,1e9)),e.timeNs,'physical time in ns');}
+ const critical=H.seriesParameters({R:200,L:Q.div(50,1e9),C:Q.div(5,1e12)});assert.equal(critical.regime,'critical');assert.equal(Q.sign(Q.sub(critical.gammaQ,2)),0);
+ const t=Q.mul(Number.MIN_VALUE,1e-9),tiny=H.edgeState({},t);assert.equal(tiny.v.sign,1);assert.equal(tiny.v.belowRange,true);assert.equal(tiny.input.sign,1);
+ assert.equal(H.edgeState({rise:Q.ZERO},1e-9).v.value,H.edgeState({rise:0},1e-9).v.value);
+});
+
+test('all eight written lessons preserve frozen identities, ordered dependencies and outside-chapter syllabus bytes',()=>{
+ const frozen=JSON.parse(fs.readFileSync(new URL('../docs/wave-6-plan.json',import.meta.url))).chapters.find(c=>c.collection==='circ'&&c.chapter===6),row=syllabus.chapters.find(c=>c.n===6);
+ assert.equal(chapter.items.length,8);assert.equal(row.items.length,8);
+ for(const [j,item]of chapter.items.entries()){
+  const planned=frozen.items[j],catalogue=row.items[j];
+  for(const key of ['num','kind','name','deps','paper','introduces','see','verify']){assert.deepEqual(item[key],planned[key],item.num+' '+key);assert.deepEqual(catalogue[key],planned[key],item.num+' syllabus '+key);}
+  assert.equal(typeof item.viz,'function');for(const key of ['statement','idea','caption','scope'])assert.ok(typeof item[key]==='string'&&item[key].length>60,item.num+' complete '+key);
+  assert.deepEqual(catalogue.refs,item.refs);assert.equal(catalogue.pic,item.caption);
+ }
+ const hash=x=>crypto.createHash('sha256').update(x).digest('hex'),outside={...syllabus,chapters:syllabus.chapters.filter(c=>c.n!==6)};
+ assert.equal(hash(JSON.stringify(outside)),'12b8ed9f48b94fb5fea4750caef7e2eb5413e578f0ced0ecf3055e70e85c814f');
+ const source=fs.readFileSync(new URL('../content/circ/syllabus.js',import.meta.url),'utf8'),start=source.indexOf('    {\n      "n": 6,'),end=source.indexOf('    {\n      n: 7,',start);assert.ok(start>0&&end>start);
+ assert.equal(hash(source.slice(0,start)),'66f7495f58672f6e5492300f7722c50d666b2f080643cb7758cc9588fb44c48b');assert.equal(hash(source.slice(end)),'43ca75572fb835219c16b425e5b50df354a08e54afa6e0dda0f90f752efa7d98');
+});
+
+test('late finite-rise voltage retains the decaying source error without a false critical overshoot',()=>{
+ const rows=F.edgeUnits.filter(r=>r.args.tailBoundary);assert.equal(rows.length,6);
+ for(const {args:a,expect:e}of rows){const p={R:a.R,L:Q.div(a.LnH,1e9),C:Q.div(a.CpF,1e12),rise:Q.div(a.riseNs,1e9),amplitude:a.amplitude},parameters=H.seriesParameters(p),z=H.edgeState(p,a.normalizedTime/parameters.omega);assert.equal(z.v.value,e.v.value,'strict late voltage rounding');scalar(z.error,e.error,'small remaining source error');assert.equal(z.error.sign,-1);assert.ok(z.v.value<1);}
+ const p={R:200,L:Q.div(50,1e9),C:Q.div(5,1e12),rise:Q.div(.2,1e9)},parameters=H.seriesParameters(p);for(const tau of H.lin(401,0,40)){const z=H.edgeState(p,tau/parameters.omega);assert.ok(z.v.value<=1,'critical monotone input cannot create physical overshoot');assert.equal(z.error.sign,-1,'decaying error stays negative throughout this finite window');}
+});

@@ -1,13 +1,18 @@
 {
-  "baseCommit": "29ccf412ae512db76cb4c66406305b7f07f29018",
-  "status": "Pure-model/source checkpoint only. No CIRC6 main/viz/syllabus or author promotion.",
+  "baseCommit": "5784e357",
+  "status": "All8 frozen CIRC6 lessons author-verified locally, including complete original-pixel personal visual gates. No independent acceptance/release/deploy claim.",
   "sha256": {
-    "content/circ/ch06.shared.js": "faf8cb26d3fdfcf39b382b89554a95d0d5c26f2bfa5e75ca6e99d8ffd44eac69",
+    "content/circ/ch06.js": "d031f70f13d355f5401ab1f4157470e302a95ba735162aa58243388f94eac0cb",
+    "content/circ/ch06.shared.js": "23629db8a53849dc00bd1692b626bd1b1b6459a8da1ff2e12789393276318b77",
     "content/circ/ch06.exact.shared.js": "315b5c2122348625585b830109d98aa7a6d98ff715f2ec0c05de3f1a8162846a",
-    "tests/wave6-circ.test.mjs": "01267182bbd0a978a4ad6eef3982a6dc003379b2f7847eda4875b288408d7c99",
-    "tests/wave6-circ-reference.py": "c09c1afb2a05480144cf791532d422002fa92aec93321088c2f082b5a57525d0",
-    "tests/fixtures/wave6-circ-reference.json": "81b5df853b4950498bfbc4daa4bf003b379b26f8435ece879682f37af4a29281",
-    "docs/verification/wave6-circ-sources.json": "5c973e77f894b8ed8d97972d095920bc1f94a004847dc94f883b673e764e7369",
-    "docs/verification/wave6-circ-gates.json": "e585812f8f2b1be30a04626939846baf159ed46572dc25f07f8c8b20a6a1c330"
+    "content/circ/ch06.viz.js": "9f001cac2ea5b66203fe19cd7d1cb2b3904a45c3c8eeeee4c950e3f986cebeea",
+    "content/circ/syllabus.js": "8b20b22fec9af66777c275d288bd3f48a156cadba259acb29c061b20ca7e17f9",
+    "tests/wave6-circ.test.mjs": "ec4675d3b81bb6a5aa9c4536f2e96c1d83a41184ac2faca757c5206554e7ec1e",
+    "tests/wave6-circ-browser.mjs": "105f977b82d57b88a8904ac4a6619a4a9bd999ab264212747a26fc0c6c4c9db3",
+    "tests/wave6-circ-reference.py": "733a3d97fddb778053ceb50fcc62be930a5b5d39b3f825c1f4dcc28843de7b3c",
+    "tests/fixtures/wave6-circ-reference.json": "52e16554fbc103998f9ef87155a0b43ddd19d1f2ff80e440b04824905f815990",
+    "tests/wave5-circ.test.mjs": "e255d713e03e320031d8142c075dc84a19b439f9379ec469b1d77dcc0ed32bbc",
+    "docs/verification/wave6-circ-sources.json": "55479ad7f9b0d2c897e6075e2b04cf3e03fc54ecad90752546f9c292a55b9518",
+    "docs/verification/wave6-circ-gates.json": "b74decb0d85169511985644745c38f6cd0ad8e45453c41eaa82457dd95f2d53a"
   }
 }

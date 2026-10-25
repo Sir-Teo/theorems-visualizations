@@ -2243,6 +2243,2978 @@
         }
       }
     ],
+    "edgeUnits": [
+      {
+        "args": {
+          "CpF": 5.0,
+          "LnH": 1.0,
+          "R": 0.0,
+          "amplitude": 1.0,
+          "normalizedTime": 0.1,
+          "riseNs": 0.02
+        },
+        "expect": {
+          "error": {
+            "logMagnitude": -0.0005405166600842619,
+            "sign": -1,
+            "value": -0.9994596293927298
+          },
+          "i": {
+            "logMagnitude": -6.7999184062207005,
+            "sign": 1,
+            "value": 0.0011138660286760102
+          },
+          "input": {
+            "logMagnitude": -1.211294547411032,
+            "sign": 1,
+            "value": 0.29781149867344037
+          },
+          "regime": "underdamped",
+          "timeNs": {
+            "logMagnitude": -4.9517437762680645,
+            "sign": 1,
+            "value": 0.007071067811865475
+          },
+          "v": {
+            "logMagnitude": -7.523255344049181,
+            "sign": 1,
+            "value": 0.0005403706072701926
+          }
+        }
+      },
+      {
+        "args": {
+          "CpF": 5.0,
+          "LnH": 1.0,
+          "R": 0.0,
+          "amplitude": 1.0,
+          "normalizedTime": 1.0,
+          "riseNs": 0.02
+        },
+        "expect": {
+          "error": {
+            "logMagnitude": -0.324605174033577,
+            "sign": -1,
+            "value": -0.7228126825266606
+          },
+          "i": {
+            "logMagnitude": -3.087242610293005,
+            "sign": 1,
+            "value": 0.04562759416463023
+          },
+          "input": {
+            "logMagnitude": -0.029576291299056808,
+            "sign": 1,
+            "value": 0.9708568068887575
+          },
+          "regime": "underdamped",
+          "timeNs": {
+            "logMagnitude": -2.649158683274018,
+            "sign": 1,
+            "value": 0.07071067811865475
+          },
+          "v": {
+            "logMagnitude": -1.283061764973736,
+            "sign": 1,
+            "value": 0.27718731747333936
+          }
+        }
+      },
+      {
+        "args": {
+          "CpF": 5.0,
+          "LnH": 1.0,
+          "R": 0.0,
+          "amplitude": 1.0,
+          "normalizedTime": 10.0,
+          "riseNs": 0.02
+        },
+        "expect": {
+          "error": {
+            "logMagnitude": -0.08404211715958047,
+            "sign": 1,
+            "value": 0.9193925330776459
+          },
+          "i": {
+            "logMagnitude": -3.9080184842218815,
+            "sign": -1,
+            "value": -0.020080251000298224
+          },
+          "input": {
+            "logMagnitude": -4.419481707985868e-16,
+            "sign": 1,
+            "value": 0.9999999999999996
+          },
+          "regime": "underdamped",
+          "timeNs": {
+            "logMagnitude": -0.34657359027997275,
+            "sign": 1,
+            "value": 0.7071067811865475
+          },
+          "v": {
+            "logMagnitude": 0.6520087469560646,
+            "sign": 1,
+            "value": 1.919392533077646
+          }
+        }
+      },
+      {
+        "args": {
+          "CpF": 5.0,
+          "LnH": 1.0,
+          "R": 0.0,
+          "amplitude": 1.0,
+          "normalizedTime": 40.0,
+          "riseNs": 0.02
+        },
+        "expect": {
+          "error": {
+            "logMagnitude": -0.8618108013902572,
+            "sign": 1,
+            "value": 0.4223965131867989
+          },
+          "i": {
+            "logMagnitude": -2.794664413249903,
+            "sign": 1,
+            "value": 0.06113538711636495
+          },
+          "input": {
+            "logMagnitude": -3.814919365428655e-62,
+            "sign": 1,
+            "value": 1.0
+          },
+          "regime": "underdamped",
+          "timeNs": {
+            "logMagnitude": 1.0397207708399179,
+            "sign": 1,
+            "value": 2.82842712474619
+          },
+          "v": {
+            "logMagnitude": 0.35234313441538634,
+            "sign": 1,
+            "value": 1.4223965131867988
+          }
+        }
+      },
+      {
+        "args": {
+          "CpF": 5.0,
+          "LnH": 1.0,
+          "R": 0.0,
+          "amplitude": 1.0,
+          "normalizedTime": 0.1,
+          "riseNs": 5.0
+        },
+        "expect": {
+          "error": {
+            "logMagnitude": -2.3550143262416636e-06,
+            "sign": -1,
+            "value": -0.9999976449884468
+          },
+          "i": {
+            "logMagnitude": -12.207377554469426,
+            "sign": 1,
+            "value": 4.9934797104210355e-06
+          },
+          "input": {
+            "logMagnitude": -6.561888712150019,
+            "sign": 1,
+            "value": 0.0014132140336109962
+          },
+          "regime": "underdamped",
+          "timeNs": {
+            "logMagnitude": -4.9517437762680645,
+            "sign": 1,
+            "value": 0.007071067811865475
+          },
+          "v": {
+            "logMagnitude": -12.958964924691536,
+            "sign": 1,
+            "value": 2.355011553197602e-06
+          }
+        }
+      },
+      {
+        "args": {
+          "CpF": 5.0,
+          "LnH": 1.0,
+          "R": 0.0,
+          "amplitude": 1.0,
+          "normalizedTime": 1.0,
+          "riseNs": 5.0
+        },
+        "expect": {
+          "error": {
+            "logMagnitude": -0.002236400214039635,
+            "sign": -1,
+            "value": -0.9977660986657402
+          },
+          "i": {
+            "logMagnitude": -7.689812817806556,
+            "sign": 1,
+            "value": 0.00045746379279760043
+          },
+          "input": {
+            "logMagnitude": -4.26565933020054,
+            "sign": 1,
+            "value": 0.01404260536628803
+          },
+          "regime": "underdamped",
+          "timeNs": {
+            "logMagnitude": -2.649158683274018,
+            "sign": 1,
+            "value": 0.07071067811865475
+          },
+          "v": {
+            "logMagnitude": -6.104005744816347,
+            "sign": 1,
+            "value": 0.002233901334259833
+          }
+        }
+      },
+      {
+        "args": {
+          "CpF": 5.0,
+          "LnH": 1.0,
+          "R": 0.0,
+          "amplitude": 1.0,
+          "normalizedTime": 10.0,
+          "riseNs": 5.0
+        },
+        "expect": {
+          "error": {
+            "logMagnitude": -0.15071825246756992,
+            "sign": -1,
+            "value": -0.8600899927578478
+          },
+          "i": {
+            "logMagnitude": -6.37762037204458,
+            "sign": 1,
+            "value": 0.0016991615218343008
+          },
+          "input": {
+            "logMagnitude": -2.025888986344208,
+            "sign": 1,
+            "value": 0.1318765546054151
+          },
+          "regime": "underdamped",
+          "timeNs": {
+            "logMagnitude": -0.34657359027997275,
+            "sign": 1,
+            "value": 0.7071067811865475
+          },
+          "v": {
+            "logMagnitude": -1.9667558684740092,
+            "sign": 1,
+            "value": 0.1399100072421522
+          }
+        }
+      },
+      {
+        "args": {
+          "CpF": 5.0,
+          "LnH": 1.0,
+          "R": 0.0,
+          "amplitude": 1.0,
+          "normalizedTime": 40.0,
+          "riseNs": 5.0
+        },
+        "expect": {
+          "error": {
+            "logMagnitude": -0.5477331302873856,
+            "sign": -1,
+            "value": -0.5782591639376
+          },
+          "i": {
+            "logMagnitude": -6.688461347483258,
+            "sign": 1,
+            "value": 0.0012451972255898586
+          },
+          "input": {
+            "logMagnitude": -0.8392618967680162,
+            "sign": 1,
+            "value": 0.4320292879878078
+          },
+          "regime": "underdamped",
+          "timeNs": {
+            "logMagnitude": 1.0397207708399179,
+            "sign": 1,
+            "value": 2.82842712474619
+          },
+          "v": {
+            "logMagnitude": -0.8633642861563205,
+            "sign": 1,
+            "value": 0.4217408360624
+          }
+        }
+      },
+      {
+        "args": {
+          "CpF": 100.0,
+          "LnH": 1.0,
+          "R": 0.0,
+          "amplitude": 1.0,
+          "normalizedTime": 0.1,
+          "riseNs": 0.02
+        },
+        "expect": {
+          "error": {
+            "logMagnitude": -0.001853162672864626,
+            "sign": -1,
+            "value": -0.9981485533728804
+          },
+          "i": {
+            "logMagnitude": -4.152698059759875,
+            "sign": 1,
+            "value": 0.015721940474273347
+          },
+          "input": {
+            "logMagnitude": -0.23034524774465281,
+            "sign": 1,
+            "value": 0.7942593389161856
+          },
+          "regime": "underdamped",
+          "timeNs": {
+            "logMagnitude": -3.4538776394910684,
+            "sign": 1,
+            "value": 0.03162277660168379
+          },
+          "v": {
+            "logMagnitude": -6.291787984858641,
+            "sign": 1,
+            "value": 0.0018514466271195647
+          }
+        }
+      },
+      {
+        "args": {
+          "CpF": 100.0,
+          "LnH": 1.0,
+          "R": 0.0,
+          "amplitude": 1.0,
+          "normalizedTime": 1.0,
+          "riseNs": 0.02
+        },
+        "expect": {
+          "error": {
+            "logMagnitude": -0.5256736852629998,
+            "sign": -1,
+            "value": -0.5911569764446961
+          },
+          "i": {
+            "logMagnitude": -1.3693453981916552,
+            "sign": 1,
+            "value": 0.2542733528827822
+          },
+          "input": {
+            "logMagnitude": -1.3589433076362637e-07,
+            "sign": 1,
+            "value": 0.9999998641056784
+          },
+          "regime": "underdamped",
+          "timeNs": {
+            "logMagnitude": -1.1512925464970227,
+            "sign": 1,
+            "value": 0.31622776601683794
+          },
+          "v": {
+            "logMagnitude": -0.8944240020997674,
+            "sign": 1,
+            "value": 0.4088430235553039
+          }
+        }
+      },
+      {
+        "args": {
+          "CpF": 100.0,
+          "LnH": 1.0,
+          "R": 0.0,
+          "amplitude": 1.0,
+          "normalizedTime": 10.0,
+          "riseNs": 0.02
+        },
+        "expect": {
+          "error": {
+            "logMagnitude": -0.13926384735414105,
+            "sign": 1,
+            "value": 0.8699984513834272
+          },
+          "i": {
+            "logMagnitude": -1.8666902899111344,
+            "sign": -1,
+            "value": -0.15463461153487548
+          },
+          "input": {
+            "logMagnitude": -2.147895247866931e-69,
+            "sign": 1,
+            "value": 1.0
+          },
+          "regime": "underdamped",
+          "timeNs": {
+            "logMagnitude": 1.151292546497023,
+            "sign": 1,
+            "value": 3.1622776601683795
+          },
+          "v": {
+            "logMagnitude": 0.6259376027289476,
+            "sign": 1,
+            "value": 1.8699984513834271
+          }
+        }
+      },
+      {
+        "args": {
+          "CpF": 100.0,
+          "LnH": 1.0,
+          "R": 0.0,
+          "amplitude": 1.0,
+          "normalizedTime": 40.0,
+          "riseNs": 0.02
+        },
+        "expect": {
+          "error": {
+            "logMagnitude": -0.4823295328538452,
+            "sign": 1,
+            "value": 0.6173435932456551
+          },
+          "i": {
+            "logMagnitude": -1.394438063096737,
+            "sign": 1,
+            "value": 0.24797234203304272
+          },
+          "input": {
+            "logMagnitude": 0.0,
+            "sign": 1,
+            "value": 1.0
+          },
+          "regime": "underdamped",
+          "timeNs": {
+            "logMagnitude": 2.5375869076169133,
+            "sign": 1,
+            "value": 12.649110640673518
+          },
+          "v": {
+            "logMagnitude": 0.4807850461151236,
+            "sign": 1,
+            "value": 1.617343593245655
+          }
+        }
+      },
+      {
+        "args": {
+          "CpF": 100.0,
+          "LnH": 1.0,
+          "R": 0.0,
+          "amplitude": 1.0,
+          "normalizedTime": 0.1,
+          "riseNs": 5.0
+        },
+        "expect": {
+          "error": {
+            "logMagnitude": -1.051907159359609e-05,
+            "sign": -1,
+            "value": -0.9999894809837316
+          },
+          "i": {
+            "logMagnitude": -9.213281551867233,
+            "sign": 1,
+            "value": 9.970631411411755e-05
+          },
+          "input": {
+            "logMagnitude": -5.066476162919226,
+            "sign": 1,
+            "value": 0.006304597417456466
+          },
+          "regime": "underdamped",
+          "timeNs": {
+            "logMagnitude": -3.4538776394910684,
+            "sign": 1,
+            "value": 0.03162277660168379
+          },
+          "v": {
+            "logMagnitude": -11.462325865639603,
+            "sign": 1,
+            "value": 1.0519016268356483e-05
+          }
+        }
+      },
+      {
+        "args": {
+          "CpF": 100.0,
+          "LnH": 1.0,
+          "R": 0.0,
+          "amplitude": 1.0,
+          "normalizedTime": 1.0,
+          "riseNs": 5.0
+        },
+        "expect": {
+          "error": {
+            "logMagnitude": -0.009916085359339449,
+            "sign": -1,
+            "value": -0.9901329169111013
+          },
+          "i": {
+            "logMagnitude": -4.710907192414203,
+            "sign": 1,
+            "value": 0.008996612220859231
+          },
+          "input": {
+            "logMagnitude": -2.792186574421343,
+            "sign": 1,
+            "value": 0.061287058583484856
+          },
+          "regime": "underdamped",
+          "timeNs": {
+            "logMagnitude": -1.1512925464970227,
+            "sign": 1,
+            "value": 0.31622776601683794
+          },
+          "v": {
+            "logMagnitude": -4.618551002254881,
+            "sign": 1,
+            "value": 0.00986708308889876
+          }
+        }
+      },
+      {
+        "args": {
+          "CpF": 100.0,
+          "LnH": 1.0,
+          "R": 0.0,
+          "amplitude": 1.0,
+          "normalizedTime": 10.0,
+          "riseNs": 5.0
+        },
+        "expect": {
+          "error": {
+            "logMagnitude": -0.7101790383477707,
+            "sign": -1,
+            "value": -0.4915561821754514
+          },
+          "i": {
+            "logMagnitude": -3.6263722111868577,
+            "sign": 1,
+            "value": 0.02661255422503807
+          },
+          "input": {
+            "logMagnitude": -0.7577616707334219,
+            "sign": 1,
+            "value": 0.4687143908670322
+          },
+          "regime": "underdamped",
+          "timeNs": {
+            "logMagnitude": 1.151292546497023,
+            "sign": 1,
+            "value": 3.1622776601683795
+          },
+          "v": {
+            "logMagnitude": -0.6764005556849765,
+            "sign": 1,
+            "value": 0.5084438178245486
+          }
+        }
+      },
+      {
+        "args": {
+          "CpF": 100.0,
+          "LnH": 1.0,
+          "R": 0.0,
+          "amplitude": 1.0,
+          "normalizedTime": 40.0,
+          "riseNs": 5.0
+        },
+        "expect": {
+          "error": {
+            "logMagnitude": -2.090413607426181,
+            "sign": -1,
+            "value": -0.12363598847774655
+          },
+          "i": {
+            "logMagnitude": -4.147018957094214,
+            "sign": 1,
+            "value": 0.015811481002600204
+          },
+          "input": {
+            "logMagnitude": -0.08302644445724995,
+            "sign": 1,
+            "value": 0.9203268093553594
+          },
+          "regime": "underdamped",
+          "timeNs": {
+            "logMagnitude": 2.5375869076169133,
+            "sign": 1,
+            "value": 12.649110640673518
+          },
+          "v": {
+            "logMagnitude": -0.13197373609044902,
+            "sign": 1,
+            "value": 0.8763640115222534
+          }
+        }
+      },
+      {
+        "args": {
+          "CpF": 5.0,
+          "LnH": 50.0,
+          "R": 0.0,
+          "amplitude": 1.0,
+          "normalizedTime": 0.1,
+          "riseNs": 0.02
+        },
+        "expect": {
+          "error": {
+            "logMagnitude": -0.0024702631041916396,
+            "sign": -1,
+            "value": -0.9975327854849213
+          },
+          "i": {
+            "logMagnitude": -7.366375858901001,
+            "sign": 1,
+            "value": 0.0006321550517238726
+          },
+          "input": {
+            "logMagnitude": -0.08565048374203818,
+            "sign": 1,
+            "value": 0.9179150013761012
+          },
+          "regime": "underdamped",
+          "timeNs": {
+            "logMagnitude": -2.995732273553991,
+            "sign": 1,
+            "value": 0.05
+          },
+          "v": {
+            "logMagnitude": -6.004665491393235,
+            "sign": 1,
+            "value": 0.002467214515078744
+          }
+        }
+      },
+      {
+        "args": {
+          "CpF": 5.0,
+          "LnH": 50.0,
+          "R": 0.0,
+          "amplitude": 1.0,
+          "normalizedTime": 1.0,
+          "riseNs": 0.02
+        },
+        "expect": {
+          "error": {
+            "logMagnitude": -0.5567922975012559,
+            "sign": -1,
+            "value": -0.5730442744214035
+          },
+          "i": {
+            "logMagnitude": -4.805391943110635,
+            "sign": 1,
+            "value": 0.008185492138315958
+          },
+          "input": {
+            "logMagnitude": -1.3887943865060444e-11,
+            "sign": 1,
+            "value": 0.9999999999861121
+          },
+          "regime": "underdamped",
+          "timeNs": {
+            "logMagnitude": -0.6931471805599453,
+            "sign": 1,
+            "value": 0.5
+          },
+          "v": {
+            "logMagnitude": -0.851074958298962,
+            "sign": 1,
+            "value": 0.4269557255785965
+          }
+        }
+      },
+      {
+        "args": {
+          "CpF": 5.0,
+          "LnH": 50.0,
+          "R": 0.0,
+          "amplitude": 1.0,
+          "normalizedTime": 10.0,
+          "riseNs": 0.02
+        },
+        "expect": {
+          "error": {
+            "logMagnitude": -0.15145420301164053,
+            "sign": 1,
+            "value": 0.8594572419249472
+          },
+          "i": {
+            "logMagnitude": -5.279215335175855,
+            "sign": -1,
+            "value": -0.005096428212123721
+          },
+          "input": {
+            "logMagnitude": 0.0,
+            "sign": 1,
+            "value": 1.0
+          },
+          "regime": "underdamped",
+          "timeNs": {
+            "logMagnitude": 1.6094379124341005,
+            "sign": 1,
+            "value": 5.0
+          },
+          "v": {
+            "logMagnitude": 0.62028463972493,
+            "sign": 1,
+            "value": 1.8594572419249473
+          }
+        }
+      },
+      {
+        "args": {
+          "CpF": 5.0,
+          "LnH": 50.0,
+          "R": 0.0,
+          "amplitude": 1.0,
+          "normalizedTime": 40.0,
+          "riseNs": 0.02
+        },
+        "expect": {
+          "error": {
+            "logMagnitude": -0.45237473529415406,
+            "sign": 1,
+            "value": 0.6361157500330357
+          },
+          "i": {
+            "logMagnitude": -4.86581080915422,
+            "sign": 1,
+            "value": 0.0077055779048066965
+          },
+          "input": {
+            "logMagnitude": 0.0,
+            "sign": 1,
+            "value": 1.0
+          },
+          "regime": "underdamped",
+          "timeNs": {
+            "logMagnitude": 2.995732273553991,
+            "sign": 1,
+            "value": 20.0
+          },
+          "v": {
+            "logMagnitude": 0.49232498753169474,
+            "sign": 1,
+            "value": 1.6361157500330357
+          }
+        }
+      },
+      {
+        "args": {
+          "CpF": 5.0,
+          "LnH": 50.0,
+          "R": 0.0,
+          "amplitude": 1.0,
+          "normalizedTime": 0.1,
+          "riseNs": 5.0
+        },
+        "expect": {
+          "error": {
+            "logMagnitude": -1.6616903771736745e-05,
+            "sign": -1,
+            "value": -0.9999833832342883
+          },
+          "i": {
+            "logMagnitude": -12.210237716154381,
+            "sign": 1,
+            "value": 4.979217956262479e-06
+          },
+          "input": {
+            "logMagnitude": -4.610166019324897,
+            "sign": 1,
+            "value": 0.009950166250831947
+          },
+          "regime": "underdamped",
+          "timeNs": {
+            "logMagnitude": -2.995732273553991,
+            "sign": 1,
+            "value": 0.05
+          },
+          "v": {
+            "logMagnitude": -11.005098389655181,
+            "sign": 1,
+            "value": 1.6616765711755976e-05
+          }
+        }
+      },
+      {
+        "args": {
+          "CpF": 5.0,
+          "LnH": 50.0,
+          "R": 0.0,
+          "amplitude": 1.0,
+          "normalizedTime": 1.0,
+          "riseNs": 5.0
+        },
+        "expect": {
+          "error": {
+            "logMagnitude": -0.015578600313218808,
+            "sign": -1,
+            "value": -0.9845421183915155
+          },
+          "i": {
+            "logMagnitude": -7.719146023047544,
+            "sign": 1,
+            "value": 0.0004442398125233758
+          },
+          "input": {
+            "logMagnitude": -2.3521684610440907,
+            "sign": 1,
+            "value": 0.09516258196404043
+          },
+          "regime": "underdamped",
+          "timeNs": {
+            "logMagnitude": -0.6931471805599453,
+            "sign": 1,
+            "value": 0.5
+          },
+          "v": {
+            "logMagnitude": -4.1696362692422655,
+            "sign": 1,
+            "value": 0.015457881608484537
+          }
+        }
+      },
+      {
+        "args": {
+          "CpF": 5.0,
+          "LnH": 50.0,
+          "R": 0.0,
+          "amplitude": 1.0,
+          "normalizedTime": 10.0,
+          "riseNs": 5.0
+        },
+        "expect": {
+          "error": {
+            "logMagnitude": -1.1971098906196713,
+            "sign": -1,
+            "value": -0.3020659552393473
+          },
+          "i": {
+            "logMagnitude": -6.77572972078107,
+            "sign": 1,
+            "value": 0.0011411374843157997
+          },
+          "input": {
+            "logMagnitude": -0.4586751453870819,
+            "sign": 1,
+            "value": 0.6321205588285577
+          },
+          "regime": "underdamped",
+          "timeNs": {
+            "logMagnitude": 1.6094379124341005,
+            "sign": 1,
+            "value": 5.0
+          },
+          "v": {
+            "logMagnitude": -0.35963067243130686,
+            "sign": 1,
+            "value": 0.6979340447606527
+          }
+        }
+      },
+      {
+        "args": {
+          "CpF": 5.0,
+          "LnH": 50.0,
+          "R": 0.0,
+          "amplitude": 1.0,
+          "normalizedTime": 40.0,
+          "riseNs": 5.0
+        },
+        "expect": {
+          "error": {
+            "logMagnitude": -2.4615277305851246,
+            "sign": -1,
+            "value": -0.08530452902984789
+          },
+          "i": {
+            "logMagnitude": -7.1924516920445205,
+            "sign": 1,
+            "value": 0.0007522425906821104
+          },
+          "input": {
+            "logMagnitude": -0.01848544682588656,
+            "sign": 1,
+            "value": 0.9816843611112658
+          },
+          "regime": "underdamped",
+          "timeNs": {
+            "logMagnitude": 2.995732273553991,
+            "sign": 1,
+            "value": 20.0
+          },
+          "v": {
+            "logMagnitude": -0.0891640877148772,
+            "sign": 1,
+            "value": 0.9146954709701521
+          }
+        }
+      },
+      {
+        "args": {
+          "CpF": 100.0,
+          "LnH": 50.0,
+          "R": 0.0,
+          "amplitude": 1.0,
+          "normalizedTime": 0.1,
+          "riseNs": 0.02
+        },
+        "expect": {
+          "error": {
+            "logMagnitude": -0.004191333155123703,
+            "sign": -1,
+            "value": -0.9958174382228168
+          },
+          "i": {
+            "logMagnitude": -5.505005866875318,
+            "sign": 1,
+            "value": 0.004066364723955162
+          },
+          "input": {
+            "logMagnitude": -1.3945789619945941e-05,
+            "sign": 1,
+            "value": 0.9999860543076221
+          },
+          "regime": "underdamped",
+          "timeNs": {
+            "logMagnitude": -1.4978661367769954,
+            "sign": 1,
+            "value": 0.223606797749979
+          },
+          "v": {
+            "logMagnitude": -5.476831354815914,
+            "sign": 1,
+            "value": 0.004182561777183203
+          }
+        }
+      },
+      {
+        "args": {
+          "CpF": 100.0,
+          "LnH": 50.0,
+          "R": 0.0,
+          "amplitude": 1.0,
+          "normalizedTime": 1.0,
+          "riseNs": 0.02
+        },
+        "expect": {
+          "error": {
+            "logMagnitude": -0.6018727180927921,
+            "sign": -1,
+            "value": -0.5477848283743664
+          },
+          "i": {
+            "logMagnitude": -3.28574739795931,
+            "sign": 1,
+            "value": 0.03741261253113324
+          },
+          "input": {
+            "logMagnitude": -2.782279850495688e-49,
+            "sign": 1,
+            "value": 1.0
+          },
+          "regime": "underdamped",
+          "timeNs": {
+            "logMagnitude": 0.8047189562170503,
+            "sign": 1,
+            "value": 2.23606797749979
+          },
+          "v": {
+            "logMagnitude": -0.793597169003084,
+            "sign": 1,
+            "value": 0.4522151716256336
+          }
+        }
+      },
+      {
+        "args": {
+          "CpF": 100.0,
+          "LnH": 50.0,
+          "R": 0.0,
+          "amplitude": 1.0,
+          "normalizedTime": 10.0,
+          "riseNs": 0.02
+        },
+        "expect": {
+          "error": {
+            "logMagnitude": -0.16975695240020583,
+            "sign": 1,
+            "value": 0.8438698922256485
+          },
+          "i": {
+            "logMagnitude": -3.730042517375631,
+            "sign": -1,
+            "value": -0.0239918157459814
+          },
+          "input": {
+            "logMagnitude": 0.0,
+            "sign": 1,
+            "value": 1.0
+          },
+          "regime": "underdamped",
+          "timeNs": {
+            "logMagnitude": 3.1073040492110957,
+            "sign": 1,
+            "value": 22.360679774997898
+          },
+          "v": {
+            "logMagnitude": 0.6118665652837524,
+            "sign": 1,
+            "value": 1.8438698922256485
+          }
+        }
+      },
+      {
+        "args": {
+          "CpF": 100.0,
+          "LnH": 50.0,
+          "R": 0.0,
+          "amplitude": 1.0,
+          "normalizedTime": 40.0,
+          "riseNs": 0.02
+        },
+        "expect": {
+          "error": {
+            "logMagnitude": -0.4151810312758293,
+            "sign": 1,
+            "value": 0.6602207492812749
+          },
+          "i": {
+            "logMagnitude": -3.393629236805588,
+            "sign": 1,
+            "value": 0.03358656185494312
+          },
+          "input": {
+            "logMagnitude": 0.0,
+            "sign": 1,
+            "value": 1.0
+          },
+          "regime": "underdamped",
+          "timeNs": {
+            "logMagnitude": 4.4935984103309865,
+            "sign": 1,
+            "value": 89.44271909999159
+          },
+          "v": {
+            "logMagnitude": 0.5069505750219406,
+            "sign": 1,
+            "value": 1.6602207492812748
+          }
+        }
+      },
+      {
+        "args": {
+          "CpF": 100.0,
+          "LnH": 50.0,
+          "R": 0.0,
+          "amplitude": 1.0,
+          "normalizedTime": 0.1,
+          "riseNs": 5.0
+        },
+        "expect": {
+          "error": {
+            "logMagnitude": -7.367539527533773e-05,
+            "sign": -1,
+            "value": -0.9999263273186899
+          },
+          "i": {
+            "logMagnitude": -9.226030411271791,
+            "sign": 1,
+            "value": 9.84432408132836e-05
+          },
+          "input": {
+            "logMagnitude": -3.1295813970416053,
+            "sign": 1,
+            "value": 0.04373610148285059
+          },
+          "regime": "underdamped",
+          "timeNs": {
+            "logMagnitude": -1.4978661367769954,
+            "sign": 1,
+            "value": 0.223606797749979
+          },
+          "v": {
+            "logMagnitude": -9.515878501704725,
+            "sign": 1,
+            "value": 7.367268131005448e-05
+          }
+        }
+      },
+      {
+        "args": {
+          "CpF": 100.0,
+          "LnH": 50.0,
+          "R": 0.0,
+          "amplitude": 1.0,
+          "normalizedTime": 1.0,
+          "riseNs": 5.0
+        },
+        "expect": {
+          "error": {
+            "logMagnitude": -0.06561906474984786,
+            "sign": -1,
+            "value": -0.9364875374669624
+          },
+          "i": {
+            "logMagnitude": -4.837896425957117,
+            "sign": 1,
+            "value": 0.007923704631976454
+          },
+          "input": {
+            "logMagnitude": -1.0200062655955526,
+            "sign": 1,
+            "value": 0.3605926808381029
+          },
+          "regime": "underdamped",
+          "timeNs": {
+            "logMagnitude": 0.8047189562170503,
+            "sign": 1,
+            "value": 2.23606797749979
+          },
+          "v": {
+            "logMagnitude": -2.75651913197724,
+            "sign": 1,
+            "value": 0.06351246253303756
+          }
+        }
+      },
+      {
+        "args": {
+          "CpF": 100.0,
+          "LnH": 50.0,
+          "R": 0.0,
+          "amplitude": 1.0,
+          "normalizedTime": 10.0,
+          "riseNs": 5.0
+        },
+        "expect": {
+          "error": {
+            "logMagnitude": -1.0993999691806189,
+            "sign": 1,
+            "value": 0.33307087654211676
+          },
+          "i": {
+            "logMagnitude": -4.593240325530101,
+            "sign": 1,
+            "value": 0.010120013050686707
+          },
+          "input": {
+            "logMagnitude": -0.011488633337369422,
+            "sign": 1,
+            "value": 0.9885771090065331
+          },
+          "regime": "underdamped",
+          "timeNs": {
+            "logMagnitude": 3.1073040492110957,
+            "sign": 1,
+            "value": 22.360679774997898
+          },
+          "v": {
+            "logMagnitude": 0.28748521048232245,
+            "sign": 1,
+            "value": 1.3330708765421166
+          }
+        }
+      },
+      {
+        "args": {
+          "CpF": 100.0,
+          "LnH": 50.0,
+          "R": 0.0,
+          "amplitude": 1.0,
+          "normalizedTime": 40.0,
+          "riseNs": 5.0
+        },
+        "expect": {
+          "error": {
+            "logMagnitude": -1.7925740997117838,
+            "sign": -1,
+            "value": -0.1665309502062668
+          },
+          "i": {
+            "logMagnitude": -4.094181761244663,
+            "sign": 1,
+            "value": 0.016669380237170607
+          },
+          "input": {
+            "logMagnitude": -1.7025666940629673e-08,
+            "sign": 1,
+            "value": 0.9999999829743332
+          },
+          "regime": "underdamped",
+          "timeNs": {
+            "logMagnitude": 4.4935984103309865,
+            "sign": 1,
+            "value": 89.44271909999159
+          },
+          "v": {
+            "logMagnitude": -0.18215871030168457,
+            "sign": 1,
+            "value": 0.8334690497937333
+          }
+        }
+      },
+      {
+        "args": {
+          "CpF": 5.0,
+          "LnH": 1.0,
+          "R": 200.0,
+          "amplitude": 1.0,
+          "normalizedTime": 0.1,
+          "riseNs": 0.02
+        },
+        "expect": {
+          "error": {
+            "logMagnitude": -0.0003907980547051371,
+            "sign": -1,
+            "value": -0.9996092782969083
+          },
+          "i": {
+            "logMagnitude": -7.231593003988704,
+            "sign": 1,
+            "value": 0.0007233676173314274
+          },
+          "input": {
+            "logMagnitude": -1.211294547411032,
+            "sign": 1,
+            "value": 0.29781149867344037
+          },
+          "regime": "overdamped",
+          "timeNs": {
+            "logMagnitude": -4.9517437762680645,
+            "sign": 1,
+            "value": 0.007071067811865475
+          },
+          "v": {
+            "logMagnitude": -7.847515008196753,
+            "sign": 1,
+            "value": 0.00039072170309170103
+          }
+        }
+      },
+      {
+        "args": {
+          "CpF": 5.0,
+          "LnH": 1.0,
+          "R": 200.0,
+          "amplitude": 1.0,
+          "normalizedTime": 1.0,
+          "riseNs": 0.02
+        },
+        "expect": {
+          "error": {
+            "logMagnitude": -0.046534719670612706,
+            "sign": -1,
+            "value": -0.9545314189781847
+          },
+          "i": {
+            "logMagnitude": -5.381445787030514,
+            "sign": 1,
+            "value": 0.0046011648143527905
+          },
+          "input": {
+            "logMagnitude": -0.029576291299056808,
+            "sign": 1,
+            "value": 0.9708568068887575
+          },
+          "regime": "overdamped",
+          "timeNs": {
+            "logMagnitude": -2.649158683274018,
+            "sign": 1,
+            "value": 0.07071067811865475
+          },
+          "v": {
+            "logMagnitude": -3.0907337185418773,
+            "sign": 1,
+            "value": 0.045468581021815314
+          }
+        }
+      },
+      {
+        "args": {
+          "CpF": 5.0,
+          "LnH": 1.0,
+          "R": 200.0,
+          "amplitude": 1.0,
+          "normalizedTime": 10.0,
+          "riseNs": 0.02
+        },
+        "expect": {
+          "error": {
+            "logMagnitude": -0.6853089004204714,
+            "sign": -1,
+            "value": -0.5039345399384894
+          },
+          "i": {
+            "logMagnitude": -5.97858834475312,
+            "sign": 1,
+            "value": 0.002532398644004454
+          },
+          "input": {
+            "logMagnitude": -4.419481707985868e-16,
+            "sign": 1,
+            "value": 0.9999999999999996
+          },
+          "regime": "overdamped",
+          "timeNs": {
+            "logMagnitude": -0.34657359027997275,
+            "sign": 1,
+            "value": 0.7071067811865475
+          },
+          "v": {
+            "logMagnitude": -0.7010473850348015,
+            "sign": 1,
+            "value": 0.49606546006151064
+          }
+        }
+      },
+      {
+        "args": {
+          "CpF": 5.0,
+          "LnH": 1.0,
+          "R": 200.0,
+          "amplitude": 1.0,
+          "normalizedTime": 40.0,
+          "riseNs": 0.02
+        },
+        "expect": {
+          "error": {
+            "logMagnitude": -2.8173432563847287,
+            "sign": -1,
+            "value": -0.05976451096099084
+          },
+          "i": {
+            "logMagnitude": -8.110622700717377,
+            "sign": 1,
+            "value": 0.00030033179812536027
+          },
+          "input": {
+            "logMagnitude": -3.814919365428655e-62,
+            "sign": 1,
+            "value": 1.0
+          },
+          "regime": "overdamped",
+          "timeNs": {
+            "logMagnitude": 1.0397207708399179,
+            "sign": 1,
+            "value": 2.82842712474619
+          },
+          "v": {
+            "logMagnitude": -0.061624914838781374,
+            "sign": 1,
+            "value": 0.9402354890390091
+          }
+        }
+      },
+      {
+        "args": {
+          "CpF": 5.0,
+          "LnH": 1.0,
+          "R": 200.0,
+          "amplitude": 1.0,
+          "normalizedTime": 0.1,
+          "riseNs": 5.0
+        },
+        "expect": {
+          "error": {
+            "logMagnitude": -1.7119485779290668e-06,
+            "sign": -1,
+            "value": -0.9999982880528875
+          },
+          "i": {
+            "logMagnitude": -12.626911255066398,
+            "sign": 1,
+            "value": 3.282480225304865e-06
+          },
+          "input": {
+            "logMagnitude": -6.561888712150019,
+            "sign": 1,
+            "value": 0.0014132140336109962
+          },
+          "regime": "overdamped",
+          "timeNs": {
+            "logMagnitude": -4.9517437762680645,
+            "sign": 1,
+            "value": 0.007071067811865475
+          },
+          "v": {
+            "logMagnitude": -13.277879172926374,
+            "sign": 1,
+            "value": 1.7119471125459363e-06
+          }
+        }
+      },
+      {
+        "args": {
+          "CpF": 5.0,
+          "LnH": 1.0,
+          "R": 200.0,
+          "amplitude": 1.0,
+          "normalizedTime": 1.0,
+          "riseNs": 5.0
+        },
+        "expect": {
+          "error": {
+            "logMagnitude": -0.0004248314723542991,
+            "sign": -1,
+            "value": -0.9995752587557579
+          },
+          "i": {
+            "logMagnitude": -9.665282019954692,
+            "sign": 1,
+            "value": 6.344849903498443e-05
+          },
+          "input": {
+            "logMagnitude": -4.26565933020054,
+            "sign": 1,
+            "value": 0.01404260536628803
+          },
+          "regime": "overdamped",
+          "timeNs": {
+            "logMagnitude": -2.649158683274018,
+            "sign": 1,
+            "value": 0.07071067811865475
+          },
+          "v": {
+            "logMagnitude": -7.764030411533949,
+            "sign": 1,
+            "value": 0.00042474124424204734
+          }
+        }
+      },
+      {
+        "args": {
+          "CpF": 5.0,
+          "LnH": 1.0,
+          "R": 200.0,
+          "amplitude": 1.0,
+          "normalizedTime": 10.0,
+          "riseNs": 5.0
+        },
+        "expect": {
+          "error": {
+            "logMagnitude": -0.03852635675400215,
+            "sign": -1,
+            "value": -0.9622063437697005
+          },
+          "i": {
+            "logMagnitude": -7.666184940747241,
+            "sign": 1,
+            "value": 0.000468401398407229
+          },
+          "input": {
+            "logMagnitude": -2.025888986344208,
+            "sign": 1,
+            "value": 0.1318765546054151
+          },
+          "regime": "overdamped",
+          "timeNs": {
+            "logMagnitude": -0.34657359027997275,
+            "sign": 1,
+            "value": 0.7071067811865475
+          },
+          "v": {
+            "logMagnitude": -3.2756140150359703,
+            "sign": 1,
+            "value": 0.037793656230299476
+          }
+        }
+      },
+      {
+        "args": {
+          "CpF": 5.0,
+          "LnH": 1.0,
+          "R": 200.0,
+          "amplitude": 1.0,
+          "normalizedTime": 40.0,
+          "riseNs": 5.0
+        },
+        "expect": {
+          "error": {
+            "logMagnitude": -0.36350248532309853,
+            "sign": -1,
+            "value": -0.6952369993254396
+          },
+          "i": {
+            "logMagnitude": -7.359253097031266,
+            "sign": 1,
+            "value": 0.0006366738155569501
+          },
+          "input": {
+            "logMagnitude": -0.8392618967680162,
+            "sign": 1,
+            "value": 0.4320292879878078
+          },
+          "regime": "overdamped",
+          "timeNs": {
+            "logMagnitude": 1.0397207708399179,
+            "sign": 1,
+            "value": 2.82842712474619
+          },
+          "v": {
+            "logMagnitude": -1.188220851400861,
+            "sign": 1,
+            "value": 0.3047630006745604
+          }
+        }
+      },
+      {
+        "args": {
+          "CpF": 100.0,
+          "LnH": 1.0,
+          "R": 200.0,
+          "amplitude": 1.0,
+          "normalizedTime": 0.1,
+          "riseNs": 0.02
+        },
+        "expect": {
+          "error": {
+            "logMagnitude": -0.0006052931594811664,
+            "sign": -1,
+            "value": -0.9993948899934677
+          },
+          "i": {
+            "logMagnitude": -5.618755388649726,
+            "sign": 1,
+            "value": 0.0036291551869843002
+          },
+          "input": {
+            "logMagnitude": -0.23034524774465281,
+            "sign": 1,
+            "value": 0.7942593389161856
+          },
+          "regime": "overdamped",
+          "timeNs": {
+            "logMagnitude": -3.4538776394910684,
+            "sign": 1,
+            "value": 0.03162277660168379
+          },
+          "v": {
+            "logMagnitude": -7.410100287483284,
+            "sign": 1,
+            "value": 0.0006051100065323152
+          }
+        }
+      },
+      {
+        "args": {
+          "CpF": 100.0,
+          "LnH": 1.0,
+          "R": 200.0,
+          "amplitude": 1.0,
+          "normalizedTime": 1.0,
+          "riseNs": 0.02
+        },
+        "expect": {
+          "error": {
+            "logMagnitude": -0.014564436235930203,
+            "sign": -1,
+            "value": -0.9855411121267211
+          },
+          "i": {
+            "logMagnitude": -5.312631892847902,
+            "sign": 1,
+            "value": 0.004928937197107899
+          },
+          "input": {
+            "logMagnitude": -1.3589433076362637e-07,
+            "sign": 1,
+            "value": 0.9999998641056784
+          },
+          "regime": "overdamped",
+          "timeNs": {
+            "logMagnitude": -1.1512925464970227,
+            "sign": 1,
+            "value": 0.31622776601683794
+          },
+          "v": {
+            "logMagnitude": -4.2364459757709145,
+            "sign": 1,
+            "value": 0.014458887873278876
+          }
+        }
+      },
+      {
+        "args": {
+          "CpF": 100.0,
+          "LnH": 1.0,
+          "R": 200.0,
+          "amplitude": 1.0,
+          "normalizedTime": 10.0,
+          "riseNs": 0.02
+        },
+        "expect": {
+          "error": {
+            "logMagnitude": -0.15690252418202502,
+            "sign": -1,
+            "value": -0.8547873758555771
+          },
+          "i": {
+            "logMagnitude": -5.454969796927944,
+            "sign": 1,
+            "value": 0.00427500589807395
+          },
+          "input": {
+            "logMagnitude": -2.147895247866931e-69,
+            "sign": 1,
+            "value": 1.0
+          },
+          "regime": "overdamped",
+          "timeNs": {
+            "logMagnitude": 1.151292546497023,
+            "sign": 1,
+            "value": 3.1622776601683795
+          },
+          "v": {
+            "logMagnitude": -1.9295562372273691,
+            "sign": 1,
+            "value": 0.14521262414442287
+          }
+        }
+      },
+      {
+        "args": {
+          "CpF": 100.0,
+          "LnH": 1.0,
+          "R": 200.0,
+          "amplitude": 1.0,
+          "normalizedTime": 40.0,
+          "riseNs": 0.02
+        },
+        "expect": {
+          "error": {
+            "logMagnitude": -0.6313628179493282,
+            "sign": -1,
+            "value": -0.5318664697003433
+          },
+          "i": {
+            "logMagnitude": -5.929430090695248,
+            "sign": 1,
+            "value": 0.002659997514213291
+          },
+          "input": {
+            "logMagnitude": 0.0,
+            "sign": 1,
+            "value": 1.0
+          },
+          "regime": "overdamped",
+          "timeNs": {
+            "logMagnitude": 2.5375869076169133,
+            "sign": 1,
+            "value": 12.649110640673518
+          },
+          "v": {
+            "logMagnitude": -0.759001702607717,
+            "sign": 1,
+            "value": 0.4681335302996567
+          }
+        }
+      },
+      {
+        "args": {
+          "CpF": 100.0,
+          "LnH": 1.0,
+          "R": 200.0,
+          "amplitude": 1.0,
+          "normalizedTime": 0.1,
+          "riseNs": 5.0
+        },
+        "expect": {
+          "error": {
+            "logMagnitude": -3.660486516846003e-06,
+            "sign": -1,
+            "value": -0.9999963395201827
+          },
+          "i": {
+            "logMagnitude": -10.536646124043923,
+            "sign": 1,
+            "value": 2.6545611282238038e-05
+          },
+          "input": {
+            "logMagnitude": -5.066476162919226,
+            "sign": 1,
+            "value": 0.006304597417456466
+          },
+          "regime": "overdamped",
+          "timeNs": {
+            "logMagnitude": -3.4538776394910684,
+            "sign": 1,
+            "value": 0.03162277660168379
+          },
+          "v": {
+            "logMagnitude": -12.517916321527855,
+            "sign": 1,
+            "value": 3.6604798172734077e-06
+          }
+        }
+      },
+      {
+        "args": {
+          "CpF": 100.0,
+          "LnH": 1.0,
+          "R": 200.0,
+          "amplitude": 1.0,
+          "normalizedTime": 1.0,
+          "riseNs": 5.0
+        },
+        "expect": {
+          "error": {
+            "logMagnitude": -0.0004722962782595189,
+            "sign": -1,
+            "value": -0.999527815236071
+          },
+          "i": {
+            "logMagnitude": -8.113563730493171,
+            "sign": 1,
+            "value": 0.0002994498109754308
+          },
+          "input": {
+            "logMagnitude": -2.792186574421343,
+            "sign": 1,
+            "value": 0.061287058583484856
+          },
+          "regime": "overdamped",
+          "timeNs": {
+            "logMagnitude": -1.1512925464970227,
+            "sign": 1,
+            "value": 0.31622776601683794
+          },
+          "v": {
+            "logMagnitude": -7.6581401999729515,
+            "sign": 1,
+            "value": 0.0004721847639289154
+          }
+        }
+      },
+      {
+        "args": {
+          "CpF": 100.0,
+          "LnH": 1.0,
+          "R": 200.0,
+          "amplitude": 1.0,
+          "normalizedTime": 10.0,
+          "riseNs": 5.0
+        },
+        "expect": {
+          "error": {
+            "logMagnitude": -0.03942735176728893,
+            "sign": -1,
+            "value": -0.9613397910906541
+          },
+          "i": {
+            "logMagnitude": -6.143149050579127,
+            "sign": 1,
+            "value": 0.0021481483282938356
+          },
+          "input": {
+            "logMagnitude": -0.7577616707334219,
+            "sign": 1,
+            "value": 0.4687143908670322
+          },
+          "regime": "overdamped",
+          "timeNs": {
+            "logMagnitude": 1.151292546497023,
+            "sign": 1,
+            "value": 3.1622776601683795
+          },
+          "v": {
+            "logMagnitude": -3.252944401456959,
+            "sign": 1,
+            "value": 0.03866020890934589
+          }
+        }
+      },
+      {
+        "args": {
+          "CpF": 100.0,
+          "LnH": 1.0,
+          "R": 200.0,
+          "amplitude": 1.0,
+          "normalizedTime": 40.0,
+          "riseNs": 5.0
+        },
+        "expect": {
+          "error": {
+            "logMagnitude": -0.3828548903583609,
+            "sign": -1,
+            "value": -0.6819118440902198
+          },
+          "i": {
+            "logMagnitude": -5.805301220087793,
+            "sign": 1,
+            "value": 0.003011547477854383
+          },
+          "input": {
+            "logMagnitude": -0.08302644445724995,
+            "sign": 1,
+            "value": 0.9203268093553594
+          },
+          "regime": "overdamped",
+          "timeNs": {
+            "logMagnitude": 2.5375869076169133,
+            "sign": 1,
+            "value": 12.649110640673518
+          },
+          "v": {
+            "logMagnitude": -1.1454267147782045,
+            "sign": 1,
+            "value": 0.3180881559097802
+          }
+        }
+      },
+      {
+        "args": {
+          "CpF": 5.0,
+          "LnH": 50.0,
+          "R": 200.0,
+          "amplitude": 1.0,
+          "normalizedTime": 0.1,
+          "riseNs": 0.02
+        },
+        "expect": {
+          "error": {
+            "logMagnitude": -0.0023398090885685075,
+            "sign": -1,
+            "value": -0.9976629261310038
+          },
+          "i": {
+            "logMagnitude": -7.443144170064566,
+            "sign": 1,
+            "value": 0.0005854415728620843
+          },
+          "input": {
+            "logMagnitude": -0.08565048374203818,
+            "sign": 1,
+            "value": 0.9179150013761012
+          },
+          "regime": "critical",
+          "timeNs": {
+            "logMagnitude": -2.995732273553991,
+            "sign": 1,
+            "value": 0.05
+          },
+          "v": {
+            "logMagnitude": -6.058855615454208,
+            "sign": 1,
+            "value": 0.0023370738689961327
+          }
+        }
+      },
+      {
+        "args": {
+          "CpF": 5.0,
+          "LnH": 50.0,
+          "R": 200.0,
+          "amplitude": 1.0,
+          "normalizedTime": 1.0,
+          "riseNs": 0.02
+        },
+        "expect": {
+          "error": {
+            "logMagnitude": -0.2870842341175998,
+            "sign": -1,
+            "value": -0.7504485128063517
+          },
+          "i": {
+            "logMagnitude": -5.60690780588499,
+            "sign": 1,
+            "value": 0.0036724076158667802
+          },
+          "input": {
+            "logMagnitude": -1.3887943865060444e-11,
+            "sign": 1,
+            "value": 0.9999999999861121
+          },
+          "regime": "critical",
+          "timeNs": {
+            "logMagnitude": -0.6931471805599453,
+            "sign": 1,
+            "value": 0.5
+          },
+          "v": {
+            "logMagnitude": -1.3880900235825804,
+            "sign": 1,
+            "value": 0.24955148719364825
+          }
+        }
+      },
+      {
+        "args": {
+          "CpF": 5.0,
+          "LnH": 50.0,
+          "R": 200.0,
+          "amplitude": 1.0,
+          "normalizedTime": 10.0,
+          "riseNs": 0.02
+        },
+        "expect": {
+          "error": {
+            "logMagnitude": -7.565077803649926,
+            "sign": -1,
+            "value": -0.0005182370454658643
+          },
+          "i": {
+            "logMagnitude": -12.265938469884272,
+            "sign": 1,
+            "value": 4.709454519632759e-06
+          },
+          "input": {
+            "logMagnitude": 0.0,
+            "sign": 1,
+            "value": 1.0
+          },
+          "regime": "critical",
+          "timeNs": {
+            "logMagnitude": 1.6094379124341005,
+            "sign": 1,
+            "value": 5.0
+          },
+          "v": {
+            "logMagnitude": -0.0005183713766957955,
+            "sign": 1,
+            "value": 0.9994817629545342
+          }
+        }
+      },
+      {
+        "args": {
+          "CpF": 5.0,
+          "LnH": 50.0,
+          "R": 200.0,
+          "amplitude": 1.0,
+          "normalizedTime": 40.0,
+          "riseNs": 0.02
+        },
+        "expect": {
+          "error": {
+            "logMagnitude": -36.24662271568052,
+            "sign": -1,
+            "value": -1.8125573927741444e-16
+          },
+          "i": {
+            "logMagnitude": -40.87651094693234,
+            "sign": 1,
+            "value": 1.768303702614857e-18
+          },
+          "input": {
+            "logMagnitude": 0.0,
+            "sign": 1,
+            "value": 1.0
+          },
+          "regime": "critical",
+          "timeNs": {
+            "logMagnitude": 2.995732273553991,
+            "sign": 1,
+            "value": 20.0
+          },
+          "v": {
+            "logMagnitude": -1.8125573927741444e-16,
+            "sign": 1,
+            "value": 0.9999999999999998
+          }
+        }
+      },
+      {
+        "args": {
+          "CpF": 5.0,
+          "LnH": 50.0,
+          "R": 200.0,
+          "amplitude": 1.0,
+          "normalizedTime": 0.1,
+          "riseNs": 5.0
+        },
+        "expect": {
+          "error": {
+            "logMagnitude": -1.5817952248704437e-05,
+            "sign": -1,
+            "value": -0.9999841821728545
+          },
+          "i": {
+            "logMagnitude": -12.275846750679495,
+            "sign": 1,
+            "value": 4.6630223332989125e-06
+          },
+          "input": {
+            "logMagnitude": -4.610166019324897,
+            "sign": 1,
+            "value": 0.009950166250831947
+          },
+          "regime": "critical",
+          "timeNs": {
+            "logMagnitude": -2.995732273553991,
+            "sign": 1,
+            "value": 0.05
+          },
+          "v": {
+            "logMagnitude": -11.054372953632067,
+            "sign": 1,
+            "value": 1.581782714555739e-05
+          }
+        }
+      },
+      {
+        "args": {
+          "CpF": 5.0,
+          "LnH": 50.0,
+          "R": 200.0,
+          "amplitude": 1.0,
+          "normalizedTime": 1.0,
+          "riseNs": 5.0
+        },
+        "expect": {
+          "error": {
+            "logMagnitude": -0.01013616756043655,
+            "sign": -1,
+            "value": -0.9899150302567354
+          },
+          "i": {
+            "logMagnitude": -8.27756172426419,
+            "sign": 1,
+            "value": 0.00025415614791385083
+          },
+          "input": {
+            "logMagnitude": -2.3521684610440907,
+            "sign": 1,
+            "value": 0.09516258196404043
+          },
+          "regime": "critical",
+          "timeNs": {
+            "logMagnitude": -0.6931471805599453,
+            "sign": 1,
+            "value": 0.5
+          },
+          "v": {
+            "logMagnitude": -4.596709107752545,
+            "sign": 1,
+            "value": 0.010084969743264541
+          }
+        }
+      },
+      {
+        "args": {
+          "CpF": 5.0,
+          "LnH": 50.0,
+          "R": 200.0,
+          "amplitude": 1.0,
+          "normalizedTime": 10.0,
+          "riseNs": 5.0
+        },
+        "expect": {
+          "error": {
+            "logMagnitude": -0.7894134944189828,
+            "sign": -1,
+            "value": -0.4541110558617299
+          },
+          "i": {
+            "logMagnitude": -7.698269107833428,
+            "sign": 1,
+            "value": 0.0004536116566343425
+          },
+          "input": {
+            "logMagnitude": -0.4586751453870819,
+            "sign": 1,
+            "value": 0.6321205588285577
+          },
+          "regime": "critical",
+          "timeNs": {
+            "logMagnitude": 1.6094379124341005,
+            "sign": 1,
+            "value": 5.0
+          },
+          "v": {
+            "logMagnitude": -0.6053397229397741,
+            "sign": 1,
+            "value": 0.5458889441382702
+          }
+        }
+      },
+      {
+        "args": {
+          "CpF": 5.0,
+          "LnH": 50.0,
+          "R": 200.0,
+          "amplitude": 1.0,
+          "normalizedTime": 40.0,
+          "riseNs": 5.0
+        },
+        "expect": {
+          "error": {
+            "logMagnitude": -3.789278968684348,
+            "sign": -1,
+            "value": -0.02261189986263477
+          },
+          "i": {
+            "logMagnitude": -10.697034247666494,
+            "sign": 1,
+            "value": 2.2611899862634593e-05
+          },
+          "input": {
+            "logMagnitude": -0.01848544682588656,
+            "sign": 1,
+            "value": 0.9816843611112658
+          },
+          "regime": "critical",
+          "timeNs": {
+            "logMagnitude": 2.995732273553991,
+            "sign": 1,
+            "value": 20.0
+          },
+          "v": {
+            "logMagnitude": -0.02287146923824127,
+            "sign": 1,
+            "value": 0.9773881001373652
+          }
+        }
+      },
+      {
+        "args": {
+          "CpF": 100.0,
+          "LnH": 50.0,
+          "R": 200.0,
+          "amplitude": 1.0,
+          "normalizedTime": 0.1,
+          "riseNs": 0.02
+        },
+        "expect": {
+          "error": {
+            "logMagnitude": -0.003238307652199888,
+            "sign": -1,
+            "value": -0.9967669300107785
+          },
+          "i": {
+            "logMagnitude": -5.887405884462795,
+            "sign": 1,
+            "value": 0.0027741638723066077
+          },
+          "input": {
+            "logMagnitude": -1.3945789619945941e-05,
+            "sign": 1,
+            "value": 0.9999860543076221
+          },
+          "regime": "overdamped",
+          "timeNs": {
+            "logMagnitude": -1.4978661367769954,
+            "sign": 1,
+            "value": 0.223606797749979
+          },
+          "v": {
+            "logMagnitude": -5.734323132090397,
+            "sign": 1,
+            "value": 0.0032330699892214854
+          }
+        }
+      },
+      {
+        "args": {
+          "CpF": 100.0,
+          "LnH": 50.0,
+          "R": 200.0,
+          "amplitude": 1.0,
+          "normalizedTime": 1.0,
+          "riseNs": 0.02
+        },
+        "expect": {
+          "error": {
+            "logMagnitude": -0.09932041146965795,
+            "sign": -1,
+            "value": -0.9054525441597362
+          },
+          "i": {
+            "logMagnitude": -5.3850719124795425,
+            "sign": 1,
+            "value": 0.0045845106268593665
+          },
+          "input": {
+            "logMagnitude": -2.782279850495688e-49,
+            "sign": 1,
+            "value": 1.0
+          },
+          "regime": "overdamped",
+          "timeNs": {
+            "logMagnitude": 0.8047189562170503,
+            "sign": 1,
+            "value": 2.23606797749979
+          },
+          "v": {
+            "logMagnitude": -2.3586533923278665,
+            "sign": 1,
+            "value": 0.09454745584026385
+          }
+        }
+      },
+      {
+        "args": {
+          "CpF": 100.0,
+          "LnH": 50.0,
+          "R": 200.0,
+          "amplitude": 1.0,
+          "normalizedTime": 10.0,
+          "riseNs": 0.02
+        },
+        "expect": {
+          "error": {
+            "logMagnitude": -1.118451238559169,
+            "sign": -1,
+            "value": -0.3267855157074438
+          },
+          "i": {
+            "logMagnitude": -6.404027498071141,
+            "sign": 1,
+            "value": 0.0016548788122328784
+          },
+          "input": {
+            "logMagnitude": 0.0,
+            "sign": 1,
+            "value": 1.0
+          },
+          "regime": "overdamped",
+          "timeNs": {
+            "logMagnitude": 3.1073040492110957,
+            "sign": 1,
+            "value": 22.360679774997898
+          },
+          "v": {
+            "logMagnitude": -0.3956913013108524,
+            "sign": 1,
+            "value": 0.6732144842925561
+          }
+        }
+      },
+      {
+        "args": {
+          "CpF": 100.0,
+          "LnH": 50.0,
+          "R": 200.0,
+          "amplitude": 1.0,
+          "normalizedTime": 40.0,
+          "riseNs": 0.02
+        },
+        "expect": {
+          "error": {
+            "logMagnitude": -4.515561582326344,
+            "sign": -1,
+            "value": -0.01093746111695102
+          },
+          "i": {
+            "logMagnitude": -9.801137841838317,
+            "sign": 1,
+            "value": 5.5388540164881295e-05
+          },
+          "input": {
+            "logMagnitude": 0.0,
+            "sign": 1,
+            "value": 1.0
+          },
+          "regime": "overdamped",
+          "timeNs": {
+            "logMagnitude": 4.4935984103309865,
+            "sign": 1,
+            "value": 89.44271909999159
+          },
+          "v": {
+            "logMagnitude": -0.010997714896506824,
+            "sign": 1,
+            "value": 0.989062538883049
+          }
+        }
+      },
+      {
+        "args": {
+          "CpF": 100.0,
+          "LnH": 50.0,
+          "R": 200.0,
+          "amplitude": 1.0,
+          "normalizedTime": 0.1,
+          "riseNs": 5.0
+        },
+        "expect": {
+          "error": {
+            "logMagnitude": -5.973342030468097e-05,
+            "sign": -1,
+            "value": -0.9999402683637005
+          },
+          "i": {
+            "logMagnitude": -9.503860485372394,
+            "sign": 1,
+            "value": 7.45634225476671e-05
+          },
+          "input": {
+            "logMagnitude": -3.1295813970416053,
+            "sign": 1,
+            "value": 0.04373610148285059
+          },
+          "regime": "overdamped",
+          "timeNs": {
+            "logMagnitude": -1.4978661367769954,
+            "sign": 1,
+            "value": 0.223606797749979
+          },
+          "v": {
+            "logMagnitude": -9.725648756660553,
+            "sign": 1,
+            "value": 5.973163629945208e-05
+          }
+        }
+      },
+      {
+        "args": {
+          "CpF": 100.0,
+          "LnH": 50.0,
+          "R": 200.0,
+          "amplitude": 1.0,
+          "normalizedTime": 1.0,
+          "riseNs": 5.0
+        },
+        "expect": {
+          "error": {
+            "logMagnitude": -0.017281027461037282,
+            "sign": -1,
+            "value": -0.9828674330803364
+          },
+          "i": {
+            "logMagnitude": -6.4588247479028835,
+            "sign": 1,
+            "value": 0.0015666358209194433
+          },
+          "input": {
+            "logMagnitude": -1.0200062655955526,
+            "sign": 1,
+            "value": 0.3605926808381029
+          },
+          "regime": "overdamped",
+          "timeNs": {
+            "logMagnitude": 0.8047189562170503,
+            "sign": 1,
+            "value": 2.23606797749979
+          },
+          "v": {
+            "logMagnitude": -4.0667741285050045,
+            "sign": 1,
+            "value": 0.017132566919663545
+          }
+        }
+      },
+      {
+        "args": {
+          "CpF": 100.0,
+          "LnH": 50.0,
+          "R": 200.0,
+          "amplitude": 1.0,
+          "normalizedTime": 10.0,
+          "riseNs": 5.0
+        },
+        "expect": {
+          "error": {
+            "logMagnitude": -0.8368754185024654,
+            "sign": -1,
+            "value": -0.43306154773648226
+          },
+          "i": {
+            "logMagnitude": -6.150629035707132,
+            "sign": 1,
+            "value": 0.0021321401558297
+          },
+          "input": {
+            "logMagnitude": -0.011488633337369422,
+            "sign": 1,
+            "value": 0.9885771090065331
+          },
+          "regime": "overdamped",
+          "timeNs": {
+            "logMagnitude": 3.1073040492110957,
+            "sign": 1,
+            "value": 22.360679774997898
+          },
+          "v": {
+            "logMagnitude": -0.5675045309461332,
+            "sign": 1,
+            "value": 0.5669384522635178
+          }
+        }
+      },
+      {
+        "args": {
+          "CpF": 100.0,
+          "LnH": 50.0,
+          "R": 200.0,
+          "amplitude": 1.0,
+          "normalizedTime": 40.0,
+          "riseNs": 5.0
+        },
+        "expect": {
+          "error": {
+            "logMagnitude": -4.224609893886399,
+            "sign": -1,
+            "value": -0.014631041255084666
+          },
+          "i": {
+            "logMagnitude": -9.510187379139472,
+            "sign": 1,
+            "value": 7.409315692333241e-05
+          },
+          "input": {
+            "logMagnitude": -1.7025666940629673e-08,
+            "sign": 1,
+            "value": 0.9999999829743332
+          },
+          "regime": "overdamped",
+          "timeNs": {
+            "logMagnitude": 4.4935984103309865,
+            "sign": 1,
+            "value": 89.44271909999159
+          },
+          "v": {
+            "logMagnitude": -0.014739130540645455,
+            "sign": 1,
+            "value": 0.9853689587449154
+          }
+        }
+      },
+      {
+        "args": {
+          "CpF": 5.0,
+          "LnH": 1.0,
+          "R": 20.0,
+          "amplitude": 5e-324,
+          "fraction": 5e-324,
+          "riseNs": 0.2
+        },
+        "expect": {
+          "error": {
+            "logMagnitude": -744.4400719213812,
+            "sign": -1,
+            "value": -5e-324
+          },
+          "i": {
+            "logMagnitude": -2230.32448349059,
+            "sign": 1,
+            "value": 0.0
+          },
+          "input": {
+            "logMagnitude": -1486.2309851594885,
+            "sign": 1,
+            "value": 0.0
+          },
+          "regime": "underdamped",
+          "timeNs": {
+            "logMagnitude": -743.4003511505414,
+            "sign": 1,
+            "value": 1.5e-323
+          },
+          "v": {
+            "logMagnitude": -2969.525129563251,
+            "sign": 1,
+            "value": 0.0
+          }
+        }
+      },
+      {
+        "args": {
+          "CpF": 5.0,
+          "LnH": 1.0,
+          "R": 20.0,
+          "amplitude": 1.0,
+          "fraction": 0.2,
+          "riseNs": 0.2
+        },
+        "expect": {
+          "error": {
+            "logMagnitude": -2.380963869467412,
+            "sign": -1,
+            "value": -0.09246141381247582
+          },
+          "i": {
+            "logMagnitude": -6.078343063898148,
+            "sign": 1,
+            "value": 0.002291971158184057
+          },
+          "input": {
+            "logMagnitude": -0.06092452250422944,
+            "sign": 1,
+            "value": 0.9408942534380438
+          },
+          "regime": "underdamped",
+          "timeNs": {
+            "logMagnitude": -0.5697171415941824,
+            "sign": 1,
+            "value": 0.565685424949238
+          },
+          "v": {
+            "logMagnitude": -0.09701919453214472,
+            "sign": 1,
+            "value": 0.9075385861875241
+          }
+        }
+      },
+      {
+        "args": {
+          "CpF": 100.0,
+          "LnH": 1.0,
+          "R": 20.0,
+          "amplitude": 5e-324,
+          "fraction": 5e-324,
+          "riseNs": 0.2
+        },
+        "expect": {
+          "error": {
+            "logMagnitude": -744.4400719213812,
+            "sign": -1,
+            "value": -5e-324
+          },
+          "i": {
+            "logMagnitude": -2227.328751217036,
+            "sign": 1,
+            "value": 0.0
+          },
+          "input": {
+            "logMagnitude": -1484.7331190227114,
+            "sign": 1,
+            "value": 0.0
+          },
+          "regime": "overdamped",
+          "timeNs": {
+            "logMagnitude": -741.9024850137644,
+            "sign": 1,
+            "value": 6.4e-323
+          },
+          "v": {
+            "logMagnitude": -2968.0272634264743,
+            "sign": 1,
+            "value": 0.0
+          }
+        }
+      },
+      {
+        "args": {
+          "CpF": 100.0,
+          "LnH": 1.0,
+          "R": 20.0,
+          "amplitude": 1.0,
+          "fraction": 0.2,
+          "riseNs": 0.2
+        },
+        "expect": {
+          "error": {
+            "logMagnitude": -1.163245062892891,
+            "sign": -1,
+            "value": -0.31247054729827267
+          },
+          "i": {
+            "logMagnitude": -4.132997889090642,
+            "sign": 1,
+            "value": 0.01603473633459592
+          },
+          "input": {
+            "logMagnitude": -3.210419206369708e-06,
+            "sign": 1,
+            "value": 0.9999967895859471
+          },
+          "regime": "overdamped",
+          "timeNs": {
+            "logMagnitude": 0.9281489951828132,
+            "sign": 1,
+            "value": 2.529822128134704
+          },
+          "v": {
+            "logMagnitude": -0.37465061006560835,
+            "sign": 1,
+            "value": 0.6875294527017273
+          }
+        }
+      },
+      {
+        "args": {
+          "CpF": 5.0,
+          "LnH": 50.0,
+          "R": 20.0,
+          "amplitude": 5e-324,
+          "fraction": 5e-324,
+          "riseNs": 0.2
+        },
+        "expect": {
+          "error": {
+            "logMagnitude": -744.4400719213812,
+            "sign": -1,
+            "value": -5e-324
+          },
+          "i": {
+            "logMagnitude": -2230.32448349059,
+            "sign": 1,
+            "value": 0.0
+          },
+          "input": {
+            "logMagnitude": -1484.2749736567744,
+            "sign": 1,
+            "value": 0.0
+          },
+          "regime": "underdamped",
+          "timeNs": {
+            "logMagnitude": -741.4443396478273,
+            "sign": 1,
+            "value": 1e-322
+          },
+          "v": {
+            "logMagnitude": -2967.569118060537,
+            "sign": 1,
+            "value": 0.0
+          }
+        }
+      },
+      {
+        "args": {
+          "CpF": 5.0,
+          "LnH": 50.0,
+          "R": 20.0,
+          "amplitude": 1.0,
+          "fraction": 0.2,
+          "riseNs": 0.2
+        },
+        "expect": {
+          "error": {
+            "logMagnitude": -1.8072361428733859,
+            "sign": -1,
+            "value": -0.16410707910057312
+          },
+          "i": {
+            "logMagnitude": -5.48041541801801,
+            "sign": 1,
+            "value": 0.004167598042929822
+          },
+          "input": {
+            "logMagnitude": -2.061153624562734e-09,
+            "sign": 1,
+            "value": 0.9999999979388464
+          },
+          "regime": "underdamped",
+          "timeNs": {
+            "logMagnitude": 1.3862943611198908,
+            "sign": 1,
+            "value": 4.0
+          },
+          "v": {
+            "logMagnitude": -0.1792547591495582,
+            "sign": 1,
+            "value": 0.8358929208994269
+          }
+        }
+      },
+      {
+        "args": {
+          "CpF": 100.0,
+          "LnH": 50.0,
+          "R": 20.0,
+          "amplitude": 5e-324,
+          "fraction": 5e-324,
+          "riseNs": 0.2
+        },
+        "expect": {
+          "error": {
+            "logMagnitude": -744.4400719213812,
+            "sign": -1,
+            "value": -5e-324
+          },
+          "i": {
+            "logMagnitude": -2227.328751217036,
+            "sign": 1,
+            "value": 0.0
+          },
+          "input": {
+            "logMagnitude": -1482.7771075199973,
+            "sign": 1,
+            "value": 0.0
+          },
+          "regime": "underdamped",
+          "timeNs": {
+            "logMagnitude": -739.9464735110503,
+            "sign": 1,
+            "value": 4.4e-322
+          },
+          "v": {
+            "logMagnitude": -2966.07125192376,
+            "sign": 1,
+            "value": 0.0
+          }
+        }
+      },
+      {
+        "args": {
+          "CpF": 100.0,
+          "LnH": 50.0,
+          "R": 20.0,
+          "amplitude": 1.0,
+          "fraction": 0.2,
+          "riseNs": 0.2
+        },
+        "expect": {
+          "error": {
+            "logMagnitude": -3.482693997247394,
+            "sign": -1,
+            "value": -0.030724527646165182
+          },
+          "i": {
+            "logMagnitude": -6.8789736327131425,
+            "sign": 1,
+            "value": 0.0010291998403129865
+          },
+          "input": {
+            "logMagnitude": -1.4306079971965835e-39,
+            "sign": 1,
+            "value": 1.0
+          },
+          "regime": "underdamped",
+          "timeNs": {
+            "logMagnitude": 2.8841604978968864,
+            "sign": 1,
+            "value": 17.88854381999832
+          },
+          "v": {
+            "logMagnitude": -0.031206422297874032,
+            "sign": 1,
+            "value": 0.9692754723538348
+          }
+        }
+      },
+      {
+        "args": {
+          "CpF": 5.0,
+          "LnH": 50.0,
+          "R": 200.0,
+          "amplitude": 1.0,
+          "normalizedTime": 20.0,
+          "riseNs": 0.2,
+          "tailBoundary": true
+        },
+        "expect": {
+          "error": {
+            "logMagnitude": -16.476912800728808,
+            "sign": -1,
+            "value": -6.985020609375118e-08
+          },
+          "i": {
+            "logMagnitude": -21.132513840343787,
+            "sign": 1,
+            "value": 6.641495005635372e-10
+          },
+          "input": {
+            "logMagnitude": -1.928749847963921e-22,
+            "sign": 1,
+            "value": 1.0
+          },
+          "regime": "critical",
+          "timeNs": {
+            "logMagnitude": 2.302585092994046,
+            "sign": 1,
+            "value": 10.0
+          },
+          "v": {
+            "logMagnitude": -6.985020853327694e-08,
+            "sign": 1,
+            "value": 0.9999999301497939
+          }
+        }
+      },
+      {
+        "args": {
+          "CpF": 5.0,
+          "LnH": 50.0,
+          "R": 200.0,
+          "amplitude": 1.0,
+          "normalizedTime": 30.0,
+          "riseNs": 0.2,
+          "tailBoundary": true
+        },
+        "expect": {
+          "error": {
+            "logMagnitude": -26.076927158385267,
+            "sign": -1,
+            "value": -4.730798278691434e-12
+          },
+          "i": {
+            "logMagnitude": -30.715620036412002,
+            "sign": 1,
+            "value": 4.574837895877431e-14
+          },
+          "input": {
+            "logMagnitude": -2.678636961808107e-33,
+            "sign": 1,
+            "value": 1.0
+          },
+          "regime": "critical",
+          "timeNs": {
+            "logMagnitude": 2.70805020110221,
+            "sign": 1,
+            "value": 14.999999999999998
+          },
+          "v": {
+            "logMagnitude": -4.730798278702624e-12,
+            "sign": 1,
+            "value": 0.9999999999952692
+          }
+        }
+      },
+      {
+        "args": {
+          "CpF": 5.0,
+          "LnH": 50.0,
+          "R": 200.0,
+          "amplitude": 1.0,
+          "normalizedTime": 39.33333333333333,
+          "riseNs": 0.2,
+          "tailBoundary": true
+        },
+        "expect": {
+          "error": {
+            "logMagnitude": -35.14199650512392,
+            "sign": -1,
+            "value": -5.470472444319021e-16
+          },
+          "i": {
+            "logMagnitude": -39.77269999311717,
+            "sign": 1,
+            "value": 5.332561374294172e-18
+          },
+          "input": {
+            "logMagnitude": -1.969590524203526e-43,
+            "sign": 1,
+            "value": 1.0
+          },
+          "regime": "critical",
+          "timeNs": {
+            "logMagnitude": 2.9789251552376097,
+            "sign": 1,
+            "value": 19.666666666666664
+          },
+          "v": {
+            "logMagnitude": -5.470472444319023e-16,
+            "sign": 1,
+            "value": 0.9999999999999994
+          }
+        }
+      },
+      {
+        "args": {
+          "CpF": 5.0,
+          "LnH": 50.0,
+          "R": 200.0,
+          "amplitude": 1.0,
+          "normalizedTime": 40.0,
+          "riseNs": 0.2,
+          "tailBoundary": true
+        },
+        "expect": {
+          "error": {
+            "logMagnitude": -35.79199611930538,
+            "sign": -1,
+            "value": -2.855838138279344e-16
+          },
+          "i": {
+            "logMagnitude": -40.422272226424546,
+            "sign": 1,
+            "value": 2.7850322340244838e-18
+          },
+          "input": {
+            "logMagnitude": -3.720075976020849e-44,
+            "sign": 1,
+            "value": 1.0
+          },
+          "regime": "critical",
+          "timeNs": {
+            "logMagnitude": 2.995732273553991,
+            "sign": 1,
+            "value": 20.0
+          },
+          "v": {
+            "logMagnitude": -2.8558381382793443e-16,
+            "sign": 1,
+            "value": 0.9999999999999997
+          }
+        }
+      },
+      {
+        "args": {
+          "CpF": 5.0,
+          "LnH": 50.0,
+          "R": 199.99999999999997,
+          "amplitude": 1.0,
+          "normalizedTime": 39.33333333333333,
+          "riseNs": 0.2,
+          "tailBoundary": true
+        },
+        "expect": {
+          "error": {
+            "logMagnitude": -35.141996505123984,
+            "sign": -1,
+            "value": -5.470472444318643e-16
+          },
+          "i": {
+            "logMagnitude": -39.77269999311724,
+            "sign": 1,
+            "value": 5.332561374293823e-18
+          },
+          "input": {
+            "logMagnitude": -1.969590524203526e-43,
+            "sign": 1,
+            "value": 1.0
+          },
+          "regime": "underdamped",
+          "timeNs": {
+            "logMagnitude": 2.9789251552376097,
+            "sign": 1,
+            "value": 19.666666666666664
+          },
+          "v": {
+            "logMagnitude": -5.470472444318644e-16,
+            "sign": 1,
+            "value": 0.9999999999999994
+          }
+        }
+      },
+      {
+        "args": {
+          "CpF": 5.0,
+          "LnH": 50.0,
+          "R": 199.99999999999997,
+          "amplitude": 1.0,
+          "normalizedTime": 40.0,
+          "riseNs": 0.2,
+          "tailBoundary": true
+        },
+        "expect": {
+          "error": {
+            "logMagnitude": -35.79199611930545,
+            "sign": -1,
+            "value": -2.855838138279139e-16
+          },
+          "i": {
+            "logMagnitude": -40.42227222642462,
+            "sign": 1,
+            "value": 2.7850322340242954e-18
+          },
+          "input": {
+            "logMagnitude": -3.720075976020849e-44,
+            "sign": 1,
+            "value": 1.0
+          },
+          "regime": "underdamped",
+          "timeNs": {
+            "logMagnitude": 2.995732273553991,
+            "sign": 1,
+            "value": 20.0
+          },
+          "v": {
+            "logMagnitude": -2.8558381382791397e-16,
+            "sign": 1,
+            "value": 0.9999999999999997
+          }
+        }
+      }
+    ],
     "joule": [
       {
         "args": {

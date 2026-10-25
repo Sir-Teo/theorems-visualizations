@@ -1,5 +1,5 @@
 {
-  "status": "Pure-model/source checkpoint only. No CIRC6 main/viz/syllabus or author promotion.",
+  "status": "All8 frozen CIRC6 lessons author-verified locally, including complete original-pixel personal visual gates. No independent acceptance/release/deploy claim.",
   "frozenItems": 8,
   "prerequisiteBodiesRead": 6,
   "design": "/tmp/wave6-circ-research/design.md",
@@ -40,7 +40,7 @@
       "id": "mit-6002-l15",
       "requestedURL": "https://ocw.mit.edu/courses/6-002-circuits-and-electronics-spring-2007/34dd2fd3821b725a8b2191558673296b_6002_l15.pdf",
       "requestedUTC": "2026-10-25T10:37:19.008978+00:00",
-      "bodyRead": "Selected extracted PDF pages6–9,15–19; actual rendered PDF18 personally inspected.",
+      "bodyRead": "Selected extracted PDF pages6\u20139,15\u201319; actual rendered PDF18 personally inspected.",
       "finalURL": "https://ocw.mit.edu/courses/6-002-circuits-and-electronics-spring-2007/34dd2fd3821b725a8b2191558673296b_6002_l15.pdf",
       "httpStatus": 200,
       "contentType": "application/pdf",
@@ -64,7 +64,7 @@
       "id": "mit-6002-l15b",
       "requestedURL": "https://ocw.mit.edu/courses/6-002-circuits-and-electronics-spring-2007/c794c9c9e067b6c16274ed844894ace7_6002_l15b.pdf",
       "requestedUTC": "2026-10-25T10:37:19.416325+00:00",
-      "bodyRead": "Selected extracted PDF pages10–24; actual rendered PDF10/18/19/24 personally inspected.",
+      "bodyRead": "Selected extracted PDF pages10\u201324; actual rendered PDF10/18/19/24 personally inspected.",
       "finalURL": "https://ocw.mit.edu/courses/6-002-circuits-and-electronics-spring-2007/c794c9c9e067b6c16274ed844894ace7_6002_l15b.pdf",
       "httpStatus": 200,
       "contentType": "application/pdf",
@@ -101,13 +101,12 @@
     }
   ],
   "sourceCautions": [
-    "LC energy sketch misses doubled frequency over marked0–2π. Plot derived cos²/sin².",
+    "LC energy sketch misses doubled frequency over marked0\u20132\u03c0. Plot derived cos\u00b2/sin\u00b2.",
     "Intermediate current derivative on15b p19 swaps K coefficients in sine terms; final voltage formula and initial condition are correct.",
     "Ringing does not stop exactly after Q cycles; no finite cutoff is adopted."
   ],
-  "commercialBodies": "Agarwal–Lang and Horowitz–Hill commercial bodies not requested or read.",
+  "commercialBodies": "Agarwal\u2013Lang and Horowitz\u2013Hill commercial bodies not requested or read.",
   "inheritedStops": "All earlier source stops bind; especially ADI charge-sharing timeout and existing CIRC4.17 queue.",
-  "authorAvailabilityUnchanged": 774,
   "independentAcceptanceUnchanged": 36,
   "prototypeCheckpoint": {
     "sourceScope": "Temporary draft only; no production CIRC6 files or author promotion.",
@@ -124,7 +123,7 @@
     "referenceRegeneration": "canonical generator byte-identical",
     "referenceSHA256": "81b5df853b4950498bfbc4daa4bf003b379b26f8435ece879682f37af4a29281",
     "thirdRepair": "Switch voltage evaluation between initial-state and source/error anchors, retaining a free tail when the step coefficient rounds to1. Current derivatives use propagated slopes, avoiding cancellation against a rounded equilibrium voltage.",
-    "oracleRepair": "A−6.1e−92 residual at exact critical t1 was an oracle subtraction artifact. Its critical derivative now evaluates the exact polynomial coefficient before its exponential.",
+    "oracleRepair": "A\u22126.1e\u221292 residual at exact critical t1 was an oracle subtraction artifact. Its critical derivative now evaluates the exact polynomial coefficient before its exponential.",
     "retainedFailures": [
       "/tmp/wave6-circ-research/initial-tiny-time-loss.json",
       "/tmp/wave6-circ-research/edge-tail-initial-failure.json",
@@ -135,10 +134,76 @@
   "prerequisiteReceipt": "/tmp/wave6-circ-research/written-prerequisites.json",
   "frozenPacket": "/tmp/wave6-circ-research/frozen-chapter.json",
   "sourceTextLimits": {
-    "lecture15": "Extracted lines125–220 and358–489, PDF6–9/15–19; source-page energy timing caution verified in pixels.",
-    "lecture15b": "Extracted lines201–660, PDF10–24; selected diagrams/equations personally viewed on10/18/19/24. Other diagram pixels are not claimed read."
+    "lecture15": "Extracted lines125\u2013220 and358\u2013489, PDF6\u20139/15\u201319; source-page energy timing caution verified in pixels.",
+    "lecture15b": "Extracted lines201\u2013660, PDF10\u201324; selected diagrams/equations personally viewed on10/18/19/24. Other diagram pixels are not claimed read."
   },
   "priorCheckpoint": "CTRL6 completed at29ccf412; its11-file manifest and all113 earlier recent-chapter files must remain exact.",
-  "temporaryDraft": "/tmp/wave6-circ-research/draft/ch06.js",
-  "visualImplementation": "/tmp/wave6-circ-research/viz-implementation.md"
+  "temporaryDraft": "Eight complete production lessons now author-verified; historical drafts and failed states retained under /tmp/wave6-circ-research.",
+  "visualImplementation": "/tmp/wave6-circ-research/viz-implementation.md",
+  "exactSIUnits": {
+    "cases": 78,
+    "method": "Exact nH/pF/ns rational prefix conversion from the original offered binary64 values. Includes fractional selected times below the physical binary64 range. Independent physical mpmath state equations.",
+    "failure": "/tmp/wave6-circ-research/subnormal-input-ratio-initial.json",
+    "canonicalReceipt": "/tmp/wave6-circ-research/canonical-754-receipt.json"
+  },
+  "prerequisiteAliasNormalization": {
+    "writtenBodiesRead": 6,
+    "alias": "ode-3.14 resolves to mech-4.7, whose actual body was read; it is not an additional proof body.",
+    "receipt": "/tmp/wave6-circ-research/syllabus-alias-normalization.json"
+  },
+  "authorAvailability": 782,
+  "additionalAuthorVerified": 746,
+  "lateVoltageRepair": {
+    "initial": "/tmp/wave6-circ-research/edge-voltage-tail-initial.json",
+    "repaired": "/tmp/wave6-circ-research/edge-voltage-tail-repaired.json",
+    "preservation": "/tmp/wave6-circ-research/edge-voltage-tail-preservation.json",
+    "canonicalStrictCases": 6,
+    "monotoneSampleGrid": 401,
+    "falseExcessesBefore": 6,
+    "falseExcessesAfter": 0,
+    "pixelReplacement": "/tmp/wave6-circ-research/edge-tail-pixel-replacement.json"
+  },
+  "visualVerification": {
+    "nativeTotals": {
+      "layouts": 32,
+      "actions": 792,
+      "replays": 412,
+      "checks": 1778,
+      "invalidReplays": 64,
+      "rawReplays": 32,
+      "criticalReplays": 228,
+      "modelChecks": 2942682
+    },
+    "finalScientificInkAudit": {
+      "completeLayoutGroups": 32,
+      "defaultAndCriticalStates": 260,
+      "criticalStates": 228,
+      "compositeChecks": 438,
+      "failures": 0,
+      "disjointLanes": {
+        "audit-final-a": "IDs1\u20134,16 groups",
+        "audit-final-b": "IDs5\u20137 only,12 groups; original8 excluded",
+        "audit-tail8": "ID8,4 groups,32 critical restores"
+      },
+      "footprint": "Each group checks its default, capture settlement and baseline. Each critical state is checked in four layouts and additionally at capture in both narrow themes:3*32+6*57=438 checks. Primitive counters from overlapping historical lanes are not promoted as a disjoint total.",
+      "laterTextOnlyReplacement": {
+        "punctuation2": {
+          "groups": 4,
+          "checks": 8,
+          "primitiveComparisons": 5848,
+          "failures": 0,
+          "scope": "Statement2 punctuation plus actual source links/inner bounds; all four widget RGBA images exact."
+        },
+        "narrowSourceCapture": {
+          "groups": 16,
+          "checks": 32,
+          "primitiveComparisons": 50844,
+          "failures": 0,
+          "scope": "Actual source URLs and complete captions/reference bars; separate counters."
+        }
+      }
+    },
+    "personalReceipt": "/tmp/wave6-circ-research/personal-pixels-final.json",
+    "scope": "Own author verification only; source-read and independent-acceptance scopes remain distinct."
+  }
 }

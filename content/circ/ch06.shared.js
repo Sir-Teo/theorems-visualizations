@@ -7,7 +7,7 @@ export const lin=(n,a,b)=>Array.from({length:n},(_,i)=>a+(b-a)*i/(n-1));
 export function quantity(q){q=Q.exact(q);const value=Q.approximate(q),sign=Q.sign(q);return{exact:q,value,sign,logMagnitude:Q.logAbs(q),belowRange:sign!==0&&value===0,aboveRange:!Number.isFinite(value)};}
 export function seriesParameters({R=1,L=1,C=1}={}){
  nonnegative(R,'R');positive(L,'L');positive(C,'C');
- const lc=Q.mul(L,C),omega=Q.squareRoot(Q.div(1,lc)),Z=Q.squareRoot(Q.div(L,C)),gammaQ=Q.mul(R,Q.exact(Q.squareRoot(Q.div(C,L)))),gamma=Q.approximate(gammaQ),delta=Q.sub(Q.mul(Q.mul(R,R),C),Q.mul(4,L)),sign=Q.sign(delta),alphaQ=Q.div(R,Q.mul(2,L));
+ const lc=Q.mul(L,C),omega=Q.squareRoot(Q.div(1,lc)),Z=Q.squareRoot(Q.div(L,C)),delta=Q.sub(Q.mul(Q.mul(R,R),C),Q.mul(4,L)),sign=Q.sign(delta),gammaQ=sign===0?Q.exact(2):Q.mul(R,Q.exact(Q.squareRoot(Q.div(C,L)))),gamma=Q.approximate(gammaQ),alphaQ=Q.div(R,Q.mul(2,L));
  let roots;
  if(sign<0){const imaginary=Q.squareRoot(Q.div(Q.neg(delta),Q.mul(4,Q.mul(Q.mul(L,L),C)))),real=-Q.approximate(alphaQ);roots=[[real,imaginary],[real,-imaginary]];}
  else if(sign===0){const real=-Q.approximate(alphaQ);roots=[[real,0],[real,0]];}
@@ -71,11 +71,12 @@ export function mechanicalState({mass=1,damping=1,stiffness=1,t=0,x0=1,velocity0
 }
 export function edgeState({R=20,L=10e-9,C=20e-12,rise=200e-12,amplitude=1}={},t=1e-9){
  nonnegative(rise,'rise time');nonnegative(t,'time');if(!Number.isFinite(amplitude))throw Error('finite amplitude required');const p=seriesParameters({R,L,C}),tauQ=Q.mul(t,p.omega),tau=Q.approximate(tauQ),rhoQ=Q.mul(rise,p.omega),rho=Q.approximate(rhoQ);
- if(rise===0){const z=seriesState(p,t,{source:amplitude});return{...z,input:quantity(amplitude),rise,amplitude};}
+ if(!Q.sign(rise)){const z=seriesState(p,t,{source:amplitude});return{...z,input:quantity(amplitude),rise,amplitude};}
  const inverse=Q.div(1,rhoQ),A=[[0,1,0,0],[-1,Q.neg(p.gammaQ),1,0],[0,0,Q.neg(inverse),inverse],[0,0,0,0]],numeric=A.map(row=>row.map(Q.approximate)),norm=Math.max(...numeric.map(row=>row.reduce((s,x)=>s+Math.abs(x),0)));let voltage,current;
  if(tau*norm<1e-5){let term=[Q.ZERO,Q.ZERO,Q.ZERO,Q.exact(amplitude)],sum=term.slice();for(let k=1;k<=10;k++){term=A.map(row=>Q.div(Q.mul(tauQ,row.reduce((a,x,j)=>Q.add(a,Q.mul(x,term[j])),Q.ZERO)),k));sum=sum.map((x,j)=>Q.add(x,term[j]));}voltage=sum[0];current=Q.div(sum[1],p.Z);}
- else{const E=matrixExponential(numeric,tau);voltage=Q.mul(amplitude,E[0][3]);if(tau>=1){const error=matrixExponential([[0,1,0],[-1,-p.gamma,1],[0,0,-1/rho]],tau);current=Q.div(Q.mul(amplitude,Q.neg(Q.add(error[1][0],error[1][2]))),p.Z);}else current=Q.div(Q.mul(amplitude,E[1][3]),p.Z);}
- const x=Q.div(t,rise),small=Q.approximate(x),input=Q.mul(amplitude,small===0?x:-Math.expm1(-small));return{parameters:p,time:t,tau,rise,amplitude,input:quantity(input),v:quantity(voltage),i:quantity(current)};
+ // The direct forced increment is accurate early; a decaying source error avoids a stationary voltage floor late.
+ else{const E=matrixExponential(numeric,tau);voltage=Q.mul(amplitude,E[0][3]);if(tau>=1){const error=matrixExponential([[0,1,0],[-1,-p.gamma,1],[0,0,-1/rho]],tau);if(E[0][3]>.5)voltage=Q.add(amplitude,Q.mul(amplitude,Q.neg(Q.add(error[0][0],error[0][2]))));current=Q.div(Q.mul(amplitude,Q.neg(Q.add(error[1][0],error[1][2]))),p.Z);}else current=Q.div(Q.mul(amplitude,E[1][3]),p.Z);}
+ const x=Q.div(t,rise),small=Q.approximate(x);let unitInput;if(small<1e-6){let term=x;unitInput=x;for(let k=2;k<=8;k++){term=Q.div(Q.neg(Q.mul(term,x)),k);unitInput=Q.add(unitInput,term);}}else unitInput=Q.exact(-Math.expm1(-small));const input=Q.mul(amplitude,unitInput);return{parameters:p,time:t,tau,rise,amplitude,input:quantity(input),v:quantity(voltage),error:quantity(Q.sub(voltage,amplitude)),i:quantity(current)};
 }
 export function sampleTimes(p,{horizon,points=301}={}){
  const T=horizon??Math.max(20,8*p.gamma),fast=Math.min(T,12/Math.max(1,p.gamma)),knots=[...lin(points,0,T),...lin(81,0,fast)];return[...new Set(knots)].sort((a,b)=>a-b).map(tau=>tau/p.omega);

@@ -99,4 +99,15 @@ for R,L,C,t in [(1.,1.,1.,.1),(1.,4.,4.,.1),(1.,1.,1.,1.),(1.,4.,4.,10.)]:
 for v0,i0,source in [(0.,0.,1.),(1.,0.,0.),(math.nextafter(0.,1.),0.,0.)]:
  a=dict(R=2.,L=1.,C=1.,t=100.,v0=v0,i0=i0,source=source)
  with work(a.values()):out['physical'].append(row(a,physical(**a)))
+rows=[]
+unitcases=[dict(R=R,LnH=L,CpF=C,riseNs=rise,amplitude=1.,normalizedTime=tau) for R,L,C,rise,tau in itertools.product([0.,200.],[1.,50.],[5.,100.],[.02,5.],[.1,1.,10.,40.])]
+unitcases.extend(dict(R=20.,LnH=L,CpF=C,riseNs=.2,amplitude=amplitude,fraction=fraction) for L,C,(fraction,amplitude) in itertools.product([1.,50.],[5.,100.],[(math.nextafter(0.,1.),math.nextafter(0.,1.)),(.2,1.)]))
+unitcases.extend(dict(R=R,LnH=50.,CpF=5.,riseNs=.2,amplitude=1.,normalizedTime=tau,tailBoundary=True) for R,tau in [(200.,20.),(200.,30.),(200.,39.33333333333333),(200.,40.),(math.nextafter(200.,0.),39.33333333333333),(math.nextafter(200.,0.),40.)])
+for a in unitcases:
+ with work(a.values()):
+  R=mp.mpf(a['R']);L=mp.mpf(a['LnH'])/10**9;C=mp.mpf(a['CpF'])/10**12;rise=mp.mpf(a['riseNs'])/10**9;V=mp.mpf(a['amplitude']);omega=f(1/mp.sqrt(L*C))
+  if 'fraction' in a:T=mp.mpf(40/omega)*mp.mpf(a['fraction'])
+  else:T=mp.mpf(a['normalizedTime']/omega)
+  A=mp.matrix([[0,1/C,0,0],[-1/L,-R/L,1/L,0],[0,0,-1/rise,1/rise],[0,0,0,0]]);z=mp.expm(A*T)*mp.matrix([0,0,0,V]);D=Fraction(a['R'])**2*Fraction(a['CpF'])/10**12-4*Fraction(a['LnH'])/10**9;regime='underdamped' if D<0 else 'overdamped' if D>0 else 'critical';rows.append(row(a,dict(v=q(z[0]),error=q(z[0]-V),i=q(z[1]),input=q(V*(-mp.expm1(-T/rise))),timeNs=q(T*10**9),regime=regime)))
+publish('edgeUnits',rows)
 args.output.write_text(json.dumps({'precision':'90 digits ordinary;1800 digits for extreme original binary64 stimuli','method':'Independent physical/normalized mpmath matrix exponentials; exact Fraction discriminant signs; independent physical quadratic-moment Joule integral; exact dyadic Fraction output rounding','families':out},sort_keys=True,indent=2,allow_nan=False)+'\n');print('TOTAL',sum(map(len,out.values())),flush=True)
