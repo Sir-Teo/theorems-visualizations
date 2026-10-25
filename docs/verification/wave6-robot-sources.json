@@ -146,21 +146,21 @@
   "restrictions": "No new body access stop for this one official MR-v2.pdf request. All inherited original-body and figure access stops remain binding; no mirrors, alternate format/host or cache recovery.",
   "modelValidation": {
     "status": "pure models and metadata pass; complete nine lesson/view drafts; native/personal gates open",
-    "referenceCases": 1120,
+    "referenceCases": 1132,
     "families": 9,
     "mpmath": "1.3.0",
     "precisionDigits": [
       90,
       2600
     ],
-    "higherPrecisionCases": 74,
+    "higherPrecisionCases": 85,
     "higherPrecisionDigits": 5200,
     "higherPrecisionResult": "all64 complete expected objects exact",
-    "comparisonChecks": 257004,
-    "focusedGroups": 21,
+    "comparisonChecks": 260068,
+    "focusedGroups": 22,
     "affectedWave5Groups": 11,
     "canonicalRegeneration": "byte-identical",
-    "fixtureSHA256": "bc6a3f0e98e57f48b0d58c4a0e3ad6eb52f009b524008710589130a03e48461d",
+    "fixtureSHA256": "bf2d5731b8bde06924d01034df626a6c28a41693a2abf540b4e1ee1419e234fc",
     "referenceRepairs": [
       {
         "initialLog": "/tmp/wave6-robot-model-tests-initial.log",
@@ -181,7 +181,9 @@
       "Pre-cancel integer factors in the chapter-local rational helper; no shared math/renderer edits.",
       "Released-elbow angle/rate increments remain retained; sampled trig geometry stays approximate rather than constructing needlessly expensive exact composite rotations."
     ],
-    "currentModelReceipt": "wave6-robot-model-followup.json"
+    "currentModelReceipt": "wave6-robot-momentum-repair.json",
+    "higherPrecisionReceipt": "/tmp/wave6-robot-momentum-repair/higher-precision-85.json",
+    "momentumRepair": "Scale vector components before norm and atan2; retain original magnitude factors, and use exact absolute axial momentum for the coaxial wrench model."
   },
   "draftVisualFindings": {
     "preview": "36 default320/1200 both-theme text/glyph checks passed at the earlierC source; final complete gates remain open",
@@ -192,7 +194,9 @@
       "Gear-ratio endpoint markers and phase/time endpoints get plotting margins.",
       "Actual free-elbow history stays in a fixed world view instead of being clipped by the current-arm view.",
       "Recursive sweep readouts reveal results in computational order.",
-      "The common-ratio coupling curve includes zero-coupling roots and the actual selected ratio."
+      "The common-ratio coupling curve includes zero-coupling roots and the actual selected ratio.",
+      "Use actual theme teal for the proximal rod, blue for the distal rod, and matching legend styles; the collection accent had made both rods blue.",
+      "Place motor symbols in a reserved schematic area and labels outside the rods/joint glyphs."
     ],
     "failureEvidence": [
       "/tmp/wave6-robot-preview/summary.json",
@@ -202,7 +206,7 @@
       "/tmp/wave6-robot-native-pilot3/failure.txt"
     ],
     "harnessCorrection": "/tmp/wave6-robot-native-pilot4/failure.txt tested zero normal acceleration too broadly; detached contact correctly opens a gap. The check now applies zero only to active wall/guide and separately requires nonnegative gap acceleration after detachment. Product solver unchanged.",
-    "criticalInventory": 77,
-    "status": "Pilot subsets only; full native/Share/scientific/personal gates remain open"
+    "criticalInventory": 80,
+    "status": "Pre-palette36-layout matrix complete; final visual revision matrix/personal review open"
   }
 }

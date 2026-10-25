@@ -52,7 +52,8 @@ export async function captureRobot(page){
   for(const el of document.querySelectorAll('.katex-display')){const b=el.getBoundingClientRect(),inner=el.querySelector('.katex-html')?.getBoundingClientRect();if(el.scrollWidth>el.clientWidth+1||inner&&(inner.left<b.left-1||inner.right>b.right+1))issues.push({type:'inner math',text:el.textContent});}
   if(document.documentElement.scrollWidth>innerWidth+1)issues.push({type:'page overflow'});
   const state=rt.state.capture(),controls=[...document.querySelectorAll('#viz input[type=range]')].map(e=>({label:e.getAttribute('aria-label'),value:Number(e.value)}));
-  return{issues,state,controls,stages,modelName:window.__robotModelName,model:pack(window.__robotModel),plotUnit:pack(window.__robotPlotUnit),energyUnit:pack(window.__robotEnergyUnit),powerUnit:pack(window.__robotPowerUnit),readout:document.querySelector('.viz-readout')?.innerText,theme:document.documentElement.dataset.theme,drawErrors:[...document.querySelectorAll('.viz-error')].map(e=>e.innerText)};
+  const palette=Object.fromEntries(['teal','blue'].map(k=>[k,getComputedStyle(document.documentElement).getPropertyValue('--c-'+k).trim()]));
+  return{issues,state,controls,stages,palette,modelName:window.__robotModelName,model:pack(window.__robotModel),plotUnit:pack(window.__robotPlotUnit),energyUnit:pack(window.__robotEnergyUnit),powerUnit:pack(window.__robotPowerUnit),readout:document.querySelector('.viz-readout')?.innerText,theme:document.documentElement.dataset.theme,drawErrors:[...document.querySelectorAll('.viz-error')].map(e=>e.innerText)};
  });
 }
 

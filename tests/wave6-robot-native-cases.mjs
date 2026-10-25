@@ -25,6 +25,9 @@ export const criticalCases={
   C('subnormal wrench and time',{'coaxial applied torque / N m':tiny,'world x force / N':tiny,'initial axial spin / rad per s':0,'selected time / s':tiny},{motion:'wrench'}),
   C('oblique camera',{}, {},{camera:[1.1,.8,1]}),
   C('nonzero clock restore',{}, {},{clock:.25}),
+  C('tiny free-spin orientation',{'initial transverse spin / rad per s':tiny,'initial axial spin / rad per s':tiny,'selected time / s':2}),
+  C('half-minimum nonzero momentum',{'ellipsoid mass / kg':1,'equatorial radius / m':.5,'axial radius / m':.5,'initial transverse spin / rad per s':3*tiny,'initial axial spin / rad per s':4*tiny,'selected time / s':2}),
+  C('exact axial stop',{'ellipsoid mass / kg':5,'equatorial radius / m':.5,'axial radius / m':1,'initial axial spin / rad per s':2,'coaxial applied torque / N m':-1,'world x force / N':0,'selected time / s':1},{motion:'wrench'}),
  ],
  2:motion,
  3:[

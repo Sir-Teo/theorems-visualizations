@@ -162,6 +162,20 @@ def inputs():
  families['motion'] += [dict(amplitude1=a,amplitude2=0,progress=t)for a in [tiny,1e-100]for t in [0,.25,.5,.75,1]]
  families['rigid'] += [dict(mode=mode,axialSpin=w,transverseSpin=v,radius=.6,axialRadius=.6,time=t,torque=0,force=0)for mode in ['free','wrench']for w in [0,-4,4]for v in [0,4]for t in [0,2]]
  families['rigid'] += [dict(mode='wrench',force=f,torque=f,time=t)for f in [tiny,1e-200,-tiny]for t in [tiny,1e-100,2]]
+ families['rigid'] += [
+  dict(mode='free',transverseSpin=tiny,axialSpin=tiny,time=0),
+  dict(mode='free',transverseSpin=tiny,axialSpin=tiny,time=2),
+  dict(mode='free',transverseSpin=tiny,axialSpin=-tiny,time=2),
+  dict(mode='free',transverseSpin=tiny,axialSpin=0,time=2),
+  dict(mode='free',transverseSpin=0,axialSpin=tiny,time=2),
+  dict(mode='free',transverseSpin=0,axialSpin=-tiny,time=2),
+  dict(mode='wrench',axialSpin=0,torque=tiny,force=tiny,time=tiny),
+  dict(mode='wrench',axialSpin=0,torque=tiny,force=0,time=2),
+  dict(mode='wrench',axialSpin=0,torque=-tiny,force=0,time=2),
+  dict(mode='wrench',mass=5,radius=.5,axialRadius=1,axialSpin=2,torque=-1,force=0,time=1),
+  dict(mode='free',mass=1,radius=.5,axialRadius=.5,transverseSpin=3*tiny,axialSpin=4*tiny,time=0),
+  dict(mode='free',mass=1,radius=.5,axialRadius=.5,transverseSpin=3*tiny,axialSpin=4*tiny,time=2),
+ ]
  families['release'] += [dict(shoulderSpeed=w,time=t,initialBend=b,bendSense=sgn)for w in [0,tiny,1e-100,-8,8]for t in [0,tiny,2]for b,sgn in [(5,1),(150,-1)]]
  families['geared'] += [dict(ratio1=N,ratio2=N,rotor1=R,rotor2=R,mount=mount,sense=s)for N in [1,200]for R in [0,.02]for mount in ['ground-mounted','link-mounted']for s in [-1,1]]
  families['contact'] += [dict(q1=q1,q2=q2,normalAngle=0,speed=s,gravity=0,torque1=tau,torque2=-tau,contact=mode)for q1,q2 in [(0,0),(0,180),(90,0),(-60,120)]for s in [0,1]for tau in [0,40]for mode in ['wall','guide','free']]

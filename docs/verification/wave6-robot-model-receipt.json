@@ -29,7 +29,7 @@
     "cases": 64,
     "digits": 5200,
     "expectedObjects": "all exact",
-    "receipt": "/tmp/wave6-robot-research/higher-precision-check.json"
+    "receipt": "/tmp/wave6-robot-research/higher-precision-64-from-log.json"
   },
   "canonicalRegeneration": "byte-identical",
   "priorRecentFiles": 163,

@@ -1,5 +1,5 @@
 {
-  "status": "PURE MODELS PASS; nine lesson/view drafts installed; native and personal visual gates open",
+  "status": "Historical pure-model/tiny-angle checkpoint atb6a395ab; superseded by wave6-robot-momentum-repair.json",
   "priorModelCheckpoint": "9f3d9651",
   "files": [
     "content/robot/ch06.shared.js",
@@ -29,7 +29,7 @@
     "cases": 74,
     "digits": 5200,
     "completeExpectedObjects": "all exact",
-    "receipt": "/tmp/wave6-robot-research/higher-precision-check.json"
+    "receipt": "/tmp/wave6-robot-research/higher-precision-74-from-log.json"
   },
   "canonicalRegeneration": "byte-identical",
   "fixtureSHA256": "bc6a3f0e98e57f48b0d58c4a0e3ad6eb52f009b524008710589130a03e48461d",
@@ -48,5 +48,6 @@
   "modelLog": "/tmp/wave6-robot-draft-focused.log",
   "priorRecentFilesExact": 163,
   "availability": 806,
-  "independentAcceptance": 36
+  "independentAcceptance": 36,
+  "followup": "docs/verification/wave6-robot-momentum-repair.json"
 }

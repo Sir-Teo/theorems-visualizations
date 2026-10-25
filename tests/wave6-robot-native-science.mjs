@@ -30,7 +30,7 @@ export function robotScience(id,capture){
  }
  compare(capture.model,expected);
  const armStages=id===1?[]:id===5?[0,1]:[0];
- for(const j of armStages){const s=capture.stages[j];near(s.sx,s.sy,'physical x/y scale',3e-12);const rods=s.lines.filter(a=>a.style.width===6);eq(rods.length,2,'two physical rods');rods.forEach((r,k)=>r.points.forEach((p,l)=>p.forEach((x,m)=>near(x,expected.geometry.joints[k+l][m],'physical joint'))));const centres=s.dots.filter(d=>d.style.r===3.5);eq(centres.length,2,'two centres of mass');centres.forEach((d,k)=>d.points[0].forEach((x,m)=>near(x,expected.geometry.centres[k][m],'physical COM')));}
+ for(const j of armStages){const s=capture.stages[j];near(s.sx,s.sy,'physical x/y scale',3e-12);const rods=s.lines.filter(a=>a.style.width===6);eq(rods.length,2,'two physical rods');eq(rods.map(r=>r.style.color),['teal','blue'],'distinct consistent rod colors');assert.ok(capture.palette.teal&&capture.palette.blue&&capture.palette.teal!==capture.palette.blue,'actual theme colors differ');rods.forEach((r,k)=>r.points.forEach((p,l)=>p.forEach((x,m)=>near(x,expected.geometry.joints[k+l][m],'physical joint'))));const centres=s.dots.filter(d=>d.style.r===3.5);eq(centres.length,2,'two centres of mass');centres.forEach((d,k)=>d.points[0].forEach((x,m)=>near(x,expected.geometry.centres[k][m],'physical COM')));}
  const E=x=>x===null?null:quantity(x);
  const negative=x=>H.quantity(Q.neg(x.exact));
  let ledgers=[];

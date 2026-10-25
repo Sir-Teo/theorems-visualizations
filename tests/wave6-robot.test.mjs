@@ -58,6 +58,14 @@ test('free rigid-body Euler balance and coaxial wrench work retain exact origina
  const rest=H.rigidBody({transverseSpin:0,axialSpin:0});same(rest.momentumMagnitude.exact,0);
  const tiny=H.rigidBody({mode:'wrench',force:Number.MIN_VALUE,torque:Number.MIN_VALUE,time:Number.MIN_VALUE});assert.equal(tiny.displacement[0].sign,1);assert.equal(tiny.displacement[0].belowRange,true);assert.equal(tiny.work.sign,1);
 });
+test('sub-range momentum retains its magnitude and correctly scaled initial orientation',()=>{
+ const tiny=Number.MIN_VALUE,wrench=H.rigidBody({mode:'wrench',axialSpin:0,torque:tiny,force:tiny,time:tiny});
+ assert.equal(wrench.momentumMagnitude.sign,1);assert.equal(wrench.momentumMagnitude.belowRange,true);same(wrench.momentumMagnitude.exact,Q.mul(tiny,tiny));
+ const free=H.rigidBody({transverseSpin:tiny,axialSpin:tiny,time:0});assert.equal(free.momentumMagnitude.sign,1);assert.equal(free.referenceAngularMomentum[2].sign,1);
+ assert.ok(Math.abs(Q.approximate(Q.div(free.referenceAngularMomentum[0].exact,free.referenceAngularMomentum[2].exact)))<1e-13);
+ const half=H.rigidBody({mass:1,radius:.5,axialRadius:.5,transverseSpin:3*tiny,axialSpin:4*tiny,time:2});assert.equal(half.momentumMagnitude.value,0);assert.equal(half.momentumMagnitude.sign,1);assert.equal(half.momentumMagnitude.belowRange,true);same(half.momentumMagnitude.exact,Q.div(tiny,2));
+ const stop=H.rigidBody({mode:'wrench',mass:5,radius:.5,axialRadius:1,axialSpin:2,torque:-1,force:0,time:1});same(stop.momentumMagnitude.exact,0);same(stop.energy.exact,0);
+});
 test('released elbow has zero motor torque while the speed-controlled shoulder supplies power',()=>{
  for(const {args}of fixture.families.release){const s=H.freeElbow(args);same(s.elbowTorque.exact,0);assert.equal(s.parameters.gravity,0);if(s.steps)assert.ok(s.steps>=Math.ceil(s.dimensionlessTime.value/.001)-1);}
  const a=H.freeElbow({shoulderSpeed:3}),b=H.freeElbow({shoulderSpeed:-3});assert.equal(a.elbowRadians.value,b.elbowRadians.value);assert.equal(a.elbowRate.value,b.elbowRate.value);assert.notEqual(a.shoulderPower.value,0);
@@ -85,7 +93,7 @@ test('declared model domains reject malformed controls and unsupported modes',()
  for(const[name,cases]of Object.entries(invalid)){for(const p of cases)assert.throws(()=>functions[name](p),name);assert.throws(()=>functions[name](null),name);assert.throws(()=>functions[name]([]),name);}
 });
 test('all nine independent model families and original-input extreme cases are present',t=>{
- assert.equal(Object.keys(fixture.families).length,9);assert.equal(fixture.caseCount,1120);assert.ok(Object.values(fixture.families).flat().some(x=>x.digits===2600));assert.ok(comparisons>100000);assert.equal(failures.length,0);
+ assert.equal(Object.keys(fixture.families).length,9);assert.equal(fixture.caseCount,1132);assert.ok(Object.values(fixture.families).flat().some(x=>x.digits===2600));assert.ok(comparisons>100000);assert.equal(failures.length,0);
  t.diagnostic(JSON.stringify({independentComparisons:comparisons,worstScience}));
 });
 test('all nine complete lessons preserve frozen identities and synchronized prerequisite metadata',async()=>{
