@@ -555,7 +555,7 @@ export default {
             "waterTransfer": "https://www.energy.gov/cmei/water/how-pumped-storage-hydropower-works"
           },
           "scope": "Equal constant reservoir areas, incompressible water of chosen density 1000 kg/m³, standard gravity, no evaporation or inflows, constant efficiencies and no pipe dynamics. Area is entered in km² and converted exactly; transfer volume is in m³. The reservoir drawing is schematic and does not set a geographic scale. Efficiencies are inputs, not a universal 75% plant value or an operating forecast.",
-          "pic": "Switch between pumping and release, then move transfer progress. The reservoir volumes are conserved; the head readout and stored-energy curve use the changing water levels. Change area to reveal when fixed-head $m g H_0$ misses a meaningful amount of energy, and compare pump input with useful turbine output."
+          "pic": "Switch between pumping and release, then move transfer progress. The connected reservoirs conserve water volume; P marks pumping and T marks generation on the schematic pipe. Water fills show volume fractions, while the labelled head and energy curve use the changing levels. Change area to reveal when fixed-head $m g H_0$ misses a meaningful amount of energy, and compare pump input with turbine output."
         },
         {
           "num": "6.8",
@@ -588,7 +588,7 @@ export default {
             "rotorDiscussion": "https://www.sandia.gov/app/uploads/sites/163/2022/03/ESHB_Ch07_Flywheels_Bender.pdf"
           },
           "scope": "An ideal thin ring with uniform density and allowable tensile stress, no hub, bearings, enclosure, motor, losses, fatigue or rotor dynamics. Material parameters are chosen illustrations, not measured steel/composite product rankings. Energy per kilogram uses rotor mass only; it must not be compared directly with whole-system ratings. The phase drawing is approximate numerical geometry, while energy and stress retain original input factors.",
-          "pic": "Change speed fraction, radius, mass, density, chosen strength or safety factor. Compare energy and hoop stress against the allowable level. Move physical snapshot time to see the marker at the computed angle; it is a time sample, avoiding a misleading low-frame-rate picture of high-speed rotation. Radius changes speed and phase while the ideal rotor-specific energy limit stays fixed."
+          "pic": "Change speed fraction, radius, mass, density, chosen strength or safety factor. The large rotor rescales for legibility and labels its actual diameter; the gold trail leads to the computed phase marker. Move physical snapshot time to inspect that time sample. The second panel links energy to hoop stress and marks the fraction of the allowable stress in use. Radius changes speed and phase while the ideal rotor-specific energy limit stays fixed."
         },
         {
           "num": "6.10",
@@ -622,7 +622,7 @@ export default {
             "gibbsWork": "https://ocw.mit.edu/courses/10-626-electrochemical-energy-systems-spring-2014/ca1416c480deca1321a5edd1aa971557_MIT10_626S14_Lec2.pdf"
           },
           "scope": "A declared LHV budget with no exported heat credit or recovery of compression/expansion energy. The rounded LHV is a model reference, not a measured sample value; unrecovered terms are energy-budget losses, not a calorimetric heat-flow prediction. Chosen efficiencies lie in 0–1 and omit external thermal inputs. Real electrolyser conventions, water phases, pressure, auxiliary systems and plant boundaries require separate data. At zero input no actual round-trip ratio exists.",
-          "pic": "Follow total electrical input through the split to electrolysis and compression, then through hydrogen retention and the fuel cell. The loss ledger and output add to exactly the same input. Adjust each stage and compare a chosen battery efficiency on that identical electrical-input basis; the displayed result is computed rather than fixed at one third."
+          "pic": "Follow the energy bands from electrical input through electrolysis, hydrogen retention and the fuel cell. Band widths are proportional to energy relative to the same total electrical input; side branches expose each unrecovered budget term. The adjacent ledger adds those terms and output to exactly that input, with the battery comparison separated below. Adjust each stage to see how the returned electricity changes."
         },
         {
           "num": "6.12",
