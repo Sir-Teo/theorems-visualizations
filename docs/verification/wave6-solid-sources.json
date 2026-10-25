@@ -1,5 +1,5 @@
 {
-  "status": "All12 complete own lessons and31 panels drafted; author gates in progress, not promoted",
+  "status": "All12 frozen lessons author-verified after model, native and personal visual gates; no independent acceptance promotion",
   "baseCommit": "4eb5bb31",
   "frozenChapter": "/tmp/wave6-solid-research/frozen-chapter.json",
   "frozenIdentities": 12,
@@ -264,7 +264,7 @@
     "Plastic section capacity is a limit, not a finite-curvature snap or a global-collapse guarantee.",
     "I-section shape factor depends on actual geometry, and fixed-area comparison excludes buckling/local stability."
   ],
-  "next": "Complete native/Share/raw/invalid/critical checks and personal original-pixel visual review before author-count promotion.",
+  "next": "Integrate ENERGY6+SOLID6 as24 exact lessons, then continue ROBOT6 Dynamics without stopping.",
   "modelCheckpoint": {
     "status": "Model-only author checkpoint: all12 pure kernels independently checked; no SOLID6 main/UI/syllabus/count promotion",
     "baseCommit": "f4cd6e76",
@@ -318,6 +318,41 @@
     },
     "authorAvailabilityUnchanged": "794/1057",
     "independentAcceptanceUnchanged": 36,
-    "complete": false
+    "complete": false,
+    "historical": true
+  },
+  "finalCheckpoint": {
+    "lessons": 12,
+    "panels": 31,
+    "availability": 806,
+    "goal": 1057,
+    "independentAcceptance": 36,
+    "native": {
+      "layouts": 48,
+      "actions": 1928,
+      "replays": 840,
+      "checks": 3670,
+      "modelChecks": 66780,
+      "invalidReplays": 48,
+      "rawReplays": 48,
+      "criticalReplays": 340,
+      "distinctCriticalCases": 85
+    },
+    "personal": {
+      "completeDefaultWidgets": 48,
+      "completeNarrowCriticalPlotRegions": 170,
+      "selectedCompleteCriticalReadouts": 72,
+      "completeNarrowRichFields": 96,
+      "widgetGallerySheets": 105,
+      "originalRichSheetsPersonallyViewed": 24,
+      "finalReferenceSheetsPersonallyViewed": 6,
+      "personallyInspectedExactGalleryArtifacts": 135,
+      "nativeCSSPixels": true,
+      "resampling": false,
+      "tallPartOverlapPixels": 40,
+      "cropQualification": "Critical plot regions exclude controls/readouts;72 selected complete readouts supplement them. Default widgets are complete. Statement captures include scope. All source field images are complete."
+    },
+    "priorRecentFilesExact": 149,
+    "allOwnedBrowsersAndServersClosed": true
   }
 }

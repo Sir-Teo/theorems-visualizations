@@ -1,0 +1,1161 @@
+{
+  "status": "author-verified; independent acceptance remains36",
+  "availability": {
+    "before": 794,
+    "after": 806,
+    "goal": 1057,
+    "historicalIndependentlyAccepted": 36,
+    "additionalAuthorVerified": 770
+  },
+  "model": {
+    "cases": 1247,
+    "families": 12,
+    "profileProbes": 2570,
+    "precisionDigits": [
+      90,
+      1800
+    ],
+    "mpmathVersion": "1.3.0",
+    "canonicalRegeneration": "byte-identical",
+    "focusedGroups": 21,
+    "affectedGroups": 15,
+    "failed": 0,
+    "skipped": 0,
+    "finalLog": "/tmp/wave6-solid-research/final-focused.log"
+  },
+  "catalogue": {
+    "written": 8521,
+    "planned": 5053,
+    "chapters": 586,
+    "collections": 85,
+    "errors": 0,
+    "warnings": 0,
+    "log": "/tmp/wave6-solid-research/build-final.log"
+  },
+  "static": {
+    "items": 12,
+    "errors": 0,
+    "warnings": 0
+  },
+  "modeChecks": {
+    "light": {
+      "items": 12,
+      "failed": 0,
+      "texBlankWarnings": 0,
+      "qualityWarnings": 0
+    },
+    "dark": {
+      "items": 12,
+      "failed": 0,
+      "texBlankWarnings": 0,
+      "qualityWarnings": 0
+    },
+    "logs": [
+      "/tmp/wave6-solid-research/modes-final-light.log",
+      "/tmp/wave6-solid-research/modes-final-dark.log"
+    ]
+  },
+  "native": {
+    "summary": {
+      "layouts": 48,
+      "actions": 1928,
+      "replays": 840,
+      "checks": 3670,
+      "modelChecks": 66780,
+      "invalidReplays": 48,
+      "rawReplays": 48,
+      "criticalReplays": 340,
+      "distinctCriticalCases": 85
+    },
+    "rows": [
+      {
+        "label": "6.1-light-1200",
+        "lesson": 1,
+        "theme": "light",
+        "width": 1200,
+        "log": "/tmp/wave6-solid-research/native-c.log",
+        "folder": "/tmp/wave6-solid-native-c",
+        "actions": 47,
+        "replays": 23,
+        "checks": 92,
+        "modelChecks": 6160,
+        "criticalCases": 9,
+        "screenshots": {
+          "/tmp/wave6-solid-native-c/6.1-light-1200-default.png": "b674230352b54159ff0bdba2fd650fad28a14284cf8f6e953dd5fe7209f14b18"
+        }
+      },
+      {
+        "label": "6.1-light-320",
+        "lesson": 1,
+        "theme": "light",
+        "width": 320,
+        "log": "/tmp/wave6-solid-research/native-c.log",
+        "folder": "/tmp/wave6-solid-native-c",
+        "actions": 47,
+        "replays": 23,
+        "checks": 101,
+        "modelChecks": 7245,
+        "criticalCases": 9,
+        "screenshots": {
+          "/tmp/wave6-solid-native-c/6.1-light-320-default.png": "2156e01128f6cc0ec50202e6426991468a2c48c0b5dee5910244b21b7619b84d",
+          "/tmp/wave6-solid-native-c/6.1-light-320-critical-0.png": "2555d5cd7c261e5a3c99b919e88bf552cecba02cc39d96b817cf1b24486c13f9",
+          "/tmp/wave6-solid-native-c/6.1-light-320-critical-1.png": "fc5bbd45876f55ca1d29979f0f3fb58acadc73840da8835668ddf9cc30d382c2",
+          "/tmp/wave6-solid-native-c/6.1-light-320-critical-2.png": "96f24151f616f0e09fbe97fb4ded905f6d77bb6ebdac3e99740b38afa86d64f8",
+          "/tmp/wave6-solid-native-c/6.1-light-320-critical-3.png": "ad19fe36b547f3dff9ac8f89c0911bf67e565aa38ff066c9f982c07c26fcbf82",
+          "/tmp/wave6-solid-native-c/6.1-light-320-critical-4.png": "b4a7ddfdfef5d944b48e3fe4b3289095c0dd5e777c42b9cf417e9336ad299935",
+          "/tmp/wave6-solid-native-c/6.1-light-320-critical-5.png": "c27e50b64f64593e5dc98bae42a6284bdfb7cf17e5af5ace5c539d860c32e509",
+          "/tmp/wave6-solid-native-c/6.1-light-320-critical-6.png": "c190c1f13a54bbbdfb5c5cd86dea4821b94ba05f835d8b9305653f1e52ac7e04",
+          "/tmp/wave6-solid-native-c/6.1-light-320-critical-7.png": "6069d45d971c31d945b17f98440cb65e24baf871ec8a42f7ca61f13fe1edcfdb",
+          "/tmp/wave6-solid-native-c/6.1-light-320-critical-8.png": "1360456fdd1cc133a453a09fb820915f840547bfb2302a4e8a66e1eba46276c3"
+        }
+      },
+      {
+        "label": "6.1-dark-1200",
+        "lesson": 1,
+        "theme": "dark",
+        "width": 1200,
+        "log": "/tmp/wave6-solid-research/native-c.log",
+        "folder": "/tmp/wave6-solid-native-c",
+        "actions": 47,
+        "replays": 23,
+        "checks": 92,
+        "modelChecks": 6160,
+        "criticalCases": 9,
+        "screenshots": {
+          "/tmp/wave6-solid-native-c/6.1-dark-1200-default.png": "76922151cc56d6a5f7fe02307399205975f8aaa416836eae7b7812d0280c0baf"
+        }
+      },
+      {
+        "label": "6.1-dark-320",
+        "lesson": 1,
+        "theme": "dark",
+        "width": 320,
+        "log": "/tmp/wave6-solid-research/native-c.log",
+        "folder": "/tmp/wave6-solid-native-c",
+        "actions": 47,
+        "replays": 23,
+        "checks": 101,
+        "modelChecks": 7245,
+        "criticalCases": 9,
+        "screenshots": {
+          "/tmp/wave6-solid-native-c/6.1-dark-320-default.png": "ca2854f5507d741bfd4392f8b9d51e9416fc9012dbdf554361617a814be97225",
+          "/tmp/wave6-solid-native-c/6.1-dark-320-critical-0.png": "82b5d8b7d01a59fb8a82b0c0fe31842bba6daaa67fb8894f255661e4b124cc17",
+          "/tmp/wave6-solid-native-c/6.1-dark-320-critical-1.png": "cfacde5f39458da91b346ed6b1db285d30b453df333c8fa65c5b7a63b063906f",
+          "/tmp/wave6-solid-native-c/6.1-dark-320-critical-2.png": "3d213462c1f988a4f5521b94990124b0faa12468e7e88b610145a60e438f7682",
+          "/tmp/wave6-solid-native-c/6.1-dark-320-critical-3.png": "053d65c763444b50d60052f1a2b6277ca731024cebfbe285c02f8f65cf797ef2",
+          "/tmp/wave6-solid-native-c/6.1-dark-320-critical-4.png": "b3c7b8a0232128f440cbf8b4b4129969761c858236c0dc6e09865e9c4c3534f0",
+          "/tmp/wave6-solid-native-c/6.1-dark-320-critical-5.png": "6661ce062af110cf85a3783f2c0a6958d5d5399ef976698545f014ea5b640c4c",
+          "/tmp/wave6-solid-native-c/6.1-dark-320-critical-6.png": "5e9bd15e15b92d249449d235433c0e1b99462c31b8307299a44b3592a1a8e016",
+          "/tmp/wave6-solid-native-c/6.1-dark-320-critical-7.png": "f02a04e8bed986a0524e50afaf3ac146943594353dbfdb3c352e5633837f682e",
+          "/tmp/wave6-solid-native-c/6.1-dark-320-critical-8.png": "4c8a83c1e8942345512443e4563d3d35d19af397907d7f29a7d140ef77e583dd"
+        }
+      },
+      {
+        "label": "6.2-light-1200",
+        "lesson": 2,
+        "theme": "light",
+        "width": 1200,
+        "log": "/tmp/wave6-solid-research/native-c.log",
+        "folder": "/tmp/wave6-solid-native-c",
+        "actions": 33,
+        "replays": 15,
+        "checks": 61,
+        "modelChecks": 244,
+        "criticalCases": 8,
+        "screenshots": {
+          "/tmp/wave6-solid-native-c/6.2-light-1200-default.png": "e16ac7e4aba1e1ba2f6f5e94dff903dc287182908e5103ae53ff234f47024a67"
+        }
+      },
+      {
+        "label": "6.2-light-320",
+        "lesson": 2,
+        "theme": "light",
+        "width": 320,
+        "log": "/tmp/wave6-solid-research/native-c.log",
+        "folder": "/tmp/wave6-solid-native-c",
+        "actions": 33,
+        "replays": 15,
+        "checks": 69,
+        "modelChecks": 276,
+        "criticalCases": 8,
+        "screenshots": {
+          "/tmp/wave6-solid-native-c/6.2-light-320-default.png": "a25ab10a97bb79be8278e183fd7a722199085296f3026f899f841c19477d9f8d",
+          "/tmp/wave6-solid-native-c/6.2-light-320-critical-0.png": "df7820cb136c97b69e10ba1386bc22bd3e3ba1d5012ddb1993145f1f283931cf",
+          "/tmp/wave6-solid-native-c/6.2-light-320-critical-1.png": "5ac8fe4f21bd6ed934871d2dd4d903b797cd029292f26819cc8cf86c97baaeb9",
+          "/tmp/wave6-solid-native-c/6.2-light-320-critical-2.png": "104ee5f6a75c2e242bab9152813c86675d8caee793a44f06382976a088476d4c",
+          "/tmp/wave6-solid-native-c/6.2-light-320-critical-3.png": "60fc86177102d1d1ebcbbc506732051863fb49fc31b5d3837e8a62cc52734a48",
+          "/tmp/wave6-solid-native-c/6.2-light-320-critical-4.png": "fbc6f85a8925a8d1feebcf32d26d4481211f552f462fa1bb4777d833ba1faa5e",
+          "/tmp/wave6-solid-native-c/6.2-light-320-critical-5.png": "21e16ec4aa95f12d5fed70ed76bb58eea062f9bb4bfc846858eee0d8167a90e9",
+          "/tmp/wave6-solid-native-c/6.2-light-320-critical-6.png": "d81022c602a94ddf56d2e6a0865109267687bc1039aae8358aaaa65bd133299c",
+          "/tmp/wave6-solid-native-c/6.2-light-320-critical-7.png": "3b1336658ab20de8915c10398803cfa116b6aca9a589b101b1b97f12785433b9"
+        }
+      },
+      {
+        "label": "6.2-dark-1200",
+        "lesson": 2,
+        "theme": "dark",
+        "width": 1200,
+        "log": "/tmp/wave6-solid-research/native-c.log",
+        "folder": "/tmp/wave6-solid-native-c",
+        "actions": 33,
+        "replays": 15,
+        "checks": 61,
+        "modelChecks": 244,
+        "criticalCases": 8,
+        "screenshots": {
+          "/tmp/wave6-solid-native-c/6.2-dark-1200-default.png": "1d9189eb15fefd096a80651fb32761eb7a96ec6c5222bf18fde5c0688b3e94de"
+        }
+      },
+      {
+        "label": "6.2-dark-320",
+        "lesson": 2,
+        "theme": "dark",
+        "width": 320,
+        "log": "/tmp/wave6-solid-research/native-c.log",
+        "folder": "/tmp/wave6-solid-native-c",
+        "actions": 33,
+        "replays": 15,
+        "checks": 69,
+        "modelChecks": 276,
+        "criticalCases": 8,
+        "screenshots": {
+          "/tmp/wave6-solid-native-c/6.2-dark-320-default.png": "2d0d2c8a5776494515a905a8a8e764ba24e9de93db7ef4f88fe45f012ca1020e",
+          "/tmp/wave6-solid-native-c/6.2-dark-320-critical-0.png": "dfb84645a2e0102e7e8e637f931bf70e0fd8ffe2ae6bb30fbaf822caed761291",
+          "/tmp/wave6-solid-native-c/6.2-dark-320-critical-1.png": "5c7dbaed115d05caf4c5298f52781a33ec796fb62143f94fb0d40b61dc7335f6",
+          "/tmp/wave6-solid-native-c/6.2-dark-320-critical-2.png": "3e68788556cad341e656a6d99a642b09f7c59f2dad981501ece7bd356fa3b4dc",
+          "/tmp/wave6-solid-native-c/6.2-dark-320-critical-3.png": "01f98becbe4200ad934220d39b0b7030265c1a94051a0417338575bdc81ae7b6",
+          "/tmp/wave6-solid-native-c/6.2-dark-320-critical-4.png": "e92f0ff810c127f25117d53cc433336c7e557eda1a6e84f0336e80cb7a8538d8",
+          "/tmp/wave6-solid-native-c/6.2-dark-320-critical-5.png": "087d7429f2e970d185aa33e80f365ec39065c3ca57ee7edc813822b6d6010dd3",
+          "/tmp/wave6-solid-native-c/6.2-dark-320-critical-6.png": "4c92906d930ef2861c0a94f3920d679f7dcc4a51c55ab6de6dd3f1ee1db80e45",
+          "/tmp/wave6-solid-native-c/6.2-dark-320-critical-7.png": "6c4e8a1e8c1be0495fa8a4c43a3a8cd94fa69cb7bb68dd3c546d55a4a26506ec"
+        }
+      },
+      {
+        "label": "6.5-light-1200",
+        "lesson": 5,
+        "theme": "light",
+        "width": 1200,
+        "log": "/tmp/wave6-solid-research/native-c.log",
+        "folder": "/tmp/wave6-solid-native-c",
+        "actions": 84,
+        "replays": 32,
+        "checks": 139,
+        "modelChecks": 2085,
+        "criticalCases": 6,
+        "screenshots": {
+          "/tmp/wave6-solid-native-c/6.5-light-1200-default.png": "9985c8461b7bbdc9e06c6a75d2476db85f28e0fa8421b10a603e51f927a7acc5"
+        }
+      },
+      {
+        "label": "6.5-light-320",
+        "lesson": 5,
+        "theme": "light",
+        "width": 320,
+        "log": "/tmp/wave6-solid-research/native-c.log",
+        "folder": "/tmp/wave6-solid-native-c",
+        "actions": 84,
+        "replays": 32,
+        "checks": 145,
+        "modelChecks": 2175,
+        "criticalCases": 6,
+        "screenshots": {
+          "/tmp/wave6-solid-native-c/6.5-light-320-default.png": "b6c84cbe36a33730c829e3479c39f74898d169402f31ec892eebae1745731080",
+          "/tmp/wave6-solid-native-c/6.5-light-320-critical-0.png": "fd2175d8bf3ad3d9658473447c0280383d0a7e403d33ac096986a7c46eccd76e",
+          "/tmp/wave6-solid-native-c/6.5-light-320-critical-1.png": "8673edcc660e6154cc1cedf8b72f0db67ae0106b915987eeef41861637945e9b",
+          "/tmp/wave6-solid-native-c/6.5-light-320-critical-2.png": "b638a31f969992378bb08ccb4ff47b5aeb6853af2103f3464fb564a8025bb73c",
+          "/tmp/wave6-solid-native-c/6.5-light-320-critical-3.png": "71f1624b11bbc04e30df428cda1372fbebb28986d63fc9798b827b95bcc85bed",
+          "/tmp/wave6-solid-native-c/6.5-light-320-critical-4.png": "fab47af24845a07ae162d7a9692c234ceaeddffdba6eadc2845e3f93de196ab9",
+          "/tmp/wave6-solid-native-c/6.5-light-320-critical-5.png": "7d1de910a6f601f4559ef48b9dad1483222987ab5f25d31bf157cc3064daba4d"
+        }
+      },
+      {
+        "label": "6.5-dark-1200",
+        "lesson": 5,
+        "theme": "dark",
+        "width": 1200,
+        "log": "/tmp/wave6-solid-research/native-c.log",
+        "folder": "/tmp/wave6-solid-native-c",
+        "actions": 84,
+        "replays": 32,
+        "checks": 139,
+        "modelChecks": 2085,
+        "criticalCases": 6,
+        "screenshots": {
+          "/tmp/wave6-solid-native-c/6.5-dark-1200-default.png": "7c66e2a01fbb92ac3bea285d2a2f0f24209b39047ef99ef17ff8a99f672cc2ec"
+        }
+      },
+      {
+        "label": "6.5-dark-320",
+        "lesson": 5,
+        "theme": "dark",
+        "width": 320,
+        "log": "/tmp/wave6-solid-research/native-c.log",
+        "folder": "/tmp/wave6-solid-native-c",
+        "actions": 84,
+        "replays": 32,
+        "checks": 145,
+        "modelChecks": 2175,
+        "criticalCases": 6,
+        "screenshots": {
+          "/tmp/wave6-solid-native-c/6.5-dark-320-default.png": "cd3497b216ca39dc078a24aae7b83fc6709869cdc4b870540525f09d3859ddaf",
+          "/tmp/wave6-solid-native-c/6.5-dark-320-critical-0.png": "b517123bda39fe0e2b8f7fc9cf81e94143665626c79578b5230cd8b9d48721b4",
+          "/tmp/wave6-solid-native-c/6.5-dark-320-critical-1.png": "9d216101a80e6a1b9f657243ec6411d09d22145f1a578f1d8adf9da6d2b650b7",
+          "/tmp/wave6-solid-native-c/6.5-dark-320-critical-2.png": "3489fda30a81447b83a0dd91b6edb3e27e72a43e79569f663ba49ee41eec4cf3",
+          "/tmp/wave6-solid-native-c/6.5-dark-320-critical-3.png": "cc30804e726910c8b76f7b1f732db380c50c5f384e576d931fe707785fdc50b0",
+          "/tmp/wave6-solid-native-c/6.5-dark-320-critical-4.png": "0e37befa72e984f6a7557e817e1cd5e9264e9dee41ae4ec9679918c356b5ecd5",
+          "/tmp/wave6-solid-native-c/6.5-dark-320-critical-5.png": "e236cd303119ff17a38b7d8d4b36ac3ef58b88c49e61df21653bf528c1cf72fc"
+        }
+      },
+      {
+        "label": "6.6-light-1200",
+        "lesson": 6,
+        "theme": "light",
+        "width": 1200,
+        "log": "/tmp/wave6-solid-research/native-c.log",
+        "folder": "/tmp/wave6-solid-native-c",
+        "actions": 23,
+        "replays": 11,
+        "checks": 45,
+        "modelChecks": 2475,
+        "criticalCases": 6,
+        "screenshots": {
+          "/tmp/wave6-solid-native-c/6.6-light-1200-default.png": "1cd3f7d2552077fc6f4273e2b0db7e57cc84d32f1b0e606f3a26ab9cb881d235"
+        }
+      },
+      {
+        "label": "6.6-light-320",
+        "lesson": 6,
+        "theme": "light",
+        "width": 320,
+        "log": "/tmp/wave6-solid-research/native-c.log",
+        "folder": "/tmp/wave6-solid-native-c",
+        "actions": 23,
+        "replays": 11,
+        "checks": 51,
+        "modelChecks": 2805,
+        "criticalCases": 6,
+        "screenshots": {
+          "/tmp/wave6-solid-native-c/6.6-light-320-default.png": "530c352cb5ea0c54138f22a67fbf2ea76d52133fc71a26467c27ff2c0e9319a7",
+          "/tmp/wave6-solid-native-c/6.6-light-320-critical-0.png": "21b2d24e1ef6fc53c2cae64b65424db44fe9c4ebcdb3422d159bedae4df10f2f",
+          "/tmp/wave6-solid-native-c/6.6-light-320-critical-1.png": "d30f0a235410622a445f84e5a61bdeb3b56e46dae6daa07d645157f5b07f8c4b",
+          "/tmp/wave6-solid-native-c/6.6-light-320-critical-2.png": "b98a092337015a8d932319020dc79f1c5f51023f8b6f29d6f5646ec5ae61e2ea",
+          "/tmp/wave6-solid-native-c/6.6-light-320-critical-3.png": "749050b11d3005899d031c291388dd1996abd54cb5156c30e8ad02bf320cf626",
+          "/tmp/wave6-solid-native-c/6.6-light-320-critical-4.png": "9d31ad8743cbd3c3ca66efbb18a776c80b65e20f3b635260ee25f20598071fa3",
+          "/tmp/wave6-solid-native-c/6.6-light-320-critical-5.png": "4a73da7e78b8e36a51ece4233888823f28c934a4d6b842267583dcceaf48330c"
+        }
+      },
+      {
+        "label": "6.6-dark-1200",
+        "lesson": 6,
+        "theme": "dark",
+        "width": 1200,
+        "log": "/tmp/wave6-solid-research/native-c.log",
+        "folder": "/tmp/wave6-solid-native-c",
+        "actions": 23,
+        "replays": 11,
+        "checks": 45,
+        "modelChecks": 2475,
+        "criticalCases": 6,
+        "screenshots": {
+          "/tmp/wave6-solid-native-c/6.6-dark-1200-default.png": "1a311bf3ae6f747ba147a48cca7364a3684fbb169b90dc97a5343df9af63410a"
+        }
+      },
+      {
+        "label": "6.6-dark-320",
+        "lesson": 6,
+        "theme": "dark",
+        "width": 320,
+        "log": "/tmp/wave6-solid-research/native-c.log",
+        "folder": "/tmp/wave6-solid-native-c",
+        "actions": 23,
+        "replays": 11,
+        "checks": 51,
+        "modelChecks": 2805,
+        "criticalCases": 6,
+        "screenshots": {
+          "/tmp/wave6-solid-native-c/6.6-dark-320-default.png": "5cde3222153bd0e9d83ae530d6c7f80ba055ff85a0240cf63a0ff7f3fdf48480",
+          "/tmp/wave6-solid-native-c/6.6-dark-320-critical-0.png": "9b04f433d888fcaed48227bf7fd562c194621ca0f0519b36750a56400234bd59",
+          "/tmp/wave6-solid-native-c/6.6-dark-320-critical-1.png": "f80bb1a16781b1360b748ac5b997a046c7460ee1c887f64988499dc48563c045",
+          "/tmp/wave6-solid-native-c/6.6-dark-320-critical-2.png": "8cf127a36ad5d119eacea8b0dd6a91646146a1143383605cd8bb103343c95b21",
+          "/tmp/wave6-solid-native-c/6.6-dark-320-critical-3.png": "8f6d5033ab4249248ce243b6b4941894df3bef56df9848a2a7b42c9125f39240",
+          "/tmp/wave6-solid-native-c/6.6-dark-320-critical-4.png": "e20d18323cfed2729ce89327479de6b378e024a525cdb3bf36df0c65234ddc69",
+          "/tmp/wave6-solid-native-c/6.6-dark-320-critical-5.png": "4e8aa4107107672d955b35b8b9e239dc34ce5af2c49caa0cd4e775e0d6c69c26"
+        }
+      },
+      {
+        "label": "6.7-light-1200",
+        "lesson": 7,
+        "theme": "light",
+        "width": 1200,
+        "log": "/tmp/wave6-solid-research/native-c.log",
+        "folder": "/tmp/wave6-solid-native-c",
+        "actions": 38,
+        "replays": 17,
+        "checks": 70,
+        "modelChecks": 350,
+        "criticalCases": 8,
+        "screenshots": {
+          "/tmp/wave6-solid-native-c/6.7-light-1200-default.png": "336adc8ab4cc2e9ea8c83e776a95fd9e037b046bab94c9aac71f80724e51b852"
+        }
+      },
+      {
+        "label": "6.7-light-320",
+        "lesson": 7,
+        "theme": "light",
+        "width": 320,
+        "log": "/tmp/wave6-solid-research/native-c.log",
+        "folder": "/tmp/wave6-solid-native-c",
+        "actions": 38,
+        "replays": 17,
+        "checks": 78,
+        "modelChecks": 390,
+        "criticalCases": 8,
+        "screenshots": {
+          "/tmp/wave6-solid-native-c/6.7-light-320-default.png": "79e886ee3a7b5953a8a4b917a9fb290997f7ca6cd16b8794153ab69851ea33e8",
+          "/tmp/wave6-solid-native-c/6.7-light-320-critical-0.png": "aaa42ae691f79fe444917922ed3e7785aff5f74d3dbb01b3423ffd4a273eda30",
+          "/tmp/wave6-solid-native-c/6.7-light-320-critical-1.png": "be40596b03858404dc7a0f58d9fb950f075a6ff6cdce8748ee132fd6a27e0e1d",
+          "/tmp/wave6-solid-native-c/6.7-light-320-critical-2.png": "1d3907155d9e2ed900fd72527b2783f3ea1adc7ba5bb84945e872dd0cbdb7de3",
+          "/tmp/wave6-solid-native-c/6.7-light-320-critical-3.png": "a2af4aa9598a4738b9c059329e2dedd06cf72c3e65e8cc71e8b94884b3131109",
+          "/tmp/wave6-solid-native-c/6.7-light-320-critical-4.png": "b5e028fdc5f34d3a1dd5fc451311d7723379a2e90e5cb6e4a7454275ecdb0af1",
+          "/tmp/wave6-solid-native-c/6.7-light-320-critical-5.png": "5786b21d57d950121b53db97a3a0abaf31d3878489e556697cfc0bddb1082173",
+          "/tmp/wave6-solid-native-c/6.7-light-320-critical-6.png": "18c7e1729c3cac73329c6a0cb9755dcaaff46e8fa3f62a94199a1d5899185cc1",
+          "/tmp/wave6-solid-native-c/6.7-light-320-critical-7.png": "947cc24d81c55c989bd7dd9dbfcf89c3881111b426b19154a5a0ac6056bda5fd"
+        }
+      },
+      {
+        "label": "6.7-dark-1200",
+        "lesson": 7,
+        "theme": "dark",
+        "width": 1200,
+        "log": "/tmp/wave6-solid-research/native-c.log",
+        "folder": "/tmp/wave6-solid-native-c",
+        "actions": 38,
+        "replays": 17,
+        "checks": 70,
+        "modelChecks": 350,
+        "criticalCases": 8,
+        "screenshots": {
+          "/tmp/wave6-solid-native-c/6.7-dark-1200-default.png": "1ba53b16227b49c3c7b049031010e4d079103b090fc092cf68d657e227a24b92"
+        }
+      },
+      {
+        "label": "6.7-dark-320",
+        "lesson": 7,
+        "theme": "dark",
+        "width": 320,
+        "log": "/tmp/wave6-solid-research/native-c.log",
+        "folder": "/tmp/wave6-solid-native-c",
+        "actions": 38,
+        "replays": 17,
+        "checks": 78,
+        "modelChecks": 390,
+        "criticalCases": 8,
+        "screenshots": {
+          "/tmp/wave6-solid-native-c/6.7-dark-320-default.png": "0f043f525df01d5dcf71a428b216ba99de122ec6362b311769e68bcf5757c978",
+          "/tmp/wave6-solid-native-c/6.7-dark-320-critical-0.png": "ca3bb25c7d672e9a0e021a6f08481ca80a5206e781584d9e495981a84b78f0cc",
+          "/tmp/wave6-solid-native-c/6.7-dark-320-critical-1.png": "1e9b8eb5a7b1bd8ebc6111f43f8ee99e6a9c366efa6d35d9518d76c2bb847a18",
+          "/tmp/wave6-solid-native-c/6.7-dark-320-critical-2.png": "7dba8fff8d042c071150bd4e84f35e92697d0ec4a9c65a91e5ac6423d90e3f85",
+          "/tmp/wave6-solid-native-c/6.7-dark-320-critical-3.png": "0b3cd8cb48415f08d740c4dd4c04d6e2b0b417240d688a1798a3746fe62602e5",
+          "/tmp/wave6-solid-native-c/6.7-dark-320-critical-4.png": "8a456fc6554b34b7dcbfe02c2c017e9df7a8a5a41b245aecf5d588eb7c294c21",
+          "/tmp/wave6-solid-native-c/6.7-dark-320-critical-5.png": "1695270d4a966c98c02b4623547a94e862f7c33019b46c7346fe9aaad598c675",
+          "/tmp/wave6-solid-native-c/6.7-dark-320-critical-6.png": "899e9a260203852ab7ef2f6d37ac8a0e758cb74443780d6cfbf99636db52c4d2",
+          "/tmp/wave6-solid-native-c/6.7-dark-320-critical-7.png": "62758c3a7740dabb8c3233b211d31f4a379c473af842e1adddb603f82b8bd829"
+        }
+      },
+      {
+        "label": "6.3-light-1200",
+        "lesson": 3,
+        "theme": "light",
+        "width": 1200,
+        "log": "/tmp/wave6-solid-research/native-d.log",
+        "folder": "/tmp/wave6-solid-native-d",
+        "actions": 27,
+        "replays": 12,
+        "checks": 50,
+        "modelChecks": 300,
+        "criticalCases": 6,
+        "screenshots": {
+          "/tmp/wave6-solid-native-d/6.3-light-1200-default.png": "2403cd523a651f32af5802cbd802b7ad71b297b547600a26bd7a8eef4c23a2a7"
+        }
+      },
+      {
+        "label": "6.3-light-320",
+        "lesson": 3,
+        "theme": "light",
+        "width": 320,
+        "log": "/tmp/wave6-solid-research/native-d.log",
+        "folder": "/tmp/wave6-solid-native-d",
+        "actions": 27,
+        "replays": 12,
+        "checks": 56,
+        "modelChecks": 336,
+        "criticalCases": 6,
+        "screenshots": {
+          "/tmp/wave6-solid-native-d/6.3-light-320-default.png": "7084c24271439e4f729822d56052b2d54be1115938b1b97ec41ff4b4a3ff0981",
+          "/tmp/wave6-solid-native-d/6.3-light-320-critical-0.png": "a4af0d7297d71eb918e692dfe3201f870ff4904a8de23b217ae4a25f8222d8e5",
+          "/tmp/wave6-solid-native-d/6.3-light-320-critical-1.png": "eb56a6b6304de74a2437388dc1a2b46d322bdc5f32ec97438520f0cd2898977d",
+          "/tmp/wave6-solid-native-d/6.3-light-320-critical-2.png": "282e84ced52a7752d2ac62bd126f30887d1e3c7c58fb01d665507ceeac9a064e",
+          "/tmp/wave6-solid-native-d/6.3-light-320-critical-3.png": "b339aa36798e028658b47834d8020899e44865dd37712613f91e20f35a9e560d",
+          "/tmp/wave6-solid-native-d/6.3-light-320-critical-4.png": "591bd763d7ea85a9a01ada4fb95494e91a0d195120a0bdcd30f727620c4bcaed",
+          "/tmp/wave6-solid-native-d/6.3-light-320-critical-5.png": "6e48da3d7db912dc1f77e897a5ffac1ecc69853c10d595d0449305bba1703e17"
+        }
+      },
+      {
+        "label": "6.3-dark-1200",
+        "lesson": 3,
+        "theme": "dark",
+        "width": 1200,
+        "log": "/tmp/wave6-solid-research/native-d.log",
+        "folder": "/tmp/wave6-solid-native-d",
+        "actions": 27,
+        "replays": 12,
+        "checks": 50,
+        "modelChecks": 300,
+        "criticalCases": 6,
+        "screenshots": {
+          "/tmp/wave6-solid-native-d/6.3-dark-1200-default.png": "1f242e89892a7e351bbae6db4d9c4b5ab839090fe0de3a1b9d02ee139cede691"
+        }
+      },
+      {
+        "label": "6.3-dark-320",
+        "lesson": 3,
+        "theme": "dark",
+        "width": 320,
+        "log": "/tmp/wave6-solid-research/native-d.log",
+        "folder": "/tmp/wave6-solid-native-d",
+        "actions": 27,
+        "replays": 12,
+        "checks": 56,
+        "modelChecks": 336,
+        "criticalCases": 6,
+        "screenshots": {
+          "/tmp/wave6-solid-native-d/6.3-dark-320-default.png": "c27db8b88fb0dc4ae80ddd0faad4a995331c8369027519245b08e9afb97e0f15",
+          "/tmp/wave6-solid-native-d/6.3-dark-320-critical-0.png": "6bb6bb24a3a02c48c9715bc04c00fdd5351ba48d651180f5613a57c0ca6974c2",
+          "/tmp/wave6-solid-native-d/6.3-dark-320-critical-1.png": "2de907c779df7c65f989ca8ea8fd2d4cde42d400314577ee94692cf2ebf90606",
+          "/tmp/wave6-solid-native-d/6.3-dark-320-critical-2.png": "765a8f46c6cb8f96ccddac9de0c6f14790bf93fd850c0d92e0438afd56016ad4",
+          "/tmp/wave6-solid-native-d/6.3-dark-320-critical-3.png": "365f6122a6ef6e102c869c1748c3f9b8973592117530a00c586f29a81083d64d",
+          "/tmp/wave6-solid-native-d/6.3-dark-320-critical-4.png": "a5a4a5bba1cbf0742a2967ffb140635ed3ac6679fadf56f6342d2f3b1004bc3e",
+          "/tmp/wave6-solid-native-d/6.3-dark-320-critical-5.png": "1b8b0f278a4d5bdd20c75dd5430bdd18e1e23fba6bc4de3eb9f862bf8388bea2"
+        }
+      },
+      {
+        "label": "6.9-light-1200",
+        "lesson": 9,
+        "theme": "light",
+        "width": 1200,
+        "log": "/tmp/wave6-solid-research/native-d.log",
+        "folder": "/tmp/wave6-solid-native-d",
+        "actions": 41,
+        "replays": 19,
+        "checks": 78,
+        "modelChecks": 546,
+        "criticalCases": 7,
+        "screenshots": {
+          "/tmp/wave6-solid-native-d/6.9-light-1200-default.png": "43a095192d322cca51520ace1e0b3c0b7085710a8187db75062ab877a7969eac"
+        }
+      },
+      {
+        "label": "6.9-light-320",
+        "lesson": 9,
+        "theme": "light",
+        "width": 320,
+        "log": "/tmp/wave6-solid-research/native-d.log",
+        "folder": "/tmp/wave6-solid-native-d",
+        "actions": 41,
+        "replays": 19,
+        "checks": 85,
+        "modelChecks": 595,
+        "criticalCases": 7,
+        "screenshots": {
+          "/tmp/wave6-solid-native-d/6.9-light-320-default.png": "2bd9a454e2d94288bd1db5fc2e4a489bac1ccd6ef3bd7cede5e96c07d4f2e905",
+          "/tmp/wave6-solid-native-d/6.9-light-320-critical-0.png": "58b8d6ed5c12684d0f7de467ddcc79bf6ebd2324acc3fe1802af2efcc95012a3",
+          "/tmp/wave6-solid-native-d/6.9-light-320-critical-1.png": "a7d3a962b88003cbaeae9863dec4a6fa88a80120ea4cde5eaa2b049ffbe85dbf",
+          "/tmp/wave6-solid-native-d/6.9-light-320-critical-2.png": "d2617829412c7f2aa9ce21f61cd3ab36520c5b8ac44056b9331a2e74bb58e359",
+          "/tmp/wave6-solid-native-d/6.9-light-320-critical-3.png": "47d39dc155dbf93de1ca2d6d708d5c9f73e38d8ecda03126205afd636fde8560",
+          "/tmp/wave6-solid-native-d/6.9-light-320-critical-4.png": "defa8800da3aa2d41586feb761d89e3ed078e865b88a0fc3e980971b725c2754",
+          "/tmp/wave6-solid-native-d/6.9-light-320-critical-5.png": "fbe77a5a21d13ea03ff60c53eb1079b70dfe30655b98054134bebe77c1177b40",
+          "/tmp/wave6-solid-native-d/6.9-light-320-critical-6.png": "370d1cb91dedc4b4a2c943cb50e3898f69ec41346951a3997fddb310a89f508a"
+        }
+      },
+      {
+        "label": "6.9-dark-1200",
+        "lesson": 9,
+        "theme": "dark",
+        "width": 1200,
+        "log": "/tmp/wave6-solid-research/native-d.log",
+        "folder": "/tmp/wave6-solid-native-d",
+        "actions": 41,
+        "replays": 19,
+        "checks": 78,
+        "modelChecks": 546,
+        "criticalCases": 7,
+        "screenshots": {
+          "/tmp/wave6-solid-native-d/6.9-dark-1200-default.png": "9c035187c18229a413728609e05fddfebb7fdb86ae03135198879836ddfdc151"
+        }
+      },
+      {
+        "label": "6.9-dark-320",
+        "lesson": 9,
+        "theme": "dark",
+        "width": 320,
+        "log": "/tmp/wave6-solid-research/native-d.log",
+        "folder": "/tmp/wave6-solid-native-d",
+        "actions": 41,
+        "replays": 19,
+        "checks": 85,
+        "modelChecks": 595,
+        "criticalCases": 7,
+        "screenshots": {
+          "/tmp/wave6-solid-native-d/6.9-dark-320-default.png": "ededff24712504691fca9ff7c0bed160ef50e406c529199599647aaffc4d9a7b",
+          "/tmp/wave6-solid-native-d/6.9-dark-320-critical-0.png": "eb22daa2a98b256bfa8d9f12062ff9b9c50cd33594d48891689e7825ad7ddeaf",
+          "/tmp/wave6-solid-native-d/6.9-dark-320-critical-1.png": "7920b98dae82e14d40ba13807bcbf37acbc7cabf5edd8ceb0a4c6d805a40551a",
+          "/tmp/wave6-solid-native-d/6.9-dark-320-critical-2.png": "1624e82734185edd42ed1bc1d73d0c11cc3c68b0aa271f010e9ba65b1df1dbd8",
+          "/tmp/wave6-solid-native-d/6.9-dark-320-critical-3.png": "35c383667cb50eddbc144f5db194c617db0740c54b55a89a4b137ee394fb02d4",
+          "/tmp/wave6-solid-native-d/6.9-dark-320-critical-4.png": "25a92a275f34ad1f595893c7c133508232878ee16c624a8d971ba9c24cbeeed6",
+          "/tmp/wave6-solid-native-d/6.9-dark-320-critical-5.png": "3d268893c0c278e243461e0bfbd10d59c6721317a5a3af38d3e4f89e2694ddfd",
+          "/tmp/wave6-solid-native-d/6.9-dark-320-critical-6.png": "8222fafb7ba432aef83c9914908f7484271d5f7560f7772bfc106f6ec9c1963a"
+        }
+      },
+      {
+        "label": "6.10-light-1200",
+        "lesson": 10,
+        "theme": "light",
+        "width": 1200,
+        "log": "/tmp/wave6-solid-research/native-e.log",
+        "folder": "/tmp/wave6-solid-native-e",
+        "actions": 42,
+        "replays": 18,
+        "checks": 75,
+        "modelChecks": 675,
+        "criticalCases": 8,
+        "screenshots": {
+          "/tmp/wave6-solid-native-e/6.10-light-1200-default.png": "5691321c9f5a6e8225f4fccbe5cd8dced563bbc0b4214f3652b77c086deea785"
+        }
+      },
+      {
+        "label": "6.10-light-320",
+        "lesson": 10,
+        "theme": "light",
+        "width": 320,
+        "log": "/tmp/wave6-solid-research/native-e.log",
+        "folder": "/tmp/wave6-solid-native-e",
+        "actions": 42,
+        "replays": 18,
+        "checks": 83,
+        "modelChecks": 747,
+        "criticalCases": 8,
+        "screenshots": {
+          "/tmp/wave6-solid-native-e/6.10-light-320-default.png": "b98471384371dc1af5918a96ee782566f3a8139b786cec3e5b517f8af1dd5e52",
+          "/tmp/wave6-solid-native-e/6.10-light-320-critical-0.png": "c5a71c3ce5be49858b94220d8378682db05af0666d4694fb6d71a96d4756f3c4",
+          "/tmp/wave6-solid-native-e/6.10-light-320-critical-1.png": "7aba74a5eb5d9f5af95783c3c5234d7df36b52dee2a197289af4c3ed8dfb74b2",
+          "/tmp/wave6-solid-native-e/6.10-light-320-critical-2.png": "1d4d3f25c800a2f736d6f07cc3c99159bea490c5fcd4f493c68c6bbcf9e8d451",
+          "/tmp/wave6-solid-native-e/6.10-light-320-critical-3.png": "9d7a3a9362e9037d316d84bcd73e119a7ce5efc2cf7d31b6b2d34ab11d367c23",
+          "/tmp/wave6-solid-native-e/6.10-light-320-critical-4.png": "ab214b0185c1fdde2f63b001d3b7dcbce7782aaa9e9cfcc2ad50589f738ecf3a",
+          "/tmp/wave6-solid-native-e/6.10-light-320-critical-5.png": "78dea8e1f5c3acda3a044e111dd2eabe1d3d56c9af70fe155c009f7e93de71ce",
+          "/tmp/wave6-solid-native-e/6.10-light-320-critical-6.png": "d2353045f0680ff8dbdef7c08114336d8981e37a603b9214cf1f01cabd545817",
+          "/tmp/wave6-solid-native-e/6.10-light-320-critical-7.png": "5bfc292de501d6cbe52f9f5afebfd05860c65d75414cf53d6201d2085374f096"
+        }
+      },
+      {
+        "label": "6.10-dark-1200",
+        "lesson": 10,
+        "theme": "dark",
+        "width": 1200,
+        "log": "/tmp/wave6-solid-research/native-e.log",
+        "folder": "/tmp/wave6-solid-native-e",
+        "actions": 42,
+        "replays": 18,
+        "checks": 75,
+        "modelChecks": 675,
+        "criticalCases": 8,
+        "screenshots": {
+          "/tmp/wave6-solid-native-e/6.10-dark-1200-default.png": "be643add7a467cce8cbeebca39842ed3f74c296e34c59ba54304c1204aa907bc"
+        }
+      },
+      {
+        "label": "6.10-dark-320",
+        "lesson": 10,
+        "theme": "dark",
+        "width": 320,
+        "log": "/tmp/wave6-solid-research/native-e.log",
+        "folder": "/tmp/wave6-solid-native-e",
+        "actions": 42,
+        "replays": 18,
+        "checks": 83,
+        "modelChecks": 747,
+        "criticalCases": 8,
+        "screenshots": {
+          "/tmp/wave6-solid-native-e/6.10-dark-320-default.png": "bc4106f0d1d26668e7b60a89df1dae82aab0a4da6ee0d01c5fd2908647d6d43f",
+          "/tmp/wave6-solid-native-e/6.10-dark-320-critical-0.png": "bd97baf9087bd551b5d7190dbcaad632a51423f5c668e4bae4d41e187397f790",
+          "/tmp/wave6-solid-native-e/6.10-dark-320-critical-1.png": "db1b92710a1a4963a20448ecaff757ee12986ff216b94669130a8340bd6ee62d",
+          "/tmp/wave6-solid-native-e/6.10-dark-320-critical-2.png": "aff11d7e1ef3a6a333b7784331e6523bd38a0933406ad29bb31a9b2c2cf028ae",
+          "/tmp/wave6-solid-native-e/6.10-dark-320-critical-3.png": "c6c3f75c5e3cc732bb49af9a999a582d4e0dc3cb07cc3044b380cabdeadb0054",
+          "/tmp/wave6-solid-native-e/6.10-dark-320-critical-4.png": "e91413272d7b122b620eeccb6654849f7bdec44cca188e477cfb453ef96b33a9",
+          "/tmp/wave6-solid-native-e/6.10-dark-320-critical-5.png": "363c2709124bf356cb580a65a8b6431f43b4accd888b75903271441c2608e337",
+          "/tmp/wave6-solid-native-e/6.10-dark-320-critical-6.png": "d440a97d5777f422f603e2f9cdd0ac516d95352e0d18e0de3e67ca948c1f4070",
+          "/tmp/wave6-solid-native-e/6.10-dark-320-critical-7.png": "362c6622ede7f185c3dab99334a005fecd4d0b8bf06e40e06d26bfc8c1edbd3e"
+        }
+      },
+      {
+        "label": "6.11-light-1200",
+        "lesson": 11,
+        "theme": "light",
+        "width": 1200,
+        "log": "/tmp/wave6-solid-research/native-e.log",
+        "folder": "/tmp/wave6-solid-native-e",
+        "actions": 35,
+        "replays": 14,
+        "checks": 60,
+        "modelChecks": 900,
+        "criticalCases": 6,
+        "screenshots": {
+          "/tmp/wave6-solid-native-e/6.11-light-1200-default.png": "aa46a22f1b6711dadd146a76c8837e823fb4eb0dee4ed06d71dac0c737046e2c"
+        }
+      },
+      {
+        "label": "6.11-light-320",
+        "lesson": 11,
+        "theme": "light",
+        "width": 320,
+        "log": "/tmp/wave6-solid-research/native-e.log",
+        "folder": "/tmp/wave6-solid-native-e",
+        "actions": 35,
+        "replays": 14,
+        "checks": 66,
+        "modelChecks": 990,
+        "criticalCases": 6,
+        "screenshots": {
+          "/tmp/wave6-solid-native-e/6.11-light-320-default.png": "5c7e021adc0fb827649d06514826b83a42a26a1d186c385e3b753b655db269b8",
+          "/tmp/wave6-solid-native-e/6.11-light-320-critical-0.png": "3c3315f4c3a116c4ae45aaaaaca6c6a84c8e37e82cda4668153cbd6ce0b2697a",
+          "/tmp/wave6-solid-native-e/6.11-light-320-critical-1.png": "2c90cbedeec096ffff806c95b707209f73a38c98694eb796761ebf0c3f075045",
+          "/tmp/wave6-solid-native-e/6.11-light-320-critical-2.png": "9bded638b3f55cdbfa912cffb9d6895c20d97e3bc62d3cb87bf902292b6180ee",
+          "/tmp/wave6-solid-native-e/6.11-light-320-critical-3.png": "374b8cd078fda5afa8cf0be32f788f013dd1336f3f3861393c325bed4ee3e2f8",
+          "/tmp/wave6-solid-native-e/6.11-light-320-critical-4.png": "b01017ee64cd2da59b18afad0ed5248c731418db317cb1a33b66d85a4ab70ffe",
+          "/tmp/wave6-solid-native-e/6.11-light-320-critical-5.png": "75fa3f08e5a84a805a98b0dc2bdf8b3aff0ce34e616521b389fe79569b9e71d1"
+        }
+      },
+      {
+        "label": "6.11-dark-1200",
+        "lesson": 11,
+        "theme": "dark",
+        "width": 1200,
+        "log": "/tmp/wave6-solid-research/native-e.log",
+        "folder": "/tmp/wave6-solid-native-e",
+        "actions": 35,
+        "replays": 14,
+        "checks": 60,
+        "modelChecks": 900,
+        "criticalCases": 6,
+        "screenshots": {
+          "/tmp/wave6-solid-native-e/6.11-dark-1200-default.png": "891ccb5a206c2f30fe9361f51d94cd20630a5837e95d1628635782713c004177"
+        }
+      },
+      {
+        "label": "6.11-dark-320",
+        "lesson": 11,
+        "theme": "dark",
+        "width": 320,
+        "log": "/tmp/wave6-solid-research/native-e.log",
+        "folder": "/tmp/wave6-solid-native-e",
+        "actions": 35,
+        "replays": 14,
+        "checks": 66,
+        "modelChecks": 990,
+        "criticalCases": 6,
+        "screenshots": {
+          "/tmp/wave6-solid-native-e/6.11-dark-320-default.png": "1e869ab8c1754b03299f905e648de60f80d2591db8b258db1ebd1b59c0509e73",
+          "/tmp/wave6-solid-native-e/6.11-dark-320-critical-0.png": "97a5d4f47707deffde7d87e24e5447b6b6eae52c0b51a9e9001a82daf2e821cc",
+          "/tmp/wave6-solid-native-e/6.11-dark-320-critical-1.png": "8ac24d7cf4e3792bb00cbbdc54c3ae6c713926c4414fd926317324912fc81056",
+          "/tmp/wave6-solid-native-e/6.11-dark-320-critical-2.png": "582ff8d24f1ab4c130873c75dc867d39785d67c45e6eca5cd6dfe848d2a76855",
+          "/tmp/wave6-solid-native-e/6.11-dark-320-critical-3.png": "4b856ad76fd261476e669fb2c8637fd802db4b31daea055e8749a8e68d7205db",
+          "/tmp/wave6-solid-native-e/6.11-dark-320-critical-4.png": "91847639b0605f793e0a5cb82a12f004ab7e8982e5bd03336c511701a6676781",
+          "/tmp/wave6-solid-native-e/6.11-dark-320-critical-5.png": "8b2bd93e8ab9bcd4facc857374c73a72053c3b81049426f6e3adb3a426c0f315"
+        }
+      },
+      {
+        "label": "6.12-light-1200",
+        "lesson": 12,
+        "theme": "light",
+        "width": 1200,
+        "log": "/tmp/wave6-solid-research/native-e.log",
+        "folder": "/tmp/wave6-solid-native-e",
+        "actions": 53,
+        "replays": 23,
+        "checks": 96,
+        "modelChecks": 1006,
+        "criticalCases": 9,
+        "screenshots": {
+          "/tmp/wave6-solid-native-e/6.12-light-1200-default.png": "5908567b0d69e5245da4f850ebba06f5ac21caed56f5cb3f3753c711ec3b05e0"
+        }
+      },
+      {
+        "label": "6.12-light-320",
+        "lesson": 12,
+        "theme": "light",
+        "width": 320,
+        "log": "/tmp/wave6-solid-research/native-e.log",
+        "folder": "/tmp/wave6-solid-native-e",
+        "actions": 53,
+        "replays": 23,
+        "checks": 105,
+        "modelChecks": 1144,
+        "criticalCases": 9,
+        "screenshots": {
+          "/tmp/wave6-solid-native-e/6.12-light-320-default.png": "fae058dc4de8ee347fd0300f6b361abb819c17763a8d73bfdb0b28f77f5a3666",
+          "/tmp/wave6-solid-native-e/6.12-light-320-critical-0.png": "28e61a45c4c55c8f9cdc2b7452c0d45b427cefda278d66b0976050ec2961fa76",
+          "/tmp/wave6-solid-native-e/6.12-light-320-critical-1.png": "ead0b4965bb94de3e59d5da74f19d046b90895a0e82e82cd92b1e52221b849c8",
+          "/tmp/wave6-solid-native-e/6.12-light-320-critical-2.png": "becf6da69eed9bc2f00987345c8d97780b99f78582685cffdeaa613adc687fa8",
+          "/tmp/wave6-solid-native-e/6.12-light-320-critical-3.png": "54da97ed1e3c6d53238121bfbfbb479c227f266ff66d54ba7269b7c0d03a0ddf",
+          "/tmp/wave6-solid-native-e/6.12-light-320-critical-4.png": "6397c3665d384f4c2a196e72e36b0bd67b7dee1edadc7e7ba4963ad2a4030a24",
+          "/tmp/wave6-solid-native-e/6.12-light-320-critical-5.png": "a2f989c2d37a81819877087520a14086b42c79a7666536885324f279311cee25",
+          "/tmp/wave6-solid-native-e/6.12-light-320-critical-6.png": "009be4bcd054981955dd204ecf638a6af6b264120802d2efb25b37f7db993607",
+          "/tmp/wave6-solid-native-e/6.12-light-320-critical-7.png": "115d47ed619094b57d0fb93da0ddb680b571175828475365793e1b0757483826",
+          "/tmp/wave6-solid-native-e/6.12-light-320-critical-8.png": "0404ed7873b9c821e6caca87845b9d8cec1ba9d4b518e7dbef1c966bbbfdc59a"
+        }
+      },
+      {
+        "label": "6.12-dark-1200",
+        "lesson": 12,
+        "theme": "dark",
+        "width": 1200,
+        "log": "/tmp/wave6-solid-research/native-e.log",
+        "folder": "/tmp/wave6-solid-native-e",
+        "actions": 53,
+        "replays": 23,
+        "checks": 96,
+        "modelChecks": 1006,
+        "criticalCases": 9,
+        "screenshots": {
+          "/tmp/wave6-solid-native-e/6.12-dark-1200-default.png": "0eaab5cfd71711196e41e475aaaa8321ffcd3a5872faf1205349819aba8bd240"
+        }
+      },
+      {
+        "label": "6.12-dark-320",
+        "lesson": 12,
+        "theme": "dark",
+        "width": 320,
+        "log": "/tmp/wave6-solid-research/native-e.log",
+        "folder": "/tmp/wave6-solid-native-e",
+        "actions": 53,
+        "replays": 23,
+        "checks": 105,
+        "modelChecks": 1144,
+        "criticalCases": 9,
+        "screenshots": {
+          "/tmp/wave6-solid-native-e/6.12-dark-320-default.png": "270ee20d2e5399873f815c25a32839227b47cdb9938af266e44ea7753ece66a5",
+          "/tmp/wave6-solid-native-e/6.12-dark-320-critical-0.png": "e4b850f04a7ec055b110dd34be311eb9337827c133eec420fd5ba2c86ce67fed",
+          "/tmp/wave6-solid-native-e/6.12-dark-320-critical-1.png": "c28fc7e8b04ba8dbbefc0a7b05e920f03786c6325b1c2209c4aeba6165479a3a",
+          "/tmp/wave6-solid-native-e/6.12-dark-320-critical-2.png": "5c0746ef2da5abf5d82a8f390e3d316bab83f916da082c39b2b79bdbb1b2ef08",
+          "/tmp/wave6-solid-native-e/6.12-dark-320-critical-3.png": "6b601a441559b198f209e763ed29159f27f1fedb8423a56b6802ce46d5a1b58d",
+          "/tmp/wave6-solid-native-e/6.12-dark-320-critical-4.png": "4ebb8d64fb2edf61709db8cc72a9fb92694735069348d4af524f411681a1a00d",
+          "/tmp/wave6-solid-native-e/6.12-dark-320-critical-5.png": "e83397011ce5e564be58bb3adb0d75231572bc1e01cfa294d684b154ac7a115e",
+          "/tmp/wave6-solid-native-e/6.12-dark-320-critical-6.png": "f7bd8f450e3d983878fa7d95acb5f633ae15592f44879ecd4275e9bff3cd423a",
+          "/tmp/wave6-solid-native-e/6.12-dark-320-critical-7.png": "e8132dc51d09f295ebb060199683eb6fbcd2517b8bae1ee697d19bdb8ebe4b08",
+          "/tmp/wave6-solid-native-e/6.12-dark-320-critical-8.png": "c87c69ffee3adc351ffca4f5490f7fc59b2ceb779753ae5e63b547645ea8068e"
+        }
+      },
+      {
+        "label": "6.4-light-1200",
+        "lesson": 4,
+        "theme": "light",
+        "width": 1200,
+        "log": "/tmp/wave6-solid-research/native-a2.log",
+        "folder": "/tmp/wave6-solid-native-a2",
+        "actions": 27,
+        "replays": 12,
+        "checks": 50,
+        "modelChecks": 450,
+        "criticalCases": 6,
+        "screenshots": {
+          "/tmp/wave6-solid-native-a2/6.4-light-1200-default.png": "7316dab0111adbe556a919f3c43e4cee841dd7d689ad0ec9b1d8a0985210e835"
+        }
+      },
+      {
+        "label": "6.4-light-320",
+        "lesson": 4,
+        "theme": "light",
+        "width": 320,
+        "log": "/tmp/wave6-solid-research/native-a2.log",
+        "folder": "/tmp/wave6-solid-native-a2",
+        "actions": 27,
+        "replays": 12,
+        "checks": 56,
+        "modelChecks": 504,
+        "criticalCases": 6,
+        "screenshots": {
+          "/tmp/wave6-solid-native-a2/6.4-light-320-default.png": "70643608a61b5e3e63f3595e40b81788f536e917400eefed09b003ead5af6330",
+          "/tmp/wave6-solid-native-a2/6.4-light-320-critical-0.png": "556f13d3f6a7b99ab9f55b7d96199606ebb9359a6f446c53f490a37c077f8b42",
+          "/tmp/wave6-solid-native-a2/6.4-light-320-critical-1.png": "c6552846e99d1ff1e5c878c73a35922b1ab6ed3f224e81afeb3a5bbc4bedaa1b",
+          "/tmp/wave6-solid-native-a2/6.4-light-320-critical-2.png": "1eff27f4457e126fea142792fee0dfc535b948a72bb6180e89713efd78e57b72",
+          "/tmp/wave6-solid-native-a2/6.4-light-320-critical-3.png": "5ff964412ebb16d5eed837c59faa3e80f722886ecdd0ac38b5323ad32aac0ea4",
+          "/tmp/wave6-solid-native-a2/6.4-light-320-critical-4.png": "f29e42d80aa519d78d576c1d070e7e1227d29725734d5956fcf7726833efac02",
+          "/tmp/wave6-solid-native-a2/6.4-light-320-critical-5.png": "3be1d63aeaee838a14cb1fbc6ae7badbd04b0065215709677cb07fb6d2e3cea8"
+        }
+      },
+      {
+        "label": "6.4-dark-1200",
+        "lesson": 4,
+        "theme": "dark",
+        "width": 1200,
+        "log": "/tmp/wave6-solid-research/native-a2.log",
+        "folder": "/tmp/wave6-solid-native-a2",
+        "actions": 27,
+        "replays": 12,
+        "checks": 50,
+        "modelChecks": 450,
+        "criticalCases": 6,
+        "screenshots": {
+          "/tmp/wave6-solid-native-a2/6.4-dark-1200-default.png": "455ce5d759fc3425312772eb8d6078971149d17e6e69b2eb3824e0507436d4b2"
+        }
+      },
+      {
+        "label": "6.4-dark-320",
+        "lesson": 4,
+        "theme": "dark",
+        "width": 320,
+        "log": "/tmp/wave6-solid-research/native-a2.log",
+        "folder": "/tmp/wave6-solid-native-a2",
+        "actions": 27,
+        "replays": 12,
+        "checks": 56,
+        "modelChecks": 504,
+        "criticalCases": 6,
+        "screenshots": {
+          "/tmp/wave6-solid-native-a2/6.4-dark-320-default.png": "e783b4081218fa2ec6e88e502923afe4f668f4175f558a1ac4ef6902a787283d",
+          "/tmp/wave6-solid-native-a2/6.4-dark-320-critical-0.png": "245a9a84866ef0cd582b4d34ab6fd610d85c9d963a5c50998bcc5207c243b090",
+          "/tmp/wave6-solid-native-a2/6.4-dark-320-critical-1.png": "daf41e15e966636ab0470f235e78b7ceafe619eef9b0c66979f1888c4aa7e9f8",
+          "/tmp/wave6-solid-native-a2/6.4-dark-320-critical-2.png": "8a86764c51c07b4548595b44a0cd5f2b27eef9c65dbec6867edc1f389ea88c67",
+          "/tmp/wave6-solid-native-a2/6.4-dark-320-critical-3.png": "96d5f485bece3f841bf3a740a564dc7eb70d9e3638919b9d26890397583e7686",
+          "/tmp/wave6-solid-native-a2/6.4-dark-320-critical-4.png": "53852d3fb73decbb2694044877f3cc3100df9f7bb4a6a70097329ec4d235472d",
+          "/tmp/wave6-solid-native-a2/6.4-dark-320-critical-5.png": "043f5149c9126da0a281b19b55a4a1f9e5baf46c8d45e8c440c4b86e8984e68b"
+        }
+      },
+      {
+        "label": "6.8-light-1200",
+        "lesson": 8,
+        "theme": "light",
+        "width": 1200,
+        "log": "/tmp/wave6-solid-research/native-b.log",
+        "folder": "/tmp/wave6-solid-native-b",
+        "actions": 32,
+        "replays": 14,
+        "checks": 59,
+        "modelChecks": 472,
+        "criticalCases": 6,
+        "screenshots": {
+          "/tmp/wave6-solid-native-b/6.8-light-1200-default.png": "69e8bf60056804bb1de399ef6efea29e3b7b0320506928e088cf55c6c50fccfd"
+        }
+      },
+      {
+        "label": "6.8-light-320",
+        "lesson": 8,
+        "theme": "light",
+        "width": 320,
+        "log": "/tmp/wave6-solid-research/native-b.log",
+        "folder": "/tmp/wave6-solid-native-b",
+        "actions": 32,
+        "replays": 14,
+        "checks": 65,
+        "modelChecks": 520,
+        "criticalCases": 6,
+        "screenshots": {
+          "/tmp/wave6-solid-native-b/6.8-light-320-default.png": "baa2a112d065d112b690b0606d0ac0856c78fd84890c1b0962ba2a1cd2fab821",
+          "/tmp/wave6-solid-native-b/6.8-light-320-critical-0.png": "52974162fee17e663c743fca2a49d081d75c8a57e352a1d52ff4bea207bd9adf",
+          "/tmp/wave6-solid-native-b/6.8-light-320-critical-1.png": "74f60109e480d33f387273b53e33969e42850364af15ebc1d925c952bb790af1",
+          "/tmp/wave6-solid-native-b/6.8-light-320-critical-2.png": "b3d638ba73aa99e944af1c8ce719cc3f9ef7855954734b6937aee4f345d81c3b",
+          "/tmp/wave6-solid-native-b/6.8-light-320-critical-3.png": "38041440c7773cc3bc4f9213e3257a4057acbd40aa654526a08b74482f2e3214",
+          "/tmp/wave6-solid-native-b/6.8-light-320-critical-4.png": "aa99bc565acf70f0ef79e42bbac0ea21ae1a73877a4b30de0eda3d7a7be2e72a",
+          "/tmp/wave6-solid-native-b/6.8-light-320-critical-5.png": "42f590ff80f05d37062adcaf307c3cf96acd9b11ceda8a83a6a7fd66791e47df"
+        }
+      },
+      {
+        "label": "6.8-dark-1200",
+        "lesson": 8,
+        "theme": "dark",
+        "width": 1200,
+        "log": "/tmp/wave6-solid-research/native-b.log",
+        "folder": "/tmp/wave6-solid-native-b",
+        "actions": 32,
+        "replays": 14,
+        "checks": 59,
+        "modelChecks": 472,
+        "criticalCases": 6,
+        "screenshots": {
+          "/tmp/wave6-solid-native-b/6.8-dark-1200-default.png": "0e01917ed9a0565d56861effc6987a436279a493fe89eb22ec6d1068a9c6a285"
+        }
+      },
+      {
+        "label": "6.8-dark-320",
+        "lesson": 8,
+        "theme": "dark",
+        "width": 320,
+        "log": "/tmp/wave6-solid-research/native-b.log",
+        "folder": "/tmp/wave6-solid-native-b",
+        "actions": 32,
+        "replays": 14,
+        "checks": 65,
+        "modelChecks": 520,
+        "criticalCases": 6,
+        "screenshots": {
+          "/tmp/wave6-solid-native-b/6.8-dark-320-default.png": "9656383d7ec49cb6012907f60c8f378d9e2f1a466d5cf289b4eb3b52173a1f30",
+          "/tmp/wave6-solid-native-b/6.8-dark-320-critical-0.png": "5011d28c2be5e609c665268542cbdcc2b18e5479a96cd54c87eb53b3155383be",
+          "/tmp/wave6-solid-native-b/6.8-dark-320-critical-1.png": "960bf18bf6322042b66c0f7eed86342fa3407ace36f232d329021128117bef54",
+          "/tmp/wave6-solid-native-b/6.8-dark-320-critical-2.png": "18c8dd032a7a131c700fe891169bb79684c83564697cb2a2c41033399ada190f",
+          "/tmp/wave6-solid-native-b/6.8-dark-320-critical-3.png": "8f7eb908ec122a9043e825d3426cb845db71b0d9c9168e19e252d3836164c8f5",
+          "/tmp/wave6-solid-native-b/6.8-dark-320-critical-4.png": "02c1a2464426e146de1c9dcc74dbb6afc6e70699851cc03cff788130afb2ad73",
+          "/tmp/wave6-solid-native-b/6.8-dark-320-critical-5.png": "9b0806f7ea7dc232f22ad263550bd5d6bed9e5a5c4112ad004708c0846125755"
+        }
+      }
+    ],
+    "files": {
+      "content/solid/ch06.js": "df242b80af08feae7bb5bfca6cfaf3585ef538c3e81861dba16481969786b966",
+      "content/solid/ch06.viz.js": "f06f65bb46fba8c25ba0236dee26b9766d3e5b4552e54bffd0003280811f5959",
+      "content/solid/ch06.shared.js": "610f0767481d1a05ab7f363d044b6a6ace15142283b78ac091a0f974f40d89d4",
+      "content/solid/ch06.exact.shared.js": "a102a6f2b0fa92e8d6a4ec07b550ca580dd4e43d5c565f55c69dc5744f26e28c",
+      "content/solid/syllabus.js": "95b8c5cfb97a3625ce54041a4d9115378e3e22c84bcfd6df00b9a66ca9473c61",
+      "tests/wave6-solid.test.mjs": "e6e7eade43aa0e836e43c1556f58c6128594182f89ea05d37bc5d97c3b8ac474",
+      "tests/wave6-solid-browser.mjs": "d95625df6af454a33b099f530dd03c2fbbe5884f4318c0814a810c0650e222d5",
+      "tests/wave6-solid-reference.py": "de21523ac9df72503a6793502315d2ef343e73b68ca9089a70693ccef0f3b419",
+      "tests/fixtures/wave6-solid-reference.json": "695a685905fc28be34609a3a3d6c8fdbcd4fe91632089c421b9378ecb33bcace"
+    },
+    "scope": "Only final successful unique layouts: c1/2/5/6/7,d3/9,e10/11/12,a2-4,b8. Earlier superseded rows and failures excluded."
+  },
+  "final48LayoutRichInkAudit": {
+    "auditPasses": 48,
+    "auditFailures": 0,
+    "auditCriticalStates": 0
+  },
+  "personal": {
+    "completeDefaultWidgets": 48,
+    "completeNarrowCriticalPlotRegions": 170,
+    "selectedCompleteCriticalReadouts": 72,
+    "completeNarrowRichFields": 96,
+    "widgetGallerySheets": 105,
+    "originalRichSheetsPersonallyViewed": 24,
+    "finalReferenceSheetsPersonallyViewed": 6,
+    "personallyInspectedExactGalleryArtifacts": 135,
+    "nativeCSSPixels": true,
+    "resampling": false,
+    "tallPartOverlapPixels": 40,
+    "cropQualification": "Critical plot regions exclude controls/readouts;72 selected complete readouts supplement them. Default widgets are complete. Statement captures include scope. All source field images are complete."
+  },
+  "sourceLabelPolish": {
+    "allTwelveNonLinkFieldsExact": true,
+    "allHrefsExact": true,
+    "rows": [
+      {
+        "num": "6.1",
+        "nonLinkFieldsExact": true,
+        "hrefsExact": true,
+        "labels": [
+          "Beam statics notes"
+        ]
+      },
+      {
+        "num": "6.2",
+        "nonLinkFieldsExact": true,
+        "hrefsExact": true,
+        "labels": [
+          "Beam statics notes"
+        ]
+      },
+      {
+        "num": "6.3",
+        "nonLinkFieldsExact": true,
+        "hrefsExact": true,
+        "labels": [
+          "Beam stress notes"
+        ]
+      },
+      {
+        "num": "6.4",
+        "nonLinkFieldsExact": true,
+        "hrefsExact": true,
+        "labels": [
+          "Beam stress notes"
+        ]
+      },
+      {
+        "num": "6.5",
+        "nonLinkFieldsExact": true,
+        "hrefsExact": true,
+        "labels": [
+          "Beam stress notes"
+        ]
+      },
+      {
+        "num": "6.6",
+        "nonLinkFieldsExact": true,
+        "hrefsExact": true,
+        "labels": [
+          "Beam stress notes"
+        ]
+      },
+      {
+        "num": "6.7",
+        "nonLinkFieldsExact": true,
+        "hrefsExact": true,
+        "labels": [
+          "Beam stress notes"
+        ]
+      },
+      {
+        "num": "6.8",
+        "nonLinkFieldsExact": true,
+        "hrefsExact": true,
+        "labels": [
+          "Beam stress notes"
+        ]
+      },
+      {
+        "num": "6.9",
+        "nonLinkFieldsExact": true,
+        "hrefsExact": true,
+        "labels": [
+          "Thin-wall beam notes"
+        ]
+      },
+      {
+        "num": "6.10",
+        "nonLinkFieldsExact": true,
+        "hrefsExact": true,
+        "labels": [
+          "Beam stress notes"
+        ]
+      },
+      {
+        "num": "6.11",
+        "nonLinkFieldsExact": true,
+        "hrefsExact": true,
+        "labels": [
+          "General beam notes"
+        ]
+      },
+      {
+        "num": "6.12",
+        "nonLinkFieldsExact": true,
+        "hrefsExact": true,
+        "labels": []
+      }
+    ]
+  },
+  "priorManifestFiles": 149,
+  "priorMismatches": [],
+  "retainedFailuresAndRepairs": [
+    "Initial generic geometry audit recorded the renderer’s intentionally clipped far hline/vline endpoints; chapter-local bounded guide helpers made the geometry directly inspectable. No shared renderer was changed.",
+    "Initial narrow layouts overflowed equations1/2/3/5/10/12; expressions were split into coherent steps. Lesson2 required a second split of the load/atom balance.",
+    "Initial equal-area panel squeezed three labelled shapes into one narrow picture; three separate common-scale shape panels plus one quantitative graph replaced it.",
+    "Unchanged rectangle handle restoration selected the last rectangle; the drag callback now changes the edit selection only when coordinates actually change.",
+    "The native DOM echo serialized a handle-produced100.00000333525446 as100.000003335254. Its check now permits32EPS for the browser echo; raw runtime values, Share parts and readouts still compare exactly. This was a harness precision bound, not a model repair.",
+    "Personal review found tiny beam-load header collisions, coincident endpoint label overlap, an endpoint guide crossing the atom header, and a straight-reference label crossing the negative-curvature beam. Reserved labels and combined endpoint notation repair them.",
+    "Channel flow arrows were too small, and S/C labels touched on tall sections. One larger shared arrow scale, outward label offsets and a padded load annotation repair these cases; a glyph separation guard is included.",
+    "Tip-plot labels crossed the displacement vectors. Their explanation moved to the legend. Angle dimensions moved to a wrapping stage title to clear principal/neutral axes.",
+    "Actual/transformed composite views had a small vertical display mismatch from independent aspect fitting. They now share the exact vertical view and pixel scale, checked for every native state.",
+    "Plastic-limit raster sampling painted a thin false elastic stripe at the zero-measure neutral fibre. The limiting section now has uniform yielded fill, with an explicit raster-probe guard; finite states retain their elastic core. The rounded elastic-area annotation uses an approximation sign.",
+    "Rectangle shear readouts carried irrelevant flange/web limits; the text is now section-specific. Ambiguous bolt dots were removed from the physical section while the separate schematic bay retains chosen row count.",
+    "Final source-link labels were made readable. All12 non-link lesson fields/functions and every href stayed exact; all48 native default widget PNGs and72 non-reference narrow field PNGs remained byte-identical. Final24 reference fields were recaptured and personally viewed."
+  ],
+  "sourceStops": "IGNOU Unit16 PDF503 and every inherited body/figure stop remain binding; no recovery attempted. Precise scopes in source ledger.",
+  "allOwnedBrowsersAndServersClosed": true,
+  "readingIntegration": "ENERGY6+SOLID6 batch pending; current integrated roster8497/76aliases"
+}

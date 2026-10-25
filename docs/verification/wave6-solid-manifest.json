@@ -1,0 +1,20 @@
+{
+  "baseCommit": "2f35c96a",
+  "status": "author-verified; no independent acceptance/release/deploy promotion",
+  "sha256": {
+    "content/solid/ch06.js": "df242b80af08feae7bb5bfca6cfaf3585ef538c3e81861dba16481969786b966",
+    "content/solid/ch06.viz.js": "f06f65bb46fba8c25ba0236dee26b9766d3e5b4552e54bffd0003280811f5959",
+    "content/solid/ch06.shared.js": "610f0767481d1a05ab7f363d044b6a6ace15142283b78ac091a0f974f40d89d4",
+    "content/solid/ch06.exact.shared.js": "a102a6f2b0fa92e8d6a4ec07b550ca580dd4e43d5c565f55c69dc5744f26e28c",
+    "content/solid/syllabus.js": "95b8c5cfb97a3625ce54041a4d9115378e3e22c84bcfd6df00b9a66ca9473c61",
+    "tests/wave6-solid.test.mjs": "e6e7eade43aa0e836e43c1556f58c6128594182f89ea05d37bc5d97c3b8ac474",
+    "tests/wave6-solid-browser.mjs": "d95625df6af454a33b099f530dd03c2fbbe5884f4318c0814a810c0650e222d5",
+    "tests/wave6-solid-reference.py": "de21523ac9df72503a6793502315d2ef343e73b68ca9089a70693ccef0f3b419",
+    "tests/fixtures/wave6-solid-reference.json": "695a685905fc28be34609a3a3d6c8fdbcd4fe91632089c421b9378ecb33bcace",
+    "docs/verification/wave6-solid-sources.json": "aa83851e6034b19f7eb09d624ec7cd694ca92d0406de52a655044249162b7a61",
+    "docs/verification/wave6-solid-model-receipt.json": "b5a48fb23ac13678ff2de25e1150954145b3abae30d9df55149cd0affbadc5d7",
+    "docs/verification/wave6-solid-gates.json": "eb53f78726605c31b8a8689f8eda0c0fb84b7c55ba4623ae79ab37c2e99ad8fa",
+    "docs/verification/wave6-solid-visual-receipt.json": "e0eaa0e2d1b97312d0174f7cfdeb5ddc55537a6b878736c0f1cdf582843fcd8d",
+    "docs/verification/wave6-solid.md": "8df8936d92a63b4c7185d8c7860eb3a6cee348ae4fec4dc374c44c4f3af331ea"
+  }
+}
