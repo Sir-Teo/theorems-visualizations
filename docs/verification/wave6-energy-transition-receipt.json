@@ -31,5 +31,7 @@
     "tests/fixtures/wave6-energy-reference.json": "deeabd6a2c8a43a4c41afd8c3b266329b4d5fe80ddf63c03ef9d8585f0203b9e",
     "tests/wave6-energy.test.mjs": "fb3cd51865c6e3bc0d0313d424f2f06c38c53748ddc094f4b72bdf5c8b1b557a",
     "tests/wave6-energy-browser.mjs": "4394b0ebdd006eb3d559c33bd3b75b01c54add56a6c0e6cbd0ed26d679b97787"
-  }
+  },
+  "snapshotCommit": "c7fe7cc9",
+  "artifactScope": "These hashes bind the transition/native endpoint repair snapshot atc7fe7cc9. Later presentation-only changes receive the final chapter manifest."
 }

@@ -73,10 +73,14 @@
     {
       "kind": "native range endpoint",
       "detail": "Chrome End emitted1.66666666666667 above5/3, invalidating capture. Chapter-local native onChange corrects endpoint rounding before render/Share; raw restore validation remains prior and rejects adjacent invalid values. Full native matrix restarted after repair."
+    },
+    {
+      "kind": "personal presentation review",
+      "detail": "Nernst sentence left a leading period after a wrapped equation; cycle-life condition left a lone1; reservoir caption promised a head curve rather than its actual readout. Local statement2/6 and caption7 fixes, plus a visual separator between hydrogen budget and battery comparison, are followed by complete post-presentation geometry/mode checks and scoped personal replacement."
     }
   ],
   "sourceStops": "See wave6-energy-sources.json; all new/inherited original-body and removed-figure stops remain binding",
-  "personalStatus": "Complete narrow defaults1\u20134 in both themes and desktop1light personally inspected at original pixels; remaining scopes pending",
+  "personalStatus": "In progress:24 complete current critical widgets (ENERGY6.1/6.2 both themes),22 current default widgets and80 current rich fields via exact RGBA preservation;26defaults/16rich replacements/124critical widgets pending. Personal progress and exact gallery scopes are retained under /tmp/wave6-energy-research.",
   "nativeFirstLesson": {
     "layouts": 4,
     "actions": 128,
@@ -95,5 +99,43 @@
     "modelComparisons": 74796,
     "failures": 0,
     "scope": "Pre log-transition/native-endpoint source; retained earlier evidence, superseded by ongoing final native matrix"
+  },
+  "nativeCurrent": {
+    "snapshotCommit": "c7fe7cc9",
+    "layouts": 48,
+    "actions": 1408,
+    "actualShares": 636,
+    "checks": 2816,
+    "invalidRestores": 72,
+    "rawRestores": 48,
+    "criticalRestores": 296,
+    "scientificRenderComparisons": 363780,
+    "logs": [
+      "/tmp/wave6-energy-research/native-final-a.log",
+      "/tmp/wave6-energy-research/native-final-b.log"
+    ],
+    "results": [
+      "/tmp/wave6-energy-native-final-a/result.json",
+      "/tmp/wave6-energy-native-final-b/result.json"
+    ],
+    "followupScope": "Only statement2/6 line breaks, caption7 wording and hydrogen budget separator/title/row label change afterwards. All control inventories/domains/model math and Share behavior remain exact; complete post-presentation geometry/mode and personal gates follow."
+  },
+  "postPresentationAudit": {
+    "groups": 48,
+    "distinctStates": 344,
+    "criticalStates": 296,
+    "checks": 588,
+    "scientificRenderComparisons": 74796,
+    "failures": 0,
+    "log": "/tmp/wave6-energy-research/audit-final.log",
+    "images": "/tmp/wave6-energy-audit-final"
+  },
+  "modeChecks": {
+    "lightItems": 12,
+    "darkItems": 12,
+    "errors": 0,
+    "blankWarnings": 0,
+    "texWarnings": 0,
+    "qualityWarnings": 0
   }
 }

@@ -555,7 +555,7 @@ export default {
             "waterTransfer": "https://www.energy.gov/cmei/water/how-pumped-storage-hydropower-works"
           },
           "scope": "Equal constant reservoir areas, incompressible water of chosen density 1000 kg/m³, standard gravity, no evaporation or inflows, constant efficiencies and no pipe dynamics. Area is entered in km² and converted exactly; transfer volume is in m³. The reservoir drawing is schematic and does not set a geographic scale. Efficiencies are inputs, not a universal 75% plant value or an operating forecast.",
-          "pic": "Switch between pumping and release, then move transfer progress. The reservoir volumes are conserved; the head and stored-energy curves use the changing water levels. Change area to reveal when fixed-head $m g H_0$ misses a meaningful amount of energy, and compare pump input with useful turbine output."
+          "pic": "Switch between pumping and release, then move transfer progress. The reservoir volumes are conserved; the head readout and stored-energy curve use the changing water levels. Change area to reveal when fixed-head $m g H_0$ misses a meaningful amount of energy, and compare pump input with useful turbine output."
         },
         {
           "num": "6.8",

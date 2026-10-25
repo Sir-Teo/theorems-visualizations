@@ -25,7 +25,9 @@ A positive-input cycle returning to its initial stored energy has round-trip eff
    kind:"Model",
    name:"Cell voltage from free energy: the Nernst equation",
    deps:["pchem-8.6", "pchem-8.5"],
-   statement:String.raw`For a specified whole-cell reaction transferring $n$ electrons, reversible operation at constant temperature and pressure gives $\Delta_rG=-nFE$. With positive dimensionless activities $a_i$ and signed stoichiometric coefficients $\nu_i$,
+   statement:String.raw`For a specified whole-cell reaction transferring $n$ electrons, reversible operation at constant temperature and pressure,
+$$\Delta_rG=-nFE.$$
+With positive dimensionless activities $a_i$ and signed stoichiometric coefficients $\nu_i$,
 $$\begin{aligned}\mu_i&=\mu_i^\circ+RT\ln a_i,\\Q&=\prod_i a_i^{\nu_i},\\E&=E^\circ-\frac{RT}{nF}\ln Q.\end{aligned}$$
 The teaching reaction consumes charged species and forms discharged species against a fixed reference, with $Q=\Gamma(1-x)/x$, $0<x<1$ and $\Gamma>0$. Its open-circuit voltage rises with charged fraction $x$. Here $RT/F=k_BT/e$ with exact SI constants.`,
    idea:String.raw`Chemical potentials add according to reaction stoichiometry: $\Delta_rG=\Delta_rG^\circ+RT\ln Q$. At fixed temperature and pressure, the largest reversible non-expansion work delivered is the decrease in Gibbs energy; passing $nF$ coulombs through voltage $E$ delivers $nFE$ joules per mole of reaction. Combining these identities yields the Nernst equation with the whole-cell electron count intact. The chosen activity quotient is an explicitly idealized composition model, not a fit to a measured battery plateau.`,
@@ -91,7 +93,7 @@ The meter reads $I_m=gI+b$ with gain $g$ and offset $b$. True current switches t
 $$\begin{aligned}N_*(d)&=N_rd^{-b},\\c(n)&=1-0.2n/N_*,\\0&\le n\le N_*.\end{aligned}$$
 The continuous cycle-count approximation reaches 80% retained capacity at $N_*$. For initial energy capacity $E_c$, cumulative delivered energy is
 $$\begin{aligned}W(n)&=E_cdN_*[u-0.1u^2],\\u&=n/N_*.\end{aligned}$$
-Thus lifetime energy relative to full-depth cycling is $d^{1-b}$: shallow cycling increases it only when $b>1$.`,
+Thus lifetime energy relative to full-depth cycling is $d^{1-b}$: shallow cycling increases it only when the exponent exceeds one.`,
    idea:String.raw`Each differential cycle delivers depth times its currently retained energy capacity. Integrating the linear fade law gives the throughput expression and the factor 0.9 at end of modeled life. More shallow cycles alone do not establish more total delivered energy: each cycle is smaller. The exponent comparison exposes the missing condition—at $b=1$ lifetime energy is exactly unchanged, and at $b<1$ shallower cycles deliver less under these assumptions.`,
    caption:String.raw`Vary depth and the explicitly illustrative exponent. Compare retained capacity against cycle count, then against delivered lifetime energy, using full-depth cycling as a fixed reference. Move the selected life fraction to inspect actual degradation and throughput; the readout states whether shallow cycling helps this chosen energy metric.`,
    scope:String.raw`A continuous empirical-style teaching model, not fitted battery data, a universal degradation law or a product warranty. Depth, reference life and exponent are chosen inputs; fade is prescribed as linear in cycle count until 80% capacity. Calendar aging, temperature, charge rates, variable histories, repair and replacement are excluded. Delivered energy uses the evolving modeled capacity.`,
@@ -108,7 +110,7 @@ Thus lifetime energy relative to full-depth cycling is $d^{1-b}$: shallow cyclin
 $$\begin{aligned}H(V)&=H_0+2V/A,\\E(V)&=\rho g(H_0V+V^2/A).\end{aligned}$$
 With pump efficiency $\eta_p$ and turbine efficiency $\eta_t$, charging requires $E(V)/\eta_p$ and returning from full transfer $V_c$ to remaining $V$ delivers $\eta_t[E(V_c)-E(V)]$. For a completed cycle, $\eta_{\rm RT}=\eta_p\eta_t$.`,
    idea:String.raw`Raising the upper surface by $V/A$ also lowers the lower surface by $V/A$. Integrate the incremental work $\rho gH(v)\,dv$ rather than substitute a single fixed head. At chosen volume flow $q$, hydraulic power is $\rho gqH$, so pump input and turbine output change during their legs. The water-volume and electrical-energy ledgers close separately, with conversion losses on their respective sides of the boundary.`,
-   caption:String.raw`Switch between pumping and release, then move transfer progress. The reservoir volumes are conserved; the head and stored-energy curves use the changing water levels. Change area to reveal when fixed-head $m g H_0$ misses a meaningful amount of energy, and compare pump input with useful turbine output.`,
+   caption:String.raw`Switch between pumping and release, then move transfer progress. The reservoir volumes are conserved; the head readout and stored-energy curve use the changing water levels. Change area to reveal when fixed-head $m g H_0$ misses a meaningful amount of energy, and compare pump input with useful turbine output.`,
    scope:String.raw`Equal constant reservoir areas, incompressible water of chosen density 1000 kg/m³, standard gravity, no evaporation or inflows, constant efficiencies and no pipe dynamics. Area is entered in km² and converted exactly; transfer volume is in m³. The reservoir drawing is schematic and does not set a geographic scale. Efficiencies are inputs, not a universal 75% plant value or an operating forecast.`,
    refs:["DOE, How Pumped Storage Hydropower Works, public water-transfer explanation", "Independent equal-area reservoir work integral and electrical balance"],
    links:{"waterTransfer": "https://www.energy.gov/cmei/water/how-pumped-storage-hydropower-works"},
