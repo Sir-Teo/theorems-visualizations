@@ -1,0 +1,90 @@
+// Intended physical states. Values become actual saved UI components before
+// any draw; the native harness verifies their exact restoration and Share.
+const tiny=Number.MIN_VALUE;
+const C=(label,sliders={},selects={},extra={})=>({label,sliders,selects,...extra});
+const pose=(q1,q2)=>({'shoulder angle / deg':q1,'relative elbow angle / deg':q2});
+const motion=[
+ C('zero motion and zero gravity',{'shoulder amplitude / deg':0,'elbow amplitude / deg':0,'selected cycle fraction':0},{gravity:'off'}),
+ C('static gravity',{'shoulder amplitude / deg':0,'elbow amplitude / deg':0,'selected cycle fraction':.25}),
+ C('fast prescribed motion',{...pose(-90,-90),'shoulder amplitude / deg':45,'elbow amplitude / deg':45,'cycle duration / s':.5,'selected cycle fraction':0}),
+ C('exact endpoint',{'selected cycle fraction':1}),
+ C('reversed phase without gravity',{'selected cycle fraction':.75,'shoulder amplitude / deg':45,'elbow amplitude / deg':45},{gravity:'off'}),
+ C('subnormal positive potential increment',{'shoulder amplitude / deg':tiny,'elbow amplitude / deg':0,'selected cycle fraction':.25}),
+ C('subnormal phase',{'selected cycle fraction':tiny}),
+ C('zero power at turning point',{'selected cycle fraction':.25}),
+ C('nonzero clock restore',{}, {},{clock:.25}),
+];
+export const criticalCases={
+ 1:[
+  C('zero momentum',{'initial transverse spin / rad per s':0,'initial axial spin / rad per s':0,'selected time / s':0}),
+  C('sphere',{'equatorial radius / m':.6,'axial radius / m':.6,'initial transverse spin / rad per s':4,'initial axial spin / rad per s':-4,'selected time / s':2}),
+  C('reversed axial spin',{'initial axial spin / rad per s':-4,'initial transverse spin / rad per s':4,'selected time / s':2}),
+  C('pure force',{'coaxial applied torque / N m':0,'world x force / N':5,'initial axial spin / rad per s':0,'selected time / s':2},{motion:'wrench'}),
+  C('pure torque',{'coaxial applied torque / N m':2,'world x force / N':0,'initial axial spin / rad per s':0,'selected time / s':2},{motion:'wrench'}),
+  C('negative work while braking',{'coaxial applied torque / N m':-.6,'world x force / N':0,'initial axial spin / rad per s':2,'selected time / s':.1},{motion:'wrench'}),
+  C('subnormal wrench and time',{'coaxial applied torque / N m':tiny,'world x force / N':tiny,'initial axial spin / rad per s':0,'selected time / s':tiny},{motion:'wrench'}),
+  C('oblique camera',{}, {},{camera:[1.1,.8,1]}),
+  C('nonzero clock restore',{}, {},{clock:.25}),
+ ],
+ 2:motion,
+ 3:[
+  C('zero energy',{...pose(0,0),'chosen kinetic energy / J':0}),
+  C('subnormal positive energy and bend',{...pose(0,tiny),'chosen kinetic energy / J':tiny,'velocity direction / deg':0}),
+  C('folded equal lengths',{...pose(0,180),'distal rod length / m':1,'distal rod mass / kg':.5,'chosen kinetic energy / J':20}),
+  C('straight high distal mass',{...pose(0,0),'distal rod length / m':2,'distal rod mass / kg':5,'chosen kinetic energy / J':20}),
+  C('negative folded posture',{...pose(0,-180),'distal rod length / m':.5,'velocity direction / deg':90}),
+  C('negative right angle',{'relative elbow angle / deg':-90,'velocity direction / deg':-180}),
+  C('tiny energy and velocity direction',{'chosen kinetic energy / J':1e-300,'velocity direction / deg':tiny}),
+ ],
+ 4:motion,
+ 5:[
+  ...['base initialization','outward: link1','outward: link2','inward: link2','inward: link1'].map(step=>C(step,{}, {'computational step':step})),
+  C('complete rest',{'shoulder rate / rad per s':0,'relative elbow rate / rad per s':0,'shoulder acceleration / rad per s²':0,'relative elbow acceleration / rad per s²':0},{gravity:'off'}),
+  C('gravity only',{'shoulder rate / rad per s':0,'relative elbow rate / rad per s':0,'shoulder acceleration / rad per s²':0,'relative elbow acceleration / rad per s²':0}),
+  C('velocity products only',{'shoulder rate / rad per s':-8,'relative elbow rate / rad per s':8,'shoulder acceleration / rad per s²':0,'relative elbow acceleration / rad per s²':0},{gravity:'off'}),
+  C('acceleration of folded rods',{'relative elbow angle / deg':180,'shoulder rate / rad per s':0,'relative elbow rate / rad per s':0,'shoulder acceleration / rad per s²':-12,'relative elbow acceleration / rad per s²':12},{gravity:'off'}),
+ ],
+ 6:[
+  C('exact straight zero directional mobility',{...pose(0,0),'tool-force direction / deg':0}),
+  C('folded zero directional mobility',{...pose(0,180),'tool-force direction / deg':0}),
+  C('subnormal positive bend',{...pose(0,tiny),'tool-force direction / deg':0}),
+  C('near straight rotated posture',{...pose(90,1e-12),'tool-force direction / deg':90}),
+  C('zero applied force',{'relative elbow angle / deg':90,'tool-force magnitude / N':0}),
+  C('subnormal applied force',{...pose(0,90),'tool-force magnitude / N':tiny,'tool-force direction / deg':0}),
+  C('off-principal force',{...pose(0,150),'tool-force direction / deg':0,'tool-force magnitude / N':10}),
+  C('reversed posture and force',{...pose(-90,-90),'tool-force direction / deg':-180,'tool-force magnitude / N':10}),
+ ],
+ 7:[
+  C('zero rotor inertia',{'gear ratio / both joints':1,'each axial rotor inertia / kg m²':0}),
+  C('dominant link-mounted rotors',{'gear ratio / both joints':200,'each axial rotor inertia / kg m²':.02}),
+  C('dominant grounded rotors',{'gear ratio / both joints':200,'each axial rotor inertia / kg m²':.02},{'motor mounting':'ground-mounted'}),
+  C('opposite transmission',{'gear ratio / both joints':200,'each axial rotor inertia / kg m²':.02},{'distal transmission sense':'opposite'}),
+  C('direct low ratio',{'gear ratio / both joints':1,'each axial rotor inertia / kg m²':.02}),
+  C('folded without rotor inertia',{'relative elbow angle / deg':180,'gear ratio / both joints':200,'each axial rotor inertia / kg m²':0}),
+  C('exact off-diagonal cancellation',{'relative elbow angle / deg':180,'distal rod length / m':1,'gear ratio / both joints':16,'each axial rotor inertia / kg m²':.015625}),
+  C('subnormal positive rotor inertia',{'gear ratio / both joints':200,'each axial rotor inertia / kg m²':tiny}),
+ ],
+ 8:[
+  C('stationary shoulder',{'commanded shoulder speed / rad per s':0,'initial elbow-bend magnitude / deg':150,'selected time / s':2}),
+  C('small-bend fast motion',{'commanded shoulder speed / rad per s':8,'initial elbow-bend magnitude / deg':5,'selected time / s':2}),
+  C('large reversed motion',{'commanded shoulder speed / rad per s':-8,'initial elbow-bend magnitude / deg':150,'selected time / s':2},{'initial bend':'negative'}),
+  C('initial time',{'commanded shoulder speed / rad per s':8,'selected time / s':0}),
+  C('subnormal speed and time',{'commanded shoulder speed / rad per s':tiny,'selected time / s':tiny}),
+  C('tiny nonzero speed',{'commanded shoulder speed / rad per s':1e-100,'selected time / s':2}),
+  C('subnormal time',{'selected time / s':tiny}),
+  C('long fast history',{'distal rod length / m':.5,'distal rod mass / kg':5,'commanded shoulder speed / rad per s':8,'initial elbow-bend magnitude / deg':150,'selected time / s':1.75}),
+  C('nonzero clock restore',{}, {},{clock:.25}),
+ ],
+ 9:[
+  C('active pushing wall',{}, {},{status:'active-wall'}),
+  C('detaching wall',{'tangent joint-speed parameter / rad per s':0,'applied shoulder torque / N m':40,'applied elbow torque / N m':-40},{gravity:'off'},{status:'detached'}),
+  C('pulling bilateral guide',{'tangent joint-speed parameter / rad per s':0,'applied shoulder torque / N m':40,'applied elbow torque / N m':-40},{gravity:'off',contact:'guide'},{status:'bilateral-guide'}),
+  C('free arm',{...pose(-60,120),'tangent joint-speed parameter / rad per s':1},{gravity:'off',contact:'free'},{status:'free'}),
+  C('degenerate compatible rest',{...pose(0,0),'tangent joint-speed parameter / rad per s':0},{gravity:'off'},{status:'degenerate-indeterminate'}),
+  C('degenerate incompatible velocity',{...pose(0,0),'tangent joint-speed parameter / rad per s':1},{gravity:'off'},{status:'degenerate-incompatible'}),
+  C('subnormal normal mobility',{...pose(0,tiny),'tangent joint-speed parameter / rad per s':0,'applied shoulder torque / N m':40},{gravity:'off'}),
+  C('above-range reaction and acceleration',{...pose(0,tiny),'tangent joint-speed parameter / rad per s':.6},{gravity:'off'}),
+  C('rotated degenerate contact',{...pose(90,0),'wall-normal direction / deg':90,'tangent joint-speed parameter / rad per s':1},{gravity:'off'},{status:'degenerate-incompatible'}),
+ ],
+};
+export const rawControls={1:['ellipsoid mass / kg',1.5000000000000002],2:['shoulder angle / deg',.10000000000000002],3:['chosen kinetic energy / J',.10000000000000002],4:['selected cycle fraction',.10000000000000002],5:['shoulder rate / rad per s',.10000000000000002],6:['tool-force magnitude / N',.10000000000000002],7:['gear ratio / both joints',100.00000000000003],8:['selected time / s',.10000000000000002],9:['tangent joint-speed parameter / rad per s',.10000000000000002]};

@@ -73,11 +73,24 @@ test('workless contact enforces acceleration, detaches on pulling and reports de
 test('zero energy and tiny positive energy stay distinct without a visual numerical floor',()=>{
  const z=H.massEllipse({energy:0}),tiny=H.massEllipse({energy:Number.MIN_VALUE});assert.equal(z.collapsed,true);assert.deepEqual(z.ellipse.axes,[0,0]);assert.equal(tiny.collapsed,false);assert.ok(tiny.ellipse.axes.every(x=>x>0));assert.equal(tiny.requestedEnergy.sign,1);
 });
+test('tiny prescribed angle increments retain their signed potential and energy changes',()=>{
+ const p={amplitude1:Number.MIN_VALUE,amplitude2:0};
+ const rise=H.prescribedMotion({...p,progress:.25}),fall=H.prescribedMotion({...p,progress:.75});
+ assert.equal(rise.potentialChange.sign,1);assert.equal(rise.potentialChange.belowRange,true);assert.equal(fall.potentialChange.sign,-1);assert.equal(fall.potentialChange.belowRange,true);
+ for(const progress of[0,.5,1])same(H.prescribedMotion({...p,progress}).potentialChange.exact,0);
+ for(const s of[rise,fall]){same(s.powerResidual.exact,0);same(s.skewPower.exact,0);same(s.energyChange.exact,Q.add(s.potentialChange.exact,s.kineticChange.exact));}
+});
 test('declared model domains reject malformed controls and unsupported modes',()=>{
  const invalid={rigid:[{mode:'tumbling'},{mass:0},{time:3}],chain:[{m1:0},{l2:0},{q2:181},{dq1:NaN}],motion:[{amplitude1:-Number.MIN_VALUE},{duration:0},{progress:1.01}],ellipse:[{energy:-Number.MIN_VALUE},{direction:181}],recursive:[{step:.5},{step:5}],task:[{force:-1},{gravity:-1}],geared:[{ratio1:0},{rotor2:-1},{sense:0},{mount:'floating'}],release:[{initialBend:0},{bendSense:0},{shoulderSpeed:9},{time:-Number.MIN_VALUE}],contact:[{contact:'impact'},{speed:3},{normalAngle:181},{torque1:41}]};
  for(const[name,cases]of Object.entries(invalid)){for(const p of cases)assert.throws(()=>functions[name](p),name);assert.throws(()=>functions[name](null),name);assert.throws(()=>functions[name]([]),name);}
 });
 test('all nine independent model families and original-input extreme cases are present',t=>{
- assert.equal(Object.keys(fixture.families).length,9);assert.equal(fixture.caseCount,1110);assert.ok(Object.values(fixture.families).flat().some(x=>x.digits===2600));assert.ok(comparisons>100000);assert.equal(failures.length,0);
+ assert.equal(Object.keys(fixture.families).length,9);assert.equal(fixture.caseCount,1120);assert.ok(Object.values(fixture.families).flat().some(x=>x.digits===2600));assert.ok(comparisons>100000);assert.equal(failures.length,0);
  t.diagnostic(JSON.stringify({independentComparisons:comparisons,worstScience}));
+});
+test('all nine complete lessons preserve frozen identities and synchronized prerequisite metadata',async()=>{
+ const [{default:chapter},{default:syllabus}]=await Promise.all([import('../content/robot/ch06.js'),import('../content/robot/syllabus.js')]);
+ const plan=JSON.parse(fs.readFileSync(new URL('../docs/wave-6-plan.json',import.meta.url))),frozen=plan.chapters.find(c=>c.collection==='robot').items,outline=syllabus.chapters.find(c=>c.n===6).items;
+ assert.equal(chapter.items.length,9);assert.equal(outline.length,9);
+ chapter.items.forEach((item,j)=>{for(const k of['num','kind','name','deps','paper','verify','see'])assert.deepEqual(item[k],frozen[j][k]);for(const k of['num','kind','name','deps','refs'])assert.deepEqual(item[k],outline[j][k]);assert.equal(item.caption,outline[j].pic);for(const k of['statement','idea','caption','scope'])assert.ok(typeof item[k]==='string'&&item[k].length>120,item.num+' complete '+k);assert.equal(typeof item.viz,'function');assert.ok(item.refs.length);for(const url of Object.values(item.links))assert.match(url,/^https:\/\/hades\.mech\.northwestern\.edu\/images\/2\/25\/MR-v2\.pdf#page=\d+$/);});
 });

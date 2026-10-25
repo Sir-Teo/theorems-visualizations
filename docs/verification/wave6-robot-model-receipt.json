@@ -1,5 +1,5 @@
 {
-  "status": "MODEL ONLY; all content/native/visual/availability gates remain open",
+  "status": "Historical pure-model receipt at9f3d9651; superseded by wave6-robot-model-followup.json",
   "frozenSourceCommit": "fd7bb0e055ea87074a4c4c6f9e912c51ce7dae46",
   "files": [
     "content/robot/ch06.shared.js",
@@ -41,5 +41,7 @@
   ],
   "availability": 806,
   "independentAcceptance": 36,
-  "browsersAndServers": "all closed"
+  "browsersAndServers": "all closed",
+  "checkpointCommit": "9f3d9651",
+  "followup": "docs/verification/wave6-robot-model-followup.json"
 }

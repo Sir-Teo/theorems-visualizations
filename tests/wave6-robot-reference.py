@@ -78,6 +78,8 @@ def ref_motion(p):
  def deriv(i,j,k):return dM[i,j] if k==1 else mp.mpf(0)
  C=mp.matrix([[sum((deriv(i,j,k)+deriv(i,k,j)-deriv(j,k,i))*w[k]/2 for k in range(2))for j in range(2)]for i in range(2)]);Mdot=dM*w[1]
  out.update(coriolisMatrix=qm(C),massRate=qm(Mdot),skewMatrix=qm(Mdot-2*C),**fields(kineticRate=dot(w,s['M']*a)+dot(w,Mdot*w)/2,potentialRate=dot(s['g'],w),energyRate=dot(s['tau'],w),powerResidual=0,skewPower=0,couplingPower=dot(s['c'],w),massRatePower=dot(w,Mdot*w)/2))
+ initial=rod_model(p,dict(q=mp.matrix([z['q1']*mp.pi/180,z['q2']*mp.pi/180]),w=amp*frequency,a=vector(0,0)))
+ out.update(**fields(potentialChange=s['U']-initial['U'],kineticChange=s['T']-initial['T'],energyChange=s['U']+s['T']-initial['U']-initial['T']))
  return out
 
 def ref_ellipse(p):
@@ -157,6 +159,7 @@ def inputs():
  families['ellipse'] += [dict(energy=x,direction=d)for x in [0,tiny,1e-300,20]for d in [0,90,180]]
  families['task'] += [dict(q1=0,q2=q,force=f,direction=d)for q in [0,90,180]for f in [0,tiny,10]for d in [0,90]]
  families['motion'] += [dict(amplitude1=a,amplitude2=a,progress=t,gravity=g)for a in [0,tiny,45]for t in [0,.25,.5,.75,1]for g in [0,9.81]]
+ families['motion'] += [dict(amplitude1=a,amplitude2=0,progress=t)for a in [tiny,1e-100]for t in [0,.25,.5,.75,1]]
  families['rigid'] += [dict(mode=mode,axialSpin=w,transverseSpin=v,radius=.6,axialRadius=.6,time=t,torque=0,force=0)for mode in ['free','wrench']for w in [0,-4,4]for v in [0,4]for t in [0,2]]
  families['rigid'] += [dict(mode='wrench',force=f,torque=f,time=t)for f in [tiny,1e-200,-tiny]for t in [tiny,1e-100,2]]
  families['release'] += [dict(shoulderSpeed=w,time=t,initialBend=b,bendSense=sgn)for w in [0,tiny,1e-100,-8,8]for t in [0,tiny,2]for b,sgn in [(5,1),(150,-1)]]

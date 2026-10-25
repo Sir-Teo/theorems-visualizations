@@ -134,7 +134,9 @@
     "Own contact lambda is force of wall on robot, opposite to textbook lambda/Ftip applied by robot against constraint; preserve and explain sign conversion.",
     "Near a task singularity the finite map J M^-1 J^T remains valid but its inverse Lambda is undefined at exact rank loss.",
     "Motor2 mounted on link1 has absolute rotor velocity qdot1+s*N2*qdot2; diagonal reflected inertia is only the explicit remote ground-mounted idealization.",
-    "Prescribed inverse-dynamics motion is labeled as such; elbow-release animation is a separately solved force-driven initial-value problem; contact view is explicitly instantaneous unless a trajectory is actually integrated."
+    "Prescribed inverse-dynamics motion is labeled as such; elbow-release animation is a separately solved force-driven initial-value problem; contact view is explicitly instantaneous unless a trajectory is actually integrated.",
+    "Gearing demonstration adds axial rotor inertia only to the original uniform rods. Localized motor/stator mass, translation and transverse rotor inertia are neglected; the source full spatial-inertia treatment accounts for them.",
+    "The free-body initial orientation aligns nonzero spatial angular momentum with world+z; changing body spin also changes that chosen orientation. Wrench-mode world/COM and body linear velocities are displayed separately."
   ],
   "unreadSources": [
     "Siciliano et al. commercial textbook body",
@@ -143,22 +145,22 @@
   ],
   "restrictions": "No new body access stop for this one official MR-v2.pdf request. All inherited original-body and figure access stops remain binding; no mirrors, alternate format/host or cache recovery.",
   "modelValidation": {
-    "status": "pure model only; native and visual gates open",
-    "referenceCases": 1110,
+    "status": "pure models and metadata pass; complete nine lesson/view drafts; native/personal gates open",
+    "referenceCases": 1120,
     "families": 9,
     "mpmath": "1.3.0",
     "precisionDigits": [
       90,
       2600
     ],
-    "higherPrecisionCases": 64,
+    "higherPrecisionCases": 74,
     "higherPrecisionDigits": 5200,
     "higherPrecisionResult": "all64 complete expected objects exact",
-    "comparisonChecks": 252539,
-    "focusedGroups": 19,
+    "comparisonChecks": 257004,
+    "focusedGroups": 21,
     "affectedWave5Groups": 11,
     "canonicalRegeneration": "byte-identical",
-    "fixtureSHA256": "3b0be19757408b91ce0ba8a9eb94afc476dcb8eeae09ef2b135c7aadb89294e5",
+    "fixtureSHA256": "bc6a3f0e98e57f48b0d58c4a0e3ad6eb52f009b524008710589130a03e48461d",
     "referenceRepairs": [
       {
         "initialLog": "/tmp/wave6-robot-model-tests-initial.log",
@@ -172,6 +174,35 @@
       }
     ],
     "tolerances": "scientific values3e-11 relative, released-elbow integration2e-9; signed log/range flags separately checked; scoped finite geometry absolute errors explicit; no model comparison relaxed after a failure",
-    "worstObservedRelative": "1.129e-13 outside released-elbow family;8.019e-11 for released-elbow angle change; excludes subnormal final rounding and declared zero-component geometry tolerances"
+    "worstObservedRelative": "1.129e-13 outside released-elbow family;8.019e-11 for released-elbow angle change; excludes subnormal final rounding and declared zero-component geometry tolerances",
+    "tinyAngleFollowup": [
+      "Retain prescribed base angles and their small increments separately in trigonometric addition, preserving signed potential/energy changes.",
+      "Expose potential, kinetic and total energy change from cycle start;10 additional independent cases plus a focused original-factor regression.",
+      "Pre-cancel integer factors in the chapter-local rational helper; no shared math/renderer edits.",
+      "Released-elbow angle/rate increments remain retained; sampled trig geometry stays approximate rather than constructing needlessly expensive exact composite rotations."
+    ],
+    "currentModelReceipt": "wave6-robot-model-followup.json"
+  },
+  "draftVisualFindings": {
+    "preview": "36 default320/1200 both-theme text/glyph checks passed at the earlierC source; final complete gates remain open",
+    "repairs": [
+      "Narrow operational-mass equation split; axis labels rendered as full TeX overlays.",
+      "3D vector labels separated from world axes, ellipsoid shading refined and an explicit torque arc/visible foreground tau label added.",
+      "Gravity and velocity-product quantities use different colors.",
+      "Gear-ratio endpoint markers and phase/time endpoints get plotting margins.",
+      "Actual free-elbow history stays in a fixed world view instead of being clipped by the current-arm view.",
+      "Recursive sweep readouts reveal results in computational order.",
+      "The common-ratio coupling curve includes zero-coupling roots and the actual selected ratio."
+    ],
+    "failureEvidence": [
+      "/tmp/wave6-robot-preview/summary.json",
+      "/tmp/wave6-robot-preview-b/summary.json",
+      "/tmp/wave6-robot-native-pilot1/1-light-320-critical-4.png",
+      "/tmp/wave6-robot-native-pilot2/failure.txt",
+      "/tmp/wave6-robot-native-pilot3/failure.txt"
+    ],
+    "harnessCorrection": "/tmp/wave6-robot-native-pilot4/failure.txt tested zero normal acceleration too broadly; detached contact correctly opens a gap. The check now applies zero only to active wall/guide and separately requires nonnegative gap acceleration after detachment. Product solver unchanged.",
+    "criticalInventory": 77,
+    "status": "Pilot subsets only; full native/Share/scientific/personal gates remain open"
   }
 }

@@ -1,0 +1,52 @@
+{
+  "status": "PURE MODELS PASS; nine lesson/view drafts installed; native and personal visual gates open",
+  "priorModelCheckpoint": "9f3d9651",
+  "files": [
+    "content/robot/ch06.shared.js",
+    "content/robot/ch06.exact.shared.js",
+    "tests/wave6-robot-reference.py",
+    "tests/fixtures/wave6-robot-reference.json",
+    "tests/wave6-robot.test.mjs"
+  ],
+  "sha256": {
+    "content/robot/ch06.shared.js": "da899b70dd8a6606fe3015768d72fa382ac479c8655cab6819a3011b78c709be",
+    "content/robot/ch06.exact.shared.js": "68751873d8405ebd2cef296a3e8d5b092f2ee9ca8bb0f9a3c6090f9e8d3d61c2",
+    "tests/wave6-robot-reference.py": "0893ca972d0fa028e3bdf4e553ef28519b7547d740a5fa14195350183edb3ddb",
+    "tests/fixtures/wave6-robot-reference.json": "bc6a3f0e98e57f48b0d58c4a0e3ad6eb52f009b524008710589130a03e48461d",
+    "tests/wave6-robot.test.mjs": "bd1f67456fcd99b3781feb47cfc8409353d4fe1fba52a0b4de1544459044f9c3"
+  },
+  "referenceCases": 1120,
+  "families": 9,
+  "focusedGroups": 21,
+  "affectedGroups": 11,
+  "totalFocusedAffectedGroups": 32,
+  "comparisonChecks": 257004,
+  "precisionDigits": [
+    90,
+    2600
+  ],
+  "higherPrecision": {
+    "cases": 74,
+    "digits": 5200,
+    "completeExpectedObjects": "all exact",
+    "receipt": "/tmp/wave6-robot-research/higher-precision-check.json"
+  },
+  "canonicalRegeneration": "byte-identical",
+  "fixtureSHA256": "bc6a3f0e98e57f48b0d58c4a0e3ad6eb52f009b524008710589130a03e48461d",
+  "changes": [
+    "Retain prescribed base angles and their small increments separately in trigonometric addition, preserving signed potential/energy changes.",
+    "Expose potential, kinetic and total energy change from cycle start;10 additional independent cases plus a focused original-factor regression.",
+    "Pre-cancel integer factors in the chapter-local rational helper; no shared math/renderer edits.",
+    "Released-elbow angle/rate increments remain retained; sampled trig geometry stays approximate rather than constructing needlessly expensive exact composite rotations."
+  ],
+  "failureEvidence": [
+    "/tmp/wave6-robot-prescribed-increment-defect.log",
+    "/tmp/wave6-robot-model-tests-initial.log",
+    "/tmp/wave6-robot-model-tests-final.log"
+  ],
+  "timingEvidence": "/tmp/wave6-robot-increment-timing.log preserves an expensive exact-composite prototype; current subnormal released-elbow state completed in320.6ms in a one-off diagnostic, not a general performance/FPS claim",
+  "modelLog": "/tmp/wave6-robot-draft-focused.log",
+  "priorRecentFilesExact": 163,
+  "availability": 806,
+  "independentAcceptance": 36
+}
