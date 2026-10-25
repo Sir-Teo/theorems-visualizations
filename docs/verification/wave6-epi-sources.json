@@ -1,0 +1,107 @@
+{
+  "started": "2026-10-25",
+  "actualRead": [
+    {
+      "id": "nist-bias",
+      "url": "https://www.itl.nist.gov/div898/handbook/mpc/section1/mpc113.htm",
+      "scope": "Actual HTML lines0–18 read; bias as average minus reference. No source images seen or reproduced. Own epidemiologic binomial model is a separate derivation."
+    },
+    {
+      "id": "nist-glossary",
+      "url": "https://www.itl.nist.gov/div898/handbook/glossary.htm",
+      "scope": "Actual selected HTML lines0–53 read, especially bias and independent-trial binomial entries32–34. No whole-glossary reading claim."
+    },
+    {
+      "id": "catalogue-selection",
+      "url": "https://catalogofbias.org/biases/selection-bias/",
+      "scope": "Actual2017 HTML selected body lines12–67 read. Our four-cell conditional-sampling model separates association distortion from broad generalizability concerns. No cited original clinical studies read/reproduced."
+    },
+    {
+      "id": "catalogue-recall",
+      "url": "https://catalogofbias.org/biases/recall-bias/",
+      "scope": "Actual2017 HTML selected body lines12–45 read. Differential retrospective reporting may change estimates in either direction. No clinical or vaccine example reused; cited original studies unread."
+    },
+    {
+      "id": "catalogue-misclassification",
+      "url": "https://catalogofbias.org/biases/misclassification-bias/",
+      "scope": "Actual2018 HTML selected body lines12–55 read. General misclassification direction is not universal. No source figure seen or reconstructed; own binary-exposure theorem has explicit stronger assumptions."
+    },
+    {
+      "id": "niosh-healthy-worker",
+      "url": "https://www.cdc.gov/niosh/work-hour-training-for-nurses/longhours/mod3/15.html",
+      "scope": "Actual short HTML body lines21–35 read, reviewed31March2020: tolerance-dependent self-selection can understate harm. Distinct training page, not recovery of either stopped teaching body. Own single-population employment model; no real cohort/disease-list/shift advice."
+    },
+    {
+      "id": "wald-landing",
+      "url": "https://www.cna.org/analyses/1980/a-method-of-estimating-plane-vulnerability",
+      "scope": "Actual complete20-line CNA landing read. Abraham Wald,100-page CRC-0204320000-Final,7July1980, public release; normal Download link opened successfully."
+    },
+    {
+      "id": "wald-1980",
+      "url": "https://www.cna.org/reports/1980/0204320000.pdf",
+      "path": "/tmp/wave6-epi-research/wald1980.pdf",
+      "sha256": "77a1f116e912657ca3086854ac9875b97338cc11007cecb7512820c646deada8",
+      "scope": "Actual selected PDF physical1–18 text/lines0–480 read, including frontmatter and PartI printed1–9. Physical10/15 (printed1/6) personally rendered and viewed: conditional nonfatal product Q_i and equation26/common-q root. Other OCR formulas not visually validated; no whole100-page reading claim. Known sortie N and returned hit-count A_i are distinct denominators; introduction neglects sampling variation under declared assumptions. Source Example1 is an illustration, not documented wartime measurements. Own regional Poisson-thinning model is a new educational construction, not Wald’s inference procedure, original geometry or historical red-dot data."
+    }
+  ],
+  "stops": [
+    {
+      "work": "Attempted What If landing page for new EPI6 source preparation",
+      "url": "https://miguelhernan.org/whatif",
+      "result": "Normal web open returned Internal Error / URL not accessible via this tool. No new landing or book-body reading. No retry or alternate book-body recovery in this continuation; earlier legitimate CAUSAL2026 selected-page receipts remain historical and do not verify EPI bias chapters."
+    },
+    {
+      "work": "Legacy BU EP713 Bias printable module",
+      "url": "https://sphweb.bumc.bu.edu/otlt/MPH-Modules/EP/EP713_Bias/EP713_Bias_print.html",
+      "result": "Normal open redirected to public migration/degree page https://www.bu.edu/sph/online-mph-and-teaching-public-health/. Old module body unavailable/unread; no cache/archive/alternate-copy recovery. New teaching platform not visited. Redirect is not described as a login gate."
+    },
+    {
+      "work": "CDC Principles of Epidemiology Lesson6 section3",
+      "url": "https://archive.cdc.gov/www_cdc_gov/csels/dsepd/ss1978/lesson6/section3.html",
+      "result": "Normal web open InternalError/inaccessible. Body unread; no alternate original-body recovery."
+    },
+    {
+      "work": "Catalogue of Bias healthy worker effect",
+      "url": "https://catalogofbias.org/biases/healthy-worker-effect/",
+      "result": "Normal web open InternalError/inaccessible. Body unread; no alternate original-body recovery. Distinct NIOSH training text actually read."
+    },
+    {
+      "work": "WHO malaria-control participants guide2e",
+      "url": "https://iris.who.int/bitstream/10665/96351/3/9789241506014_participants_guide_eng.pdf",
+      "result": "Normal web open HTTP403. Search snippet only; no actual book-body reading or alternate WHO/cache recovery."
+    }
+  ],
+  "inherited": "All PHARM/PHYSIO/CAUSAL and earlier original-body/figure access stops remain binding. Rothman/Gordis planned chapter refs are not actual EPI6 reading. No EPI product or author count yet.",
+  "status": "Source/design and scientifically checked numerical prototype checkpoint.845 independent cases/18 focused groups; no production lessons or availability increment. All source stops bind.",
+  "date": "2026-10-25",
+  "baseCommit": "50a6f394d789b8968439692a71dfc750e9944b76",
+  "prerequisitesActuallyRead": [
+    "causal-3.10",
+    "epi-2.1",
+    "epi-3.2"
+  ],
+  "design": {
+    "6.1": "Own binomial risk estimator: observed probability q=(1-b)p+b*c, E[estimate]=q, bias=q-p, variance=q(1-q)/n, MSE=variance+bias². Exact endpoint point masses; finite empirical repetition can differ from analytic distribution. Avoid mistaking a finite ratio-estimator bias for the chosen systematic shift.",
+    "6.2": "Own binary E/Y full four-cell population followed by four separate participation probabilities s_ey. Selected OR equals original OR*s11*s00/(s10*s01) when cells/selection are positive. Both direction and cancellation are possible; include multiplicatively separable sampling as a no-association-change example. Empty selected strata and positivity failures stay undefined, never capped estimates.",
+    "6.3": "Construct a single full population with latent baseline health, health-dependent employment and nonnegative authored occupational risk difference. General-population observed outcome includes employed people; do not use arbitrary unrelated populations. Compare crude employed/general and employed/nonemployed risks with standardized counterfactual risks at a common declared health mix. This is a known model, not identification from observed comparisons alone.",
+    "6.4": "The frozen name needs explicit hypotheses: binary true exposure, nondifferential independent classification conditional on true exposure, nonempty groups, informative Se+Sp>1 and a common unconfounded target. Posterior risks are convex mixtures, so RR lies between1 and true RR for an informative classifier. Se+Sp=1 erases the association; below-chance classification can reverse it. This is not a general multicategory/outcome/confounded attenuation theorem.",
+    "6.5": "Use outcome-specific exposure sensitivity/specificity to demonstrate differential recall in both directions. Keep actual exposure/outcome cells fixed and apply declared recording matrices; cases do not necessarily overreport every exposure. Preserving/erasing/reversing association depends on all four rates. Observational case-control OR is an association in this model, not automatically a causal RR.",
+    "6.8": "Own synthetic aircraft geometry and explicitly invented damage, never original Wald holes or measurements. A Poisson hit-and-lethality model gives return probability exp(-sum(lambda_i*q_i)) and conditional nonfatal hits lambda_i*(1-q_i); sparse holes can also mean little incoming fire. Show full fleet and returning subset, known-input counterfactual armor comparison, and nonidentification from survivors alone. Zero hits, zero lethality, no observed survivors and rare positive probabilities need honest statuses."
+  },
+  "scientificPrototype": {
+    "independentCases": 845,
+    "families": {
+      "selection": 256,
+      "classification": 240,
+      "healthyWorker": 288,
+      "binomial": 21,
+      "sorties": 40
+    },
+    "numericComparisons": 38502,
+    "focusedGroups": 18,
+    "referenceSha256": "1df4cc03425258e6f8bf9258fa0c611c1d616679f63de83862cdee45e091adf4",
+    "regeneration": "byte-identical",
+    "productionLessons": 0,
+    "authorAvailableIncrement": 0
+  }
+}

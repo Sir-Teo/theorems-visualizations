@@ -1,0 +1,24 @@
+{
+  "date": "2026-10-25",
+  "status": "prototype only; author availability726; no EPI production lesson counted",
+  "science": {
+    "independentCases": 845,
+    "families": {
+      "selection": 256,
+      "classification": 240,
+      "healthyWorker": 288,
+      "binomial": 21,
+      "sorties": 40
+    },
+    "numericComparisons": 38502,
+    "focusedGroups": 18,
+    "referenceSha256": "1df4cc03425258e6f8bf9258fa0c611c1d616679f63de83862cdee45e091adf4",
+    "regeneration": "byte-identical",
+    "productionLessons": 0,
+    "authorAvailableIncrement": 0
+  },
+  "sourceLedger": "docs/verification/wave6-epi-sources.json",
+  "helperSha256": "2dcfa5e160a180baed05b6ec6e051b99d86ce73bb76b2a4e66cfaea7c59415fd",
+  "browserInstances": 0,
+  "next": "Complete all six frozen lessons and native visual gates; retain aliases6.6/6.7 and all prior core/source bytes."
+}
