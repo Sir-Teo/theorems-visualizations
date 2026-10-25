@@ -507,7 +507,7 @@ export default {
           "refs": [
             "Complete chapter-local derivation under the stated engineering Fourier convention"
           ],
-          "pic": "Change the time constant and read the actual10%,63.2% and90% step crossings alongside the half-power point. Both panels use physical axes, so the faster rise and wider pass band are visible together."
+          "pic": "Change the time constant and read the actual 10%, 63.2% and 90% step crossings alongside the half-power point. Both panels include a fixed τ=1 s dashed reference, so the faster rise and wider pass band are visible together on physical axes."
         },
         {
           "num": "6.9",
@@ -532,7 +532,7 @@ export default {
           "refs": [
             "Oppenheim–Verghese2010, selected printed58–64: all-pass factors, CT inverse properness, factorization and gain ambiguity"
           ],
-          "pic": "Reflect the zero across the imaginary axis. The gain curves coincide, while phase and initial step motion separate. The zero positions and both exact step traces make the factorization visible."
+          "pic": "Reflect the zero across the imaginary axis. Their gain magnitudes stay equal, while phase and initial step motion separate. The zero positions and both exact step traces make the factorization visible."
         },
         {
           "num": "6.11",
@@ -558,7 +558,7 @@ export default {
           "refs": [
             "Complete chapter-local derivation under the stated engineering Fourier convention"
           ],
-          "pic": "Match the bandwidth and compare one pole, two poles or one pole plus an all-pass factor. Measure the actual10% and90% crossings; the all-pass example keeps the original gain while stretching the measured rise."
+          "pic": "Match the bandwidth and compare one pole, two poles or one pole plus an all-pass factor. Measure the actual 10% and 90% crossings; the all-pass example keeps the original gain while stretching the measured rise."
         },
         {
           "num": "6.13",
@@ -571,7 +571,7 @@ export default {
           "refs": [
             "Complete chapter-local derivation under the stated engineering Fourier convention"
           ],
-          "pic": "Widen the transition band and compare its exact impulse and step with the sharp reference. Change cutoff separately to see time compression. The triangular endpoint removes step overshoot by making the whole impulse nonnegative."
+          "pic": "Widen the transition band and compare its exact impulse and step with the sharp reference. The time axis rescales with cutoff, showing the fixed fractional overshoot on a changing physical time scale. The triangular endpoint removes step overshoot by making the whole impulse nonnegative."
         }
       ]
     },

@@ -12,7 +12,7 @@ for(const [family,rows]of Object.entries(F.families))test('SIG6 '+family+' agree
  case 'second':near(H.secondStep(a.t,a),e.step,k,{atol:1e-14});near(H.secondImpulse(a.t,a),e.impulse,k,{atol:1e-15});break;
  case 'secondFrequency':image(H.secondResponse(a.w,a).h,e.h,k);break;
  case 'gainPhase':{const z=H.gainPhase(a.w,a);near(z.phase,e.phase,k,{atol:Math.abs(e.phase)<1e-12?0:2e-13});near(z.exact,e.exact,k,{atol:0});break;}
- case 'bode':{const z=H.bode(a.w,a);for(const[p,q]of Object.entries(e))near(z[p],q,k,{atol:p==='phase'&&Math.abs(q)<1e-12?0:2e-13});break;}
+ case 'bode':{const z=H.bode(a.w,a);for(const[p,q]of Object.entries(e))near(z[p],q,k,{atol:Math.abs(q)<1e-12?0:2e-13});break;}
  case 'minimumFrequency':{const z=H.minimumPhase(a.w,a);image(z.h,e.h,k);near(z.phase,e.phase,k);near(z.groupDelay,e.groupDelay,k);break;}
  case 'taperImpulse':near(H.taperImpulse(a.t,a),e,k);break;
  case 'minimumStep':near(H.minimumStep(a.t,a),e,k);break;
@@ -24,6 +24,7 @@ for(const [family,rows]of Object.entries(F.families))test('SIG6 '+family+' agree
 test('SIG6 exact boundaries, positive unresolved dispersion and gain ambiguity remain distinct',()=>{
  for(const W of[.5,2,5])for(const delay of[.5,2,8]){const w=H.negativeTimeWitness(W,delay);assert.ok(w.t<0&&w.value!==0);near(H.idealImpulse(w.t,W,delay),w.value,'negative witness');}
  for(const taper of[Number.MIN_VALUE,1e-100,1e-14,.2,1])assert.equal(H.taperGain(2,{taper}),.5);
+ near(H.bode(.5843414133735175,{pole:1,zero:1.0000000000000002}).phaseApproximation,-7.573810211446659e-17,'adjacent interior phase ramp',{atol:0});
  assert.equal(H.phasePacket(0,{beta:0}).extraVariance.status,'zero');assert.equal(H.phasePacket(0,{beta:Number.MIN_VALUE}).extraVariance.status,'positive below binary64 range');assert.ok(H.firstResponse(Number.MIN_VALUE,.05).phaseUnderflow);
  assert.equal(H.secondModel({zeta:.7071067811865475}).resonant,true);near(H.secondModel({zeta:.7071067811865475,omega:1}).peakFrequency,1.3315491676371419e-8,'near-DC resonance',{atol:0});assert.equal(H.secondModel({zeta:Math.SQRT1_2}).resonant,false);
  assert.equal(H.secondModel({zeta:1-Number.EPSILON/2}).overshoot.status,'positive below binary64 range');assert.equal(H.secondModel({zeta:1}).overshoot.status,'zero');

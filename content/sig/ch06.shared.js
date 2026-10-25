@@ -61,7 +61,7 @@ export function paleyModel({family='power law',alpha=1,a=.5,cutoff=2,R=10}={}) {
   choice(family,['power law','Gaussian','brick wall']);bound(alpha,.6,3);bound(a,.05,2);bound(cutoff,.5,5);bound(R,.1,50);
   const logMagnitude=w=>family==='power law'?-.5*alpha*Math.log1p(w*w):family==='Gaussian'?-a*w*w:Math.abs(w)<=cutoff?0:-Infinity;
   const finiteIntegral=r=>family==='power law'?-2*alpha*gauss(t=>Math.log(Math.cos(t)),0,Math.atan(r),16):family==='Gaussian'?2*a*(r-Math.atan(r)):r>cutoff?Infinity:0;
-  return {logMagnitude,finiteIntegral,value:finiteIntegral(R),limit:family==='power law'?alpha*Math.PI*Math.LN2:Infinity,admissible:family==='power law',criterion:'existence of some causal L2 phase; not a BIBO claim'};
+  return {logMagnitude,finiteIntegral,value:finiteIntegral(R),limit:family==='power law'?alpha*Math.PI*Math.LN2:Infinity,admissible:family==='power law',criterion:'existence of a phase yielding a causal L2 impulse; not a BIBO claim'};
 }
 export function phasePacket(t,{sigma=1,beta=2,delay=2,carrier=3}={}) {
   bound(sigma,.3,3);bound(beta,-6,6);bound(delay,0,5);bound(carrier,1,8);finite(t);
@@ -70,8 +70,9 @@ export function phasePacket(t,{sigma=1,beta=2,delay=2,carrier=3}={}) {
 }
 export function bode(w,{pole=1,zero=2,gainDB=0,withZero=true}={}) {
   bound(pole,.2,5);bound(zero,.2,5);bound(gainDB,-12,12);if(typeof withZero!=='boolean')throw new RangeError('Boolean zero control required');bound(w,.001,1000);
-  const p=w/pole,z=w/zero,dB=gainDB-10*Math.log1p(p*p)/Math.LN10+(withZero?10*Math.log1p(z*z)/Math.LN10:0),phase=withZero?Math.atan2(w*(pole-zero),pole*zero+w*w):-Math.atan(p),asymptote=gainDB-20*Math.max(0,Math.log10(p))+(withZero?20*Math.max(0,Math.log10(z)):0),ramp=x=>Math.max(0,Math.min(2,Math.log10(x)+1))*Math.PI/4;
-  return {dB,phase,asymptote,phaseApproximation:-ramp(p)+(withZero?ramp(z):0)};
+  const p=w/pole,z=w/zero,delta=(pole-zero)*(pole+zero),dB=gainDB+(withZero?10*Math.log1p(w*w*delta/(zero*zero*(pole*pole+w*w)))/Math.LN10:-10*Math.log1p(p*p)/Math.LN10),phase=withZero?Math.atan2(w*(pole-zero),pole*zero+w*w):-Math.atan(p),asymptote=gainDB+(withZero&&w>=Math.max(pole,zero)?20*Math.log1p((pole-zero)/zero)/Math.LN10:-20*Math.max(0,Math.log10(p))+(withZero?20*Math.max(0,Math.log10(z)):0)),ramp=x=>Math.max(0,Math.min(2,Math.log10(x)+1))*Math.PI/4;
+  const phaseApproximation=withZero&&p>.1&&p<10&&z>.1&&z<10?Math.PI/(4*Math.LN10)*Math.log1p((pole-zero)/zero):-ramp(p)+(withZero?ramp(z):0);
+  return {dB,phase,asymptote,phaseApproximation};
 }
 export function secondResponse(w,{zeta=.4,omega=2}={}) {
   bound(zeta,.05,2);bound(omega,.5,5);finite(w);const u=w/omega,re=1-u*u,im=2*zeta*u,d=re*re+im*im;
@@ -93,7 +94,7 @@ export function secondImpulse(t,{zeta=.4,omega=2}={}) {
 }
 export function secondModel({zeta=.4,omega=2}={}) {
   bound(zeta,.05,2);bound(omega,.5,5);const square=zeta*zeta,split=134217729*zeta,hi=split-(split-zeta),lo=zeta-hi,squareError=((hi*hi-square)+2*hi*lo)+lo*lo,resonanceSquared=(1-2*square)-2*squareError,resonant=resonanceSquared>0,underdamped=zeta<1;
-  return {resonant,underdamped,peakFrequency:resonant?omega*Math.sqrt(resonanceSquared):0,peakGain:resonant?1/(2*zeta*Math.sqrt(1-zeta*zeta)):1,overshoot:positiveMetric(underdamped?-Math.PI*zeta/Math.sqrt((1-zeta)*(1+zeta)):0,!underdamped),timeSpan:8/(omega*(zeta<=1?zeta:1/(zeta+Math.sqrt((zeta-1)*(zeta+1)))))};
+  return {resonant,underdamped,resonanceSquared,peakFrequency:resonant?omega*Math.sqrt(resonanceSquared):0,peakGain:resonant?1/(2*zeta*Math.sqrt(1-zeta*zeta)):1,overshoot:positiveMetric(underdamped?-Math.PI*zeta/Math.sqrt((1-zeta)*(1+zeta)):0,!underdamped),timeSpan:8/(omega*(zeta<=1?zeta:1/(zeta+Math.sqrt((zeta-1)*(zeta+1)))))};
 }
 export function minimumPhase(w,{pole=1,zero=2,reflected=false,delay=0}={}) {
   bound(pole,.2,5);bound(zero,.2,5);bound(delay,0,2);if(typeof reflected!=='boolean')throw new RangeError('Boolean reflection required');finite(w);

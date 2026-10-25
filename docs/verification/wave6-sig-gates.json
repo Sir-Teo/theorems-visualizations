@@ -1,13 +1,16 @@
 {
-  "status": "Scientific prototype passes; native, Share, raw canvas and personal pixel gates pending. No SIG6 author-count promotion.",
+  "status": "All13 SIG6 lessons author-verified locally. No independent acceptance, release or deployment claim.",
   "frozenItems": 13,
   "referenceCases": 1480,
   "referenceFamilies": 15,
+  "additionalHighPrecisionRegressions": 1,
   "prototypeComparisonsIncludingInvariants": 3497,
+  "prototypeComparisonScope": "Historical prototype only; final numerical code is covered by18 focused groups and the independent fixture.",
   "focusedGroups": 18,
+  "focusedDurationMs": 117.185967,
   "referenceRegeneration": "canonical generator byte-identical",
   "referenceSHA256": "d06220ecba6dcafb6583d9bf6c494926a26a0827bcd744fc57ffa555ea57f3e2",
-  "scientificHelperSHA256": "c96544cde3ba1f47423ca4f2595a336c2df3835cfb5a64808e384cc9107c47e6",
+  "scientificHelperSHA256": "c83fe085c960f8fdc987f88c311837b5865e99b32b75cb607ae105a4ee5217e9",
   "strictCatalogue": {
     "written": 8476,
     "planned": 5098,
@@ -21,7 +24,7 @@
     "errors": 0,
     "warnings": 0
   },
-  "preliminaryNarrowModeRuns": {
+  "finalNarrowModeRuns": {
     "light": {
       "items": 13,
       "errors": 0,
@@ -35,14 +38,155 @@
       "qualityWarnings": 0
     }
   },
-  "visualLimit": "Preliminary mode runs do not establish native state replay, complete text/glyph fit or personal pixel quality.",
+  "native": {
+    "layouts": 52,
+    "actions": 980,
+    "replays": 472,
+    "checks": 2102,
+    "modelChecks": 1823746,
+    "invalidReplays": 52,
+    "rawReplays": 52,
+    "criticalReplays": 212
+  },
+  "nativeMethod": "Per-layout deltas of completed PASS cumulative counters. Retain refined-a IDs1/2/3/5/6, refined-b8/9/11/12/13, final-c4 and final-d7/10; omit the earlier4 and incomplete7. One invalid and one raw restore per completed layout; critical counts from the exact53-case inventory.",
+  "nativeLimits": "Completed disjoint lanes prove actual controls/Share and exact intended states. Final presentation-only repairs are closed by the separate uniform264-state paint/glyph audit; later prose-only recaptures add no native counts. All sliders are continuous step:any.",
+  "finalPaintGlyphAudit": {
+    "defaultLayouts": 52,
+    "criticalStates": 212,
+    "distinctStates": 264,
+    "failures": 0,
+    "checks": 474,
+    "scientificRenderComparisons": 429708,
+    "lanes": [
+      "/tmp/wave6-sig-paint-final-f-a",
+      "/tmp/wave6-sig-paint-final-f-b"
+    ],
+    "scope": "Raw fillText glyph bounds, full marker rings, at-paint mapped path coordinates versus final axes, complete rich-text bounds, full intended states and scientific data. Separate from native counters."
+  },
+  "proseOnlyClosure": {
+    "finalDefaultLayouts": 52,
+    "allWidgetPNGsByteIdenticalToPersonallyReviewedFinalF": true,
+    "rebuiltHeaderLayoutsRechecked": 16,
+    "additionalNativeActionsClaimed": 0
+  },
+  "personalPixels": {
+    "receipt": "/tmp/wave6-sig-research/pixel-review/receipt-final.json",
+    "sha256": "90db0721a20e7d9aae6c41f195d14dd52b71b38d299a198c2bc48b4c46ee5065",
+    "counts": {
+      "completeDefaultWidgets": 52,
+      "completeNarrowStatementAndScopeElements": 26,
+      "completeNarrowIdeaElements": 26,
+      "completeNarrowCaptions": 26,
+      "narrowCriticalPlotRegions": 106,
+      "selectedCompleteNarrowCriticalReadouts": 24
+    },
+    "qualifications": [
+      "Critical galleries show the top1100px containing complete plot regions; they do not establish complete long readouts.",
+      "Separate bottom1100px galleries show24 selected complete critical readouts.",
+      "All offered segmented options occur in reviewed defaults/critical views; actual native clicks for every option are covered separately.",
+      "Native controls/Share evidence predates final render-only repairs. The separate final264-state paint/glyph audit closes all those repairs. Final prose-only52-layout recapture and16-layout rebuilt-header recheck add no native-action counts."
+    ]
+  },
+  "scientificPreservation": {
+    "baseline": "54a0214a",
+    "exactExportedValuesAndFunctions": [
+      "HARMONICS",
+      "TAU",
+      "allpassLowStep",
+      "bound",
+      "cascadeStep",
+      "causalTruncation",
+      "choice",
+      "cis",
+      "crossing",
+      "finite",
+      "firstModel",
+      "firstResponse",
+      "firstStep",
+      "gainPhase",
+      "gauss",
+      "harmonicSignal",
+      "idealGain",
+      "idealImpulse",
+      "magnitude",
+      "minimumPhase",
+      "minimumStep",
+      "mul",
+      "negativeTimeWitness",
+      "phasePacket",
+      "positiveMetric",
+      "riseModel",
+      "secondImpulse",
+      "secondResponse",
+      "secondStep",
+      "si",
+      "sinc",
+      "taperGain",
+      "taperImpulse",
+      "taperStep",
+      "truncatedResponse"
+    ],
+    "changedFunctions": [
+      "bode",
+      "paleyModel",
+      "secondModel"
+    ],
+    "allowedChanges": {
+      "bode": "stable log1p exact gain and stable interior straight-line phase ramp; independent tiny-result references pass",
+      "paleyModel": "criterion wording only, exact function comparison after literal substitution",
+      "secondModel": "expose existing compensated discriminant only; exact function comparison after return-field substitution"
+    },
+    "frozenReferenceBytes": {
+      "tests/wave6-sig-reference.py": "0692ccee776e1e6367a2926279b6b0778f9416391d8eb7b7505f158e4ff06c6c",
+      "tests/fixtures/wave6-sig-reference.json": "d06220ecba6dcafb6583d9bf6c494926a26a0827bcd744fc57ffa555ea57f3e2"
+    },
+    "recentManifestFilesExact": 103,
+    "outsideContentAssetsFrozenPlan": "exact",
+    "allowedChangedContentFiles": [
+      "content/sig/ch06.js",
+      "content/sig/ch06.shared.js",
+      "content/sig/ch06.viz.js",
+      "content/sig/syllabus.js"
+    ]
+  },
+  "retainedFailures": {
+    "adjacentGain": "5/5 initial tiny-dB cases failed; stable single log1p ratio repaired.",
+    "adjacentPhaseRamp": "Chromium interior phase ramp returned false zero; independent90-digit regression and stable log-corner ratio repair.",
+    "initialDefaultBounds": "42/52 pass,10 fail;16 affected replacements close six overlapping original passes.",
+    "controlLabel": "Positive MIN saved frequency displayed0.00000; significant/scientific labels now preserve nonzero status.",
+    "firstOrderVisibility": "Autoscaling hid parameter effects; fixed tau=1s reference and dense fast-time grid added.",
+    "poleZeroGlyphs": "Fixed CSS-sized crosses and full real-axis extent replace distorted/truncated schematics.",
+    "paleyPaintTransform": "Actual curve was painted before final view; diagnostic four layouts reproduce coordinate drift, including49.0667CSSpx at logm=0. All views now set before paint; final264-state audit passes.",
+    "prose": "Short equations repair fitting, final whitespace/caption truth and process-detail cleanup personally recaptured.",
+    "qaOnly": "Typographic-minus parser and about:blank localStorage capture startup repaired; not product defects.",
+    "referencePreparation": "Original binary64 inputs replace decimal reconstruction before formal prototype checks."
+  },
   "logs": [
-    "/tmp/wave6-sig-research/focused-first.log",
-    "/tmp/wave6-sig-research/prototype-result.json",
+    "/tmp/wave6-sig-research/focused-final-prose.log",
     "/tmp/wave6-sig-research/reference-canonical-regen.log",
-    "/tmp/wave6-sig-research/build-first.log",
-    "/tmp/wave6-sig-research/static-first.log",
-    "/tmp/wave6-sig-research/modes-first-light.log",
-    "/tmp/wave6-sig-research/modes-first-dark.log"
-  ]
+    "/tmp/wave6-sig-research/build-final-prose.log",
+    "/tmp/wave6-sig-research/static-final-prose.log",
+    "/tmp/wave6-sig-research/modes-exact-final-light.log",
+    "/tmp/wave6-sig-research/modes-exact-final-dark.log",
+    "/tmp/wave6-sig-research/native-refined-a.log",
+    "/tmp/wave6-sig-research/native-refined-b.log",
+    "/tmp/wave6-sig-research/native-final-c.log",
+    "/tmp/wave6-sig-research/native-final-d.log",
+    "/tmp/wave6-sig-research/paint-final-f-a.log",
+    "/tmp/wave6-sig-research/paint-final-f-b.log",
+    "/tmp/wave6-sig-research/prose-final-g-a.log",
+    "/tmp/wave6-sig-research/prose-final-g-b.log",
+    "/tmp/wave6-sig-research/prose-final-h.log",
+    "/tmp/wave6-sig-research/transform-before.log",
+    "/tmp/wave6-sig-research/preservation-final.log"
+  ],
+  "availability": {
+    "authorVerifiedIncludingHistorical": 761,
+    "historicalIndependentlyAccepted": 36,
+    "additionalAuthorVerified": 725,
+    "frozenWaveTotal": 1057,
+    "latestIntegratedReadingRoster": 8463
+  },
+  "ownedBrowsersAndServers": "closed",
+  "scope": "Only SIG6 production modules/syllabus6 and its tests/verification/docs. No shared renderer/core/math or frozen plan changes."
 }

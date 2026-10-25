@@ -1,0 +1,16 @@
+{
+  "baseCommit": "54a0214ac1ddab226e9f49948093972a06b1e260",
+  "status": "All13 author-verified locally; no independent acceptance/release/deploy claim.",
+  "sha256": {
+    "content/sig/ch06.js": "0fc3063cfbded21324a9f46e46cf95a1f48609695f5f30c90183e8f5d527ca25",
+    "content/sig/ch06.shared.js": "c83fe085c960f8fdc987f88c311837b5865e99b32b75cb607ae105a4ee5217e9",
+    "content/sig/ch06.viz.js": "f8e81740ea5cb012aa4560b4ca72a23e43d431c65e3cc01cd6535fea37bba8f9",
+    "content/sig/syllabus.js": "9438db51dd7e73bb56309e875a0af7745072646c4a9a523552b01ca2e60feae0",
+    "tests/wave6-sig.test.mjs": "82089cac91217cb1bf8c4be574174972755d6ded0e1bb5fcad7ebcc20e5e8f2f",
+    "tests/wave6-sig-browser.mjs": "2f95c5718ff528a6644419e80d383dbbfe3175a3d028c5f629660052040ddbf2",
+    "tests/wave6-sig-reference.py": "0692ccee776e1e6367a2926279b6b0778f9416391d8eb7b7505f158e4ff06c6c",
+    "tests/fixtures/wave6-sig-reference.json": "d06220ecba6dcafb6583d9bf6c494926a26a0827bcd744fc57ffa555ea57f3e2",
+    "docs/verification/wave6-sig-sources.json": "bd97802f8c144077f586e1655ede5dee4fee6c031703b87f9e40b25e8b3340f2",
+    "docs/verification/wave6-sig-gates.json": "c1fccb0afa6326e10e9af50fae1ba343b52f5c2738889138839eb1da21e9a4f6"
+  }
+}
