@@ -1,0 +1,13 @@
+{
+  "baseCommit": "29ccf412ae512db76cb4c66406305b7f07f29018",
+  "status": "Pure-model/source checkpoint only. No CIRC6 main/viz/syllabus or author promotion.",
+  "sha256": {
+    "content/circ/ch06.shared.js": "faf8cb26d3fdfcf39b382b89554a95d0d5c26f2bfa5e75ca6e99d8ffd44eac69",
+    "content/circ/ch06.exact.shared.js": "315b5c2122348625585b830109d98aa7a6d98ff715f2ec0c05de3f1a8162846a",
+    "tests/wave6-circ.test.mjs": "01267182bbd0a978a4ad6eef3982a6dc003379b2f7847eda4875b288408d7c99",
+    "tests/wave6-circ-reference.py": "c09c1afb2a05480144cf791532d422002fa92aec93321088c2f082b5a57525d0",
+    "tests/fixtures/wave6-circ-reference.json": "81b5df853b4950498bfbc4daa4bf003b379b26f8435ece879682f37af4a29281",
+    "docs/verification/wave6-circ-sources.json": "5c973e77f894b8ed8d97972d095920bc1f94a004847dc94f883b673e764e7369",
+    "docs/verification/wave6-circ-gates.json": "e585812f8f2b1be30a04626939846baf159ed46572dc25f07f8c8b20a6a1c330"
+  }
+}

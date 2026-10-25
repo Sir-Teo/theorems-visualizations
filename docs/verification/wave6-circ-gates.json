@@ -1,0 +1,45 @@
+{
+  "status": "Pure-model/source checkpoint only. No CIRC6 main/viz/syllabus or author promotion.",
+  "frozenItems": 8,
+  "prerequisiteBodiesRead": 6,
+  "referenceCases": 676,
+  "referenceFamilies": 9,
+  "referenceSHA256": "81b5df853b4950498bfbc4daa4bf003b379b26f8435ece879682f37af4a29281",
+  "referenceRegeneration": "canonical generator byte-identical",
+  "referencePrecision": "90 digits ordinary;1800 digits for extreme original binary64 stimuli",
+  "focusedGroups": 16,
+  "focusedDurationMs": 29795.145155,
+  "historicalStrictPrototype": {
+    "cases": 669,
+    "comparisons": 5929,
+    "scope": "Before late-natural-tail anchor/slope repair and new reference cases; final676 have the16 focused groups."
+  },
+  "strictCatalogue": {
+    "written": 8489,
+    "planned": 5085,
+    "chapters": 583,
+    "collections": 85,
+    "errors": 0,
+    "warnings": 0
+  },
+  "priorManifestFilesExact": 124,
+  "authorAvailabilityUnchanged": 774,
+  "independentAcceptanceUnchanged": 36,
+  "nativeAndPersonalVisualGates": "pending; no browser opened for CIRC6 yet",
+  "logs": [
+    "/tmp/wave6-circ-research/focused-initial.log",
+    "/tmp/wave6-circ-research/reference-final-676.log",
+    "/tmp/wave6-circ-research/reference-canonical-676.log",
+    "/tmp/wave6-circ-research/build-pure-checkpoint.log",
+    "/tmp/wave6-circ-research/model-strict-tiny.log"
+  ],
+  "retainedFailures": [
+    "/tmp/wave6-circ-research/initial-tiny-time-loss.json",
+    "/tmp/wave6-circ-research/edge-tail-initial-failure.json",
+    "/tmp/wave6-circ-research/late-natural-tail-initial.json",
+    "/tmp/wave6-circ-research/critical-derivative-oracle-noise.json"
+  ],
+  "design": "/tmp/wave6-circ-research/design.md",
+  "visualImplementation": "/tmp/wave6-circ-research/viz-implementation.md",
+  "completeTemporaryExplanationDraft": "/tmp/wave6-circ-research/draft/ch06.js"
+}

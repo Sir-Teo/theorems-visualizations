@@ -1,0 +1,144 @@
+{
+  "status": "Pure-model/source checkpoint only. No CIRC6 main/viz/syllabus or author promotion.",
+  "frozenItems": 8,
+  "prerequisiteBodiesRead": 6,
+  "design": "/tmp/wave6-circ-research/design.md",
+  "acquisitions": [
+    {
+      "id": "mit-6002-lectures",
+      "requestedURL": "https://ocw.mit.edu/courses/6-002-circuits-and-electronics-spring-2007/pages/lecture-notes/",
+      "requestedUTC": "2026-10-25T10:36:22.680543+00:00",
+      "bodyRead": false,
+      "finalURL": "https://ocw.mit.edu/courses/6-002-circuits-and-electronics-spring-2007/pages/lecture-notes/",
+      "httpStatus": 200,
+      "contentType": "text/html",
+      "bytes": 63955,
+      "sha256": "1e01cdf40a4bcdf64a4b6acfe5217389a5891d7ea66d50ed52eca587600fa0cb",
+      "path": "/tmp/wave6-circ-research/mit-6002-lectures.html"
+    },
+    {
+      "id": "mit-circuits-handouts",
+      "requestedURL": "https://circuits.mit.edu/handouts/",
+      "requestedUTC": "2026-10-25T10:36:22.893739+00:00",
+      "bodyRead": false,
+      "error": "HTTP Error 404: Not Found",
+      "stop": "No retry or alternate host/cache recovery of this stopped work."
+    },
+    {
+      "id": "mit-6002-l15-resource",
+      "requestedURL": "https://ocw.mit.edu/courses/6-002-circuits-and-electronics-spring-2007/resources/6002_l15/",
+      "requestedUTC": "2026-10-25T10:37:18.720821+00:00",
+      "bodyRead": false,
+      "finalURL": "https://ocw.mit.edu/courses/6-002-circuits-and-electronics-spring-2007/resources/6002_l15/",
+      "httpStatus": 200,
+      "contentType": "text/html",
+      "bytes": 61624,
+      "sha256": "dac033bc6b0e543613115b803503e236bebae30c4ea1c7ba13b72883e2e3f923",
+      "path": "/tmp/wave6-circ-research/mit-6002-l15-resource.html"
+    },
+    {
+      "id": "mit-6002-l15",
+      "requestedURL": "https://ocw.mit.edu/courses/6-002-circuits-and-electronics-spring-2007/34dd2fd3821b725a8b2191558673296b_6002_l15.pdf",
+      "requestedUTC": "2026-10-25T10:37:19.008978+00:00",
+      "bodyRead": "Selected extracted PDF pages6–9,15–19; actual rendered PDF18 personally inspected.",
+      "finalURL": "https://ocw.mit.edu/courses/6-002-circuits-and-electronics-spring-2007/34dd2fd3821b725a8b2191558673296b_6002_l15.pdf",
+      "httpStatus": 200,
+      "contentType": "application/pdf",
+      "bytes": 200077,
+      "sha256": "d3eb6e1eaeae084f83d8750083f05750cfbe71ad214d93c3ce68748502ed8e01",
+      "path": "/tmp/wave6-circ-research/mit-6002-l15.pdf"
+    },
+    {
+      "id": "mit-6002-l15b-resource",
+      "requestedURL": "https://ocw.mit.edu/courses/6-002-circuits-and-electronics-spring-2007/resources/6002_l15b/",
+      "requestedUTC": "2026-10-25T10:37:19.280581+00:00",
+      "bodyRead": false,
+      "finalURL": "https://ocw.mit.edu/courses/6-002-circuits-and-electronics-spring-2007/resources/6002_l15b/",
+      "httpStatus": 200,
+      "contentType": "text/html",
+      "bytes": 61489,
+      "sha256": "be2db84a9c9b269ea68636277aa6e2ba199fe20b2d1441c5f95eef4a3abe0284",
+      "path": "/tmp/wave6-circ-research/mit-6002-l15b-resource.html"
+    },
+    {
+      "id": "mit-6002-l15b",
+      "requestedURL": "https://ocw.mit.edu/courses/6-002-circuits-and-electronics-spring-2007/c794c9c9e067b6c16274ed844894ace7_6002_l15b.pdf",
+      "requestedUTC": "2026-10-25T10:37:19.416325+00:00",
+      "bodyRead": "Selected extracted PDF pages10–24; actual rendered PDF10/18/19/24 personally inspected.",
+      "finalURL": "https://ocw.mit.edu/courses/6-002-circuits-and-electronics-spring-2007/c794c9c9e067b6c16274ed844894ace7_6002_l15b.pdf",
+      "httpStatus": 200,
+      "contentType": "application/pdf",
+      "bytes": 352736,
+      "sha256": "ef2c880583c65ea51e0c14133e0ad730126b43f9a5fd840bf26db7e14b7dce97",
+      "path": "/tmp/wave6-circ-research/mit-6002-l15b.pdf"
+    }
+  ],
+  "personallyViewedSourcePages": [
+    {
+      "path": "/tmp/wave6-circ-research/source-lc-energy-p18.png",
+      "sha256": "d0442fa42e1369fe58df76e72bb36ab358fbbcb4d9a31a9f986758a01faea8a2",
+      "personallyViewed": true
+    },
+    {
+      "path": "/tmp/wave6-circ-research/source-rlc-p10.png",
+      "sha256": "0e8b60e68281cbf690e10e94565294025b6120fa44f87112415f7dba2532f137",
+      "personallyViewed": true
+    },
+    {
+      "path": "/tmp/wave6-circ-research/source-regimes-p18.png",
+      "sha256": "8935ca0bf1e5f306769db217e919d4c30a6f67a5dcc36f48969f5667333c9056",
+      "personallyViewed": true
+    },
+    {
+      "path": "/tmp/wave6-circ-research/source-initial-state-p19.png",
+      "sha256": "1cbb140621f89f6e457e26216f36df8b146c3e7ec3afe888657c21f978150109",
+      "personallyViewed": true
+    },
+    {
+      "path": "/tmp/wave6-circ-research/source-poles-p24.png",
+      "sha256": "bb4ef1315b70a23fa28802b63532d2948372f78482ed87b6607660e9396261a7",
+      "personallyViewed": true
+    }
+  ],
+  "sourceCautions": [
+    "LC energy sketch misses doubled frequency over marked0–2π. Plot derived cos²/sin².",
+    "Intermediate current derivative on15b p19 swaps K coefficients in sine terms; final voltage formula and initial condition are correct.",
+    "Ringing does not stop exactly after Q cycles; no finite cutoff is adopted."
+  ],
+  "commercialBodies": "Agarwal–Lang and Horowitz–Hill commercial bodies not requested or read.",
+  "inheritedStops": "All earlier source stops bind; especially ADI charge-sharing timeout and existing CIRC4.17 queue.",
+  "authorAvailabilityUnchanged": 774,
+  "independentAcceptanceUnchanged": 36,
+  "prototypeCheckpoint": {
+    "sourceScope": "Temporary draft only; no production CIRC6 files or author promotion.",
+    "independentCases": 676,
+    "families": 9,
+    "scalarComparisonsInInitialPass": 4362,
+    "initialFailures": 2,
+    "failureReceipt": "/tmp/wave6-circ-research/edge-tail-initial-failure.json",
+    "firstRepair": "Original tiny normalized time retained rationally, so positive below-range states/heat are not mislabelled zero.",
+    "secondRepair": "Late finite-rise current uses decaying error dynamics; the recheck passes all572 cases and4362 scalar comparisons.Expanded root/parallel/mechanical cases are being generated.",
+    "repairedResult": "16 durable focused groups; strict669/5929 historical prototype receipt precedes final tail repair",
+    "focusedGroups": 16,
+    "focusedDurationMs": 29795.145155,
+    "referenceRegeneration": "canonical generator byte-identical",
+    "referenceSHA256": "81b5df853b4950498bfbc4daa4bf003b379b26f8435ece879682f37af4a29281",
+    "thirdRepair": "Switch voltage evaluation between initial-state and source/error anchors, retaining a free tail when the step coefficient rounds to1. Current derivatives use propagated slopes, avoiding cancellation against a rounded equilibrium voltage.",
+    "oracleRepair": "A−6.1e−92 residual at exact critical t1 was an oracle subtraction artifact. Its critical derivative now evaluates the exact polynomial coefficient before its exponential.",
+    "retainedFailures": [
+      "/tmp/wave6-circ-research/initial-tiny-time-loss.json",
+      "/tmp/wave6-circ-research/edge-tail-initial-failure.json",
+      "/tmp/wave6-circ-research/late-natural-tail-initial.json",
+      "/tmp/wave6-circ-research/critical-derivative-oracle-noise.json"
+    ]
+  },
+  "prerequisiteReceipt": "/tmp/wave6-circ-research/written-prerequisites.json",
+  "frozenPacket": "/tmp/wave6-circ-research/frozen-chapter.json",
+  "sourceTextLimits": {
+    "lecture15": "Extracted lines125–220 and358–489, PDF6–9/15–19; source-page energy timing caution verified in pixels.",
+    "lecture15b": "Extracted lines201–660, PDF10–24; selected diagrams/equations personally viewed on10/18/19/24. Other diagram pixels are not claimed read."
+  },
+  "priorCheckpoint": "CTRL6 completed at29ccf412; its11-file manifest and all113 earlier recent-chapter files must remain exact.",
+  "temporaryDraft": "/tmp/wave6-circ-research/draft/ch06.js",
+  "visualImplementation": "/tmp/wave6-circ-research/viz-implementation.md"
+}
