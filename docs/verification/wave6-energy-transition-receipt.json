@@ -1,0 +1,35 @@
+{
+  "status": "Transition precision repaired; full native matrix and post-repair personal gates in progress",
+  "originalModelCheckpoint": "18363029",
+  "referenceCases": 1221,
+  "addedCases": 87,
+  "families": {
+    "air": 84,
+    "battery": 32,
+    "capacitor": 36,
+    "cycleLife": 52,
+    "flywheel": 138,
+    "hydro": 260,
+    "hydrogen": 69,
+    "nernst": 124,
+    "peukert": 55,
+    "ragone": 31,
+    "soc": 150,
+    "storage": 190
+  },
+  "all1134EarlierArgsAndFields": "exactly unchanged",
+  "canonical": "byte identical",
+  "focusedAndAffectedGroups": 36,
+  "failedBeforeRepair": "Nernst independent-reference group; all17 other focused groups passed",
+  "initialRelativeLogError": 4.470016809174403e-11,
+  "repair": "Use log1p of the exact-rational quotient difference for the ordinary near-one branch; small rational series retained. No model domain or physical equation changes.",
+  "nativeEndpointRepair": "Chrome End returned1.66666666666667 above5/3; chapter-local onChange corrects native endpoint rounding using public set. Core saved-state range validation precedes onChange; adjacent invalid gamma restore cases added.",
+  "sha256": {
+    "content/energy/ch06.shared.js": "b3d6deae1ab896f88c5d86c055aeb1638fd48144ee724d72106feba3d8342dc2",
+    "content/energy/ch06.viz.js": "128afbcda69956894319544d9e13b6811f6d13da3b07dd854c0fc9016868001f",
+    "tests/wave6-energy-reference.py": "d492fc7009bda438c321ad68c536a3129e5eb93e901ab60cb71525c705ed3f14",
+    "tests/fixtures/wave6-energy-reference.json": "deeabd6a2c8a43a4c41afd8c3b266329b4d5fe80ddf63c03ef9d8585f0203b9e",
+    "tests/wave6-energy.test.mjs": "fb3cd51865c6e3bc0d0313d424f2f06c38c53748ddc094f4b72bdf5c8b1b557a",
+    "tests/wave6-energy-browser.mjs": "4394b0ebdd006eb3d559c33bd3b75b01c54add56a6c0e6cbd0ed26d679b97787"
+  }
+}

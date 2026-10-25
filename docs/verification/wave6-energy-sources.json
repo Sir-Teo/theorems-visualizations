@@ -1,5 +1,5 @@
 {
-  "status": "Models verified against1134 independent references; main/viz/syllabus pending and no ENERGY6 author promotion.",
+  "status": "Twelve frozen lesson drafts and24 purpose-built panels installed;1221 independent references/36 focused+affected groups pass; browser and personal gates in progress, no author promotion.",
   "frozenPacket": "/tmp/wave6-energy-research/frozen-chapter.json",
   "prerequisiteBodies": "/tmp/wave6-energy-research/prerequisite-bodies.json",
   "prerequisiteReceipt": "/tmp/wave6-energy-research/written-prerequisites-read.json",
@@ -246,9 +246,9 @@
     "Every prior ENERGY5, CIRC6, CTRL6 and earlier original-body/figure access stop remains binding; no retries or alternate recovery."
   ],
   "commercialBodies": "Tester/MacKay/Newman/Bard/Huggins/OHayre and original Peukert body not requested/read.",
-  "implementationDesign": "Twelve pure models installed;17 focused groups, canonical reference regeneration and complete UI/personal gates remain explicitly separated.",
+  "implementationDesign": "Twelve pure models, complete statement/idea/scope/caption fields and responsive views;18 focused groups and18 affected Wave5 groups pass. See in-progress browser gates.",
   "authorAvailabilityUnchanged": 782,
   "independentAcceptanceUnchanged": 36,
-  "productionMainVizSyllabusInstalled": false,
+  "productionMainVizSyllabusInstalled": true,
   "modelReceipt": "docs/verification/wave6-energy-model-receipt.json"
 }

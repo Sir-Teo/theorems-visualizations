@@ -8,7 +8,7 @@ const abs=q=>Q.sign(q)<0?Q.neg(q):Q.exact(q);
 const minQ=(a,b)=>Q.sign(Q.sub(a,b))<=0?Q.exact(a):Q.exact(b);
 const maxQ=(a,b)=>Q.sign(Q.sub(a,b))>=0?Q.exact(a):Q.exact(b);
 export const KB=Q.rational(1380649n,10n**29n),ELEMENTARY_CHARGE=Q.rational(1602176634n,10n**28n),AVOGADRO=Q.rational(602214076000000000000000n),GAS_CONSTANT=Q.mul(KB,AVOGADRO),FARADAY=Q.mul(ELEMENTARY_CHARGE,AVOGADRO),GRAVITY=Q.rational(980665n,100000n);
-export function qLog(r){r=Q.exact(r);if(Q.sign(r)<=0)throw Error('positive logarithm argument required');const delta=Q.sub(r,1),x=Q.approximate(delta);if(Math.abs(x)<1e-6){let term=delta,sum=delta;for(let k=2;k<=12;k++){term=Q.mul(term,delta);sum=Q.add(sum,Q.mul(k%2?1:-1,Q.div(term,k)));}return sum;}const v=Q.approximate(r);return Q.exact(Number.isFinite(v)&&v>0?Math.log(v):Q.logAbs(r));}
+export function qLog(r){r=Q.exact(r);if(Q.sign(r)<=0)throw Error('positive logarithm argument required');const delta=Q.sub(r,1),x=Q.approximate(delta);if(Math.abs(x)<1e-6){let term=delta,sum=delta;for(let k=2;k<=12;k++){term=Q.mul(term,delta);sum=Q.add(sum,Q.mul(k%2?1:-1,Q.div(term,k)));}return sum;}if(Math.abs(x)<.5)return Q.exact(Math.log1p(x));const v=Q.approximate(r);return Q.exact(Number.isFinite(v)&&v>0?Math.log(v):Q.logAbs(r));}
 export function qExpm1(x){x=Q.exact(x);const v=Q.approximate(x);if(Math.abs(v)<1e-6){let term=x,sum=x;for(let k=2;k<=3;k++){term=Q.div(Q.mul(term,x),k);sum=Q.add(sum,term);}return sum;}return Q.exact(Math.expm1(v));}
 const qExp=x=>Math.abs(Q.approximate(x))<1e-6?Q.add(1,qExpm1(x)):Q.exact(Math.exp(Q.approximate(x)));
 export function storageCycle({capacity=100,chargePower=25,dischargePower=25,etaCharge=.9,etaDischarge=.9,progress=.5}={}){

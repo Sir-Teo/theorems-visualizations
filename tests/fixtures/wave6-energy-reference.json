@@ -6895,6 +6895,1461 @@
             "value": 0.9999999999999999
           }
         }
+      },
+      {
+        "args": {
+          "progress": 5.152482288889154e-07
+        },
+        "expect": {
+          "adiabaticWork": {
+            "logMagnitude": 8.438451499219827,
+            "sign": 1,
+            "value": 4621.393209991875
+          },
+          "ambientHeat": {
+            "logMagnitude": 8.148413217187676,
+            "sign": 1,
+            "value": 3457.8877929863875
+          },
+          "compressedVolume": {
+            "logMagnitude": -5.077440868880725,
+            "sign": 1,
+            "value": 0.00623584696361493
+          },
+          "coolingHeat": {
+            "logMagnitude": 8.438451499219827,
+            "sign": 1,
+            "value": 4621.393209991875
+          },
+          "initialVolume": {
+            "logMagnitude": -3.691146507760834,
+            "sign": 1,
+            "value": 0.02494338785445972
+          },
+          "isothermalWork": {
+            "logMagnitude": 8.148413217187676,
+            "sign": 1,
+            "value": 3457.8877929863875
+          },
+          "lostWork": {
+            "logMagnitude": 7.0591926385161985,
+            "sign": 1,
+            "value": 1163.5054170054873
+          },
+          "partialExcessWork": {
+            "logMagnitude": -22.09162444915758,
+            "sign": 1,
+            "value": 2.545243901022513e-10
+          },
+          "partialWork": {
+            "logMagnitude": -6.330203694518946,
+            "sign": 1,
+            "value": 0.001781670815557227
+          },
+          "pressure": {
+            "logMagnitude": 11.512926464970228,
+            "sign": 1,
+            "value": 100000.10000005
+          },
+          "pressureRise": {
+            "logMagnitude": -2.302584592994004,
+            "sign": 1,
+            "value": 0.10000005000001665
+          },
+          "recoveredWork": {
+            "logMagnitude": 8.148413217187676,
+            "sign": 1,
+            "value": 3457.8877929863875
+          },
+          "residual": {
+            "logMagnitude": null,
+            "sign": 0,
+            "value": 0.0
+          },
+          "temperature": {
+            "logMagnitude": 5.703782760370487,
+            "sign": 1,
+            "value": 300.00008571429794
+          },
+          "temperatureRise": {
+            "logMagnitude": -9.364490908946296,
+            "sign": 1,
+            "value": 8.57142979591848e-05
+          },
+          "volume": {
+            "logMagnitude": -3.691147222046548,
+            "sign": 1,
+            "value": 0.02494337003776047
+          },
+          "volumeDrop": {
+            "logMagnitude": -17.843129659489158,
+            "sign": 1,
+            "value": 1.7816699247220737e-08
+          },
+          "workEfficiency": {
+            "logMagnitude": -0.2900382820321512,
+            "sign": 1,
+            "value": 0.748234923076902
+          }
+        }
+      },
+      {
+        "args": {
+          "progress": 5.152482288889155e-07
+        },
+        "expect": {
+          "adiabaticWork": {
+            "logMagnitude": 8.438451499219827,
+            "sign": 1,
+            "value": 4621.393209991875
+          },
+          "ambientHeat": {
+            "logMagnitude": 8.148413217187676,
+            "sign": 1,
+            "value": 3457.8877929863875
+          },
+          "compressedVolume": {
+            "logMagnitude": -5.077440868880725,
+            "sign": 1,
+            "value": 0.00623584696361493
+          },
+          "coolingHeat": {
+            "logMagnitude": 8.438451499219827,
+            "sign": 1,
+            "value": 4621.393209991875
+          },
+          "initialVolume": {
+            "logMagnitude": -3.691146507760834,
+            "sign": 1,
+            "value": 0.02494338785445972
+          },
+          "isothermalWork": {
+            "logMagnitude": 8.148413217187676,
+            "sign": 1,
+            "value": 3457.8877929863875
+          },
+          "lostWork": {
+            "logMagnitude": 7.0591926385161985,
+            "sign": 1,
+            "value": 1163.5054170054873
+          },
+          "partialExcessWork": {
+            "logMagnitude": -22.09162444915758,
+            "sign": 1,
+            "value": 2.545243901022514e-10
+          },
+          "partialWork": {
+            "logMagnitude": -6.330203694518946,
+            "sign": 1,
+            "value": 0.0017816708155572274
+          },
+          "pressure": {
+            "logMagnitude": 11.512926464970228,
+            "sign": 1,
+            "value": 100000.10000005
+          },
+          "pressureRise": {
+            "logMagnitude": -2.302584592994004,
+            "sign": 1,
+            "value": 0.10000005000001667
+          },
+          "recoveredWork": {
+            "logMagnitude": 8.148413217187676,
+            "sign": 1,
+            "value": 3457.8877929863875
+          },
+          "residual": {
+            "logMagnitude": null,
+            "sign": 0,
+            "value": 0.0
+          },
+          "temperature": {
+            "logMagnitude": 5.703782760370487,
+            "sign": 1,
+            "value": 300.00008571429794
+          },
+          "temperatureRise": {
+            "logMagnitude": -9.364490908946294,
+            "sign": 1,
+            "value": 8.571429795918483e-05
+          },
+          "volume": {
+            "logMagnitude": -3.691147222046548,
+            "sign": 1,
+            "value": 0.02494337003776047
+          },
+          "volumeDrop": {
+            "logMagnitude": -17.843129659489158,
+            "sign": 1,
+            "value": 1.781669924722074e-08
+          },
+          "workEfficiency": {
+            "logMagnitude": -0.2900382820321512,
+            "sign": 1,
+            "value": 0.748234923076902
+          }
+        }
+      },
+      {
+        "args": {
+          "progress": 5.152482288889156e-07
+        },
+        "expect": {
+          "adiabaticWork": {
+            "logMagnitude": 8.438451499219827,
+            "sign": 1,
+            "value": 4621.393209991875
+          },
+          "ambientHeat": {
+            "logMagnitude": 8.148413217187676,
+            "sign": 1,
+            "value": 3457.8877929863875
+          },
+          "compressedVolume": {
+            "logMagnitude": -5.077440868880725,
+            "sign": 1,
+            "value": 0.00623584696361493
+          },
+          "coolingHeat": {
+            "logMagnitude": 8.438451499219827,
+            "sign": 1,
+            "value": 4621.393209991875
+          },
+          "initialVolume": {
+            "logMagnitude": -3.691146507760834,
+            "sign": 1,
+            "value": 0.02494338785445972
+          },
+          "isothermalWork": {
+            "logMagnitude": 8.148413217187676,
+            "sign": 1,
+            "value": 3457.8877929863875
+          },
+          "lostWork": {
+            "logMagnitude": 7.0591926385161985,
+            "sign": 1,
+            "value": 1163.5054170054873
+          },
+          "partialExcessWork": {
+            "logMagnitude": -22.09162444915758,
+            "sign": 1,
+            "value": 2.545243901022515e-10
+          },
+          "partialWork": {
+            "logMagnitude": -6.330203694518946,
+            "sign": 1,
+            "value": 0.0017816708155572278
+          },
+          "pressure": {
+            "logMagnitude": 11.512926464970228,
+            "sign": 1,
+            "value": 100000.10000005
+          },
+          "pressureRise": {
+            "logMagnitude": -2.3025845929940036,
+            "sign": 1,
+            "value": 0.10000005000001669
+          },
+          "recoveredWork": {
+            "logMagnitude": 8.148413217187676,
+            "sign": 1,
+            "value": 3457.8877929863875
+          },
+          "residual": {
+            "logMagnitude": null,
+            "sign": 0,
+            "value": 0.0
+          },
+          "temperature": {
+            "logMagnitude": 5.703782760370487,
+            "sign": 1,
+            "value": 300.00008571429794
+          },
+          "temperatureRise": {
+            "logMagnitude": -9.364490908946294,
+            "sign": 1,
+            "value": 8.571429795918484e-05
+          },
+          "volume": {
+            "logMagnitude": -3.691147222046548,
+            "sign": 1,
+            "value": 0.02494337003776047
+          },
+          "volumeDrop": {
+            "logMagnitude": -17.843129659489158,
+            "sign": 1,
+            "value": 1.7816699247220744e-08
+          },
+          "workEfficiency": {
+            "logMagnitude": -0.2900382820321512,
+            "sign": 1,
+            "value": 0.748234923076902
+          }
+        }
+      },
+      {
+        "args": {
+          "progress": 1.8033688011112042e-06
+        },
+        "expect": {
+          "adiabaticWork": {
+            "logMagnitude": 8.438451499219827,
+            "sign": 1,
+            "value": 4621.393209991875
+          },
+          "ambientHeat": {
+            "logMagnitude": 8.148413217187676,
+            "sign": 1,
+            "value": 3457.8877929863875
+          },
+          "compressedVolume": {
+            "logMagnitude": -5.077440868880725,
+            "sign": 1,
+            "value": 0.00623584696361493
+          },
+          "coolingHeat": {
+            "logMagnitude": 8.438451499219827,
+            "sign": 1,
+            "value": 4621.393209991875
+          },
+          "initialVolume": {
+            "logMagnitude": -3.691146507760834,
+            "sign": 1,
+            "value": 0.02494338785445972
+          },
+          "isothermalWork": {
+            "logMagnitude": 8.148413217187676,
+            "sign": 1,
+            "value": 3457.8877929863875
+          },
+          "lostWork": {
+            "logMagnitude": 7.0591926385161985,
+            "sign": 1,
+            "value": 1163.5054170054873
+          },
+          "partialExcessWork": {
+            "logMagnitude": -19.586098274071585,
+            "sign": 1,
+            "value": 3.1179245211155513e-09
+          },
+          "partialWork": {
+            "logMagnitude": -5.077440368880683,
+            "sign": 1,
+            "value": 0.006235850081539451
+          },
+          "pressure": {
+            "logMagnitude": 11.512928964970229,
+            "sign": 1,
+            "value": 100000.3500006125
+          },
+          "pressureRise": {
+            "logMagnitude": -1.0498203744981673,
+            "sign": 1,
+            "value": 0.35000061250071457
+          },
+          "recoveredWork": {
+            "logMagnitude": 8.148413217187676,
+            "sign": 1,
+            "value": 3457.8877929863875
+          },
+          "residual": {
+            "logMagnitude": null,
+            "sign": 0,
+            "value": 0.0
+          },
+          "temperature": {
+            "logMagnitude": 5.703783474656201,
+            "sign": 1,
+            "value": 300.00030000015
+          },
+          "temperatureRise": {
+            "logMagnitude": -8.111727583308031,
+            "sign": 1,
+            "value": 0.0003000001500000499
+          },
+          "volume": {
+            "logMagnitude": -3.691149007760834,
+            "sign": 1,
+            "value": 0.024943325496068033
+          },
+          "volumeDrop": {
+            "logMagnitude": -16.590367583850693,
+            "sign": 1,
+            "value": 6.235839168812721e-08
+          },
+          "workEfficiency": {
+            "logMagnitude": -0.2900382820321512,
+            "sign": 1,
+            "value": 0.748234923076902
+          }
+        }
+      },
+      {
+        "args": {
+          "progress": 1.8033688011112044e-06
+        },
+        "expect": {
+          "adiabaticWork": {
+            "logMagnitude": 8.438451499219827,
+            "sign": 1,
+            "value": 4621.393209991875
+          },
+          "ambientHeat": {
+            "logMagnitude": 8.148413217187676,
+            "sign": 1,
+            "value": 3457.8877929863875
+          },
+          "compressedVolume": {
+            "logMagnitude": -5.077440868880725,
+            "sign": 1,
+            "value": 0.00623584696361493
+          },
+          "coolingHeat": {
+            "logMagnitude": 8.438451499219827,
+            "sign": 1,
+            "value": 4621.393209991875
+          },
+          "initialVolume": {
+            "logMagnitude": -3.691146507760834,
+            "sign": 1,
+            "value": 0.02494338785445972
+          },
+          "isothermalWork": {
+            "logMagnitude": 8.148413217187676,
+            "sign": 1,
+            "value": 3457.8877929863875
+          },
+          "lostWork": {
+            "logMagnitude": 7.0591926385161985,
+            "sign": 1,
+            "value": 1163.5054170054873
+          },
+          "partialExcessWork": {
+            "logMagnitude": -19.586098274071585,
+            "sign": 1,
+            "value": 3.1179245211155517e-09
+          },
+          "partialWork": {
+            "logMagnitude": -5.077440368880683,
+            "sign": 1,
+            "value": 0.006235850081539452
+          },
+          "pressure": {
+            "logMagnitude": 11.512928964970229,
+            "sign": 1,
+            "value": 100000.3500006125
+          },
+          "pressureRise": {
+            "logMagnitude": -1.0498203744981673,
+            "sign": 1,
+            "value": 0.35000061250071457
+          },
+          "recoveredWork": {
+            "logMagnitude": 8.148413217187676,
+            "sign": 1,
+            "value": 3457.8877929863875
+          },
+          "residual": {
+            "logMagnitude": null,
+            "sign": 0,
+            "value": 0.0
+          },
+          "temperature": {
+            "logMagnitude": 5.703783474656201,
+            "sign": 1,
+            "value": 300.00030000015
+          },
+          "temperatureRise": {
+            "logMagnitude": -8.111727583308031,
+            "sign": 1,
+            "value": 0.00030000015000004995
+          },
+          "volume": {
+            "logMagnitude": -3.691149007760834,
+            "sign": 1,
+            "value": 0.024943325496068033
+          },
+          "volumeDrop": {
+            "logMagnitude": -16.590367583850693,
+            "sign": 1,
+            "value": 6.235839168812722e-08
+          },
+          "workEfficiency": {
+            "logMagnitude": -0.2900382820321512,
+            "sign": 1,
+            "value": 0.748234923076902
+          }
+        }
+      },
+      {
+        "args": {
+          "progress": 1.8033688011112046e-06
+        },
+        "expect": {
+          "adiabaticWork": {
+            "logMagnitude": 8.438451499219827,
+            "sign": 1,
+            "value": 4621.393209991875
+          },
+          "ambientHeat": {
+            "logMagnitude": 8.148413217187676,
+            "sign": 1,
+            "value": 3457.8877929863875
+          },
+          "compressedVolume": {
+            "logMagnitude": -5.077440868880725,
+            "sign": 1,
+            "value": 0.00623584696361493
+          },
+          "coolingHeat": {
+            "logMagnitude": 8.438451499219827,
+            "sign": 1,
+            "value": 4621.393209991875
+          },
+          "initialVolume": {
+            "logMagnitude": -3.691146507760834,
+            "sign": 1,
+            "value": 0.02494338785445972
+          },
+          "isothermalWork": {
+            "logMagnitude": 8.148413217187676,
+            "sign": 1,
+            "value": 3457.8877929863875
+          },
+          "lostWork": {
+            "logMagnitude": 7.0591926385161985,
+            "sign": 1,
+            "value": 1163.5054170054873
+          },
+          "partialExcessWork": {
+            "logMagnitude": -19.58609827407158,
+            "sign": 1,
+            "value": 3.1179245211155525e-09
+          },
+          "partialWork": {
+            "logMagnitude": -5.077440368880683,
+            "sign": 1,
+            "value": 0.0062358500815394525
+          },
+          "pressure": {
+            "logMagnitude": 11.512928964970229,
+            "sign": 1,
+            "value": 100000.3500006125
+          },
+          "pressureRise": {
+            "logMagnitude": -1.0498203744981671,
+            "sign": 1,
+            "value": 0.3500006125007146
+          },
+          "recoveredWork": {
+            "logMagnitude": 8.148413217187676,
+            "sign": 1,
+            "value": 3457.8877929863875
+          },
+          "residual": {
+            "logMagnitude": null,
+            "sign": 0,
+            "value": 0.0
+          },
+          "temperature": {
+            "logMagnitude": 5.703783474656201,
+            "sign": 1,
+            "value": 300.00030000015
+          },
+          "temperatureRise": {
+            "logMagnitude": -8.111727583308031,
+            "sign": 1,
+            "value": 0.00030000015000005
+          },
+          "volume": {
+            "logMagnitude": -3.691149007760834,
+            "sign": 1,
+            "value": 0.024943325496068033
+          },
+          "volumeDrop": {
+            "logMagnitude": -16.590367583850693,
+            "sign": 1,
+            "value": 6.235839168812722e-08
+          },
+          "workEfficiency": {
+            "logMagnitude": -0.2900382820321512,
+            "sign": 1,
+            "value": 0.748234923076902
+          }
+        }
+      },
+      {
+        "args": {
+          "progress": 7.213475204444816e-07
+        },
+        "expect": {
+          "adiabaticWork": {
+            "logMagnitude": 8.438451499219827,
+            "sign": 1,
+            "value": 4621.393209991875
+          },
+          "ambientHeat": {
+            "logMagnitude": 8.148413217187676,
+            "sign": 1,
+            "value": 3457.8877929863875
+          },
+          "compressedVolume": {
+            "logMagnitude": -5.077440868880725,
+            "sign": 1,
+            "value": 0.00623584696361493
+          },
+          "coolingHeat": {
+            "logMagnitude": 8.438451499219827,
+            "sign": 1,
+            "value": 4621.393209991875
+          },
+          "initialVolume": {
+            "logMagnitude": -3.691146507760834,
+            "sign": 1,
+            "value": 0.02494338785445972
+          },
+          "isothermalWork": {
+            "logMagnitude": 8.148413217187676,
+            "sign": 1,
+            "value": 3457.8877929863875
+          },
+          "lostWork": {
+            "logMagnitude": 7.0591926385161985,
+            "sign": 1,
+            "value": 1163.5054170054873
+          },
+          "partialExcessWork": {
+            "logMagnitude": -21.418679937819917,
+            "sign": 1,
+            "value": 4.988678236049018e-10
+          },
+          "partialWork": {
+            "logMagnitude": -5.993731400754873,
+            "sign": 1,
+            "value": 0.002494339284313795
+          },
+          "pressure": {
+            "logMagnitude": 11.512926864970229,
+            "sign": 1,
+            "value": 100000.140000098
+          },
+          "pressureRise": {
+            "logMagnitude": -1.9661121563727513,
+            "sign": 1,
+            "value": 0.1400000980000457
+          },
+          "recoveredWork": {
+            "logMagnitude": 8.148413217187676,
+            "sign": 1,
+            "value": 3457.8877929863875
+          },
+          "residual": {
+            "logMagnitude": null,
+            "sign": 0,
+            "value": 0.0
+          },
+          "temperature": {
+            "logMagnitude": 5.703782874656201,
+            "sign": 1,
+            "value": 300.000120000024
+          },
+          "temperatureRise": {
+            "logMagnitude": -9.028018615182221,
+            "sign": 1,
+            "value": 0.00012000002400000316
+          },
+          "volume": {
+            "logMagnitude": -3.6911475077608342,
+            "sign": 1,
+            "value": 0.024943362911084337
+          },
+          "volumeDrop": {
+            "logMagnitude": -17.506657565725067,
+            "sign": 1,
+            "value": 2.4943375382769945e-08
+          },
+          "workEfficiency": {
+            "logMagnitude": -0.2900382820321512,
+            "sign": 1,
+            "value": 0.748234923076902
+          }
+        }
+      },
+      {
+        "args": {
+          "progress": 7.213475204444817e-07
+        },
+        "expect": {
+          "adiabaticWork": {
+            "logMagnitude": 8.438451499219827,
+            "sign": 1,
+            "value": 4621.393209991875
+          },
+          "ambientHeat": {
+            "logMagnitude": 8.148413217187676,
+            "sign": 1,
+            "value": 3457.8877929863875
+          },
+          "compressedVolume": {
+            "logMagnitude": -5.077440868880725,
+            "sign": 1,
+            "value": 0.00623584696361493
+          },
+          "coolingHeat": {
+            "logMagnitude": 8.438451499219827,
+            "sign": 1,
+            "value": 4621.393209991875
+          },
+          "initialVolume": {
+            "logMagnitude": -3.691146507760834,
+            "sign": 1,
+            "value": 0.02494338785445972
+          },
+          "isothermalWork": {
+            "logMagnitude": 8.148413217187676,
+            "sign": 1,
+            "value": 3457.8877929863875
+          },
+          "lostWork": {
+            "logMagnitude": 7.0591926385161985,
+            "sign": 1,
+            "value": 1163.5054170054873
+          },
+          "partialExcessWork": {
+            "logMagnitude": -21.418679937819917,
+            "sign": 1,
+            "value": 4.988678236049019e-10
+          },
+          "partialWork": {
+            "logMagnitude": -5.993731400754873,
+            "sign": 1,
+            "value": 0.0024943392843137955
+          },
+          "pressure": {
+            "logMagnitude": 11.512926864970229,
+            "sign": 1,
+            "value": 100000.140000098
+          },
+          "pressureRise": {
+            "logMagnitude": -1.9661121563727513,
+            "sign": 1,
+            "value": 0.14000009800004573
+          },
+          "recoveredWork": {
+            "logMagnitude": 8.148413217187676,
+            "sign": 1,
+            "value": 3457.8877929863875
+          },
+          "residual": {
+            "logMagnitude": null,
+            "sign": 0,
+            "value": 0.0
+          },
+          "temperature": {
+            "logMagnitude": 5.703782874656201,
+            "sign": 1,
+            "value": 300.000120000024
+          },
+          "temperatureRise": {
+            "logMagnitude": -9.028018615182221,
+            "sign": 1,
+            "value": 0.00012000002400000317
+          },
+          "volume": {
+            "logMagnitude": -3.6911475077608342,
+            "sign": 1,
+            "value": 0.024943362911084337
+          },
+          "volumeDrop": {
+            "logMagnitude": -17.506657565725067,
+            "sign": 1,
+            "value": 2.494337538276995e-08
+          },
+          "workEfficiency": {
+            "logMagnitude": -0.2900382820321512,
+            "sign": 1,
+            "value": 0.748234923076902
+          }
+        }
+      },
+      {
+        "args": {
+          "progress": 7.213475204444818e-07
+        },
+        "expect": {
+          "adiabaticWork": {
+            "logMagnitude": 8.438451499219827,
+            "sign": 1,
+            "value": 4621.393209991875
+          },
+          "ambientHeat": {
+            "logMagnitude": 8.148413217187676,
+            "sign": 1,
+            "value": 3457.8877929863875
+          },
+          "compressedVolume": {
+            "logMagnitude": -5.077440868880725,
+            "sign": 1,
+            "value": 0.00623584696361493
+          },
+          "coolingHeat": {
+            "logMagnitude": 8.438451499219827,
+            "sign": 1,
+            "value": 4621.393209991875
+          },
+          "initialVolume": {
+            "logMagnitude": -3.691146507760834,
+            "sign": 1,
+            "value": 0.02494338785445972
+          },
+          "isothermalWork": {
+            "logMagnitude": 8.148413217187676,
+            "sign": 1,
+            "value": 3457.8877929863875
+          },
+          "lostWork": {
+            "logMagnitude": 7.0591926385161985,
+            "sign": 1,
+            "value": 1163.5054170054873
+          },
+          "partialExcessWork": {
+            "logMagnitude": -21.418679937819917,
+            "sign": 1,
+            "value": 4.98867823604902e-10
+          },
+          "partialWork": {
+            "logMagnitude": -5.993731400754873,
+            "sign": 1,
+            "value": 0.002494339284313796
+          },
+          "pressure": {
+            "logMagnitude": 11.512926864970229,
+            "sign": 1,
+            "value": 100000.140000098
+          },
+          "pressureRise": {
+            "logMagnitude": -1.966112156372751,
+            "sign": 1,
+            "value": 0.14000009800004573
+          },
+          "recoveredWork": {
+            "logMagnitude": 8.148413217187676,
+            "sign": 1,
+            "value": 3457.8877929863875
+          },
+          "residual": {
+            "logMagnitude": null,
+            "sign": 0,
+            "value": 0.0
+          },
+          "temperature": {
+            "logMagnitude": 5.703782874656201,
+            "sign": 1,
+            "value": 300.000120000024
+          },
+          "temperatureRise": {
+            "logMagnitude": -9.028018615182221,
+            "sign": 1,
+            "value": 0.00012000002400000319
+          },
+          "volume": {
+            "logMagnitude": -3.6911475077608342,
+            "sign": 1,
+            "value": 0.024943362911084337
+          },
+          "volumeDrop": {
+            "logMagnitude": -17.506657565725067,
+            "sign": 1,
+            "value": 2.4943375382769955e-08
+          },
+          "workEfficiency": {
+            "logMagnitude": -0.2900382820321512,
+            "sign": 1,
+            "value": 0.748234923076902
+          }
+        }
+      },
+      {
+        "args": {
+          "progress": 0.9016844005556021
+        },
+        "expect": {
+          "adiabaticWork": {
+            "logMagnitude": 8.438451499219827,
+            "sign": 1,
+            "value": 4621.393209991875
+          },
+          "ambientHeat": {
+            "logMagnitude": 8.148413217187676,
+            "sign": 1,
+            "value": 3457.8877929863875
+          },
+          "compressedVolume": {
+            "logMagnitude": -5.077440868880725,
+            "sign": 1,
+            "value": 0.00623584696361493
+          },
+          "coolingHeat": {
+            "logMagnitude": 8.438451499219827,
+            "sign": 1,
+            "value": 4621.393209991875
+          },
+          "initialVolume": {
+            "logMagnitude": -3.691146507760834,
+            "sign": 1,
+            "value": 0.02494338785445972
+          },
+          "isothermalWork": {
+            "logMagnitude": 8.148413217187676,
+            "sign": 1,
+            "value": 3457.8877929863875
+          },
+          "lostWork": {
+            "logMagnitude": 7.0591926385161985,
+            "sign": 1,
+            "value": 1163.5054170054873
+          },
+          "partialExcessWork": {
+            "logMagnitude": 6.832388297723178,
+            "sign": 1,
+            "value": 927.4030843203477
+          },
+          "partialWork": {
+            "logMagnitude": 8.30531755951636,
+            "sign": 1,
+            "value": 4045.3265661278124
+          },
+          "pressure": {
+            "logMagnitude": 13.262925464970229,
+            "sign": 1,
+            "value": 575460.2676005729
+          },
+          "pressureRise": {
+            "logMagnitude": 13.07203859827668,
+            "sign": 1,
+            "value": 475460.2676005729
+          },
+          "recoveredWork": {
+            "logMagnitude": 8.148413217187676,
+            "sign": 1,
+            "value": 3457.8877929863875
+          },
+          "residual": {
+            "logMagnitude": null,
+            "sign": 0,
+            "value": 0.0
+          },
+          "temperature": {
+            "logMagnitude": 6.203782474656201,
+            "sign": 1,
+            "value": 494.61638121003836
+          },
+          "temperatureRise": {
+            "logMagnitude": 5.271030345089012,
+            "sign": 1,
+            "value": 194.61638121003838
+          },
+          "volume": {
+            "logMagnitude": -4.941146507760834,
+            "sign": 1,
+            "value": 0.007146400270246916
+          },
+          "volumeDrop": {
+            "logMagnitude": -4.0287260728482455,
+            "sign": 1,
+            "value": 0.017796987584212803
+          },
+          "workEfficiency": {
+            "logMagnitude": -0.2900382820321512,
+            "sign": 1,
+            "value": 0.748234923076902
+          }
+        }
+      },
+      {
+        "args": {
+          "progress": 0.9016844005556022
+        },
+        "expect": {
+          "adiabaticWork": {
+            "logMagnitude": 8.438451499219827,
+            "sign": 1,
+            "value": 4621.393209991875
+          },
+          "ambientHeat": {
+            "logMagnitude": 8.148413217187676,
+            "sign": 1,
+            "value": 3457.8877929863875
+          },
+          "compressedVolume": {
+            "logMagnitude": -5.077440868880725,
+            "sign": 1,
+            "value": 0.00623584696361493
+          },
+          "coolingHeat": {
+            "logMagnitude": 8.438451499219827,
+            "sign": 1,
+            "value": 4621.393209991875
+          },
+          "initialVolume": {
+            "logMagnitude": -3.691146507760834,
+            "sign": 1,
+            "value": 0.02494338785445972
+          },
+          "isothermalWork": {
+            "logMagnitude": 8.148413217187676,
+            "sign": 1,
+            "value": 3457.8877929863875
+          },
+          "lostWork": {
+            "logMagnitude": 7.0591926385161985,
+            "sign": 1,
+            "value": 1163.5054170054873
+          },
+          "partialExcessWork": {
+            "logMagnitude": 6.832388297723178,
+            "sign": 1,
+            "value": 927.4030843203481
+          },
+          "partialWork": {
+            "logMagnitude": 8.30531755951636,
+            "sign": 1,
+            "value": 4045.3265661278133
+          },
+          "pressure": {
+            "logMagnitude": 13.262925464970229,
+            "sign": 1,
+            "value": 575460.267600573
+          },
+          "pressureRise": {
+            "logMagnitude": 13.07203859827668,
+            "sign": 1,
+            "value": 475460.267600573
+          },
+          "recoveredWork": {
+            "logMagnitude": 8.148413217187676,
+            "sign": 1,
+            "value": 3457.8877929863875
+          },
+          "residual": {
+            "logMagnitude": null,
+            "sign": 0,
+            "value": 0.0
+          },
+          "temperature": {
+            "logMagnitude": 6.203782474656201,
+            "sign": 1,
+            "value": 494.6163812100384
+          },
+          "temperatureRise": {
+            "logMagnitude": 5.271030345089012,
+            "sign": 1,
+            "value": 194.6163812100384
+          },
+          "volume": {
+            "logMagnitude": -4.941146507760834,
+            "sign": 1,
+            "value": 0.007146400270246915
+          },
+          "volumeDrop": {
+            "logMagnitude": -4.0287260728482455,
+            "sign": 1,
+            "value": 0.017796987584212807
+          },
+          "workEfficiency": {
+            "logMagnitude": -0.2900382820321512,
+            "sign": 1,
+            "value": 0.748234923076902
+          }
+        }
+      },
+      {
+        "args": {
+          "progress": 0.9016844005556023
+        },
+        "expect": {
+          "adiabaticWork": {
+            "logMagnitude": 8.438451499219827,
+            "sign": 1,
+            "value": 4621.393209991875
+          },
+          "ambientHeat": {
+            "logMagnitude": 8.148413217187676,
+            "sign": 1,
+            "value": 3457.8877929863875
+          },
+          "compressedVolume": {
+            "logMagnitude": -5.077440868880725,
+            "sign": 1,
+            "value": 0.00623584696361493
+          },
+          "coolingHeat": {
+            "logMagnitude": 8.438451499219827,
+            "sign": 1,
+            "value": 4621.393209991875
+          },
+          "initialVolume": {
+            "logMagnitude": -3.691146507760834,
+            "sign": 1,
+            "value": 0.02494338785445972
+          },
+          "isothermalWork": {
+            "logMagnitude": 8.148413217187676,
+            "sign": 1,
+            "value": 3457.8877929863875
+          },
+          "lostWork": {
+            "logMagnitude": 7.0591926385161985,
+            "sign": 1,
+            "value": 1163.5054170054873
+          },
+          "partialExcessWork": {
+            "logMagnitude": 6.8323882977231785,
+            "sign": 1,
+            "value": 927.4030843203483
+          },
+          "partialWork": {
+            "logMagnitude": 8.30531755951636,
+            "sign": 1,
+            "value": 4045.3265661278137
+          },
+          "pressure": {
+            "logMagnitude": 13.262925464970229,
+            "sign": 1,
+            "value": 575460.2676005731
+          },
+          "pressureRise": {
+            "logMagnitude": 13.072038598276682,
+            "sign": 1,
+            "value": 475460.26760057313
+          },
+          "recoveredWork": {
+            "logMagnitude": 8.148413217187676,
+            "sign": 1,
+            "value": 3457.8877929863875
+          },
+          "residual": {
+            "logMagnitude": null,
+            "sign": 0,
+            "value": 0.0
+          },
+          "temperature": {
+            "logMagnitude": 6.203782474656201,
+            "sign": 1,
+            "value": 494.6163812100384
+          },
+          "temperatureRise": {
+            "logMagnitude": 5.271030345089012,
+            "sign": 1,
+            "value": 194.61638121003844
+          },
+          "volume": {
+            "logMagnitude": -4.941146507760834,
+            "sign": 1,
+            "value": 0.007146400270246913
+          },
+          "volumeDrop": {
+            "logMagnitude": -4.028726072848245,
+            "sign": 1,
+            "value": 0.017796987584212807
+          },
+          "workEfficiency": {
+            "logMagnitude": -0.2900382820321512,
+            "sign": 1,
+            "value": 0.748234923076902
+          }
+        }
+      },
+      {
+        "args": {
+          "ratio": 3.490342957461842
+        },
+        "expect": {
+          "adiabaticWork": {
+            "logMagnitude": 8.30531755951636,
+            "sign": 1,
+            "value": 4045.3265661278133
+          },
+          "ambientHeat": {
+            "logMagnitude": 8.044922508523605,
+            "sign": 1,
+            "value": 3117.923481807465
+          },
+          "compressedVolume": {
+            "logMagnitude": -4.941146507760834,
+            "sign": 1,
+            "value": 0.007146400270246914
+          },
+          "coolingHeat": {
+            "logMagnitude": 8.30531755951636,
+            "sign": 1,
+            "value": 4045.3265661278133
+          },
+          "initialVolume": {
+            "logMagnitude": -3.691146507760834,
+            "sign": 1,
+            "value": 0.02494338785445972
+          },
+          "isothermalWork": {
+            "logMagnitude": 8.044922508523605,
+            "sign": 1,
+            "value": 3117.923481807465
+          },
+          "lostWork": {
+            "logMagnitude": 6.8323882977231785,
+            "sign": 1,
+            "value": 927.4030843203482
+          },
+          "partialExcessWork": {
+            "logMagnitude": 5.357422205080971,
+            "sign": 1,
+            "value": 212.1772913379855
+          },
+          "partialWork": {
+            "logMagnitude": 7.479378139637517,
+            "sign": 1,
+            "value": 1771.1390322417183
+          },
+          "pressure": {
+            "logMagnitude": 12.387925464970229,
+            "sign": 1,
+            "value": 239887.5293967098
+          },
+          "pressureRise": {
+            "logMagnitude": 11.848594017271626,
+            "sign": 1,
+            "value": 139887.5293967098
+          },
+          "recoveredWork": {
+            "logMagnitude": 8.044922508523605,
+            "sign": 1,
+            "value": 3117.923481807465
+          },
+          "residual": {
+            "logMagnitude": null,
+            "sign": 0,
+            "value": 0.0
+          },
+          "temperature": {
+            "logMagnitude": 5.953782474656201,
+            "sign": 1,
+            "value": 385.2076250063224
+          },
+          "temperatureRise": {
+            "logMagnitude": 4.4450909252101685,
+            "sign": 1,
+            "value": 85.20762500632243
+          },
+          "volume": {
+            "logMagnitude": -4.316146507760834,
+            "sign": 1,
+            "value": 0.01335123341508134
+          },
+          "volumeDrop": {
+            "logMagnitude": -4.457426751124764,
+            "sign": 1,
+            "value": 0.01159215443937838
+          },
+          "workEfficiency": {
+            "logMagnitude": -0.2603950509927567,
+            "sign": 1,
+            "value": 0.7707470412683992
+          }
+        }
+      },
+      {
+        "args": {
+          "ratio": 3.4903429574618423
+        },
+        "expect": {
+          "adiabaticWork": {
+            "logMagnitude": 8.30531755951636,
+            "sign": 1,
+            "value": 4045.326566127814
+          },
+          "ambientHeat": {
+            "logMagnitude": 8.044922508523605,
+            "sign": 1,
+            "value": 3117.9234818074656
+          },
+          "compressedVolume": {
+            "logMagnitude": -4.941146507760834,
+            "sign": 1,
+            "value": 0.007146400270246913
+          },
+          "coolingHeat": {
+            "logMagnitude": 8.30531755951636,
+            "sign": 1,
+            "value": 4045.326566127814
+          },
+          "initialVolume": {
+            "logMagnitude": -3.691146507760834,
+            "sign": 1,
+            "value": 0.02494338785445972
+          },
+          "isothermalWork": {
+            "logMagnitude": 8.044922508523605,
+            "sign": 1,
+            "value": 3117.9234818074656
+          },
+          "lostWork": {
+            "logMagnitude": 6.8323882977231785,
+            "sign": 1,
+            "value": 927.4030843203484
+          },
+          "partialExcessWork": {
+            "logMagnitude": 5.357422205080971,
+            "sign": 1,
+            "value": 212.17729133798554
+          },
+          "partialWork": {
+            "logMagnitude": 7.479378139637517,
+            "sign": 1,
+            "value": 1771.1390322417183
+          },
+          "pressure": {
+            "logMagnitude": 12.387925464970229,
+            "sign": 1,
+            "value": 239887.5293967098
+          },
+          "pressureRise": {
+            "logMagnitude": 11.848594017271626,
+            "sign": 1,
+            "value": 139887.5293967098
+          },
+          "recoveredWork": {
+            "logMagnitude": 8.044922508523605,
+            "sign": 1,
+            "value": 3117.9234818074656
+          },
+          "residual": {
+            "logMagnitude": null,
+            "sign": 0,
+            "value": 0.0
+          },
+          "temperature": {
+            "logMagnitude": 5.953782474656201,
+            "sign": 1,
+            "value": 385.2076250063224
+          },
+          "temperatureRise": {
+            "logMagnitude": 4.445090925210169,
+            "sign": 1,
+            "value": 85.20762500632244
+          },
+          "volume": {
+            "logMagnitude": -4.316146507760834,
+            "sign": 1,
+            "value": 0.01335123341508134
+          },
+          "volumeDrop": {
+            "logMagnitude": -4.457426751124763,
+            "sign": 1,
+            "value": 0.011592154439378381
+          },
+          "workEfficiency": {
+            "logMagnitude": -0.2603950509927567,
+            "sign": 1,
+            "value": 0.7707470412683991
+          }
+        }
+      },
+      {
+        "args": {
+          "ratio": 3.4903429574618428
+        },
+        "expect": {
+          "adiabaticWork": {
+            "logMagnitude": 8.30531755951636,
+            "sign": 1,
+            "value": 4045.3265661278147
+          },
+          "ambientHeat": {
+            "logMagnitude": 8.044922508523605,
+            "sign": 1,
+            "value": 3117.923481807466
+          },
+          "compressedVolume": {
+            "logMagnitude": -4.941146507760834,
+            "sign": 1,
+            "value": 0.007146400270246912
+          },
+          "coolingHeat": {
+            "logMagnitude": 8.30531755951636,
+            "sign": 1,
+            "value": 4045.3265661278147
+          },
+          "initialVolume": {
+            "logMagnitude": -3.691146507760834,
+            "sign": 1,
+            "value": 0.02494338785445972
+          },
+          "isothermalWork": {
+            "logMagnitude": 8.044922508523605,
+            "sign": 1,
+            "value": 3117.923481807466
+          },
+          "lostWork": {
+            "logMagnitude": 6.8323882977231785,
+            "sign": 1,
+            "value": 927.4030843203485
+          },
+          "partialExcessWork": {
+            "logMagnitude": 5.3574222050809714,
+            "sign": 1,
+            "value": 212.1772913379856
+          },
+          "partialWork": {
+            "logMagnitude": 7.479378139637518,
+            "sign": 1,
+            "value": 1771.1390322417185
+          },
+          "pressure": {
+            "logMagnitude": 12.387925464970229,
+            "sign": 1,
+            "value": 239887.52939670984
+          },
+          "pressureRise": {
+            "logMagnitude": 11.848594017271626,
+            "sign": 1,
+            "value": 139887.52939670984
+          },
+          "recoveredWork": {
+            "logMagnitude": 8.044922508523605,
+            "sign": 1,
+            "value": 3117.923481807466
+          },
+          "residual": {
+            "logMagnitude": null,
+            "sign": 0,
+            "value": 0.0
+          },
+          "temperature": {
+            "logMagnitude": 5.953782474656201,
+            "sign": 1,
+            "value": 385.2076250063225
+          },
+          "temperatureRise": {
+            "logMagnitude": 4.445090925210169,
+            "sign": 1,
+            "value": 85.20762500632246
+          },
+          "volume": {
+            "logMagnitude": -4.316146507760834,
+            "sign": 1,
+            "value": 0.013351233415081338
+          },
+          "volumeDrop": {
+            "logMagnitude": -4.457426751124763,
+            "sign": 1,
+            "value": 0.011592154439378381
+          },
+          "workEfficiency": {
+            "logMagnitude": -0.2603950509927568,
+            "sign": 1,
+            "value": 0.7707470412683991
+          }
+        }
       }
     ],
     "battery": [
@@ -27365,6 +28820,510 @@
             "logMagnitude": -16.706681913290634,
             "sign": 1,
             "value": 5.551115123125783e-08
+          }
+        }
+      },
+      {
+        "args": {
+          "fraction": 2.7928480087537874e-07
+        },
+        "expect": {
+          "allowableStress": {
+            "logMagnitude": 19.33697147582652,
+            "sign": 1,
+            "value": 250000000.0
+          },
+          "angle": {
+            "logMagnitude": -13.815510557964274,
+            "sign": 1,
+            "value": 9.999999999999997e-07
+          },
+          "energy": {
+            "logMagnitude": -18.197537192638155,
+            "sign": 1,
+            "value": 1.2499999999999993e-08
+          },
+          "energyWh": {
+            "logMagnitude": -26.386226317082357,
+            "sign": 1,
+            "value": 3.47222222222222e-12
+          },
+          "inertia": {
+            "logMagnitude": 0.9162907318741551,
+            "sign": 1,
+            "value": 2.5
+          },
+          "limitingOmega": {
+            "logMagnitude": 5.880693412134364,
+            "sign": 1,
+            "value": 358.0574370197164
+          },
+          "limitingSpecificEnergy": {
+            "logMagnitude": 9.681945282588892,
+            "sign": 1,
+            "value": 16025.641025641025
+          },
+          "omega": {
+            "logMagnitude": -9.210340371976184,
+            "sign": 1,
+            "value": 9.999999999999996e-05
+          },
+          "omegaSquared": {
+            "logMagnitude": -18.420680743952367,
+            "sign": 1,
+            "value": 9.999999999999994e-09
+          },
+          "position": [
+            {
+              "logMagnitude": -0.6931471805604453,
+              "sign": 1,
+              "value": 0.49999999999975
+            },
+            {
+              "logMagnitude": -14.508657738524386,
+              "sign": 1,
+              "value": 4.999999999999165e-07
+            }
+          ],
+          "specificEnergy": {
+            "logMagnitude": -20.5001222856322,
+            "sign": 1,
+            "value": 1.2499999999999992e-09
+          },
+          "specificWh": {
+            "logMagnitude": -28.688811410076404,
+            "sign": 1,
+            "value": 3.47222222222222e-13
+          },
+          "stress": {
+            "logMagnitude": -10.845096092394574,
+            "sign": 1,
+            "value": 1.949999999999999e-05
+          },
+          "stressMargin": {
+            "logMagnitude": 19.33697147582644,
+            "sign": 1,
+            "value": 249999999.9999805
+          }
+        }
+      },
+      {
+        "args": {
+          "fraction": 2.792848008753788e-07
+        },
+        "expect": {
+          "allowableStress": {
+            "logMagnitude": 19.33697147582652,
+            "sign": 1,
+            "value": 250000000.0
+          },
+          "angle": {
+            "logMagnitude": -13.815510557964274,
+            "sign": 1,
+            "value": 1e-06
+          },
+          "energy": {
+            "logMagnitude": -18.197537192638155,
+            "sign": 1,
+            "value": 1.2499999999999998e-08
+          },
+          "energyWh": {
+            "logMagnitude": -26.386226317082357,
+            "sign": 1,
+            "value": 3.4722222222222213e-12
+          },
+          "inertia": {
+            "logMagnitude": 0.9162907318741551,
+            "sign": 1,
+            "value": 2.5
+          },
+          "limitingOmega": {
+            "logMagnitude": 5.880693412134364,
+            "sign": 1,
+            "value": 358.0574370197164
+          },
+          "limitingSpecificEnergy": {
+            "logMagnitude": 9.681945282588892,
+            "sign": 1,
+            "value": 16025.641025641025
+          },
+          "omega": {
+            "logMagnitude": -9.210340371976184,
+            "sign": 1,
+            "value": 9.999999999999999e-05
+          },
+          "omegaSquared": {
+            "logMagnitude": -18.420680743952367,
+            "sign": 1,
+            "value": 9.999999999999997e-09
+          },
+          "position": [
+            {
+              "logMagnitude": -0.6931471805604453,
+              "sign": 1,
+              "value": 0.49999999999975
+            },
+            {
+              "logMagnitude": -14.508657738524386,
+              "sign": 1,
+              "value": 4.999999999999167e-07
+            }
+          ],
+          "specificEnergy": {
+            "logMagnitude": -20.5001222856322,
+            "sign": 1,
+            "value": 1.2499999999999996e-09
+          },
+          "specificWh": {
+            "logMagnitude": -28.688811410076404,
+            "sign": 1,
+            "value": 3.472222222222221e-13
+          },
+          "stress": {
+            "logMagnitude": -10.845096092394574,
+            "sign": 1,
+            "value": 1.9499999999999996e-05
+          },
+          "stressMargin": {
+            "logMagnitude": 19.33697147582644,
+            "sign": 1,
+            "value": 249999999.9999805
+          }
+        }
+      },
+      {
+        "args": {
+          "fraction": 2.7928480087537884e-07
+        },
+        "expect": {
+          "allowableStress": {
+            "logMagnitude": 19.33697147582652,
+            "sign": 1,
+            "value": 250000000.0
+          },
+          "angle": {
+            "logMagnitude": -13.815510557964274,
+            "sign": 1,
+            "value": 1.0000000000000002e-06
+          },
+          "energy": {
+            "logMagnitude": -18.197537192638155,
+            "sign": 1,
+            "value": 1.2500000000000001e-08
+          },
+          "energyWh": {
+            "logMagnitude": -26.386226317082357,
+            "sign": 1,
+            "value": 3.472222222222223e-12
+          },
+          "inertia": {
+            "logMagnitude": 0.9162907318741551,
+            "sign": 1,
+            "value": 2.5
+          },
+          "limitingOmega": {
+            "logMagnitude": 5.880693412134364,
+            "sign": 1,
+            "value": 358.0574370197164
+          },
+          "limitingSpecificEnergy": {
+            "logMagnitude": 9.681945282588892,
+            "sign": 1,
+            "value": 16025.641025641025
+          },
+          "omega": {
+            "logMagnitude": -9.210340371976182,
+            "sign": 1,
+            "value": 0.0001
+          },
+          "omegaSquared": {
+            "logMagnitude": -18.420680743952364,
+            "sign": 1,
+            "value": 1.0000000000000002e-08
+          },
+          "position": [
+            {
+              "logMagnitude": -0.6931471805604453,
+              "sign": 1,
+              "value": 0.49999999999975
+            },
+            {
+              "logMagnitude": -14.508657738524386,
+              "sign": 1,
+              "value": 4.999999999999168e-07
+            }
+          ],
+          "specificEnergy": {
+            "logMagnitude": -20.5001222856322,
+            "sign": 1,
+            "value": 1.2500000000000002e-09
+          },
+          "specificWh": {
+            "logMagnitude": -28.688811410076404,
+            "sign": 1,
+            "value": 3.4722222222222227e-13
+          },
+          "stress": {
+            "logMagnitude": -10.845096092394574,
+            "sign": 1,
+            "value": 1.9500000000000003e-05
+          },
+          "stressMargin": {
+            "logMagnitude": 19.33697147582644,
+            "sign": 1,
+            "value": 249999999.9999805
+          }
+        }
+      },
+      {
+        "args": {
+          "time": 4.654746681256313e-09
+        },
+        "expect": {
+          "allowableStress": {
+            "logMagnitude": 19.33697147582652,
+            "sign": 1,
+            "value": 250000000.0
+          },
+          "angle": {
+            "logMagnitude": -13.815510557964274,
+            "sign": 1,
+            "value": 9.999999999999997e-07
+          },
+          "energy": {
+            "logMagnitude": 10.962879128050956,
+            "sign": 1,
+            "value": 57692.30769230769
+          },
+          "energyWh": {
+            "logMagnitude": 2.774190003606755,
+            "sign": 1,
+            "value": 16.025641025641026
+          },
+          "inertia": {
+            "logMagnitude": 0.9162907318741551,
+            "sign": 1,
+            "value": 2.5
+          },
+          "limitingOmega": {
+            "logMagnitude": 5.880693412134364,
+            "sign": 1,
+            "value": 358.0574370197164
+          },
+          "limitingSpecificEnergy": {
+            "logMagnitude": 9.681945282588892,
+            "sign": 1,
+            "value": 16025.641025641025
+          },
+          "omega": {
+            "logMagnitude": 5.369867788368373,
+            "sign": 1,
+            "value": 214.83446221182984
+          },
+          "omegaSquared": {
+            "logMagnitude": 10.739735576736747,
+            "sign": 1,
+            "value": 46153.84615384615
+          },
+          "position": [
+            {
+              "logMagnitude": -0.6931471805604453,
+              "sign": 1,
+              "value": 0.49999999999975
+            },
+            {
+              "logMagnitude": -14.508657738524386,
+              "sign": 1,
+              "value": 4.999999999999165e-07
+            }
+          ],
+          "specificEnergy": {
+            "logMagnitude": 8.66029403505691,
+            "sign": 1,
+            "value": 5769.230769230769
+          },
+          "specificWh": {
+            "logMagnitude": 0.4716049106127093,
+            "sign": 1,
+            "value": 1.6025641025641024
+          },
+          "stress": {
+            "logMagnitude": 18.31532022829454,
+            "sign": 1,
+            "value": 90000000.0
+          },
+          "stressMargin": {
+            "logMagnitude": 18.890684373198102,
+            "sign": 1,
+            "value": 160000000.0
+          }
+        }
+      },
+      {
+        "args": {
+          "time": 4.654746681256314e-09
+        },
+        "expect": {
+          "allowableStress": {
+            "logMagnitude": 19.33697147582652,
+            "sign": 1,
+            "value": 250000000.0
+          },
+          "angle": {
+            "logMagnitude": -13.815510557964274,
+            "sign": 1,
+            "value": 1e-06
+          },
+          "energy": {
+            "logMagnitude": 10.962879128050956,
+            "sign": 1,
+            "value": 57692.30769230769
+          },
+          "energyWh": {
+            "logMagnitude": 2.774190003606755,
+            "sign": 1,
+            "value": 16.025641025641026
+          },
+          "inertia": {
+            "logMagnitude": 0.9162907318741551,
+            "sign": 1,
+            "value": 2.5
+          },
+          "limitingOmega": {
+            "logMagnitude": 5.880693412134364,
+            "sign": 1,
+            "value": 358.0574370197164
+          },
+          "limitingSpecificEnergy": {
+            "logMagnitude": 9.681945282588892,
+            "sign": 1,
+            "value": 16025.641025641025
+          },
+          "omega": {
+            "logMagnitude": 5.369867788368373,
+            "sign": 1,
+            "value": 214.83446221182984
+          },
+          "omegaSquared": {
+            "logMagnitude": 10.739735576736747,
+            "sign": 1,
+            "value": 46153.84615384615
+          },
+          "position": [
+            {
+              "logMagnitude": -0.6931471805604453,
+              "sign": 1,
+              "value": 0.49999999999975
+            },
+            {
+              "logMagnitude": -14.508657738524386,
+              "sign": 1,
+              "value": 4.999999999999167e-07
+            }
+          ],
+          "specificEnergy": {
+            "logMagnitude": 8.66029403505691,
+            "sign": 1,
+            "value": 5769.230769230769
+          },
+          "specificWh": {
+            "logMagnitude": 0.4716049106127093,
+            "sign": 1,
+            "value": 1.6025641025641024
+          },
+          "stress": {
+            "logMagnitude": 18.31532022829454,
+            "sign": 1,
+            "value": 90000000.0
+          },
+          "stressMargin": {
+            "logMagnitude": 18.890684373198102,
+            "sign": 1,
+            "value": 160000000.0
+          }
+        }
+      },
+      {
+        "args": {
+          "time": 4.6547466812563144e-09
+        },
+        "expect": {
+          "allowableStress": {
+            "logMagnitude": 19.33697147582652,
+            "sign": 1,
+            "value": 250000000.0
+          },
+          "angle": {
+            "logMagnitude": -13.815510557964274,
+            "sign": 1,
+            "value": 1.0000000000000002e-06
+          },
+          "energy": {
+            "logMagnitude": 10.962879128050956,
+            "sign": 1,
+            "value": 57692.30769230769
+          },
+          "energyWh": {
+            "logMagnitude": 2.774190003606755,
+            "sign": 1,
+            "value": 16.025641025641026
+          },
+          "inertia": {
+            "logMagnitude": 0.9162907318741551,
+            "sign": 1,
+            "value": 2.5
+          },
+          "limitingOmega": {
+            "logMagnitude": 5.880693412134364,
+            "sign": 1,
+            "value": 358.0574370197164
+          },
+          "limitingSpecificEnergy": {
+            "logMagnitude": 9.681945282588892,
+            "sign": 1,
+            "value": 16025.641025641025
+          },
+          "omega": {
+            "logMagnitude": 5.369867788368373,
+            "sign": 1,
+            "value": 214.83446221182984
+          },
+          "omegaSquared": {
+            "logMagnitude": 10.739735576736747,
+            "sign": 1,
+            "value": 46153.84615384615
+          },
+          "position": [
+            {
+              "logMagnitude": -0.6931471805604453,
+              "sign": 1,
+              "value": 0.49999999999975
+            },
+            {
+              "logMagnitude": -14.508657738524386,
+              "sign": 1,
+              "value": 4.999999999999168e-07
+            }
+          ],
+          "specificEnergy": {
+            "logMagnitude": 8.66029403505691,
+            "sign": 1,
+            "value": 5769.230769230769
+          },
+          "specificWh": {
+            "logMagnitude": 0.4716049106127093,
+            "sign": 1,
+            "value": 1.6025641025641024
+          },
+          "stress": {
+            "logMagnitude": 18.31532022829454,
+            "sign": 1,
+            "value": 90000000.0
+          },
+          "stressMargin": {
+            "logMagnitude": 18.890684373198102,
+            "sign": 1,
+            "value": 160000000.0
           }
         }
       }
@@ -66727,6 +68686,2310 @@
             "value": 1.0
           }
         }
+      },
+      {
+        "args": {
+          "electrons": 1,
+          "fraction": 0.4999997500001249
+        },
+        "expect": {
+          "freeEnergyShift": {
+            "logMagnitude": -5.999917859524635,
+            "sign": 1,
+            "value": 0.002478955790910832
+          },
+          "logQuotient": {
+            "logMagnitude": -13.815511057646944,
+            "sign": 1,
+            "value": 9.999995003174557e-07
+          },
+          "quotient": {
+            "logMagnitude": 9.999995003174557e-07,
+            "sign": 1,
+            "value": 1.0000010000000004
+          },
+          "reactionFreeEnergy": {
+            "logMagnitude": 11.477146251359358,
+            "sign": -1,
+            "value": -96485.32964435422
+          },
+          "shift": {
+            "logMagnitude": -17.47706413657656,
+            "sign": -1,
+            "value": -2.569256628295254e-08
+          },
+          "standardFreeEnergy": {
+            "logMagnitude": 11.477146277051926,
+            "sign": -1,
+            "value": -96485.33212331001
+          },
+          "thermal": {
+            "logMagnitude": -3.6615530789296167,
+            "sign": 1,
+            "value": 0.025692579121085843
+          },
+          "voltage": {
+            "logMagnitude": -2.5692566613006523e-08,
+            "sign": 1,
+            "value": 0.9999999743074337
+          }
+        }
+      },
+      {
+        "args": {
+          "electrons": 2,
+          "fraction": 0.4999997500001249
+        },
+        "expect": {
+          "freeEnergyShift": {
+            "logMagnitude": -5.999917859524635,
+            "sign": 1,
+            "value": 0.002478955790910832
+          },
+          "logQuotient": {
+            "logMagnitude": -13.815511057646944,
+            "sign": 1,
+            "value": 9.999995003174557e-07
+          },
+          "quotient": {
+            "logMagnitude": 9.999995003174557e-07,
+            "sign": 1,
+            "value": 1.0000010000000004
+          },
+          "reactionFreeEnergy": {
+            "logMagnitude": 12.170293444765587,
+            "sign": -1,
+            "value": -192970.66176766425
+          },
+          "shift": {
+            "logMagnitude": -18.170211317136506,
+            "sign": -1,
+            "value": -1.284628314147627e-08
+          },
+          "standardFreeEnergy": {
+            "logMagnitude": 12.17029345761187,
+            "sign": -1,
+            "value": -192970.66424662003
+          },
+          "thermal": {
+            "logMagnitude": -4.354700259489562,
+            "sign": 1,
+            "value": 0.012846289560542921
+          },
+          "voltage": {
+            "logMagnitude": -1.2846283223989765e-08,
+            "sign": 1,
+            "value": 0.9999999871537169
+          }
+        }
+      },
+      {
+        "args": {
+          "electrons": 1,
+          "fraction": 0.499999750000125
+        },
+        "expect": {
+          "freeEnergyShift": {
+            "logMagnitude": -5.99991785974668,
+            "sign": 1,
+            "value": 0.002478955790360393
+          },
+          "logQuotient": {
+            "logMagnitude": -13.815511057868989,
+            "sign": 1,
+            "value": 9.999995000954111e-07
+          },
+          "quotient": {
+            "logMagnitude": 9.999995000954111e-07,
+            "sign": 1,
+            "value": 1.0000010000000001
+          },
+          "reactionFreeEnergy": {
+            "logMagnitude": 11.477146251359358,
+            "sign": -1,
+            "value": -96485.32964435423
+          },
+          "shift": {
+            "logMagnitude": -17.477064136798603,
+            "sign": -1,
+            "value": -2.569256627724764e-08
+          },
+          "standardFreeEnergy": {
+            "logMagnitude": 11.477146277051926,
+            "sign": -1,
+            "value": -96485.33212331001
+          },
+          "thermal": {
+            "logMagnitude": -3.6615530789296167,
+            "sign": 1,
+            "value": 0.025692579121085843
+          },
+          "voltage": {
+            "logMagnitude": -2.5692566607301627e-08,
+            "sign": 1,
+            "value": 0.9999999743074337
+          }
+        }
+      },
+      {
+        "args": {
+          "electrons": 2,
+          "fraction": 0.499999750000125
+        },
+        "expect": {
+          "freeEnergyShift": {
+            "logMagnitude": -5.99991785974668,
+            "sign": 1,
+            "value": 0.002478955790360393
+          },
+          "logQuotient": {
+            "logMagnitude": -13.815511057868989,
+            "sign": 1,
+            "value": 9.999995000954111e-07
+          },
+          "quotient": {
+            "logMagnitude": 9.999995000954111e-07,
+            "sign": 1,
+            "value": 1.0000010000000001
+          },
+          "reactionFreeEnergy": {
+            "logMagnitude": 12.170293444765587,
+            "sign": -1,
+            "value": -192970.66176766425
+          },
+          "shift": {
+            "logMagnitude": -18.17021131735855,
+            "sign": -1,
+            "value": -1.284628313862382e-08
+          },
+          "standardFreeEnergy": {
+            "logMagnitude": 12.17029345761187,
+            "sign": -1,
+            "value": -192970.66424662003
+          },
+          "thermal": {
+            "logMagnitude": -4.354700259489562,
+            "sign": 1,
+            "value": 0.012846289560542921
+          },
+          "voltage": {
+            "logMagnitude": -1.2846283221137316e-08,
+            "sign": 1,
+            "value": 0.9999999871537169
+          }
+        }
+      },
+      {
+        "args": {
+          "electrons": 1,
+          "fraction": 0.49999975000012503
+        },
+        "expect": {
+          "freeEnergyShift": {
+            "logMagnitude": -5.999917859968725,
+            "sign": 1,
+            "value": 0.002478955789809954
+          },
+          "logQuotient": {
+            "logMagnitude": -13.815511058091033,
+            "sign": 1,
+            "value": 9.999994998733665e-07
+          },
+          "quotient": {
+            "logMagnitude": 9.999994998733665e-07,
+            "sign": 1,
+            "value": 1.000001
+          },
+          "reactionFreeEnergy": {
+            "logMagnitude": 11.477146251359358,
+            "sign": -1,
+            "value": -96485.32964435423
+          },
+          "shift": {
+            "logMagnitude": -17.47706413702065,
+            "sign": -1,
+            "value": -2.569256627154274e-08
+          },
+          "standardFreeEnergy": {
+            "logMagnitude": 11.477146277051926,
+            "sign": -1,
+            "value": -96485.33212331001
+          },
+          "thermal": {
+            "logMagnitude": -3.6615530789296167,
+            "sign": 1,
+            "value": 0.025692579121085843
+          },
+          "voltage": {
+            "logMagnitude": -2.5692566601596728e-08,
+            "sign": 1,
+            "value": 0.9999999743074337
+          }
+        }
+      },
+      {
+        "args": {
+          "electrons": 2,
+          "fraction": 0.49999975000012503
+        },
+        "expect": {
+          "freeEnergyShift": {
+            "logMagnitude": -5.999917859968725,
+            "sign": 1,
+            "value": 0.002478955789809954
+          },
+          "logQuotient": {
+            "logMagnitude": -13.815511058091033,
+            "sign": 1,
+            "value": 9.999994998733665e-07
+          },
+          "quotient": {
+            "logMagnitude": 9.999994998733665e-07,
+            "sign": 1,
+            "value": 1.000001
+          },
+          "reactionFreeEnergy": {
+            "logMagnitude": 12.170293444765587,
+            "sign": -1,
+            "value": -192970.66176766425
+          },
+          "shift": {
+            "logMagnitude": -18.170211317580595,
+            "sign": -1,
+            "value": -1.284628313577137e-08
+          },
+          "standardFreeEnergy": {
+            "logMagnitude": 12.17029345761187,
+            "sign": -1,
+            "value": -192970.66424662003
+          },
+          "thermal": {
+            "logMagnitude": -4.354700259489562,
+            "sign": 1,
+            "value": 0.012846289560542921
+          },
+          "voltage": {
+            "logMagnitude": -1.2846283218284866e-08,
+            "sign": 1,
+            "value": 0.9999999871537169
+          }
+        }
+      },
+      {
+        "args": {
+          "electrons": 1,
+          "fraction": 0.5000002500001248
+        },
+        "expect": {
+          "freeEnergyShift": {
+            "logMagnitude": -5.999916860545958,
+            "sign": -1,
+            "value": -0.0024789582673360477
+          },
+          "logQuotient": {
+            "logMagnitude": -13.815510058668266,
+            "sign": -1,
+            "value": -1.0000004992961333e-06
+          },
+          "quotient": {
+            "logMagnitude": -1.0000004992961333e-06,
+            "sign": 1,
+            "value": 0.9999990000000007
+          },
+          "reactionFreeEnergy": {
+            "logMagnitude": 11.477146302744517,
+            "sign": -1,
+            "value": -96485.33460226828
+          },
+          "shift": {
+            "logMagnitude": -17.47706313759788,
+            "sign": 1,
+            "value": 2.569259194929125e-08
+          },
+          "standardFreeEnergy": {
+            "logMagnitude": 11.477146277051926,
+            "sign": -1,
+            "value": -96485.33212331001
+          },
+          "thermal": {
+            "logMagnitude": -3.6615530789296167,
+            "sign": 1,
+            "value": 0.025692579121085843
+          },
+          "voltage": {
+            "logMagnitude": 2.5692591619236617e-08,
+            "sign": 1,
+            "value": 1.000000025692592
+          }
+        }
+      },
+      {
+        "args": {
+          "electrons": 2,
+          "fraction": 0.5000002500001248
+        },
+        "expect": {
+          "freeEnergyShift": {
+            "logMagnitude": -5.999916860545958,
+            "sign": -1,
+            "value": -0.0024789582673360477
+          },
+          "logQuotient": {
+            "logMagnitude": -13.815510058668266,
+            "sign": -1,
+            "value": -1.0000004992961333e-06
+          },
+          "quotient": {
+            "logMagnitude": -1.0000004992961333e-06,
+            "sign": 1,
+            "value": 0.9999990000000007
+          },
+          "reactionFreeEnergy": {
+            "logMagnitude": 12.170293470458166,
+            "sign": -1,
+            "value": -192970.6667255783
+          },
+          "shift": {
+            "logMagnitude": -18.170210318157828,
+            "sign": 1,
+            "value": 1.2846295974645625e-08
+          },
+          "standardFreeEnergy": {
+            "logMagnitude": 12.17029345761187,
+            "sign": -1,
+            "value": -192970.66424662003
+          },
+          "thermal": {
+            "logMagnitude": -4.354700259489562,
+            "sign": 1,
+            "value": 0.012846289560542921
+          },
+          "voltage": {
+            "logMagnitude": 1.2846295892131965e-08,
+            "sign": 1,
+            "value": 1.000000012846296
+          }
+        }
+      },
+      {
+        "args": {
+          "electrons": 1,
+          "fraction": 0.5000002500001249
+        },
+        "expect": {
+          "freeEnergyShift": {
+            "logMagnitude": -5.999916860101869,
+            "sign": -1,
+            "value": -0.0024789582684369258
+          },
+          "logQuotient": {
+            "logMagnitude": -13.815510058224177,
+            "sign": -1,
+            "value": -1.0000004997402225e-06
+          },
+          "quotient": {
+            "logMagnitude": -1.0000004997402225e-06,
+            "sign": 1,
+            "value": 0.9999990000000003
+          },
+          "reactionFreeEnergy": {
+            "logMagnitude": 11.477146302744517,
+            "sign": -1,
+            "value": -96485.33460226828
+          },
+          "shift": {
+            "logMagnitude": -17.47706313715379,
+            "sign": 1,
+            "value": 2.569259196070105e-08
+          },
+          "standardFreeEnergy": {
+            "logMagnitude": 11.477146277051926,
+            "sign": -1,
+            "value": -96485.33212331001
+          },
+          "thermal": {
+            "logMagnitude": -3.6615530789296167,
+            "sign": 1,
+            "value": 0.025692579121085843
+          },
+          "voltage": {
+            "logMagnitude": 2.5692591630646412e-08,
+            "sign": 1,
+            "value": 1.000000025692592
+          }
+        }
+      },
+      {
+        "args": {
+          "electrons": 2,
+          "fraction": 0.5000002500001249
+        },
+        "expect": {
+          "freeEnergyShift": {
+            "logMagnitude": -5.999916860101869,
+            "sign": -1,
+            "value": -0.0024789582684369258
+          },
+          "logQuotient": {
+            "logMagnitude": -13.815510058224177,
+            "sign": -1,
+            "value": -1.0000004997402225e-06
+          },
+          "quotient": {
+            "logMagnitude": -1.0000004997402225e-06,
+            "sign": 1,
+            "value": 0.9999990000000003
+          },
+          "reactionFreeEnergy": {
+            "logMagnitude": 12.170293470458166,
+            "sign": -1,
+            "value": -192970.6667255783
+          },
+          "shift": {
+            "logMagnitude": -18.17021031771374,
+            "sign": 1,
+            "value": 1.2846295980350524e-08
+          },
+          "standardFreeEnergy": {
+            "logMagnitude": 12.17029345761187,
+            "sign": -1,
+            "value": -192970.66424662003
+          },
+          "thermal": {
+            "logMagnitude": -4.354700259489562,
+            "sign": 1,
+            "value": 0.012846289560542921
+          },
+          "voltage": {
+            "logMagnitude": 1.2846295897836865e-08,
+            "sign": 1,
+            "value": 1.000000012846296
+          }
+        }
+      },
+      {
+        "args": {
+          "electrons": 1,
+          "fraction": 0.500000250000125
+        },
+        "expect": {
+          "freeEnergyShift": {
+            "logMagnitude": -5.999916859657779,
+            "sign": -1,
+            "value": -0.002478958269537804
+          },
+          "logQuotient": {
+            "logMagnitude": -13.815510057780088,
+            "sign": -1,
+            "value": -1.0000005001843117e-06
+          },
+          "quotient": {
+            "logMagnitude": -1.0000005001843117e-06,
+            "sign": 1,
+            "value": 0.9999989999999999
+          },
+          "reactionFreeEnergy": {
+            "logMagnitude": 11.477146302744517,
+            "sign": -1,
+            "value": -96485.33460226828
+          },
+          "shift": {
+            "logMagnitude": -17.477063136709706,
+            "sign": 1,
+            "value": 2.5692591972110844e-08
+          },
+          "standardFreeEnergy": {
+            "logMagnitude": 11.477146277051926,
+            "sign": -1,
+            "value": -96485.33212331001
+          },
+          "thermal": {
+            "logMagnitude": -3.6615530789296167,
+            "sign": 1,
+            "value": 0.025692579121085843
+          },
+          "voltage": {
+            "logMagnitude": 2.569259164205621e-08,
+            "sign": 1,
+            "value": 1.000000025692592
+          }
+        }
+      },
+      {
+        "args": {
+          "electrons": 2,
+          "fraction": 0.500000250000125
+        },
+        "expect": {
+          "freeEnergyShift": {
+            "logMagnitude": -5.999916859657779,
+            "sign": -1,
+            "value": -0.002478958269537804
+          },
+          "logQuotient": {
+            "logMagnitude": -13.815510057780088,
+            "sign": -1,
+            "value": -1.0000005001843117e-06
+          },
+          "quotient": {
+            "logMagnitude": -1.0000005001843117e-06,
+            "sign": 1,
+            "value": 0.9999989999999999
+          },
+          "reactionFreeEnergy": {
+            "logMagnitude": 12.170293470458166,
+            "sign": -1,
+            "value": -192970.6667255783
+          },
+          "shift": {
+            "logMagnitude": -18.17021031726965,
+            "sign": 1,
+            "value": 1.2846295986055422e-08
+          },
+          "standardFreeEnergy": {
+            "logMagnitude": 12.17029345761187,
+            "sign": -1,
+            "value": -192970.66424662003
+          },
+          "thermal": {
+            "logMagnitude": -4.354700259489562,
+            "sign": 1,
+            "value": 0.012846289560542921
+          },
+          "voltage": {
+            "logMagnitude": 1.2846295903541764e-08,
+            "sign": 1,
+            "value": 1.000000012846296
+          }
+        }
+      },
+      {
+        "args": {
+          "electrons": 1,
+          "fraction": 0.499999749999875
+        },
+        "expect": {
+          "freeEnergyShift": {
+            "logMagnitude": -5.999916859879824,
+            "sign": 1,
+            "value": 0.002478958268987365
+          },
+          "logQuotient": {
+            "logMagnitude": -13.815510058002133,
+            "sign": 1,
+            "value": 1.000000499962267e-06
+          },
+          "quotient": {
+            "logMagnitude": 1.000000499962267e-06,
+            "sign": 1,
+            "value": 1.000001000001
+          },
+          "reactionFreeEnergy": {
+            "logMagnitude": 11.477146251359333,
+            "sign": -1,
+            "value": -96485.32964435175
+          },
+          "shift": {
+            "logMagnitude": -17.477063136931747,
+            "sign": -1,
+            "value": -2.5692591966405948e-08
+          },
+          "standardFreeEnergy": {
+            "logMagnitude": 11.477146277051926,
+            "sign": -1,
+            "value": -96485.33212331001
+          },
+          "thermal": {
+            "logMagnitude": -3.6615530789296167,
+            "sign": 1,
+            "value": 0.025692579121085843
+          },
+          "voltage": {
+            "logMagnitude": -2.5692592296460595e-08,
+            "sign": 1,
+            "value": 0.9999999743074081
+          }
+        }
+      },
+      {
+        "args": {
+          "electrons": 2,
+          "fraction": 0.499999749999875
+        },
+        "expect": {
+          "freeEnergyShift": {
+            "logMagnitude": -5.999916859879824,
+            "sign": 1,
+            "value": 0.002478958268987365
+          },
+          "logQuotient": {
+            "logMagnitude": -13.815510058002133,
+            "sign": 1,
+            "value": 1.000000499962267e-06
+          },
+          "quotient": {
+            "logMagnitude": 1.000000499962267e-06,
+            "sign": 1,
+            "value": 1.000001000001
+          },
+          "reactionFreeEnergy": {
+            "logMagnitude": 12.170293444765575,
+            "sign": -1,
+            "value": -192970.66176766178
+          },
+          "shift": {
+            "logMagnitude": -18.170210317491694,
+            "sign": -1,
+            "value": -1.2846295983202974e-08
+          },
+          "standardFreeEnergy": {
+            "logMagnitude": 12.17029345761187,
+            "sign": -1,
+            "value": -192970.66424662003
+          },
+          "thermal": {
+            "logMagnitude": -4.354700259489562,
+            "sign": 1,
+            "value": 0.012846289560542921
+          },
+          "voltage": {
+            "logMagnitude": -1.2846296065716634e-08,
+            "sign": 1,
+            "value": 0.999999987153704
+          }
+        }
+      },
+      {
+        "args": {
+          "electrons": 1,
+          "fraction": 0.49999974999987506
+        },
+        "expect": {
+          "freeEnergyShift": {
+            "logMagnitude": -5.999916860101869,
+            "sign": 1,
+            "value": 0.0024789582684369258
+          },
+          "logQuotient": {
+            "logMagnitude": -13.815510058224177,
+            "sign": 1,
+            "value": 1.0000004997402225e-06
+          },
+          "quotient": {
+            "logMagnitude": 1.0000004997402225e-06,
+            "sign": 1,
+            "value": 1.0000010000009998
+          },
+          "reactionFreeEnergy": {
+            "logMagnitude": 11.477146251359333,
+            "sign": -1,
+            "value": -96485.32964435175
+          },
+          "shift": {
+            "logMagnitude": -17.47706313715379,
+            "sign": -1,
+            "value": -2.569259196070105e-08
+          },
+          "standardFreeEnergy": {
+            "logMagnitude": 11.477146277051926,
+            "sign": -1,
+            "value": -96485.33212331001
+          },
+          "thermal": {
+            "logMagnitude": -3.6615530789296167,
+            "sign": 1,
+            "value": 0.025692579121085843
+          },
+          "voltage": {
+            "logMagnitude": -2.5692592290755695e-08,
+            "sign": 1,
+            "value": 0.9999999743074081
+          }
+        }
+      },
+      {
+        "args": {
+          "electrons": 2,
+          "fraction": 0.49999974999987506
+        },
+        "expect": {
+          "freeEnergyShift": {
+            "logMagnitude": -5.999916860101869,
+            "sign": 1,
+            "value": 0.0024789582684369258
+          },
+          "logQuotient": {
+            "logMagnitude": -13.815510058224177,
+            "sign": 1,
+            "value": 1.0000004997402225e-06
+          },
+          "quotient": {
+            "logMagnitude": 1.0000004997402225e-06,
+            "sign": 1,
+            "value": 1.0000010000009998
+          },
+          "reactionFreeEnergy": {
+            "logMagnitude": 12.170293444765575,
+            "sign": -1,
+            "value": -192970.66176766178
+          },
+          "shift": {
+            "logMagnitude": -18.17021031771374,
+            "sign": -1,
+            "value": -1.2846295980350524e-08
+          },
+          "standardFreeEnergy": {
+            "logMagnitude": 12.17029345761187,
+            "sign": -1,
+            "value": -192970.66424662003
+          },
+          "thermal": {
+            "logMagnitude": -4.354700259489562,
+            "sign": 1,
+            "value": 0.012846289560542921
+          },
+          "voltage": {
+            "logMagnitude": -1.2846296062864184e-08,
+            "sign": 1,
+            "value": 0.999999987153704
+          }
+        }
+      },
+      {
+        "args": {
+          "electrons": 1,
+          "fraction": 0.4999997499998751
+        },
+        "expect": {
+          "freeEnergyShift": {
+            "logMagnitude": -5.999916860323913,
+            "sign": 1,
+            "value": 0.0024789582678864867
+          },
+          "logQuotient": {
+            "logMagnitude": -13.815510058446222,
+            "sign": 1,
+            "value": 1.0000004995181779e-06
+          },
+          "quotient": {
+            "logMagnitude": 1.0000004995181779e-06,
+            "sign": 1,
+            "value": 1.0000010000009996
+          },
+          "reactionFreeEnergy": {
+            "logMagnitude": 11.477146251359333,
+            "sign": -1,
+            "value": -96485.32964435175
+          },
+          "shift": {
+            "logMagnitude": -17.477063137375836,
+            "sign": -1,
+            "value": -2.569259195499615e-08
+          },
+          "standardFreeEnergy": {
+            "logMagnitude": 11.477146277051926,
+            "sign": -1,
+            "value": -96485.33212331001
+          },
+          "thermal": {
+            "logMagnitude": -3.6615530789296167,
+            "sign": 1,
+            "value": 0.025692579121085843
+          },
+          "voltage": {
+            "logMagnitude": -2.5692592285050796e-08,
+            "sign": 1,
+            "value": 0.9999999743074081
+          }
+        }
+      },
+      {
+        "args": {
+          "electrons": 2,
+          "fraction": 0.4999997499998751
+        },
+        "expect": {
+          "freeEnergyShift": {
+            "logMagnitude": -5.999916860323913,
+            "sign": 1,
+            "value": 0.0024789582678864867
+          },
+          "logQuotient": {
+            "logMagnitude": -13.815510058446222,
+            "sign": 1,
+            "value": 1.0000004995181779e-06
+          },
+          "quotient": {
+            "logMagnitude": 1.0000004995181779e-06,
+            "sign": 1,
+            "value": 1.0000010000009996
+          },
+          "reactionFreeEnergy": {
+            "logMagnitude": 12.170293444765575,
+            "sign": -1,
+            "value": -192970.66176766178
+          },
+          "shift": {
+            "logMagnitude": -18.170210317935783,
+            "sign": -1,
+            "value": -1.2846295977498075e-08
+          },
+          "standardFreeEnergy": {
+            "logMagnitude": 12.17029345761187,
+            "sign": -1,
+            "value": -192970.66424662003
+          },
+          "thermal": {
+            "logMagnitude": -4.354700259489562,
+            "sign": 1,
+            "value": 0.012846289560542921
+          },
+          "voltage": {
+            "logMagnitude": -1.2846296060011735e-08,
+            "sign": 1,
+            "value": 0.999999987153704
+          }
+        }
+      },
+      {
+        "args": {
+          "electrons": 1,
+          "fraction": 0.5000002500003748
+        },
+        "expect": {
+          "freeEnergyShift": {
+            "logMagnitude": -5.9999158604580565,
+            "sign": -1,
+            "value": -0.002478960746513458
+          },
+          "logQuotient": {
+            "logMagnitude": -13.815509058580364,
+            "sign": -1,
+            "value": -1.0000014993850339e-06
+          },
+          "quotient": {
+            "logMagnitude": -1.0000014993850339e-06,
+            "sign": 1,
+            "value": 0.9999989999990007
+          },
+          "reactionFreeEnergy": {
+            "logMagnitude": 11.477146302744542,
+            "sign": -1,
+            "value": -96485.33460227077
+          },
+          "shift": {
+            "logMagnitude": -17.477062137509982,
+            "sign": 1,
+            "value": 2.569261764415446e-08
+          },
+          "standardFreeEnergy": {
+            "logMagnitude": 11.477146277051926,
+            "sign": -1,
+            "value": -96485.33212331001
+          },
+          "thermal": {
+            "logMagnitude": -3.6615530789296167,
+            "sign": 1,
+            "value": 0.025692579121085843
+          },
+          "voltage": {
+            "logMagnitude": 2.5692617314099164e-08,
+            "sign": 1,
+            "value": 1.0000000256926176
+          }
+        }
+      },
+      {
+        "args": {
+          "electrons": 2,
+          "fraction": 0.5000002500003748
+        },
+        "expect": {
+          "freeEnergyShift": {
+            "logMagnitude": -5.9999158604580565,
+            "sign": -1,
+            "value": -0.002478960746513458
+          },
+          "logQuotient": {
+            "logMagnitude": -13.815509058580364,
+            "sign": -1,
+            "value": -1.0000014993850339e-06
+          },
+          "quotient": {
+            "logMagnitude": -1.0000014993850339e-06,
+            "sign": 1,
+            "value": 0.9999989999990007
+          },
+          "reactionFreeEnergy": {
+            "logMagnitude": 12.170293470458178,
+            "sign": -1,
+            "value": -192970.66672558078
+          },
+          "shift": {
+            "logMagnitude": -18.170209318069926,
+            "sign": 1,
+            "value": 1.284630882207723e-08
+          },
+          "standardFreeEnergy": {
+            "logMagnitude": 12.17029345761187,
+            "sign": -1,
+            "value": -192970.66424662003
+          },
+          "thermal": {
+            "logMagnitude": -4.354700259489562,
+            "sign": 1,
+            "value": 0.012846289560542921
+          },
+          "voltage": {
+            "logMagnitude": 1.2846308739563404e-08,
+            "sign": 1,
+            "value": 1.000000012846309
+          }
+        }
+      },
+      {
+        "args": {
+          "electrons": 1,
+          "fraction": 0.500000250000375
+        },
+        "expect": {
+          "freeEnergyShift": {
+            "logMagnitude": -5.999915860013968,
+            "sign": -1,
+            "value": -0.002478960747614336
+          },
+          "logQuotient": {
+            "logMagnitude": -13.815509058136277,
+            "sign": -1,
+            "value": -1.000001499829123e-06
+          },
+          "quotient": {
+            "logMagnitude": -1.000001499829123e-06,
+            "sign": 1,
+            "value": 0.9999989999990002
+          },
+          "reactionFreeEnergy": {
+            "logMagnitude": 11.477146302744542,
+            "sign": -1,
+            "value": -96485.33460227077
+          },
+          "shift": {
+            "logMagnitude": -17.477062137065893,
+            "sign": 1,
+            "value": 2.5692617655564254e-08
+          },
+          "standardFreeEnergy": {
+            "logMagnitude": 11.477146277051926,
+            "sign": -1,
+            "value": -96485.33212331001
+          },
+          "thermal": {
+            "logMagnitude": -3.6615530789296167,
+            "sign": 1,
+            "value": 0.025692579121085843
+          },
+          "voltage": {
+            "logMagnitude": 2.569261732550896e-08,
+            "sign": 1,
+            "value": 1.0000000256926176
+          }
+        }
+      },
+      {
+        "args": {
+          "electrons": 2,
+          "fraction": 0.500000250000375
+        },
+        "expect": {
+          "freeEnergyShift": {
+            "logMagnitude": -5.999915860013968,
+            "sign": -1,
+            "value": -0.002478960747614336
+          },
+          "logQuotient": {
+            "logMagnitude": -13.815509058136277,
+            "sign": -1,
+            "value": -1.000001499829123e-06
+          },
+          "quotient": {
+            "logMagnitude": -1.000001499829123e-06,
+            "sign": 1,
+            "value": 0.9999989999990002
+          },
+          "reactionFreeEnergy": {
+            "logMagnitude": 12.170293470458178,
+            "sign": -1,
+            "value": -192970.66672558078
+          },
+          "shift": {
+            "logMagnitude": -18.170209317625837,
+            "sign": 1,
+            "value": 1.2846308827782127e-08
+          },
+          "standardFreeEnergy": {
+            "logMagnitude": 12.17029345761187,
+            "sign": -1,
+            "value": -192970.66424662003
+          },
+          "thermal": {
+            "logMagnitude": -4.354700259489562,
+            "sign": 1,
+            "value": 0.012846289560542921
+          },
+          "voltage": {
+            "logMagnitude": 1.2846308745268303e-08,
+            "sign": 1,
+            "value": 1.000000012846309
+          }
+        }
+      },
+      {
+        "args": {
+          "electrons": 1,
+          "fraction": 0.5000002500003751
+        },
+        "expect": {
+          "freeEnergyShift": {
+            "logMagnitude": -5.999915859569879,
+            "sign": -1,
+            "value": -0.002478960748715214
+          },
+          "logQuotient": {
+            "logMagnitude": -13.815509057692188,
+            "sign": -1,
+            "value": -1.0000015002732123e-06
+          },
+          "quotient": {
+            "logMagnitude": -1.0000015002732123e-06,
+            "sign": 1,
+            "value": 0.9999989999989998
+          },
+          "reactionFreeEnergy": {
+            "logMagnitude": 11.477146302744542,
+            "sign": -1,
+            "value": -96485.33460227077
+          },
+          "shift": {
+            "logMagnitude": -17.477062136621804,
+            "sign": 1,
+            "value": 2.5692617666974052e-08
+          },
+          "standardFreeEnergy": {
+            "logMagnitude": 11.477146277051926,
+            "sign": -1,
+            "value": -96485.33212331001
+          },
+          "thermal": {
+            "logMagnitude": -3.6615530789296167,
+            "sign": 1,
+            "value": 0.025692579121085843
+          },
+          "voltage": {
+            "logMagnitude": 2.5692617336918757e-08,
+            "sign": 1,
+            "value": 1.0000000256926176
+          }
+        }
+      },
+      {
+        "args": {
+          "electrons": 2,
+          "fraction": 0.5000002500003751
+        },
+        "expect": {
+          "freeEnergyShift": {
+            "logMagnitude": -5.999915859569879,
+            "sign": -1,
+            "value": -0.002478960748715214
+          },
+          "logQuotient": {
+            "logMagnitude": -13.815509057692188,
+            "sign": -1,
+            "value": -1.0000015002732123e-06
+          },
+          "quotient": {
+            "logMagnitude": -1.0000015002732123e-06,
+            "sign": 1,
+            "value": 0.9999989999989998
+          },
+          "reactionFreeEnergy": {
+            "logMagnitude": 12.170293470458178,
+            "sign": -1,
+            "value": -192970.66672558078
+          },
+          "shift": {
+            "logMagnitude": -18.17020931718175,
+            "sign": 1,
+            "value": 1.2846308833487026e-08
+          },
+          "standardFreeEnergy": {
+            "logMagnitude": 12.17029345761187,
+            "sign": -1,
+            "value": -192970.66424662003
+          },
+          "thermal": {
+            "logMagnitude": -4.354700259489562,
+            "sign": 1,
+            "value": 0.012846289560542921
+          },
+          "voltage": {
+            "logMagnitude": 1.28463087509732e-08,
+            "sign": 1,
+            "value": 1.000000012846309
+          }
+        }
+      },
+      {
+        "args": {
+          "electrons": 1,
+          "fraction": 0.49999975000037494
+        },
+        "expect": {
+          "freeEnergyShift": {
+            "logMagnitude": -5.999918859614535,
+            "sign": 1,
+            "value": 0.002478953311733422
+          },
+          "logQuotient": {
+            "logMagnitude": -13.815512057736843,
+            "sign": 1,
+            "value": 9.999985002285551e-07
+          },
+          "quotient": {
+            "logMagnitude": 9.999985002285551e-07,
+            "sign": 1,
+            "value": 1.0000009999990003
+          },
+          "reactionFreeEnergy": {
+            "logMagnitude": 11.477146251359384,
+            "sign": -1,
+            "value": -96485.32964435671
+          },
+          "shift": {
+            "logMagnitude": -17.47706513666646,
+            "sign": -1,
+            "value": -2.569254058808933e-08
+          },
+          "standardFreeEnergy": {
+            "logMagnitude": 11.477146277051926,
+            "sign": -1,
+            "value": -96485.33212331001
+          },
+          "thermal": {
+            "logMagnitude": -3.6615530789296167,
+            "sign": 1,
+            "value": 0.025692579121085843
+          },
+          "voltage": {
+            "logMagnitude": -2.5692540918142656e-08,
+            "sign": 1,
+            "value": 0.9999999743074595
+          }
+        }
+      },
+      {
+        "args": {
+          "electrons": 2,
+          "fraction": 0.49999975000037494
+        },
+        "expect": {
+          "freeEnergyShift": {
+            "logMagnitude": -5.999918859614535,
+            "sign": 1,
+            "value": 0.002478953311733422
+          },
+          "logQuotient": {
+            "logMagnitude": -13.815512057736843,
+            "sign": 1,
+            "value": 9.999985002285551e-07
+          },
+          "quotient": {
+            "logMagnitude": 9.999985002285551e-07,
+            "sign": 1,
+            "value": 1.0000009999990003
+          },
+          "reactionFreeEnergy": {
+            "logMagnitude": 12.1702934447656,
+            "sign": -1,
+            "value": -192970.66176766672
+          },
+          "shift": {
+            "logMagnitude": -18.170212317226405,
+            "sign": -1,
+            "value": -1.2846270294044665e-08
+          },
+          "standardFreeEnergy": {
+            "logMagnitude": 12.17029345761187,
+            "sign": -1,
+            "value": -192970.66424662003
+          },
+          "thermal": {
+            "logMagnitude": -4.354700259489562,
+            "sign": 1,
+            "value": 0.012846289560542921
+          },
+          "voltage": {
+            "logMagnitude": -1.2846270376557996e-08,
+            "sign": 1,
+            "value": 0.9999999871537297
+          }
+        }
+      },
+      {
+        "args": {
+          "electrons": 1,
+          "fraction": 0.499999750000375
+        },
+        "expect": {
+          "freeEnergyShift": {
+            "logMagnitude": -5.999918859836581,
+            "sign": 1,
+            "value": 0.002478953311182983
+          },
+          "logQuotient": {
+            "logMagnitude": -13.81551205795889,
+            "sign": 1,
+            "value": 9.999985000065105e-07
+          },
+          "quotient": {
+            "logMagnitude": 9.999985000065105e-07,
+            "sign": 1,
+            "value": 1.000000999999
+          },
+          "reactionFreeEnergy": {
+            "logMagnitude": 11.477146251359384,
+            "sign": -1,
+            "value": -96485.32964435671
+          },
+          "shift": {
+            "logMagnitude": -17.477065136888505,
+            "sign": -1,
+            "value": -2.5692540582384434e-08
+          },
+          "standardFreeEnergy": {
+            "logMagnitude": 11.477146277051926,
+            "sign": -1,
+            "value": -96485.33212331001
+          },
+          "thermal": {
+            "logMagnitude": -3.6615530789296167,
+            "sign": 1,
+            "value": 0.025692579121085843
+          },
+          "voltage": {
+            "logMagnitude": -2.569254091243776e-08,
+            "sign": 1,
+            "value": 0.9999999743074595
+          }
+        }
+      },
+      {
+        "args": {
+          "electrons": 2,
+          "fraction": 0.499999750000375
+        },
+        "expect": {
+          "freeEnergyShift": {
+            "logMagnitude": -5.999918859836581,
+            "sign": 1,
+            "value": 0.002478953311182983
+          },
+          "logQuotient": {
+            "logMagnitude": -13.81551205795889,
+            "sign": 1,
+            "value": 9.999985000065105e-07
+          },
+          "quotient": {
+            "logMagnitude": 9.999985000065105e-07,
+            "sign": 1,
+            "value": 1.000000999999
+          },
+          "reactionFreeEnergy": {
+            "logMagnitude": 12.1702934447656,
+            "sign": -1,
+            "value": -192970.66176766672
+          },
+          "shift": {
+            "logMagnitude": -18.17021231744845,
+            "sign": -1,
+            "value": -1.2846270291192217e-08
+          },
+          "standardFreeEnergy": {
+            "logMagnitude": 12.17029345761187,
+            "sign": -1,
+            "value": -192970.66424662003
+          },
+          "thermal": {
+            "logMagnitude": -4.354700259489562,
+            "sign": 1,
+            "value": 0.012846289560542921
+          },
+          "voltage": {
+            "logMagnitude": -1.2846270373705548e-08,
+            "sign": 1,
+            "value": 0.9999999871537297
+          }
+        }
+      },
+      {
+        "args": {
+          "electrons": 1,
+          "fraction": 0.49999975000037505
+        },
+        "expect": {
+          "freeEnergyShift": {
+            "logMagnitude": -5.999918860058625,
+            "sign": 1,
+            "value": 0.002478953310632544
+          },
+          "logQuotient": {
+            "logMagnitude": -13.815512058180934,
+            "sign": 1,
+            "value": 9.99998499784466e-07
+          },
+          "quotient": {
+            "logMagnitude": 9.99998499784466e-07,
+            "sign": 1,
+            "value": 1.0000009999989998
+          },
+          "reactionFreeEnergy": {
+            "logMagnitude": 11.477146251359384,
+            "sign": -1,
+            "value": -96485.32964435671
+          },
+          "shift": {
+            "logMagnitude": -17.47706513711055,
+            "sign": -1,
+            "value": -2.5692540576679535e-08
+          },
+          "standardFreeEnergy": {
+            "logMagnitude": 11.477146277051926,
+            "sign": -1,
+            "value": -96485.33212331001
+          },
+          "thermal": {
+            "logMagnitude": -3.6615530789296167,
+            "sign": 1,
+            "value": 0.025692579121085843
+          },
+          "voltage": {
+            "logMagnitude": -2.569254090673286e-08,
+            "sign": 1,
+            "value": 0.9999999743074595
+          }
+        }
+      },
+      {
+        "args": {
+          "electrons": 2,
+          "fraction": 0.49999975000037505
+        },
+        "expect": {
+          "freeEnergyShift": {
+            "logMagnitude": -5.999918860058625,
+            "sign": 1,
+            "value": 0.002478953310632544
+          },
+          "logQuotient": {
+            "logMagnitude": -13.815512058180934,
+            "sign": 1,
+            "value": 9.99998499784466e-07
+          },
+          "quotient": {
+            "logMagnitude": 9.99998499784466e-07,
+            "sign": 1,
+            "value": 1.0000009999989998
+          },
+          "reactionFreeEnergy": {
+            "logMagnitude": 12.1702934447656,
+            "sign": -1,
+            "value": -192970.66176766672
+          },
+          "shift": {
+            "logMagnitude": -18.170212317670497,
+            "sign": -1,
+            "value": -1.2846270288339767e-08
+          },
+          "standardFreeEnergy": {
+            "logMagnitude": 12.17029345761187,
+            "sign": -1,
+            "value": -192970.66424662003
+          },
+          "thermal": {
+            "logMagnitude": -4.354700259489562,
+            "sign": 1,
+            "value": 0.012846289560542921
+          },
+          "voltage": {
+            "logMagnitude": -1.2846270370853098e-08,
+            "sign": 1,
+            "value": 0.9999999871537297
+          }
+        }
+      },
+      {
+        "args": {
+          "electrons": 1,
+          "fraction": 0.5000002499998749
+        },
+        "expect": {
+          "freeEnergyShift": {
+            "logMagnitude": -5.999917860190769,
+            "sign": -1,
+            "value": -0.002478955789259515
+          },
+          "logQuotient": {
+            "logMagnitude": -13.815511058313078,
+            "sign": -1,
+            "value": -9.99999499651322e-07
+          },
+          "quotient": {
+            "logMagnitude": -9.99999499651322e-07,
+            "sign": 1,
+            "value": 0.9999990000010004
+          },
+          "reactionFreeEnergy": {
+            "logMagnitude": 11.47714630274449,
+            "sign": -1,
+            "value": -96485.33460226581
+          },
+          "shift": {
+            "logMagnitude": -17.477064137242696,
+            "sign": 1,
+            "value": 2.569256626583784e-08
+          },
+          "standardFreeEnergy": {
+            "logMagnitude": 11.477146277051926,
+            "sign": -1,
+            "value": -96485.33212331001
+          },
+          "thermal": {
+            "logMagnitude": -3.6615530789296167,
+            "sign": 1,
+            "value": 0.025692579121085843
+          },
+          "voltage": {
+            "logMagnitude": 2.5692565935783866e-08,
+            "sign": 1,
+            "value": 1.0000000256925663
+          }
+        }
+      },
+      {
+        "args": {
+          "electrons": 2,
+          "fraction": 0.5000002499998749
+        },
+        "expect": {
+          "freeEnergyShift": {
+            "logMagnitude": -5.999917860190769,
+            "sign": -1,
+            "value": -0.002478955789259515
+          },
+          "logQuotient": {
+            "logMagnitude": -13.815511058313078,
+            "sign": -1,
+            "value": -9.99999499651322e-07
+          },
+          "quotient": {
+            "logMagnitude": -9.99999499651322e-07,
+            "sign": 1,
+            "value": 0.9999990000010004
+          },
+          "reactionFreeEnergy": {
+            "logMagnitude": 12.170293470458153,
+            "sign": -1,
+            "value": -192970.66672557584
+          },
+          "shift": {
+            "logMagnitude": -18.17021131780264,
+            "sign": 1,
+            "value": 1.284628313291892e-08
+          },
+          "standardFreeEnergy": {
+            "logMagnitude": 12.17029345761187,
+            "sign": -1,
+            "value": -192970.66424662003
+          },
+          "thermal": {
+            "logMagnitude": -4.354700259489562,
+            "sign": 1,
+            "value": 0.012846289560542921
+          },
+          "voltage": {
+            "logMagnitude": 1.2846283050405426e-08,
+            "sign": 1,
+            "value": 1.0000000128462831
+          }
+        }
+      },
+      {
+        "args": {
+          "electrons": 1,
+          "fraction": 0.500000249999875
+        },
+        "expect": {
+          "freeEnergyShift": {
+            "logMagnitude": -5.99991785974668,
+            "sign": -1,
+            "value": -0.002478955790360393
+          },
+          "logQuotient": {
+            "logMagnitude": -13.815511057868989,
+            "sign": -1,
+            "value": -9.999995000954111e-07
+          },
+          "quotient": {
+            "logMagnitude": -9.999995000954111e-07,
+            "sign": 1,
+            "value": 0.999999000001
+          },
+          "reactionFreeEnergy": {
+            "logMagnitude": 11.47714630274449,
+            "sign": -1,
+            "value": -96485.33460226581
+          },
+          "shift": {
+            "logMagnitude": -17.477064136798603,
+            "sign": 1,
+            "value": 2.569256627724764e-08
+          },
+          "standardFreeEnergy": {
+            "logMagnitude": 11.477146277051926,
+            "sign": -1,
+            "value": -96485.33212331001
+          },
+          "thermal": {
+            "logMagnitude": -3.6615530789296167,
+            "sign": 1,
+            "value": 0.025692579121085843
+          },
+          "voltage": {
+            "logMagnitude": 2.5692565947193664e-08,
+            "sign": 1,
+            "value": 1.0000000256925663
+          }
+        }
+      },
+      {
+        "args": {
+          "electrons": 2,
+          "fraction": 0.500000249999875
+        },
+        "expect": {
+          "freeEnergyShift": {
+            "logMagnitude": -5.99991785974668,
+            "sign": -1,
+            "value": -0.002478955790360393
+          },
+          "logQuotient": {
+            "logMagnitude": -13.815511057868989,
+            "sign": -1,
+            "value": -9.999995000954111e-07
+          },
+          "quotient": {
+            "logMagnitude": -9.999995000954111e-07,
+            "sign": 1,
+            "value": 0.999999000001
+          },
+          "reactionFreeEnergy": {
+            "logMagnitude": 12.170293470458153,
+            "sign": -1,
+            "value": -192970.66672557584
+          },
+          "shift": {
+            "logMagnitude": -18.17021131735855,
+            "sign": 1,
+            "value": 1.284628313862382e-08
+          },
+          "standardFreeEnergy": {
+            "logMagnitude": 12.17029345761187,
+            "sign": -1,
+            "value": -192970.66424662003
+          },
+          "thermal": {
+            "logMagnitude": -4.354700259489562,
+            "sign": 1,
+            "value": 0.012846289560542921
+          },
+          "voltage": {
+            "logMagnitude": 1.2846283056110325e-08,
+            "sign": 1,
+            "value": 1.0000000128462831
+          }
+        }
+      },
+      {
+        "args": {
+          "electrons": 1,
+          "fraction": 0.5000002499998751
+        },
+        "expect": {
+          "freeEnergyShift": {
+            "logMagnitude": -5.999917859302591,
+            "sign": -1,
+            "value": -0.0024789557914612712
+          },
+          "logQuotient": {
+            "logMagnitude": -13.8155110574249,
+            "sign": -1,
+            "value": -9.999995005395003e-07
+          },
+          "quotient": {
+            "logMagnitude": -9.999995005395003e-07,
+            "sign": 1,
+            "value": 0.9999990000009995
+          },
+          "reactionFreeEnergy": {
+            "logMagnitude": 11.47714630274449,
+            "sign": -1,
+            "value": -96485.33460226581
+          },
+          "shift": {
+            "logMagnitude": -17.477064136354514,
+            "sign": 1,
+            "value": 2.5692566288657438e-08
+          },
+          "standardFreeEnergy": {
+            "logMagnitude": 11.477146277051926,
+            "sign": -1,
+            "value": -96485.33212331001
+          },
+          "thermal": {
+            "logMagnitude": -3.6615530789296167,
+            "sign": 1,
+            "value": 0.025692579121085843
+          },
+          "voltage": {
+            "logMagnitude": 2.569256595860346e-08,
+            "sign": 1,
+            "value": 1.0000000256925663
+          }
+        }
+      },
+      {
+        "args": {
+          "electrons": 2,
+          "fraction": 0.5000002499998751
+        },
+        "expect": {
+          "freeEnergyShift": {
+            "logMagnitude": -5.999917859302591,
+            "sign": -1,
+            "value": -0.0024789557914612712
+          },
+          "logQuotient": {
+            "logMagnitude": -13.8155110574249,
+            "sign": -1,
+            "value": -9.999995005395003e-07
+          },
+          "quotient": {
+            "logMagnitude": -9.999995005395003e-07,
+            "sign": 1,
+            "value": 0.9999990000009995
+          },
+          "reactionFreeEnergy": {
+            "logMagnitude": 12.170293470458153,
+            "sign": -1,
+            "value": -192970.66672557584
+          },
+          "shift": {
+            "logMagnitude": -18.17021131691446,
+            "sign": 1,
+            "value": 1.2846283144328719e-08
+          },
+          "standardFreeEnergy": {
+            "logMagnitude": 12.17029345761187,
+            "sign": -1,
+            "value": -192970.66424662003
+          },
+          "thermal": {
+            "logMagnitude": -4.354700259489562,
+            "sign": 1,
+            "value": 0.012846289560542921
+          },
+          "voltage": {
+            "logMagnitude": 1.2846283061815223e-08,
+            "sign": 1,
+            "value": 1.0000000128462831
+          }
+        }
+      },
+      {
+        "args": {
+          "electrons": 1,
+          "fraction": 0.39999999999999997
+        },
+        "expect": {
+          "freeEnergyShift": {
+            "logMagnitude": 6.912872742404429,
+            "sign": 1,
+            "value": 1005.1305800032268
+          },
+          "logQuotient": {
+            "logMagnitude": -0.9027204557178796,
+            "sign": 1,
+            "value": 0.4054651081081645
+          },
+          "quotient": {
+            "logMagnitude": 0.4054651081081645,
+            "sign": 1,
+            "value": 1.5000000000000002
+          },
+          "reactionFreeEnergy": {
+            "logMagnitude": 11.466674191293718,
+            "sign": -1,
+            "value": -95480.20154330679
+          },
+          "shift": {
+            "logMagnitude": -4.564273534647496,
+            "sign": -1,
+            "value": -0.010417444370908642
+          },
+          "standardFreeEnergy": {
+            "logMagnitude": 11.477146277051926,
+            "sign": -1,
+            "value": -96485.33212331001
+          },
+          "thermal": {
+            "logMagnitude": -3.6615530789296167,
+            "sign": 1,
+            "value": 0.025692579121085843
+          },
+          "voltage": {
+            "logMagnitude": -0.010472085758206634,
+            "sign": 1,
+            "value": 0.9895825556290914
+          }
+        }
+      },
+      {
+        "args": {
+          "electrons": 2,
+          "fraction": 0.39999999999999997
+        },
+        "expect": {
+          "freeEnergyShift": {
+            "logMagnitude": 6.912872742404429,
+            "sign": 1,
+            "value": 1005.1305800032268
+          },
+          "logQuotient": {
+            "logMagnitude": -0.9027204557178796,
+            "sign": 1,
+            "value": 0.4054651081081645
+          },
+          "quotient": {
+            "logMagnitude": 0.4054651081081645,
+            "sign": 1,
+            "value": 1.5000000000000002
+          },
+          "reactionFreeEnergy": {
+            "logMagnitude": 12.165071122742646,
+            "sign": -1,
+            "value": -191965.5336666168
+          },
+          "shift": {
+            "logMagnitude": -5.2574207152074415,
+            "sign": -1,
+            "value": -0.005208722185454321
+          },
+          "standardFreeEnergy": {
+            "logMagnitude": 12.17029345761187,
+            "sign": -1,
+            "value": -192970.66424662003
+          },
+          "thermal": {
+            "logMagnitude": -4.354700259489562,
+            "sign": 1,
+            "value": 0.012846289560542921
+          },
+          "voltage": {
+            "logMagnitude": -0.005222334869224039,
+            "sign": 1,
+            "value": 0.9947912778145457
+          }
+        }
+      },
+      {
+        "args": {
+          "electrons": 1,
+          "fraction": 0.4
+        },
+        "expect": {
+          "freeEnergyShift": {
+            "logMagnitude": 6.912872742404428,
+            "sign": 1,
+            "value": 1005.1305800032262
+          },
+          "logQuotient": {
+            "logMagnitude": -0.9027204557178802,
+            "sign": 1,
+            "value": 0.4054651081081643
+          },
+          "quotient": {
+            "logMagnitude": 0.4054651081081643,
+            "sign": 1,
+            "value": 1.4999999999999998
+          },
+          "reactionFreeEnergy": {
+            "logMagnitude": 11.466674191293718,
+            "sign": -1,
+            "value": -95480.20154330679
+          },
+          "shift": {
+            "logMagnitude": -4.564273534647497,
+            "sign": -1,
+            "value": -0.010417444370908637
+          },
+          "standardFreeEnergy": {
+            "logMagnitude": 11.477146277051926,
+            "sign": -1,
+            "value": -96485.33212331001
+          },
+          "thermal": {
+            "logMagnitude": -3.6615530789296167,
+            "sign": 1,
+            "value": 0.025692579121085843
+          },
+          "voltage": {
+            "logMagnitude": -0.010472085758206628,
+            "sign": 1,
+            "value": 0.9895825556290914
+          }
+        }
+      },
+      {
+        "args": {
+          "electrons": 2,
+          "fraction": 0.4
+        },
+        "expect": {
+          "freeEnergyShift": {
+            "logMagnitude": 6.912872742404428,
+            "sign": 1,
+            "value": 1005.1305800032262
+          },
+          "logQuotient": {
+            "logMagnitude": -0.9027204557178802,
+            "sign": 1,
+            "value": 0.4054651081081643
+          },
+          "quotient": {
+            "logMagnitude": 0.4054651081081643,
+            "sign": 1,
+            "value": 1.4999999999999998
+          },
+          "reactionFreeEnergy": {
+            "logMagnitude": 12.165071122742646,
+            "sign": -1,
+            "value": -191965.5336666168
+          },
+          "shift": {
+            "logMagnitude": -5.257420715207442,
+            "sign": -1,
+            "value": -0.005208722185454318
+          },
+          "standardFreeEnergy": {
+            "logMagnitude": 12.17029345761187,
+            "sign": -1,
+            "value": -192970.66424662003
+          },
+          "thermal": {
+            "logMagnitude": -4.354700259489562,
+            "sign": 1,
+            "value": 0.012846289560542921
+          },
+          "voltage": {
+            "logMagnitude": -0.005222334869224036,
+            "sign": 1,
+            "value": 0.9947912778145457
+          }
+        }
+      },
+      {
+        "args": {
+          "electrons": 1,
+          "fraction": 0.4000000000000001
+        },
+        "expect": {
+          "freeEnergyShift": {
+            "logMagnitude": 6.912872742404427,
+            "sign": 1,
+            "value": 1005.1305800032256
+          },
+          "logQuotient": {
+            "logMagnitude": -0.9027204557178807,
+            "sign": 1,
+            "value": 0.40546510810816405
+          },
+          "quotient": {
+            "logMagnitude": 0.40546510810816405,
+            "sign": 1,
+            "value": 1.4999999999999996
+          },
+          "reactionFreeEnergy": {
+            "logMagnitude": 11.466674191293718,
+            "sign": -1,
+            "value": -95480.20154330679
+          },
+          "shift": {
+            "logMagnitude": -4.564273534647498,
+            "sign": -1,
+            "value": -0.01041744437090863
+          },
+          "standardFreeEnergy": {
+            "logMagnitude": 11.477146277051926,
+            "sign": -1,
+            "value": -96485.33212331001
+          },
+          "thermal": {
+            "logMagnitude": -3.6615530789296167,
+            "sign": 1,
+            "value": 0.025692579121085843
+          },
+          "voltage": {
+            "logMagnitude": -0.010472085758206622,
+            "sign": 1,
+            "value": 0.9895825556290914
+          }
+        }
+      },
+      {
+        "args": {
+          "electrons": 2,
+          "fraction": 0.4000000000000001
+        },
+        "expect": {
+          "freeEnergyShift": {
+            "logMagnitude": 6.912872742404427,
+            "sign": 1,
+            "value": 1005.1305800032256
+          },
+          "logQuotient": {
+            "logMagnitude": -0.9027204557178807,
+            "sign": 1,
+            "value": 0.40546510810816405
+          },
+          "quotient": {
+            "logMagnitude": 0.40546510810816405,
+            "sign": 1,
+            "value": 1.4999999999999996
+          },
+          "reactionFreeEnergy": {
+            "logMagnitude": 12.165071122742646,
+            "sign": -1,
+            "value": -191965.5336666168
+          },
+          "shift": {
+            "logMagnitude": -5.257420715207442,
+            "sign": -1,
+            "value": -0.005208722185454315
+          },
+          "standardFreeEnergy": {
+            "logMagnitude": 12.17029345761187,
+            "sign": -1,
+            "value": -192970.66424662003
+          },
+          "thermal": {
+            "logMagnitude": -4.354700259489562,
+            "sign": 1,
+            "value": 0.012846289560542921
+          },
+          "voltage": {
+            "logMagnitude": -0.0052223348692240325,
+            "sign": 1,
+            "value": 0.9947912778145457
+          }
+        }
+      },
+      {
+        "args": {
+          "electrons": 1,
+          "fraction": 0.6666666666666665
+        },
+        "expect": {
+          "freeEnergyShift": {
+            "logMagnitude": 7.449080277540643,
+            "sign": -1,
+            "value": -1718.2820757981508
+          },
+          "logQuotient": {
+            "logMagnitude": -0.3665129205816653,
+            "sign": -1,
+            "value": -0.6931471805599446
+          },
+          "quotient": {
+            "logMagnitude": -0.6931471805599446,
+            "sign": 1,
+            "value": 0.5000000000000003
+          },
+          "reactionFreeEnergy": {
+            "logMagnitude": 11.494798298136859,
+            "sign": -1,
+            "value": -98203.61419910817
+          },
+          "shift": {
+            "logMagnitude": -4.0280659995112815,
+            "sign": 1,
+            "value": 0.017808738779093954
+          },
+          "standardFreeEnergy": {
+            "logMagnitude": 11.477146277051926,
+            "sign": -1,
+            "value": -96485.33212331001
+          },
+          "thermal": {
+            "logMagnitude": -3.6615530789296167,
+            "sign": 1,
+            "value": 0.025692579121085843
+          },
+          "voltage": {
+            "logMagnitude": 0.017652021084934418,
+            "sign": 1,
+            "value": 1.017808738779094
+          }
+        }
+      },
+      {
+        "args": {
+          "electrons": 2,
+          "fraction": 0.6666666666666665
+        },
+        "expect": {
+          "freeEnergyShift": {
+            "logMagnitude": 7.449080277540643,
+            "sign": -1,
+            "value": -1718.2820757981508
+          },
+          "logQuotient": {
+            "logMagnitude": -0.3665129205816653,
+            "sign": -1,
+            "value": -0.6931471805599446
+          },
+          "quotient": {
+            "logMagnitude": -0.6931471805599446,
+            "sign": 1,
+            "value": 0.5000000000000003
+          },
+          "reactionFreeEnergy": {
+            "logMagnitude": 12.179158416879714,
+            "sign": -1,
+            "value": -194688.9463224182
+          },
+          "shift": {
+            "logMagnitude": -4.721213180071227,
+            "sign": 1,
+            "value": 0.008904369389546977
+          },
+          "standardFreeEnergy": {
+            "logMagnitude": 12.17029345761187,
+            "sign": -1,
+            "value": -192970.66424662003
+          },
+          "thermal": {
+            "logMagnitude": -4.354700259489562,
+            "sign": 1,
+            "value": 0.012846289560542921
+          },
+          "voltage": {
+            "logMagnitude": 0.008864959267844719,
+            "sign": 1,
+            "value": 1.008904369389547
+          }
+        }
+      },
+      {
+        "args": {
+          "electrons": 1,
+          "fraction": 0.6666666666666666
+        },
+        "expect": {
+          "freeEnergyShift": {
+            "logMagnitude": 7.449080277540643,
+            "sign": -1,
+            "value": -1718.282075798152
+          },
+          "logQuotient": {
+            "logMagnitude": -0.36651292058166457,
+            "sign": -1,
+            "value": -0.6931471805599452
+          },
+          "quotient": {
+            "logMagnitude": -0.6931471805599452,
+            "sign": 1,
+            "value": 0.5000000000000001
+          },
+          "reactionFreeEnergy": {
+            "logMagnitude": 11.494798298136859,
+            "sign": -1,
+            "value": -98203.61419910817
+          },
+          "shift": {
+            "logMagnitude": -4.0280659995112815,
+            "sign": 1,
+            "value": 0.017808738779093967
+          },
+          "standardFreeEnergy": {
+            "logMagnitude": 11.477146277051926,
+            "sign": -1,
+            "value": -96485.33212331001
+          },
+          "thermal": {
+            "logMagnitude": -3.6615530789296167,
+            "sign": 1,
+            "value": 0.025692579121085843
+          },
+          "voltage": {
+            "logMagnitude": 0.01765202108493443,
+            "sign": 1,
+            "value": 1.017808738779094
+          }
+        }
+      },
+      {
+        "args": {
+          "electrons": 2,
+          "fraction": 0.6666666666666666
+        },
+        "expect": {
+          "freeEnergyShift": {
+            "logMagnitude": 7.449080277540643,
+            "sign": -1,
+            "value": -1718.282075798152
+          },
+          "logQuotient": {
+            "logMagnitude": -0.36651292058166457,
+            "sign": -1,
+            "value": -0.6931471805599452
+          },
+          "quotient": {
+            "logMagnitude": -0.6931471805599452,
+            "sign": 1,
+            "value": 0.5000000000000001
+          },
+          "reactionFreeEnergy": {
+            "logMagnitude": 12.179158416879714,
+            "sign": -1,
+            "value": -194688.9463224182
+          },
+          "shift": {
+            "logMagnitude": -4.721213180071227,
+            "sign": 1,
+            "value": 0.008904369389546984
+          },
+          "standardFreeEnergy": {
+            "logMagnitude": 12.17029345761187,
+            "sign": -1,
+            "value": -192970.66424662003
+          },
+          "thermal": {
+            "logMagnitude": -4.354700259489562,
+            "sign": 1,
+            "value": 0.012846289560542921
+          },
+          "voltage": {
+            "logMagnitude": 0.008864959267844724,
+            "sign": 1,
+            "value": 1.008904369389547
+          }
+        }
+      },
+      {
+        "args": {
+          "electrons": 1,
+          "fraction": 0.6666666666666667
+        },
+        "expect": {
+          "freeEnergyShift": {
+            "logMagnitude": 7.449080277540644,
+            "sign": -1,
+            "value": -1718.282075798153
+          },
+          "logQuotient": {
+            "logMagnitude": -0.36651292058166385,
+            "sign": -1,
+            "value": -0.6931471805599456
+          },
+          "quotient": {
+            "logMagnitude": -0.6931471805599456,
+            "sign": 1,
+            "value": 0.49999999999999983
+          },
+          "reactionFreeEnergy": {
+            "logMagnitude": 11.494798298136859,
+            "sign": -1,
+            "value": -98203.61419910817
+          },
+          "shift": {
+            "logMagnitude": -4.028065999511281,
+            "sign": 1,
+            "value": 0.017808738779093978
+          },
+          "standardFreeEnergy": {
+            "logMagnitude": 11.477146277051926,
+            "sign": -1,
+            "value": -96485.33212331001
+          },
+          "thermal": {
+            "logMagnitude": -3.6615530789296167,
+            "sign": 1,
+            "value": 0.025692579121085843
+          },
+          "voltage": {
+            "logMagnitude": 0.017652021084934445,
+            "sign": 1,
+            "value": 1.017808738779094
+          }
+        }
+      },
+      {
+        "args": {
+          "electrons": 2,
+          "fraction": 0.6666666666666667
+        },
+        "expect": {
+          "freeEnergyShift": {
+            "logMagnitude": 7.449080277540644,
+            "sign": -1,
+            "value": -1718.282075798153
+          },
+          "logQuotient": {
+            "logMagnitude": -0.36651292058166385,
+            "sign": -1,
+            "value": -0.6931471805599456
+          },
+          "quotient": {
+            "logMagnitude": -0.6931471805599456,
+            "sign": 1,
+            "value": 0.49999999999999983
+          },
+          "reactionFreeEnergy": {
+            "logMagnitude": 12.179158416879714,
+            "sign": -1,
+            "value": -194688.9463224182
+          },
+          "shift": {
+            "logMagnitude": -4.721213180071226,
+            "sign": 1,
+            "value": 0.008904369389546989
+          },
+          "standardFreeEnergy": {
+            "logMagnitude": 12.17029345761187,
+            "sign": -1,
+            "value": -192970.66424662003
+          },
+          "thermal": {
+            "logMagnitude": -4.354700259489562,
+            "sign": 1,
+            "value": 0.012846289560542921
+          },
+          "voltage": {
+            "logMagnitude": 0.008864959267844731,
+            "sign": 1,
+            "value": 1.008904369389547
+          }
+        }
       }
     ],
     "peukert": [
@@ -67991,6 +72254,600 @@
             "logMagnitude": 2.995732273553991,
             "sign": 1,
             "value": 19.999999999999996
+          },
+          "referenceCurrent": {
+            "logMagnitude": 1.6094379124341003,
+            "sign": 1,
+            "value": 5.0
+          }
+        }
+      },
+      {
+        "args": {
+          "current": 4.999995000005,
+          "exponent": 1.0
+        },
+        "expect": {
+          "availableCharge": {
+            "logMagnitude": 4.605170185988092,
+            "sign": 1,
+            "value": 100.0
+          },
+          "capacityRatio": {
+            "logMagnitude": 0.0,
+            "sign": 1,
+            "value": 1.0
+          },
+          "constantCapacityDuration": {
+            "logMagnitude": 2.995733273553491,
+            "sign": 1,
+            "value": 20.00002
+          },
+          "duration": {
+            "logMagnitude": 2.995733273553491,
+            "sign": 1,
+            "value": 20.00002
+          },
+          "referenceCurrent": {
+            "logMagnitude": 1.6094379124341003,
+            "sign": 1,
+            "value": 5.0
+          }
+        }
+      },
+      {
+        "args": {
+          "current": 4.999995000005,
+          "exponent": 1.0000000000000002
+        },
+        "expect": {
+          "availableCharge": {
+            "logMagnitude": 4.605170185988092,
+            "sign": 1,
+            "value": 100.0
+          },
+          "capacityRatio": {
+            "logMagnitude": 2.2204449391387786e-22,
+            "sign": 1,
+            "value": 1.0
+          },
+          "constantCapacityDuration": {
+            "logMagnitude": 2.995733273553491,
+            "sign": 1,
+            "value": 20.00002
+          },
+          "duration": {
+            "logMagnitude": 2.995733273553491,
+            "sign": 1,
+            "value": 20.00002
+          },
+          "referenceCurrent": {
+            "logMagnitude": 1.6094379124341003,
+            "sign": 1,
+            "value": 5.0
+          }
+        }
+      },
+      {
+        "args": {
+          "current": 4.999995000005,
+          "exponent": 1.5
+        },
+        "expect": {
+          "availableCharge": {
+            "logMagnitude": 4.605170685987841,
+            "sign": 1,
+            "value": 100.0000499999875
+          },
+          "capacityRatio": {
+            "logMagnitude": 4.999997500251053e-07,
+            "sign": 1,
+            "value": 1.000000499999875
+          },
+          "constantCapacityDuration": {
+            "logMagnitude": 2.995733273553491,
+            "sign": 1,
+            "value": 20.00002
+          },
+          "duration": {
+            "logMagnitude": 2.995733773553241,
+            "sign": 1,
+            "value": 20.000030000007502
+          },
+          "referenceCurrent": {
+            "logMagnitude": 1.6094379124341003,
+            "sign": 1,
+            "value": 5.0
+          }
+        }
+      },
+      {
+        "args": {
+          "current": 4.999995000005001,
+          "exponent": 1.0
+        },
+        "expect": {
+          "availableCharge": {
+            "logMagnitude": 4.605170185988092,
+            "sign": 1,
+            "value": 100.0
+          },
+          "capacityRatio": {
+            "logMagnitude": -1.2272733663244316e-91,
+            "sign": 1,
+            "value": 1.0
+          },
+          "constantCapacityDuration": {
+            "logMagnitude": 2.995733273553491,
+            "sign": 1,
+            "value": 20.000019999999996
+          },
+          "duration": {
+            "logMagnitude": 2.995733273553491,
+            "sign": 1,
+            "value": 20.000019999999996
+          },
+          "referenceCurrent": {
+            "logMagnitude": 1.6094379124341003,
+            "sign": 1,
+            "value": 5.0
+          }
+        }
+      },
+      {
+        "args": {
+          "current": 4.999995000005001,
+          "exponent": 1.0000000000000002
+        },
+        "expect": {
+          "availableCharge": {
+            "logMagnitude": 4.605170185988092,
+            "sign": 1,
+            "value": 100.0
+          },
+          "capacityRatio": {
+            "logMagnitude": 2.220444938744348e-22,
+            "sign": 1,
+            "value": 1.0
+          },
+          "constantCapacityDuration": {
+            "logMagnitude": 2.995733273553491,
+            "sign": 1,
+            "value": 20.000019999999996
+          },
+          "duration": {
+            "logMagnitude": 2.995733273553491,
+            "sign": 1,
+            "value": 20.000019999999996
+          },
+          "referenceCurrent": {
+            "logMagnitude": 1.6094379124341003,
+            "sign": 1,
+            "value": 5.0
+          }
+        }
+      },
+      {
+        "args": {
+          "current": 4.999995000005001,
+          "exponent": 1.5
+        },
+        "expect": {
+          "availableCharge": {
+            "logMagnitude": 4.605170685987841,
+            "sign": 1,
+            "value": 100.0000499999875
+          },
+          "capacityRatio": {
+            "logMagnitude": 4.999997499362875e-07,
+            "sign": 1,
+            "value": 1.0000004999998748
+          },
+          "constantCapacityDuration": {
+            "logMagnitude": 2.995733273553491,
+            "sign": 1,
+            "value": 20.000019999999996
+          },
+          "duration": {
+            "logMagnitude": 2.995733773553241,
+            "sign": 1,
+            "value": 20.000030000007495
+          },
+          "referenceCurrent": {
+            "logMagnitude": 1.6094379124341003,
+            "sign": 1,
+            "value": 5.0
+          }
+        }
+      },
+      {
+        "args": {
+          "current": 4.9999950000050015,
+          "exponent": 1.0
+        },
+        "expect": {
+          "availableCharge": {
+            "logMagnitude": 4.605170185988092,
+            "sign": 1,
+            "value": 100.0
+          },
+          "capacityRatio": {
+            "logMagnitude": 0.0,
+            "sign": 1,
+            "value": 1.0
+          },
+          "constantCapacityDuration": {
+            "logMagnitude": 2.9957332735534905,
+            "sign": 1,
+            "value": 20.000019999999992
+          },
+          "duration": {
+            "logMagnitude": 2.9957332735534905,
+            "sign": 1,
+            "value": 20.000019999999992
+          },
+          "referenceCurrent": {
+            "logMagnitude": 1.6094379124341003,
+            "sign": 1,
+            "value": 5.0
+          }
+        }
+      },
+      {
+        "args": {
+          "current": 4.9999950000050015,
+          "exponent": 1.0000000000000002
+        },
+        "expect": {
+          "availableCharge": {
+            "logMagnitude": 4.605170185988092,
+            "sign": 1,
+            "value": 100.0
+          },
+          "capacityRatio": {
+            "logMagnitude": 2.220444938349917e-22,
+            "sign": 1,
+            "value": 1.0
+          },
+          "constantCapacityDuration": {
+            "logMagnitude": 2.9957332735534905,
+            "sign": 1,
+            "value": 20.000019999999992
+          },
+          "duration": {
+            "logMagnitude": 2.9957332735534905,
+            "sign": 1,
+            "value": 20.000019999999992
+          },
+          "referenceCurrent": {
+            "logMagnitude": 1.6094379124341003,
+            "sign": 1,
+            "value": 5.0
+          }
+        }
+      },
+      {
+        "args": {
+          "current": 4.9999950000050015,
+          "exponent": 1.5
+        },
+        "expect": {
+          "availableCharge": {
+            "logMagnitude": 4.605170685987841,
+            "sign": 1,
+            "value": 100.00004999998748
+          },
+          "capacityRatio": {
+            "logMagnitude": 4.999997498474695e-07,
+            "sign": 1,
+            "value": 1.0000004999998748
+          },
+          "constantCapacityDuration": {
+            "logMagnitude": 2.9957332735534905,
+            "sign": 1,
+            "value": 20.000019999999992
+          },
+          "duration": {
+            "logMagnitude": 2.9957337735532406,
+            "sign": 1,
+            "value": 20.00003000000749
+          },
+          "referenceCurrent": {
+            "logMagnitude": 1.6094379124341003,
+            "sign": 1,
+            "value": 5.0
+          }
+        }
+      },
+      {
+        "args": {
+          "current": 5.000005000004999,
+          "exponent": 1.0
+        },
+        "expect": {
+          "availableCharge": {
+            "logMagnitude": 4.605170185988092,
+            "sign": 1,
+            "value": 100.0
+          },
+          "capacityRatio": {
+            "logMagnitude": 2.4545467326488633e-91,
+            "sign": 1,
+            "value": 1.0
+          },
+          "constantCapacityDuration": {
+            "logMagnitude": 2.995731273553491,
+            "sign": 1,
+            "value": 19.999980000000004
+          },
+          "duration": {
+            "logMagnitude": 2.995731273553491,
+            "sign": 1,
+            "value": 19.999980000000004
+          },
+          "referenceCurrent": {
+            "logMagnitude": 1.6094379124341003,
+            "sign": 1,
+            "value": 5.0
+          }
+        }
+      },
+      {
+        "args": {
+          "current": 5.000005000004999,
+          "exponent": 1.0000000000000002
+        },
+        "expect": {
+          "availableCharge": {
+            "logMagnitude": 4.605170185988092,
+            "sign": 1,
+            "value": 100.0
+          },
+          "capacityRatio": {
+            "logMagnitude": -2.220447159190765e-22,
+            "sign": 1,
+            "value": 1.0
+          },
+          "constantCapacityDuration": {
+            "logMagnitude": 2.995731273553491,
+            "sign": 1,
+            "value": 19.999980000000004
+          },
+          "duration": {
+            "logMagnitude": 2.995731273553491,
+            "sign": 1,
+            "value": 19.999980000000004
+          },
+          "referenceCurrent": {
+            "logMagnitude": 1.6094379124341003,
+            "sign": 1,
+            "value": 5.0
+          }
+        }
+      },
+      {
+        "args": {
+          "current": 5.000005000004999,
+          "exponent": 1.5
+        },
+        "expect": {
+          "availableCharge": {
+            "logMagnitude": 4.605169685987842,
+            "sign": 1,
+            "value": 99.9999499999875
+          },
+          "capacityRatio": {
+            "logMagnitude": -5.000002499363703e-07,
+            "sign": 1,
+            "value": 0.999999499999875
+          },
+          "constantCapacityDuration": {
+            "logMagnitude": 2.995731273553491,
+            "sign": 1,
+            "value": 19.999980000000004
+          },
+          "duration": {
+            "logMagnitude": 2.995730773553241,
+            "sign": 1,
+            "value": 19.999970000007504
+          },
+          "referenceCurrent": {
+            "logMagnitude": 1.6094379124341003,
+            "sign": 1,
+            "value": 5.0
+          }
+        }
+      },
+      {
+        "args": {
+          "current": 5.000005000005,
+          "exponent": 1.0
+        },
+        "expect": {
+          "availableCharge": {
+            "logMagnitude": 4.605170185988092,
+            "sign": 1,
+            "value": 100.0
+          },
+          "capacityRatio": {
+            "logMagnitude": 0.0,
+            "sign": 1,
+            "value": 1.0
+          },
+          "constantCapacityDuration": {
+            "logMagnitude": 2.995731273553491,
+            "sign": 1,
+            "value": 19.99998
+          },
+          "duration": {
+            "logMagnitude": 2.995731273553491,
+            "sign": 1,
+            "value": 19.99998
+          },
+          "referenceCurrent": {
+            "logMagnitude": 1.6094379124341003,
+            "sign": 1,
+            "value": 5.0
+          }
+        }
+      },
+      {
+        "args": {
+          "current": 5.000005000005,
+          "exponent": 1.0000000000000002
+        },
+        "expect": {
+          "availableCharge": {
+            "logMagnitude": 4.605170185988092,
+            "sign": 1,
+            "value": 100.0
+          },
+          "capacityRatio": {
+            "logMagnitude": -2.220447159585195e-22,
+            "sign": 1,
+            "value": 1.0
+          },
+          "constantCapacityDuration": {
+            "logMagnitude": 2.995731273553491,
+            "sign": 1,
+            "value": 19.99998
+          },
+          "duration": {
+            "logMagnitude": 2.995731273553491,
+            "sign": 1,
+            "value": 19.99998
+          },
+          "referenceCurrent": {
+            "logMagnitude": 1.6094379124341003,
+            "sign": 1,
+            "value": 5.0
+          }
+        }
+      },
+      {
+        "args": {
+          "current": 5.000005000005,
+          "exponent": 1.5
+        },
+        "expect": {
+          "availableCharge": {
+            "logMagnitude": 4.605169685987842,
+            "sign": 1,
+            "value": 99.99994999998749
+          },
+          "capacityRatio": {
+            "logMagnitude": -5.00000250025188e-07,
+            "sign": 1,
+            "value": 0.999999499999875
+          },
+          "constantCapacityDuration": {
+            "logMagnitude": 2.995731273553491,
+            "sign": 1,
+            "value": 19.99998
+          },
+          "duration": {
+            "logMagnitude": 2.995730773553241,
+            "sign": 1,
+            "value": 19.999970000007497
+          },
+          "referenceCurrent": {
+            "logMagnitude": 1.6094379124341003,
+            "sign": 1,
+            "value": 5.0
+          }
+        }
+      },
+      {
+        "args": {
+          "current": 5.000005000005001,
+          "exponent": 1.0
+        },
+        "expect": {
+          "availableCharge": {
+            "logMagnitude": 4.605170185988092,
+            "sign": 1,
+            "value": 100.0
+          },
+          "capacityRatio": {
+            "logMagnitude": -1.2272733663244316e-91,
+            "sign": 1,
+            "value": 1.0
+          },
+          "constantCapacityDuration": {
+            "logMagnitude": 2.9957312735534907,
+            "sign": 1,
+            "value": 19.999979999999997
+          },
+          "duration": {
+            "logMagnitude": 2.9957312735534907,
+            "sign": 1,
+            "value": 19.999979999999997
+          },
+          "referenceCurrent": {
+            "logMagnitude": 1.6094379124341003,
+            "sign": 1,
+            "value": 5.0
+          }
+        }
+      },
+      {
+        "args": {
+          "current": 5.000005000005001,
+          "exponent": 1.0000000000000002
+        },
+        "expect": {
+          "availableCharge": {
+            "logMagnitude": 4.605170185988092,
+            "sign": 1,
+            "value": 100.0
+          },
+          "capacityRatio": {
+            "logMagnitude": -2.220447159979625e-22,
+            "sign": 1,
+            "value": 1.0
+          },
+          "constantCapacityDuration": {
+            "logMagnitude": 2.9957312735534907,
+            "sign": 1,
+            "value": 19.999979999999997
+          },
+          "duration": {
+            "logMagnitude": 2.9957312735534907,
+            "sign": 1,
+            "value": 19.999979999999997
+          },
+          "referenceCurrent": {
+            "logMagnitude": 1.6094379124341003,
+            "sign": 1,
+            "value": 5.0
+          }
+        }
+      },
+      {
+        "args": {
+          "current": 5.000005000005001,
+          "exponent": 1.5
+        },
+        "expect": {
+          "availableCharge": {
+            "logMagnitude": 4.605169685987841,
+            "sign": 1,
+            "value": 99.99994999998749
+          },
+          "capacityRatio": {
+            "logMagnitude": -5.000002501140058e-07,
+            "sign": 1,
+            "value": 0.9999994999998749
+          },
+          "constantCapacityDuration": {
+            "logMagnitude": 2.9957312735534907,
+            "sign": 1,
+            "value": 19.999979999999997
+          },
+          "duration": {
+            "logMagnitude": 2.9957307735532406,
+            "sign": 1,
+            "value": 19.999970000007494
           },
           "referenceCurrent": {
             "logMagnitude": 1.6094379124341003,

@@ -57,4 +57,18 @@ test('declared domains reject invalid restored values rather than manufacture a 
  const invalid={storage:[{capacity:-1},{progress:2.0000000000000004},{etaCharge:.49}],nernst:[{fraction:0},{electrons:3},{activityRatio:0}],battery:[{resistance:0},{fraction:1.0000000000000002}],peukert:[{current:0},{exponent:.99},{preset:'unknown'}],soc:[{initial:-Number.MIN_VALUE},{hours:4.000000000000001},{operation:'unknown'}],cycleLife:[{depth:0},{exponent:0}],hydro:[{areaKm2:0},{flow:0},{operation:'unknown'}],air:[{ratio:.99},{gamma:.99},{thermal:'unknown'}],flywheel:[{radius:0},{fraction:1.0000000000000002}],capacitor:[{cutoff:1},{current:0}],hydrogen:[{electrolyser:-Number.MIN_VALUE},{retention:1.0000000000000002}],ragone:[{power:0,energy:10},{power:100,energy:0}]};
  for(const[name,rows]of Object.entries(invalid))for(const args of [...rows,{[name==='ragone'?'power':Object.keys(rows[0])[0]]:NaN}])assert.throws(()=>functions[name](args),name+' '+JSON.stringify(args));
 });
-test('all twelve frozen physical families retain their complete independent reference inventory',()=>{assert.equal(Object.keys(F).length,12);assert.equal(Object.values(F).reduce((n,rows)=>n+rows.length,0),1134);});
+test('all twelve frozen physical families retain their complete independent reference inventory',()=>{assert.equal(Object.keys(F).length,12);assert.equal(Object.values(F).reduce((n,rows)=>n+rows.length,0),1221);});
+
+test('twelve complete lessons preserve frozen identities, ordered dependencies and outside-chapter syllabus bytes',async()=>{
+ const {default:chapter}=await import('../content/energy/ch06.js'),{default:syllabus}=await import('../content/energy/syllabus.js'),crypto=await import('node:crypto');
+ const frozen=JSON.parse(fs.readFileSync(new URL('../docs/wave-6-plan.json',import.meta.url))).chapters.find(c=>c.collection==='energy'&&c.chapter===6),row=syllabus.chapters.find(c=>c.n===6);
+ assert.equal(chapter.items.length,12);assert.equal(row.items.length,12);
+ for(const[j,item]of chapter.items.entries()){
+  for(const key of ['num','kind','name','deps','paper','introduces','see','verify']){assert.deepEqual(item[key],frozen.items[j][key],item.num+' '+key);assert.deepEqual(row.items[j][key],frozen.items[j][key],item.num+' catalogue '+key);}
+  assert.equal(typeof item.viz,'function');for(const k of ['statement','idea','caption','scope'])assert.ok(typeof item[k]==='string'&&item[k].length>100,item.num+' complete '+k);
+  assert.deepEqual(row.items[j].refs,item.refs);assert.equal(row.items[j].pic,item.caption);assert.equal(row.items[j].scope,item.scope);
+ }
+ const hash=x=>crypto.createHash('sha256').update(x).digest('hex');assert.equal(hash(JSON.stringify({...syllabus,chapters:syllabus.chapters.filter(c=>c.n!==6)})),'535e0c1155db4832ded34518ecc7b4b2a1b417621ef9df8b21b36289aaadbd59');
+ const source=fs.readFileSync(new URL('../content/energy/syllabus.js',import.meta.url),'utf8'),a=source.indexOf('    {\n      "n": 6,'),next=source.indexOf('    {\n      n: 7,',a),b=source.lastIndexOf('    //',next);assert.ok(a>0&&b>a);
+ assert.equal(hash(source.slice(0,a)),'46bb4240557b125d10c408c1721f79bca904a49c7dcbc63e28e72f5f9cae16cb');assert.equal(hash(source.slice(b)),'5a1d0c6bb37460a7b3d2cedcfe3b16c0b58a7bdd8c8f47ac586525835be30877');
+});

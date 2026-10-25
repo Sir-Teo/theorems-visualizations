@@ -39,6 +39,10 @@ publish('storage',cases,storage)
 def nernst(fraction=.5,temperature=298.15,electrons=1,standardVoltage=1,activityRatio=1):
  x,T,n,V0,g=map(m,[fraction,temperature,electrons,standardVoltage,activityRatio]);Q=g*(1-x)/x;l=mp.log(Q);thermal=m(KB)*T/(n*m(E));shift=-thermal*l;V=V0+shift;return dict(quotient=q(Q),logQuotient=q(l),thermal=q(thermal),shift=q(shift),voltage=q(V),reactionFreeEnergy=q(-n*m(FAR)*V),freeEnergyShift=q(-n*m(FAR)*shift),standardFreeEnergy=q(-n*m(FAR)*V0))
 cases=grid({'fraction':[.01,.5,.99],'temperature':[200.,400.],'electrons':[1,2],'standardVoltage':[.5,2.],'activityRatio':[.2,1.,5.]});cases += [dict(fraction=x,electrons=n)for x,n in itertools.product([math.nextafter(.5,0.),math.nextafter(.5,1.)],[1,2])]
+# Adjacent original inputs around the logarithm's small-argument and near-one branches.
+for delta in [1e-6,-1e-6,1.000001e-6,-1.000001e-6,9.99999e-7,-9.99999e-7,.5,-.5]:
+ center=1/(2+delta)
+ cases +=[dict(fraction=x,electrons=n)for x,n in itertools.product([math.nextafter(center,0.),center,math.nextafter(center,1.)],[1,2])]
 publish('nernst',cases,nernst)
 def battery(voltage=3.7,resistance=.1,fraction=.25,operation='discharge'):
  V0,r,u=map(F,[voltage,resistance,fraction]);I=u*V0/r*(1 if operation=='discharge'else-1);V=V0-I*r;chemical=V0*I;terminal=V*I;heat=r*I*I;source=chemical if operation=='discharge'else-terminal;useful=terminal if operation=='discharge'else-chemical;return dict(current=q(I),drop=q(I*r),terminal=q(V),chemicalPower=q(chemical),terminalPower=q(terminal),heat=q(heat),sourcePower=q(source),usefulPower=q(useful),efficiency=q(useful/source)if source else None,lossFraction=q(heat/source)if source else None,shortCircuitCurrent=q(V0/r),maximumPower=q(V0*V0/(4*r)),residual=q(F(0)))
@@ -49,6 +53,9 @@ def peukert(capacityAh=100,referenceHours=20,current=10,exponent=1.2,preset='adj
  else:k=m(exponent)
  C,H,I=map(m,[capacityAh,referenceHours,current]);ref=C/H;t=C/I if k==1 else H*(ref/I)**k;return dict(referenceCurrent=q(ref),duration=q(t),availableCharge=q(I*t),constantCapacityDuration=q(C/I),capacityRatio=q(I*t/C))
 cases=grid({'capacityAh':[10.,200.],'referenceHours':[1.,20.],'current':[.5,100.],'exponent':[1.,1.2,1.5]});cases +=[dict(preset='manual example',current=I)for I in [.5,5.,15.,100.]];cases +=[dict(current=I,exponent=k)for I,k in itertools.product([math.nextafter(5.,0.),5.,math.nextafter(5.,10.)],[1.,math.nextafter(1.,2.),1.5])]
+for ratio in [1+1e-6,1-1e-6]:
+ center=5/ratio
+ cases +=[dict(current=x,exponent=k)for x,k in itertools.product([math.nextafter(center,0.),center,math.nextafter(center,math.inf)],[1.,math.nextafter(1.,2.),1.5])]
 publish('peukert',cases,peukert)
 def soc(initial=.5,rate=.5,operation='discharge',hours=.5,meterGain=1.01,meterBias=.1):
  x,r,t,g,b=map(F,[initial,rate,hours,meterGain,meterBias]);r*=0 if operation=='rest'else 1 if operation=='discharge'else-1;stop=x/r if r>0 else(1-x)/(-r)if r<0 else None;active=t if stop is None else min(t,stop);I=100*r if stop is None or t<stop else F(0);true=x-r*active;withdrawn=100*r*active;measured=g*withdrawn+b*t;estimate=x-measured/100;ocv=3+F(6,5)*true;V=ocv-I/F(500);ve=(V-3)/F(6,5);phase='rest'if not r else'cutoff'if stop is not None and t>=stop else operation
@@ -73,11 +80,18 @@ def air(moles=1,temperature=300,ratio=4,gamma=1.4,progress=.5,thermal='reject he
  wi=scale*L;wa=integrate(L);lost=integrate(L,True);partial=integrate(s);extra=integrate(s,True);keep=thermal=='retain heat';out=wa if keep else wi;cool=mp.mpf(0)if keep else wa;ambient=mp.mpf(0)if keep else wi
  return dict(initialVolume=q(V0),compressedVolume=q(V0/r),volume=q(V0*mp.exp(-s)),volumeDrop=q(-V0*mp.expm1(-s)),pressure=q(100000*mp.exp(g*s)),pressureRise=q(100000*mp.expm1(g*s)),temperature=q(T*mp.exp(b*s)),temperatureRise=q(T*mp.expm1(b*s)),isothermalWork=q(wi),adiabaticWork=q(wa),partialWork=q(partial),partialExcessWork=q(extra),lostWork=q(mp.mpf(0)if keep else lost),recoveredWork=q(out),coolingHeat=q(cool),ambientHeat=q(ambient),workEfficiency=q(out/wa)if wa else None,residual=q(F(0)))
 cases=grid({'moles':[.1,10.],'temperature':[200.,400.],'ratio':[1.,10.],'gamma':[1.,5/3],'progress':[0.,1.],'thermal':['reject heat','retain heat']});cases += [dict(ratio=r,gamma=g,progress=u)for r,g,u in [(math.nextafter(1.,2.),1.4,1.),(math.nextafter(1.,2.),math.nextafter(1.,2.),1.),(4.,1.4,tiny),(4.,1.,.5),(4.,1.0000000000000002,tiny)]]
+for center in [1e-6/(1.4*math.log(4)),1e-6/(.4*math.log(4)),1e-6/math.log(4),.5/(.4*math.log(4))]:
+ cases +=[dict(progress=x)for x in [math.nextafter(center,0.),center,math.nextafter(center,1.)]]
+center=math.exp(.5/(1.4-1))
+cases +=[dict(ratio=x)for x in [math.nextafter(center,0.),center,math.nextafter(center,math.inf)]]
 publish('air',cases,air)
 def fly(mass=10,radius=.5,density=7800,strengthMPa=500,safety=2,fraction=.6,time=.01):
  M,r,rho,stress,N,u,t=map(F,[mass,radius,density,strengthMPa,safety,fraction,time]);allow=stress*10**6/N;limit2=allow/(rho*r*r);w2=limit2*u*u;inertia=M*r*r;energy=inertia*w2/2;w=mp.sqrt(m(w2));limit=mp.sqrt(m(limit2));theta=limit*m(u)*m(t);pos=[q(m(r)*mp.cos(theta)),q(m(r)*mp.sin(theta))]
  return dict(allowableStress=q(allow),stress=q(allow*u*u),stressMargin=q(allow*(1-u*u)),omega=q(w),limitingOmega=q(limit),omegaSquared=q(w2),inertia=q(inertia),energy=q(energy),specificEnergy=q(energy/M),limitingSpecificEnergy=q(allow/(2*rho)),angle=q(theta),position=pos,energyWh=q(energy/3600),specificWh=q(energy/M/3600))
 cases=grid({'mass':[1.,100.],'radius':[.2,2.],'density':[1000.,9000.],'strengthMPa':[100.,2000.],'safety':[1.,5.],'fraction':[0.,1.],'time':[0.,.02]});cases += [dict(fraction=u,time=t)for u,t in [(tiny,.01),(tiny,tiny),(.6,tiny),(math.nextafter(1.,0.),.02)]]
+limit=math.sqrt((500e6/2)/(7800*.5*.5))
+for key,center in [('fraction',1e-6/(limit*.01)),('time',1e-6/(limit*.6))]:
+ cases +=[{key:x}for x in [math.nextafter(center,0.),center,math.nextafter(center,math.inf)]]
 publish('flywheel',cases,fly)
 def cap(capacitance=500,voltage=2.7,cutoff=.5,current=10,progress=.5):
  C,V0,k,I,u=map(F,[capacitance,voltage,cutoff,current,progress]);Vmin=k*V0;T=C*(V0-Vmin)/I;t=u*T;v=V0-I*t/C;initial=C*V0*V0/2;stored=C*v*v/2;extracted=I*(V0*t-I*t*t/(2*C));cut=C*Vmin*Vmin/2;usable=C*(V0-Vmin)*(V0+Vmin)/2

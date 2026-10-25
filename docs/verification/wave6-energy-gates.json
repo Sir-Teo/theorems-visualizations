@@ -1,0 +1,99 @@
+{
+  "status": "In progress; no ENERGY6 author count or independent acceptance promotion",
+  "modelCheckpoint": "18363029",
+  "references": {
+    "cases": 1221,
+    "families": 12,
+    "digits": [
+      90,
+      1800
+    ],
+    "canonical": "byte identical",
+    "focusedGroups": 18,
+    "affectedWave5Groups": 18,
+    "all36Groups": "pass",
+    "addedTransitionCases": 87,
+    "all1134EarlierCases": "exact unchanged"
+  },
+  "catalogue": {
+    "written": 8509,
+    "planned": 5065,
+    "chapters": 585,
+    "collections": 85
+  },
+  "static": {
+    "visualizations": 8446,
+    "errors": 0,
+    "warnings": 0,
+    "energy6Only": 12
+  },
+  "priorManifests": {
+    "uniqueFiles": 136,
+    "mismatches": 0,
+    "receipt": "/tmp/wave6-energy-research/prior-manifest-preservation.json"
+  },
+  "browserStatus": "Initial defaults/critical audit and native controls/Share in progress; final gates pending",
+  "retainedFailures": [
+    {
+      "kind": "setup",
+      "detail": "Generator compact Python else/digit syntax fixed before any reference generation."
+    },
+    {
+      "kind": "setup",
+      "detail": "An unscoped check command began a broad browser run; owned node/browser stopped, replaced with explicit chapter/static check."
+    },
+    {
+      "kind": "harness",
+      "detail": "Blind circ\u2192energy rename changed circle instrumentation identifier. Repaired before actual production geometry checks."
+    },
+    {
+      "kind": "content",
+      "detail": "Two mobile equations overflowed, a capacitor derivative accent touched idea box, and the SOC100% reference lay outside fitted view. Local equations, derivative wording and frame repaired; rebuilt metadata before final checks."
+    },
+    {
+      "kind": "render sampler",
+      "detail": "Nernst sample endpoint rounded above .99 and violated domain. Explicit original endpoints repaired."
+    },
+    {
+      "kind": "affected legacy guard",
+      "detail": "Wave5 guard originally hashed unwritten ENERGY6 as outside chapter5. It now excludes only newly authored6 alongside5; all other chapter semantics retain a freshly reproduced base hash, and ENERGY6 adds exact outside6 byte guards."
+    },
+    {
+      "kind": "harness precision",
+      "detail": "Subtracting tiny bar/fill endpoints from offsets loses representable difference. Compare raw expected endpoints; retain strict width comparisons when resolved. Underlying quantities remain independently checked with exact algebraic rounding and explicit tiny readouts."
+    },
+    {
+      "kind": "boundary ink",
+      "detail": "Ragone minimum requirement handle outer ring touched the logarithmic data clip. Expanded fixed log margins preserve the complete10px marker at all allowed points; four-layout replacement pending."
+    },
+    {
+      "kind": "numerical transition",
+      "detail": "New independently generated adjacent branch cases reproduce Nernst logarithm relative error4.47e-11. log1p of the exact quotient difference repairs it; all36 focused/affected groups now pass and1134 earlier oracle rows remain exact."
+    },
+    {
+      "kind": "native range endpoint",
+      "detail": "Chrome End emitted1.66666666666667 above5/3, invalidating capture. Chapter-local native onChange corrects endpoint rounding before render/Share; raw restore validation remains prior and rejects adjacent invalid values. Full native matrix restarted after repair."
+    }
+  ],
+  "sourceStops": "See wave6-energy-sources.json; all new/inherited original-body and removed-figure stops remain binding",
+  "personalStatus": "Complete narrow defaults1\u20134 in both themes and desktop1light personally inspected at original pixels; remaining scopes pending",
+  "nativeFirstLesson": {
+    "layouts": 4,
+    "actions": 128,
+    "actualShares": 56,
+    "checks": 246,
+    "invalid": 4,
+    "raw": 4,
+    "critical": 28,
+    "modelComparisons": 4762
+  },
+  "preTransitionAudit": {
+    "groups": 48,
+    "distinctStates": 344,
+    "criticalStates": 296,
+    "checks": 588,
+    "modelComparisons": 74796,
+    "failures": 0,
+    "scope": "Pre log-transition/native-endpoint source; retained earlier evidence, superseded by ongoing final native matrix"
+  }
+}

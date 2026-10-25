@@ -31,5 +31,7 @@
     "tests/wave6-energy-reference.py": "777977fc03dfc57a78daceb7f66dac9d8858ec1c8dc9d13c8222860c56544500",
     "tests/fixtures/wave6-energy-reference.json": "f0e25b8478fde6dc5c7e43a3877a25c4df752dad33a6d13c3971036196fc2402",
     "tests/wave6-energy.test.mjs": "ce95aed9bafd0ec36e3dc7c674b4c3ee60957615d994d9ec10009ecef0245e54"
-  }
+  },
+  "snapshotCommit": "18363029",
+  "artifactScope": "Hashes bind the model-only checkpoint at18363029; subsequent lesson/catalogue/UI regression additions are outside this snapshot and will receive a complete final chapter manifest."
 }
