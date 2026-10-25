@@ -1,0 +1,89 @@
+{
+  "date": "2026-10-25",
+  "status": "Scientific prototype passes; complete native/pixel acceptance pending. Author availability remains732/1057; no16-lesson increment yet.",
+  "baseCommit": "8cafaee5789e47e35834a72190cc793b246868cf",
+  "frozen": {
+    "ids": [
+      "imaging-6.2",
+      "imaging-6.3",
+      "imaging-6.4",
+      "imaging-6.5",
+      "imaging-6.6",
+      "imaging-6.7",
+      "imaging-6.8",
+      "imaging-6.9",
+      "imaging-6.10",
+      "imaging-6.11",
+      "imaging-6.12",
+      "imaging-6.13",
+      "imaging-6.14",
+      "imaging-6.15",
+      "imaging-6.16",
+      "imaging-6.17"
+    ],
+    "alias": "imaging-6.1 \u2192 em-7.20",
+    "PaperVerificationFlags": [
+      "imaging-6.16",
+      "imaging-6.17"
+    ],
+    "outsideSyllabusPrefixSuffix": "exact; focused metadata group passes"
+  },
+  "science": {
+    "cases": 2270,
+    "families": {
+      "polarization": 35,
+      "bloch": 260,
+      "spinEcho": 351,
+      "matrix": 72,
+      "sineIntegral": 191,
+      "sliceProfiles": 120,
+      "transforms": 9,
+      "aliasing": 4,
+      "partialFourier": 12,
+      "sense": 16,
+      "cs": 12,
+      "bold": 864,
+      "diffusion": 324
+    },
+    "additionalGaussianQuantiles": 31,
+    "prototypeComparisonsIncludingInvariants": 233761,
+    "focusedGroups": 25,
+    "focusedPass": 25,
+    "focusedFail": 0,
+    "focusedDurationMs": 4269.604777,
+    "log": "/tmp/wave6-imaging-research/focused-first.log",
+    "fixtureSha256": "ac8e20be67a848c6ebc8fefdd1ab59a4389d940452925e5cef00100615383bb4",
+    "linearStimuliSha256": "aeab31bafc12a7fd27dfe15988ddbf624a8acf14056c6660358411b479e9daf4",
+    "regeneration": "byte-identical",
+    "qualification": "Independent mathematical formulations/algorithms by the same author, not an independent reviewer. SENSE/CS dense solvers use recorded stimuli; they do not independently validate random generation or acquisition. Separate dense transform tests and native pixel/state probes cover other claims."
+  },
+  "build": {
+    "written": 8463,
+    "planned": 5111,
+    "chapters": 581,
+    "collections": 85,
+    "errors": 0,
+    "warnings": 0,
+    "log": "/tmp/wave6-imaging-research/build-layout-v3.log"
+  },
+  "native": {
+    "status": "ongoing",
+    "completedScope": [
+      "6.2 and6.3 all4 layouts from native-first-a",
+      "6.10 all4 layouts from native-first-b; exclude partial6.11 failure"
+    ],
+    "note": "Native-first-c and-f are in progress. Earlier first-d retains completed6.4 only; first-e6.5 was superseded after narrow endpoint marker clipping. No incomplete run is a full acceptance."
+  },
+  "personalPixelReview": {
+    "status": "ongoing; no complete64-layout claim"
+  },
+  "failures": {
+    "tinyRFAngle": "14 first observed false-zero statuses; original mutable output overwritten, selected historical receipt explicitly labelled foundation-initial-observed.json. Modulo handling and analytic log sine repaired.",
+    "diffusionUnitConversion": "28 initial comparisons failed; retained dynamic-initial-result.json contains count and first10 observations. Compute timing factor in logs before converting seconds.",
+    "firstLayoutAudit": "6.3 all4 first layouts and6.8 both narrow formulas failed; retained logs/PNG. Equation splitting repaired;6.3 second narrow pass still failed and was split further before native-first-a all4 passed.",
+    "partialFourierProbe": "Native-first-b stopped during6.11 after validating6.10. Probe initially demanded more precision than the5-significant-digit readout; now uses explicit format-aware tolerance while plotted/pixel tests retain their tighter tolerances. No production numerical repair was needed.",
+    "finiteMeanReadoutProbe": "First-d stopped at6.5 when Node/Chromium differed near1e-17 in a displayed finite mean. The adapter now parses the displayed pair with explicit5-significant-digit tolerance; scientific geometry keeps its tighter tolerance. No numerical production repair was needed.",
+    "fanEndpointMarker": "First-e6.5 narrow time0 hollow ring clipped the data gutter. Shared FID/echo xpadding increased and hollow rings now precede filled markers. Fan-padding-scope.json proves all other widget/global-drawing bytes unchanged. First edit attempt aborted before writing; corrected patch is the actual installed change."
+  },
+  "externalActions": "No push,merge,PR,deploy,source-stop recovery or independent-release claim."
+}

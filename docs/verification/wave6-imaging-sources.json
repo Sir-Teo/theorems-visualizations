@@ -1,0 +1,124 @@
+{
+  "date": "2026-10-25",
+  "status": "All16 local scientific prototypes installed; full native/personal pixel acceptance still running. No author-availability increment.",
+  "actualRead": [
+    {
+      "id": "stanford-notes-index",
+      "url": "https://web.stanford.edu/class/rad229/Notes.html",
+      "scope": "Actual complete104-line current notes index read,2025generated page with2020/prior-year links. It identifies topics/links, not a claim of reading linked notes, videos or Canvas."
+    },
+    {
+      "id": "stanford-rf-2020",
+      "url": "https://web.stanford.edu/class/rad229/Notes/Lecture-01/Rad229_2020_Lecture01C_BlochEqn_and_Contrast.pdf",
+      "sha256": "21657f36065d7f3bdb270fecf759daeec8735c4cd9bf3aad5d975ca8db64150e",
+      "scope": "Actual16-page PDF text read in two selected outputs coveringall16pages; rendered slides4/10/11 personally inspected. Filename says BlochEqn_and_Contrast but actualbodyisLecture01C HardRF/ForcedPrecession withoutrelaxation. CircularcorotatingB1, positivegamma lefthandrotation, gammaB1 pulsearea and radian/cyclicunitdistinction read. Not a claim of relaxation/tissue table reading from this file.",
+      "qualification": "Apparent phase-sign inconsistency: rendered slide10 gives dMx/dt=+gamma B sin(theta) Mz while slide11 displays Mx=-M0 sin(alpha) sin(theta) for initial+z; they do not differentiate consistently as written. We will explicitly define B1rot=(B1cos(phi),B1sin(phi),0) and dM/dt=gamma M cross B, derive the full generator and independently verify its signs. No source artwork/data copied."
+    },
+    {
+      "id": "stanford-relaxation-2020",
+      "url": "https://web.stanford.edu/class/rad229/Notes/Lecture-01/Rad229_2020_Lecture01D_BlochEqns_Relaxation_and_Contrast.pdf",
+      "sha256": "7f75ff01f11c852b0ad97fdde899b7c0cdf13e3683dafe21903be3fe634fb938",
+      "scope": "Actual full25-page extracted text read in two outputs; no original tissue MRI images inspected/reproduced. Relaxation terms, free exponentials, forced rotating-frame equations and phenomenological qualification read. Slide8 lists fat260/85ms,white790/92,CSF2400/180 but does not state field/temperature; these are not authenticated clinical tissue constants.",
+      "qualification": "Do not repeat slide5 nonlinear characterization for a prescribed field (the system is affine linear), slide9 universal T2<T1 (too strong), or slide22 assertion that no analytic forced solution exists for a constant generator. Our declared constant-pulse affine system has a matrix exponential. Use an explicitly scoped Markov-spin T2<=2T1 bound/own derivation, not a universal fit constraint. Tissue curves/phantoms should use labelled illustrative classes instead of treating the context-free table as validated measurements."
+    },
+    {
+      "id": "stanford-field-2020",
+      "url": "https://web.stanford.edu/class/rad229/Notes/Lecture-01/Rad229_2020_Lecture01A_B0_field_and_Eqn_of_Motion.pdf",
+      "sha256": "57915062a9a046924a5c9121338adbbd929dc6bb67b33063983d9e9be4a31dab",
+      "scope": "Actual selected extracted text lines1\u2013210 read: MRI components,NMR nuclei, gamma versus gamma-bar, main-field introductory description and opening polarizer illustration captions. Do not claim whole lecture, Boltzmann derivation, source hardware images or tabulated isotope abundance validation. Simplified no-signal/always tissue statements are not transferred as universal claims."
+    },
+    {
+      "id": "stanford-echo-2020",
+      "url": "https://web.stanford.edu/class/rad229/Notes/Lecture-08/Rad229_2020_Lecture08A-BasicSpinEcho.pdf",
+      "sha256": "ecfa271ae0a69b6fc32ebba0e8cb70a91a78f2144fa366c318f3c2b13bf9b4d6",
+      "scope": "Actual extracted text through slide15 read, including static-dephasing refocus,90y/180x axes,qualitativeTR/TEcontrast,approximateT1recovery andT2echo factor. No original MRIimages or clinical prevalence of sequences validated; do not repeat75% clinicalshare ascurrentfact.",
+      "qualification": "Slide9 uses an approximate1-exp(-(TR-TE)/T1) recovery factor while slide11 example uses1-exp(-TR/T1); neither is an exact finite-TE periodic spin-echo balance. Our declared ideal90/180 reset/spoiling cycle will be independently derived and compared by affine propagation. Unfiltered four-projection reconstruction for the historical view remains an adjoint blur, notexactinverse."
+    },
+    {
+      "id": "nibib-mri-overview",
+      "url": "https://www.nibib.nih.gov/science-education/science-topics/magnetic-resonance-imaging-mri",
+      "scope": "Actual selected mainMRIbody177\u2013202read, notimages, linkedmedia, safetyrecommendations orresearchnews. BroadMRI/fMRIcontextonly; its simplified all-proton-alignment, brightness, and activation/oxygen-consumption wording is not a quantitativeBOLD or relaxation law. It does not authenticate the proposed hemodynamic/fielddistribution model."
+    },
+    {
+      "id": "stanford-multichannel-2020",
+      "url": "https://web.stanford.edu/class/rad229/Notes/Lecture-07/Rad229_2020_Lecture07C_MultiChannelSNR.pdf",
+      "sha256": "11aea15cd42552d3be2d492eea0f9121292c921f64ead42260ae30dda01ea4e4",
+      "scope": "Actual extracted lines1\u2013370 read, substantive teaching slides3\u201322 through summary/closing footer. Complex coil covariance, linear weighted combination, SENSE matrix alias group, noise propagation and g-factor discussed. No original images inspected yet; OCR square roots require rendered-slide verification before quoting. Distinct2020teaching work, not recovery of stopped1999original. Rendered actual slide16 personally inspected at1350px; covariance is for noise, and displayed SD is the square root of the diagonal. Not raw signal second moment unless mean/noise is separated."
+    },
+    {
+      "id": "lustig-sparse-mri-2007",
+      "url": "https://people.eecs.berkeley.edu/~mlustig/CS/SparseMRI.pdf",
+      "sha256": "8889e78088b6cd9d7130d176c4558b37c7609059425691b4c041221c6fbe5345",
+      "scope": "Actual selected text108\u2013147,380\u2013445,770\u2013804 plus opening/abstract portions received in initial truncated output. Read CS prerequisites, constrained l1 objective, TV variant, data consistency and AppendixA nonlinear conjugate-gradient smoothed absolute-value solver. Captions ofFigures5/6 encountered as text, not figure pixel inspection. No original clinical image data or reconstruction performance validated. Our declared unitary-DFT/Haar/ISTA exercise is distinct."
+    },
+    {
+      "id": "dartbrains-mr-physics",
+      "url": "https://dartbrains.org/MR_Physics/",
+      "scope": "Actual web find body received lines256\u2013279; selected264\u2013279 oxygenation, indirect BOLD, paramagnetic deoxyhemoglobin versus diamagnetic oxyhemoglobin and qualitative flow/metabolic chain read. No source images/animations or code execution. Fixed HRF timing/universal flow overshoot/universal removal by spin echo are not transferred."
+    },
+    {
+      "id": "andys-brainbook-hrf",
+      "url": "https://andysbrainbook.readthedocs.io/en/stable/SPM/SPM_Short_Course/SPM_Statistics/SPM_03_Stats_HRF_Overview.html",
+      "scope": "Actual selected web body0\u201327 read from successful find output. Canonical gamma HRF as an assumed basis, impulse/boxcar convolution and linear superposition. No source GIF/images or code execution; not a universal physiology/identification law."
+    },
+    {
+      "id": "stanford-slice-2020",
+      "url": "https://web.stanford.edu/class/rad229/Notes/Lecture-02/Rad229_2020_Lecture02B_Slice_Selection.pdf",
+      "sha256": "40bcf17859ad9afe4d0e03ed5e32aa44dd18c2f7796a3cf01961c4c83c075483",
+      "scope": "Actual selected text1\u201395 read so far: spatial encoding stages, slice-gradient/resonance relationship and opening selective RF description. Later text/images not yet claimed. Later selected196\u2013266 and347\u2013420 also read: resonance-position map, bandwidth/thickness example, small-tip Fourier profile and post-excitation rephasing. No source figure pixels inspected/copied."
+    },
+    {
+      "id": "stanford-signal-2020",
+      "url": "https://web.stanford.edu/class/rad229/Notes/Lecture-02/Rad229_2020_Lecture02C_MRI_Signal_Equation_and_kSpace.pdf",
+      "sha256": "dd492499f577c14dd24cad549a516eb2fd5abd30f0f1072e6c805a80d310849e",
+      "scope": "Actual selected text1\u2013175 read: reception, MRI Fourier signal and k-space encoding/spatial-frequency interpretation. OCR phase sign not reliable; use explicit own convention and validate forward/inverse. Later text/source images not claimed."
+    },
+    {
+      "id": "stanford-diffusion-2020",
+      "url": "https://web.stanford.edu/class/rad229/Notes/Lecture-15/Rad229_2020_Lecture15B_Diffusion_Weighted_Imaging.pdf",
+      "sha256": "45aa1771fe8889cf7ec3e9e02d0834ccf68b485b86256cd4facb53662b19a34b",
+      "scope": "Actual selected extracted text1\u2013137 read including motion-dependent gradient phase, signal attenuation, gradient-/spin-echo encoding and rectangular-pulse b expression. OCR loses signs/Greek letters; rendered formula verification pending. No original images/movies measured or copied; some slide footers say15A in the15B artifact. Rendered actual slide7 personally inspected at1350px: same-polarity physical lobes with intervening180pulse versus opposite effective lobes, b=gamma^2 G^2 delta^2(Delta-delta/3); gamma is angular. No patient data copied."
+    }
+  ],
+  "prerequisitesActuallyRead": [
+    "thermo-6.1",
+    "imaging-1.3",
+    "rca-9.11",
+    "imaging-1.5",
+    "rca-9.2",
+    "physio-6.2",
+    "imaging-3.6"
+  ],
+  "unwrittenDependencies": [
+    "em-7.20",
+    "qm-13.2",
+    "sig-7.16",
+    "mathbio-8.3"
+  ],
+  "qualifications": [
+    "RCA9.2 verify:true remains untouched. Prove finite DFT conjugate symmetry directly in our declared normalization; do not clear its original flag.",
+    "No commercial Prince\u2013Links body was requested/read in the actual Wave5 report. This is not a commercial-book access stop; do not misdescribe it as one.",
+    "All16 non-alias identities/deps/Paper metadata remain frozen; preserve6.1 alias to planned em7.20. Planned prerequisites are not actual read bodies or proof inputs.",
+    "PHYSIO6.2 is now actually written/read; its Hill model is not a BOLD signal-to-neural-activity identification law."
+  ],
+  "stops": [
+    {
+      "work": "Lauterbur1973 original Nature body",
+      "url": "https://www.nature.com/articles/242190a0",
+      "result": "Normal open redirected to idp.nature.com authorize cookie/login endpoint, inaccessible/nonretryable500. Original body/figures/data unread; no original PDF/reader/reprint/mirror/cache recovery. Frozen bibliography retained; new Paper view must use verify:true and own declared construction."
+    },
+    {
+      "work": "Ogawa etal1990 PNAS original body",
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC55275/",
+      "result": "Normal open returned Checking your browser/reCAPTCHA. Original body/figures/data unread. No PNAS/PDF/PubMed-abstract/alternate/reprint/cache original recovery; search snippets are not actual body reading. Frozen bibliography retained; Paper view must use verify:true and own declared construction."
+    },
+    {
+      "work": "Pruessmann etal1999 original SENSE paper",
+      "url": "https://mri-q.com/uploads/3/4/5/7/34572113/pruessmann-sense.pdf",
+      "result": "First normal public PDF request returned HTTP465. Body unread. No retry, mriquestions/www variant, Wiley/ETH/publisher/original PDF/abstract/reprint/cache recovery. Search snippets are not body reading. Distinct teaching works may support an explicitly own linear-unfolding construction."
+    }
+  ],
+  "inherited": "All earlier source stops bind. Actual Wave5 report: Wagner1986 later PMC reCAPTCHA after earlier selected lines; ASE2017 later normal403 after limited actual text; IAEA handbook size failure then normal403, no body; NYU lecture TLS/tool failures, no bypass; OpenStax inaccessible. Original Kasai1985 was not read. Old IMAGING3.18 verify flag persists. All EPI/PHARM/PHYSIO/CAUSAL and earlier stops remain.",
+  "acquisitionReceipts": "acquisition-receipts.json",
+  "sourceCopies": "Successful normal acquisitions and hashes retained in /tmp/wave6-imaging-research/{acquisition-receipts,sense-cs-receipts,multichannel-receipt,stanford-index-receipt}.json; no artwork/patient data copied into the site."
+}
