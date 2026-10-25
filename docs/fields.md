@@ -196,6 +196,8 @@ an eigen-direction, an orthonormal frame, an ellipse's axes) with live numbers.
 
 ## Medicine & health
 
+- Expose the exact participation or recording mechanism on one declared population. Qualify binary nondifferential attenuation, preserve empty groups and zero/unbounded ratios, and keep standardized counterfactual comparisons separate from crude identification. Label synthetic survivor damage, distinguish finite samples from expectations, retain tiny signed effects, and draw filled points above coincident hollow rings. See the [bias verification](verification/wave6-epi.md).
+
 - Separate binding, activation and transduction; preserve free-ligand conditions in Cheng–Prusoff and molar units in Schild plots. Declare allosteric parameter conventions, receptor-reserve effects on both maximum and EC50, and residence time versus effect duration. Keep descriptive mixture departures separate from empirical synergy; resolve fast transitions and place status text outside plotted data. See the [receptor-pharmacodynamics report](verification/wave6-pharm.md).
 
 - Declare whether a metabolized fraction refers to total clearance or hepatic clearance before computing an interaction ratio. Separate reversible binding from elimination, and distinguish an integrated trajectory's sampled maximum from a proved continuous maximum. Keep genotype activity conventions and copy-phase ambiguity separate from a measured exposure prediction. See the [nonlinear pharmacokinetics review](verification/wave5-pharm-review.md).

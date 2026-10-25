@@ -1,6 +1,21 @@
 {
   "date": "2026-10-25",
-  "status": "prototype only; author availability726; no EPI production lesson counted",
+  "status": "All6 author-verified locally; availability732/1057, historical independent acceptance36 unchanged.",
+  "frozen": {
+    "ideas": [
+      "epi-6.1",
+      "epi-6.2",
+      "epi-6.3",
+      "epi-6.4",
+      "epi-6.5",
+      "epi-6.8"
+    ],
+    "aliasesPreserved": [
+      "epi-6.6 → causal-8.6",
+      "epi-6.7 → causal-5.13"
+    ],
+    "otherSyllabusChaptersAndRootMetadata": "exact; unchanged prefix/suffix bytes"
+  },
   "science": {
     "independentCases": 845,
     "families": {
@@ -11,14 +26,418 @@
       "sorties": 40
     },
     "numericComparisons": 38502,
-    "focusedGroups": 18,
+    "focusedGroups": 19,
     "referenceSha256": "1df4cc03425258e6f8bf9258fa0c611c1d616679f63de83862cdee45e091adf4",
     "regeneration": "byte-identical",
-    "productionLessons": 0,
-    "authorAvailableIncrement": 0
+    "productionLessons": 6,
+    "authorAvailableIncrement": 6,
+    "helperSha256": "2dcfa5e160a180baed05b6ec6e051b99d86ce73bb76b2a4e66cfaea7c59415fd",
+    "referenceGenerator": "tests/wave6-epi-reference.py",
+    "referenceFixture": "tests/fixtures/wave6-epi-reference.json",
+    "note": "Independent formulation/reference arithmetic by the author; not a separate reviewer. The prototype component above remains a historical zero-production checkpoint."
+  },
+  "focused": {
+    "groups": 19,
+    "result": "PASS",
+    "durationMs": 171.343001,
+    "log": "/tmp/wave6-epi-focused-final.log"
+  },
+  "build": {
+    "written": 8447,
+    "planned": 5127,
+    "chapters": 580,
+    "collections": 85,
+    "errors": 0,
+    "warnings": 0,
+    "log": "/tmp/wave6-epi-build-final-2.log"
+  },
+  "static": {
+    "items": 6,
+    "errors": 0,
+    "warnings": 0,
+    "log": "/tmp/wave6-epi-static-final-2.log"
+  },
+  "modes": {
+    "light": 6,
+    "dark": 6,
+    "failed": 0,
+    "TeXBlankWarnings": 0,
+    "qualityWarnings": 0,
+    "logs": [
+      "/tmp/wave6-epi-allmodes-light-final.log",
+      "/tmp/wave6-epi-allmodes-dark-final.log"
+    ],
+    "subsequentPresentationRefinements": "Fresh complete native matrices/audits for6.3 and6.8 replace affected layouts; every other item/view/helper exact. Random-study cloud validation strengthened in fresh6.1 matrix without changing production pixels."
+  },
+  "native": {
+    "totals": {
+      "actions": 784,
+      "replays": 328,
+      "checks": 1464,
+      "modelChecks": 689204,
+      "invalidReplays": 24,
+      "rawReplays": 24,
+      "criticalReplays": 144,
+      "layouts": 24
+    },
+    "scope": "Disjoint final lesson/layout coverage. Only6.8 prose and6.3 marker order changed after original A/B; their targeted fresh C/D matrices replace those lessons. E strengthens the seed-dependent study-cloud check for6.1. Other items/global helpers/validators are proved unchanged. Superseded overlaps excluded.",
+    "segments": [
+      {
+        "lane": "a",
+        "log": "/tmp/wave6-epi-native-final-a.log",
+        "keptIds": [
+          "epi-6.2"
+        ],
+        "layouts": [
+          {
+            "id": "epi-6.2",
+            "theme": "light",
+            "width": 1200,
+            "actions": 35,
+            "replays": 14,
+            "checks": 60,
+            "modelChecks": 14144,
+            "invalidReplays": 1,
+            "rawReplays": 1,
+            "criticalReplays": 6
+          },
+          {
+            "id": "epi-6.2",
+            "theme": "light",
+            "width": 320,
+            "actions": 35,
+            "replays": 14,
+            "checks": 66,
+            "modelChecks": 15204,
+            "invalidReplays": 1,
+            "rawReplays": 1,
+            "criticalReplays": 6
+          },
+          {
+            "id": "epi-6.2",
+            "theme": "dark",
+            "width": 1200,
+            "actions": 35,
+            "replays": 14,
+            "checks": 60,
+            "modelChecks": 14144,
+            "invalidReplays": 1,
+            "rawReplays": 1,
+            "criticalReplays": 6
+          },
+          {
+            "id": "epi-6.2",
+            "theme": "dark",
+            "width": 320,
+            "actions": 35,
+            "replays": 14,
+            "checks": 66,
+            "modelChecks": 15204,
+            "invalidReplays": 1,
+            "rawReplays": 1,
+            "criticalReplays": 6
+          }
+        ]
+      },
+      {
+        "lane": "b",
+        "log": "/tmp/wave6-epi-native-final-b.log",
+        "keptIds": [
+          "epi-6.4",
+          "epi-6.5"
+        ],
+        "layouts": [
+          {
+            "id": "epi-6.4",
+            "theme": "light",
+            "width": 1200,
+            "actions": 27,
+            "replays": 12,
+            "checks": 50,
+            "modelChecks": 20956,
+            "invalidReplays": 1,
+            "rawReplays": 1,
+            "criticalReplays": 6
+          },
+          {
+            "id": "epi-6.4",
+            "theme": "light",
+            "width": 320,
+            "actions": 27,
+            "replays": 12,
+            "checks": 56,
+            "modelChecks": 23460,
+            "invalidReplays": 1,
+            "rawReplays": 1,
+            "criticalReplays": 6
+          },
+          {
+            "id": "epi-6.4",
+            "theme": "dark",
+            "width": 1200,
+            "actions": 27,
+            "replays": 12,
+            "checks": 50,
+            "modelChecks": 20956,
+            "invalidReplays": 1,
+            "rawReplays": 1,
+            "criticalReplays": 6
+          },
+          {
+            "id": "epi-6.4",
+            "theme": "dark",
+            "width": 320,
+            "actions": 27,
+            "replays": 12,
+            "checks": 56,
+            "modelChecks": 23460,
+            "invalidReplays": 1,
+            "rawReplays": 1,
+            "criticalReplays": 6
+          },
+          {
+            "id": "epi-6.5",
+            "theme": "light",
+            "width": 1200,
+            "actions": 35,
+            "replays": 14,
+            "checks": 60,
+            "modelChecks": 22764,
+            "invalidReplays": 1,
+            "rawReplays": 1,
+            "criticalReplays": 6
+          },
+          {
+            "id": "epi-6.5",
+            "theme": "light",
+            "width": 320,
+            "actions": 35,
+            "replays": 14,
+            "checks": 66,
+            "modelChecks": 24464,
+            "invalidReplays": 1,
+            "rawReplays": 1,
+            "criticalReplays": 6
+          },
+          {
+            "id": "epi-6.5",
+            "theme": "dark",
+            "width": 1200,
+            "actions": 35,
+            "replays": 14,
+            "checks": 60,
+            "modelChecks": 22764,
+            "invalidReplays": 1,
+            "rawReplays": 1,
+            "criticalReplays": 6
+          },
+          {
+            "id": "epi-6.5",
+            "theme": "dark",
+            "width": 320,
+            "actions": 35,
+            "replays": 14,
+            "checks": 66,
+            "modelChecks": 24464,
+            "invalidReplays": 1,
+            "rawReplays": 1,
+            "criticalReplays": 6
+          }
+        ]
+      },
+      {
+        "lane": "c",
+        "log": "/tmp/wave6-epi-native-final-c.log",
+        "keptIds": [
+          "epi-6.8"
+        ],
+        "layouts": [
+          {
+            "id": "epi-6.8",
+            "theme": "light",
+            "width": 1200,
+            "actions": 41,
+            "replays": 17,
+            "checks": 73,
+            "modelChecks": 11245,
+            "invalidReplays": 1,
+            "rawReplays": 1,
+            "criticalReplays": 6
+          },
+          {
+            "id": "epi-6.8",
+            "theme": "light",
+            "width": 320,
+            "actions": 41,
+            "replays": 17,
+            "checks": 79,
+            "modelChecks": 11347,
+            "invalidReplays": 1,
+            "rawReplays": 1,
+            "criticalReplays": 6
+          },
+          {
+            "id": "epi-6.8",
+            "theme": "dark",
+            "width": 1200,
+            "actions": 41,
+            "replays": 17,
+            "checks": 73,
+            "modelChecks": 11245,
+            "invalidReplays": 1,
+            "rawReplays": 1,
+            "criticalReplays": 6
+          },
+          {
+            "id": "epi-6.8",
+            "theme": "dark",
+            "width": 320,
+            "actions": 41,
+            "replays": 17,
+            "checks": 79,
+            "modelChecks": 11347,
+            "invalidReplays": 1,
+            "rawReplays": 1,
+            "criticalReplays": 6
+          }
+        ]
+      },
+      {
+        "lane": "d",
+        "log": "/tmp/wave6-epi-native-final-d.log",
+        "keptIds": [
+          "epi-6.3"
+        ],
+        "layouts": [
+          {
+            "id": "epi-6.3",
+            "theme": "light",
+            "width": 1200,
+            "actions": 31,
+            "replays": 13,
+            "checks": 55,
+            "modelChecks": 44805,
+            "invalidReplays": 1,
+            "rawReplays": 1,
+            "criticalReplays": 6
+          },
+          {
+            "id": "epi-6.3",
+            "theme": "light",
+            "width": 320,
+            "actions": 31,
+            "replays": 13,
+            "checks": 61,
+            "modelChecks": 49413,
+            "invalidReplays": 1,
+            "rawReplays": 1,
+            "criticalReplays": 6
+          },
+          {
+            "id": "epi-6.3",
+            "theme": "dark",
+            "width": 1200,
+            "actions": 31,
+            "replays": 13,
+            "checks": 55,
+            "modelChecks": 44805,
+            "invalidReplays": 1,
+            "rawReplays": 1,
+            "criticalReplays": 6
+          },
+          {
+            "id": "epi-6.3",
+            "theme": "dark",
+            "width": 320,
+            "actions": 31,
+            "replays": 13,
+            "checks": 61,
+            "modelChecks": 49413,
+            "invalidReplays": 1,
+            "rawReplays": 1,
+            "criticalReplays": 6
+          }
+        ]
+      },
+      {
+        "lane": "e",
+        "log": "/tmp/wave6-epi-native-final-e.log",
+        "keptIds": [
+          "epi-6.1"
+        ],
+        "layouts": [
+          {
+            "id": "epi-6.1",
+            "theme": "light",
+            "width": 1200,
+            "actions": 27,
+            "replays": 12,
+            "checks": 50,
+            "modelChecks": 50700,
+            "invalidReplays": 1,
+            "rawReplays": 1,
+            "criticalReplays": 6
+          },
+          {
+            "id": "epi-6.1",
+            "theme": "light",
+            "width": 320,
+            "actions": 27,
+            "replays": 12,
+            "checks": 56,
+            "modelChecks": 56100,
+            "invalidReplays": 1,
+            "rawReplays": 1,
+            "criticalReplays": 6
+          },
+          {
+            "id": "epi-6.1",
+            "theme": "dark",
+            "width": 1200,
+            "actions": 27,
+            "replays": 12,
+            "checks": 50,
+            "modelChecks": 50700,
+            "invalidReplays": 1,
+            "rawReplays": 1,
+            "criticalReplays": 6
+          },
+          {
+            "id": "epi-6.1",
+            "theme": "dark",
+            "width": 320,
+            "actions": 27,
+            "replays": 12,
+            "checks": 56,
+            "modelChecks": 56100,
+            "invalidReplays": 1,
+            "rawReplays": 1,
+            "criticalReplays": 6
+          }
+        ]
+      }
+    ],
+    "receipt": "/tmp/wave6-epi-native-final-result.json",
+    "sourceFreeze": "/tmp/wave6-epi-final-source-freeze.sha256",
+    "note": "689204 browser/model/readout/path/bar/cloud/geometry consistency comparisons are separate from845 independent scientific reference cases."
+  },
+  "pixels": {
+    "defaultLayouts": 24,
+    "completeNarrowStatementsScopesIdeas": "all6 in both themes",
+    "narrowCriticalPlotRegions": 72,
+    "selectedCompleteCriticalReadouts": 6,
+    "scope": "Top850px plot crops for two-panel lessons/top1200px for Wald; not every complete long critical readout. All default/mode options and critical scientific geometry personally reviewed. Two full narrow Wald default images were displayed265x2048 from288x2229; detailed selected readouts reviewed separately.",
+    "receipt": "/tmp/wave6-epi-pixel-review/receipt-final.json",
+    "finalDefaultReuse": "All4 final healthy-worker defaults, all32 final Wald widget captures and all16 seed-instrumented random-study widget captures byte-identical to reviewed images. Eight changed narrow healthy-worker critical captures re-inspected in full plot sheets. Final Wald statement personally re-read in both narrow themes."
+  },
+  "preservation": {
+    "priorChapterManifestHashes": 80,
+    "readingIdeasRetained": 8441,
+    "aliasesRetained": 76,
+    "frozenWaveAndCore": "exact",
+    "noReadingReconciliationYet": true
   },
   "sourceLedger": "docs/verification/wave6-epi-sources.json",
-  "helperSha256": "2dcfa5e160a180baed05b6ec6e051b99d86ce73bb76b2a4e66cfaea7c59415fd",
-  "browserInstances": 0,
-  "next": "Complete all six frozen lessons and native visual gates; retain aliases6.6/6.7 and all prior core/source bytes."
+  "ownedBrowsersAndServersClosed": true,
+  "next": "Continue16 frozen IMAGING6 lessons, preserving planned prerequisites,6.1 alias, old3.18 flag and all source stops. Global reading/suite/route integration waits for the meaningful EPI/IMAGING batch."
 }

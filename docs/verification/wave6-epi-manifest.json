@@ -1,0 +1,15 @@
+{
+  "baseCommit": "0bb36f53",
+  "sha256": {
+    "content/epi/ch06.js": "701364e40dc253d10ed792601c705e8dc82b1f59af2b7a06cfbc7ff5dc3f095b",
+    "content/epi/ch06.shared.js": "2dcfa5e160a180baed05b6ec6e051b99d86ce73bb76b2a4e66cfaea7c59415fd",
+    "content/epi/ch06.viz.js": "baf05d6c9531258bfe05c816ee3d1598af38ddc9c833affdfa53b51c71f01ac8",
+    "content/epi/syllabus.js": "cfa5533b1f1853b615650d0e49189a78f6de794fd3c85e1a7095d4731859ca71",
+    "tests/wave6-epi.test.mjs": "a1c88da5329f0ccd1868dc5816b98e4a85e24d6b56f77d188c9433fcd1efc033",
+    "tests/wave6-epi-browser.mjs": "791b3a6d00091a91c9d0e88c76467512c04b4ddd913ac323c31d94e19bcde3db",
+    "tests/wave6-epi-reference.py": "0ca2feaeca06062c0a4d340749663e867b640fcc825376a1123a4fa909117ff0",
+    "tests/fixtures/wave6-epi-reference.json": "1df4cc03425258e6f8bf9258fa0c611c1d616679f63de83862cdee45e091adf4",
+    "docs/verification/wave6-epi-sources.json": "1781fe123d90656bdac3c3d29195e084f589018e605701550d4a5337ae578a4e",
+    "docs/verification/wave6-epi-gates.json": "c04b1cb177e5ac7b61fe8a1b5c39a2270d2838efbd1d6137a54dc3390ebfee4f"
+  }
+}

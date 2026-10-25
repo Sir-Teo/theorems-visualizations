@@ -71,8 +71,8 @@
       "result": "Normal web open HTTP403. Search snippet only; no actual book-body reading or alternate WHO/cache recovery."
     }
   ],
-  "inherited": "All PHARM/PHYSIO/CAUSAL and earlier original-body/figure access stops remain binding. Rothman/Gordis planned chapter refs are not actual EPI6 reading. No EPI product or author count yet.",
-  "status": "Source/design and scientifically checked numerical prototype checkpoint.845 independent cases/18 focused groups; no production lessons or availability increment. All source stops bind.",
+  "inherited": "All PHARM/PHYSIO/CAUSAL and earlier original-body/figure access stops remain binding. Rothman/Gordis planned chapter refs are not actual EPI6 reading.",
+  "status": "All six frozen lessons author-verified locally.19 focused groups/845 independent cases; strict/static, both-theme modes and24 distinct final native layouts pass. Personal default/rich/critical review completed. Author availability732; historical independent acceptance36. No new independent review or publication.",
   "date": "2026-10-25",
   "baseCommit": "50a6f394d789b8968439692a71dfc750e9944b76",
   "prerequisitesActuallyRead": [
@@ -103,5 +103,41 @@
     "regeneration": "byte-identical",
     "productionLessons": 0,
     "authorAvailableIncrement": 0
+  },
+  "verificationCompleted": "2026-10-25",
+  "scientificVerification": {
+    "independentCases": 845,
+    "families": {
+      "selection": 256,
+      "classification": 240,
+      "healthyWorker": 288,
+      "binomial": 21,
+      "sorties": 40
+    },
+    "numericComparisons": 38502,
+    "focusedGroups": 19,
+    "referenceSha256": "1df4cc03425258e6f8bf9258fa0c611c1d616679f63de83862cdee45e091adf4",
+    "regeneration": "byte-identical",
+    "productionLessons": 6,
+    "authorAvailableIncrement": 6,
+    "helperSha256": "2dcfa5e160a180baed05b6ec6e051b99d86ce73bb76b2a4e66cfaea7c59415fd",
+    "referenceGenerator": "tests/wave6-epi-reference.py",
+    "referenceFixture": "tests/fixtures/wave6-epi-reference.json",
+    "note": "Independent formulation/reference arithmetic by the author; not a separate reviewer. The prototype component above remains a historical zero-production checkpoint."
+  },
+  "visualVerification": {
+    "native": {
+      "actions": 784,
+      "replays": 328,
+      "checks": 1464,
+      "modelChecks": 689204,
+      "invalidReplays": 24,
+      "rawReplays": 24,
+      "criticalReplays": 144,
+      "layouts": 24
+    },
+    "receipt": "/tmp/wave6-epi-native-final-result.json",
+    "pixels": "/tmp/wave6-epi-pixel-review/receipt-final.json",
+    "ownedBrowsersAndServersClosed": true
   }
 }

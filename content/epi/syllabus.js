@@ -202,25 +202,116 @@ export default {
       ],
     },
     {
-      n: 6,
-      title: 'Bias',
-      summary: String.raw`Systematic errors do not shrink with sample size. Selection bias arises from who enters or stays in a study, information bias from how exposure and outcome are measured; each has classic forms such as the healthy-worker effect, recall bias and survivorship bias. Quantitative bias analysis asks how strong an unmeasured confounder would need to be to explain a result away.`,
-      items: [
-        { num: '6.1', kind: 'Concept', name: 'Random versus systematic error', deps: [], refs: ['Rothman ch. 9'],
-          pic: 'Repeat a study many times at increasing size; random error narrows the spread of estimates while a systematic error keeps their centre away from the truth.' },
-        { num: '6.2', kind: 'Concept', name: 'Selection bias', deps: ['epi-4.8'], refs: ['Rothman ch. 9', 'Gordis ch. 15'],
-          pic: 'Let study participation depend on both exposure and outcome; the estimate among participants departs from the population value, explained by a collider in the causal diagram.' },
-        { num: '6.3', kind: 'Phenomenon', name: 'Healthy worker effect', deps: ['epi-6.2'], refs: ['Rothman ch. 9'],
-          pic: 'Compare mortality of a workforce with the general population; workers look healthier because the sick are less likely to be employed, masking a real occupational hazard.' },
-        { num: '6.4', kind: 'Concept', name: 'Non-differential misclassification biases toward the null', deps: ['epi-3.2', 'epi-2.1'], refs: ['Rothman ch. 9'],
-          pic: 'Misclassify exposure with the same sensitivity and specificity in cases and controls; the observed risk ratio slides toward 1 as accuracy falls.' },
-        { num: '6.5', kind: 'Phenomenon', name: 'Recall bias', deps: ['epi-6.4'], refs: ['Gordis ch. 15'],
-          pic: 'Mothers of affected infants recall exposures more completely than control mothers; differential misclassification inflates the odds ratio, which the simulation quantifies.' },
-        { num: '6.6', alias: 'causal-8.6', name: 'Immortal time bias' },
-        { num: '6.7', alias: 'causal-5.13', name: 'Sensitivity analysis and the E-value' },
-        { num: '6.8', kind: 'Phenomenon', name: 'Survivorship bias (Wald’s bombers)', deps: ['epi-6.2'], refs: ['Rothman ch. 9'],
-          pic: 'Bullet holes are plotted only on aircraft that returned; armouring where holes are dense is wrong, since planes hit elsewhere did not come back, as the full simulated fleet shows.' },
-      ],
+      "n": 6,
+      "title": "Bias",
+      "summary": "Increasing a study’s size can reduce sampling variation while leaving an error in its data-generating mechanism. Follow the same population through participation, employment and exposure recording; distinguish assumptions that force attenuation from mechanisms that can reverse an association. A synthetic sortie model shows what returning observations omit, without treating historical illustrations as measured data.",
+      "items": [
+        {
+          "num": "6.1",
+          "kind": "Concept",
+          "name": "Random versus systematic error",
+          "deps": [],
+          "refs": [
+            "NIST e-Handbook: actual Bias and Accuracy body and selected glossary entries",
+            "Own binomial recording model and squared-error decomposition"
+          ],
+          "links": {
+            "education": "https://www.itl.nist.gov/div898/handbook/mpc/section1/mpc113.htm"
+          },
+          "pic": "Change the study size, contamination and replacement probability. Compare the exact binned sampling distribution with 80 fixed-seed repetitions, then follow the separate variance, squared-bias and MSE curves."
+        },
+        {
+          "num": "6.2",
+          "kind": "Concept",
+          "name": "Selection bias",
+          "deps": [
+            "causal-3.10"
+          ],
+          "refs": [
+            "Catalogue of Bias2017: actual selected selection-bias body",
+            "Own four-cell conditional-sampling derivation"
+          ],
+          "links": {
+            "education": "https://catalogofbias.org/biases/selection-bias/"
+          },
+          "pic": "Move the four participation gates and compare full-population and participant cell probabilities. Sweep the joint E+,Y+ gate while keeping the other three fixed; watch the selected log odds ratio cross, approach or depart from the population reference."
+        },
+        {
+          "num": "6.3",
+          "kind": "Phenomenon",
+          "name": "Healthy worker effect",
+          "deps": [
+            "epi-6.2"
+          ],
+          "refs": [
+            "NIOSH nurse-training Module3p15: actual self-selection discussion, reviewed2020",
+            "Own enumerated health–employment–outcome population"
+          ],
+          "links": {
+            "education": "https://www.cdc.gov/niosh/work-hour-training-for-nurses/longhours/mod3/15.html"
+          },
+          "pic": "Change baseline vulnerability, employment by health, baseline risks and the occupational increment. Compare the resulting health mixtures, then see the crude and standardized risk differences as the same occupational parameter changes."
+        },
+        {
+          "num": "6.4",
+          "kind": "Concept",
+          "name": "Non-differential misclassification biases toward the null",
+          "deps": [
+            "epi-3.2",
+            "epi-2.1"
+          ],
+          "refs": [
+            "Catalogue of Bias2018: actual selected misclassification body and general-direction qualification",
+            "Own binary-exposure posterior-mixture proof"
+          ],
+          "links": {
+            "education": "https://catalogofbias.org/biases/misclassification-bias/"
+          },
+          "pic": "Move sensitivity and specificity, including below-chance values. Inspect the true-exposure composition of each recorded group and the recorded log risk ratio as sensitivity crosses the chance boundary."
+        },
+        {
+          "num": "6.5",
+          "kind": "Phenomenon",
+          "name": "Recall bias",
+          "deps": [
+            "epi-6.4"
+          ],
+          "refs": [
+            "Catalogue of Bias2017: actual selected recall-bias body",
+            "Own outcome-specific binary recording enumeration"
+          ],
+          "links": {
+            "education": "https://catalogofbias.org/biases/recall-bias/"
+          },
+          "pic": "Change the two groups’ reporting rates independently. Compare their true and recorded exposure proportions, then sweep case sensitivity while keeping all other rates fixed to reveal which direction the apparent association moves."
+        },
+        {
+          "num": "6.6",
+          "alias": "causal-8.6",
+          "name": "Immortal time bias"
+        },
+        {
+          "num": "6.7",
+          "alias": "causal-5.13",
+          "name": "Sensitivity analysis and the E-value"
+        },
+        {
+          "num": "6.8",
+          "kind": "Phenomenon",
+          "name": "Survivorship bias (Wald’s bombers)",
+          "deps": [
+            "epi-6.2"
+          ],
+          "refs": [
+            "Wald, A Method of Estimating Plane Vulnerability, CNA1980: actual selected frontmatter/PartI text and printed1/6 images",
+            "Own independent regional Poisson-thinning model and synthetic fleet"
+          ],
+          "links": {
+            "source": "https://www.cna.org/analyses/1980/a-method-of-estimating-plane-vulnerability"
+          },
+          "pic": "Inspect 100 synthetic sorties, select an aircraft and reveal either returning observations or the complete simulated fleet. Change regional loss probabilities, then switch to an alternate exposure mechanism with the same expected survivor holes. Compare exact expectations with the finite fleet’s means."
+        }
+      ]
     },
     {
       n: 7,
