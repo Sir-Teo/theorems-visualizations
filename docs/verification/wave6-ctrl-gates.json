@@ -67,11 +67,11 @@
       "layouts": 52,
       "actions": 1092,
       "replays": 592,
-      "checks": 2522,
-      "invalidReplays": 52,
+      "checks": 2538,
+      "invalidReplays": 68,
       "rawReplays": 52,
       "criticalReplays": 292,
-      "modelChecks": 1707884
+      "modelChecks": 1708092
     },
     "lanes": [
       [
@@ -105,7 +105,7 @@
         ]
       ],
       [
-        "final-k",
+        "final-l",
         [
           7
         ]
@@ -729,60 +729,60 @@
         "id": 7,
         "theme": "light",
         "width": 1200,
-        "lane": "final-k",
+        "lane": "final-l",
         "layouts": 1,
-        "invalidReplays": 1,
+        "invalidReplays": 5,
         "rawReplays": 1,
         "criticalReplays": 11,
         "actions": 25,
         "replays": 18,
-        "checks": 65,
-        "modelChecks": 850
+        "checks": 69,
+        "modelChecks": 902
       },
       {
         "label": "6.7-light-320",
         "id": 7,
         "theme": "light",
         "width": 320,
-        "lane": "final-k",
+        "lane": "final-l",
         "layouts": 1,
-        "invalidReplays": 1,
+        "invalidReplays": 5,
         "rawReplays": 1,
         "criticalReplays": 11,
         "actions": 25,
         "replays": 18,
-        "checks": 76,
-        "modelChecks": 992
+        "checks": 80,
+        "modelChecks": 1044
       },
       {
         "label": "6.7-dark-1200",
         "id": 7,
         "theme": "dark",
         "width": 1200,
-        "lane": "final-k",
+        "lane": "final-l",
         "layouts": 1,
-        "invalidReplays": 1,
+        "invalidReplays": 5,
         "rawReplays": 1,
         "criticalReplays": 11,
         "actions": 25,
         "replays": 18,
-        "checks": 65,
-        "modelChecks": 850
+        "checks": 69,
+        "modelChecks": 902
       },
       {
         "label": "6.7-dark-320",
         "id": 7,
         "theme": "dark",
         "width": 320,
-        "lane": "final-k",
+        "lane": "final-l",
         "layouts": 1,
-        "invalidReplays": 1,
+        "invalidReplays": 5,
         "rawReplays": 1,
         "criticalReplays": 11,
         "actions": 25,
         "replays": 18,
-        "checks": 76,
-        "modelChecks": 992
+        "checks": 80,
+        "modelChecks": 1044
       },
       {
         "label": "6.5-light-1200",
@@ -1021,17 +1021,18 @@
       "content/ctrl/ch06.shared.js",
       "content/ctrl/ch06.viz.js",
       "content/ctrl/syllabus.js"
-    ]
+    ],
+    "scope": "Historical 29ccf412 chapter-authoring preservation receipt; later CIRC6 work is separately owned. The finite-handle follow-up changes only local handle validation and the browser harness."
   },
   "independentAcceptanceUnchanged": 36,
   "sha256": {
     "content/ctrl/ch06.js": "b70734fac6e6760f4d6c53951a0e156b4938cd3aa13e1a5e45c28e458310ae8e",
     "content/ctrl/ch06.exact.shared.js": "53b1fec41c399402aa234aa9fbce2f08e5a6e3767fdf302bfaa88abfbfee5bb8",
     "content/ctrl/ch06.shared.js": "6ef0e6c1c983cfa91eedd4105902d656d904cffc1ddb1594016978269157d71a",
-    "content/ctrl/ch06.viz.js": "94e96c812388f922c014dc97617bd9c670a59e999caf1b856fac6bcce7810185",
+    "content/ctrl/ch06.viz.js": "4ce76cd0eaf18ed40294adb6141bce60ff98efc528beffff95633502d23fdca4",
     "content/ctrl/syllabus.js": "e22d7177ea4f035f72ddd3be85cacdb2956400b3d0aec45cf315e08e9b637427",
     "tests/wave6-ctrl.test.mjs": "ba3b948f4a308989aae1f3cb444d77eadcde8409fd822e52bc87827a4aae1daf",
-    "tests/wave6-ctrl-browser.mjs": "498f75a2c12d39479d2eac41b98921c636ef4e2b1b121538f3d4b53e526520a8",
+    "tests/wave6-ctrl-browser.mjs": "560d1fd232da91e8337dfa065785e5f69a5a1177570ca78ea9f9ed8951e33c7e",
     "tests/wave6-ctrl-reference.py": "c6f5469445e6314292c80fc515fa579d97111bcea79040946ff96c764c3fd787",
     "tests/fixtures/wave6-ctrl-reference.json": "3f2f8739a268c1f43332ddfa3ffcb1f15d064a9fcb0f81e8ca839ed905f5e46a"
   },
@@ -1064,7 +1065,9 @@
     "/tmp/wave6-ctrl-research/review7-final.log",
     "/tmp/wave6-ctrl-research/caption3-final.log",
     "/tmp/wave6-ctrl-research/idea9-final.log",
-    "/tmp/wave6-ctrl-research/reference-final-canonical-437.log"
+    "/tmp/wave6-ctrl-research/reference-final-canonical-437.log",
+    "/tmp/wave6-ctrl-research/finite-handle-initial.log",
+    "/tmp/wave6-ctrl-research/native-final-l.log"
   ],
   "authorAvailability": 774,
   "additionalAuthorVerified": 738,
@@ -1082,7 +1085,7 @@
       "qualityWarnings": 0
     }
   },
-  "finalNarrowModeScope": "Both13-item runs pass; subsequent wording-only caption3 has dedicated both-theme bounds/pixel replacement, and precise point readout7 has a complete4-layout native replacement plus both-theme critical/readout recapture. Default7 rendering is unchanged.",
+  "finalNarrowModeScope": "Both13-item runs pass; subsequent wording-only caption3 has dedicated both-theme bounds/pixel replacement, and precise point readout7 has a complete4-layout native replacement plus both-theme critical/readout recapture. Default7 rendering is unchanged. A later finite-handle restore guard has a complete four-layout lesson7 native replacement; all26 compared default/critical widget pixels are identical.",
   "finalScientificInkAudit": {
     "completeLayoutGroups": 52,
     "defaultAndCriticalStates": 344,
@@ -1090,12 +1093,55 @@
     "modelComparisons": 412752,
     "failures": 0,
     "disjointLanes": {
-      "final-audit-i": "IDs1–4,6–13; includes final conditional detail",
+      "final-audit-i": "IDs1\u20134,6\u201313; includes final conditional detail",
       "numberline-repaired": "ID5"
     },
     "scope": "Counters are separate from native actions/replays. Afterward only caption3/idea9 wording and point7 readout precision changed; dedicated source/text captures and complete native7 replacement close those scopes. All raw data ink is checked against its inner clip, axis ink against the canvas."
   },
   "squareRootDerivedRoundingInvariants": 114,
   "allBrowsersClosed": true,
-  "sourceTemplateValuePreservation": "/tmp/wave6-ctrl-research/raw-template-value-preservation.json"
+  "sourceTemplateValuePreservation": "/tmp/wave6-ctrl-research/raw-template-value-preservation.json",
+  "finiteHandleFollowup": {
+    "observedFailure": "A finite out-of-domain restored handle was silently clamped, changing the intended point without notice.",
+    "before": "/tmp/wave6-ctrl-research/finite-handle-initial.log",
+    "repair": "Chapter-local handle constraint rejects finite out-of-domain coordinates when the handle is not actively dragging. Mount failure restores every component to fresh defaults with a notice; interactive dragging retains its declared clamp.",
+    "boundaryCases": [
+      [
+        3.0000000000000004,
+        0
+      ],
+      [
+        -6.000000000000001,
+        0
+      ],
+      [
+        0,
+        5.000000000000001
+      ],
+      [
+        0,
+        -5.000000000000001
+      ]
+    ],
+    "mixedPayload": "First invalid point also changes the family select; the whole state resets to the original baseline.",
+    "nativeReplacement": {
+      "layouts": 4,
+      "actions": 100,
+      "replays": 72,
+      "checks": 298,
+      "invalidReplays": 20,
+      "rawReplays": 4,
+      "criticalReplays": 44,
+      "modelChecks": 3892
+    },
+    "nativeLog": "/tmp/wave6-ctrl-research/native-final-l.log",
+    "validPixelPreservation": "/tmp/wave6-ctrl-research/finite-handle-valid-pixel-preservation.json",
+    "validPixelsCompared": {
+      "defaultLayouts": 4,
+      "narrowCriticalWidgets": 22,
+      "allRGBAAndDimensionsExact": true
+    },
+    "personallyViewedExtraInvalidNotice": 1,
+    "science": "Pure model, independent fixtures and valid-state pixels unchanged. This is a saved-state validation follow-up, not additional lesson acceptance."
+  }
 }

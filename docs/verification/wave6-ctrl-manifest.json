@@ -5,13 +5,14 @@
     "content/ctrl/ch06.js": "b70734fac6e6760f4d6c53951a0e156b4938cd3aa13e1a5e45c28e458310ae8e",
     "content/ctrl/ch06.exact.shared.js": "53b1fec41c399402aa234aa9fbce2f08e5a6e3767fdf302bfaa88abfbfee5bb8",
     "content/ctrl/ch06.shared.js": "6ef0e6c1c983cfa91eedd4105902d656d904cffc1ddb1594016978269157d71a",
-    "content/ctrl/ch06.viz.js": "94e96c812388f922c014dc97617bd9c670a59e999caf1b856fac6bcce7810185",
+    "content/ctrl/ch06.viz.js": "4ce76cd0eaf18ed40294adb6141bce60ff98efc528beffff95633502d23fdca4",
     "content/ctrl/syllabus.js": "e22d7177ea4f035f72ddd3be85cacdb2956400b3d0aec45cf315e08e9b637427",
     "tests/wave6-ctrl.test.mjs": "ba3b948f4a308989aae1f3cb444d77eadcde8409fd822e52bc87827a4aae1daf",
-    "tests/wave6-ctrl-browser.mjs": "498f75a2c12d39479d2eac41b98921c636ef4e2b1b121538f3d4b53e526520a8",
+    "tests/wave6-ctrl-browser.mjs": "560d1fd232da91e8337dfa065785e5f69a5a1177570ca78ea9f9ed8951e33c7e",
     "tests/wave6-ctrl-reference.py": "c6f5469445e6314292c80fc515fa579d97111bcea79040946ff96c764c3fd787",
     "tests/fixtures/wave6-ctrl-reference.json": "3f2f8739a268c1f43332ddfa3ffcb1f15d064a9fcb0f81e8ca839ed905f5e46a",
-    "docs/verification/wave6-ctrl-sources.json": "943c60386f274d3cac0b94505a16973d9e4d60e53fda25326573725c8eb52916",
-    "docs/verification/wave6-ctrl-gates.json": "0a9d4eb9999f2780397e6bbeb944e530a8e2039452cf4b149ef947c5d68c2e08"
-  }
+    "docs/verification/wave6-ctrl-sources.json": "a187ab5cde147870bb4236180988d67a5d87498597114678e6ad1e34f57f771f",
+    "docs/verification/wave6-ctrl-gates.json": "4586d160842eff0c03c452455cc410d7ec5d4dc6d54d3899b66242cf7b2f142d"
+  },
+  "finiteHandleFollowup": "Complete four-layout lesson7 replacement; valid pixels identical; pure model and independent references unchanged."
 }

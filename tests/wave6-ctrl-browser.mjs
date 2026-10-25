@@ -130,6 +130,7 @@ async function savedStates(id,theme,width,label){
  const after=await open(id,theme,width,stateURL(base,`ctrl-6.${id}`,bad));
  assert.deepEqual(after.state.parts,baseState.parts,label+' reject out-of-domain state');
  assert.match(await page.locator('.share-status').innerText(),/could not|invalid|saved|restor/i);invalidReplays++;
+ if(id===7){for(const[index,coordinates]of [[3.0000000000000004,0],[-6.000000000000001,0],[0,5.000000000000001],[0,-5.000000000000001]].entries()){const invalid=structuredClone(baseState),handle=invalid.parts.find(([key])=>key.startsWith('handle:'));handle[1]=coordinates;if(index===0){const choice=invalid.parts.find(([key])=>key.startsWith('select:'));choice[1][0]=1;}const restored=await open(id,theme,width,stateURL(base,`ctrl-6.${id}`,invalid));assert.deepEqual(restored.state.parts,baseState.parts,label+' reject finite handle domain and reset every component');assert.match(await page.locator('.viz-state-notice').innerText(),/could not be restored/i);invalidReplays++;}}
  const rawIndex=await page.locator('#viz .ctl-slider input').evaluateAll(es=>es.findIndex(e=>e.getAttribute('step')==='any'));
  if(rawIndex>=0){
  const rawKey=baseState.parts.filter(([k])=>k.startsWith('slider:'))[rawIndex][0],raw=structuredClone(baseState),part=raw.parts.find(([k])=>k===rawKey),bounds=await page.locator('#viz .ctl-slider input').nth(rawIndex).evaluate(e=>({min:+e.min,max:+e.max})),delta=.0000123456789;part[1]+=part[1]+delta<=bounds.max?delta:-delta;assert.ok(part[1]>=bounds.min&&part[1]<=bounds.max);

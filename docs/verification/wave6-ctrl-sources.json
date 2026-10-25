@@ -50,7 +50,7 @@
       "id": "mit-1630-02",
       "requestedURL": "https://ocw.mit.edu/courses/16-30-feedback-control-systems-fall-2010/0647b5f6e52191b6e63c6c23b59fd3dd_MIT16_30F10_lec02.pdf",
       "requestedUTC": "2026-10-25T07:17:48.994246+00:00",
-      "bodyRead": "Selected text lines181–413,595–667,735–840,868–947 only; personally inspected rendered PDF pages11/21 (printed2–11/2–21).",
+      "bodyRead": "Selected text lines181\u2013413,595\u2013667,735\u2013840,868\u2013947 only; personally inspected rendered PDF pages11/21 (printed2\u201311/2\u201321).",
       "finalURL": "https://ocw.mit.edu/courses/16-30-feedback-control-systems-fall-2010/0647b5f6e52191b6e63c6c23b59fd3dd_MIT16_30F10_lec02.pdf",
       "httpStatus": 200,
       "contentType": "application/pdf",
@@ -144,7 +144,7 @@
       "id": "mit-6241-19",
       "requestedURL": "https://ocw.mit.edu/courses/6-241j-dynamic-systems-and-control-spring-2011/f5ef45e468ca752d181e7682a6fe939b_MIT6_241JS11_chap19.pdf",
       "requestedUTC": "2026-10-25T07:29:28.100613+00:00",
-      "bodyRead": "Selected text lines182–225 and rendered PDF page7 only; no remaining chapter proof or Kharitonov body read.",
+      "bodyRead": "Selected text lines182\u2013225 and rendered PDF page7 only; no remaining chapter proof or Kharitonov body read.",
       "finalURL": "https://ocw.mit.edu/courses/6-241j-dynamic-systems-and-control-spring-2011/f5ef45e468ca752d181e7682a6fe939b_MIT6_241JS11_chap19.pdf",
       "httpStatus": 200,
       "contentType": "application/pdf",
@@ -180,7 +180,7 @@
       "id": "kharitonov-orthogonal-2017",
       "requestedURL": "https://periodicals.karazin.ua/mech_math/article/download/11006/10575",
       "requestedUTC": "2026-10-25T07:50:27.545719+00:00",
-      "bodyRead": "Own selected reading: text lines1–65,373–455,487–520,924–934,1015–1034. Personally inspected rendered PDF page8 (printed56), including four endpoint patterns and classical Theorem1. No full-degree proof or original1978/1979 paper body claimed read.",
+      "bodyRead": "Own selected reading: text lines1\u201365,373\u2013455,487\u2013520,924\u2013934,1015\u20131034. Personally inspected rendered PDF page8 (printed56), including four endpoint patterns and classical Theorem1. No full-degree proof or original1978/1979 paper body claimed read.",
       "finalURL": "https://periodicals.karazin.ua/mech_math/en/article/download/11006/10575",
       "httpStatus": 200,
       "contentType": "application/pdf",
@@ -190,17 +190,17 @@
     }
   ],
   "inheritedStops": [
-    "Original Ziegler–Nichols ASME403; do not recover via alternate host/cache.",
+    "Original Ziegler\u2013Nichols ASME403; do not recover via alternate host/cache.",
     "Original Skogestad timeout; do not recover via alternate host/cache."
   ],
-  "commercialBodies": "Franklin–Powell/Emami-Naeini and current Åström–Murray bodies not requested/read in this continuation. Earlier cached-source reading belongs to the historical Wave5 ledger only.",
+  "commercialBodies": "Franklin\u2013Powell/Emami-Naeini and current \u00c5str\u00f6m\u2013Murray bodies not requested/read in this continuation. Earlier cached-source reading belongs to the historical Wave5 ledger only.",
   "sourceCautions": [
-    "MIT16.30 extracted printed2–23 characteristic-polynomial line has a wrong degree term; local polynomial multiplication supplies the actual cubic. No original figure or numerical example is reused.",
-    "MIT6.241 chapter19 Theorem19.1 says the Nyquist plot of L must avoid the origin. Personally inspected page7 confirms that wording; for L the forbidden point is−1 (equivalently1+L avoids0). Local proofs use the actual return-difference polynomial and argument principle; that erroneous line is not adopted.",
+    "MIT16.30 extracted printed2\u201323 characteristic-polynomial line has a wrong degree term; local polynomial multiplication supplies the actual cubic. No original figure or numerical example is reused.",
+    "MIT6.241 chapter19 Theorem19.1 says the Nyquist plot of L must avoid the origin. Personally inspected page7 confirms that wording; for L the forbidden point is\u22121 (equivalently1+L avoids0). Local proofs use the actual return-difference polynomial and argument principle; that erroneous line is not adopted.",
     "CTRL4.4 pole regions are second-order heuristics for rise/settling when zeros/higher-order modes occur. Lead views must calculate the full transient and label the region as a design guide.",
     "CTRL1.4 common denominator roots can disappear from selected transfer maps through cancellation; local characteristic roots retain the chosen realization modes.",
     "Approximate root locations use correctly rounded coefficients and their exact square-free factors. Exact stability and original multiplicity use the original rational polynomial. Classification/multiplicity disagreement flags are required for visually unresolved states; a small backward residual is not a forward root-error guarantee.",
-    "Classical monic Kharitonov statement and its endpoint set are checked against Choque-Rivero2017 Theorem1/Definitions5–6, up to permutation of corner labels. The source recalls the classical theorem without proving it there. Our displayed quartic has a complete local Routh/convexity proof. No full-degree proof or original paper body is claimed read.",
+    "Classical monic Kharitonov statement and its endpoint set are checked against Choque-Rivero2017 Theorem1/Definitions5\u20136, up to permutation of corner labels. The source recalls the classical theorem without proving it there. Our displayed quartic has a complete local Routh/convexity proof. No full-degree proof or original paper body is claimed read.",
     "Choque-Rivero2017 Theorem2 gives a sufficient Kharitonov-quadruple condition; its converse is explicitly Conjecture3. That novel equivalence is not adopted as a theorem. The present chapter uses the classical Theorem1 only.",
     "A root below representable coordinate range can draw at zero even though exact coefficients and Routh counts are resolved. Coordinate-count resolution is disclosed separately; the six-MIN output at the long finite gain-range probe is independently checked."
   ],
@@ -220,7 +220,7 @@
     {
       "id": "rational-rounding",
       "path": "/tmp/wave6-ctrl-research/rational-rounding-initial.json",
-      "meaning": "Prototype truncation exaggerated2−MIN by one ulp; repaired exact nearest-even rounding before any view/promotion."
+      "meaning": "Prototype truncation exaggerated2\u2212MIN by one ulp; repaired exact nearest-even rounding before any view/promotion."
     },
     {
       "id": "rounded-root-cluster",
@@ -276,6 +276,11 @@
       "id": "point-coordinate-precision",
       "path": "/tmp/wave6-ctrl-research/viz-before-point-precision.js",
       "meaning": "A rounded readout made an adjacent-to-pole point look equal to the pole despite a defined formula. Shortest round-trip binary64 coordinates distinguish the cases; exact displayed coordinates are checked after actual Share replay."
+    },
+    {
+      "id": "finite-saved-handle-clamping",
+      "path": "/tmp/wave6-ctrl-research/finite-handle-initial.log",
+      "meaning": "A finite out-of-domain restored handle was silently clamped, changing the intended point without notice. Chapter-local handle constraint rejects finite out-of-domain coordinates when the handle is not actively dragging. Mount failure restores every component to fresh defaults with a notice; interactive dragging retains its declared clamp."
     }
   ],
   "personallyViewedSourcePages": [
@@ -328,5 +333,48 @@
       "mode": "/tmp/wave6-ctrl-research/pixel-review/mode-manifest.json"
     },
     "scope": "All73 exact critical states in both narrow themes have complete plot regions viewed.30 selected critical states have complete readouts viewed in both themes. Every offered control/mode is automated; personal mode coverage combines defaults, critical states and two additional Routh construction modes."
+  },
+  "finiteHandleFollowup": {
+    "observedFailure": "A finite out-of-domain restored handle was silently clamped, changing the intended point without notice.",
+    "before": "/tmp/wave6-ctrl-research/finite-handle-initial.log",
+    "repair": "Chapter-local handle constraint rejects finite out-of-domain coordinates when the handle is not actively dragging. Mount failure restores every component to fresh defaults with a notice; interactive dragging retains its declared clamp.",
+    "boundaryCases": [
+      [
+        3.0000000000000004,
+        0
+      ],
+      [
+        -6.000000000000001,
+        0
+      ],
+      [
+        0,
+        5.000000000000001
+      ],
+      [
+        0,
+        -5.000000000000001
+      ]
+    ],
+    "mixedPayload": "First invalid point also changes the family select; the whole state resets to the original baseline.",
+    "nativeReplacement": {
+      "layouts": 4,
+      "actions": 100,
+      "replays": 72,
+      "checks": 298,
+      "invalidReplays": 20,
+      "rawReplays": 4,
+      "criticalReplays": 44,
+      "modelChecks": 3892
+    },
+    "nativeLog": "/tmp/wave6-ctrl-research/native-final-l.log",
+    "validPixelPreservation": "/tmp/wave6-ctrl-research/finite-handle-valid-pixel-preservation.json",
+    "validPixelsCompared": {
+      "defaultLayouts": 4,
+      "narrowCriticalWidgets": 22,
+      "allRGBAAndDimensionsExact": true
+    },
+    "personallyViewedExtraInvalidNotice": 1,
+    "science": "Pure model, independent fixtures and valid-state pixels unchanged. This is a saved-state validation follow-up, not additional lesson acceptance."
   }
 }
