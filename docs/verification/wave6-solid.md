@@ -1,0 +1,9 @@
+# SOLID6 Beams — preparation in progress
+
+Twelve frozen lessons are being developed. No SOLID6 production/count promotion has occurred; availability remains794/1057 with36 historical independently accepted. ENERGY6 is complete at4eb5bb31.
+
+All six actual written prerequisite bodies were read. The [source ledger](wave6-solid-sources.json) records selected Roylance Statics/Stresses passages, Lagace Unit14 and NPTEL thin-wall/shear-centre material, with seven personally inspected source pages and exact reading limits. Commercial textbook bodies/section numbering remain unverified. The IGNOU Unit16 PDF returned503 with no body read; it is a binding no-retry/no-alternate-recovery stop. All inherited restrictions remain in force.
+
+The visual priority is a connected explanation: dimensioned loads and section cuts, force/moment curves, neutral axes and stress profiles. Fixed-area shapes, modulus-weighted sections and plastic zones will use their actual computed geometry and clear scales. Schematics, exaggerated deformation and leading thin-wall assumptions must be labelled. Different shear/moment conventions are converted explicitly before drawing any arrows.
+
+Independent source checks identify the half-span-UDL maximum as9qL²/128 instead of a printed9qL²/32, and avoid an incorrect T-section extreme-distance sentence. Own section and equilibrium integrals will supply the examples. Detailed12-model designs and boundary/reference plans are in `/tmp/wave6-solid-research/design-notes.json`;149 prior recent manifest files are frozen and exact. Next build independently verified chapter-local pure kernels, then complete the lessons and full native/pixel gates. Continue without a chapter-boundary stop.
