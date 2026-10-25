@@ -1,0 +1,1329 @@
+{
+  "completed": "2026-10-25",
+  "status": "author-verified local chapter; no independent acceptance/release claim",
+  "node": "22.23.3",
+  "frozenItems": 15,
+  "focused": {
+    "groups": 26,
+    "passed": 26,
+    "failed": 0,
+    "skipped": 0,
+    "log": "/tmp/wave6-physio-focused-final.log"
+  },
+  "independentReferences": {
+    "parameterCases": 729,
+    "additionalCovarianceCases": 9,
+    "families": 11,
+    "fixture": "tests/fixtures/wave6-physio-reference.json",
+    "sha256": "7167e07a779a20176f3ddcd86431b7e5cc7e487744255a61ba839765f0f44cf2",
+    "repeatByteIdentical": true,
+    "generator": "tests/wave6-physio-reference.py",
+    "notes": "Independent120/1000-digit enumeration/root arithmetic, full10-species/four-stage DOP853, full Jacobian eigenproblems, flux quadrature and BVP collocation; production JS is not imported by Python. Native model/geometry consistency counts are separate."
+  },
+  "strictBuild": {
+    "written": 8425,
+    "planned": 5149,
+    "chapters": 578,
+    "collections": 85,
+    "errors": 0,
+    "warnings": 0,
+    "log": "/tmp/wave6-physio-build-final.log"
+  },
+  "static": {
+    "items": 15,
+    "errors": 0,
+    "warnings": 0,
+    "log": "/tmp/wave6-physio-static-final.log"
+  },
+  "allModes": {
+    "light": {
+      "items": 15,
+      "failed": 0,
+      "TeXBlankWarnings": 0,
+      "qualityWarnings": 0,
+      "log": "/tmp/wave6-physio-modes-light-final.log"
+    },
+    "dark": {
+      "items": 15,
+      "failed": 0,
+      "TeXBlankWarnings": 0,
+      "qualityWarnings": 0,
+      "log": "/tmp/wave6-physio-modes-dark-final.log"
+    }
+  },
+  "native": {
+    "date": "2026-10-25",
+    "totals": {
+      "layouts": 60,
+      "actions": 1236,
+      "replays": 548,
+      "checks": 2482,
+      "modelChecks": 2034736,
+      "invalidReplays": 60,
+      "rawReplays": 60,
+      "criticalReplays": 228
+    },
+    "records": [
+      {
+        "label": "6.1-light-1200",
+        "id": 1,
+        "theme": "light",
+        "width": 1200,
+        "lane": "a",
+        "actions": 12,
+        "replays": 6,
+        "checks": 26,
+        "modelChecks": 33826,
+        "invalidReplays": 1,
+        "rawReplays": 1,
+        "criticalReplays": 3
+      },
+      {
+        "label": "6.1-light-320",
+        "id": 1,
+        "theme": "light",
+        "width": 320,
+        "lane": "a",
+        "actions": 12,
+        "replays": 6,
+        "checks": 29,
+        "modelChecks": 37729,
+        "invalidReplays": 1,
+        "rawReplays": 1,
+        "criticalReplays": 3
+      },
+      {
+        "label": "6.1-dark-1200",
+        "id": 1,
+        "theme": "dark",
+        "width": 1200,
+        "lane": "a",
+        "actions": 12,
+        "replays": 6,
+        "checks": 26,
+        "modelChecks": 33826,
+        "invalidReplays": 1,
+        "rawReplays": 1,
+        "criticalReplays": 3
+      },
+      {
+        "label": "6.1-dark-320",
+        "id": 1,
+        "theme": "dark",
+        "width": 320,
+        "lane": "a",
+        "actions": 12,
+        "replays": 6,
+        "checks": 29,
+        "modelChecks": 37729,
+        "invalidReplays": 1,
+        "rawReplays": 1,
+        "criticalReplays": 3
+      },
+      {
+        "label": "6.2-light-1200",
+        "id": 2,
+        "theme": "light",
+        "width": 1200,
+        "lane": "a",
+        "actions": 16,
+        "replays": 7,
+        "checks": 31,
+        "modelChecks": 40021,
+        "invalidReplays": 1,
+        "rawReplays": 1,
+        "criticalReplays": 3
+      },
+      {
+        "label": "6.2-light-320",
+        "id": 2,
+        "theme": "light",
+        "width": 320,
+        "lane": "a",
+        "actions": 16,
+        "replays": 7,
+        "checks": 34,
+        "modelChecks": 43894,
+        "invalidReplays": 1,
+        "rawReplays": 1,
+        "criticalReplays": 3
+      },
+      {
+        "label": "6.2-dark-1200",
+        "id": 2,
+        "theme": "dark",
+        "width": 1200,
+        "lane": "a",
+        "actions": 16,
+        "replays": 7,
+        "checks": 31,
+        "modelChecks": 40021,
+        "invalidReplays": 1,
+        "rawReplays": 1,
+        "criticalReplays": 3
+      },
+      {
+        "label": "6.2-dark-320",
+        "id": 2,
+        "theme": "dark",
+        "width": 320,
+        "lane": "a",
+        "actions": 16,
+        "replays": 7,
+        "checks": 34,
+        "modelChecks": 43894,
+        "invalidReplays": 1,
+        "rawReplays": 1,
+        "criticalReplays": 3
+      },
+      {
+        "label": "6.3-light-1200",
+        "id": 3,
+        "theme": "light",
+        "width": 1200,
+        "lane": "a",
+        "actions": 28,
+        "replays": 12,
+        "checks": 52,
+        "modelChecks": 36140,
+        "invalidReplays": 1,
+        "rawReplays": 1,
+        "criticalReplays": 4
+      },
+      {
+        "label": "6.3-light-320",
+        "id": 3,
+        "theme": "light",
+        "width": 320,
+        "lane": "a",
+        "actions": 28,
+        "replays": 12,
+        "checks": 56,
+        "modelChecks": 38920,
+        "invalidReplays": 1,
+        "rawReplays": 1,
+        "criticalReplays": 4
+      },
+      {
+        "label": "6.3-dark-1200",
+        "id": 3,
+        "theme": "dark",
+        "width": 1200,
+        "lane": "a",
+        "actions": 28,
+        "replays": 12,
+        "checks": 52,
+        "modelChecks": 36140,
+        "invalidReplays": 1,
+        "rawReplays": 1,
+        "criticalReplays": 4
+      },
+      {
+        "label": "6.3-dark-320",
+        "id": 3,
+        "theme": "dark",
+        "width": 320,
+        "lane": "a",
+        "actions": 28,
+        "replays": 12,
+        "checks": 56,
+        "modelChecks": 38920,
+        "invalidReplays": 1,
+        "rawReplays": 1,
+        "criticalReplays": 4
+      },
+      {
+        "label": "6.4-light-1200",
+        "id": 4,
+        "theme": "light",
+        "width": 1200,
+        "lane": "a",
+        "actions": 16,
+        "replays": 7,
+        "checks": 31,
+        "modelChecks": 20274,
+        "invalidReplays": 1,
+        "rawReplays": 1,
+        "criticalReplays": 3
+      },
+      {
+        "label": "6.4-light-320",
+        "id": 4,
+        "theme": "light",
+        "width": 320,
+        "lane": "a",
+        "actions": 16,
+        "replays": 7,
+        "checks": 34,
+        "modelChecks": 22236,
+        "invalidReplays": 1,
+        "rawReplays": 1,
+        "criticalReplays": 3
+      },
+      {
+        "label": "6.4-dark-1200",
+        "id": 4,
+        "theme": "dark",
+        "width": 1200,
+        "lane": "a",
+        "actions": 16,
+        "replays": 7,
+        "checks": 31,
+        "modelChecks": 20274,
+        "invalidReplays": 1,
+        "rawReplays": 1,
+        "criticalReplays": 3
+      },
+      {
+        "label": "6.4-dark-320",
+        "id": 4,
+        "theme": "dark",
+        "width": 320,
+        "lane": "a",
+        "actions": 16,
+        "replays": 7,
+        "checks": 34,
+        "modelChecks": 22236,
+        "invalidReplays": 1,
+        "rawReplays": 1,
+        "criticalReplays": 3
+      },
+      {
+        "label": "6.5-light-1200",
+        "id": 5,
+        "theme": "light",
+        "width": 1200,
+        "lane": "a",
+        "actions": 16,
+        "replays": 7,
+        "checks": 31,
+        "modelChecks": 12989,
+        "invalidReplays": 1,
+        "rawReplays": 1,
+        "criticalReplays": 3
+      },
+      {
+        "label": "6.5-light-320",
+        "id": 5,
+        "theme": "light",
+        "width": 320,
+        "lane": "a",
+        "actions": 16,
+        "replays": 7,
+        "checks": 34,
+        "modelChecks": 14246,
+        "invalidReplays": 1,
+        "rawReplays": 1,
+        "criticalReplays": 3
+      },
+      {
+        "label": "6.5-dark-1200",
+        "id": 5,
+        "theme": "dark",
+        "width": 1200,
+        "lane": "a",
+        "actions": 16,
+        "replays": 7,
+        "checks": 31,
+        "modelChecks": 12989,
+        "invalidReplays": 1,
+        "rawReplays": 1,
+        "criticalReplays": 3
+      },
+      {
+        "label": "6.5-dark-320",
+        "id": 5,
+        "theme": "dark",
+        "width": 320,
+        "lane": "a",
+        "actions": 16,
+        "replays": 7,
+        "checks": 34,
+        "modelChecks": 14246,
+        "invalidReplays": 1,
+        "rawReplays": 1,
+        "criticalReplays": 3
+      },
+      {
+        "label": "6.6-light-1200",
+        "id": 6,
+        "theme": "light",
+        "width": 1200,
+        "lane": "b",
+        "actions": 17,
+        "replays": 8,
+        "checks": 34,
+        "modelChecks": 31620,
+        "invalidReplays": 1,
+        "rawReplays": 1,
+        "criticalReplays": 4
+      },
+      {
+        "label": "6.6-light-320",
+        "id": 6,
+        "theme": "light",
+        "width": 320,
+        "lane": "b",
+        "actions": 17,
+        "replays": 8,
+        "checks": 38,
+        "modelChecks": 35340,
+        "invalidReplays": 1,
+        "rawReplays": 1,
+        "criticalReplays": 4
+      },
+      {
+        "label": "6.6-dark-1200",
+        "id": 6,
+        "theme": "dark",
+        "width": 1200,
+        "lane": "b",
+        "actions": 17,
+        "replays": 8,
+        "checks": 34,
+        "modelChecks": 31620,
+        "invalidReplays": 1,
+        "rawReplays": 1,
+        "criticalReplays": 4
+      },
+      {
+        "label": "6.6-dark-320",
+        "id": 6,
+        "theme": "dark",
+        "width": 320,
+        "lane": "b",
+        "actions": 17,
+        "replays": 8,
+        "checks": 38,
+        "modelChecks": 35340,
+        "invalidReplays": 1,
+        "rawReplays": 1,
+        "criticalReplays": 4
+      },
+      {
+        "label": "6.7-light-1200",
+        "id": 7,
+        "theme": "light",
+        "width": 1200,
+        "lane": "b",
+        "actions": 17,
+        "replays": 8,
+        "checks": 34,
+        "modelChecks": 26146,
+        "invalidReplays": 1,
+        "rawReplays": 1,
+        "criticalReplays": 4
+      },
+      {
+        "label": "6.7-light-320",
+        "id": 7,
+        "theme": "light",
+        "width": 320,
+        "lane": "b",
+        "actions": 17,
+        "replays": 8,
+        "checks": 38,
+        "modelChecks": 29222,
+        "invalidReplays": 1,
+        "rawReplays": 1,
+        "criticalReplays": 4
+      },
+      {
+        "label": "6.7-dark-1200",
+        "id": 7,
+        "theme": "dark",
+        "width": 1200,
+        "lane": "b",
+        "actions": 17,
+        "replays": 8,
+        "checks": 34,
+        "modelChecks": 26146,
+        "invalidReplays": 1,
+        "rawReplays": 1,
+        "criticalReplays": 4
+      },
+      {
+        "label": "6.7-dark-320",
+        "id": 7,
+        "theme": "dark",
+        "width": 320,
+        "lane": "b",
+        "actions": 17,
+        "replays": 8,
+        "checks": 38,
+        "modelChecks": 29222,
+        "invalidReplays": 1,
+        "rawReplays": 1,
+        "criticalReplays": 4
+      },
+      {
+        "label": "6.8-light-1200",
+        "id": 8,
+        "theme": "light",
+        "width": 1200,
+        "lane": "b",
+        "actions": 21,
+        "replays": 9,
+        "checks": 39,
+        "modelChecks": 37869,
+        "invalidReplays": 1,
+        "rawReplays": 1,
+        "criticalReplays": 4
+      },
+      {
+        "label": "6.8-light-320",
+        "id": 8,
+        "theme": "light",
+        "width": 320,
+        "lane": "b",
+        "actions": 21,
+        "replays": 9,
+        "checks": 43,
+        "modelChecks": 41753,
+        "invalidReplays": 1,
+        "rawReplays": 1,
+        "criticalReplays": 4
+      },
+      {
+        "label": "6.8-dark-1200",
+        "id": 8,
+        "theme": "dark",
+        "width": 1200,
+        "lane": "b",
+        "actions": 21,
+        "replays": 9,
+        "checks": 39,
+        "modelChecks": 37869,
+        "invalidReplays": 1,
+        "rawReplays": 1,
+        "criticalReplays": 4
+      },
+      {
+        "label": "6.8-dark-320",
+        "id": 8,
+        "theme": "dark",
+        "width": 320,
+        "lane": "b",
+        "actions": 21,
+        "replays": 9,
+        "checks": 43,
+        "modelChecks": 41753,
+        "invalidReplays": 1,
+        "rawReplays": 1,
+        "criticalReplays": 4
+      },
+      {
+        "label": "6.9-light-1200",
+        "id": 9,
+        "theme": "light",
+        "width": 1200,
+        "lane": "b",
+        "actions": 12,
+        "replays": 6,
+        "checks": 26,
+        "modelChecks": 17004,
+        "invalidReplays": 1,
+        "rawReplays": 1,
+        "criticalReplays": 3
+      },
+      {
+        "label": "6.9-light-320",
+        "id": 9,
+        "theme": "light",
+        "width": 320,
+        "lane": "b",
+        "actions": 12,
+        "replays": 6,
+        "checks": 29,
+        "modelChecks": 18966,
+        "invalidReplays": 1,
+        "rawReplays": 1,
+        "criticalReplays": 3
+      },
+      {
+        "label": "6.9-dark-1200",
+        "id": 9,
+        "theme": "dark",
+        "width": 1200,
+        "lane": "b",
+        "actions": 12,
+        "replays": 6,
+        "checks": 26,
+        "modelChecks": 17004,
+        "invalidReplays": 1,
+        "rawReplays": 1,
+        "criticalReplays": 3
+      },
+      {
+        "label": "6.9-dark-320",
+        "id": 9,
+        "theme": "dark",
+        "width": 320,
+        "lane": "b",
+        "actions": 12,
+        "replays": 6,
+        "checks": 29,
+        "modelChecks": 18966,
+        "invalidReplays": 1,
+        "rawReplays": 1,
+        "criticalReplays": 3
+      },
+      {
+        "label": "6.10-light-1200",
+        "id": 10,
+        "theme": "light",
+        "width": 1200,
+        "lane": "b",
+        "actions": 22,
+        "replays": 10,
+        "checks": 42,
+        "modelChecks": 9310,
+        "invalidReplays": 1,
+        "rawReplays": 1,
+        "criticalReplays": 5
+      },
+      {
+        "label": "6.10-light-320",
+        "id": 10,
+        "theme": "light",
+        "width": 320,
+        "lane": "b",
+        "actions": 22,
+        "replays": 10,
+        "checks": 47,
+        "modelChecks": 10136,
+        "invalidReplays": 1,
+        "rawReplays": 1,
+        "criticalReplays": 5
+      },
+      {
+        "label": "6.10-dark-1200",
+        "id": 10,
+        "theme": "dark",
+        "width": 1200,
+        "lane": "b",
+        "actions": 22,
+        "replays": 10,
+        "checks": 42,
+        "modelChecks": 9310,
+        "invalidReplays": 1,
+        "rawReplays": 1,
+        "criticalReplays": 5
+      },
+      {
+        "label": "6.10-dark-320",
+        "id": 10,
+        "theme": "dark",
+        "width": 320,
+        "lane": "b",
+        "actions": 22,
+        "replays": 10,
+        "checks": 47,
+        "modelChecks": 10136,
+        "invalidReplays": 1,
+        "rawReplays": 1,
+        "criticalReplays": 5
+      },
+      {
+        "label": "6.11-light-1200",
+        "id": 11,
+        "theme": "light",
+        "width": 1200,
+        "lane": "c",
+        "actions": 25,
+        "replays": 10,
+        "checks": 44,
+        "modelChecks": 954,
+        "invalidReplays": 1,
+        "rawReplays": 1,
+        "criticalReplays": 4
+      },
+      {
+        "label": "6.11-light-320",
+        "id": 11,
+        "theme": "light",
+        "width": 320,
+        "lane": "c",
+        "actions": 25,
+        "replays": 10,
+        "checks": 48,
+        "modelChecks": 1038,
+        "invalidReplays": 1,
+        "rawReplays": 1,
+        "criticalReplays": 4
+      },
+      {
+        "label": "6.11-dark-1200",
+        "id": 11,
+        "theme": "dark",
+        "width": 1200,
+        "lane": "c",
+        "actions": 25,
+        "replays": 10,
+        "checks": 44,
+        "modelChecks": 954,
+        "invalidReplays": 1,
+        "rawReplays": 1,
+        "criticalReplays": 4
+      },
+      {
+        "label": "6.11-dark-320",
+        "id": 11,
+        "theme": "dark",
+        "width": 320,
+        "lane": "c",
+        "actions": 25,
+        "replays": 10,
+        "checks": 48,
+        "modelChecks": 1038,
+        "invalidReplays": 1,
+        "rawReplays": 1,
+        "criticalReplays": 4
+      },
+      {
+        "label": "6.13-light-1200",
+        "id": 13,
+        "theme": "light",
+        "width": 1200,
+        "lane": "d",
+        "actions": 22,
+        "replays": 10,
+        "checks": 43,
+        "modelChecks": 83764,
+        "invalidReplays": 1,
+        "rawReplays": 1,
+        "criticalReplays": 4
+      },
+      {
+        "label": "6.13-light-320",
+        "id": 13,
+        "theme": "light",
+        "width": 320,
+        "lane": "d",
+        "actions": 22,
+        "replays": 10,
+        "checks": 47,
+        "modelChecks": 91556,
+        "invalidReplays": 1,
+        "rawReplays": 1,
+        "criticalReplays": 4
+      },
+      {
+        "label": "6.13-dark-1200",
+        "id": 13,
+        "theme": "dark",
+        "width": 1200,
+        "lane": "d",
+        "actions": 22,
+        "replays": 10,
+        "checks": 43,
+        "modelChecks": 83764,
+        "invalidReplays": 1,
+        "rawReplays": 1,
+        "criticalReplays": 4
+      },
+      {
+        "label": "6.13-dark-320",
+        "id": 13,
+        "theme": "dark",
+        "width": 320,
+        "lane": "d",
+        "actions": 22,
+        "replays": 10,
+        "checks": 47,
+        "modelChecks": 91556,
+        "invalidReplays": 1,
+        "rawReplays": 1,
+        "criticalReplays": 4
+      },
+      {
+        "label": "6.14-light-1200",
+        "id": 14,
+        "theme": "light",
+        "width": 1200,
+        "lane": "d",
+        "actions": 31,
+        "replays": 13,
+        "checks": 57,
+        "modelChecks": 91998,
+        "invalidReplays": 1,
+        "rawReplays": 1,
+        "criticalReplays": 4
+      },
+      {
+        "label": "6.14-light-320",
+        "id": 14,
+        "theme": "light",
+        "width": 320,
+        "lane": "d",
+        "actions": 31,
+        "replays": 13,
+        "checks": 61,
+        "modelChecks": 98454,
+        "invalidReplays": 1,
+        "rawReplays": 1,
+        "criticalReplays": 4
+      },
+      {
+        "label": "6.14-dark-1200",
+        "id": 14,
+        "theme": "dark",
+        "width": 1200,
+        "lane": "d",
+        "actions": 31,
+        "replays": 13,
+        "checks": 57,
+        "modelChecks": 91998,
+        "invalidReplays": 1,
+        "rawReplays": 1,
+        "criticalReplays": 4
+      },
+      {
+        "label": "6.14-dark-320",
+        "id": 14,
+        "theme": "dark",
+        "width": 320,
+        "lane": "d",
+        "actions": 31,
+        "replays": 13,
+        "checks": 61,
+        "modelChecks": 98454,
+        "invalidReplays": 1,
+        "rawReplays": 1,
+        "criticalReplays": 4
+      },
+      {
+        "label": "6.15-light-1200",
+        "id": 15,
+        "theme": "light",
+        "width": 1200,
+        "lane": "d",
+        "actions": 19,
+        "replays": 10,
+        "checks": 42,
+        "modelChecks": 7644,
+        "invalidReplays": 1,
+        "rawReplays": 1,
+        "criticalReplays": 3
+      },
+      {
+        "label": "6.15-light-320",
+        "id": 15,
+        "theme": "light",
+        "width": 320,
+        "lane": "d",
+        "actions": 19,
+        "replays": 10,
+        "checks": 45,
+        "modelChecks": 8190,
+        "invalidReplays": 1,
+        "rawReplays": 1,
+        "criticalReplays": 3
+      },
+      {
+        "label": "6.15-dark-1200",
+        "id": 15,
+        "theme": "dark",
+        "width": 1200,
+        "lane": "d",
+        "actions": 19,
+        "replays": 10,
+        "checks": 42,
+        "modelChecks": 7644,
+        "invalidReplays": 1,
+        "rawReplays": 1,
+        "criticalReplays": 3
+      },
+      {
+        "label": "6.15-dark-320",
+        "id": 15,
+        "theme": "dark",
+        "width": 320,
+        "lane": "d",
+        "actions": 19,
+        "replays": 10,
+        "checks": 45,
+        "modelChecks": 8190,
+        "invalidReplays": 1,
+        "rawReplays": 1,
+        "criticalReplays": 3
+      },
+      {
+        "label": "6.12-light-1200",
+        "id": 12,
+        "theme": "light",
+        "width": 1200,
+        "lane": "e",
+        "actions": 35,
+        "replays": 14,
+        "checks": 60,
+        "modelChecks": 36331,
+        "invalidReplays": 1,
+        "rawReplays": 1,
+        "criticalReplays": 6
+      },
+      {
+        "label": "6.12-light-320",
+        "id": 12,
+        "theme": "light",
+        "width": 320,
+        "lane": "e",
+        "actions": 35,
+        "replays": 14,
+        "checks": 66,
+        "modelChecks": 39798,
+        "invalidReplays": 1,
+        "rawReplays": 1,
+        "criticalReplays": 6
+      },
+      {
+        "label": "6.12-dark-1200",
+        "id": 12,
+        "theme": "dark",
+        "width": 1200,
+        "lane": "e",
+        "actions": 35,
+        "replays": 14,
+        "checks": 60,
+        "modelChecks": 36331,
+        "invalidReplays": 1,
+        "rawReplays": 1,
+        "criticalReplays": 6
+      },
+      {
+        "label": "6.12-dark-320",
+        "id": 12,
+        "theme": "dark",
+        "width": 320,
+        "lane": "e",
+        "actions": 35,
+        "replays": 14,
+        "checks": 66,
+        "modelChecks": 39798,
+        "invalidReplays": 1,
+        "rawReplays": 1,
+        "criticalReplays": 6
+      }
+    ],
+    "selection": "A1\u20135, B6\u201310, C11, D13\u201315, E12. C12 and D12 superseded; failed reproduction excluded. Actual Create state link controls and complete exact intended state.parts assertions are required by the harness.",
+    "finalDefaultAudit": {
+      "layouts": 60,
+      "checks": 120,
+      "modelChecks": 98648,
+      "labels": [
+        "6.1-light-1200",
+        "6.1-light-320",
+        "6.1-dark-1200",
+        "6.1-dark-320",
+        "6.2-light-1200",
+        "6.2-light-320",
+        "6.2-dark-1200",
+        "6.2-dark-320",
+        "6.3-light-1200",
+        "6.3-light-320",
+        "6.3-dark-1200",
+        "6.3-dark-320",
+        "6.4-light-1200",
+        "6.4-light-320",
+        "6.4-dark-1200",
+        "6.4-dark-320",
+        "6.5-light-1200",
+        "6.5-light-320",
+        "6.5-dark-1200",
+        "6.5-dark-320",
+        "6.6-light-1200",
+        "6.6-light-320",
+        "6.6-dark-1200",
+        "6.6-dark-320",
+        "6.7-light-1200",
+        "6.7-light-320",
+        "6.7-dark-1200",
+        "6.7-dark-320",
+        "6.8-light-1200",
+        "6.8-light-320",
+        "6.8-dark-1200",
+        "6.8-dark-320",
+        "6.9-light-1200",
+        "6.9-light-320",
+        "6.9-dark-1200",
+        "6.9-dark-320",
+        "6.10-light-1200",
+        "6.10-light-320",
+        "6.10-dark-1200",
+        "6.10-dark-320",
+        "6.11-light-1200",
+        "6.11-light-320",
+        "6.11-dark-1200",
+        "6.11-dark-320",
+        "6.12-light-1200",
+        "6.12-light-320",
+        "6.12-dark-1200",
+        "6.12-dark-320",
+        "6.13-light-1200",
+        "6.13-light-320",
+        "6.13-dark-1200",
+        "6.13-dark-320",
+        "6.14-light-1200",
+        "6.14-light-320",
+        "6.14-dark-1200",
+        "6.14-dark-320",
+        "6.15-light-1200",
+        "6.15-light-320",
+        "6.15-dark-1200",
+        "6.15-dark-320"
+      ],
+      "log": "/tmp/wave6-physio-final-captures.log",
+      "counterNote": "The harness layouts counter counts full native loops only; audit layout count is independently derived from60 unique successful labels."
+    }
+  },
+  "personalVisualReview": {
+    "defaults": 60,
+    "themes": [
+      "light",
+      "dark"
+    ],
+    "widths": [
+      1200,
+      320
+    ],
+    "completeNarrowStatementScopeIdeaPairs": 30,
+    "folder": "/tmp/wave6-physio-pixel-review",
+    "observations": [
+      "All15 four-layout default sheets personally viewed; changed6/10/11 recaptures and final12 unsupported-state annotation personally rechecked.",
+      "All15 complete statement/scope/idea pairs at320px in both themes personally viewed.",
+      "Selected modified Adair and instantaneous EPO modes personally viewed; extra coefficient/lag controls appear only where meaningful.",
+      "Negative/incomplete/unresolved Krogh fields and exact unstable EPO equilibrium versus displaced initial state personally viewed in both themes.",
+      "Marker rings stay inside data gutters; overlay glyphs, complete rich fields and inner KaTeX displays stay within their measured bounds."
+    ],
+    "failuresAndRepairs": [
+      "320px combined radial boundary-condition equation overflow: split into equivalent short displays.",
+      "Near-coincident BPG optimum hid the selected marker: larger hollow optimum ring with smaller gold point on top.",
+      "Tissue rectangles produced visual seams and weak gray/blue contrast: cached nearest-sample raster, fixed theme-aware0\u2013150 key and full-row key; unsupported columns stay hatched.",
+      "Delivery threshold occupied too little of the default plot: disclose rescaling around operating point/threshold up to6000 while drawing the exact kink.",
+      "No-Hb native state exposed overlong unsupported-profile annotation: exact failure and screenshot retained; shorter message moved to upper-right with backing plate to clear the inlet curve.",
+      "Early audit used outdated BPG control labels and reference point count: corrected only harness bookkeeping, with failed log retained."
+    ]
+  },
+  "preservedHashes": [
+    {
+      "file": "content/popgen/ch06.js",
+      "sha256": "5b8cc232746563d4142e6b10511eb3c0c81f345627ef8fbde3f6f69103c9e584",
+      "exact": true
+    },
+    {
+      "file": "content/popgen/ch06.shared.js",
+      "sha256": "117c3d3c6836676cee372a4b38aafe2620cfcadf2261557e3f4cba3ceda8c02e",
+      "exact": true
+    },
+    {
+      "file": "content/popgen/ch06.viz.js",
+      "sha256": "8a3157efbafb425beade4ef3f3eec81fa3da1547074855a78271aa74ddfd7dac",
+      "exact": true
+    },
+    {
+      "file": "content/popgen/syllabus.js",
+      "sha256": "9f40a252e9d5b878135e5848f3afa341cd6f92b11374ec74db0bb909f53728ba",
+      "exact": true
+    },
+    {
+      "file": "tests/wave6-popgen.test.mjs",
+      "sha256": "707c131f061a6d746db560b9db672e4f936e5201804a143eeadd967d7f344424",
+      "exact": true
+    },
+    {
+      "file": "tests/wave6-popgen-browser.mjs",
+      "sha256": "1a4bfd53658be44a08bffd3258279b3238204026a8f2e32aebcca51df9b8b0da",
+      "exact": true
+    },
+    {
+      "file": "tests/wave6-popgen-reference.py",
+      "sha256": "33b0e23fd8d1080295a8ff9924443c902e6dff9908e7e020e3a356bc6334a579",
+      "exact": true
+    },
+    {
+      "file": "tests/fixtures/wave6-popgen-reference.json",
+      "sha256": "ca6b2d351e57ac48fb2f18495ad88c1d2e4a916cb6e4690acaf63ea857d504e5",
+      "exact": true
+    },
+    {
+      "file": "docs/verification/wave6-popgen-sources.json",
+      "sha256": "fd7fd5b24731342663078b07a4f15afc04005a99c81972d336a9f81c8784a77f",
+      "exact": true
+    },
+    {
+      "file": "docs/verification/wave6-popgen-gates.json",
+      "sha256": "72a5e8af9599143a9e4d5317a18fc4ccb96c4437509fa7b3455f30fa1d3c4ba3",
+      "exact": true
+    },
+    {
+      "file": "content/mathbio/ch06.js",
+      "sha256": "6614d1db2e37e329fd5426d58bebb7459d321a49fec170eef7b2d32c0b2a2bb8",
+      "exact": true
+    },
+    {
+      "file": "content/mathbio/ch06.shared.js",
+      "sha256": "3433f7fa8bd7f37adcc16190c3258114ec4663fe8b07516c03b3487b76536a04",
+      "exact": true
+    },
+    {
+      "file": "content/mathbio/ch06.viz.js",
+      "sha256": "175e7b784a9f6dd87e13c8ad5b15d4f4bc671bf246a6d243d6634fc83b71a66a",
+      "exact": true
+    },
+    {
+      "file": "content/mathbio/syllabus.js",
+      "sha256": "82d2ae5f7c5ddf48d915d610e95ebe07f756d564cee176876ade945a61c59c03",
+      "exact": true
+    },
+    {
+      "file": "tests/wave6-mathbio.test.mjs",
+      "sha256": "9794635666dc40f581f8d8fa02718b8057b7c84ecd33567c7f57c5dfbcb96aa5",
+      "exact": true
+    },
+    {
+      "file": "tests/wave6-mathbio-browser.mjs",
+      "sha256": "56bd9afbdf5c775ef91f21b6880afd44232637fd14d5e1b2db35245b2a96d19c",
+      "exact": true
+    },
+    {
+      "file": "tests/wave6-mathbio-reference.py",
+      "sha256": "771ca55f4ce37193ced1c69330b53a845f262057e744105b75dd0df1cab187f9",
+      "exact": true
+    },
+    {
+      "file": "tests/fixtures/wave6-mathbio-reference.json",
+      "sha256": "ee6e4eab84b75b19462857d6cb4081de22a45e3c818df3422dc52fc36e84fa1d",
+      "exact": true
+    },
+    {
+      "file": "docs/verification/wave6-mathbio-sources.json",
+      "sha256": "f631bb28a18ff219c293dfe2137d12eae2794563b26fb0c33bb2bb308c6db370",
+      "exact": true
+    },
+    {
+      "file": "docs/verification/wave6-mathbio-gates.json",
+      "sha256": "331d4c062ccdc6459883095b25dae5a9c9bf6d1896c9d586d2cb69e036e81ef2",
+      "exact": true
+    },
+    {
+      "file": "content/ecol/ch06.js",
+      "sha256": "57710158a2410a164c51c5f2395a0f799be2983aa0a0a13021a62bb6e06274ac",
+      "exact": true
+    },
+    {
+      "file": "content/ecol/ch06.shared.js",
+      "sha256": "2d34382a52eaac175444bcc3759d61ad64148271df14e745b8e6d374a4c997fb",
+      "exact": true
+    },
+    {
+      "file": "content/ecol/ch06.viz.js",
+      "sha256": "1f2eb7148548e33a72345fb07ff020560c85710ee24d6272d9182d5150cc7953",
+      "exact": true
+    },
+    {
+      "file": "content/ecol/syllabus.js",
+      "sha256": "3767ddabb7290c40df364606eb9f10795d103a884541dc8f8b039e6864f03f48",
+      "exact": true
+    },
+    {
+      "file": "tests/wave6-ecol.test.mjs",
+      "sha256": "46f9f5debf3ff02653a274670ac439b59758d944fb4560e78ce325f037c9608f",
+      "exact": true
+    },
+    {
+      "file": "tests/wave6-ecol-browser.mjs",
+      "sha256": "d73071aeabcbcda8efc90cb74044527f4599ca6c9078cb92d3ca15f42dd95616",
+      "exact": true
+    },
+    {
+      "file": "tests/wave6-ecol-reference.py",
+      "sha256": "60a83b0ffd7cc6442fc647de218664d2099a71be22a7504911eb6dfb829291df",
+      "exact": true
+    },
+    {
+      "file": "tests/fixtures/wave6-ecol-reference.json",
+      "sha256": "b5f859de863b8d2c3a1ac230bd3c40aa41946a34fbb19c91d558dd71eef1451b",
+      "exact": true
+    },
+    {
+      "file": "docs/verification/wave6-ecol-sources.json",
+      "sha256": "c252cc6f8755a8634c782b6fe3bb338526e3464b582db005a1ce319a389c201b",
+      "exact": true
+    },
+    {
+      "file": "docs/verification/wave6-ecol-gates.json",
+      "sha256": "c40fedd991a957a22b94525873aebe2b86998202c6f58cc02b7c4580e534de33",
+      "exact": true
+    },
+    {
+      "file": "content/neuro/ch06.js",
+      "sha256": "1f96eecc46ef37846df5a5786ef71c2c386bdb85a250e64e52507ad3e76a0c65",
+      "exact": true
+    },
+    {
+      "file": "content/neuro/ch06.shared.js",
+      "sha256": "aa91be98810afc0b6279146fa7577bd7b27179a4faae2b82e1b15e3fcf4d85f4",
+      "exact": true
+    },
+    {
+      "file": "content/neuro/ch06.viz.js",
+      "sha256": "42057014e64fe95b2740605b5720f90d70d04d0b1aede15756563dc40aa0cd92",
+      "exact": true
+    },
+    {
+      "file": "content/neuro/syllabus.js",
+      "sha256": "3a9ce34c6b09309521a4e52d52e4ae067d051f6781ff8e91bf13e20a8512a1e5",
+      "exact": true
+    },
+    {
+      "file": "tests/wave6-neuro.test.mjs",
+      "sha256": "ed5fe1b8f2c90e5d4624bbf8882c5ebfb5a71e1e68d8b8e2bf1b5b59b77ae146",
+      "exact": true
+    },
+    {
+      "file": "tests/wave6-neuro-browser.mjs",
+      "sha256": "2a3aadcefdae3827b248effe27d9859e675badee3f65e2baa298129616a1e21e",
+      "exact": true
+    },
+    {
+      "file": "tests/wave6-neuro-reference.py",
+      "sha256": "7e586cd251b9d8a5d1555e48d92c1868824c85e226ff7bb7bbeba362c656ad55",
+      "exact": true
+    },
+    {
+      "file": "tests/fixtures/wave6-neuro-reference.json",
+      "sha256": "cfd96986ff7d7eb8dc9a0c47e763c6d9a85fa39dfc78ddfe97ddbe590d883efb",
+      "exact": true
+    },
+    {
+      "file": "docs/verification/wave6-neuro-sources.json",
+      "sha256": "d0b4776848db0cad84428205c94f26959e81522bf598cd5f60e34db438a54e09",
+      "exact": true
+    },
+    {
+      "file": "docs/verification/wave6-neuro-gates.json",
+      "sha256": "9c7302031bf11ee9fc054fab129be88df09ce60c21a46267684bddfcab4af6e6",
+      "exact": true
+    },
+    {
+      "file": "content/bioinf/ch06.js",
+      "sha256": "27b96bc217799126d1077183933448a8dcab5199f7aea2bc21f8ec93fc62031b",
+      "exact": true
+    },
+    {
+      "file": "content/bioinf/ch06.shared.js",
+      "sha256": "82b9cb8625a960d1c324e02325800c7aa252c3fc6dd7d6dd3f4180784cfbbeb8",
+      "exact": true
+    },
+    {
+      "file": "content/bioinf/ch06.viz.js",
+      "sha256": "0f6dba8a28147b9d1567aba82104a2e833606ab0bf4ea3b3563d8ce2978b563c",
+      "exact": true
+    },
+    {
+      "file": "content/bioinf/syllabus.js",
+      "sha256": "e3bcc95e65f40a1647591818250e52766a5b6c6f9cc0e8e03ecbf6dabec078be",
+      "exact": true
+    },
+    {
+      "file": "tests/wave6-bioinf.test.mjs",
+      "sha256": "6ef08bfef619cd4ae96982a7acdc69d1e298b5638341e99c6f7507b22c85967f",
+      "exact": true
+    },
+    {
+      "file": "tests/wave6-bioinf-browser.mjs",
+      "sha256": "de9960566fd0d10a0dc13e34218ae6dd4c240def5214274cf3516ccf72fb1fae",
+      "exact": true
+    },
+    {
+      "file": "tests/wave6-bioinf-reference.py",
+      "sha256": "0d375ae268c210923114977b8f1ac36814320af551c36741a3a027166474e686",
+      "exact": true
+    },
+    {
+      "file": "tests/fixtures/wave6-bioinf-reference.json",
+      "sha256": "86b80e62e7846e61a145dcc06df498705fc3463102ad4015c308822948ebf86c",
+      "exact": true
+    },
+    {
+      "file": "docs/verification/wave6-bioinf-sources.json",
+      "sha256": "93791a07f2ee7ab8ad48fac84a929575f8c663250dcfe962a3e0be775d3f7748",
+      "exact": true
+    },
+    {
+      "file": "docs/verification/wave6-bioinf-gates.json",
+      "sha256": "576a577fbfe733aa87353eee7e9b29d07d2cb86c5174a220f1a4e62a8366b814",
+      "exact": true
+    },
+    {
+      "file": "content/sysbio/ch06.js",
+      "sha256": "b2657c3f019303bbdd57ef78b22674321f2976a3f5f912d939e34833e6b355b5",
+      "exact": true
+    },
+    {
+      "file": "content/sysbio/ch06.shared.js",
+      "sha256": "ec2578bd3aaa8e9297c53138e99ee5a69f86c0d8f7f52fb0f0bdc4a7b83b662f",
+      "exact": true
+    },
+    {
+      "file": "content/sysbio/ch06.viz.js",
+      "sha256": "2fd724efb903c3ed62bef2ddc4cbaee890d4aa683c8ec29e071ba10a1c73401d",
+      "exact": true
+    },
+    {
+      "file": "content/sysbio/syllabus.js",
+      "sha256": "2e688c87ffb4a333626fea1d6741f8cb0cfa9e5a7541dd0124d8261ed881ffed",
+      "exact": true
+    },
+    {
+      "file": "tests/wave6-sysbio.test.mjs",
+      "sha256": "b52f82c382a76e96a1526f8ca0c72259078b6aa120c98b81b5131cb9664bd84a",
+      "exact": true
+    },
+    {
+      "file": "tests/wave6-sysbio-browser.mjs",
+      "sha256": "963584452fe6ca60d07c11b8be25941ae9efb3c2961c5f6e74fcc6dbe0b66884",
+      "exact": true
+    },
+    {
+      "file": "tests/wave6-sysbio-reference.py",
+      "sha256": "7cd1c5c712464e472ef11d7a9a5e5e1018e784fc52ff03d9b30c604689f8ec1d",
+      "exact": true
+    },
+    {
+      "file": "tests/fixtures/wave6-sysbio-reference.json",
+      "sha256": "4ce3b39309832995ca2f0410feb13fadf95c6ff03e577c09856473c81892506b",
+      "exact": true
+    },
+    {
+      "file": "docs/verification/wave6-sysbio-sources.json",
+      "sha256": "d293c1b03fab82dcabf8c2ffa8c605de4208cdbdd6f2fc0dcc5bc7f082811685",
+      "exact": true
+    },
+    {
+      "file": "docs/verification/wave6-sysbio-gates.json",
+      "sha256": "55a4c1785ee55ef46978b61d2f7b087bd1c09a98ad9226ba0d4bdcba1cd556f8",
+      "exact": true
+    },
+    {
+      "file": "docs/wave-6-plan.json",
+      "sha256": "b930f067635ea6d2ae3796ed749d749c29d2952609311fc0c139cd7f4ad887fe",
+      "exact": true,
+      "base": "d476c88f"
+    },
+    {
+      "file": "assets/js/viz/math.js",
+      "sha256": "439c335e1cc47907bc72bb76559216aa093be4710e0589f41c70192729eb223e",
+      "exact": true,
+      "base": "d476c88f"
+    },
+    {
+      "file": "assets/js/viz/core.js",
+      "sha256": "a6fa1753d9d9e8b9a05a7161fffc58dfd53b27002d9d393a3266aeb96515fe73",
+      "exact": true,
+      "base": "d476c88f"
+    }
+  ],
+  "browserStatus": "All chapter-owned browser/server sessions closed after final E12 and final both-theme mode checks. Never more than2 concurrent browsers.",
+  "integrationStatus": "PHYSIO15 is a local author checkpoint. Next PHARM16, then meaningful31-lesson global reconciliation/full-suite/smoke/export. Previous completed global checkpoint remains BIOINF+SYSBIO17:4636 tests/272 routes per theme."
+}

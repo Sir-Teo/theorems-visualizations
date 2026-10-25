@@ -1,0 +1,15 @@
+{
+  "baseCommit": "d476c88f",
+  "sha256": {
+    "content/physio/ch06.js": "05f77644f1a54177636c5706f6fee3424acf01e12ad335eb38f6d133354d6701",
+    "content/physio/ch06.shared.js": "4885bd24fe25b69fd17ab7e6bfe16bc30ff29178c5da7763da32b55e02fb16f9",
+    "content/physio/ch06.viz.js": "7026ae99aaf8670582613304a78eb85eb0cb7d3c5b47caffa8e3e56341bb1137",
+    "content/physio/syllabus.js": "2f3305cf67efb668bd8da1b68305c6732237c4ed66572bb644f6ac3aa6f3432b",
+    "tests/wave6-physio.test.mjs": "53d9fd8bdc10ca1fd729608475093dc44ad93a8b5258a24c3cc2949ebd2e28e5",
+    "tests/wave6-physio-browser.mjs": "a3659f53941b16ee927f7ea6eca423835e5561ec46dd2239f412a8bb1fd115f0",
+    "tests/wave6-physio-reference.py": "c1a7b549f9c439a6dafe9fca3f6932eb137ef5e9da49179140729293648094a4",
+    "tests/fixtures/wave6-physio-reference.json": "7167e07a779a20176f3ddcd86431b7e5cc7e487744255a61ba839765f0f44cf2",
+    "docs/verification/wave6-physio-sources.json": "b24fb78426d7a2c84eaf30599afbc2a170c7e4aa31a225311d1ab700b0e7a001",
+    "docs/verification/wave6-physio-gates.json": "b207345bc6c3608a9a613716e9498490af1804675d5883b4c862484fe9dc3b51"
+  }
+}

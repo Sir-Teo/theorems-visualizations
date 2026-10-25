@@ -203,6 +203,8 @@ an eigen-direction, an orthonormal frame, an ellipse's axes) with live numbers.
 
 - Mix perfusion-weighted gas content before inverting to pressure, and distinguish exact shunt/zero-perfusion branches. Keep Henry conventions, gas-volume reference conditions and source temperatures explicit. Delayed-history interpolation has its own convergence order; an unresolved positive delay needs a numeric-status message rather than a zero-delay substitute or invented trace. See the [respiration review](verification/wave5-physio-review.md).
 
+- Separate oxygen pressure, saturation, content, delivery and uptake. Equal-pressure affinity differences do not establish passive flux; fixed-endpoint release can worsen after a right shift. Use one thermodynamic partition for linked gas chemistry, preserve conservative carbon/charge balances, and distinguish negative zero-order tissue predictions from uncomputed axial budgets. Keep maturation distributions and linear stability separate from clinical cycle claims. See the [oxygen-transport report](verification/wave6-physio.md).
+
 - **A simulated population the reader controls**: cohorts on lifelines (Lexis-style), with
   prevalence, risk and rates measured live and compared with the formulas; icon arrays of 100 or
   1,000 people for risks and test results (natural frequencies beat percentages).

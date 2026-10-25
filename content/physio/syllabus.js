@@ -410,44 +410,280 @@ export default {
       ]
     },
     {
-      n: 6,
-      title: 'Oxygen transport and blood',
-      summary: String.raw`Almost all oxygen in blood rides on hemoglobin, whose sigmoidal binding curve — a textbook case of cooperativity — loads oxygen in the lungs and unloads it in tissues. Acidity, CO₂, temperature and 2,3-BPG shift the curve to tune delivery; fetal hemoglobin and carbon monoxide shift it the other way. The Fick principle measures cardiac output from oxygen consumption, and feedback through erythropoietin keeps the red-cell mass in line.`,
-      items: [
-        { num: '6.1', kind: 'Concept', name: 'Oxygen content: bound versus dissolved', deps: ['physio-5.7'], refs: ['Keener–Sneyd ch. 14'],
-          pic: 'Break arterial oxygen content into hemoglobin-bound and dissolved parts as P_O₂ varies; dissolved oxygen is a thin sliver, and anaemia shrinks the bound part at normal P_O₂.' },
-        { num: '6.2', kind: 'Model', name: 'Oxygen–hemoglobin dissociation curve', deps: ['physio-6.1', 'mathbio-5.8'], refs: ['Keener–Sneyd ch. 14', 'Guyton–Hall'],
-          pic: 'Plot saturation against P_O₂ with the Hill fit (n ≈ 2.7, P50 ≈ 27 mmHg); the steep middle section unloads oxygen at tissue pressures while the flat top protects loading in the lungs.' },
-        { num: '6.3', kind: 'Model', name: 'Adair and MWC models of hemoglobin', deps: ['physio-6.2', 'mathbio-5.9'], refs: ['Keener–Sneyd ch. 14'],
-          pic: 'Fit the dissociation curve with the four-step Adair scheme and with the two-state MWC model; the successive binding constants increase, showing cooperativity mechanistically.' },
-        { num: '6.4', kind: 'Phenomenon', name: 'Bohr effect', deps: ['physio-6.2'], refs: ['Guyton–Hall'],
-          pic: 'Lower pH or raise CO₂ and the dissociation curve shifts right; at a fixed tissue P_O₂ the extra oxygen released is shaded and read out.' },
-        { num: '6.5', kind: 'Phenomenon', name: 'Haldane effect', deps: ['physio-6.4'], refs: ['Guyton–Hall'],
-          pic: 'Plot CO₂ content against P_CO₂ for oxygenated and deoxygenated blood; deoxygenated blood carries more CO₂, so unloading oxygen in tissues helps pick up CO₂.' },
-        { num: '6.6', kind: 'Phenomenon', name: '2,3-BPG and adaptation to altitude', deps: ['physio-6.4'], refs: ['Guyton–Hall'],
-          pic: 'Raise red-cell 2,3-BPG and the curve shifts right; at altitude compare oxygen delivered with and without the shift for a given arterial P_O₂.' },
-        { num: '6.7', kind: 'Phenomenon', name: 'Fetal hemoglobin’s left-shifted curve', deps: ['physio-6.2'], refs: ['Guyton–Hall'],
-          pic: 'Overlay fetal and maternal dissociation curves at placental P_O₂; the fetal curve’s higher saturation at the same pressure lets oxygen flow from mother to fetus.' },
-        { num: '6.8', kind: 'Phenomenon', name: 'Carbon monoxide poisoning', deps: ['physio-6.2'], refs: ['Guyton–Hall'],
-          pic: 'Replace a fraction of binding sites with CO; the remaining curve both shrinks and shifts left, so oxygen delivery falls far more than the lost capacity alone suggests.' },
-        { num: '6.9', kind: 'Phenomenon', name: 'Myoglobin versus hemoglobin: hyperbola and sigmoid', deps: ['physio-6.2', 'mathbio-5.2'], refs: ['Keener–Sneyd ch. 14'],
-          pic: 'Myoglobin’s hyperbolic curve sits to the left of hemoglobin’s sigmoid; follow oxygen handed from capillary hemoglobin to muscle myoglobin at low P_O₂.' },
-        { num: '6.10', kind: 'Principle', name: 'Fick principle for cardiac output', deps: ['physio-6.1', 'physio-3.6'], refs: ['Guyton–Hall'],
-          pic: 'Measure oxygen uptake and the arterial–mixed-venous content difference; cardiac output is their ratio, and the readout tracks a simulated exercise test.' },
-        { num: '6.11', kind: 'Concept', name: 'Oxygen delivery and extraction', deps: ['physio-6.10'], refs: ['Guyton–Hall'],
-          pic: 'Delivery is cardiac output times arterial content; lower delivery and extraction rises to hold uptake constant until a critical delivery below which uptake falls.' },
-        { num: '6.12', kind: 'Model', name: 'Krogh tissue cylinder', deps: ['physio-1.3', 'physio-6.2'], refs: ['Keener–Sneyd ch. 14'],
-          pic: 'Solve the diffusion–consumption equation around a capillary; tissue P_O₂ falls with radius and toward the venous end, and a lethal corner appears when consumption is raised.' },
-        { num: '6.13', kind: 'Model', name: 'CO₂ transport and the chloride shift', deps: ['physio-6.5'], refs: ['Guyton–Hall'],
-          pic: 'Follow CO₂ entering a red cell: carbonic anhydrase makes bicarbonate, which leaves in exchange for chloride; the proportions carried as bicarbonate, carbamino and dissolved are shown as bars.' },
-        { num: '6.14', kind: 'Model', name: 'Erythropoietin feedback and red-cell production', deps: ['physio-1.2', 'mathbio-1.17'], refs: ['Keener–Sneyd ch. 13'],
-          pic: 'Lower oxygen delivery and the kidney releases erythropoietin; red-cell mass recovers over weeks after a maturation delay, and lengthening the delay produces oscillations.' },
-        { num: '6.15', kind: 'Paper', name: 'Einfluss der Kohlensäurespannung auf die Sauerstoffbindung',
-          paper: { authors: 'Chr. Bohr, K. Hasselbalch and August Krogh', year: 1904, title: 'Ueber einen in biologischer Beziehung wichtigen Einfluss, den die Kohlensäurespannung des Blutes auf dessen Sauerstoffbindung übt',
-                   venue: 'Skandinavisches Archiv für Physiologie 16 (2): 402–412', doi: '10.1111/j.1748-1716.1904.tb01382.x' },
-          introduces: ['physio-6.2', 'physio-6.4'], deps: ['physio-5.7'], refs: [],
-          pic: 'Recreate the paper’s figure: S-shaped oxygen dissociation curves of dog blood measured at several carbon-dioxide tensions; raising CO₂ shifts the curve to the right, so tissue rich in CO₂ unloads more oxygen at the same partial pressure — slide P_CO₂ and read off the extra oxygen delivered between lung and tissue.' },
-      ],
+      "n": 6,
+      "title": "Oxygen transport and blood",
+      "summary": "Pressure sets free oxygen activity; hemoglobin inventory and binding determine how much oxygen blood carries. Compare cooperative binding, coupled gas chemistry, blood-flow balances and a tissue diffusion field before examining red-cell feedback. Each view states its model assumptions, and the historical lesson preserves a reported dog-blood table with its original normalization.",
+      "items": [
+        {
+          "num": "6.1",
+          "kind": "Concept",
+          "name": "Oxygen content: bound versus dissolved",
+          "deps": [
+            "physio-5.7"
+          ],
+          "refs": [
+            "MIT HST.542J Spring 2004, problem set 9, Problem 3, printed p.5: oxygen capacity and content balance",
+            "Keener author manuscript, §13.3.1, pp.653–655",
+            "Own compatible-unit content bookkeeping"
+          ],
+          "links": {
+            "source": "https://www.math.utah.edu/~keener/books/control.pdf#page=653",
+            "course": "https://ocw.mit.edu/courses/hst-542j-quantitative-physiology-organ-transport-systems-spring-2004/"
+          },
+          "pic": "Move free oxygen pressure and hemoglobin concentration. Compare bound, dissolved and total content with a fixed 15 g/dL reference; the stack shows the current sample’s two contributions at the selected pressure."
+        },
+        {
+          "num": "6.2",
+          "kind": "Model",
+          "name": "Oxygen–hemoglobin dissociation curve",
+          "deps": [
+            "physio-6.1",
+            "mathbio-5.8"
+          ],
+          "refs": [
+            "Keener author manuscript, §13.3.1, pp.653–655: hyperbola, Hill approximation and limitations",
+            "Own derivative and selected-pressure comparison"
+          ],
+          "links": {
+            "source": "https://www.math.utah.edu/~keener/books/control.pdf#page=653"
+          },
+          "pic": "Change half-pressure and steepness, then move the selected pressure. Compare the chosen curve and its local sensitivity with an independent-site hyperbola at the same half-pressure; the open marker fixes a 100 mmHg loading comparison."
+        },
+        {
+          "num": "6.3",
+          "kind": "Model",
+          "name": "Adair and MWC models of hemoglobin",
+          "deps": [
+            "physio-6.2",
+            "mathbio-5.9"
+          ],
+          "refs": [
+            "Keener author manuscript, §13.3.2, pp.655–658: Adair, statistical factors, MWC and KNF",
+            "Own labelled-site enumeration, coefficient expansion and variance identity"
+          ],
+          "links": {
+            "source": "https://www.math.utah.edu/~keener/books/control.pdf#page=655"
+          },
+          "pic": "Compare MWC-derived, independent-site and modified-Adair families. Change conformation bias and affinity ratio; the curve, five occupancy weights and unmodified-reference conformation bars distinguish mathematical equivalence from a specific mechanism."
+        },
+        {
+          "num": "6.4",
+          "kind": "Phenomenon",
+          "name": "Bohr effect",
+          "deps": [
+            "physio-6.2"
+          ],
+          "refs": [
+            "Keener author manuscript, §13.3.3, pp.658–662: proton linkage, carbamates and detailed balance",
+            "OpenStax A&P 2e §22.5, selected oxygen-transport and Bohr-effect passages",
+            "Own complete joint binding partition"
+          ],
+          "links": {
+            "source": "https://www.math.utah.edu/~keener/books/control.pdf#page=658",
+            "textbook": "https://openstax.org/books/anatomy-and-physiology-2e/pages/22-5-transport-of-gases"
+          },
+          "pic": "Maintain pH and CO₂ independently, then move oxygen pressure. Compare the binding curve with the pH 7.4 / CO₂ 40 reference and read the calculated content released over the fixed 100-to-40 mmHg interval."
+        },
+        {
+          "num": "6.5",
+          "kind": "Phenomenon",
+          "name": "Haldane effect",
+          "deps": [
+            "physio-6.4"
+          ],
+          "refs": [
+            "Keener author manuscript, §13.3.3, pp.658–662: bicarbonate, buffering and Haldane coupling",
+            "OpenStax A&P 2e §22.5, selected Haldane-effect passage",
+            "Own proton-inventory and carbonic-equilibrium closure"
+          ],
+          "links": {
+            "source": "https://www.math.utah.edu/~keener/books/control.pdf#page=658",
+            "textbook": "https://openstax.org/books/anatomy-and-physiology-2e/pages/22-5-transport-of-gases"
+          },
+          "pic": "Change oxygen pressure and hemoglobin inventory, then compare total CO₂ curves at the same CO₂ pressure. The bars show the calculated pool fractions rather than imposing textbook percentages."
+        },
+        {
+          "num": "6.6",
+          "kind": "Phenomenon",
+          "name": "2,3-BPG and adaptation to altitude",
+          "deps": [
+            "physio-6.4"
+          ],
+          "refs": [
+            "OpenStax A&P 2e §22.5, selected BPG and affinity-shift text",
+            "Keener author manuscript, §13.3.1, Hill approximation",
+            "Own exact fixed-interval optimum derivation"
+          ],
+          "links": {
+            "source": "https://openstax.org/books/anatomy-and-physiology-2e/pages/22-5-transport-of-gases"
+          },
+          "pic": "Choose the two endpoint pressures and a relative right or left shift. Compare reference and shifted curves, then locate the actual release maximum on the half-pressure plot. Try low arterial pressure to expose the loading–unloading tradeoff."
+        },
+        {
+          "num": "6.7",
+          "kind": "Phenomenon",
+          "name": "Fetal hemoglobin’s left-shifted curve",
+          "deps": [
+            "physio-6.2"
+          ],
+          "refs": [
+            "OpenStax A&P 2e §22.5, selected fetal-hemoglobin passage",
+            "Own separately maintained reservoir and passive-flux comparison"
+          ],
+          "links": {
+            "source": "https://openstax.org/books/anatomy-and-physiology-2e/pages/22-5-transport-of-gases"
+          },
+          "pic": "Move the maternal and fetal free pressures separately. Watch their different saturation markers while the flux follows the actual pressure difference; equalize the pressures, reverse the gradient or set membrane conductance to zero."
+        },
+        {
+          "num": "6.8",
+          "kind": "Phenomenon",
+          "name": "Carbon monoxide poisoning",
+          "deps": [
+            "physio-6.2"
+          ],
+          "refs": [
+            "OpenStax A&P 2e §22.5, selected hemoglobin competition passage",
+            "Keener author manuscript, §13.3.2, two-state equilibrium framework",
+            "Own conditional fixed-CO ensemble and capacity reference"
+          ],
+          "links": {
+            "source": "https://www.math.utah.edu/~keener/books/control.pdf#page=655",
+            "textbook": "https://openstax.org/books/anatomy-and-physiology-2e/pages/22-5-transport-of-gases"
+          },
+          "pic": "Set the fixed number of CO-occupied sites and their illustrative conformation bias. Compare normal binding, a capacity-only reference and the conditioned ensemble; move oxygen pressure to inspect bound and dissolved content."
+        },
+        {
+          "num": "6.9",
+          "kind": "Phenomenon",
+          "name": "Myoglobin versus hemoglobin: hyperbola and sigmoid",
+          "deps": [
+            "physio-6.2",
+            "mathbio-5.2"
+          ],
+          "refs": [
+            "Keener author manuscript, §13.3.1, pp.653–655: myoglobin hyperbola and hemoglobin sigmoid",
+            "Own signed per-site occupancy-difference comparison"
+          ],
+          "links": {
+            "source": "https://www.math.utah.edu/~keener/books/control.pdf#page=653"
+          },
+          "pic": "Move starting and selected free pressures. Compare the two binding curves and their released fractions per site; reverse the pressure change to turn release into loading."
+        },
+        {
+          "num": "6.10",
+          "kind": "Principle",
+          "name": "Fick principle for cardiac output",
+          "deps": [
+            "physio-6.1",
+            "physio-3.6"
+          ],
+          "refs": [
+            "MIT HST.542J Spring 2004, problem set 9, Problem 3, printed p.5: Fick and oxygen-content balance",
+            "Own explicit L-to-dL unit conversion and degeneracy analysis"
+          ],
+          "links": {
+            "source": "https://ocw.mit.edu/courses/hst-542j-quantitative-physiology-organ-transport-systems-spring-2004/"
+          },
+          "pic": "Change oxygen uptake, the two sample pressures and hemoglobin inventory. Compare their actual content stacks and locate the inferred flow on a logarithmic positive-gradient family; equal or reversed gradients show why the inference fails."
+        },
+        {
+          "num": "6.11",
+          "kind": "Concept",
+          "name": "Oxygen delivery and extraction",
+          "deps": [
+            "physio-6.10"
+          ],
+          "refs": [
+            "MIT HST.542J Spring 2004, problem set 9, Problem 3: compatible oxygen balances",
+            "Own explicitly imposed extraction-ceiling closure"
+          ],
+          "links": {
+            "source": "https://ocw.mit.edu/courses/hst-542j-quantitative-physiology-organ-transport-systems-spring-2004/"
+          },
+          "pic": "Change flow, hemoglobin, arterial pressure, requested uptake and the declared extraction ceiling. Compare delivered, requested and used oxygen, then inspect the operating point relative to the closure’s exact threshold."
+        },
+        {
+          "num": "6.12",
+          "kind": "Model",
+          "name": "Krogh tissue cylinder",
+          "deps": [
+            "physio-1.3",
+            "physio-6.2"
+          ],
+          "refs": [
+            "MIT 10.37 Spring 2007, K. Dane Wittrup, Lecture 19, actual printed pp.3–4 and radial boundary-value derivation",
+            "Own axial content budget, inversion and independent flux/BVP checks"
+          ],
+          "links": {
+            "source": "https://ocw.mit.edu/courses/10-37-chemical-and-biological-reaction-engineering-spring-2007/"
+          },
+          "pic": "Change sleeve radius, length, blood speed, consumption and inlet oxygen inventory. The heatmap and selected radial slice reveal axial and radial limitations; raise demand to distinguish negative zero-order tissue predictions from hatched columns with no computed axial supply."
+        },
+        {
+          "num": "6.13",
+          "kind": "Model",
+          "name": "CO₂ transport and the chloride shift",
+          "deps": [
+            "physio-6.5"
+          ],
+          "refs": [
+            "OpenStax A&P 2e §22.5, selected bicarbonate, carbonic-anhydrase, carbamino and chloride-shift passages",
+            "Keener author manuscript, §13.3.3, pp.660–662",
+            "Own conservative reaction network and full-species reference integration"
+          ],
+          "links": {
+            "source": "https://openstax.org/books/anatomy-and-physiology-2e/pages/22-5-transport-of-gases"
+          },
+          "pic": "Vary the initial outside CO₂ amount, extra hydration catalyst and observation time. Turn chloride exchange on or off; compare the actual carbon pools with the no-extra-catalyst bicarbonate trace and verify equal bicarbonate/chloride transfer."
+        },
+        {
+          "num": "6.14",
+          "kind": "Model",
+          "name": "Erythropoietin feedback and red-cell production",
+          "deps": [
+            "physio-1.2",
+            "mathbio-1.17"
+          ],
+          "refs": [
+            "Keener author manuscript, printed p.642, EPO/maturation paragraph; pp.650–653, distributed maturation and stability qualifications",
+            "Own four-stage feedback system, phase boundary and independent Jacobian eigenvalue checks"
+          ],
+          "links": {
+            "source": "https://www.math.utah.edu/~keener/books/control.pdf#page=642"
+          },
+          "pic": "Lower availability and compare the selected architecture with a clearly labelled four-stage 80-day counterfactual. Change feedback strength and mean lag, inspect their positions relative to the stability boundary, or begin with a 20% red-cell deficit."
+        },
+        {
+          "num": "6.15",
+          "kind": "Paper",
+          "name": "Einfluss der Kohlensäurespannung auf die Sauerstoffbindung",
+          "paper": {
+            "authors": "Chr. Bohr, K. Hasselbalch and August Krogh",
+            "year": 1904,
+            "title": "Ueber einen in biologischer Beziehung wichtigen Einfluss, den die Kohlensäurespannung des Blutes auf dessen Sauerstoffbindung übt",
+            "venue": "Skandinavisches Archiv für Physiologie 16 (2): 402–412",
+            "doi": "10.1111/j.1748-1716.1904.tb01382.x"
+          },
+          "introduces": [
+            "physio-6.2",
+            "physio-6.4"
+          ],
+          "deps": [
+            "physio-5.7"
+          ],
+          "refs": [
+            "Bohr, Hasselbalch & Krogh (1904), selected translated methods and complete Table IV; Ulf Marquardt (1997) translation hosted by UDel",
+            "Frozen DOI bibliography; original German body unread and page-range discrepancy retained"
+          ],
+          "links": {
+            "source": "https://www1.udel.edu/chem/white/C342/Bohr%281904%29.html",
+            "doi": "https://doi.org/10.1111/j.1748-1716.1904.tb01382.x"
+          },
+          "verify": true,
+          "pic": "Choose one of the five reported CO₂ pressures and move through the tabulated oxygen-pressure range. Compare all five Table IV curves and their values at one common oxygen pressure; a hollow marker identifies an added linear interpolation between reported knots."
+        }
+      ]
     },
     {
       n: 7,

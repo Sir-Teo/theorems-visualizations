@@ -66,6 +66,11 @@ def first_references():
     for Pa,Pv in [(100,40),(40,math.nextafter(40,0)),(0,40),(5e-324,0),(1e-200,5e-201),(0,0)]:
      for Hb in [0,15]:
       P1,P2=map(mp.mpf,[Pa,Pv]);d=(q*Hb*(P1**mp.mpf('2.7')/(27**mp.mpf('2.7')+P1**mp.mpf('2.7'))-P2**mp.mpf('2.7')/(27**mp.mpf('2.7')+P2**mp.mpf('2.7')))+a*(P1-P2));out['differences'].append({'Pa':Pa,'Pv':Pv,'Hb':Hb,'sign':int(mp.sign(d)),'log':float(mp.log(abs(d))) if d else None,'value':float(abs(d))})
+    out['bindingDifferences']=[]
+    for Pa,Pv in [(20,5),(5e-324,0),(0,5e-324),(40,math.nextafter(40,0)),(0,0),(100,40)]:
+        for P50,n in [(27,2.7),(2.6,1)]:
+            A,B,K,power=map(mp.mpf,[Pa,Pv,P50,n]);d=A**power/(K**power+A**power)-B**power/(K**power+B**power)
+            out['bindingDifferences'].append({'Pa':Pa,'Pv':Pv,'P50':P50,'n':n,'sign':int(mp.sign(d)),'value':float(abs(d)),'log':float(mp.log(abs(d))) if d else None})
     out['binding']=[{'params':{'P':P,'L':L,'c':c,'family':family,'third':3.2},'expected':binding(P,L,c,family,3.2)}for P in [0,5e-324,1e-100,20,40,100,200]for L,c in [(1,1),(1e4,.01),(1e6,.001)]for family in ['MWC-derived','independent sites','modified Adair']]
     out['co']=[{'params':{'P':P,'occupied':n,'bias':bias},'expected':co(P,n,bias)}for P in [0,5e-324,20,40,100,200]for n in range(5)for bias in [3,4,6]]
     return out

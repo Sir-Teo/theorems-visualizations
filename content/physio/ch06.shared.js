@@ -1,6 +1,9 @@
 // Own oxygen-transport families. Numerical parameters are declared teaching choices.
-import {finite,integer,lin,sum,fmt} from '../mathbio/ch06.shared.js';
-export {finite,integer,lin,sum,fmt};
+export const fmt=x=>x===null?'not defined':x===0?'0':Math.abs(x)<1e-4||Math.abs(x)>=1e5?x.toExponential(4):Number(x.toPrecision(5)).toString();
+export const sum=a=>a.reduce((s,x)=>s+x,0);
+export const lin=(n,a=0,b=1)=>Array.from({length:n},(_,i)=>a+(b-a)*i/(n-1));
+export function finite(x,a,b,name='parameter'){if(typeof x!=='number'||!Number.isFinite(x)||x<a||x>b)throw RangeError(name+' outside its finite domain');return x;}
+export function integer(x,a,b,name='integer'){finite(x,a,b,name);if(!Number.isInteger(x))throw RangeError(name+' must be integral');return x;}
 export const O={step:'any',sig:5,fmt},I={step:1,int:true};
 export const axes=(title,x,y,extra={})=>({title,x,y,height:340,axes:'box',gutter:true,...extra});
 export const CAPACITY=1.36,DISSOLVED=.003;
@@ -16,10 +19,12 @@ export function content({P=100,Hb=15,P50=27,n=2.7}={}){
  finite(Hb,0,20,'hemoglobin concentration');const z=hill({P,P50,n}),bound=magnitude(Hb===0?-Infinity:Math.log(CAPACITY)+Math.log(Hb)+(z.S.log??-Infinity)),dissolved=magnitude(P===0?-Infinity:Math.log(DISSOLVED)+Math.log(P)),total=magnitude(logAdd(bound.log??-Infinity,dissolved.log??-Infinity));
  return{...z,Hb,bound,dissolved,total,dissolvedFraction:total.log===null?null:magnitude((dissolved.log??-Infinity)-total.log)};
 }
+export function bindingDifference(Pa,Pv,P50=27,n=2.7){
+ finite(Pa,0,200,'first pressure');finite(Pv,0,200,'second pressure');finite(P50,.1,100,'half pressure');finite(n,1,4,'Hill exponent');if(Pa===Pv)return{sign:0,...magnitude(-Infinity)};if(Pa<Pv){const q=bindingDifference(Pv,Pa,P50,n);return{...q,sign:-1};}
+ const a=hill({P:Pa,P50,n}),b=hill({P:Pv,P50,n}),relative=Pv===0?Infinity:(Pa-Pv)/Pv,delta=Pv===0?Infinity:n*(Number.isFinite(relative)?Math.log1p(relative):Math.log(Pa)-Math.log(Pv)),contrast=Math.log(-Math.expm1(-delta));return{sign:1,...magnitude((a.S.log??-Infinity)+(b.unoccupied.log??-Infinity)+contrast)};
+}
 export function contentDifference(Pa,Pv,Hb=15,P50=27,n=2.7){
- finite(Pa,0,200,'arterial pressure');finite(Pv,0,200,'venous pressure');finite(Hb,0,20,'hemoglobin concentration');finite(P50,.1,100,'half pressure');finite(n,1,4,'Hill exponent');if(Pa===Pv)return{sign:0,...magnitude(-Infinity)};if(Pa<Pv){const q=contentDifference(Pv,Pa,Hb,P50,n);return{...q,sign:-1};}
- const a=hill({P:Pa,P50,n}),b=hill({P:Pv,P50,n}),relative=Pv===0?Infinity:(Pa-Pv)/Pv,delta=Pv===0?Infinity:n*(Number.isFinite(relative)?Math.log1p(relative):Math.log(Pa)-Math.log(Pv)),contrast=Math.log(-Math.expm1(-delta)),logBound=Hb===0?-Infinity:Math.log(CAPACITY)+Math.log(Hb)+(a.S.log??-Infinity)+(b.unoccupied.log??-Infinity)+contrast,logDiss=Math.log(DISSOLVED)+Math.log(Pa-Pv);
- return{sign:1,...magnitude(logAdd(logBound,logDiss))};
+ finite(Hb,0,20,'hemoglobin concentration');const q=bindingDifference(Pa,Pv,P50,n);if(q.sign===0)return q;const logBound=Hb===0?-Infinity:Math.log(CAPACITY)+Math.log(Hb)+(q.log??-Infinity),logDiss=Math.log(DISSOLVED)+Math.log(Math.abs(Pa-Pv));return{sign:q.sign,...magnitude(logAdd(logBound,logDiss))};
 }
 export function inverseContent(target,{Hb=15,P50=27,n=2.7}={}){
  finite(target,0,100,'oxygen content');finite(Hb,0,20,'hemoglobin concentration');finite(P50,.1,100,'half pressure');finite(n,1,4,'Hill exponent');if(target===0)return magnitude(-Infinity);
