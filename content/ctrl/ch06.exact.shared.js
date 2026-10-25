@@ -14,6 +14,11 @@ export const sign=a=>exact(a).n<0n?-1:exact(a).n>0n?1:0;
 const logBig=n=>{const s=abs(n).toString(2),k=Math.min(53,s.length);return Math.log(Number(BigInt('0b'+s.slice(0,k))))+(s.length-k)*Math.LN2;};
 export const logAbs=a=>{a=exact(a);return a.n===0n?-Infinity:logBig(a.n)-logBig(a.d);};
 export function approximate(a){a=exact(a);if(!a.n)return 0;const n=abs(a.n),d=a.d;let exponent=n.toString(2).length-d.toString(2).length;if(exponent>=0?n<(d<<BigInt(exponent)):(n<<BigInt(-exponent))<d)exponent--;const shift=exponent< -1022?1074:52-exponent,N=shift>=0?n<<BigInt(shift):n,D=shift>=0?d:d<<BigInt(-shift);let q=N/D;const remainder=N%D;if(2n*remainder>D||(2n*remainder===D&&q%2n===1n))q++;if(exponent< -1022)return sign(a)*Number(q)*Number.MIN_VALUE;if(q===(1n<<53n)){q>>=1n;exponent++;}return exponent>1023?sign(a)*Infinity:sign(a)*Number(q)*2**(exponent-52);}
+// Correctly rounded sqrt(n/d), without underflowing the squared magnitude.
+// Midpoint comparison is exact: 4N ? D(2q+1)^2, with ties to even.
+function integerSquareRoot(n){if(n<2n)return n;let x=1n<<BigInt(Math.ceil(n.toString(2).length/2));for(;;){const y=(x+n/x)>>1n;if(y>=x)return x;x=y;}}
+export function squareRoot(a){a=exact(a);if(a.n<0n)throw Error('nonnegative rational square root required');if(!a.n)return 0;const n=a.n,d=a.d;let exponent=n.toString(2).length-d.toString(2).length;if(exponent>=0?n<(d<<BigInt(exponent)):(n<<BigInt(-exponent))<d)exponent--;exponent=Math.floor(exponent/2);const shift=exponent< -1022?1074:52-exponent,N=shift>=0?n<<BigInt(2*shift):n,D=shift>=0?d:d<<BigInt(-2*shift);let q=integerSquareRoot(N/D);const midpoint=D*(2n*q+1n)**2n;if(4n*N>midpoint||(4n*N===midpoint&&q%2n===1n))q++;if(exponent< -1022)return Number(q)*Number.MIN_VALUE;if(q===(1n<<53n)){q>>=1n;exponent++;}return exponent>1023?Infinity:Number(q)*2**(exponent-52);}
+
 export const exactText=a=>{a=exact(a);return a.d===1n?String(a.n):a.n+'/'+a.d;};
 export function poly(a){const p=a.map(exact);while(p.length>1&&!sign(p.at(-1)))p.pop();return p.length?p:[ZERO];}
 export const degree=a=>poly(a).length-1;

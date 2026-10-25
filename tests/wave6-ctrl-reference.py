@@ -5,17 +5,25 @@ No import of the JavaScript implementation. Original binary64 stimuli retained.
 import json,math,random,itertools,argparse,pathlib
 import sympy as sp
 import mpmath as mp
+from fractions import Fraction
 mp.mp.dps=90
 parser=argparse.ArgumentParser();parser.add_argument('--output',type=pathlib.Path,default=pathlib.Path(__file__).resolve().parent/'fixtures/wave6-ctrl-reference.json');args=parser.parse_args()
 x=sp.Symbol('s');out={}
 def S(a):return sp.Rational(a)
 def M(a):return mp.mpf(int(a.p))/int(a.q) if isinstance(a,sp.Rational) else mp.mpf(a)
+def mp_float(v):
+ # Round the exact dyadic mpf value directly into binary64, avoiding a53-bit
+ # significand round followed by a second subnormal scaling round.
+ if not mp.isfinite(v):return 'negative overflow' if v<0 else 'positive overflow'
+ sign_,mantissa,exponent,bits=v._mpf_;dyadic=Fraction((-1 if sign_ else 1)*int(mantissa))
+ try:return float(dyadic*2**exponent) if exponent>=0 else float(dyadic/Fraction(2**(-exponent)))
+ except OverflowError:return 'negative overflow' if sign_ else 'positive overflow'
 def serial(a):
  if isinstance(a,dict):return{k:serial(v) for k,v in a.items()}
  if isinstance(a,(list,tuple)):return[serial(v) for v in a]
  if isinstance(a,mp.mpc):return[float(a.real),float(a.imag)]
  if isinstance(a,sp.Rational):return str(a)
- if isinstance(a,mp.mpf):return float(a)
+ if isinstance(a,mp.mpf):return mp_float(a)
  return a
 def publish(name,rows):out[name]=serial(rows);print(name,len(rows),flush=True)
 def coef(expr):return sp.Poly(expr,x).all_coeffs()[::-1]
@@ -39,12 +47,22 @@ for degree in [1,2,3,4,5,6]:
  for i in range(10):polys.append([rng.randint(-5,8) for _ in range(degree)]+[rng.choice([1,2,3])])
 publish('routh',[countrow(list(map(S,c)),{'coefficients':c}) for c in polys])
 rows=[]
+for family,delta in itertools.product(['imaginary pair','zero leading entry'],[0.,math.nextafter(0.,1.),-math.nextafter(0.,1.)]):
+ c=coef((x+2)*(x*x+1)+S(delta)) if family=='imaginary pair' else [S(1),S(2),1+S(delta),S(2),S(1)]
+ rows.append(countrow(c,{'family':family,'delta':delta}))
+publish('specialRouth',rows)
+rows=[]
 for a,b in [(1.,3.),(.2,.7),(2.,2.),(6.,1.)]:
  for gain in [0.,math.nextafter(0.,1.),.1,1.,6.,12.,80.]:
   c=coef(x*(x+S(a))*(x+S(b))+S(gain));rows.append(countrow(c,{'a':a,'b':b,'gain':gain}))
 publish('gainRange',rows)
 rows=[]
-for gain in [0.,.1,.25,.3,.5,1.,5.,5.75,5.8,6.,8.]:
+thresholds=sp.Poly(1+12*x-60*x*x+10*x**3,x).intervals(eps=sp.Rational(1,10**35))
+critical_gains=[]
+for (lo,hi),multiplicity in thresholds:
+ if lo>0:
+  center=float((lo+hi)/2);critical_gains.extend([math.nextafter(center,-math.inf),center,math.nextafter(center,math.inf)])
+for gain in [0.,.1,.25,.3,.5,1.,5.,5.75,5.8,6.,8.]+critical_gains:
  c=coef(x**4+x**3+3*x*x+x+1+S(gain)*(10*x**3+x*x+x));margin=1+12*S(gain)-60*S(gain)**2+10*S(gain)**3;rows.append({**countrow(c,{'gain':gain}),'margin':margin})
 thresholds=sp.Poly(1+12*x-60*x*x+10*x**3,x).intervals(eps=sp.Rational(1,10**35));publish('conditional',rows);publish('conditionalBoundaries',[{'interval':[str(a),str(b)],'midpoint':float((a+b)/2),'multiplicity':m} for (a,b),m in thresholds])
 rows=[]
@@ -78,12 +96,33 @@ for row in out['compensators']:
   v=mp.expm(a*M(t))*mp.matrix([0,0,0,1]);y=k*z*v[0]+k*v[1];rows.append({'args':{**state,'time':t},'expect':y})
 publish('step',rows)
 rows=[]
+for a,b,gain in [(1.,3.,0.),(1.,3.,math.nextafter(0.,1.)),(1.,3.,12.),(1.,3.,math.nextafter(12.,math.inf)),(.25,.25,30.),(4.,4.,30.)]:
+ aa,bb,k=map(M,[a,b,gain]);matrix=mp.matrix([[0,1,0,0],[0,0,1,0],[-k,-aa*bb,-aa-bb,1],[0,0,0,0]])
+ for t in [0.,1e-5,.01,.1,1.,4.,12.,18.]:
+  state=mp.expm(matrix*M(t))*mp.matrix([0,0,0,1]);rows.append({'args':{'a':a,'b':b,'gain':gain,'time':t},'expect':k*state[0]})
+publish('gainRangeStep',rows)
+rows=[]
 for profile,d,n in [('three real poles',[0,3,4,1],[1]),('one finite zero',[0,3,4,1],[2,1]),('complex pole pair',[5,7,3,1],[1])]:
- for re,im in [(-.5,0.),(-2.,0.),(-4.,0.),(0.,0.),(-2.,1.),(-1.,2.),(-1.,-2.),(math.nextafter(-1.,0.),math.nextafter(0.,1.))]:
-  z=mp.mpc(M(re),M(im));D=mp.polyval(list(reversed(d)),z);N=mp.polyval(list(reversed(n)),z);defined=bool(D and N)
-  # Exact rational complex evaluation decides membership, independently of trigonometric tolerance.
-  sq=S(re)+sp.I*S(im);dq=sum(S(a)*sq**j for j,a in enumerate(d));nq=sum(S(a)*sq**j for j,a in enumerate(n));q=sp.cancel(-dq/nq) if nq else None
-  rows.append({'args':{'profile':profile,'point':[re,im]},'expect':{'defined':defined,'onLocus':bool(defined and sp.im(q)==0 and sp.re(q)>0),'requiredGain':abs(D/N) if defined else None,'ratio':-D/N if defined else None}})
+ points=[(-.5,0.),(-2.,0.),(-4.,0.),(0.,0.),(-2.,1.),(-1.,2.),(-1.,-2.),(math.nextafter(-1.,0.),math.nextafter(0.,1.))]
+ if profile=='complex pole pair':
+  for center in [2.,-2.]:
+   for re,im in itertools.product([-1.,math.nextafter(-1.,-math.inf),math.nextafter(-1.,math.inf)],[center,math.nextafter(center,-math.inf),math.nextafter(center,math.inf)]):
+    if (re,im)!=(-1.,center):points.append((re,im))
+ else:
+  tiny=math.nextafter(0.,1.)
+  points.extend(itertools.product([-tiny,tiny],repeat=2))
+  if profile=='one finite zero':points.append((-2.,tiny))
+ for re,im in points:
+  #1100 digits retain the cubic correction to a half-subnormal quotient;
+  #90 digits would silently turn some true above/below-midpoint results into ties.
+  with mp.workdps(1100 if any(0<abs(a)<1e-300 for a in [re,im]) else 90):
+   z=mp.mpc(M(re),M(im));D=mp.polyval(list(reversed(d)),z);N=mp.polyval(list(reversed(n)),z);defined=bool(D and N)
+   sq=S(re)+sp.I*S(im);dq=sum(S(a)*sq**j for j,a in enumerate(d));nq=sum(S(a)*sq**j for j,a in enumerate(n));q=sp.cancel(-dq/nq) if nq else None
+   def rational_float(v):
+    try:return float(Fraction(int(v.p),int(v.q)))
+    except OverflowError:return 'negative overflow' if v<0 else 'positive overflow'
+   expected={'defined':defined,'onLocus':bool(defined and sp.im(q)==0 and sp.re(q)>0),'requiredGain':mp_float(abs(D/N)) if defined else None,'requiredGainLog':mp_float(mp.log(abs(D/N))) if defined else None,'ratio':[rational_float(sp.re(q)),rational_float(sp.im(q))] if defined else None,'phase':mp_float(mp.arg(N/D)) if defined else None}
+   rows.append({'args':{'profile':profile,'point':[re,im]},'expect':expected})
 publish('angle',rows)
 rows=[]
 for c in polys[:14]+[[1,1,3,1,1],[1,1.5,3.5,6,1],[1,7,9,61,1],[.1,.5,1,1]]:
@@ -107,4 +146,4 @@ for exponent in [-1074,-1022,-52,0,1,52,1023]:
 for sign_ in [-1,1]:
  q=Fraction(2)+sign_*Fraction(math.nextafter(0.,1.));rounding.append({'args':{'numerator':str(q.numerator),'denominator':str(q.denominator)},'expect':float(q)})
 publish('rationalRounding',rounding)
-args.output.write_text(json.dumps({'precisionDigits':90,'exactRootCountMethod':'SymPy exact closed right/left rectangle counts with strict Cauchy bound; Origin factors removed exactly first to avoid the repeated-origin boundary counting defect; other shared-axis counts recovered by inclusion-exclusion. No Routh algorithm in oracle.','families':out},indent=2,sort_keys=True)+'\n');print('TOTAL',sum(map(len,out.values())),flush=True)
+args.output.write_text(json.dumps({'precisionDigits':90,'subnormalAnglePrecisionDigits':1100,'exactRootCountMethod':'SymPy exact closed right/left rectangle counts with strict Cauchy bound; Origin factors removed exactly first to avoid the repeated-origin boundary counting defect; other shared-axis counts recovered by inclusion-exclusion. No Routh algorithm in oracle.','families':out},indent=2,sort_keys=True)+'\n');print('TOTAL',sum(map(len,out.values())),flush=True)

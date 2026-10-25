@@ -363,39 +363,172 @@ export default {
     },
     // ───────────────────────────────────────────────────────────── 6
     {
-      n: 6,
-      title: 'Routh–Hurwitz and the root locus',
-      summary: String.raw`Closed-loop stability comes down to whether a polynomial has roots in the right half-plane. Routh's array answers that question from the coefficients alone, without computing a single root, and also tells how far a gain can be raised. The root locus shows instead how every closed-loop pole moves as the gain increases, and simple geometric rules let us sketch it by hand and design compensators on it.`,
-      items: [
-        { num: '6.1', kind: 'Definition', name: 'Closed-loop characteristic polynomial', deps: ['ctrl-1.4'], refs: ['Franklin–Powell §3.6'],
-          pic: 'Edit numerator and denominator polynomials of a loop: the characteristic polynomial d + kn is formed and its roots plotted as the gain slider moves.' },
-        { num: '6.2', kind: 'Theorem', name: 'Routh–Hurwitz stability criterion', deps: ['ctrl-6.1', 'rca-10.43'], refs: ['Franklin–Powell §3.6'],
-          pic: 'Type a polynomial and watch the Routh array fill in row by row; the number of sign changes in the first column equals the number of right-half-plane roots, confirmed by the computed roots.' },
-        { num: '6.3', kind: 'Proposition', name: 'All coefficients positive: necessary, not sufficient', deps: ['ctrl-6.2'], refs: ['Franklin–Powell §3.6'],
-          pic: 'A polynomial with all positive coefficients can still have unstable roots once its degree is three or more — a slider finds one, and the Routh array flags it.' },
-        { num: '6.4', kind: 'Method', name: 'Routh special cases and imaginary-axis crossings', deps: ['ctrl-6.2'], refs: ['Franklin–Powell §3.6'],
-          pic: 'Tune a gain until a whole row of the Routh array vanishes: the auxiliary polynomial gives the frequency at which the roots cross the imaginary axis.' },
-        { num: '6.5', kind: 'Method', name: 'Stability range of a gain', deps: ['ctrl-6.4'], refs: ['Franklin–Powell §3.6'],
-          pic: 'For a loop with a free gain, the Routh conditions are solved for k; the stable interval is shaded on a number line and checked against a simulation at each end.' },
-        { num: '6.6', kind: 'Definition', name: 'Root locus', deps: ['ctrl-6.1'], refs: ['Franklin–Powell §5.1', 'Åström–Murray §12.5'],
-          pic: 'Sweep the gain from zero to infinity: closed-loop poles leave the open-loop poles and travel to the open-loop zeros or to infinity, leaving coloured trails.' },
-        { num: '6.7', kind: 'Theorem', name: 'Angle and magnitude conditions', deps: ['ctrl-6.6'], refs: ['Franklin–Powell §5.1'],
-          pic: 'Drag a test point around the s-plane: the sum of angles from zeros minus poles is displayed and turns red at exactly 180°, where the point is on the locus and the required gain is read out.' },
-        { num: '6.8', kind: 'Method', name: 'Root-locus sketching rules', deps: ['ctrl-6.7'], refs: ['Franklin–Powell §5.2'],
-          pic: 'Toggle each rule — real-axis segments, asymptote angles and centroid, breakaway points, departure angles — to overlay its prediction on the computed locus.' },
-        { num: '6.9', kind: 'Theorem', name: 'Roots move continuously with the gain', deps: ['ctrl-6.6', 'rca-10.43'], refs: ['Franklin–Powell §5.1'],
-          pic: 'Draw a small circle around a closed-loop pole and nudge the gain: Rouché’s theorem guarantees the circle still contains exactly one root, which the animation confirms.' },
-        { num: '6.10', kind: 'Method', name: 'Lead compensation on the root locus', deps: ['ctrl-6.8', 'ctrl-4.4'], refs: ['Franklin–Powell §5.4'],
-          pic: 'Place a lead zero and pole to bend the locus leftward through the desired region of the s-plane; the step response improves as the locus passes through the shaded spec region.' },
-        { num: '6.11', kind: 'Method', name: 'Lag compensation for steady-state accuracy', deps: ['ctrl-6.8', 'ctrl-4.6'], refs: ['Franklin–Powell §5.4'],
-          pic: 'Add a lag pole–zero pair close to the origin: the low-frequency gain rises and the steady-state error falls while the locus near the dominant poles barely moves.' },
-        { num: '6.12', kind: 'Phenomenon', name: 'Conditionally stable systems', deps: ['ctrl-6.8'], refs: ['Franklin–Powell §5.3'],
-          pic: 'A locus dips into the right half-plane and back out: the loop is stable for large and small gains but unstable in between, so reducing the gain can destabilise it.' },
-        { num: '6.13', kind: 'Theorem', name: 'Kharitonov’s theorem', deps: ['ctrl-6.2'], refs: ['Franklin–Powell §3.6'],
-          pic: 'Give each coefficient an uncertainty interval: checking just four special polynomials certifies stability of the whole family, verified by plotting roots of thousands of random members.' },
-      ],
+      "n": 6,
+      "title": "Routh–Hurwitz and the root locus",
+      "summary": "Exact stability counts and pole trajectories connect polynomial coefficients with closed-loop behavior. Singular Routh rows, multiple roots, compensator transients and coefficient uncertainty expose the assumptions behind the geometric rules.",
+      "items": [
+        {
+          "num": "6.1",
+          "kind": "Definition",
+          "name": "Closed-loop characteristic polynomial",
+          "deps": [
+            "ctrl-1.4"
+          ],
+          "refs": [
+            "Jonathan How, MIT16.30 Topic2 (2010), selected printed2–5/2–6 feedback equations; own coefficient/state derivation"
+          ],
+          "pic": "Edit the denominator coefficients, choose a constant or linear numerator, and vary feedback gain. The coefficient table forms D + K N term by term, while the root plot shows the resulting characteristic roots."
+        },
+        {
+          "num": "6.2",
+          "kind": "Theorem",
+          "name": "Routh–Hurwitz stability criterion",
+          "deps": [
+            "ctrl-6.1",
+            "rca-10.43"
+          ],
+          "refs": [
+            "Complete chapter-local derivation under the stated unity negative-feedback convention"
+          ],
+          "pic": "Edit a cubic or quartic and reveal its Routh construction. Compare the exact first-column sign changes with the independently approximated roots; the array remains the stability decision when a plotted crossing is too small to resolve."
+        },
+        {
+          "num": "6.3",
+          "kind": "Proposition",
+          "name": "All coefficients positive: necessary, not sufficient",
+          "deps": [
+            "ctrl-6.2"
+          ],
+          "refs": [
+            "Complete chapter-local derivation under the stated unity negative-feedback convention"
+          ],
+          "pic": "Keep every coefficient positive while increasing the constant term. The coefficient bars stay positive, but the exact Routh margin changes sign and the conjugate roots enter the right half-plane."
+        },
+        {
+          "num": "6.4",
+          "kind": "Method",
+          "name": "Routh special cases and imaginary-axis crossings",
+          "deps": [
+            "ctrl-6.2"
+          ],
+          "refs": [
+            "Complete chapter-local derivation under the stated unity negative-feedback convention"
+          ],
+          "pic": "Compare an imaginary-pair crossing, a zero pivot, symmetric real/imaginary roots and an origin root. The replacement row is highlighted. Signed tiny offsets can change the exact count even when the root picture still rounds to the boundary."
+        },
+        {
+          "num": "6.5",
+          "kind": "Method",
+          "name": "Stability range of a gain",
+          "deps": [
+            "ctrl-6.4"
+          ],
+          "refs": [
+            "Complete chapter-local derivation under the stated unity negative-feedback convention"
+          ],
+          "pic": "Move the two open-loop rates and the feedback gain. The open interval on the number line, live Routh margin and actual finite-time step response use the same polynomial."
+        },
+        {
+          "num": "6.6",
+          "kind": "Definition",
+          "name": "Root locus",
+          "deps": [
+            "ctrl-6.1"
+          ],
+          "refs": [
+            "Jonathan How, MIT16.30 Topic2 (2010), selected printed2–5 through2–11; own finite-gain models"
+          ],
+          "pic": "Sweep a finite positive gain through three distinct loop families. Trails retain all sampled characteristic roots, with open-loop poles and finite zeros marked separately. The companion plot shows how the largest real part determines the current stability."
+        },
+        {
+          "num": "6.7",
+          "kind": "Theorem",
+          "name": "Angle and magnitude conditions",
+          "deps": [
+            "ctrl-6.6"
+          ],
+          "refs": [
+            "Jonathan How, MIT16.30 Topic2 (2010), selected printed2–7/2–11 and2–21/2–22; own exact quotient test"
+          ],
+          "pic": "Drag the test point. Vectors from the poles and zeros explain the phase sum, while the phase wheel compares it with the negative real direction. Read the required magnitude gain and whether the exact positive-real quotient condition holds."
+        },
+        {
+          "num": "6.8",
+          "kind": "Method",
+          "name": "Root-locus sketching rules",
+          "deps": [
+            "ctrl-6.7"
+          ],
+          "refs": [
+            "Jonathan How, MIT16.30 Topic2 (2010), selected printed2–7 through2–11; own breakaway/departure derivations"
+          ],
+          "pic": "Overlay real-axis segments, infinity asymptotes, the valid real breakaway and complex-pole departure directions on the sampled locus. Controls that do not apply to the chosen family are hidden."
+        },
+        {
+          "num": "6.9",
+          "kind": "Theorem",
+          "name": "Roots move continuously with the gain",
+          "deps": [
+            "ctrl-6.6",
+            "rca-10.43"
+          ],
+          "refs": [
+            "Complete chapter-local derivation under the stated unity negative-feedback convention"
+          ],
+          "pic": "Resize a disk around a simple or double root and change the signed gain perturbation. Compare the boundary modulus with the actual perturbation. A strict inequality certifies one or two enclosed roots, even through a split of the double root."
+        },
+        {
+          "num": "6.10",
+          "kind": "Method",
+          "name": "Lead compensation on the root locus",
+          "deps": [
+            "ctrl-6.8",
+            "ctrl-4.4"
+          ],
+          "refs": [
+            "Jonathan How, MIT16.30 Topic2 (2010), selected printed2–20 through2–25 controller geometry/caveats; own plant, polynomial and full-state response"
+          ],
+          "pic": "Place the lead pole and zero and move the gain. Compare the changed locus with the proportional reference and the shaded design guide, then inspect the full finite-time step response that the same transfer actually produces."
+        },
+        {
+          "num": "6.11",
+          "kind": "Method",
+          "name": "Lag compensation for steady-state accuracy",
+          "deps": [
+            "ctrl-6.8",
+            "ctrl-4.6"
+          ],
+          "refs": [
+            "Jonathan How, MIT16.30 Topic2 (2010), selected printed2–17/2–20 tracking and lag discussion; own plant and exact error/state equations"
+          ],
+          "pic": "Raise the low-frequency gain with a lag pole–zero pair. Compare the exact stable-loop error with the proportional reference, and use the full transient and pole positions to see the slow mode that a steady-error formula omits."
+        },
+        {
+          "num": "6.12",
+          "kind": "Phenomenon",
+          "name": "Conditionally stable systems",
+          "deps": [
+            "ctrl-6.8"
+          ],
+          "refs": [
+            "Complete chapter-local derivation under the stated unity negative-feedback convention"
+          ],
+          "pic": "Sweep through both crossings. Compare the complete root locus, the determinant sign and the rightmost-root detail, which reveals crossings hidden by the fast far-left root. The exact selected-gain classification remains separate from the rounded numerical crossing labels."
+        },
+        {
+          "num": "6.13",
+          "kind": "Theorem",
+          "name": "Kharitonov’s theorem",
+          "deps": [
+            "ctrl-6.2"
+          ],
+          "refs": [
+            "Abdon E. Choque-Rivero (2017), The Kharitonov theorem and robust stabilization via orthogonal polynomials, selected Definition5/6 and Theorem1, printed55–57; own complete quartic Routh/convexity proof"
+          ],
+          "pic": "Widen the independent coefficient intervals of a quartic. Compare the four special spectra with deterministic sampled members, then inspect the convex worst-case inequality that certifies the entire box."
+        }
+      ]
     },
-    // ───────────────────────────────────────────────────────────── 7
     {
       n: 7,
       title: 'Frequency response: Bode and Nyquist',

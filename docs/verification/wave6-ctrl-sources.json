@@ -1,5 +1,5 @@
 {
-  "status": "CTRL6 pure-model preparation only. No visualization, native/pixel or author-count promotion.",
+  "status": "All13 frozen CTRL6 lessons author-verified locally, including complete personal visual gates. No independent acceptance/release/deploy claim.",
   "prerequisiteBodiesRead": [
     "ctrl-1.4",
     "ctrl-4.4",
@@ -50,7 +50,7 @@
       "id": "mit-1630-02",
       "requestedURL": "https://ocw.mit.edu/courses/16-30-feedback-control-systems-fall-2010/0647b5f6e52191b6e63c6c23b59fd3dd_MIT16_30F10_lec02.pdf",
       "requestedUTC": "2026-10-25T07:17:48.994246+00:00",
-      "bodyRead": "Selected text lines181\u2013413,595\u2013667,735\u2013840,868\u2013947 only; personally inspected rendered PDF pages11/21 (printed2\u201311/2\u201321).",
+      "bodyRead": "Selected text lines181–413,595–667,735–840,868–947 only; personally inspected rendered PDF pages11/21 (printed2–11/2–21).",
       "finalURL": "https://ocw.mit.edu/courses/16-30-feedback-control-systems-fall-2010/0647b5f6e52191b6e63c6c23b59fd3dd_MIT16_30F10_lec02.pdf",
       "httpStatus": 200,
       "contentType": "application/pdf",
@@ -144,27 +144,65 @@
       "id": "mit-6241-19",
       "requestedURL": "https://ocw.mit.edu/courses/6-241j-dynamic-systems-and-control-spring-2011/f5ef45e468ca752d181e7682a6fe939b_MIT6_241JS11_chap19.pdf",
       "requestedUTC": "2026-10-25T07:29:28.100613+00:00",
-      "bodyRead": "Selected text lines182\u2013225 and rendered PDF page7 only; no remaining chapter proof or Kharitonov body read.",
+      "bodyRead": "Selected text lines182–225 and rendered PDF page7 only; no remaining chapter proof or Kharitonov body read.",
       "finalURL": "https://ocw.mit.edu/courses/6-241j-dynamic-systems-and-control-spring-2011/f5ef45e468ca752d181e7682a6fe939b_MIT6_241JS11_chap19.pdf",
       "httpStatus": 200,
       "contentType": "application/pdf",
       "bytes": 757365,
       "sha256": "f4828d13e244a0b936d8cbad5b09345d12117ab0227a24a004838249f4cf184d",
       "path": "/tmp/wave6-ctrl-research/mit-6241-19.pdf"
+    },
+    {
+      "id": "kharitonov-openalex",
+      "requestedURL": "https://api.openalex.org/works?search=kharitonov%20theorem&per-page=5",
+      "requestedUTC": "2026-10-25T07:49:45.429851+00:00",
+      "bodyRead": "Metadata only; not a mathematical article body.",
+      "finalURL": "https://api.openalex.org/works?search=kharitonov%20theorem&per-page=5",
+      "httpStatus": 200,
+      "contentType": "application/json",
+      "bytes": 70857,
+      "sha256": "8efade184bba3e5db723afb64e91369461223530e9a641fef41ef7b5488a481a",
+      "path": "/tmp/wave6-ctrl-research/kharitonov-openalex.html"
+    },
+    {
+      "id": "kharitonov-proof-openalex",
+      "requestedURL": "https://api.openalex.org/works?search=proof%20kharitonov&filter=is_oa:true&per-page=10&select=id,title,doi,publication_year,best_oa_location",
+      "requestedUTC": "2026-10-25T07:50:04.484191+00:00",
+      "bodyRead": "Metadata only; not a mathematical article body.",
+      "finalURL": "https://api.openalex.org/works?search=proof%20kharitonov&filter=is_oa:true&per-page=10&select=id,title,doi,publication_year,best_oa_location",
+      "httpStatus": 200,
+      "contentType": "application/json",
+      "bytes": 12470,
+      "sha256": "1100bf687bb582b10891a2867b8205d99cc98728369ead3bc0c76b600d72fcbb",
+      "path": "/tmp/wave6-ctrl-research/kharitonov-proof-openalex.html"
+    },
+    {
+      "id": "kharitonov-orthogonal-2017",
+      "requestedURL": "https://periodicals.karazin.ua/mech_math/article/download/11006/10575",
+      "requestedUTC": "2026-10-25T07:50:27.545719+00:00",
+      "bodyRead": "Own selected reading: text lines1–65,373–455,487–520,924–934,1015–1034. Personally inspected rendered PDF page8 (printed56), including four endpoint patterns and classical Theorem1. No full-degree proof or original1978/1979 paper body claimed read.",
+      "finalURL": "https://periodicals.karazin.ua/mech_math/en/article/download/11006/10575",
+      "httpStatus": 200,
+      "contentType": "application/pdf",
+      "bytes": 503904,
+      "sha256": "41b9b2124a9623ea4a3d9bad5d066813348e20528004f05c78067e69e47513ad",
+      "path": "/tmp/wave6-ctrl-research/kharitonov-orthogonal-2017.pdf"
     }
   ],
   "inheritedStops": [
-    "Original Ziegler\u2013Nichols ASME403; do not recover via alternate host/cache.",
+    "Original Ziegler–Nichols ASME403; do not recover via alternate host/cache.",
     "Original Skogestad timeout; do not recover via alternate host/cache."
   ],
-  "commercialBodies": "Franklin\u2013Powell/Emami-Naeini and current \u00c5str\u00f6m\u2013Murray bodies not requested/read in this continuation. Earlier cached-source reading belongs to the historical Wave5 ledger only.",
+  "commercialBodies": "Franklin–Powell/Emami-Naeini and current Åström–Murray bodies not requested/read in this continuation. Earlier cached-source reading belongs to the historical Wave5 ledger only.",
   "sourceCautions": [
-    "MIT16.30 extracted printed2\u201323 characteristic-polynomial line has a wrong degree term; local polynomial multiplication supplies the actual cubic. No original figure or numerical example is reused.",
-    "MIT6.241 chapter19 Theorem19.1 says the Nyquist plot of L must avoid the origin. Personally inspected page7 confirms that wording; for L the forbidden point is\u22121 (equivalently1+L avoids0). Local proofs use the actual return-difference polynomial and argument principle; that erroneous line is not adopted.",
+    "MIT16.30 extracted printed2–23 characteristic-polynomial line has a wrong degree term; local polynomial multiplication supplies the actual cubic. No original figure or numerical example is reused.",
+    "MIT6.241 chapter19 Theorem19.1 says the Nyquist plot of L must avoid the origin. Personally inspected page7 confirms that wording; for L the forbidden point is−1 (equivalently1+L avoids0). Local proofs use the actual return-difference polynomial and argument principle; that erroneous line is not adopted.",
     "CTRL4.4 pole regions are second-order heuristics for rise/settling when zeros/higher-order modes occur. Lead views must calculate the full transient and label the region as a design guide.",
     "CTRL1.4 common denominator roots can disappear from selected transfer maps through cancellation; local characteristic roots retain the chosen realization modes.",
-    "The general-degree Kharitonov theorem proof/source review remains pending. The quartic demonstration has a direct local Routh/convexity argument; finite samples or vertex tests alone are not a proof of the general theorem.",
-    "Approximate root locations use correctly rounded coefficients and their exact square-free factors. Exact stability and original multiplicity use the original rational polynomial. Classification/multiplicity disagreement flags are required for visually unresolved states; a small backward residual is not a forward root-error guarantee."
+    "Approximate root locations use correctly rounded coefficients and their exact square-free factors. Exact stability and original multiplicity use the original rational polynomial. Classification/multiplicity disagreement flags are required for visually unresolved states; a small backward residual is not a forward root-error guarantee.",
+    "Classical monic Kharitonov statement and its endpoint set are checked against Choque-Rivero2017 Theorem1/Definitions5–6, up to permutation of corner labels. The source recalls the classical theorem without proving it there. Our displayed quartic has a complete local Routh/convexity proof. No full-degree proof or original paper body is claimed read.",
+    "Choque-Rivero2017 Theorem2 gives a sufficient Kharitonov-quadruple condition; its converse is explicitly Conjecture3. That novel equivalence is not adopted as a theorem. The present chapter uses the classical Theorem1 only.",
+    "A root below representable coordinate range can draw at zero even though exact coefficients and Routh counts are resolved. Coordinate-count resolution is disclosed separately; the six-MIN output at the long finite gain-range probe is independently checked."
   ],
   "ownDerivations": [
     "Exact Routh first columns with formal epsilon, auxiliary derivatives and explicit origin factors. Independent oracle uses exact rectangle root counts and Hurwitz minors, not the Routh algorithm.",
@@ -172,7 +210,7 @@
     "Lead/lag actual held-input state equations and quartic conditional-stability determinant.",
     "For a positive quartic, Delta3>0 becomes a2>a4*(a1/a3)+a0/(a1/a3). Convexity in the positive ratio certifies the whole coefficient box from the extremal Kharitonov corners; leading coefficient remains positive and degree fixed."
   ],
-  "referenceMethod": "352 independent cases in10 families: exact SymPy closed half-rectangle root counts after exact origin-factor extraction, Hurwitz determinant minors, exact complex evaluation, isolated root intervals,90-digit separate matrix exponentials, and Python Fraction correct binary64 rounding.",
+  "referenceMethod": "437 independent cases in12 families, with original binary64 stimuli: exact SymPy closed half-rectangle counts after exact origin extraction; independent Hurwitz minors; exact rational complex evaluation and membership; independently isolated spectra; separate90-digit held-input matrix exponentials; Python Fraction binary64 rounding. Angle evaluation uses1100 digits for subnormal coordinates; all mpf-to-binary64 conversion passes through the exact dyadic Fraction to avoid double rounding.114 derived square-root rounding invariants supplement the fixture.",
   "retainedFailures": [
     {
       "id": "sympy-repeated-origin",
@@ -182,12 +220,62 @@
     {
       "id": "rational-rounding",
       "path": "/tmp/wave6-ctrl-research/rational-rounding-initial.json",
-      "meaning": "Prototype truncation exaggerated2\u2212MIN by one ulp; repaired exact nearest-even rounding before any view/promotion."
+      "meaning": "Prototype truncation exaggerated2−MIN by one ulp; repaired exact nearest-even rounding before any view/promotion."
     },
     {
       "id": "rounded-root-cluster",
       "path": "/tmp/wave6-ctrl-research/root-rounding-cluster-initial.json",
       "meaning": "A subnormal perturbation rounded coefficients to(s+1)^4; solving that repeated polynomial as square-free manufactured a visible1e-4 root cloud despite zero backward residual. Exact square-free factoring of the plotted coefficient polynomial repairs the cloud. Original and plotted multiplicities remain separate; unresolved coalescence must be disclosed in each relevant view."
+    },
+    {
+      "id": "initial-browser-bounds",
+      "path": "/tmp/wave6-ctrl-research/first-bounds-failures.json",
+      "meaning": "Initial52 groups fail because raw endpoints of clipped infinite-line helpers are outside canvas;8 narrow layouts also have genuine equation overflows. Finite view endpoints and equivalent line breaks repair them; second52 defaults pass."
+    },
+    {
+      "id": "realized-equal-scale-background",
+      "path": "/tmp/wave6-ctrl-research/pixel-before-bounds-repair/receipt.json",
+      "meaning": "Personal inspection of four initial narrow widgets found that RHP masks/reference lines used requested rather than realized equal-scale bounds. Stage.bounds plus unoutlined fill repairs the misleading box; QA now checks the actual realized mask."
+    },
+    {
+      "id": "critical-step-ticks",
+      "path": "/tmp/wave6-ctrl-research/critical-tick-overflow.json",
+      "meaning": "Four large unstable-response layouts have overflowing10-digit ticks. Chapter-local scientific labels preserve coordinates/data and pass the targeted replacement."
+    },
+    {
+      "id": "routh-pedagogy",
+      "path": "/tmp/wave6-ctrl-research/routh-pixel-refinements.json",
+      "meaning": "Default ordinary cubic replaces a singular starting point whose one-elimination and complete-array modes coincided. Actual singular replacement rows now receive the orange highlight promised by the caption."
+    },
+    {
+      "id": "native-handle-checker",
+      "path": "/tmp/wave6-ctrl-research/browser-before-handle-fix.mjs",
+      "meaning": "A checker assumed every view had a slider; select-based invalid restore and raw handle coordinates repair the QA assumption. Partial first7 excluded."
+    },
+    {
+      "id": "phase-cancellation",
+      "path": "/tmp/wave6-ctrl-research/phase-cancellation-initial.json",
+      "meaning": "Expanded polynomial evaluation cancels near adjacent complex poles; rounding exact quotient components separately can also distort subnormal direction. Exact normalization before binary64 conversion repairs the phase. Initial differences mix production errors with naive-quotient comparator errors; no undifferentiated failure count claimed."
+    },
+    {
+      "id": "mpmath-subnormal-rounding",
+      "path": "/tmp/wave6-ctrl-research/mpmath-subnormal-double-rounding.json",
+      "meaning": "Even1100-digit mpmath-to-float can double-round a subnormal. The independent oracle now rounds the exact mpf dyadic through Fraction, and exact rational quotients directly through Fraction."
+    },
+    {
+      "id": "number-line-clipping",
+      "path": "/tmp/wave6-ctrl-research/numberline-visual-repair.json",
+      "meaning": "Personal inspection found colliding endpoint labels and selected-gain text clipped at the inner plot boundary. Separate label rows/inward alignment preserve data positions. Raw canvas-ink checks now distinguish data clipping from axis-label canvas bounds."
+    },
+    {
+      "id": "conditional-crossing-detail",
+      "path": "/tmp/wave6-ctrl-research/conditional-visual-detail-repair.json",
+      "meaning": "A fast far-left root compressed the instability crossings into unresolved pixels. A separate maximum-real-part view of the actual same roots retains the complete locus and exposes the crossings."
+    },
+    {
+      "id": "point-coordinate-precision",
+      "path": "/tmp/wave6-ctrl-research/viz-before-point-precision.js",
+      "meaning": "A rounded readout made an adjacent-to-pole point look equal to the pole despite a defined formula. Shortest round-trip binary64 coordinates distinguish the cases; exact displayed coordinates are checked after actual Share replay."
     }
   ],
   "personallyViewedSourcePages": [
@@ -202,7 +290,43 @@
     {
       "path": "/tmp/wave6-ctrl-research/source-nyquist-criterion.png",
       "sha256": "5497efcd4c9221ca046b334ee76fab57a8710aebf00c9c2e596320db8af61da6"
+    },
+    {
+      "path": "/tmp/wave6-ctrl-research/source-kharitonov-page8.png",
+      "sha256": "35c92b0388b1f5f4272f63e0d88211819953d669d99a1562c2509f0c29ef9687"
     }
   ],
-  "temporaryEvidence": "/tmp/wave6-ctrl-research"
+  "temporaryEvidence": "/tmp/wave6-ctrl-research",
+  "finalNumericalGates": {
+    "referenceCases": 437,
+    "families": 12,
+    "focusedGroups": 29,
+    "prototypeScalarOrInvariantComparisons": 2541,
+    "referenceRegeneration": "canonical byte-identical",
+    "referenceSHA256": "3f2f8739a268c1f43332ddfa3ffcb1f15d064a9fcb0f81e8ca839ed905f5e46a",
+    "scientificPreservation": "/tmp/wave6-ctrl-research/scientific-preservation.json"
+  },
+  "personalVisualGates": {
+    "status": "Personally inspected original CSS pixels; no resize. Long fields/widgets inspected through all declared pieces.",
+    "completeDefaultLayouts": 52,
+    "completeNarrowStatementsIncludingScopes": 26,
+    "completeNarrowIdeas": 26,
+    "completeNarrowCaptions": 26,
+    "criticalPlotRegions": 146,
+    "selectedCompleteCriticalReadouts": 60,
+    "additionalCompleteConstructionModeWidgets": 4,
+    "galleryCounts": {
+      "default": 30,
+      "rich": 26,
+      "capture": 116,
+      "mode": 4
+    },
+    "manifests": {
+      "default": "/tmp/wave6-ctrl-research/pixel-review/default-manifest.json",
+      "rich": "/tmp/wave6-ctrl-research/pixel-review/rich-manifest.json",
+      "capture": "/tmp/wave6-ctrl-research/pixel-review/capture-manifest.json",
+      "mode": "/tmp/wave6-ctrl-research/pixel-review/mode-manifest.json"
+    },
+    "scope": "All73 exact critical states in both narrow themes have complete plot regions viewed.30 selected critical states have complete readouts viewed in both themes. Every offered control/mode is automated; personal mode coverage combines defaults, critical states and two additional Routh construction modes."
+  }
 }
