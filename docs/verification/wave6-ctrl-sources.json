@@ -1,0 +1,208 @@
+{
+  "status": "CTRL6 pure-model preparation only. No visualization, native/pixel or author-count promotion.",
+  "prerequisiteBodiesRead": [
+    "ctrl-1.4",
+    "ctrl-4.4",
+    "ctrl-4.6",
+    "rca-10.43"
+  ],
+  "prerequisiteReceipt": "/tmp/wave6-ctrl-research/written-prerequisites.json",
+  "acquisitionReceipts": [
+    {
+      "id": "fbs-landing",
+      "requestedURL": "https://fbsbook.org/",
+      "error": "HTTP Error 500: Internal Server Error",
+      "bodyRead": false,
+      "stop": "Do not recover this stopped body via retry or alternative host/cache."
+    },
+    {
+      "id": "mit-1630-landing",
+      "requestedURL": "https://ocw.mit.edu/courses/16-30-feedback-control-systems-fall-2010/pages/lecture-notes/",
+      "finalURL": "https://ocw.mit.edu/courses/16-30-feedback-control-systems-fall-2010/pages/lecture-notes/",
+      "httpStatus": 200,
+      "bytes": 59153,
+      "sha256": "a2a69e516d5680d3355f8367d447f8781fac525e92f0bfed2798f151bd364ed3",
+      "requestedUTC": "2026-10-25T07:13:13.764225+00:00",
+      "path": "/tmp/wave6-ctrl-research/mit-1630-landing.html",
+      "bodyRead": false
+    },
+    {
+      "id": "mit-1630-02-resource",
+      "requestedURL": "https://ocw.mit.edu/courses/16-30-feedback-control-systems-fall-2010/resources/mit16_30f10_lec02/",
+      "requestedUTC": "2026-10-25T07:16:47.419460+00:00",
+      "bodyRead": false,
+      "finalURL": "https://ocw.mit.edu/courses/16-30-feedback-control-systems-fall-2010/resources/mit16_30f10_lec02/",
+      "httpStatus": 200,
+      "contentType": "text/html",
+      "bytes": 56727,
+      "sha256": "00448566fd1b3d715e1b328db77cdff90b9250bb7dbbe51fb1b09b326a5b460d",
+      "path": "/tmp/wave6-ctrl-research/mit-1630-02-resource.html"
+    },
+    {
+      "id": "kharitonov-wikipedia",
+      "requestedURL": "https://en.wikipedia.org/wiki/Kharitonov%27s_theorem",
+      "requestedUTC": "2026-10-25T07:16:47.694808+00:00",
+      "bodyRead": false,
+      "error": "HTTP Error 403: Forbidden",
+      "stop": "Do not recover stopped body via retry/alternate host/cache."
+    },
+    {
+      "id": "mit-1630-02",
+      "requestedURL": "https://ocw.mit.edu/courses/16-30-feedback-control-systems-fall-2010/0647b5f6e52191b6e63c6c23b59fd3dd_MIT16_30F10_lec02.pdf",
+      "requestedUTC": "2026-10-25T07:17:48.994246+00:00",
+      "bodyRead": "Selected text lines181\u2013413,595\u2013667,735\u2013840,868\u2013947 only; personally inspected rendered PDF pages11/21 (printed2\u201311/2\u201321).",
+      "finalURL": "https://ocw.mit.edu/courses/16-30-feedback-control-systems-fall-2010/0647b5f6e52191b6e63c6c23b59fd3dd_MIT16_30F10_lec02.pdf",
+      "httpStatus": 200,
+      "contentType": "application/pdf",
+      "bytes": 542567,
+      "sha256": "8664eff1f5a247905ab9f2117bb48f97502845d26970bbe3d7741bce2474bcd8",
+      "path": "/tmp/wave6-ctrl-research/mit-1630-02.pdf"
+    },
+    {
+      "id": "mit-6241-readings",
+      "requestedURL": "https://ocw.mit.edu/courses/6-241j-dynamic-systems-and-control-spring-2011/pages/readings/",
+      "requestedUTC": "2026-10-25T07:17:58.422232+00:00",
+      "bodyRead": false,
+      "finalURL": "https://ocw.mit.edu/courses/6-241j-dynamic-systems-and-control-spring-2011/pages/readings/",
+      "httpStatus": 200,
+      "contentType": "text/html",
+      "bytes": 82505,
+      "sha256": "483b83ea31a3bd013e73f204880ad78296c35047166cd16ddab8b3f514efef62",
+      "path": "/tmp/wave6-ctrl-research/mit-6241-readings.html"
+    },
+    {
+      "id": "kharitonov-search",
+      "requestedURL": "https://www.google.com/search?q=Kharitonov+theorem+lecture+notes+pdf",
+      "requestedUTC": "2026-10-25T07:22:17.936692+00:00",
+      "bodyRead": false,
+      "finalURL": "https://www.google.com/search?q=Kharitonov+theorem+lecture+notes+pdf",
+      "httpStatus": 200,
+      "contentType": "text/html; charset=ISO-8859-1",
+      "bytes": 92518,
+      "sha256": "2be2700ee0b2e35015ea6f7abda273fc1ea51581d96dafb193b15d5ea5067808",
+      "path": "/tmp/wave6-ctrl-research/kharitonov-search.html",
+      "outcome": "JS redirect only; no source text or source result acquired."
+    },
+    {
+      "id": "mit-1630-01-resource",
+      "requestedURL": "https://ocw.mit.edu/courses/16-30-feedback-control-systems-fall-2010/resources/mit16_30f10_lec01/",
+      "requestedUTC": "2026-10-25T07:22:18.154039+00:00",
+      "bodyRead": false,
+      "finalURL": "https://ocw.mit.edu/courses/16-30-feedback-control-systems-fall-2010/resources/mit16_30f10_lec01/",
+      "httpStatus": 200,
+      "contentType": "text/html",
+      "bytes": 56619,
+      "sha256": "4d33178bff098c6a57c7367e185456e695cc9532ad649f46c75a1f1be399f970",
+      "path": "/tmp/wave6-ctrl-research/mit-1630-01-resource.html"
+    },
+    {
+      "id": "mit-1630-01",
+      "requestedURL": "https://ocw.mit.edu/courses/16-30-feedback-control-systems-fall-2010/d2d138e9053e153f601a27a6c6cc3b4d_MIT16_30F10_lec01.pdf",
+      "requestedUTC": "2026-10-25T07:22:41.160607+00:00",
+      "bodyRead": false,
+      "finalURL": "https://ocw.mit.edu/courses/16-30-feedback-control-systems-fall-2010/d2d138e9053e153f601a27a6c6cc3b4d_MIT16_30F10_lec01.pdf",
+      "httpStatus": 200,
+      "contentType": "application/pdf",
+      "bytes": 302914,
+      "sha256": "985ecece171196531eeb222c603202117e9b876fe255176bc78a2fdf745f7731",
+      "path": "/tmp/wave6-ctrl-research/mit-1630-01.pdf"
+    },
+    {
+      "id": "liberzon-teaching",
+      "requestedURL": "https://liberzon.csl.illinois.edu/teaching/",
+      "requestedUTC": "2026-10-25T07:23:23.510104+00:00",
+      "bodyRead": false,
+      "error": "HTTP Error 403: Forbidden",
+      "stop": "Do not recover stopped body via retry/alternate host/cache."
+    },
+    {
+      "id": "kharitonov-bing",
+      "requestedURL": "https://www.bing.com/search?q=Kharitonov+theorem+lecture+notes+pdf",
+      "requestedUTC": "2026-10-25T07:23:23.999798+00:00",
+      "bodyRead": false,
+      "finalURL": "https://www.bing.com/search?q=Kharitonov+theorem+lecture+notes+pdf",
+      "httpStatus": 200,
+      "contentType": "text/html; charset=utf-8",
+      "bytes": 118955,
+      "sha256": "f4b23d697aede3d6030942c80a332fbceb1693d2ea4c4b6b50b906d5271eddfb",
+      "path": "/tmp/wave6-ctrl-research/kharitonov-bing.html",
+      "outcome": "Returned irrelevant Powerball results; unusable as mathematical evidence. No result body opened."
+    },
+    {
+      "id": "mit-6241-19-resource",
+      "requestedURL": "https://ocw.mit.edu/courses/6-241j-dynamic-systems-and-control-spring-2011/resources/mit6_241js11_chap19/",
+      "requestedUTC": "2026-10-25T07:26:26.696702+00:00",
+      "bodyRead": false,
+      "finalURL": "https://ocw.mit.edu/courses/6-241j-dynamic-systems-and-control-spring-2011/resources/mit6_241js11_chap19/",
+      "httpStatus": 200,
+      "contentType": "text/html",
+      "bytes": 76601,
+      "sha256": "ad24099b8ada70511d9e9c59773aa77552490e7e6152e8e861d123d37a9df0fd",
+      "path": "/tmp/wave6-ctrl-research/mit-6241-19-resource.html"
+    },
+    {
+      "id": "mit-6241-19",
+      "requestedURL": "https://ocw.mit.edu/courses/6-241j-dynamic-systems-and-control-spring-2011/f5ef45e468ca752d181e7682a6fe939b_MIT6_241JS11_chap19.pdf",
+      "requestedUTC": "2026-10-25T07:29:28.100613+00:00",
+      "bodyRead": "Selected text lines182\u2013225 and rendered PDF page7 only; no remaining chapter proof or Kharitonov body read.",
+      "finalURL": "https://ocw.mit.edu/courses/6-241j-dynamic-systems-and-control-spring-2011/f5ef45e468ca752d181e7682a6fe939b_MIT6_241JS11_chap19.pdf",
+      "httpStatus": 200,
+      "contentType": "application/pdf",
+      "bytes": 757365,
+      "sha256": "f4828d13e244a0b936d8cbad5b09345d12117ab0227a24a004838249f4cf184d",
+      "path": "/tmp/wave6-ctrl-research/mit-6241-19.pdf"
+    }
+  ],
+  "inheritedStops": [
+    "Original Ziegler\u2013Nichols ASME403; do not recover via alternate host/cache.",
+    "Original Skogestad timeout; do not recover via alternate host/cache."
+  ],
+  "commercialBodies": "Franklin\u2013Powell/Emami-Naeini and current \u00c5str\u00f6m\u2013Murray bodies not requested/read in this continuation. Earlier cached-source reading belongs to the historical Wave5 ledger only.",
+  "sourceCautions": [
+    "MIT16.30 extracted printed2\u201323 characteristic-polynomial line has a wrong degree term; local polynomial multiplication supplies the actual cubic. No original figure or numerical example is reused.",
+    "MIT6.241 chapter19 Theorem19.1 says the Nyquist plot of L must avoid the origin. Personally inspected page7 confirms that wording; for L the forbidden point is\u22121 (equivalently1+L avoids0). Local proofs use the actual return-difference polynomial and argument principle; that erroneous line is not adopted.",
+    "CTRL4.4 pole regions are second-order heuristics for rise/settling when zeros/higher-order modes occur. Lead views must calculate the full transient and label the region as a design guide.",
+    "CTRL1.4 common denominator roots can disappear from selected transfer maps through cancellation; local characteristic roots retain the chosen realization modes.",
+    "The general-degree Kharitonov theorem proof/source review remains pending. The quartic demonstration has a direct local Routh/convexity argument; finite samples or vertex tests alone are not a proof of the general theorem.",
+    "Approximate root locations use correctly rounded coefficients and their exact square-free factors. Exact stability and original multiplicity use the original rational polynomial. Classification/multiplicity disagreement flags are required for visually unresolved states; a small backward residual is not a forward root-error guarantee."
+  ],
+  "ownDerivations": [
+    "Exact Routh first columns with formal epsilon, auxiliary derivatives and explicit origin factors. Independent oracle uses exact rectangle root counts and Hurwitz minors, not the Routh algorithm.",
+    "Fixed-degree unity negative-feedback characteristic polynomials; positive-coefficient necessity, analytic cubic gain bound, angle/magnitude conditions, finite-gain roots/asymptotes/breakaway/departure and Rouche bounds around simple/multiple roots.",
+    "Lead/lag actual held-input state equations and quartic conditional-stability determinant.",
+    "For a positive quartic, Delta3>0 becomes a2>a4*(a1/a3)+a0/(a1/a3). Convexity in the positive ratio certifies the whole coefficient box from the extremal Kharitonov corners; leading coefficient remains positive and degree fixed."
+  ],
+  "referenceMethod": "352 independent cases in10 families: exact SymPy closed half-rectangle root counts after exact origin-factor extraction, Hurwitz determinant minors, exact complex evaluation, isolated root intervals,90-digit separate matrix exponentials, and Python Fraction correct binary64 rounding.",
+  "retainedFailures": [
+    {
+      "id": "sympy-repeated-origin",
+      "path": "/tmp/wave6-ctrl-research/reference-origin-defect.json",
+      "meaning": "Oracle defect repaired by exact factor extraction before root counting; initial failures/fixture retained."
+    },
+    {
+      "id": "rational-rounding",
+      "path": "/tmp/wave6-ctrl-research/rational-rounding-initial.json",
+      "meaning": "Prototype truncation exaggerated2\u2212MIN by one ulp; repaired exact nearest-even rounding before any view/promotion."
+    },
+    {
+      "id": "rounded-root-cluster",
+      "path": "/tmp/wave6-ctrl-research/root-rounding-cluster-initial.json",
+      "meaning": "A subnormal perturbation rounded coefficients to(s+1)^4; solving that repeated polynomial as square-free manufactured a visible1e-4 root cloud despite zero backward residual. Exact square-free factoring of the plotted coefficient polynomial repairs the cloud. Original and plotted multiplicities remain separate; unresolved coalescence must be disclosed in each relevant view."
+    }
+  ],
+  "personallyViewedSourcePages": [
+    {
+      "path": "/tmp/wave6-ctrl-research/source-root-locus-page11.png",
+      "sha256": "d6433e806c0f0d70e73a407083ed77b3c556712f45583e97e9f580f91ae76d35"
+    },
+    {
+      "path": "/tmp/wave6-ctrl-research/source-lead-page21.png",
+      "sha256": "ef00cdd1aec20cfb00758ab13c5aa0ebf8e30f0b6e4843d0ab14e7f179c27da8"
+    },
+    {
+      "path": "/tmp/wave6-ctrl-research/source-nyquist-criterion.png",
+      "sha256": "5497efcd4c9221ca046b334ee76fab57a8710aebf00c9c2e596320db8af61da6"
+    }
+  ],
+  "temporaryEvidence": "/tmp/wave6-ctrl-research"
+}

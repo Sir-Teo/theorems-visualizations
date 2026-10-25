@@ -1,0 +1,50 @@
+{
+  "status": "Pure-model preparation; no main/viz/syllabus change, browser/pixel gate or CTRL6 author promotion.",
+  "baseCommit": "26b8784bffc0d4a409b2776d7df4b5354d10f603",
+  "frozenItems": 13,
+  "writtenPrerequisitesRead": 4,
+  "referenceCases": 352,
+  "referenceFamilies": 10,
+  "prototypeComparisons": 2109,
+  "focusedGroups": 23,
+  "lastFocusedDurationMs": 405.752575,
+  "referenceRegeneration": "Production generator byte-identical",
+  "referenceSHA256": "7be34ae02dda50a3b504d8f6eb1fd5c9d3f7ab0599faa9f7ccc5f78e5b553284",
+  "strictCatalogue": {
+    "written": 8476,
+    "planned": 5098,
+    "chapters": 582,
+    "collections": 85,
+    "errors": 0,
+    "warnings": 0
+  },
+  "authorAvailabilityUnchanged": 761,
+  "independentAcceptanceUnchanged": 36,
+  "scientificLimits": [
+    "Exact rational Routh counts and multiplicities describe original binary64-input algebra; approximate root pictures use correctly rounded coefficients.",
+    "Forward root accuracy does not follow from a small backward residual. Rounded multiplicity/classification disagreement is exposed for views to disclose.",
+    "General-degree Kharitonov proof/source review remains pending; the demonstrated quartic implication has its own Routh/convexity derivation.",
+    "No actual visualization or native/Share/personal pixel evidence yet."
+  ],
+  "failuresRetained": [
+    "reference-origin-defect.json",
+    "prototype-initial-oracle-failure.json",
+    "rational-rounding-initial.json",
+    "root-rounding-cluster-initial.json"
+  ],
+  "logs": [
+    "/tmp/wave6-ctrl-research/reference-production-regen.log",
+    "/tmp/wave6-ctrl-research/prototype-root-rounding.log",
+    "/tmp/wave6-ctrl-research/focused-root-rounding.log",
+    "/tmp/wave6-ctrl-research/build-models.log"
+  ],
+  "sha256": {
+    "content/ctrl/ch06.exact.shared.js": "ce802f20e6fbf65f44de8052befa7736f8de5581386b1a34da7316598761e361",
+    "content/ctrl/ch06.shared.js": "71b22bd42d4835a0e2467d7a5baf35e157351bb4a298f83213b683f85c4ddaed",
+    "tests/wave6-ctrl.test.mjs": "c626cf81092c9d3b5d1fc8cbce9b6f6293f643e3ef9e9aa105be308b73748830",
+    "tests/wave6-ctrl-reference.py": "0f4496c85077bccf204764398d9b9b78aa1a58130483857be3a7d802cf0b870e",
+    "tests/fixtures/wave6-ctrl-reference.json": "7be34ae02dda50a3b504d8f6eb1fd5c9d3f7ab0599faa9f7ccc5f78e5b553284",
+    "docs/verification/wave6-ctrl-sources.json": "55b01e27732772fdc5e81fc45cfc4698efa3d32b9c424392632dfece225578cb"
+  },
+  "ownedBrowsersAndServers": "none started for CTRL6"
+}
