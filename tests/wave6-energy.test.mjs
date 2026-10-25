@@ -57,7 +57,7 @@ test('declared domains reject invalid restored values rather than manufacture a 
  const invalid={storage:[{capacity:-1},{progress:2.0000000000000004},{etaCharge:.49}],nernst:[{fraction:0},{electrons:3},{activityRatio:0}],battery:[{resistance:0},{fraction:1.0000000000000002}],peukert:[{current:0},{exponent:.99},{preset:'unknown'}],soc:[{initial:-Number.MIN_VALUE},{hours:4.000000000000001},{operation:'unknown'}],cycleLife:[{depth:0},{exponent:0}],hydro:[{areaKm2:0},{flow:0},{operation:'unknown'}],air:[{ratio:.99},{gamma:.99},{thermal:'unknown'}],flywheel:[{radius:0},{fraction:1.0000000000000002}],capacitor:[{cutoff:1},{current:0}],hydrogen:[{electrolyser:-Number.MIN_VALUE},{retention:1.0000000000000002}],ragone:[{power:0,energy:10},{power:100,energy:0}]};
  for(const[name,rows]of Object.entries(invalid))for(const args of [...rows,{[name==='ragone'?'power':Object.keys(rows[0])[0]]:NaN}])assert.throws(()=>functions[name](args),name+' '+JSON.stringify(args));
 });
-test('all twelve frozen physical families retain their complete independent reference inventory',()=>{assert.equal(Object.keys(F).length,12);assert.equal(Object.values(F).reduce((n,rows)=>n+rows.length,0),1221);});
+test('all twelve frozen physical families retain their complete independent reference inventory',()=>{assert.equal(Object.keys(F).length,12);assert.equal(Object.values(F).reduce((n,rows)=>n+rows.length,0),1222);});
 
 test('twelve complete lessons preserve frozen identities, ordered dependencies and outside-chapter syllabus bytes',async()=>{
  const {default:chapter}=await import('../content/energy/ch06.js'),{default:syllabus}=await import('../content/energy/syllabus.js'),crypto=await import('node:crypto');

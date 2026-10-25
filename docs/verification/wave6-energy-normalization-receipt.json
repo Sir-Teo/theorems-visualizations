@@ -1,0 +1,81 @@
+{
+  "status": "Physical helper references and current native normalization matrix pass; full current-source scientific/ink and personal gates in progress",
+  "baseCommit": "5b3ed33e",
+  "modelCases": 1222,
+  "families": 12,
+  "focusedAndAffectedGroups": 36,
+  "canonicalRegeneration": "byte identical",
+  "all1221EarlierArgsAndFields": "Canonical family-prefix bytes identical, including signed zero",
+  "earlierFamilyPrefixSHA256": {
+    "air": "e1ac85ee45d5d125226ebb62bb45757f8b67e4a1fb9e4ecc3d4a7254400a5431",
+    "battery": "aece6a36d20071e17728dc1e8559dce80d6ac8876fcdbe16603cb48fcb0ba020",
+    "capacitor": "e10801b9464784da3a574f9770a000d191faa58dca75bad899a77cc8524a2e1a",
+    "cycleLife": "76cdffa878bcc16d7c328120c0397923606a87f6c58e5c73b9e8beee5fa1b6e6",
+    "flywheel": "37417c23091a58282e16c9a70d100ff4915e1ecac56109ac305ce6c3c3f34af6",
+    "hydro": "ace38dd2b756162f7389c1aba5edc14af8fe0803c45402358be06259b2238a8f",
+    "hydrogen": "3f71fc837c2d65fc98a448308ead8589cfe138b7fe9e4562637afb78ddeb4655",
+    "nernst": "38120d6433e3cf11264f6d45b7129a95c4e02f7dc5b37aafc09cc24cf3419d71",
+    "peukert": "bbec0e1c3e484bb53b7e5da2fa1e21c432d8bd65eb9a48daf8ca5bb75c700ddb",
+    "ragone": "6daf8e903894d80c4b33b76916a6d4f8ffe3b5a83dfd2f5a2c595b33e8704cb9",
+    "soc": "4dea9531f06faab162201e969a5475c04c88bed75eeed78d988fbf6ee591f1b9",
+    "storage": "277fa781b4144565a365dccd1093867f220c570b959de7873595f2e1069242f9"
+  },
+  "initialProbe": {
+    "water": {
+      "old": [
+        0,
+        0
+      ],
+      "correct": [
+        0.5,
+        0.5
+      ]
+    },
+    "generic": {
+      "old": 0,
+      "correct": 0.45
+    },
+    "batteryComparison": {
+      "old": 1,
+      "correct": 0.9
+    },
+    "socPercent": {
+      "old": 0,
+      "correct": 2.47e-322
+    }
+  },
+  "beforeNarrowGroups": 8,
+  "beforeFailures": 8,
+  "repairedNarrowGroups": 8,
+  "repairedFailures": 0,
+  "repairedChecks": 80,
+  "repairedScientificComparisons": 12082,
+  "nativeMetrics": {
+    "actions": 1428,
+    "actualShares": 656,
+    "checks": 2886,
+    "scientificRenderComparisons": 374166,
+    "invalidRestores": 72,
+    "rawRestores": 48,
+    "criticalRestores": 316,
+    "layouts": 48
+  },
+  "repairs": [
+    "Energy bars divide exact physical amounts by their exact common reference before final rounding.",
+    "Water-fill fractions are evaluated before absolute volumes round to zero.",
+    "SOC percentage applies the exact100 unit factor before final rounding.",
+    "Rest mode hides inactive C-rate and meter gain without dropping their registered Share values."
+  ],
+  "controlsAndMath": "No shared renderer/math/map/FPS edits, no physical-model equation changes; one additional Fraction reference checks tiny SOC units.",
+  "sha256": {
+    "content/energy/ch06.js": "eb8d6694f9452e2e06717e6eb33dcea619043b7e8fae18fb969a93b676fc77e6",
+    "content/energy/ch06.shared.js": "b3d6deae1ab896f88c5d86c055aeb1638fd48144ee724d72106feba3d8342dc2",
+    "content/energy/ch06.exact.shared.js": "d272e03b1c0d088ada1491ba6483f36c7839f84af81caa12fed437a00d8f517f",
+    "content/energy/ch06.viz.js": "f84370c5c7a549b330a3ce1ad6c9b3046ba504373ed4995a7df419a15aaf32af",
+    "content/energy/syllabus.js": "d4f6572c18a13754798b4415e45bf40593a7b61b1e6ff00110e026da37d93c8d",
+    "tests/wave6-energy-reference.py": "dce99ceb38b29774f2d3a414b7bdf3f2e960b6a23397ddb80b51174ceb39394d",
+    "tests/fixtures/wave6-energy-reference.json": "4845c3400499ed0801ba19e44cbad88be62aeb9ca47e06e118617e117a789081",
+    "tests/wave6-energy.test.mjs": "b23436739a533d1dfd25d2cdb7fd0dbdef99afc385abfb4e253ff9358b9a6c67",
+    "tests/wave6-energy-browser.mjs": "f81ae3d073bfeeed43d5440b287a1d780626c7df69321c2be1fc7abf7d8cdf44"
+  }
+}

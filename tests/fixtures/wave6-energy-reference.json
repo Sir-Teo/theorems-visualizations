@@ -87895,6 +87895,94 @@
             "value": 50.0
           }
         }
+      },
+      {
+        "args": {
+          "hours": 0.5,
+          "initial": 5e-324,
+          "meterBias": 0.0,
+          "meterGain": 1.0,
+          "rate": 5e-324
+        },
+        "expect": {
+          "activeHours": {
+            "logMagnitude": -0.6931471805599453,
+            "sign": 1,
+            "value": 0.5
+          },
+          "capacityAh": 100,
+          "current": {
+            "logMagnitude": -739.8349017353931,
+            "sign": 1,
+            "value": 4.94e-322
+          },
+          "estimate": {
+            "logMagnitude": -745.1332191019412,
+            "sign": 1,
+            "value": 0.0
+          },
+          "meterCharge": {
+            "logMagnitude": -740.5280489159531,
+            "sign": 1,
+            "value": 2.47e-322
+          },
+          "meterError": {
+            "logMagnitude": null,
+            "sign": 0,
+            "value": 0.0
+          },
+          "meterReading": {
+            "logMagnitude": -739.8349017353931,
+            "sign": 1,
+            "value": 4.94e-322
+          },
+          "openVoltage": {
+            "logMagnitude": 1.0986122886681098,
+            "sign": 1,
+            "value": 3.0
+          },
+          "phase": "discharge",
+          "remainingCharge": {
+            "logMagnitude": -740.5280489159531,
+            "sign": 1,
+            "value": 2.47e-322
+          },
+          "stateOfCharge": {
+            "logMagnitude": -745.1332191019412,
+            "sign": 1,
+            "value": 0.0
+          },
+          "stopTime": {
+            "logMagnitude": 0.0,
+            "sign": 1,
+            "value": 1.0
+          },
+          "terminal": {
+            "logMagnitude": 1.0986122886681098,
+            "sign": 1,
+            "value": 3.0
+          },
+          "timePastCutoff": {
+            "logMagnitude": -0.6931471805599453,
+            "sign": -1,
+            "value": -0.5
+          },
+          "voltageError": {
+            "logMagnitude": -746.2318313906093,
+            "sign": -1,
+            "value": -0.0
+          },
+          "voltageEstimate": {
+            "logMagnitude": -745.5386842100494,
+            "sign": 1,
+            "value": 0.0
+          },
+          "withdrawnCharge": {
+            "logMagnitude": -740.5280489159531,
+            "sign": 1,
+            "value": 2.47e-322
+          }
+        }
       }
     ],
     "storage": [
