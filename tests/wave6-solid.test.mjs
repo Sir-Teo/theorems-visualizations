@@ -72,3 +72,9 @@ test('declared domains reject malformed geometry and unsupported raw states',()=
 test('complete independent inventory includes all twelve models and physical profile probes',()=>{
  assert.equal(Object.keys(families).length,12);assert.equal(Object.values(families).reduce((n,r)=>n+r.length,0),1247);assert.ok(comparisons>100000);assert.equal(failures.length,0);
 });
+
+test('all twelve complete lessons retain frozen identities and mirror researched syllabus metadata',async()=>{
+ const [{default:chapter},{default:sy}]=await Promise.all([import('../content/solid/ch06.js'),import('../content/solid/syllabus.js')]),plan=JSON.parse(fs.readFileSync(new URL('../docs/wave-6-plan.json',import.meta.url))),frozen=plan.chapters.find(c=>c.collection==='solid').items,outline=sy.chapters.find(c=>c.n===6).items;
+ assert.equal(chapter.items.length,12);assert.equal(outline.length,12);
+ chapter.items.forEach((item,j)=>{for(const k of ['num','kind','name','deps'])assert.deepEqual(item[k],frozen[j][k]);for(const k of ['paper','verify','see'])assert.deepEqual(item[k],frozen[j][k]);for(const k of ['num','kind','name','deps','refs'])assert.deepEqual(item[k],outline[j][k]);assert.equal(item.caption,outline[j].pic);for(const k of ['statement','idea','caption','scope'])assert.ok(typeof item[k]==='string'&&item[k].length>120,item.num+' complete '+k);assert.equal(typeof item.viz,'function');assert.ok(item.refs.length>0);for(const url of Object.values(item.links))assert.match(url,/^https:\/\/(ocw\.mit\.edu|archive\.nptel\.ac\.in)\//);});
+});

@@ -1,5 +1,5 @@
 {
-  "status": "All12 initial pure kernels and1247 independent reference cases pass20 focused plus15 affected groups; canonical regeneration is byte identical. Main/UI, syllabus and author count promotion remain pending.",
+  "status": "All12 complete own lessons and31 panels drafted; author gates in progress, not promoted",
   "baseCommit": "4eb5bb31",
   "frozenChapter": "/tmp/wave6-solid-research/frozen-chapter.json",
   "frozenIdentities": 12,
@@ -264,7 +264,7 @@
     "Plastic section capacity is a limit, not a finite-curvature snap or a global-collapse guarantee.",
     "I-section shape factor depends on actual geometry, and fixed-area comparison excludes buckling/local stability."
   ],
-  "next": "Derive/independently verify12 pure kernels before installing complete lessons and carefully crafted diagrams; preserve149 prior manifests and frozen plans.",
+  "next": "Complete native/Share/raw/invalid/critical checks and personal original-pixel visual review before author-count promotion.",
   "modelCheckpoint": {
     "status": "Model-only author checkpoint: all12 pure kernels independently checked; no SOLID6 main/UI/syllabus/count promotion",
     "baseCommit": "f4cd6e76",
@@ -296,5 +296,28 @@
     "priorMismatches": 0,
     "allBrowsersAndServersClosed": true,
     "next": "Author all12 complete explanations and purposeful physical diagrams, synchronize only SOLID6 syllabus metadata, then finish native/Share/inner-ink and personal-pixel gates before author counts change."
+  },
+  "uiDraft": {
+    "models": "all12 independently verified",
+    "lessons": 12,
+    "panels": 31,
+    "focusedGroups": 21,
+    "affectedGroups": 15,
+    "strictBuild": {
+      "written": 8521,
+      "planned": 5053,
+      "chapters": 586,
+      "collections": 85,
+      "errors": 0,
+      "warnings": 0
+    },
+    "static": {
+      "items": 12,
+      "errors": 0,
+      "warnings": 0
+    },
+    "authorAvailabilityUnchanged": "794/1057",
+    "independentAcceptanceUnchanged": 36,
+    "complete": false
   }
 }
