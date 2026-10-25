@@ -1,0 +1,35 @@
+{
+  "status": "Models only; no ENERGY6 main/viz/syllabus installed or author promotion",
+  "referenceCases": 1134,
+  "families": {
+    "air": 69,
+    "battery": 32,
+    "capacitor": 36,
+    "cycleLife": 52,
+    "flywheel": 132,
+    "hydro": 260,
+    "hydrogen": 69,
+    "nernst": 76,
+    "peukert": 37,
+    "ragone": 31,
+    "soc": 150,
+    "storage": 190
+  },
+  "prototypeGroups": 16,
+  "prototypeComparisons": 65069,
+  "canonicalRegeneration": "byte identical",
+  "precision": "90 ordinary /1800 extreme decimal digits; original binary64 Fraction inputs",
+  "priorAuthorAvailability": 782,
+  "independentAcceptance": 36,
+  "observedRepairs": {
+    "flywheelPhase": "Use normal limiting angular speed times original fraction and time before final rounding; original tiny phase log error -0.0001604257336111914 repaired to 0 in retained probe.",
+    "tinyKernels": "Controlled short Taylor kernels preserve tiny factors without huge rational intermediate denominators; tiny gas evaluation approximately1963.42ms to4.10ms."
+  },
+  "artifacts": {
+    "content/energy/ch06.shared.js": "879ae0f988bdf5da6c1fb7be93b8cd473a38ffca944d9fb84af8b389cf6cdde4",
+    "content/energy/ch06.exact.shared.js": "d272e03b1c0d088ada1491ba6483f36c7839f84af81caa12fed437a00d8f517f",
+    "tests/wave6-energy-reference.py": "777977fc03dfc57a78daceb7f66dac9d8858ec1c8dc9d13c8222860c56544500",
+    "tests/fixtures/wave6-energy-reference.json": "f0e25b8478fde6dc5c7e43a3877a25c4df752dad33a6d13c3971036196fc2402",
+    "tests/wave6-energy.test.mjs": "ce95aed9bafd0ec36e3dc7c674b4c3ee60957615d994d9ec10009ecef0245e54"
+  }
+}
