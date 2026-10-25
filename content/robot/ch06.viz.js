@@ -67,7 +67,7 @@ export function lesson1(v){
   const vectorLabel=(label,d,color)=>{const tip=d.map(x=>x*1.5),projected=A.project(tip),right=projected[0]>A.W/2;A.text(label,tip,{color,size:13,dx:right?-9:9,dy:projected[1]<A.H/2?12:-12,align:right?'right':'left'});};
   if(L){A.arrow([0,0,0],L.map(x=>x*1.5),{color:'gold',width:4,head:10});vectorLabel(parallel?'L ∥ ω':'L',L,'gold');}
   if(w){A.arrow([0,0,0],w.map(x=>x*1.5),{color:'purple',width:2,head:8});if(!parallel)vectorLabel('ω',w,'purple');}
-  if(p.mode==='wrench'&&p.force!==0){A.arrow([0,0,0],[Math.sign(p.force)*1.5,0,0],{color:'orange',width:2.5});A.text('F',[Math.sign(p.force)*1.7,0,0],{color:'orange',size:13});}
+  if(p.mode==='wrench'&&p.force!==0){A.arrow([0,0,0],[Math.sign(p.force)*1.5,0,0],{color:'orange',width:2.5});A.text('F',[Math.sign(p.force)*1.5,0,0],{color:'orange',size:13,dy:-17});}
   if(p.mode==='wrench'&&p.torque!==0){const sign=Math.sign(p.torque),r=1.17*p.radius,start=.25,end=start+sign*1.6*Math.PI,points=array(65,start,end).map(u=>rotate([r*Math.cos(u),r*Math.sin(u),0]));A.path(points,{color:'orange',width:2.3});A.arrow(rotate([r*Math.cos(end-sign*.4),r*Math.sin(end-sign*.4),0]),points.at(-1),{color:'orange',width:2.3,head:7});const front=points.reduce((a,b)=>A.project(a)[2]<A.project(b)[2]?a:b);A.tex(String.raw`\tau`,front,{color:'orange',size:15,dx:10,dy:12});}
   ledger(B,[['rotational kinetic energy',z.rotationalEnergy,'blue'],['translational kinetic energy',z.translationalEnergy,'accent'],['applied work',z.work,'orange'],['change in total kinetic energy',H.quantity(Q.sub(z.energy.exact,z.initialEnergy.exact)),'gold']],'J');
  },{autoplay:false,period:2,still:0});
@@ -76,7 +76,7 @@ export function lesson1(v){
 }
 
 export function lesson2(v){
- const inputs=motionControls(v),A=physical(v,'Prescribed motion · uniform rods and their centres of mass',{full:true,height:350}),B=panel(v,'Joint1: required torque'),C=panel(v,'Joint2: required torque');let z,scale;
+ const inputs=motionControls(v),A=physical(v,'Prescribed motion · uniform rods and their centres of mass',{height:350}),B=panel(v,'Joint1: required torque'),C=panel(v,'Joint2: required torque');let z,scale;
  v.animate(t=>{const p=inputs(t);z=H.prescribedMotion(p);arm(A,z,{gravity:true});const rows=i=>[['inertial: M q̈',z.inertialTorque[i],'blue'],['velocity products: c',z.coriolis[i],'purple'],['gravity: g',z.gravityTorque[i],'green'],['required actuator torque',z.torque[i],'orange']];scale=unitFor([...rows(0),...rows(1)].map(r=>r[1]));ledger(B,rows(0),'N m',scale);ledger(C,rows(1),'N m',scale);},{autoplay:false,still:0});
  v.legend([['teal','rod1'],['blue','rod2 / inertial-torque term'],['purple','velocity-product torque'],['green','gravity direction / torque'],['orange','required actuator torque'],['gold','tool point']]);
  v.readout(()=> '**Required torques='+pair(z.torque)+' N m; actuator power='+qf(z.power)+' W.**\n\nActual joint rates='+pair(z.velocity)+' rad/s; accelerations='+pair(z.acceleration)+' rad/s². Both torque ledgers use the same bar scale: maximum magnitude '+qf(scale)+' N m. This is prescribed inverse dynamics; the calculated actuators enforce the motion.\n\nRod1: 2 kg, 1 m. Rod2: '+f(z.parameters.m2)+' kg, '+f(z.parameters.l2)+' m. Hollow small dots mark the COMs. Rod thickness and gravity-arrow lengths are schematic.');

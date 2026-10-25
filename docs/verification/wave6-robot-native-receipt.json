@@ -1,0 +1,717 @@
+{
+  "status": "PASS native controls and scientific render; personal visual gate still open",
+  "scope": "36 disjoint final-behavior layouts. Initial complete matrix at67406b5a, full native reruns of1 after force-label repair and2 after desktop layout repair. Main citation and two wording-only repairs are independently proved; no claim that older entire files were retested.",
+  "totals": {
+    "layouts": 36,
+    "actions": 1692,
+    "shares": 732,
+    "invalid": 36,
+    "raw": 36,
+    "critical": 320,
+    "checks": 2844,
+    "modelComparisons": 1739916
+  },
+  "sourceProof": {
+    "mainBefore": "520ecc5536668df5375911347d6c57d643ec14eb50927b931547ffc358781ca5",
+    "mainAfter": "1b9771101d07a384b565d371e9e099ae30dc2858b7cb4f49d2d261e7724c4213",
+    "syllabusBefore": "7e1edde6998d7b8bf6da0fa4dda2d926f8660b1976cfe9c4abb5036bf2dfbec1",
+    "syllabusAfter": "4acd5c0bf5736f89ae807f1ad477f813b65e7ee270aa8fc5fdf65b4841c96dd3",
+    "vizBefore": "eb182f23c1eebf18c3b4e216f54560acbda22552d6c27c8a5acc267bbab32bb7",
+    "vizAfter": "161dd7d498fa238b6261f5c9a32aa2bf49d4fa4e62796fb08534839a65c8bb4e",
+    "claims": [
+      "Main exact except9 citation strings, lesson2 COM-inertia introductory wording, lesson3 zero-energy wording",
+      "Syllabus exact except9 citation strings, all outside6 chapters exact",
+      "Only viz changes: force-label position in1, desktop full-width flag removed in2",
+      "Lessons3–9 viz bytes exact",
+      "All four native runs consumed exact current pure helpers, shared renderer, share codec and native harness files"
+    ]
+  },
+  "runs": [
+    {
+      "directory": "/tmp/wave6-robot-native-final-a",
+      "summarySHA256": "7862f08174510ae93edd0f8b42755d0e44ed5a13a6b3b2f026574aa896bdb963",
+      "totals": {
+        "layouts": 16,
+        "actions": 760,
+        "shares": 324,
+        "invalid": 16,
+        "raw": 16,
+        "critical": 148,
+        "checks": 1272,
+        "modelComparisons": 924288
+      },
+      "sourceHashes": {
+        "../content/robot/ch06.js": "520ecc5536668df5375911347d6c57d643ec14eb50927b931547ffc358781ca5",
+        "../content/robot/ch06.viz.js": "eb182f23c1eebf18c3b4e216f54560acbda22552d6c27c8a5acc267bbab32bb7",
+        "../content/robot/ch06.shared.js": "e585f8631205c7cf403cfeb242f6e63e1e557a4f0ad307f6e6fcb2ff4762b0d7",
+        "../content/robot/ch06.exact.shared.js": "68751873d8405ebd2cef296a3e8d5b092f2ee9ca8bb0f9a3c6090f9e8d3d61c2",
+        "../content/robot/syllabus.js": "7e1edde6998d7b8bf6da0fa4dda2d926f8660b1976cfe9c4abb5036bf2dfbec1",
+        "../assets/js/viz/core.js": "a6fa1753d9d9e8b9a05a7161fffc58dfd53b27002d9d393a3266aeb96515fe73",
+        "../assets/js/share-state.js": "13c6a9ac1237d566fc5d79c89e0f4d3029aa8c2817d2c08247a02b1b053a59b1",
+        "./wave6-robot-native.mjs": "0c5b162e4c8ffe697b21e013a7cb8f182f5059ca7f28f11427d7410e0bb06290",
+        "./wave6-robot-native-science.mjs": "6ab0d0c79ec9a8e3458b8234e6e0a25bb113767314b5c1befe72465780925462",
+        "./wave6-robot-native-cases.mjs": "7e5cccd3702e481b5de38d646823bab31c19e1e24583abead3b1b81ce891aea6",
+        "./wave6-robot-browser.shared.mjs": "2e8eb42535cfc8f66035e83530c269e1f93695ad59cf63208161396742abf88e"
+      }
+    },
+    {
+      "directory": "/tmp/wave6-robot-native-final-b",
+      "summarySHA256": "a977df63af88be2114ee372f30d9f7e016fef4211bc6262358e2c5501dc244b7",
+      "totals": {
+        "layouts": 20,
+        "actions": 932,
+        "shares": 408,
+        "invalid": 20,
+        "raw": 20,
+        "critical": 172,
+        "checks": 1572,
+        "modelComparisons": 815628
+      },
+      "sourceHashes": {
+        "../content/robot/ch06.js": "520ecc5536668df5375911347d6c57d643ec14eb50927b931547ffc358781ca5",
+        "../content/robot/ch06.viz.js": "eb182f23c1eebf18c3b4e216f54560acbda22552d6c27c8a5acc267bbab32bb7",
+        "../content/robot/ch06.shared.js": "e585f8631205c7cf403cfeb242f6e63e1e557a4f0ad307f6e6fcb2ff4762b0d7",
+        "../content/robot/ch06.exact.shared.js": "68751873d8405ebd2cef296a3e8d5b092f2ee9ca8bb0f9a3c6090f9e8d3d61c2",
+        "../content/robot/syllabus.js": "7e1edde6998d7b8bf6da0fa4dda2d926f8660b1976cfe9c4abb5036bf2dfbec1",
+        "../assets/js/viz/core.js": "a6fa1753d9d9e8b9a05a7161fffc58dfd53b27002d9d393a3266aeb96515fe73",
+        "../assets/js/share-state.js": "13c6a9ac1237d566fc5d79c89e0f4d3029aa8c2817d2c08247a02b1b053a59b1",
+        "./wave6-robot-native.mjs": "0c5b162e4c8ffe697b21e013a7cb8f182f5059ca7f28f11427d7410e0bb06290",
+        "./wave6-robot-native-science.mjs": "6ab0d0c79ec9a8e3458b8234e6e0a25bb113767314b5c1befe72465780925462",
+        "./wave6-robot-native-cases.mjs": "7e5cccd3702e481b5de38d646823bab31c19e1e24583abead3b1b81ce891aea6",
+        "./wave6-robot-browser.shared.mjs": "2e8eb42535cfc8f66035e83530c269e1f93695ad59cf63208161396742abf88e"
+      }
+    },
+    {
+      "directory": "/tmp/wave6-robot-native-force-label",
+      "summarySHA256": "4f9157e9adc4b09d12f207b41f840fa0bde92eb85abe857b349f6fc12c85d46e",
+      "totals": {
+        "layouts": 4,
+        "actions": 224,
+        "shares": 100,
+        "invalid": 4,
+        "raw": 4,
+        "critical": 48,
+        "checks": 384,
+        "modelComparisons": 458540
+      },
+      "sourceHashes": {
+        "../content/robot/ch06.js": "c452d531c2ab57b3157113b32461f4341910a75e54a48bb3ffc3a7563fc94aed",
+        "../content/robot/ch06.viz.js": "9411fc3b03b53f25a95df504ed38f0519b27f23cb439b3128fbdf525306800e8",
+        "../content/robot/ch06.shared.js": "e585f8631205c7cf403cfeb242f6e63e1e557a4f0ad307f6e6fcb2ff4762b0d7",
+        "../content/robot/ch06.exact.shared.js": "68751873d8405ebd2cef296a3e8d5b092f2ee9ca8bb0f9a3c6090f9e8d3d61c2",
+        "../content/robot/syllabus.js": "4acd5c0bf5736f89ae807f1ad477f813b65e7ee270aa8fc5fdf65b4841c96dd3",
+        "../assets/js/viz/core.js": "a6fa1753d9d9e8b9a05a7161fffc58dfd53b27002d9d393a3266aeb96515fe73",
+        "../assets/js/share-state.js": "13c6a9ac1237d566fc5d79c89e0f4d3029aa8c2817d2c08247a02b1b053a59b1",
+        "./wave6-robot-native.mjs": "0c5b162e4c8ffe697b21e013a7cb8f182f5059ca7f28f11427d7410e0bb06290",
+        "./wave6-robot-native-science.mjs": "6ab0d0c79ec9a8e3458b8234e6e0a25bb113767314b5c1befe72465780925462",
+        "./wave6-robot-native-cases.mjs": "7e5cccd3702e481b5de38d646823bab31c19e1e24583abead3b1b81ce891aea6",
+        "./wave6-robot-browser.shared.mjs": "2e8eb42535cfc8f66035e83530c269e1f93695ad59cf63208161396742abf88e"
+      }
+    },
+    {
+      "directory": "/tmp/wave6-robot-native-torque-layout",
+      "summarySHA256": "09622418e2e5c8cfc4f43fd936c5d506ec4fd72e7f34105dbe61ee853e1d8e6d",
+      "totals": {
+        "layouts": 4,
+        "actions": 204,
+        "shares": 84,
+        "invalid": 4,
+        "raw": 4,
+        "critical": 36,
+        "checks": 332,
+        "modelComparisons": 148072
+      },
+      "sourceHashes": {
+        "../content/robot/ch06.js": "c452d531c2ab57b3157113b32461f4341910a75e54a48bb3ffc3a7563fc94aed",
+        "../content/robot/ch06.viz.js": "161dd7d498fa238b6261f5c9a32aa2bf49d4fa4e62796fb08534839a65c8bb4e",
+        "../content/robot/ch06.shared.js": "e585f8631205c7cf403cfeb242f6e63e1e557a4f0ad307f6e6fcb2ff4762b0d7",
+        "../content/robot/ch06.exact.shared.js": "68751873d8405ebd2cef296a3e8d5b092f2ee9ca8bb0f9a3c6090f9e8d3d61c2",
+        "../content/robot/syllabus.js": "4acd5c0bf5736f89ae807f1ad477f813b65e7ee270aa8fc5fdf65b4841c96dd3",
+        "../assets/js/viz/core.js": "a6fa1753d9d9e8b9a05a7161fffc58dfd53b27002d9d393a3266aeb96515fe73",
+        "../assets/js/share-state.js": "13c6a9ac1237d566fc5d79c89e0f4d3029aa8c2817d2c08247a02b1b053a59b1",
+        "./wave6-robot-native.mjs": "0c5b162e4c8ffe697b21e013a7cb8f182f5059ca7f28f11427d7410e0bb06290",
+        "./wave6-robot-native-science.mjs": "6ab0d0c79ec9a8e3458b8234e6e0a25bb113767314b5c1befe72465780925462",
+        "./wave6-robot-native-cases.mjs": "7e5cccd3702e481b5de38d646823bab31c19e1e24583abead3b1b81ce891aea6",
+        "./wave6-robot-browser.shared.mjs": "2e8eb42535cfc8f66035e83530c269e1f93695ad59cf63208161396742abf88e"
+      }
+    }
+  ],
+  "rows": [
+    {
+      "id": 1,
+      "theme": "light",
+      "width": 320,
+      "criticalCases": 12,
+      "totals": {
+        "layouts": 1,
+        "actions": 56,
+        "shares": 25,
+        "invalid": 1,
+        "raw": 1,
+        "critical": 12,
+        "checks": 96,
+        "modelComparisons": 114635
+      }
+    },
+    {
+      "id": 1,
+      "theme": "light",
+      "width": 1200,
+      "criticalCases": 12,
+      "totals": {
+        "layouts": 1,
+        "actions": 56,
+        "shares": 25,
+        "invalid": 1,
+        "raw": 1,
+        "critical": 12,
+        "checks": 96,
+        "modelComparisons": 114635
+      }
+    },
+    {
+      "id": 1,
+      "theme": "dark",
+      "width": 320,
+      "criticalCases": 12,
+      "totals": {
+        "layouts": 1,
+        "actions": 56,
+        "shares": 25,
+        "invalid": 1,
+        "raw": 1,
+        "critical": 12,
+        "checks": 96,
+        "modelComparisons": 114635
+      }
+    },
+    {
+      "id": 1,
+      "theme": "dark",
+      "width": 1200,
+      "criticalCases": 12,
+      "totals": {
+        "layouts": 1,
+        "actions": 56,
+        "shares": 25,
+        "invalid": 1,
+        "raw": 1,
+        "critical": 12,
+        "checks": 96,
+        "modelComparisons": 114635
+      }
+    },
+    {
+      "id": 2,
+      "theme": "light",
+      "width": 320,
+      "criticalCases": 9,
+      "totals": {
+        "layouts": 1,
+        "actions": 51,
+        "shares": 21,
+        "invalid": 1,
+        "raw": 1,
+        "critical": 9,
+        "checks": 83,
+        "modelComparisons": 37018
+      }
+    },
+    {
+      "id": 2,
+      "theme": "light",
+      "width": 1200,
+      "criticalCases": 9,
+      "totals": {
+        "layouts": 1,
+        "actions": 51,
+        "shares": 21,
+        "invalid": 1,
+        "raw": 1,
+        "critical": 9,
+        "checks": 83,
+        "modelComparisons": 37018
+      }
+    },
+    {
+      "id": 2,
+      "theme": "dark",
+      "width": 320,
+      "criticalCases": 9,
+      "totals": {
+        "layouts": 1,
+        "actions": 51,
+        "shares": 21,
+        "invalid": 1,
+        "raw": 1,
+        "critical": 9,
+        "checks": 83,
+        "modelComparisons": 37018
+      }
+    },
+    {
+      "id": 2,
+      "theme": "dark",
+      "width": 1200,
+      "criticalCases": 9,
+      "totals": {
+        "layouts": 1,
+        "actions": 51,
+        "shares": 21,
+        "invalid": 1,
+        "raw": 1,
+        "critical": 9,
+        "checks": 83,
+        "modelComparisons": 37018
+      }
+    },
+    {
+      "id": 3,
+      "theme": "light",
+      "width": 320,
+      "criticalCases": 7,
+      "totals": {
+        "layouts": 1,
+        "actions": 32,
+        "shares": 14,
+        "invalid": 1,
+        "raw": 1,
+        "critical": 7,
+        "checks": 56,
+        "modelComparisons": 29868
+      }
+    },
+    {
+      "id": 3,
+      "theme": "light",
+      "width": 1200,
+      "criticalCases": 7,
+      "totals": {
+        "layouts": 1,
+        "actions": 32,
+        "shares": 14,
+        "invalid": 1,
+        "raw": 1,
+        "critical": 7,
+        "checks": 56,
+        "modelComparisons": 29868
+      }
+    },
+    {
+      "id": 3,
+      "theme": "dark",
+      "width": 320,
+      "criticalCases": 7,
+      "totals": {
+        "layouts": 1,
+        "actions": 32,
+        "shares": 14,
+        "invalid": 1,
+        "raw": 1,
+        "critical": 7,
+        "checks": 56,
+        "modelComparisons": 29868
+      }
+    },
+    {
+      "id": 3,
+      "theme": "dark",
+      "width": 1200,
+      "criticalCases": 7,
+      "totals": {
+        "layouts": 1,
+        "actions": 32,
+        "shares": 14,
+        "invalid": 1,
+        "raw": 1,
+        "critical": 7,
+        "checks": 56,
+        "modelComparisons": 29868
+      }
+    },
+    {
+      "id": 4,
+      "theme": "light",
+      "width": 320,
+      "criticalCases": 9,
+      "totals": {
+        "layouts": 1,
+        "actions": 51,
+        "shares": 21,
+        "invalid": 1,
+        "raw": 1,
+        "critical": 9,
+        "checks": 83,
+        "modelComparisons": 49551
+      }
+    },
+    {
+      "id": 4,
+      "theme": "light",
+      "width": 1200,
+      "criticalCases": 9,
+      "totals": {
+        "layouts": 1,
+        "actions": 51,
+        "shares": 21,
+        "invalid": 1,
+        "raw": 1,
+        "critical": 9,
+        "checks": 83,
+        "modelComparisons": 49551
+      }
+    },
+    {
+      "id": 4,
+      "theme": "dark",
+      "width": 320,
+      "criticalCases": 9,
+      "totals": {
+        "layouts": 1,
+        "actions": 51,
+        "shares": 21,
+        "invalid": 1,
+        "raw": 1,
+        "critical": 9,
+        "checks": 83,
+        "modelComparisons": 49551
+      }
+    },
+    {
+      "id": 4,
+      "theme": "dark",
+      "width": 1200,
+      "criticalCases": 9,
+      "totals": {
+        "layouts": 1,
+        "actions": 51,
+        "shares": 21,
+        "invalid": 1,
+        "raw": 1,
+        "critical": 9,
+        "checks": 83,
+        "modelComparisons": 49551
+      }
+    },
+    {
+      "id": 5,
+      "theme": "light",
+      "width": 320,
+      "criticalCases": 9,
+      "totals": {
+        "layouts": 1,
+        "actions": 60,
+        "shares": 26,
+        "invalid": 1,
+        "raw": 1,
+        "critical": 9,
+        "checks": 99,
+        "modelComparisons": 38817
+      }
+    },
+    {
+      "id": 5,
+      "theme": "light",
+      "width": 1200,
+      "criticalCases": 9,
+      "totals": {
+        "layouts": 1,
+        "actions": 60,
+        "shares": 26,
+        "invalid": 1,
+        "raw": 1,
+        "critical": 9,
+        "checks": 99,
+        "modelComparisons": 38817
+      }
+    },
+    {
+      "id": 5,
+      "theme": "dark",
+      "width": 320,
+      "criticalCases": 9,
+      "totals": {
+        "layouts": 1,
+        "actions": 60,
+        "shares": 26,
+        "invalid": 1,
+        "raw": 1,
+        "critical": 9,
+        "checks": 99,
+        "modelComparisons": 38817
+      }
+    },
+    {
+      "id": 5,
+      "theme": "dark",
+      "width": 1200,
+      "criticalCases": 9,
+      "totals": {
+        "layouts": 1,
+        "actions": 60,
+        "shares": 26,
+        "invalid": 1,
+        "raw": 1,
+        "critical": 9,
+        "checks": 99,
+        "modelComparisons": 38817
+      }
+    },
+    {
+      "id": 6,
+      "theme": "light",
+      "width": 320,
+      "criticalCases": 8,
+      "totals": {
+        "layouts": 1,
+        "actions": 33,
+        "shares": 15,
+        "invalid": 1,
+        "raw": 1,
+        "critical": 8,
+        "checks": 59,
+        "modelComparisons": 29890
+      }
+    },
+    {
+      "id": 6,
+      "theme": "light",
+      "width": 1200,
+      "criticalCases": 8,
+      "totals": {
+        "layouts": 1,
+        "actions": 33,
+        "shares": 15,
+        "invalid": 1,
+        "raw": 1,
+        "critical": 8,
+        "checks": 59,
+        "modelComparisons": 29890
+      }
+    },
+    {
+      "id": 6,
+      "theme": "dark",
+      "width": 320,
+      "criticalCases": 8,
+      "totals": {
+        "layouts": 1,
+        "actions": 33,
+        "shares": 15,
+        "invalid": 1,
+        "raw": 1,
+        "critical": 8,
+        "checks": 59,
+        "modelComparisons": 29890
+      }
+    },
+    {
+      "id": 6,
+      "theme": "dark",
+      "width": 1200,
+      "criticalCases": 8,
+      "totals": {
+        "layouts": 1,
+        "actions": 33,
+        "shares": 15,
+        "invalid": 1,
+        "raw": 1,
+        "critical": 8,
+        "checks": 59,
+        "modelComparisons": 29890
+      }
+    },
+    {
+      "id": 7,
+      "theme": "light",
+      "width": 320,
+      "criticalCases": 8,
+      "totals": {
+        "layouts": 1,
+        "actions": 43,
+        "shares": 19,
+        "invalid": 1,
+        "raw": 1,
+        "critical": 8,
+        "checks": 73,
+        "modelComparisons": 34978
+      }
+    },
+    {
+      "id": 7,
+      "theme": "light",
+      "width": 1200,
+      "criticalCases": 8,
+      "totals": {
+        "layouts": 1,
+        "actions": 43,
+        "shares": 19,
+        "invalid": 1,
+        "raw": 1,
+        "critical": 8,
+        "checks": 73,
+        "modelComparisons": 34978
+      }
+    },
+    {
+      "id": 7,
+      "theme": "dark",
+      "width": 320,
+      "criticalCases": 8,
+      "totals": {
+        "layouts": 1,
+        "actions": 43,
+        "shares": 19,
+        "invalid": 1,
+        "raw": 1,
+        "critical": 8,
+        "checks": 73,
+        "modelComparisons": 34978
+      }
+    },
+    {
+      "id": 7,
+      "theme": "dark",
+      "width": 1200,
+      "criticalCases": 8,
+      "totals": {
+        "layouts": 1,
+        "actions": 43,
+        "shares": 19,
+        "invalid": 1,
+        "raw": 1,
+        "critical": 8,
+        "checks": 73,
+        "modelComparisons": 34978
+      }
+    },
+    {
+      "id": 8,
+      "theme": "light",
+      "width": 320,
+      "criticalCases": 9,
+      "totals": {
+        "layouts": 1,
+        "actions": 43,
+        "shares": 19,
+        "invalid": 1,
+        "raw": 1,
+        "critical": 9,
+        "checks": 73,
+        "modelComparisons": 61918
+      }
+    },
+    {
+      "id": 8,
+      "theme": "light",
+      "width": 1200,
+      "criticalCases": 9,
+      "totals": {
+        "layouts": 1,
+        "actions": 43,
+        "shares": 19,
+        "invalid": 1,
+        "raw": 1,
+        "critical": 9,
+        "checks": 73,
+        "modelComparisons": 61863
+      }
+    },
+    {
+      "id": 8,
+      "theme": "dark",
+      "width": 320,
+      "criticalCases": 9,
+      "totals": {
+        "layouts": 1,
+        "actions": 43,
+        "shares": 19,
+        "invalid": 1,
+        "raw": 1,
+        "critical": 9,
+        "checks": 73,
+        "modelComparisons": 61948
+      }
+    },
+    {
+      "id": 8,
+      "theme": "dark",
+      "width": 1200,
+      "criticalCases": 9,
+      "totals": {
+        "layouts": 1,
+        "actions": 43,
+        "shares": 19,
+        "invalid": 1,
+        "raw": 1,
+        "critical": 9,
+        "checks": 73,
+        "modelComparisons": 61863
+      }
+    },
+    {
+      "id": 9,
+      "theme": "light",
+      "width": 320,
+      "criticalCases": 9,
+      "totals": {
+        "layouts": 1,
+        "actions": 54,
+        "shares": 23,
+        "invalid": 1,
+        "raw": 1,
+        "critical": 9,
+        "checks": 89,
+        "modelComparisons": 38324
+      }
+    },
+    {
+      "id": 9,
+      "theme": "light",
+      "width": 1200,
+      "criticalCases": 9,
+      "totals": {
+        "layouts": 1,
+        "actions": 54,
+        "shares": 23,
+        "invalid": 1,
+        "raw": 1,
+        "critical": 9,
+        "checks": 89,
+        "modelComparisons": 38324
+      }
+    },
+    {
+      "id": 9,
+      "theme": "dark",
+      "width": 320,
+      "criticalCases": 9,
+      "totals": {
+        "layouts": 1,
+        "actions": 54,
+        "shares": 23,
+        "invalid": 1,
+        "raw": 1,
+        "critical": 9,
+        "checks": 89,
+        "modelComparisons": 38324
+      }
+    },
+    {
+      "id": 9,
+      "theme": "dark",
+      "width": 1200,
+      "criticalCases": 9,
+      "totals": {
+        "layouts": 1,
+        "actions": 54,
+        "shares": 23,
+        "invalid": 1,
+        "raw": 1,
+        "critical": 9,
+        "checks": 89,
+        "modelComparisons": 38324
+      }
+    }
+  ]
+}

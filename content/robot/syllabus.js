@@ -144,7 +144,7 @@ export default {
             "robot-2.10"
           ],
           "refs": [
-            "Lynch–Park §8.2, printed pp.281–289 (Dec.2019 preprint; actual selected body read)"
+            "Lynch–Park, Modern Robotics (Dec.2019 preprint), §8.2, pp.281–289"
           ],
           "pic": "Rotate the view and scrub time. In free motion, the ellipsoid changes orientation around a fixed spatial angular momentum; angular velocity need not point along it. Switch to the specified coaxial wrench to see rotational and translational work enter the body. The body view follows the COM, while its displacement is reported separately."
         },
@@ -157,7 +157,7 @@ export default {
             "robot-4.1"
           ],
           "refs": [
-            "Lynch–Park §8.1, printed pp.269–278 (Dec.2019 preprint; actual selected body read)"
+            "Lynch–Park, Modern Robotics (Dec.2019 preprint), §8.1, pp.269–278"
           ],
           "pic": "Follow a prescribed two-link motion and read the two torque ledgers. For each joint, the inertial, velocity-product and gravity terms add to the required actuator torque. COM markers and equal horizontal/vertical geometry scales make the mass distribution explicit. Changing gravity changes the required torque while the prescribed path stays the same."
         },
@@ -170,7 +170,7 @@ export default {
             "ladr-7.62"
           ],
           "refs": [
-            "Lynch–Park §8.1.3, printed pp.277–280 (Dec.2019 preprint; actual selected body read)"
+            "Lynch–Park, Modern Robotics (Dec.2019 preprint), §8.1.3, pp.277–280"
           ],
           "pic": "Change the elbow angle and watch the fixed-energy contour change shape in joint-velocity space. The selected direction picks a velocity on the contour; its kinetic energy is evaluated from the actual matrix. A straight tool posture can lose Cartesian mobility while its joint-space mass matrix stays positive definite."
         },
@@ -182,7 +182,7 @@ export default {
             "robot-6.2"
           ],
           "refs": [
-            "Lynch–Park §8.1.2, printed pp.275–277 (Dec.2019 preprint; actual selected body read)"
+            "Lynch–Park, Modern Robotics (Dec.2019 preprint), §8.1.2, pp.275–277"
           ],
           "pic": "Scrub the same prescribed arm cycle and compare mechanical-energy rate with actuator power. The velocity-product power and half the mass-rate quadratic form cancel. A separate ledger shows their signed sizes, so the zero identity is not produced by hiding small numbers on a chart."
         },
@@ -195,7 +195,7 @@ export default {
             "robot-2.9"
           ],
           "refs": [
-            "Lynch–Park §8.3, printed pp.289–293 (Dec.2019 preprint; actual selected body read)"
+            "Lynch–Park, Modern Robotics (Dec.2019 preprint), §8.3, pp.289–293"
           ],
           "pic": "Advance the computational step: velocity and acceleration information travels from base to tool, then force and moment information returns toward the base. The physical arm state stays fixed during a sweep. Each final torque is compared with the independently derived Lagrange torque for the same state."
         },
@@ -208,7 +208,7 @@ export default {
             "robot-4.1"
           ],
           "refs": [
-            "Lynch–Park §8.6, printed pp.298–299 (Dec.2019 preprint; actual selected body read)"
+            "Lynch–Park, Modern Robotics (Dec.2019 preprint), §8.6, pp.298–299"
           ],
           "pic": "Push in a selected direction and compare the force with the tool's response acceleration. A separate plot shows the force-response ellipse on explicit acceleration axes. Near a straight arm the response becomes thin; at exact rank loss the task-space inverse is undefined. The view preserves that distinction instead of imposing a numerical rank cutoff."
         },
@@ -220,7 +220,7 @@ export default {
             "robot-6.3"
           ],
           "refs": [
-            "Lynch–Park §8.9, printed pp.311–315 (Dec.2019 preprint; actual selected body read)"
+            "Lynch–Park, Modern Robotics (Dec.2019 preprint), §8.9, pp.311–315"
           ],
           "pic": "Raise the ideal gear ratios and compare the reflected rotor inertia with the rod inertia. Switch the rotor mounting and gear sense to expose the extra coupling caused by a moving motor housing. Speed and torque obey the same signed power relation; the transmission drawing is schematic rather than a tooth-count model."
         },
@@ -233,7 +233,7 @@ export default {
             "mech-9.8"
           ],
           "refs": [
-            "Lynch–Park §8.1, printed pp.271–275 (Dec.2019 preprint; actual selected body read)"
+            "Lynch–Park, Modern Robotics (Dec.2019 preprint), §8.1, pp.271–275"
           ],
           "pic": "The shoulder speed is controlled while the elbow motor is off and gravity is absent. Scrub actual time to see the released forearm move, then compare its relative angle with the separate velocity-product torque terms. Reversing shoulder speed preserves the elbow's relative equation, while the shoulder's torque and power still reflect the full coupled motion."
         },
@@ -246,7 +246,7 @@ export default {
             "mech-6.13"
           ],
           "refs": [
-            "Lynch–Park §8.7, printed pp.299–305 (Dec.2019 preprint; actual selected body read)"
+            "Lynch–Park, Modern Robotics (Dec.2019 preprint), §8.7, pp.299–305"
           ],
           "pic": "Compare the same arm state with a pushing wall, a bilateral guide or no contact. The wall line passes through the actual tool point, and its reaction is normal to that line. Separate equal-scale acceleration views show what contact removes. A pulling required force detaches the unilateral wall; a degenerate normal has an explicit undefined-force state."
         }

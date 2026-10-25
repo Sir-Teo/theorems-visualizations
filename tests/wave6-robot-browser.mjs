@@ -1,9 +1,17 @@
-// Initial actual-pixel preview. Full native/Share/scientific gates remain open.
+// Actual-pixel default and complete rich-field capture; native controls are gated separately.
 import fs from 'node:fs';
+import {createHash} from 'node:crypto';
+import assert from 'node:assert/strict';
+import chapter from '../content/robot/ch06.js';
 import {chromium} from 'playwright-core';
 import {createServer} from '../scripts/serve.mjs';
 import {findBrowser} from '../scripts/browser.mjs';
 const output=process.env.ROBOT_SHOTS||'/tmp/wave6-robot-preview';fs.mkdirSync(output,{recursive:true});
+const sourceFiles=['../content/robot/ch06.js','../content/robot/ch06.viz.js','../content/robot/ch06.shared.js','../content/robot/ch06.exact.shared.js','../content/robot/syllabus.js','../assets/js/viz/core.js','../data/col/robot.json','../data/index.json','./wave6-robot-browser.mjs'];
+const hashes=()=>Object.fromEntries(sourceFiles.map(p=>[p,createHash('sha256').update(fs.readFileSync(new URL(p,import.meta.url))).digest('hex')]));
+const sourceHashes=hashes();
+const shard=JSON.parse(fs.readFileSync(new URL('../data/col/robot.json',import.meta.url)));
+for(const item of chapter.items){assert.equal(shard['robot-'+item.num].st,item.statement,'built statement matches source');assert.deepEqual(shard['robot-'+item.num].refs,item.refs,'built references match source');}
 const server=createServer();await new Promise(r=>server.listen(0,r));
 const browser=await chromium.launch({executablePath:findBrowser(),headless:true});
 const page=await browser.newPage({viewport:{width:320,height:1100},deviceScaleFactor:1});
@@ -54,5 +62,8 @@ try{
   if(await page.evaluate(()=>document.documentElement.dataset.theme)!==theme)throw Error('actual production theme differs');
   rows.push({item,theme,width,...audit});console.log(JSON.stringify({item,theme,width,stages:audit.stages,issues:audit.issues.length}));
  }
- fs.writeFileSync(output+'/summary.json',JSON.stringify({previewOnly:true,errors,rows},null,2)+'\n');
+ if(JSON.stringify(hashes())!==JSON.stringify(sourceHashes))errors.push('Source changed during capture');
+ const issues=rows.reduce((sum,r)=>sum+r.issues.length,0),status=errors.length||issues?'FAIL':'PASS';
+ fs.writeFileSync(output+'/summary.json',JSON.stringify({status,scope:'Complete default widgets and rich fields; native controls gated separately',issues,errors,sourceHashes,rows},null,2)+'\n');
+ if(status!=='PASS')throw Error(`Default/rich capture failed: ${errors.length} errors, ${issues} ink issues`);
 }finally{await browser.close();await new Promise(r=>server.close(r));}
