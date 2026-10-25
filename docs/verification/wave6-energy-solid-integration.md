@@ -1,0 +1,7 @@
+# ENERGY6 / SOLID6 local integration —25 October2026
+
+This24-lesson batch joins twelve author-verified storage lessons and twelve author-verified beam/section lessons. Their chapter reports preserve independently calculated scientific references, actual source-reading limits, native/Share checks and complete qualified personal visual gates. Author availability is806/1057; historical independent acceptance remains36/1057.
+
+Reconciliation from source2acc0d2280b1f3c5e1dd55da671613211f36fa6d retains every8497 earlier projection and all76 aliases, adding exactly ENERGY6.1–6.12 and SOLID6.1–6.12 for8521 reading ideas. All existing target/source/task/ordered-route arrays remain exact; only snapshot-binding metadata changes. Projection digest568565fccb6ed9d829bc82db3c2daf27f5ff4a8f55ace11aaeb009099968a692; generated-data digest6a504045e1dbb8541108ef5bfdf163b362ba5e229a77ff2eec6aef78f02bb71d.
+
+Reconciliation and scoped checks are complete:46/46 reading/journey/curriculum/program groups pass; all8458 static visualizations, coverage validation and24 read-only continuation records pass. All163 recent chapter-manifest file hashes remain exact, as do content/assets/frozen plans and existing route arrays. The exact export, full suite and both-theme production smoke are next. No additional independent acceptance, release, PR, push, merge, publication or deployment is claimed. Continue ROBOT6 under the same scientific and visual gates without stopping at this boundary.

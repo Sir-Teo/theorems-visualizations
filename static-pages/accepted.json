@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
-  "acceptedCommit": "a9dc4fb0aac7856f2993e410a05c77db035a103b",
-  "snapshotDigest": "5ba162a16b26acb2457c8ce2fb751d78303775092609f3cd4e5aa68225e81a2c",
+  "acceptedCommit": "2acc0d2280b1f3c5e1dd55da671613211f36fa6d",
+  "snapshotDigest": "568565fccb6ed9d829bc82db3c2daf27f5ff4a8f55ace11aaeb009099968a692",
   "ids": [
     "aero-1.1",
     "aero-1.2",
@@ -1990,6 +1990,18 @@
     "energy-5.7",
     "energy-5.8",
     "energy-5.9",
+    "energy-6.1",
+    "energy-6.10",
+    "energy-6.11",
+    "energy-6.12",
+    "energy-6.2",
+    "energy-6.3",
+    "energy-6.4",
+    "energy-6.5",
+    "energy-6.6",
+    "energy-6.7",
+    "energy-6.8",
+    "energy-6.9",
     "epi-1.1",
     "epi-1.10",
     "epi-1.11",
@@ -7588,6 +7600,18 @@
     "solid-5.7",
     "solid-5.8",
     "solid-5.9",
+    "solid-6.1",
+    "solid-6.10",
+    "solid-6.11",
+    "solid-6.12",
+    "solid-6.2",
+    "solid-6.3",
+    "solid-6.4",
+    "solid-6.5",
+    "solid-6.6",
+    "solid-6.7",
+    "solid-6.8",
+    "solid-6.9",
     "stat-1.1",
     "stat-1.10",
     "stat-1.11",
@@ -8807,12 +8831,12 @@
       "to": "sig-4.4"
     }
   ],
-  "dataDigest": "1119cd717ebc55a7646dd6e7fea3a9a62be4ee309ce2d725e50e0b08ea703939",
+  "dataDigest": "6a504045e1dbb8541108ef5bfdf163b362ba5e229a77ff2eec6aef78f02bb71d",
   "sourceReconciliation": {
     "checkedOn": "2026-10-25",
-    "basis": "Source-backed author verification of SIG6, CTRL6 and CIRC6 under the continuous content goal; no additional independent review claimed",
-    "evidencePath": "docs/integration/wave6-sig-ctrl-circ-content.json",
-    "evidenceSha256": "e1587a137792b5ad2848fc0f3123944c3262fb9a2a15ab3d2e1debc6ef704b8e",
-    "verificationPath": "docs/verification/wave6-sig-ctrl-circ-integration.md"
+    "basis": "Source-backed author verification of ENERGY6 and SOLID6 under the continuous content goal; no additional independent review claimed",
+    "evidencePath": "docs/integration/wave6-energy-solid-content.json",
+    "evidenceSha256": "52057e5db9cea0f99a965c8abe4ca4c9b7ebb9db8666404b4d7664520a965051",
+    "verificationPath": "docs/verification/wave6-energy-solid-integration.md"
   }
 }

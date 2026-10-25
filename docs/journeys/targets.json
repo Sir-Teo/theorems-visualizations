@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
-  "acceptedCommit": "a9dc4fb0aac7856f2993e410a05c77db035a103b",
-  "snapshotDigest": "5ba162a16b26acb2457c8ce2fb751d78303775092609f3cd4e5aa68225e81a2c",
+  "acceptedCommit": "2acc0d2280b1f3c5e1dd55da671613211f36fa6d",
+  "snapshotDigest": "568565fccb6ed9d829bc82db3c2daf27f5ff4a8f55ace11aaeb009099968a692",
   "targets": [
     {
       "id": "fluid-2.9",

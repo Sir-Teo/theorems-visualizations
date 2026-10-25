@@ -6,7 +6,7 @@
   "scope": "Thirty scoped introductory routes, three exact accepted targets each. Routes add tasks and entry support, not 90 new lessons or complete subject coverage.",
   "publication": "local-preview",
   "acceptance": "author-checked-local",
-  "legacySnapshot": "5ba162a16b26acb2457c8ce2fb751d78303775092609f3cd4e5aa68225e81a2c",
+  "legacySnapshot": "568565fccb6ed9d829bc82db3c2daf27f5ff4a8f55ace11aaeb009099968a692",
   "routes": [
     {
       "domainId": "D01",

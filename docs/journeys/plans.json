@@ -380,8 +380,8 @@
     "scope": "local-preview",
     "author": "atlas-editor",
     "checkedOn": "2026-10-25",
-    "contentDigest": "eb83f73e890bb8f659c710b2913719532d6a8c672f4db83cf3b57361db25ae5f",
+    "contentDigest": "25bdec800226006c5516a48bcf4252ab7bd579ae3f41ded84071281d8fcf6296",
     "artifactDigest": "ff19c4a9828fd3b260c199c4963c1f85265be51d9cf59bd0c7e9e94aadd9f56e",
-    "evidencePath": "docs/verification/wave6-sig-ctrl-circ-integration.md"
+    "evidencePath": "docs/verification/wave6-energy-solid-integration.md"
   }
 }
