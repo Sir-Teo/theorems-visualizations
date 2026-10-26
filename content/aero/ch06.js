@@ -17,7 +17,7 @@ Here $\alpha$ is in radians and positive $C_m$ is nose-up. This is an initial re
  {
   num:'6.2',kind:'Definition',name:'Neutral point and static margin',deps:['aero-6.1'],
   refs:['J. P. How, MIT 16.333 (Fall 2004), lecture 2, pp.2–7–2–9'],
-  statement:String.raw`The stick-fixed neutral point $h_n$ is the CG location at which $C_{m_\alpha}=0$, with the aerodynamic geometry and fixed-control derivatives held constant. Define the static margin by $\mathrm{SM}=h_n-h$. If the whole-aircraft lift slope $A$ is positive,
+  statement:String.raw`The stick-fixed neutral point $h_n$ is the CG location at which $C_{m_\alpha}=0$ when the aerodynamic geometry and fixed-control derivatives are held constant. Define the static margin by $\mathrm{SM}=h_n-h$. If the whole-aircraft lift slope $A$ is positive,
 $$C_{m_\alpha}=A(h-h_n)=-A\,\mathrm{SM}.$$
 Positive static margin therefore gives a restoring pitch slope; a CG aft of the neutral point gives a destabilizing slope. A static margin is dimensionless, often expressed as a percentage of the reference chord.`,
   idea:String.raw`Let the wing and tail aerodynamic centres be $h_w$ and $h_t$. Write $a_w$ for the wing lift slope and $b=\eta(S_t/S)a_t(1-\epsilon_\alpha)$ for the tail's contribution to whole-aircraft lift slope. Differentiating the wing and tail moments gives

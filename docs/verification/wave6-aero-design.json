@@ -1,5 +1,5 @@
 {
-  "status": "draft awaiting complete gates",
+  "status": "author-verified; final scientific/native/personal gates pass",
   "lessons": 11,
   "purposeBuiltPanels": 30,
   "sourceLedger": "wave6-aero-sources.json",
@@ -38,7 +38,13 @@
     "Tail incidence rotates the actual tail schematic; fin polygon area follows its fin scale.",
     "Flutter frequency/pole paths contain the exact merge, rounded growth onset and current speed, with extra resolution near the merge.",
     "Panel heights match within each desktop row.",
-    "A chapter-local slow-pole isolator preserves signed spiral poles where the generic eigensolver returned zero."
+    "A chapter-local slow-pole isolator preserves signed spiral poles where the generic eigensolver returned zero.",
+    "Retained exact slow-root signs adjacent to16/3 degrees using polynomial-sign isolation.",
+    "Selected-state trim lift residual formed before rounding/subtraction; zero dots only for exact zeros.",
+    "Aligned desktop panel heights, enlarged pole movement, dense time traces, labeled automatic flutter fit, cambered/ribbed Wright biplane.",
+    "Compact scientific ticks preserve full physical values at extreme unstable responses.",
+    "Chapter-local repaint installs the view before drawing axes and curves on the first restored frame.",
+    "Removed an orphan punctuation line in the neutral-point statement."
   ],
   "deferred": [
     "Private S2",
@@ -46,5 +52,10 @@
     "Global map work",
     "Performance claims",
     "Independent acceptance"
+  ],
+  "finalReceipts": [
+    "wave6-aero-gates.json",
+    "wave6-aero-native-receipt.json",
+    "wave6-aero-visual-receipt.json"
   ]
 }

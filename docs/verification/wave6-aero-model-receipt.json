@@ -1,5 +1,5 @@
 {
-  "status": "pure-model author checks pass; native and complete personal visual review remain open",
+  "status": "PASS pure-model author verification; final native/personal visual gates closed in companion receipts",
   "referenceCases": 352,
   "families": 9,
   "focusedGroups": 19,
@@ -24,7 +24,8 @@
   "physicalRelativeGate": 3e-11,
   "classification": "Exact retained quantity signs, range statuses and characteristic-coefficient stability are checked separately from approximate trajectories and poles.",
   "logs": {
-    "focusedPrior": "/tmp/wave6-aero-spiral-focused.log"
+    "focusedPrior": "/tmp/wave6-aero-spiral-focused.log",
+    "finalFocusedPrior": "/tmp/wave6-aero-axis-final-focused.log"
   },
   "sourceHashes": {
     "content/aero/ch06.shared.js": "bf8eccaf356565aa48b49da8aafc5706baadc98a98503a773c4ed5f70d445d7c",
@@ -33,7 +34,7 @@
     "tests/fixtures/wave6-aero-reference.json": "b42fefd896c08ee3d821c3272dde6e40d7f6a049965a16bd2540ec4763b0ea77"
   },
   "oracleFinding": "A generic mpmath eigenvalue solve perturbed analytically exact half-trace real parts at binary64 halfway rounding points. The independent quadratic reference now enforces its exact trace symmetry; no epsilon snaps roots or statuses. All352 complete expected objects match at1000/90 and2000/180 digits.",
-  "nativeStatus": "Incomplete prototypes only. Fresh whole-source full44-layout matrix, actual control/share checks, mode checks, complete rich/default screenshots and personal critical-state review are still required.",
+  "nativeStatus": "Complete current44-layout matrix passes; see wave6-aero-native-receipt.json and wave6-aero-visual-receipt.json.",
   "canonicalRegeneration": "byte-identical",
   "preservation": {
     "pins": 203,
