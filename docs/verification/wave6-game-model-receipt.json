@@ -1,0 +1,72 @@
+{
+  "status": "PASS; chapter-local independent scientific checks",
+  "cases": 2269,
+  "families": 12,
+  "exactAndPhysicalComparisons": 928735,
+  "numericalComparisons": 33169,
+  "totalComparisons": 961904,
+  "statistics": [
+    {
+      "cases": 244,
+      "comparisons": 92831,
+      "worstLogAbsolute": 4.547473508864641e-13
+    },
+    {
+      "cases": 88,
+      "exactComparisons": 9937,
+      "numericalComparisons": 33169,
+      "worstPathAbsolute": 2.246355990109805e-09,
+      "worstLogShareAbsolute": 1.1745726169465343e-08,
+      "worstLogMagnitude": 4.547473508864641e-13
+    },
+    {
+      "cases": 1937,
+      "comparisons": 825967,
+      "worstLogAbsolute": 4.549693954913892e-13
+    }
+  ],
+  "precision": {
+    "finite": {
+      "cases": 1937,
+      "canonicalDigits": 100,
+      "higherDigits": 200,
+      "canonicalRepeatByteIdentical": true,
+      "completeHigherExpectedObjectsAndBytesIdentical": true,
+      "fixtureSHA256": "e486ee56278486296ee50235a3ec14790652df83e51e87c0ee1f5ec3739b6d60",
+      "original1101CompleteObjectsPreserved": true
+    },
+    "chains": {
+      "cases": 244,
+      "canonicalDigits": 100,
+      "higherDigits": 200,
+      "canonicalRepeatByteIdentical": true,
+      "completeHigherExpectedObjectsAndBytesIdentical": true,
+      "fixtureSHA256": "095472283cc177e5bc93dc9e9a9f334a5d37b263496d5915ec9e202151b5c78b",
+      "tinyFactorRowsDigitsInBothRuns": 800
+    }
+  },
+  "dynamics": {
+    "cases": 88,
+    "fixtureSHA256": "e03d8ab6ff30dc05eb92265a5499d29f0f63ddc0d91ead57c570a8b749f36aaf",
+    "method": "Independent Fraction instantaneous certificates and SciPy DOP853 all-supported-log-mass paths versus production support-aware n-1-log-ratio RK4. Numerical paths are illustrations, not proof certificates.",
+    "maxStep": 0.05,
+    "halvedMaxStep": 0.025,
+    "worstIndependentStepHalvingAbsolute": 3.979039320256561e-12,
+    "ordinaryTolerance": 8e-08,
+    "logShareTolerance": 4e-07,
+    "worstPathAbsolute": 2.246355990109805e-09,
+    "worstLogShareAbsolute": 1.1745726169465343e-08
+  },
+  "physicalGate": "Original binary64 rational factors; exact classifications/sign/range/signed-zero and correctly rounded physical outputs. Finite-chain transcendentals use outward rational enclosures. Log formatting absolute tolerance8e-12. Numerical trace checks are separately bounded.",
+  "focused": {
+    "passed": 42,
+    "failed": 0,
+    "skipped": 0,
+    "cancelled": 0,
+    "durationMs": 6800.913318,
+    "log": {
+      "path": "/workspace/scratch/wave6-game-research/final-models-focused.log",
+      "sha256": "1b4a9eba6ac022a71c6f27fc4215b3d97920c4d0aec1cfc2f7632daa7b35cd7e"
+    }
+  }
+}
