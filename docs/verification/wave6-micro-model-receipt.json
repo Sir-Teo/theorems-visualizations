@@ -1,0 +1,80 @@
+{
+  "status": "pure-model author checks pass; lesson authoring/native/personal visual gates remain open",
+  "referenceCases": 410,
+  "families": 13,
+  "focusedGroups": 22,
+  "comparisons": 34652,
+  "precision": {
+    "cases": 410,
+    "families": 13,
+    "precisionDigits": {
+      "canonical": [
+        1400,
+        90
+      ],
+      "higher": [
+        2800,
+        180
+      ]
+    },
+    "completeExpectedObjectsEqual": true,
+    "differences": [],
+    "canonicalRepeatByteIdentical": true,
+    "fixtureSHA256": "49e6b441609a7de52b0b1b8aff6f99602e5317ab74d9a21e4bb3bef5c223623f"
+  },
+  "observed": {
+    "cases": 410,
+    "comparisons": 34652,
+    "worstPhysicalRelative": 0,
+    "worstTrajectoryRelative": 3.5059395544260234e-11,
+    "worstAlgebraLogAbsolute": 4.547473508864641e-13,
+    "worstTrajectoryLogAbsolute": 3.505817858240334e-11
+  },
+  "gates": {
+    "algebraPhysicalRelativeOutsideSubnormal": 3e-13,
+    "algebraLogAbsolute": 8e-12,
+    "trajectoryPhysicalRelativeOutsideSubnormal": 2e-10,
+    "trajectoryLogAbsolute": 2e-09,
+    "subnormal": "two binary64 subnormal ulps; retained signs and range flags checked independently",
+    "exactZero": "Exact physical sign/range and signed rounded0 checked separately; no epsilon changes a classification or quantity."
+  },
+  "methods": [
+    "Independent high-precision Gauss-Legendre integration of affine/quadratic marginal curves, with constrained first-order/active-set and complete finite maximizing sets",
+    "Independent separated nonlinear clock with invariant-basin log-space bisection, up to480 steps; ordinary90digits/extreme1400digits, higher180/2800; production uses log-RK4",
+    "Exact accounting/first-order identities retained in the reference instead of quadrature rounding dust"
+  ],
+  "repairs": [
+    {
+      "finding": "Log-RK4 maxstep.002 long-decay trajectory relative error5.809976916227272e-10 exceeded the unchanged2e-10 gate.",
+      "repair": "Maxstep.001 and compensated log accumulation; worst observed3.5059395544260234e-11.",
+      "initialLog": "/tmp/wave6-micro-focused-initial.log",
+      "repairedLog": "/tmp/wave6-micro-focused-final-model.log"
+    },
+    {
+      "finding": "Harness compared a negative quantity rounded to−0 against literal+0.",
+      "repair": "Compare the expected signed0 while preserving separate exact sign/range tests; no product sign/range change."
+    }
+  ],
+  "sourceHashes": {
+    "content/micro/ch12.shared.js": "13d28dd7a155561abe7d3c453f1eb95704af8d7e72f0d5a39cd110261bc68283",
+    "content/micro/ch12.exact.shared.js": "a7868454c77521590098fc6828ff2af2b862eedbd7d8b93e296a8d26b823152f",
+    "tests/wave6-micro-reference.py": "a394c217cde1b4925aef6853610cdf45855f90f46e5d1748ef49495db70a25f1",
+    "tests/wave6-micro.test.mjs": "b25a90358ddfa9bd253ed2210d08af6c191fd2b465ca773a88c20b9157718ba5",
+    "tests/fixtures/wave6-micro-reference.json": "49e6b441609a7de52b0b1b8aff6f99602e5317ab74d9a21e4bb3bef5c223623f"
+  },
+  "preservation": {
+    "priorPinnedFiles": 225,
+    "allExact": true,
+    "microSyllabus": "complete original bytes exact so far"
+  },
+  "availability": {
+    "unchanged": 826,
+    "goal": 1057,
+    "historicalIndependent": 36
+  },
+  "limitations": [
+    "No MICRO12 lesson module or visualization yet.",
+    "Pure-model evidence does not imply native/Share, final visual review or new global-suite coverage.",
+    "Chosen economies and adjustment laws are teaching models, not measured/calibrated markets or behavior."
+  ]
+}

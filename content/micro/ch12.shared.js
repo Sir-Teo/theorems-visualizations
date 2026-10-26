@@ -83,8 +83,8 @@ function networkParameters({strength=4,price=.75,adjustment=.8,initial=.35,time=
 }
 const networkField=(p,x)=>mul(mul(p.adjustment,x),sub(mul(p.strength,mul(x,sub(1,x))),p.price));
 function advanceNetworkLog(y,dt,p){
- const count=Math.ceil(dt/.002),h=dt/count,rate=l=>{const x=Math.exp(l);return p.adjustment*(p.strength*x*(1-x)-p.price);};
- for(let i=0;i<count;i++){const a=rate(y),b=rate(y+h*a/2),c=rate(y+h*b/2),d=rate(y+h*c);y+=h*(a+2*b+2*c+d)/6;}return y;
+ const count=Math.ceil(dt/.001),h=dt/count,rate=l=>{const x=Math.exp(l);return p.adjustment*(p.strength*x*(1-x)-p.price);};let correction=0;
+ for(let i=0;i<count;i++){const a=rate(y),b=rate(y+h*a/2),c=rate(y+h*b/2),d=rate(y+h*c),increment=h*(a+2*b+2*c+d)/6-correction,next=y+increment;correction=(next-y)-increment;y=next;}return y;
 }
 function trajectoryQuantity(y){const value=Math.exp(y);return{exact:null,value,sign:1,logMagnitude:y,belowRange:value===0,aboveRange:false,approximate:true};}
 export function network({time=8,...input}={}){
