@@ -1,0 +1,117 @@
+{
+  "status": "author-verified; independent acceptance remains36",
+  "availability": {
+    "before": 878,
+    "after": 895,
+    "goal": 1057,
+    "historicalIndependentlyAccepted": 36,
+    "additionalAuthorVerified": 859
+  },
+  "lessonCount": 17,
+  "purposeBuiltPanels": 38,
+  "independentCases": 571,
+  "families": 19,
+  "totalReferenceComparisons": 345123,
+  "focused": {
+    "passed": 55,
+    "failed": 0,
+    "skipped": 0,
+    "cancelled": 0,
+    "durationMs": 1589.32173,
+    "log": {
+      "path": "/workspace/scratch/wave6-psych-research/final-focused.log",
+      "sha256": "90173017822ce9fd2c0a937951266cd58f534010e2ed03727aa392e1d54793f2"
+    }
+  },
+  "strictBuild": {
+    "written": 8610,
+    "planned": 4964,
+    "chapters": 593,
+    "collections": 85,
+    "errors": 0,
+    "warnings": 0,
+    "log": {
+      "path": "/workspace/scratch/wave6-psych-research/build-scene-frame.log",
+      "sha256": "afa7fbce8d7637bfb2bf452f7371968e6f3a123367d216c276c7ac906fa73780"
+    }
+  },
+  "globalStatic": {
+    "items": 8547,
+    "errors": 0,
+    "warnings": 0,
+    "log": {
+      "path": "/workspace/scratch/wave6-psych-research/final-static.log",
+      "sha256": "5566a2061674cb8889906a3529ba18fdfaa79598ee093668391b44237cfa4b51"
+    }
+  },
+  "productionThemes": {
+    "light": {
+      "run": 17,
+      "failed": 0,
+      "texBlankWarnings": 0,
+      "qualityWarnings": 0,
+      "log": {
+        "path": "/workspace/scratch/wave6-psych-research/final-production-light.log",
+        "sha256": "a754a7b6f580daca00077946d9fd8bee00d6b2b0a07d67ec2799796a904ee064"
+      }
+    },
+    "dark": {
+      "run": 17,
+      "failed": 0,
+      "texBlankWarnings": 0,
+      "qualityWarnings": 0,
+      "log": {
+        "path": "/workspace/scratch/wave6-psych-research/final-production-dark.log",
+        "sha256": "a754a7b6f580daca00077946d9fd8bee00d6b2b0a07d67ec2799796a904ee064"
+      }
+    }
+  },
+  "native": {
+    "layouts": 68,
+    "actions": 1764,
+    "shares": 800,
+    "invalid": 68,
+    "raw": 64,
+    "critical": 260,
+    "checks": 3020,
+    "modelComparisons": 12399336,
+    "domRangeRounding": 96
+  },
+  "visual": {
+    "targets": 530,
+    "matched": 530,
+    "counts": {
+      "phone-critical": 130,
+      "phone-native-default": 34,
+      "phone-mode": 128,
+      "default-widget": 68,
+      "phone-rich": 170
+    },
+    "reviewedSheets": 121,
+    "usedSheets": 112,
+    "missing": 0
+  },
+  "preservation": {
+    "rawPinsExact": 468,
+    "syllabusOnly17RefsPic": true,
+    "frozenIdsDepsKindsNamesFlagsAndPropertyPresenceExact": true
+  },
+  "latestFullGlobalExport": {
+    "commit": "019944fb3335f86d3501348cbf819fcecb1e7d22",
+    "tests": 4965,
+    "productionRoutesPerTheme": 272,
+    "scope": "Historical FIN/GAME integration. Predates BEHAV, PSYCH and later separately checked home cosmetics; no current full-suite claim."
+  },
+  "readingIntegration": "Roster8585/76aliases; BEHAV8+PSYCH17 integration is next.",
+  "genuineFailures": [
+    "Actual phone cue formula overflow repaired by splitting display equations.",
+    "Personal review found Ponzo rail gaps applied at extended endpoints instead of bar rows; renderer now extends the line through the correct bar-row gaps.",
+    "Ames antialias seams repaired with backing polygon; monocular default rails show both objects; constancy views now use common fitted scale.",
+    "Largest equal-image-height scene clipped the taller far column; fixed one projection field and scale, with optional context clipped explicitly.",
+    "Stereogram paired phone scale, Gaussian coincident-curve identities and narrow Gaussian sampling improved after personal review.",
+    "Axis-glyph probe had incorrect descent signs, DOM thumb serialization and canvas pen quantization required explicit platform rules, hidden checkbox click intercepted visible switch, and finite comparator rejected equal negative-infinity zero-log sentinels. All failures retained and full nativev6 rerun clean."
+  ],
+  "sourceLimits": "Precise bodies/abstracts/figures and binding stops are in wave6-psych-sources.json. No source images copied or traced.",
+  "allOwnedBrowsersAndServersExplicitlyPolledClosed": true,
+  "continuousGoalActive": true
+}
