@@ -1,0 +1,204 @@
+{
+  "status": "PASS",
+  "scope": "Changed home New links and economics field heading/blurb; original1CSSpixel captures in both themes at320/1200. Does not claim inspection of every home/field section.",
+  "sourceHashes": {
+    "assets/js/app.js": "2f5762e6bf80723a5cb8691f8b19c552dd1d731ab998d5bfcdb27828e2e9a6ce",
+    "assets/css/style.css": "eef34e3d7aaf8b38233a78d9dc6545e5e0c9d00b09a3a6876d19f3e0e0af15b6",
+    "content/fields.js": "584d05478d2e7e443e57f916372db6fbb7fe2cef13b3efc0e95ef5b5ff07c70c",
+    "data/index.json": "0c34634db3269057b24d030aec52ad66f0c3eb37bfef16bafefeaf836c13d208",
+    "data/home.json": "ee1950c1de3bfbabfbc97e5c6429739efabdcd127948ddc61573b2c6552534a5"
+  },
+  "rows": [
+    {
+      "path": "home",
+      "theme": "light",
+      "width": 320,
+      "overflow": false,
+      "title": "Ideas, visualized.",
+      "links": [
+        {
+          "text": "Evolution, learning and congestion",
+          "href": "#/c/game/6"
+        },
+        {
+          "text": "Options: payoffs and parity",
+          "href": "#/c/fin/7"
+        },
+        {
+          "text": "Open-economy macroeconomics",
+          "href": "#/c/macro/6"
+        }
+      ],
+      "errors": []
+    },
+    {
+      "path": "econ",
+      "theme": "light",
+      "width": 320,
+      "overflow": false,
+      "title": "Economics & Finance",
+      "links": [],
+      "errors": []
+    },
+    {
+      "path": "home",
+      "theme": "light",
+      "width": 1200,
+      "overflow": false,
+      "title": "Ideas, visualized.",
+      "links": [
+        {
+          "text": "Evolution, learning and congestion",
+          "href": "#/c/game/6"
+        },
+        {
+          "text": "Options: payoffs and parity",
+          "href": "#/c/fin/7"
+        },
+        {
+          "text": "Open-economy macroeconomics",
+          "href": "#/c/macro/6"
+        }
+      ],
+      "errors": []
+    },
+    {
+      "path": "econ",
+      "theme": "light",
+      "width": 1200,
+      "overflow": false,
+      "title": "Economics & Finance",
+      "links": [],
+      "errors": []
+    },
+    {
+      "path": "home",
+      "theme": "dark",
+      "width": 320,
+      "overflow": false,
+      "title": "Ideas, visualized.",
+      "links": [
+        {
+          "text": "Evolution, learning and congestion",
+          "href": "#/c/game/6"
+        },
+        {
+          "text": "Options: payoffs and parity",
+          "href": "#/c/fin/7"
+        },
+        {
+          "text": "Open-economy macroeconomics",
+          "href": "#/c/macro/6"
+        }
+      ],
+      "errors": []
+    },
+    {
+      "path": "econ",
+      "theme": "dark",
+      "width": 320,
+      "overflow": false,
+      "title": "Economics & Finance",
+      "links": [],
+      "errors": []
+    },
+    {
+      "path": "home",
+      "theme": "dark",
+      "width": 1200,
+      "overflow": false,
+      "title": "Ideas, visualized.",
+      "links": [
+        {
+          "text": "Evolution, learning and congestion",
+          "href": "#/c/game/6"
+        },
+        {
+          "text": "Options: payoffs and parity",
+          "href": "#/c/fin/7"
+        },
+        {
+          "text": "Open-economy macroeconomics",
+          "href": "#/c/macro/6"
+        }
+      ],
+      "errors": []
+    },
+    {
+      "path": "econ",
+      "theme": "dark",
+      "width": 1200,
+      "overflow": false,
+      "title": "Economics & Finance",
+      "links": [],
+      "errors": []
+    }
+  ],
+  "browsersServersClosed": true,
+  "personalReview": {
+    "status": "PASS",
+    "targets": 8,
+    "sourceImagesPersonallyViewed": 16,
+    "finalTargetsUsed": 8,
+    "images": [
+      {
+        "path": "/workspace/scratch/wave6-fin-game-integration/home-fields-final/home-light-320.png",
+        "sha256": "afc5323ab11915cbd450f2a65c752b6763db4702106f50a4bf55c417ac9cbc47",
+        "scope": "Changed hero links/button",
+        "review": "Personally inspected this final original-resolution image."
+      },
+      {
+        "path": "/workspace/scratch/wave6-fin-game-integration/home-fields-final/econ-light-320.png",
+        "sha256": "9c4c8a173d6bf7407d54566815412da7a162c2f0f408f1655965747b2f2df9c5",
+        "scope": "Changed economics heading/blurb",
+        "review": "Exact original RGB equality to the personally inspected initial field image.",
+        "personallyInspectedSource": "/workspace/scratch/wave6-fin-game-integration/home-fields/econ-light-320.png",
+        "personallyInspectedSourceSHA256": "9c4c8a173d6bf7407d54566815412da7a162c2f0f408f1655965747b2f2df9c5"
+      },
+      {
+        "path": "/workspace/scratch/wave6-fin-game-integration/home-fields-final/home-light-1200.png",
+        "sha256": "21be0becacf410dbbeed564b6c284d6d2da9f2aeb7d7401f5c0cbba00ac6120c",
+        "scope": "Changed hero links/button",
+        "review": "Personally inspected this final original-resolution image."
+      },
+      {
+        "path": "/workspace/scratch/wave6-fin-game-integration/home-fields-final/econ-light-1200.png",
+        "sha256": "2a6bd6facf8b4d07e8076869e7b40de772033f23c41aeaa129858f181cc8af2c",
+        "scope": "Changed economics heading/blurb",
+        "review": "Exact original RGB equality to the personally inspected initial field image.",
+        "personallyInspectedSource": "/workspace/scratch/wave6-fin-game-integration/home-fields/econ-light-1200.png",
+        "personallyInspectedSourceSHA256": "2a6bd6facf8b4d07e8076869e7b40de772033f23c41aeaa129858f181cc8af2c"
+      },
+      {
+        "path": "/workspace/scratch/wave6-fin-game-integration/home-fields-final/home-dark-320.png",
+        "sha256": "e4541bfa5bb621508e48e5286fae8ce1c39c363331b03dc8012a9097a3025283",
+        "scope": "Changed hero links/button",
+        "review": "Personally inspected this final original-resolution image."
+      },
+      {
+        "path": "/workspace/scratch/wave6-fin-game-integration/home-fields-final/econ-dark-320.png",
+        "sha256": "f74c46012f25e7e726c4fd6df5a09aed4db6bedfa40dcabe152ad6c8606ad9e3",
+        "scope": "Changed economics heading/blurb",
+        "review": "Exact original RGB equality to the personally inspected initial field image.",
+        "personallyInspectedSource": "/workspace/scratch/wave6-fin-game-integration/home-fields/econ-dark-320.png",
+        "personallyInspectedSourceSHA256": "f74c46012f25e7e726c4fd6df5a09aed4db6bedfa40dcabe152ad6c8606ad9e3"
+      },
+      {
+        "path": "/workspace/scratch/wave6-fin-game-integration/home-fields-final/home-dark-1200.png",
+        "sha256": "e3257f807a39288da52b0f54e108d59e5cd953ca1afcd44ce81d0792c6997bf8",
+        "scope": "Changed hero links/button",
+        "review": "Personally inspected this final original-resolution image."
+      },
+      {
+        "path": "/workspace/scratch/wave6-fin-game-integration/home-fields-final/econ-dark-1200.png",
+        "sha256": "e545e6351c28c2c0067e0d629d97e7365a4130c4943ddad97e3414c21bbbc3cb",
+        "scope": "Changed economics heading/blurb",
+        "review": "Exact original RGB equality to the personally inspected initial field image.",
+        "personallyInspectedSource": "/workspace/scratch/wave6-fin-game-integration/home-fields/econ-dark-1200.png",
+        "personallyInspectedSourceSHA256": "e545e6351c28c2c0067e0d629d97e7365a4130c4943ddad97e3414c21bbbc3cb"
+      }
+    ],
+    "method": "All initial8home/field images,4intermediate SVGhome images and4finalhome images personally inspected at originalCSSpixels. Four final field targets reuse exact original RGB equality. No resizing/similarity inference."
+  },
+  "finding": "Original home button arrow rendered as a missing glyph. Replaced by SVG; New links now stay whole when wrapping, and the macro link uses a concise accurate label. Final changed regions personally reviewed."
+}
