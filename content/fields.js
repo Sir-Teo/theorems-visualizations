@@ -93,7 +93,7 @@ export default [
   },
   {
     id: 'econ', title: 'Economics & Finance', short: 'Econ', color: ['#7a5c3e', '#d1ad86'],
-    blurb: String.raw`How people, firms and nations choose under scarcity: markets and their failures, growth and cycles, money and risk, strategy, and the predictable ways real people depart from the textbook.`,
+    blurb: String.raw`How people, firms and nations choose under scarcity: markets and their failures, growth and cycles, bonds and options, evolutionary strategy and congestion, and the predictable ways real people depart from the textbook.`,
     areas: [
       { id: 'micro', title: 'Microeconomics' },
       { id: 'macro', title: 'Macroeconomics' },
