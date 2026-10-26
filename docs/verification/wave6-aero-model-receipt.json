@@ -2,9 +2,9 @@
   "status": "pure-model author checks pass; native and complete personal visual review remain open",
   "referenceCases": 352,
   "families": 9,
-  "focusedGroups": 17,
+  "focusedGroups": 19,
   "affectedPriorGroups": 17,
-  "totalGroups": 34,
+  "totalGroups": 36,
   "precision": {
     "cases": 352,
     "ordinaryDigits": {
@@ -17,20 +17,20 @@
     },
     "completeExpectedObjectsExact": true,
     "differences": [],
-    "fixtureSHA256": "89633268c796c84df8fc8007dd9c14a8ad47fdf04b2e82e926c46ca5edd11fa0"
+    "fixtureSHA256": "b42fefd896c08ee3d821c3272dde6e40d7f6a049965a16bd2540ec4763b0ea77"
   },
-  "comparisons": 15572,
+  "comparisons": 15716,
   "worstPhysicalRelativeOutsideSubnormal": 1.3924792104428472e-11,
   "physicalRelativeGate": 3e-11,
   "classification": "Exact retained quantity signs, range statuses and characteristic-coefficient stability are checked separately from approximate trajectories and poles.",
   "logs": {
-    "focusedPrior": "/tmp/wave6-aero-freeze-focused.log"
+    "focusedPrior": "/tmp/wave6-aero-spiral-focused.log"
   },
   "sourceHashes": {
-    "content/aero/ch06.shared.js": "330fdaf5bbed698940847e8c3dea588ebfe6390d686424106831934697752a06",
+    "content/aero/ch06.shared.js": "bf8eccaf356565aa48b49da8aafc5706baadc98a98503a773c4ed5f70d445d7c",
     "content/aero/ch06.exact.shared.js": "d7b620543a053c1282e31826ab8adbc082d27ac258fe0cb5b7f1f85b00c46858",
-    "tests/wave6-aero-reference.py": "ca12b037120f8dea90b0617ea18fb0b1018e050f7f0d8bec08b9fc3fca19a435",
-    "tests/fixtures/wave6-aero-reference.json": "89633268c796c84df8fc8007dd9c14a8ad47fdf04b2e82e926c46ca5edd11fa0"
+    "tests/wave6-aero-reference.py": "274e55a75a43b69215538e4ad53c48ff8661a00cfa9571f550edd0c756306450",
+    "tests/fixtures/wave6-aero-reference.json": "b42fefd896c08ee3d821c3272dde6e40d7f6a049965a16bd2540ec4763b0ea77"
   },
   "oracleFinding": "A generic mpmath eigenvalue solve perturbed analytically exact half-trace real parts at binary64 halfway rounding points. The independent quadratic reference now enforces its exact trace symmetry; no epsilon snaps roots or statuses. All352 complete expected objects match at1000/90 and2000/180 digits.",
   "nativeStatus": "Incomplete prototypes only. Fresh whole-source full44-layout matrix, actual control/share checks, mode checks, complete rich/default screenshots and personal critical-state review are still required.",
@@ -40,5 +40,12 @@
     "allExact": true,
     "proofLog": "/tmp/wave6-aero-freeze-preservation.log",
     "syllabus": "Only chapter6 refs/pic changed; all other fields exact"
+  },
+  "spiralRepair": {
+    "finding": "Generic eigenvalue0 erased both signs around the16/3-degree spiral threshold.",
+    "before": "/tmp/wave6-aero-research/spiral-pole-sign-check.json",
+    "method": "Exact rational polynomial signs isolate the unique slow root in[-1/8,1/8]. Its derivative is bounded below by0.2966 in the declared family. The returned bracket has adjacent binary64 endpoints.",
+    "reference": "Independent mpmath principal minors and scalar root solve; all352 complete objects match at2000/180 digits.",
+    "animation": "The fixed lateral model/poles are cached across time-only frames; no FPS claim."
   }
 }

@@ -77,7 +77,7 @@ def make_lateral(p):
    for indices in itertools.combinations(range(4),size):minors.append(mp.det(mp.matrix([[A[i,j] for j in indices] for i in indices])))
    coeff.append((-1)**size*sum(minors))
   _,a,b,c,e=coeff;D2=a*b-c;D3=D2*c-a*a*e;values=coeff[1:]+[D2,D3];status='asymptotically stable' if all(x>0 for x in values) else 'stability boundary' if all(x>=0 for x in values) else 'unstable'
-  emit('lateral',p,{**{f'coefficients.{j}':c for j,c in enumerate(coeff)},'routh2':D2,'routh3':D3,'rollBeta':-D},A=A,status=status)
+  emit('lateral',p,{**{f'coefficients.{j}':c for j,c in enumerate(coeff)},'routh2':D2,'routh3':D3,'rollBeta':-D,'spiralPole':mp.findroot(lambda x:sum(c*x**(4-j) for j,c in enumerate(coeff)),(-F(1)/8,F(1)/8))},A=A,status=status)
 def make_other(name,p):
  with mp.workdps(1000):
   if name=='directional':

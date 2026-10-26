@@ -33,7 +33,12 @@
     "Background3D grid fits entirely within the rotation viewport.",
     "Dihedral gets an enlarged upper-half-plane Dutch-roll locus; the full spectrum is in the preceding lesson.",
     "Flutter has a separate frequency-vs-flow panel and labeled5x deformation with automatic fitting; all traces/readouts retain unscaled state.",
-    "The chosen trim-drag penalty uses a useful fixed coefficient range."
+    "The chosen trim-drag penalty uses a useful fixed coefficient range.",
+    "Selected trim lift residual is subtracted before rounding; a true4.1546e−17 residual was previously rendered as zero. Exact-zero dots now require an exact zero quantity.",
+    "Tail incidence rotates the actual tail schematic; fin polygon area follows its fin scale.",
+    "Flutter frequency/pole paths contain the exact merge, rounded growth onset and current speed, with extra resolution near the merge.",
+    "Panel heights match within each desktop row.",
+    "A chapter-local slow-pole isolator preserves signed spiral poles where the generic eigensolver returned zero."
   ],
   "deferred": [
     "Private S2",

@@ -19,7 +19,7 @@ const page=await browser.newPage({viewport:{width:320,height:1100},deviceScaleFa
 const errors=[],rows=[];page.on('pageerror',e=>errors.push(e.message));
 await page.addInitScript(()=>{window.__texStrict=true;window.__vizStill=true;const theme=new URL(location.href).searchParams.get('qaTheme');if(theme)localStorage.setItem('theme',theme);});
 await page.route('**/assets/js/viz/core.js',async route=>{
- let src=fs.readFileSync(new URL('../assets/js/viz/core.js','../assets/js/viz/math.js',import.meta.url),'utf8');
+ let src=fs.readFileSync(new URL('../assets/js/viz/core.js',import.meta.url),'utf8');
  const needle='try { vizFn(instance.api); }';
  if(!src.includes(needle))throw Error('runtime injection marker missing');
  src=src.replace(needle,`window.__aeroRuntime=instance;

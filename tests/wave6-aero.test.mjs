@@ -29,6 +29,16 @@ test('AERO6 static translation and neutral point retain exact signs',()=>{
  const tiny=H.staticAircraft({tailArea:Number.MIN_VALUE,cg:.25,deltaAlpha:Number.MIN_VALUE});assert.equal(tiny.margin.sign,1);assert.equal(tiny.dMoment.sign,-1);assert.ok(tiny.dMoment.belowRange);assert.equal(tiny.dTail.sign,1);
  for(const h of[.05,.25,.5,.9]){const z=H.staticAircraft({cg:h}),sum=H.Q.add(z.constants.Cmac,H.Q.add(z.wingMoment.exact,z.tailMoment.exact));assert.equal(H.Q.sign(H.Q.sub(sum,z.moment.exact)),0);}
 });
+test('AERO6 slow-pole bracket is unique throughout the declared family',()=>{
+ const Q=H.Q,P=(coeff,x)=>coeff.reduce((y,c)=>Q.add(Q.mul(y,x),c.exact),Q.ZERO);
+ for(const dihedral of[0,16])for(const fin of[.3,2]){const z=H.lateral({dihedral,fin}),c=z.coefficients;assert.equal(Q.sign(P(c,-.125)),-1);assert.equal(Q.sign(P(c,.125)),1);const derivativeLower=Q.sub(Q.sub(c[3].exact,Q.div(c[2].exact,4)),Q.rational(1,128));assert.equal(Q.sign(Q.sub(derivativeLower,.2966)),1);}
+ const nextUp=x=>{if(x===0)return Number.MIN_VALUE;const a=new Float64Array([x]),b=new BigUint64Array(a.buffer);b[0]+=x>0?1n:-1n;return a[0];};
+ for(const r of oracle.rows.filter(r=>r.name==='lateral')){const z=H.lateral(r.p),[lo,hi]=z.spiralBracket;assert.ok(H.Q.sign(P(z.coefficients,lo))<=0);assert.ok(H.Q.sign(P(z.coefficients,hi))>=0);if(lo!==hi)assert.equal(nextUp(lo),hi,'adjacent binary64 bracket');assert.ok(z.spiralPole.value===lo||z.spiralPole.value===hi);}
+});
+test('AERO6 signed slow poles survive both sides of the exact spiral threshold',()=>{
+ const a=new Float64Array([16/3]),u=new BigUint64Array(a.buffer),b=u[0];
+ for(const delta of[-1n,0n,1n]){u[0]=b+delta;const z=H.lateral({dihedral:a[0]});assert.notEqual(z.spiralPole.sign,0);assert.equal(z.spiralPole.sign,-z.coefficients[4].sign);assert.notEqual(z.spiralPole.value,0);}
+});
 test('AERO6 no-tail trim distinguishes absent authority and infeasibility',()=>{
  const a=H.trimAircraft({tailArea:0});assert.equal(a.trim.valid,false);assert.match(a.trim.status,/inconsistent/);assert.equal(a.trim.elevator,null);
  const compatible=H.trimAircraft({tailArea:0,cg:.5,targetLift:.2});assert.match(compatible.trim.status,/nonunique/);assert.equal(compatible.trim.elevator,null);

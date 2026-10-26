@@ -54,9 +54,26 @@ export function directional({fin=1,beta=6}={}){
  return{parameters:{fin,beta},cnb:q(cnb),side:q(side),finMoment:q(finMoment),bodyMoment:q(bodyMoment),moment:q(moment),status:sign(cnb)>0?'directionally restoring':sign(cnb)<0?'directionally destabilizing':'neutral first-order yaw stiffness'};
 }
 function charCoefficients(A){let B=identity(A.length),c=[1];for(let k=1;k<=A.length;k++){const AB=A.map(r=>B[0].map((_,j)=>sum(r.map((a,i)=>mul(a,B[i][j]))))),ck=neg(div(sum(AB.map((r,i)=>r[i])),k));c.push(ck);B=AB.map((r,i)=>r.map((x,j)=>i===j?add(x,ck):x));}return c;}
+function isolateSpiral(coeff){
+ // For D in[0,3.2], f in[.3,2], P(-1/8)<0<P(1/8).
+ // On this interval P' >= c-b/4-1/128 > .2966 >0.
+ // Thus there is exactly one real pole in the bracket. Exact rational
+ // signs retain the slow mode when a generic matrix eigensolver returns0.
+ const evaluate=x=>coeff.reduce((value,c)=>add(mul(value,x),c),Q.ZERO);
+ let lo=-.125,hi=.125,fl=evaluate(lo),fh=evaluate(hi),steps=0;
+ if(sign(fl)>=0||sign(fh)<=0)throw Error('unresolved slow-pole bracket');
+ for(;steps<160;steps++){
+  const mid=(lo+hi)/2;if(mid===lo||mid===hi)break;const fm=evaluate(mid),s=sign(fm);
+  if(s===0)return{root:mid,bracket:[mid,mid],steps:steps+1};
+  if(s<0){lo=mid;fl=fm;}else{hi=mid;fh=fm;}
+ }
+ const root=sign(sub(sign(fl)<0?neg(fl):fl,sign(fh)<0?neg(fh):fh))<=0?lo:hi;
+ return{root,bracket:[lo,hi],steps};
+}
 export function lateral({dihedral=10,fin=1}={}){
  bound(dihedral,0,16,'wing dihedral');bound(fin,.3,2,'fin scale');const d=div(dihedral,5),Ar=[[Q.rational(-1,5),0,-1,Q.rational(1,10)],[neg(d),-2,Q.rational(2,5),0],[mul(Q.rational(4,5),fin),Q.rational(-1,10),mul(Q.rational(-3,10),fin),0],[0,1,0,0]],coeff=charCoefficients(Ar),[,a,b,c,e]=coeff,D2=sub(mul(a,b),c),D3=sub(mul(D2,c),mul(sq(a),e)),signs=[a,b,c,e,D2,D3].map(sign),stable=signs.every(x=>x>0),boundary=signs.some(x=>x===0)&&signs.every(x=>x>=0);
- return{parameters:{dihedral,fin},A:Ar.map(r=>r.map(N)),coefficients:coeff.map(q),routh2:q(D2),routh3:q(D3),status:stable?'asymptotically stable':boundary?'stability boundary':'unstable',rollBeta:q(neg(d)),spiralBoundary:16/3};
+ const slow=isolateSpiral(coeff);
+ return{parameters:{dihedral,fin},A:Ar.map(r=>r.map(N)),coefficients:coeff.map(q),routh2:q(D2),routh3:q(D3),status:stable?'asymptotically stable':boundary?'stability boundary':'unstable',rollBeta:q(neg(d)),spiralBoundary:16/3,spiralPole:q(slow.root),spiralBracket:slow.bracket,spiralIterations:slow.steps};
 }
 export function feedback({cg=.65,attitudeGain=2,rateGain=1,mode='attitude + rate',time=3,initial=2}={}){
  bound(cg,.05,.9,'CG');bound(attitudeGain,0,5,'attitude gain');bound(rateGain,0,4,'rate gain');bound(time,0,12,'time');bound(initial,-3,3,'initial pitch');pick(mode,['bare airframe','rate only','attitude + rate']);
