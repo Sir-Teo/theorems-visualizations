@@ -1,0 +1,20 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import fs from 'node:fs';
+import {execFileSync} from 'node:child_process';
+import {createHash} from 'node:crypto';
+import {loadAll,ROOT} from '../scripts/lib.mjs';
+import {projectIdeas,selectFrozenIdeas,digest} from '../scripts/static-ideas.mjs';
+test('ROBOT6/AERO6 reading integration adds exactly twenty frozen lessons and retains every earlier projection',async()=>{
+ const old=JSON.parse(execFileSync('git',['show','4e884665ff31417d464d93fb41aa8effaa459729:static-pages/accepted.json'],{cwd:ROOT,encoding:'utf8'}));
+ const current=JSON.parse(fs.readFileSync(ROOT+'/static-pages/accepted.json'));
+ const evidence=JSON.parse(fs.readFileSync(ROOT+'/docs/integration/wave6-robot-aero-content.json'));
+ const bytes=fs.readFileSync(ROOT+'/docs/integration/wave6-robot-aero-content.json');
+ assert.equal(createHash('sha256').update(bytes).digest('hex'),'42dfe80f8297ff3503c3eb6ca6dec369eca38dd329bd935c52a8e5b303d01aef');
+ const data=await loadAll();assert.equal(digest(projectIdeas(data,old.ids,old.aliases)),old.snapshotDigest);assert.ok(old.aliases.every(a=>current.aliases.some(b=>a.id===b.id&&a.to===b.to)));
+ const expected=[['robot',9],['aero',11]].flatMap(([col,n])=>Array.from({length:n},(_,i)=>col+'-6.'+(i+1))).sort();
+ assert.deepEqual(evidence.addedIds,expected);assert.deepEqual(evidence.changedRetainedItems,[]);assert.equal(evidence.retainedIdeas,8521);assert.equal(evidence.mergedIdeas,8541);
+ const selected=selectFrozenIdeas(data,{schemaVersion:1,acceptedCommit:evidence.sourceCommit,ids:[...old.ids,...expected].sort(),aliases:old.aliases,snapshotDigest:evidence.snapshotDigest});assert.equal(selected.selected.length,8541);assert.ok(expected.every(id=>current.ids.includes(id)));
+ assert.ok(old.ids.every(id=>current.ids.includes(id)));assert.equal(evidence.sourceCommit,'7c9f315400a6d8bef573ef24b7418cf193cbc09c');assert.match(evidence.dataDigest,/^[a-f0-9]{64}$/);
+ const flags=selected.selected.filter(p=>expected.includes(p.item.id)&&p.item.verify).map(p=>p.item.id);assert.deepEqual(flags.sort(),[]);
+});

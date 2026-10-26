@@ -379,9 +379,9 @@
     "kind": "author-check",
     "scope": "local-preview",
     "author": "atlas-editor",
-    "checkedOn": "2026-10-25",
-    "contentDigest": "25bdec800226006c5516a48bcf4252ab7bd579ae3f41ded84071281d8fcf6296",
+    "checkedOn": "2026-10-26",
+    "contentDigest": "38ed4e862e18cc57d37109406e3ce738d3f1b8da2ae664242e17c83ed4765ddb",
     "artifactDigest": "ff19c4a9828fd3b260c199c4963c1f85265be51d9cf59bd0c7e9e94aadd9f56e",
-    "evidencePath": "docs/verification/wave6-energy-solid-integration.md"
+    "evidencePath": "docs/verification/wave6-robot-aero-integration.md"
   }
 }
