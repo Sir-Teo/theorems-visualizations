@@ -3,6 +3,8 @@ import {after} from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import * as H from '../content/macro/ch06.shared.js';
+import chapter from '../content/macro/ch06.js';
+import syllabus from '../content/macro/syllabus.js';
 const reference=JSON.parse(fs.readFileSync(new URL('./fixtures/wave6-macro-reference.json',import.meta.url))),priceSource=JSON.parse(fs.readFileSync(new URL('./fixtures/wave6-macro-price-source.json',import.meta.url)));
 const statistics={cases:0,comparisons:0,worstPhysicalRelative:0,worstLogAbsolute:0};
 function compare(actual,expected,label){
@@ -40,6 +42,9 @@ test('MACRO6 equal expected uncovered returns retain actual two-state currency r
  const j=H.uip({domesticRate:0,foreignRate:0,dispersion:Number.MIN_VALUE});assert.equal(j.jensenGap.sign,1);assert.equal(j.expectedLogDepreciation.sign,-1);assert.equal(j.jensenGap.belowRange,true);
  const deterministic=H.uip({dispersion:0});assert.equal(deterministic.jensenGap.sign,0);assert.equal(deterministic.payoffVariance.sign,0);
 });
+test('MACRO6 zero maturity collapses the terminal spot and both currency payoffs',()=>{
+ const z=H.uip({time:0,dispersion:.8,expectedWedge:.05});assert.equal(z.homePayoff.value,1);assert.equal(z.lowForeignPayoff.value,1);assert.equal(z.highForeignPayoff.value,1);for(const k of ['payoffVariance','payoffStandardDeviation','jensenGap','expectedLogDepreciation','expectedPayoffGap','lowExcessPayoff','highExcessPayoff'])assert.equal(z[k].sign,0,k+' no interval for exchange risk at maturity0');assert.equal(z.meanSpot.value,z.parameters.spot);
+});
 test('MACRO6 a chosen profitable carry path does not establish positive expected payoff',()=>{
  const z=H.carry({crashProbability:.1});assert.ok(z.finalIllustrativeSum.sign>0&&z.expectedGain.sign<0);assert.equal(z.illustration.filter(r=>r.isCrash).length,1);assert.equal(H.carry({schedule:'no crash'}).illustration.filter(r=>r.isCrash).length,0);
  assert.ok(H.carry({crashProbability:0}).expectedGain.sign>0);assert.equal(H.carry({crashProbability:0}).variance.sign,0);
@@ -58,3 +63,11 @@ test('MACRO6 declared domains reject invalid economic states and undeclared sour
  for(const run of [()=>H.accounting({consumption:NaN}),()=>H.accounting({unreportedFraction:1.1}),()=>H.exchange({spot:0}),()=>H.exchange({time:-1}),()=>H.exchange({domesticPrice:0}),()=>H.burger({country:'ZZZ'}),()=>H.burger({date:'2020-01-01'}),()=>H.uip({dispersion:1}),()=>H.uip({foreignRate:Infinity}),()=>H.carry({crashPeriod:1.5}),()=>H.carry({crashProbability:.4}),()=>H.carry({schedule:'random sample'}),()=>H.smallOpen({exportSensitivity:0}),()=>H.balassa({tradedProductivity:0}),()=>H.balassa({tradedShare:1})])assert.throws(run);
 });
 after(()=>console.log('MACRO6 reference statistics '+JSON.stringify(statistics)));
+
+test('MACRO6 complete teaching content preserves seven frozen lesson identities and source scopes',()=>{
+ const frozen=JSON.parse(fs.readFileSync(new URL('../docs/wave-6-plan.json',import.meta.url))).chapters.find(c=>c.collection==='macro').items,outline=syllabus.chapters.find(c=>c.n===6).items;assert.equal(chapter.items.length,7);assert.equal(outline.length,7);
+ for(const[j,item]of chapter.items.entries()){for(const k of ['num','kind','name','deps','paper','introduces','verify','see'])assert.deepEqual(item[k],frozen[j][k],item.num+' frozen '+k);for(const k of ['num','kind','name','deps','refs'])assert.deepEqual(item[k],outline[j][k],item.num+' syllabus '+k);assert.equal(item.caption,outline[j].pic);for(const k of ['statement','idea','scope','caption'])assert.ok(item[k].length>120,item.num+' complete '+k);assert.equal(typeof item.viz,'function');}
+});
+test('MACRO6 syllabus changes only chapter6 researched references and picture captions',()=>{
+ const before=JSON.parse(fs.readFileSync(new URL('./fixtures/wave6-macro-syllabus-before.json',import.meta.url))),omit=c=>c.n!==6?c:{...c,items:c.items.map(({refs,pic,...rest})=>rest)};assert.deepEqual({...syllabus,chapters:syllabus.chapters.map(omit)},{...before,chapters:before.chapters.map(omit)});
+});

@@ -1,24 +1,24 @@
 {
-  "status": "Pure models independently verified; complete lesson/native/personal visual gates remain open; no MACRO availability promotion",
+  "status": "Seven pure model families independently verified. Completed chapter gates are recorded separately in wave6-macro-gates.json; initial prototype checkpoint remains historical.",
   "availability": {
-    "unchanged": 842,
+    "chapterGates": "docs/verification/wave6-macro-gates.json",
     "goal": 1057,
     "historicalIndependentAcceptance": 36
   },
   "referenceCases": 355,
   "families": 7,
   "comparisons": 40823,
-  "focusedGroups": 15,
+  "focusedGroups": 16,
   "precision": {
     "status": "PASS",
     "cases": 355,
-    "comparisons": 40823,
     "ordinaryDigits": 1400,
     "higherDigits": 2800,
     "canonicalRepeatByteIdentical": true,
     "completeExpectedObjectsExact": true,
+    "fixtureSHA256": "9e61a43a4166669f3d8433b458ba16d0f3e88d3ced41cadcc70f02dc700d67de",
     "differences": [],
-    "fixtureSHA256": "9a1da9745b79eb7b588ce5d645b9e24620fb908fd78cf47a19cdc8c074b9525d"
+    "comparisons": 40823
   },
   "observed": {
     "worstPhysicalRelativeOutsideSubnormal": 0,
@@ -35,12 +35,12 @@
     "Production160-bit rational series enclosures with geometric tails, reciprocal/monotone transforms and outward dyadic rounding; quantities remain explicitly approximate when transcendental. Exact retained algebra/signs are separate."
   ],
   "testRun": {
-    "passed": 15,
+    "passed": 16,
     "failed": 0,
     "skipped": 0,
     "cancelled": 0,
-    "durationMs": 8374.765516,
-    "log": "/workspace/scratch/wave6-macro-research/focused-initial.log"
+    "durationMs": 8180.336902,
+    "log": "/workspace/scratch/wave6-macro-research/focused-zero-maturity.log"
   },
   "developmentNotes": [
     "The first unrounded rational composition took about1.176seconds for a fresh Balassa calculation. Outward dyadic rounding bounds intermediate integer sizes; the local fresh diagnostic fell to about31ms. This is not an FPS benchmark or native responsiveness acceptance.",
@@ -48,12 +48,12 @@
     "Managed environment restart cleared prior /tmp files. The retained45-row product source was restored to a standalone fixture only after complete original SHA equality; all reference jobs were regenerated, polled closed and compared again."
   ],
   "sourceHashes": {
-    "content/macro/ch06.shared.js": "77d5a9b9faa8059b98973dd5dd69a13299256eb00f228f5a375ccd64349c43fe",
+    "content/macro/ch06.shared.js": "a2d165ce5bddde0fe46cc5ec95d92eeb3e4f472dcb41d9e462773dcd6246a9d1",
     "content/macro/ch06.exact.shared.js": "061a042de743211c0d63548b8b3570d7a444f8c924ff7f6cf1b4716a4201b982",
     "content/macro/ch06.data.shared.js": "06d95424bde31becd95addbe8cf827351f42cc2ab094b94b78adfd13fad1f8a5",
-    "tests/wave6-macro-reference.py": "6f6c3857a5288099f29f7c41c72578a732f40a1789b2ba241c3049be3bf8d3a1",
-    "tests/wave6-macro.test.mjs": "11bec67398cdbf602bb002717a03dc98d250eb371d1205c8438234352c781b0a",
-    "tests/fixtures/wave6-macro-reference.json": "9a1da9745b79eb7b588ce5d645b9e24620fb908fd78cf47a19cdc8c074b9525d",
+    "tests/wave6-macro-reference.py": "c0f949289ee7f040faad0bff46987420e22917bec51c50c6d4cbb99e8ba695e6",
+    "tests/wave6-macro.test.mjs": "1e025b2e6c3669437944244a949742c6069efbd4913e5d7d64ccf5aa7b8e91f5",
+    "tests/fixtures/wave6-macro-reference.json": "9e61a43a4166669f3d8433b458ba16d0f3e88d3ced41cadcc70f02dc700d67de",
     "tests/fixtures/wave6-macro-price-source.json": "202cbc1ef6d9fc7be7399ad85a67fbd7574c974d914a9de58531ba447caab1a1"
   },
   "preservation": {
@@ -298,5 +298,59 @@
     "No complete MACRO6 lesson module or visualization is installed yet.",
     "Pure-model checks do not establish native/Share/visual quality or a new global-suite checkpoint.",
     "Teaching risk/productivity/fiscal economies are hypothetical; only the fixed attributed45-row burger-price cohort is observed source data."
-  ]
+  ],
+  "initialCheckpoint": {
+    "commit": "5cdc3f98",
+    "focusedGroups": 15,
+    "precision": {
+      "status": "PASS",
+      "cases": 355,
+      "comparisons": 40823,
+      "ordinaryDigits": 1400,
+      "higherDigits": 2800,
+      "canonicalRepeatByteIdentical": true,
+      "completeExpectedObjectsExact": true,
+      "differences": [],
+      "fixtureSHA256": "9a1da9745b79eb7b588ce5d645b9e24620fb908fd78cf47a19cdc8c074b9525d"
+    },
+    "sourceHashes": {
+      "content/macro/ch06.shared.js": "a2d165ce5bddde0fe46cc5ec95d92eeb3e4f472dcb41d9e462773dcd6246a9d1",
+      "content/macro/ch06.exact.shared.js": "061a042de743211c0d63548b8b3570d7a444f8c924ff7f6cf1b4716a4201b982",
+      "content/macro/ch06.data.shared.js": "06d95424bde31becd95addbe8cf827351f42cc2ab094b94b78adfd13fad1f8a5",
+      "tests/wave6-macro-reference.py": "c0f949289ee7f040faad0bff46987420e22917bec51c50c6d4cbb99e8ba695e6",
+      "tests/wave6-macro.test.mjs": "9445b78342eb923e71dd1bfedc369ad333707677ac4cefbd658864117490c561",
+      "tests/fixtures/wave6-macro-reference.json": "9e61a43a4166669f3d8433b458ba16d0f3e88d3ced41cadcc70f02dc700d67de",
+      "tests/fixtures/wave6-macro-price-source.json": "202cbc1ef6d9fc7be7399ad85a67fbd7574c974d914a9de58531ba447caab1a1"
+    },
+    "scope": "Initial pure-model checkpoint before the scientific zero-maturity boundary correction."
+  },
+  "zeroMaturityRepair": {
+    "finding": "The initial authored UIP distribution retained nonzero terminal-spot dispersion at maturity0. An actual spot at time0 must equal the current spot.",
+    "repair": "Collapse terminal dispersion at exactly zero maturity; both domestic payoffs become1, spot staysS0, variance/Jensen correction and expected excess payoff are0. Positive-maturity scenarios retain their stated independent distributions.",
+    "referenceImpact": {
+      "changedRows": [
+        {
+          "index": 200,
+          "family": "uip",
+          "label": "exact conditional parity and Jensen/tiny boundaries",
+          "parameters": {
+            "time": 0
+          }
+        }
+      ],
+      "unchangedCompleteExpectedObjects": 354
+    },
+    "validation": "All355 cases/40823 comparisons and16 groups pass; canonical repeat byte-exact; all complete physical expected objects agree at1400/2800digits."
+  },
+  "completeChapterFocusedRun": {
+    "passed": 30,
+    "failed": 0,
+    "skipped": 0,
+    "cancelled": 0,
+    "durationMs": 8779.220717,
+    "log": {
+      "path": "/workspace/scratch/wave6-macro-research/focused-spacing.log",
+      "sha256": "438ea97d8a876a050d78adf24757da75c3bfcfbd20c1994553ba17b52e7536d1"
+    }
+  }
 }

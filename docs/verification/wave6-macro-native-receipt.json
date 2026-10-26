@@ -1,0 +1,6085 @@
+{
+  "status": "PASS",
+  "scope": "Final fixed source; actual intended control state, all physical model fields, scientific geometry, complete ink and exact actual Share reconstruction. Geometry compares against separately independently verified models; it is not another independent numerical oracle.",
+  "totals": {
+    "layouts": 28,
+    "actions": 1080,
+    "shares": 528,
+    "invalid": 28,
+    "raw": 24,
+    "critical": 212,
+    "checks": 1900,
+    "modelComparisons": 669768
+  },
+  "rows": [
+    {
+      "id": 1,
+      "theme": "light",
+      "width": 320,
+      "criticalCases": 8,
+      "totals": {
+        "layouts": 1,
+        "actions": 44,
+        "shares": 19,
+        "invalid": 1,
+        "raw": 1,
+        "critical": 8,
+        "checks": 74,
+        "modelComparisons": 20942
+      }
+    },
+    {
+      "id": 1,
+      "theme": "light",
+      "width": 1200,
+      "criticalCases": 8,
+      "totals": {
+        "layouts": 1,
+        "actions": 44,
+        "shares": 19,
+        "invalid": 1,
+        "raw": 1,
+        "critical": 8,
+        "checks": 74,
+        "modelComparisons": 20942
+      }
+    },
+    {
+      "id": 1,
+      "theme": "dark",
+      "width": 320,
+      "criticalCases": 8,
+      "totals": {
+        "layouts": 1,
+        "actions": 44,
+        "shares": 19,
+        "invalid": 1,
+        "raw": 1,
+        "critical": 8,
+        "checks": 74,
+        "modelComparisons": 20942
+      }
+    },
+    {
+      "id": 1,
+      "theme": "dark",
+      "width": 1200,
+      "criticalCases": 8,
+      "totals": {
+        "layouts": 1,
+        "actions": 44,
+        "shares": 19,
+        "invalid": 1,
+        "raw": 1,
+        "critical": 8,
+        "checks": 74,
+        "modelComparisons": 20942
+      }
+    },
+    {
+      "id": 2,
+      "theme": "light",
+      "width": 320,
+      "criticalCases": 7,
+      "totals": {
+        "layouts": 1,
+        "actions": 36,
+        "shares": 15,
+        "invalid": 1,
+        "raw": 1,
+        "critical": 7,
+        "checks": 61,
+        "modelComparisons": 14335
+      }
+    },
+    {
+      "id": 2,
+      "theme": "light",
+      "width": 1200,
+      "criticalCases": 7,
+      "totals": {
+        "layouts": 1,
+        "actions": 36,
+        "shares": 15,
+        "invalid": 1,
+        "raw": 1,
+        "critical": 7,
+        "checks": 61,
+        "modelComparisons": 14335
+      }
+    },
+    {
+      "id": 2,
+      "theme": "dark",
+      "width": 320,
+      "criticalCases": 7,
+      "totals": {
+        "layouts": 1,
+        "actions": 36,
+        "shares": 15,
+        "invalid": 1,
+        "raw": 1,
+        "critical": 7,
+        "checks": 61,
+        "modelComparisons": 14335
+      }
+    },
+    {
+      "id": 2,
+      "theme": "dark",
+      "width": 1200,
+      "criticalCases": 7,
+      "totals": {
+        "layouts": 1,
+        "actions": 36,
+        "shares": 15,
+        "invalid": 1,
+        "raw": 1,
+        "critical": 7,
+        "checks": 61,
+        "modelComparisons": 14335
+      }
+    },
+    {
+      "id": 3,
+      "theme": "light",
+      "width": 320,
+      "criticalCases": 6,
+      "totals": {
+        "layouts": 1,
+        "actions": 41,
+        "shares": 22,
+        "invalid": 1,
+        "raw": 0,
+        "critical": 6,
+        "checks": 71,
+        "modelComparisons": 17395
+      }
+    },
+    {
+      "id": 3,
+      "theme": "light",
+      "width": 1200,
+      "criticalCases": 6,
+      "totals": {
+        "layouts": 1,
+        "actions": 41,
+        "shares": 22,
+        "invalid": 1,
+        "raw": 0,
+        "critical": 6,
+        "checks": 71,
+        "modelComparisons": 17395
+      }
+    },
+    {
+      "id": 3,
+      "theme": "dark",
+      "width": 320,
+      "criticalCases": 6,
+      "totals": {
+        "layouts": 1,
+        "actions": 41,
+        "shares": 22,
+        "invalid": 1,
+        "raw": 0,
+        "critical": 6,
+        "checks": 71,
+        "modelComparisons": 17395
+      }
+    },
+    {
+      "id": 3,
+      "theme": "dark",
+      "width": 1200,
+      "criticalCases": 6,
+      "totals": {
+        "layouts": 1,
+        "actions": 41,
+        "shares": 22,
+        "invalid": 1,
+        "raw": 0,
+        "critical": 6,
+        "checks": 71,
+        "modelComparisons": 17395
+      }
+    },
+    {
+      "id": 4,
+      "theme": "light",
+      "width": 320,
+      "criticalCases": 8,
+      "totals": {
+        "layouts": 1,
+        "actions": 33,
+        "shares": 15,
+        "invalid": 1,
+        "raw": 1,
+        "critical": 8,
+        "checks": 59,
+        "modelComparisons": 18408
+      }
+    },
+    {
+      "id": 4,
+      "theme": "light",
+      "width": 1200,
+      "criticalCases": 8,
+      "totals": {
+        "layouts": 1,
+        "actions": 33,
+        "shares": 15,
+        "invalid": 1,
+        "raw": 1,
+        "critical": 8,
+        "checks": 59,
+        "modelComparisons": 18408
+      }
+    },
+    {
+      "id": 4,
+      "theme": "dark",
+      "width": 320,
+      "criticalCases": 8,
+      "totals": {
+        "layouts": 1,
+        "actions": 33,
+        "shares": 15,
+        "invalid": 1,
+        "raw": 1,
+        "critical": 8,
+        "checks": 59,
+        "modelComparisons": 18408
+      }
+    },
+    {
+      "id": 4,
+      "theme": "dark",
+      "width": 1200,
+      "criticalCases": 8,
+      "totals": {
+        "layouts": 1,
+        "actions": 33,
+        "shares": 15,
+        "invalid": 1,
+        "raw": 1,
+        "critical": 8,
+        "checks": 59,
+        "modelComparisons": 18408
+      }
+    },
+    {
+      "id": 5,
+      "theme": "light",
+      "width": 320,
+      "criticalCases": 10,
+      "totals": {
+        "layouts": 1,
+        "actions": 69,
+        "shares": 36,
+        "invalid": 1,
+        "raw": 1,
+        "critical": 10,
+        "checks": 118,
+        "modelComparisons": 74218
+      }
+    },
+    {
+      "id": 5,
+      "theme": "light",
+      "width": 1200,
+      "criticalCases": 10,
+      "totals": {
+        "layouts": 1,
+        "actions": 69,
+        "shares": 36,
+        "invalid": 1,
+        "raw": 1,
+        "critical": 10,
+        "checks": 118,
+        "modelComparisons": 74218
+      }
+    },
+    {
+      "id": 5,
+      "theme": "dark",
+      "width": 320,
+      "criticalCases": 10,
+      "totals": {
+        "layouts": 1,
+        "actions": 69,
+        "shares": 36,
+        "invalid": 1,
+        "raw": 1,
+        "critical": 10,
+        "checks": 118,
+        "modelComparisons": 74218
+      }
+    },
+    {
+      "id": 5,
+      "theme": "dark",
+      "width": 1200,
+      "criticalCases": 10,
+      "totals": {
+        "layouts": 1,
+        "actions": 69,
+        "shares": 36,
+        "invalid": 1,
+        "raw": 1,
+        "critical": 10,
+        "checks": 118,
+        "modelComparisons": 74218
+      }
+    },
+    {
+      "id": 6,
+      "theme": "light",
+      "width": 320,
+      "criticalCases": 7,
+      "totals": {
+        "layouts": 1,
+        "actions": 20,
+        "shares": 11,
+        "invalid": 1,
+        "raw": 1,
+        "critical": 7,
+        "checks": 41,
+        "modelComparisons": 9922
+      }
+    },
+    {
+      "id": 6,
+      "theme": "light",
+      "width": 1200,
+      "criticalCases": 7,
+      "totals": {
+        "layouts": 1,
+        "actions": 20,
+        "shares": 11,
+        "invalid": 1,
+        "raw": 1,
+        "critical": 7,
+        "checks": 41,
+        "modelComparisons": 9922
+      }
+    },
+    {
+      "id": 6,
+      "theme": "dark",
+      "width": 320,
+      "criticalCases": 7,
+      "totals": {
+        "layouts": 1,
+        "actions": 20,
+        "shares": 11,
+        "invalid": 1,
+        "raw": 1,
+        "critical": 7,
+        "checks": 41,
+        "modelComparisons": 9922
+      }
+    },
+    {
+      "id": 6,
+      "theme": "dark",
+      "width": 1200,
+      "criticalCases": 7,
+      "totals": {
+        "layouts": 1,
+        "actions": 20,
+        "shares": 11,
+        "invalid": 1,
+        "raw": 1,
+        "critical": 7,
+        "checks": 41,
+        "modelComparisons": 9922
+      }
+    },
+    {
+      "id": 7,
+      "theme": "light",
+      "width": 320,
+      "criticalCases": 7,
+      "totals": {
+        "layouts": 1,
+        "actions": 27,
+        "shares": 14,
+        "invalid": 1,
+        "raw": 1,
+        "critical": 7,
+        "checks": 51,
+        "modelComparisons": 12222
+      }
+    },
+    {
+      "id": 7,
+      "theme": "light",
+      "width": 1200,
+      "criticalCases": 7,
+      "totals": {
+        "layouts": 1,
+        "actions": 27,
+        "shares": 14,
+        "invalid": 1,
+        "raw": 1,
+        "critical": 7,
+        "checks": 51,
+        "modelComparisons": 12222
+      }
+    },
+    {
+      "id": 7,
+      "theme": "dark",
+      "width": 320,
+      "criticalCases": 7,
+      "totals": {
+        "layouts": 1,
+        "actions": 27,
+        "shares": 14,
+        "invalid": 1,
+        "raw": 1,
+        "critical": 7,
+        "checks": 51,
+        "modelComparisons": 12222
+      }
+    },
+    {
+      "id": 7,
+      "theme": "dark",
+      "width": 1200,
+      "criticalCases": 7,
+      "totals": {
+        "layouts": 1,
+        "actions": 27,
+        "shares": 14,
+        "invalid": 1,
+        "raw": 1,
+        "critical": 7,
+        "checks": 51,
+        "modelComparisons": 12222
+      }
+    }
+  ],
+  "modes": {
+    "status": "PASS",
+    "layouts": 14,
+    "modes": 88,
+    "actions": 176,
+    "shares": 88,
+    "checks": 278,
+    "comparisons": 120294,
+    "errors": [],
+    "sourceHashes": {
+      "../content/macro/ch06.js": "cc4579337bef56a944a76be3334dc90f5bd598e53181d4808b49cee03c02e801",
+      "../content/macro/ch06.viz.js": "7c07d09521467ef9e469e5d734e3905fd4b78087b77ec416f114f5a2ea8a0a07",
+      "../content/macro/ch06.shared.js": "a2d165ce5bddde0fe46cc5ec95d92eeb3e4f472dcb41d9e462773dcd6246a9d1",
+      "../content/macro/ch06.exact.shared.js": "061a042de743211c0d63548b8b3570d7a444f8c924ff7f6cf1b4716a4201b982",
+      "../content/macro/ch06.data.shared.js": "06d95424bde31becd95addbe8cf827351f42cc2ab094b94b78adfd13fad1f8a5",
+      "../content/macro/syllabus.js": "5d3f8b0c610f6051e910d1b3a388bd5c5320bb034851a88916c0d91cf0ef1735",
+      "../assets/js/viz/core.js": "a6fa1753d9d9e8b9a05a7161fffc58dfd53b27002d9d393a3266aeb96515fe73",
+      "../assets/js/viz/math.js": "439c335e1cc47907bc72bb76559216aa093be4710e0589f41c70192729eb223e",
+      "../assets/js/share-state.js": "13c6a9ac1237d566fc5d79c89e0f4d3029aa8c2817d2c08247a02b1b053a59b1",
+      "../data/col/macro.json": "dbd370bad602a31a30d45fc1dbee72d0da0cac4b4fa707db8c38c0e73d170a5f",
+      "../data/index.json": "06ba16d020577b05893d191c3b0f75cfa41990f7dccacee4b5aa94d459a09eeb",
+      "./wave6-macro-browser.shared.mjs": "4f1dd6a91cc8c3c33d742423eac73d2dbe72624daedb001bb0e617fa15498447",
+      "./wave6-macro-native-science.mjs": "df46d613eb1aca8f65ebfb17a2421e30663b891e4f69d7ecd8872494b18b8f98",
+      "./wave6-macro-mode-coverage.mjs": "83ad85c3a7f3f49757ea3069ea4e27f974da96e792d128d30391a4c5f942b404"
+    },
+    "rows": [
+      {
+        "id": 1,
+        "theme": "light",
+        "width": 320,
+        "group": "financial recording",
+        "groupIndex": 0,
+        "option": "complete",
+        "optionIndex": 0,
+        "file": "/workspace/scratch/wave6-macro-research/spacing-modes/1-light-320-mode-g0-o0.png",
+        "state": {
+          "v": 1,
+          "parts": [
+            [
+              "clock::0",
+              null
+            ],
+            [
+              "slider:consumption / money per period:0",
+              110
+            ],
+            [
+              "slider:government purchases / money per period:0",
+              35
+            ],
+            [
+              "slider:investment / money per period:0",
+              40
+            ],
+            [
+              "slider:net primary income / money per period:0",
+              -10
+            ],
+            [
+              "slider:net secondary income / money per period:0",
+              5
+            ],
+            [
+              "slider:capital account / money per period:0",
+              0
+            ],
+            [
+              "slider:valuation change / money:0",
+              0
+            ],
+            [
+              "select:financial recording:0",
+              [
+                0,
+                [
+                  "complete",
+                  "omit 20%",
+                  "omit all"
+                ]
+              ]
+            ]
+          ]
+        }
+      },
+      {
+        "id": 1,
+        "theme": "light",
+        "width": 320,
+        "group": "financial recording",
+        "groupIndex": 0,
+        "option": "omit 20%",
+        "optionIndex": 1,
+        "file": "/workspace/scratch/wave6-macro-research/spacing-modes/1-light-320-mode-g0-o1.png",
+        "state": {
+          "v": 1,
+          "parts": [
+            [
+              "clock::0",
+              null
+            ],
+            [
+              "slider:consumption / money per period:0",
+              110
+            ],
+            [
+              "slider:government purchases / money per period:0",
+              35
+            ],
+            [
+              "slider:investment / money per period:0",
+              40
+            ],
+            [
+              "slider:net primary income / money per period:0",
+              -10
+            ],
+            [
+              "slider:net secondary income / money per period:0",
+              5
+            ],
+            [
+              "slider:capital account / money per period:0",
+              0
+            ],
+            [
+              "slider:valuation change / money:0",
+              0
+            ],
+            [
+              "select:financial recording:0",
+              [
+                1,
+                [
+                  "complete",
+                  "omit 20%",
+                  "omit all"
+                ]
+              ]
+            ]
+          ]
+        }
+      },
+      {
+        "id": 1,
+        "theme": "light",
+        "width": 320,
+        "group": "financial recording",
+        "groupIndex": 0,
+        "option": "omit all",
+        "optionIndex": 2,
+        "file": "/workspace/scratch/wave6-macro-research/spacing-modes/1-light-320-mode-g0-o2.png",
+        "state": {
+          "v": 1,
+          "parts": [
+            [
+              "clock::0",
+              null
+            ],
+            [
+              "slider:consumption / money per period:0",
+              110
+            ],
+            [
+              "slider:government purchases / money per period:0",
+              35
+            ],
+            [
+              "slider:investment / money per period:0",
+              40
+            ],
+            [
+              "slider:net primary income / money per period:0",
+              -10
+            ],
+            [
+              "slider:net secondary income / money per period:0",
+              5
+            ],
+            [
+              "slider:capital account / money per period:0",
+              0
+            ],
+            [
+              "slider:valuation change / money:0",
+              0
+            ],
+            [
+              "select:financial recording:0",
+              [
+                2,
+                [
+                  "complete",
+                  "omit 20%",
+                  "omit all"
+                ]
+              ]
+            ]
+          ]
+        }
+      },
+      {
+        "id": 1,
+        "theme": "dark",
+        "width": 320,
+        "group": "financial recording",
+        "groupIndex": 0,
+        "option": "complete",
+        "optionIndex": 0,
+        "file": "/workspace/scratch/wave6-macro-research/spacing-modes/1-dark-320-mode-g0-o0.png",
+        "state": {
+          "v": 1,
+          "parts": [
+            [
+              "clock::0",
+              null
+            ],
+            [
+              "slider:consumption / money per period:0",
+              110
+            ],
+            [
+              "slider:government purchases / money per period:0",
+              35
+            ],
+            [
+              "slider:investment / money per period:0",
+              40
+            ],
+            [
+              "slider:net primary income / money per period:0",
+              -10
+            ],
+            [
+              "slider:net secondary income / money per period:0",
+              5
+            ],
+            [
+              "slider:capital account / money per period:0",
+              0
+            ],
+            [
+              "slider:valuation change / money:0",
+              0
+            ],
+            [
+              "select:financial recording:0",
+              [
+                0,
+                [
+                  "complete",
+                  "omit 20%",
+                  "omit all"
+                ]
+              ]
+            ]
+          ]
+        }
+      },
+      {
+        "id": 1,
+        "theme": "dark",
+        "width": 320,
+        "group": "financial recording",
+        "groupIndex": 0,
+        "option": "omit 20%",
+        "optionIndex": 1,
+        "file": "/workspace/scratch/wave6-macro-research/spacing-modes/1-dark-320-mode-g0-o1.png",
+        "state": {
+          "v": 1,
+          "parts": [
+            [
+              "clock::0",
+              null
+            ],
+            [
+              "slider:consumption / money per period:0",
+              110
+            ],
+            [
+              "slider:government purchases / money per period:0",
+              35
+            ],
+            [
+              "slider:investment / money per period:0",
+              40
+            ],
+            [
+              "slider:net primary income / money per period:0",
+              -10
+            ],
+            [
+              "slider:net secondary income / money per period:0",
+              5
+            ],
+            [
+              "slider:capital account / money per period:0",
+              0
+            ],
+            [
+              "slider:valuation change / money:0",
+              0
+            ],
+            [
+              "select:financial recording:0",
+              [
+                1,
+                [
+                  "complete",
+                  "omit 20%",
+                  "omit all"
+                ]
+              ]
+            ]
+          ]
+        }
+      },
+      {
+        "id": 1,
+        "theme": "dark",
+        "width": 320,
+        "group": "financial recording",
+        "groupIndex": 0,
+        "option": "omit all",
+        "optionIndex": 2,
+        "file": "/workspace/scratch/wave6-macro-research/spacing-modes/1-dark-320-mode-g0-o2.png",
+        "state": {
+          "v": 1,
+          "parts": [
+            [
+              "clock::0",
+              null
+            ],
+            [
+              "slider:consumption / money per period:0",
+              110
+            ],
+            [
+              "slider:government purchases / money per period:0",
+              35
+            ],
+            [
+              "slider:investment / money per period:0",
+              40
+            ],
+            [
+              "slider:net primary income / money per period:0",
+              -10
+            ],
+            [
+              "slider:net secondary income / money per period:0",
+              5
+            ],
+            [
+              "slider:capital account / money per period:0",
+              0
+            ],
+            [
+              "slider:valuation change / money:0",
+              0
+            ],
+            [
+              "select:financial recording:0",
+              [
+                2,
+                [
+                  "complete",
+                  "omit 20%",
+                  "omit all"
+                ]
+              ]
+            ]
+          ]
+        }
+      },
+      {
+        "id": 3,
+        "theme": "light",
+        "width": 320,
+        "group": "selected country",
+        "groupIndex": 0,
+        "option": "AUS",
+        "optionIndex": 0,
+        "file": "/workspace/scratch/wave6-macro-research/spacing-modes/3-light-320-mode-g0-o0.png",
+        "state": {
+          "v": 1,
+          "parts": [
+            [
+              "clock::0",
+              null
+            ],
+            [
+              "select:selected country:0",
+              [
+                0,
+                [
+                  "AUS",
+                  "CHE",
+                  "GBR",
+                  "JPN",
+                  "USA"
+                ]
+              ]
+            ],
+            [
+              "select:observation date:0",
+              [
+                8,
+                [
+                  "2022-07-01",
+                  "2023-01-01",
+                  "2023-07-01",
+                  "2024-01-01",
+                  "2024-07-01",
+                  "2025-01-01",
+                  "2025-07-01",
+                  "2026-01-01",
+                  "2026-07-01"
+                ]
+              ]
+            ],
+            [
+              "select:observed comparison:0",
+              [
+                0,
+                [
+                  "dollar burger prices",
+                  "raw price deviations"
+                ]
+              ]
+            ]
+          ]
+        }
+      },
+      {
+        "id": 3,
+        "theme": "light",
+        "width": 320,
+        "group": "selected country",
+        "groupIndex": 0,
+        "option": "CHE",
+        "optionIndex": 1,
+        "file": "/workspace/scratch/wave6-macro-research/spacing-modes/3-light-320-mode-g0-o1.png",
+        "state": {
+          "v": 1,
+          "parts": [
+            [
+              "clock::0",
+              null
+            ],
+            [
+              "select:selected country:0",
+              [
+                1,
+                [
+                  "AUS",
+                  "CHE",
+                  "GBR",
+                  "JPN",
+                  "USA"
+                ]
+              ]
+            ],
+            [
+              "select:observation date:0",
+              [
+                8,
+                [
+                  "2022-07-01",
+                  "2023-01-01",
+                  "2023-07-01",
+                  "2024-01-01",
+                  "2024-07-01",
+                  "2025-01-01",
+                  "2025-07-01",
+                  "2026-01-01",
+                  "2026-07-01"
+                ]
+              ]
+            ],
+            [
+              "select:observed comparison:0",
+              [
+                0,
+                [
+                  "dollar burger prices",
+                  "raw price deviations"
+                ]
+              ]
+            ]
+          ]
+        }
+      },
+      {
+        "id": 3,
+        "theme": "light",
+        "width": 320,
+        "group": "selected country",
+        "groupIndex": 0,
+        "option": "GBR",
+        "optionIndex": 2,
+        "file": "/workspace/scratch/wave6-macro-research/spacing-modes/3-light-320-mode-g0-o2.png",
+        "state": {
+          "v": 1,
+          "parts": [
+            [
+              "clock::0",
+              null
+            ],
+            [
+              "select:selected country:0",
+              [
+                2,
+                [
+                  "AUS",
+                  "CHE",
+                  "GBR",
+                  "JPN",
+                  "USA"
+                ]
+              ]
+            ],
+            [
+              "select:observation date:0",
+              [
+                8,
+                [
+                  "2022-07-01",
+                  "2023-01-01",
+                  "2023-07-01",
+                  "2024-01-01",
+                  "2024-07-01",
+                  "2025-01-01",
+                  "2025-07-01",
+                  "2026-01-01",
+                  "2026-07-01"
+                ]
+              ]
+            ],
+            [
+              "select:observed comparison:0",
+              [
+                0,
+                [
+                  "dollar burger prices",
+                  "raw price deviations"
+                ]
+              ]
+            ]
+          ]
+        }
+      },
+      {
+        "id": 3,
+        "theme": "light",
+        "width": 320,
+        "group": "selected country",
+        "groupIndex": 0,
+        "option": "JPN",
+        "optionIndex": 3,
+        "file": "/workspace/scratch/wave6-macro-research/spacing-modes/3-light-320-mode-g0-o3.png",
+        "state": {
+          "v": 1,
+          "parts": [
+            [
+              "clock::0",
+              null
+            ],
+            [
+              "select:selected country:0",
+              [
+                3,
+                [
+                  "AUS",
+                  "CHE",
+                  "GBR",
+                  "JPN",
+                  "USA"
+                ]
+              ]
+            ],
+            [
+              "select:observation date:0",
+              [
+                8,
+                [
+                  "2022-07-01",
+                  "2023-01-01",
+                  "2023-07-01",
+                  "2024-01-01",
+                  "2024-07-01",
+                  "2025-01-01",
+                  "2025-07-01",
+                  "2026-01-01",
+                  "2026-07-01"
+                ]
+              ]
+            ],
+            [
+              "select:observed comparison:0",
+              [
+                0,
+                [
+                  "dollar burger prices",
+                  "raw price deviations"
+                ]
+              ]
+            ]
+          ]
+        }
+      },
+      {
+        "id": 3,
+        "theme": "light",
+        "width": 320,
+        "group": "selected country",
+        "groupIndex": 0,
+        "option": "USA",
+        "optionIndex": 4,
+        "file": "/workspace/scratch/wave6-macro-research/spacing-modes/3-light-320-mode-g0-o4.png",
+        "state": {
+          "v": 1,
+          "parts": [
+            [
+              "clock::0",
+              null
+            ],
+            [
+              "select:selected country:0",
+              [
+                4,
+                [
+                  "AUS",
+                  "CHE",
+                  "GBR",
+                  "JPN",
+                  "USA"
+                ]
+              ]
+            ],
+            [
+              "select:observation date:0",
+              [
+                8,
+                [
+                  "2022-07-01",
+                  "2023-01-01",
+                  "2023-07-01",
+                  "2024-01-01",
+                  "2024-07-01",
+                  "2025-01-01",
+                  "2025-07-01",
+                  "2026-01-01",
+                  "2026-07-01"
+                ]
+              ]
+            ],
+            [
+              "select:observed comparison:0",
+              [
+                0,
+                [
+                  "dollar burger prices",
+                  "raw price deviations"
+                ]
+              ]
+            ]
+          ]
+        }
+      },
+      {
+        "id": 3,
+        "theme": "light",
+        "width": 320,
+        "group": "observation date",
+        "groupIndex": 1,
+        "option": "2022-07-01",
+        "optionIndex": 0,
+        "file": "/workspace/scratch/wave6-macro-research/spacing-modes/3-light-320-mode-g1-o0.png",
+        "state": {
+          "v": 1,
+          "parts": [
+            [
+              "clock::0",
+              null
+            ],
+            [
+              "select:selected country:0",
+              [
+                3,
+                [
+                  "AUS",
+                  "CHE",
+                  "GBR",
+                  "JPN",
+                  "USA"
+                ]
+              ]
+            ],
+            [
+              "select:observation date:0",
+              [
+                0,
+                [
+                  "2022-07-01",
+                  "2023-01-01",
+                  "2023-07-01",
+                  "2024-01-01",
+                  "2024-07-01",
+                  "2025-01-01",
+                  "2025-07-01",
+                  "2026-01-01",
+                  "2026-07-01"
+                ]
+              ]
+            ],
+            [
+              "select:observed comparison:0",
+              [
+                0,
+                [
+                  "dollar burger prices",
+                  "raw price deviations"
+                ]
+              ]
+            ]
+          ]
+        }
+      },
+      {
+        "id": 3,
+        "theme": "light",
+        "width": 320,
+        "group": "observation date",
+        "groupIndex": 1,
+        "option": "2023-01-01",
+        "optionIndex": 1,
+        "file": "/workspace/scratch/wave6-macro-research/spacing-modes/3-light-320-mode-g1-o1.png",
+        "state": {
+          "v": 1,
+          "parts": [
+            [
+              "clock::0",
+              null
+            ],
+            [
+              "select:selected country:0",
+              [
+                3,
+                [
+                  "AUS",
+                  "CHE",
+                  "GBR",
+                  "JPN",
+                  "USA"
+                ]
+              ]
+            ],
+            [
+              "select:observation date:0",
+              [
+                1,
+                [
+                  "2022-07-01",
+                  "2023-01-01",
+                  "2023-07-01",
+                  "2024-01-01",
+                  "2024-07-01",
+                  "2025-01-01",
+                  "2025-07-01",
+                  "2026-01-01",
+                  "2026-07-01"
+                ]
+              ]
+            ],
+            [
+              "select:observed comparison:0",
+              [
+                0,
+                [
+                  "dollar burger prices",
+                  "raw price deviations"
+                ]
+              ]
+            ]
+          ]
+        }
+      },
+      {
+        "id": 3,
+        "theme": "light",
+        "width": 320,
+        "group": "observation date",
+        "groupIndex": 1,
+        "option": "2023-07-01",
+        "optionIndex": 2,
+        "file": "/workspace/scratch/wave6-macro-research/spacing-modes/3-light-320-mode-g1-o2.png",
+        "state": {
+          "v": 1,
+          "parts": [
+            [
+              "clock::0",
+              null
+            ],
+            [
+              "select:selected country:0",
+              [
+                3,
+                [
+                  "AUS",
+                  "CHE",
+                  "GBR",
+                  "JPN",
+                  "USA"
+                ]
+              ]
+            ],
+            [
+              "select:observation date:0",
+              [
+                2,
+                [
+                  "2022-07-01",
+                  "2023-01-01",
+                  "2023-07-01",
+                  "2024-01-01",
+                  "2024-07-01",
+                  "2025-01-01",
+                  "2025-07-01",
+                  "2026-01-01",
+                  "2026-07-01"
+                ]
+              ]
+            ],
+            [
+              "select:observed comparison:0",
+              [
+                0,
+                [
+                  "dollar burger prices",
+                  "raw price deviations"
+                ]
+              ]
+            ]
+          ]
+        }
+      },
+      {
+        "id": 3,
+        "theme": "light",
+        "width": 320,
+        "group": "observation date",
+        "groupIndex": 1,
+        "option": "2024-01-01",
+        "optionIndex": 3,
+        "file": "/workspace/scratch/wave6-macro-research/spacing-modes/3-light-320-mode-g1-o3.png",
+        "state": {
+          "v": 1,
+          "parts": [
+            [
+              "clock::0",
+              null
+            ],
+            [
+              "select:selected country:0",
+              [
+                3,
+                [
+                  "AUS",
+                  "CHE",
+                  "GBR",
+                  "JPN",
+                  "USA"
+                ]
+              ]
+            ],
+            [
+              "select:observation date:0",
+              [
+                3,
+                [
+                  "2022-07-01",
+                  "2023-01-01",
+                  "2023-07-01",
+                  "2024-01-01",
+                  "2024-07-01",
+                  "2025-01-01",
+                  "2025-07-01",
+                  "2026-01-01",
+                  "2026-07-01"
+                ]
+              ]
+            ],
+            [
+              "select:observed comparison:0",
+              [
+                0,
+                [
+                  "dollar burger prices",
+                  "raw price deviations"
+                ]
+              ]
+            ]
+          ]
+        }
+      },
+      {
+        "id": 3,
+        "theme": "light",
+        "width": 320,
+        "group": "observation date",
+        "groupIndex": 1,
+        "option": "2024-07-01",
+        "optionIndex": 4,
+        "file": "/workspace/scratch/wave6-macro-research/spacing-modes/3-light-320-mode-g1-o4.png",
+        "state": {
+          "v": 1,
+          "parts": [
+            [
+              "clock::0",
+              null
+            ],
+            [
+              "select:selected country:0",
+              [
+                3,
+                [
+                  "AUS",
+                  "CHE",
+                  "GBR",
+                  "JPN",
+                  "USA"
+                ]
+              ]
+            ],
+            [
+              "select:observation date:0",
+              [
+                4,
+                [
+                  "2022-07-01",
+                  "2023-01-01",
+                  "2023-07-01",
+                  "2024-01-01",
+                  "2024-07-01",
+                  "2025-01-01",
+                  "2025-07-01",
+                  "2026-01-01",
+                  "2026-07-01"
+                ]
+              ]
+            ],
+            [
+              "select:observed comparison:0",
+              [
+                0,
+                [
+                  "dollar burger prices",
+                  "raw price deviations"
+                ]
+              ]
+            ]
+          ]
+        }
+      },
+      {
+        "id": 3,
+        "theme": "light",
+        "width": 320,
+        "group": "observation date",
+        "groupIndex": 1,
+        "option": "2025-01-01",
+        "optionIndex": 5,
+        "file": "/workspace/scratch/wave6-macro-research/spacing-modes/3-light-320-mode-g1-o5.png",
+        "state": {
+          "v": 1,
+          "parts": [
+            [
+              "clock::0",
+              null
+            ],
+            [
+              "select:selected country:0",
+              [
+                3,
+                [
+                  "AUS",
+                  "CHE",
+                  "GBR",
+                  "JPN",
+                  "USA"
+                ]
+              ]
+            ],
+            [
+              "select:observation date:0",
+              [
+                5,
+                [
+                  "2022-07-01",
+                  "2023-01-01",
+                  "2023-07-01",
+                  "2024-01-01",
+                  "2024-07-01",
+                  "2025-01-01",
+                  "2025-07-01",
+                  "2026-01-01",
+                  "2026-07-01"
+                ]
+              ]
+            ],
+            [
+              "select:observed comparison:0",
+              [
+                0,
+                [
+                  "dollar burger prices",
+                  "raw price deviations"
+                ]
+              ]
+            ]
+          ]
+        }
+      },
+      {
+        "id": 3,
+        "theme": "light",
+        "width": 320,
+        "group": "observation date",
+        "groupIndex": 1,
+        "option": "2025-07-01",
+        "optionIndex": 6,
+        "file": "/workspace/scratch/wave6-macro-research/spacing-modes/3-light-320-mode-g1-o6.png",
+        "state": {
+          "v": 1,
+          "parts": [
+            [
+              "clock::0",
+              null
+            ],
+            [
+              "select:selected country:0",
+              [
+                3,
+                [
+                  "AUS",
+                  "CHE",
+                  "GBR",
+                  "JPN",
+                  "USA"
+                ]
+              ]
+            ],
+            [
+              "select:observation date:0",
+              [
+                6,
+                [
+                  "2022-07-01",
+                  "2023-01-01",
+                  "2023-07-01",
+                  "2024-01-01",
+                  "2024-07-01",
+                  "2025-01-01",
+                  "2025-07-01",
+                  "2026-01-01",
+                  "2026-07-01"
+                ]
+              ]
+            ],
+            [
+              "select:observed comparison:0",
+              [
+                0,
+                [
+                  "dollar burger prices",
+                  "raw price deviations"
+                ]
+              ]
+            ]
+          ]
+        }
+      },
+      {
+        "id": 3,
+        "theme": "light",
+        "width": 320,
+        "group": "observation date",
+        "groupIndex": 1,
+        "option": "2026-01-01",
+        "optionIndex": 7,
+        "file": "/workspace/scratch/wave6-macro-research/spacing-modes/3-light-320-mode-g1-o7.png",
+        "state": {
+          "v": 1,
+          "parts": [
+            [
+              "clock::0",
+              null
+            ],
+            [
+              "select:selected country:0",
+              [
+                3,
+                [
+                  "AUS",
+                  "CHE",
+                  "GBR",
+                  "JPN",
+                  "USA"
+                ]
+              ]
+            ],
+            [
+              "select:observation date:0",
+              [
+                7,
+                [
+                  "2022-07-01",
+                  "2023-01-01",
+                  "2023-07-01",
+                  "2024-01-01",
+                  "2024-07-01",
+                  "2025-01-01",
+                  "2025-07-01",
+                  "2026-01-01",
+                  "2026-07-01"
+                ]
+              ]
+            ],
+            [
+              "select:observed comparison:0",
+              [
+                0,
+                [
+                  "dollar burger prices",
+                  "raw price deviations"
+                ]
+              ]
+            ]
+          ]
+        }
+      },
+      {
+        "id": 3,
+        "theme": "light",
+        "width": 320,
+        "group": "observation date",
+        "groupIndex": 1,
+        "option": "2026-07-01",
+        "optionIndex": 8,
+        "file": "/workspace/scratch/wave6-macro-research/spacing-modes/3-light-320-mode-g1-o8.png",
+        "state": {
+          "v": 1,
+          "parts": [
+            [
+              "clock::0",
+              null
+            ],
+            [
+              "select:selected country:0",
+              [
+                3,
+                [
+                  "AUS",
+                  "CHE",
+                  "GBR",
+                  "JPN",
+                  "USA"
+                ]
+              ]
+            ],
+            [
+              "select:observation date:0",
+              [
+                8,
+                [
+                  "2022-07-01",
+                  "2023-01-01",
+                  "2023-07-01",
+                  "2024-01-01",
+                  "2024-07-01",
+                  "2025-01-01",
+                  "2025-07-01",
+                  "2026-01-01",
+                  "2026-07-01"
+                ]
+              ]
+            ],
+            [
+              "select:observed comparison:0",
+              [
+                0,
+                [
+                  "dollar burger prices",
+                  "raw price deviations"
+                ]
+              ]
+            ]
+          ]
+        }
+      },
+      {
+        "id": 3,
+        "theme": "light",
+        "width": 320,
+        "group": "observed comparison",
+        "groupIndex": 2,
+        "option": "dollar burger prices",
+        "optionIndex": 0,
+        "file": "/workspace/scratch/wave6-macro-research/spacing-modes/3-light-320-mode-g2-o0.png",
+        "state": {
+          "v": 1,
+          "parts": [
+            [
+              "clock::0",
+              null
+            ],
+            [
+              "select:selected country:0",
+              [
+                3,
+                [
+                  "AUS",
+                  "CHE",
+                  "GBR",
+                  "JPN",
+                  "USA"
+                ]
+              ]
+            ],
+            [
+              "select:observation date:0",
+              [
+                8,
+                [
+                  "2022-07-01",
+                  "2023-01-01",
+                  "2023-07-01",
+                  "2024-01-01",
+                  "2024-07-01",
+                  "2025-01-01",
+                  "2025-07-01",
+                  "2026-01-01",
+                  "2026-07-01"
+                ]
+              ]
+            ],
+            [
+              "select:observed comparison:0",
+              [
+                0,
+                [
+                  "dollar burger prices",
+                  "raw price deviations"
+                ]
+              ]
+            ]
+          ]
+        }
+      },
+      {
+        "id": 3,
+        "theme": "light",
+        "width": 320,
+        "group": "observed comparison",
+        "groupIndex": 2,
+        "option": "raw price deviations",
+        "optionIndex": 1,
+        "file": "/workspace/scratch/wave6-macro-research/spacing-modes/3-light-320-mode-g2-o1.png",
+        "state": {
+          "v": 1,
+          "parts": [
+            [
+              "clock::0",
+              null
+            ],
+            [
+              "select:selected country:0",
+              [
+                3,
+                [
+                  "AUS",
+                  "CHE",
+                  "GBR",
+                  "JPN",
+                  "USA"
+                ]
+              ]
+            ],
+            [
+              "select:observation date:0",
+              [
+                8,
+                [
+                  "2022-07-01",
+                  "2023-01-01",
+                  "2023-07-01",
+                  "2024-01-01",
+                  "2024-07-01",
+                  "2025-01-01",
+                  "2025-07-01",
+                  "2026-01-01",
+                  "2026-07-01"
+                ]
+              ]
+            ],
+            [
+              "select:observed comparison:0",
+              [
+                1,
+                [
+                  "dollar burger prices",
+                  "raw price deviations"
+                ]
+              ]
+            ]
+          ]
+        }
+      },
+      {
+        "id": 3,
+        "theme": "dark",
+        "width": 320,
+        "group": "selected country",
+        "groupIndex": 0,
+        "option": "AUS",
+        "optionIndex": 0,
+        "file": "/workspace/scratch/wave6-macro-research/spacing-modes/3-dark-320-mode-g0-o0.png",
+        "state": {
+          "v": 1,
+          "parts": [
+            [
+              "clock::0",
+              null
+            ],
+            [
+              "select:selected country:0",
+              [
+                0,
+                [
+                  "AUS",
+                  "CHE",
+                  "GBR",
+                  "JPN",
+                  "USA"
+                ]
+              ]
+            ],
+            [
+              "select:observation date:0",
+              [
+                8,
+                [
+                  "2022-07-01",
+                  "2023-01-01",
+                  "2023-07-01",
+                  "2024-01-01",
+                  "2024-07-01",
+                  "2025-01-01",
+                  "2025-07-01",
+                  "2026-01-01",
+                  "2026-07-01"
+                ]
+              ]
+            ],
+            [
+              "select:observed comparison:0",
+              [
+                0,
+                [
+                  "dollar burger prices",
+                  "raw price deviations"
+                ]
+              ]
+            ]
+          ]
+        }
+      },
+      {
+        "id": 3,
+        "theme": "dark",
+        "width": 320,
+        "group": "selected country",
+        "groupIndex": 0,
+        "option": "CHE",
+        "optionIndex": 1,
+        "file": "/workspace/scratch/wave6-macro-research/spacing-modes/3-dark-320-mode-g0-o1.png",
+        "state": {
+          "v": 1,
+          "parts": [
+            [
+              "clock::0",
+              null
+            ],
+            [
+              "select:selected country:0",
+              [
+                1,
+                [
+                  "AUS",
+                  "CHE",
+                  "GBR",
+                  "JPN",
+                  "USA"
+                ]
+              ]
+            ],
+            [
+              "select:observation date:0",
+              [
+                8,
+                [
+                  "2022-07-01",
+                  "2023-01-01",
+                  "2023-07-01",
+                  "2024-01-01",
+                  "2024-07-01",
+                  "2025-01-01",
+                  "2025-07-01",
+                  "2026-01-01",
+                  "2026-07-01"
+                ]
+              ]
+            ],
+            [
+              "select:observed comparison:0",
+              [
+                0,
+                [
+                  "dollar burger prices",
+                  "raw price deviations"
+                ]
+              ]
+            ]
+          ]
+        }
+      },
+      {
+        "id": 3,
+        "theme": "dark",
+        "width": 320,
+        "group": "selected country",
+        "groupIndex": 0,
+        "option": "GBR",
+        "optionIndex": 2,
+        "file": "/workspace/scratch/wave6-macro-research/spacing-modes/3-dark-320-mode-g0-o2.png",
+        "state": {
+          "v": 1,
+          "parts": [
+            [
+              "clock::0",
+              null
+            ],
+            [
+              "select:selected country:0",
+              [
+                2,
+                [
+                  "AUS",
+                  "CHE",
+                  "GBR",
+                  "JPN",
+                  "USA"
+                ]
+              ]
+            ],
+            [
+              "select:observation date:0",
+              [
+                8,
+                [
+                  "2022-07-01",
+                  "2023-01-01",
+                  "2023-07-01",
+                  "2024-01-01",
+                  "2024-07-01",
+                  "2025-01-01",
+                  "2025-07-01",
+                  "2026-01-01",
+                  "2026-07-01"
+                ]
+              ]
+            ],
+            [
+              "select:observed comparison:0",
+              [
+                0,
+                [
+                  "dollar burger prices",
+                  "raw price deviations"
+                ]
+              ]
+            ]
+          ]
+        }
+      },
+      {
+        "id": 3,
+        "theme": "dark",
+        "width": 320,
+        "group": "selected country",
+        "groupIndex": 0,
+        "option": "JPN",
+        "optionIndex": 3,
+        "file": "/workspace/scratch/wave6-macro-research/spacing-modes/3-dark-320-mode-g0-o3.png",
+        "state": {
+          "v": 1,
+          "parts": [
+            [
+              "clock::0",
+              null
+            ],
+            [
+              "select:selected country:0",
+              [
+                3,
+                [
+                  "AUS",
+                  "CHE",
+                  "GBR",
+                  "JPN",
+                  "USA"
+                ]
+              ]
+            ],
+            [
+              "select:observation date:0",
+              [
+                8,
+                [
+                  "2022-07-01",
+                  "2023-01-01",
+                  "2023-07-01",
+                  "2024-01-01",
+                  "2024-07-01",
+                  "2025-01-01",
+                  "2025-07-01",
+                  "2026-01-01",
+                  "2026-07-01"
+                ]
+              ]
+            ],
+            [
+              "select:observed comparison:0",
+              [
+                0,
+                [
+                  "dollar burger prices",
+                  "raw price deviations"
+                ]
+              ]
+            ]
+          ]
+        }
+      },
+      {
+        "id": 3,
+        "theme": "dark",
+        "width": 320,
+        "group": "selected country",
+        "groupIndex": 0,
+        "option": "USA",
+        "optionIndex": 4,
+        "file": "/workspace/scratch/wave6-macro-research/spacing-modes/3-dark-320-mode-g0-o4.png",
+        "state": {
+          "v": 1,
+          "parts": [
+            [
+              "clock::0",
+              null
+            ],
+            [
+              "select:selected country:0",
+              [
+                4,
+                [
+                  "AUS",
+                  "CHE",
+                  "GBR",
+                  "JPN",
+                  "USA"
+                ]
+              ]
+            ],
+            [
+              "select:observation date:0",
+              [
+                8,
+                [
+                  "2022-07-01",
+                  "2023-01-01",
+                  "2023-07-01",
+                  "2024-01-01",
+                  "2024-07-01",
+                  "2025-01-01",
+                  "2025-07-01",
+                  "2026-01-01",
+                  "2026-07-01"
+                ]
+              ]
+            ],
+            [
+              "select:observed comparison:0",
+              [
+                0,
+                [
+                  "dollar burger prices",
+                  "raw price deviations"
+                ]
+              ]
+            ]
+          ]
+        }
+      },
+      {
+        "id": 3,
+        "theme": "dark",
+        "width": 320,
+        "group": "observation date",
+        "groupIndex": 1,
+        "option": "2022-07-01",
+        "optionIndex": 0,
+        "file": "/workspace/scratch/wave6-macro-research/spacing-modes/3-dark-320-mode-g1-o0.png",
+        "state": {
+          "v": 1,
+          "parts": [
+            [
+              "clock::0",
+              null
+            ],
+            [
+              "select:selected country:0",
+              [
+                3,
+                [
+                  "AUS",
+                  "CHE",
+                  "GBR",
+                  "JPN",
+                  "USA"
+                ]
+              ]
+            ],
+            [
+              "select:observation date:0",
+              [
+                0,
+                [
+                  "2022-07-01",
+                  "2023-01-01",
+                  "2023-07-01",
+                  "2024-01-01",
+                  "2024-07-01",
+                  "2025-01-01",
+                  "2025-07-01",
+                  "2026-01-01",
+                  "2026-07-01"
+                ]
+              ]
+            ],
+            [
+              "select:observed comparison:0",
+              [
+                0,
+                [
+                  "dollar burger prices",
+                  "raw price deviations"
+                ]
+              ]
+            ]
+          ]
+        }
+      },
+      {
+        "id": 3,
+        "theme": "dark",
+        "width": 320,
+        "group": "observation date",
+        "groupIndex": 1,
+        "option": "2023-01-01",
+        "optionIndex": 1,
+        "file": "/workspace/scratch/wave6-macro-research/spacing-modes/3-dark-320-mode-g1-o1.png",
+        "state": {
+          "v": 1,
+          "parts": [
+            [
+              "clock::0",
+              null
+            ],
+            [
+              "select:selected country:0",
+              [
+                3,
+                [
+                  "AUS",
+                  "CHE",
+                  "GBR",
+                  "JPN",
+                  "USA"
+                ]
+              ]
+            ],
+            [
+              "select:observation date:0",
+              [
+                1,
+                [
+                  "2022-07-01",
+                  "2023-01-01",
+                  "2023-07-01",
+                  "2024-01-01",
+                  "2024-07-01",
+                  "2025-01-01",
+                  "2025-07-01",
+                  "2026-01-01",
+                  "2026-07-01"
+                ]
+              ]
+            ],
+            [
+              "select:observed comparison:0",
+              [
+                0,
+                [
+                  "dollar burger prices",
+                  "raw price deviations"
+                ]
+              ]
+            ]
+          ]
+        }
+      },
+      {
+        "id": 3,
+        "theme": "dark",
+        "width": 320,
+        "group": "observation date",
+        "groupIndex": 1,
+        "option": "2023-07-01",
+        "optionIndex": 2,
+        "file": "/workspace/scratch/wave6-macro-research/spacing-modes/3-dark-320-mode-g1-o2.png",
+        "state": {
+          "v": 1,
+          "parts": [
+            [
+              "clock::0",
+              null
+            ],
+            [
+              "select:selected country:0",
+              [
+                3,
+                [
+                  "AUS",
+                  "CHE",
+                  "GBR",
+                  "JPN",
+                  "USA"
+                ]
+              ]
+            ],
+            [
+              "select:observation date:0",
+              [
+                2,
+                [
+                  "2022-07-01",
+                  "2023-01-01",
+                  "2023-07-01",
+                  "2024-01-01",
+                  "2024-07-01",
+                  "2025-01-01",
+                  "2025-07-01",
+                  "2026-01-01",
+                  "2026-07-01"
+                ]
+              ]
+            ],
+            [
+              "select:observed comparison:0",
+              [
+                0,
+                [
+                  "dollar burger prices",
+                  "raw price deviations"
+                ]
+              ]
+            ]
+          ]
+        }
+      },
+      {
+        "id": 3,
+        "theme": "dark",
+        "width": 320,
+        "group": "observation date",
+        "groupIndex": 1,
+        "option": "2024-01-01",
+        "optionIndex": 3,
+        "file": "/workspace/scratch/wave6-macro-research/spacing-modes/3-dark-320-mode-g1-o3.png",
+        "state": {
+          "v": 1,
+          "parts": [
+            [
+              "clock::0",
+              null
+            ],
+            [
+              "select:selected country:0",
+              [
+                3,
+                [
+                  "AUS",
+                  "CHE",
+                  "GBR",
+                  "JPN",
+                  "USA"
+                ]
+              ]
+            ],
+            [
+              "select:observation date:0",
+              [
+                3,
+                [
+                  "2022-07-01",
+                  "2023-01-01",
+                  "2023-07-01",
+                  "2024-01-01",
+                  "2024-07-01",
+                  "2025-01-01",
+                  "2025-07-01",
+                  "2026-01-01",
+                  "2026-07-01"
+                ]
+              ]
+            ],
+            [
+              "select:observed comparison:0",
+              [
+                0,
+                [
+                  "dollar burger prices",
+                  "raw price deviations"
+                ]
+              ]
+            ]
+          ]
+        }
+      },
+      {
+        "id": 3,
+        "theme": "dark",
+        "width": 320,
+        "group": "observation date",
+        "groupIndex": 1,
+        "option": "2024-07-01",
+        "optionIndex": 4,
+        "file": "/workspace/scratch/wave6-macro-research/spacing-modes/3-dark-320-mode-g1-o4.png",
+        "state": {
+          "v": 1,
+          "parts": [
+            [
+              "clock::0",
+              null
+            ],
+            [
+              "select:selected country:0",
+              [
+                3,
+                [
+                  "AUS",
+                  "CHE",
+                  "GBR",
+                  "JPN",
+                  "USA"
+                ]
+              ]
+            ],
+            [
+              "select:observation date:0",
+              [
+                4,
+                [
+                  "2022-07-01",
+                  "2023-01-01",
+                  "2023-07-01",
+                  "2024-01-01",
+                  "2024-07-01",
+                  "2025-01-01",
+                  "2025-07-01",
+                  "2026-01-01",
+                  "2026-07-01"
+                ]
+              ]
+            ],
+            [
+              "select:observed comparison:0",
+              [
+                0,
+                [
+                  "dollar burger prices",
+                  "raw price deviations"
+                ]
+              ]
+            ]
+          ]
+        }
+      },
+      {
+        "id": 3,
+        "theme": "dark",
+        "width": 320,
+        "group": "observation date",
+        "groupIndex": 1,
+        "option": "2025-01-01",
+        "optionIndex": 5,
+        "file": "/workspace/scratch/wave6-macro-research/spacing-modes/3-dark-320-mode-g1-o5.png",
+        "state": {
+          "v": 1,
+          "parts": [
+            [
+              "clock::0",
+              null
+            ],
+            [
+              "select:selected country:0",
+              [
+                3,
+                [
+                  "AUS",
+                  "CHE",
+                  "GBR",
+                  "JPN",
+                  "USA"
+                ]
+              ]
+            ],
+            [
+              "select:observation date:0",
+              [
+                5,
+                [
+                  "2022-07-01",
+                  "2023-01-01",
+                  "2023-07-01",
+                  "2024-01-01",
+                  "2024-07-01",
+                  "2025-01-01",
+                  "2025-07-01",
+                  "2026-01-01",
+                  "2026-07-01"
+                ]
+              ]
+            ],
+            [
+              "select:observed comparison:0",
+              [
+                0,
+                [
+                  "dollar burger prices",
+                  "raw price deviations"
+                ]
+              ]
+            ]
+          ]
+        }
+      },
+      {
+        "id": 3,
+        "theme": "dark",
+        "width": 320,
+        "group": "observation date",
+        "groupIndex": 1,
+        "option": "2025-07-01",
+        "optionIndex": 6,
+        "file": "/workspace/scratch/wave6-macro-research/spacing-modes/3-dark-320-mode-g1-o6.png",
+        "state": {
+          "v": 1,
+          "parts": [
+            [
+              "clock::0",
+              null
+            ],
+            [
+              "select:selected country:0",
+              [
+                3,
+                [
+                  "AUS",
+                  "CHE",
+                  "GBR",
+                  "JPN",
+                  "USA"
+                ]
+              ]
+            ],
+            [
+              "select:observation date:0",
+              [
+                6,
+                [
+                  "2022-07-01",
+                  "2023-01-01",
+                  "2023-07-01",
+                  "2024-01-01",
+                  "2024-07-01",
+                  "2025-01-01",
+                  "2025-07-01",
+                  "2026-01-01",
+                  "2026-07-01"
+                ]
+              ]
+            ],
+            [
+              "select:observed comparison:0",
+              [
+                0,
+                [
+                  "dollar burger prices",
+                  "raw price deviations"
+                ]
+              ]
+            ]
+          ]
+        }
+      },
+      {
+        "id": 3,
+        "theme": "dark",
+        "width": 320,
+        "group": "observation date",
+        "groupIndex": 1,
+        "option": "2026-01-01",
+        "optionIndex": 7,
+        "file": "/workspace/scratch/wave6-macro-research/spacing-modes/3-dark-320-mode-g1-o7.png",
+        "state": {
+          "v": 1,
+          "parts": [
+            [
+              "clock::0",
+              null
+            ],
+            [
+              "select:selected country:0",
+              [
+                3,
+                [
+                  "AUS",
+                  "CHE",
+                  "GBR",
+                  "JPN",
+                  "USA"
+                ]
+              ]
+            ],
+            [
+              "select:observation date:0",
+              [
+                7,
+                [
+                  "2022-07-01",
+                  "2023-01-01",
+                  "2023-07-01",
+                  "2024-01-01",
+                  "2024-07-01",
+                  "2025-01-01",
+                  "2025-07-01",
+                  "2026-01-01",
+                  "2026-07-01"
+                ]
+              ]
+            ],
+            [
+              "select:observed comparison:0",
+              [
+                0,
+                [
+                  "dollar burger prices",
+                  "raw price deviations"
+                ]
+              ]
+            ]
+          ]
+        }
+      },
+      {
+        "id": 3,
+        "theme": "dark",
+        "width": 320,
+        "group": "observation date",
+        "groupIndex": 1,
+        "option": "2026-07-01",
+        "optionIndex": 8,
+        "file": "/workspace/scratch/wave6-macro-research/spacing-modes/3-dark-320-mode-g1-o8.png",
+        "state": {
+          "v": 1,
+          "parts": [
+            [
+              "clock::0",
+              null
+            ],
+            [
+              "select:selected country:0",
+              [
+                3,
+                [
+                  "AUS",
+                  "CHE",
+                  "GBR",
+                  "JPN",
+                  "USA"
+                ]
+              ]
+            ],
+            [
+              "select:observation date:0",
+              [
+                8,
+                [
+                  "2022-07-01",
+                  "2023-01-01",
+                  "2023-07-01",
+                  "2024-01-01",
+                  "2024-07-01",
+                  "2025-01-01",
+                  "2025-07-01",
+                  "2026-01-01",
+                  "2026-07-01"
+                ]
+              ]
+            ],
+            [
+              "select:observed comparison:0",
+              [
+                0,
+                [
+                  "dollar burger prices",
+                  "raw price deviations"
+                ]
+              ]
+            ]
+          ]
+        }
+      },
+      {
+        "id": 3,
+        "theme": "dark",
+        "width": 320,
+        "group": "observed comparison",
+        "groupIndex": 2,
+        "option": "dollar burger prices",
+        "optionIndex": 0,
+        "file": "/workspace/scratch/wave6-macro-research/spacing-modes/3-dark-320-mode-g2-o0.png",
+        "state": {
+          "v": 1,
+          "parts": [
+            [
+              "clock::0",
+              null
+            ],
+            [
+              "select:selected country:0",
+              [
+                3,
+                [
+                  "AUS",
+                  "CHE",
+                  "GBR",
+                  "JPN",
+                  "USA"
+                ]
+              ]
+            ],
+            [
+              "select:observation date:0",
+              [
+                8,
+                [
+                  "2022-07-01",
+                  "2023-01-01",
+                  "2023-07-01",
+                  "2024-01-01",
+                  "2024-07-01",
+                  "2025-01-01",
+                  "2025-07-01",
+                  "2026-01-01",
+                  "2026-07-01"
+                ]
+              ]
+            ],
+            [
+              "select:observed comparison:0",
+              [
+                0,
+                [
+                  "dollar burger prices",
+                  "raw price deviations"
+                ]
+              ]
+            ]
+          ]
+        }
+      },
+      {
+        "id": 3,
+        "theme": "dark",
+        "width": 320,
+        "group": "observed comparison",
+        "groupIndex": 2,
+        "option": "raw price deviations",
+        "optionIndex": 1,
+        "file": "/workspace/scratch/wave6-macro-research/spacing-modes/3-dark-320-mode-g2-o1.png",
+        "state": {
+          "v": 1,
+          "parts": [
+            [
+              "clock::0",
+              null
+            ],
+            [
+              "select:selected country:0",
+              [
+                3,
+                [
+                  "AUS",
+                  "CHE",
+                  "GBR",
+                  "JPN",
+                  "USA"
+                ]
+              ]
+            ],
+            [
+              "select:observation date:0",
+              [
+                8,
+                [
+                  "2022-07-01",
+                  "2023-01-01",
+                  "2023-07-01",
+                  "2024-01-01",
+                  "2024-07-01",
+                  "2025-01-01",
+                  "2025-07-01",
+                  "2026-01-01",
+                  "2026-07-01"
+                ]
+              ]
+            ],
+            [
+              "select:observed comparison:0",
+              [
+                1,
+                [
+                  "dollar burger prices",
+                  "raw price deviations"
+                ]
+              ]
+            ]
+          ]
+        }
+      },
+      {
+        "id": 5,
+        "theme": "light",
+        "width": 320,
+        "group": "authored illustration",
+        "groupIndex": 0,
+        "option": "one authored crash",
+        "optionIndex": 0,
+        "file": "/workspace/scratch/wave6-macro-research/spacing-modes/5-light-320-mode-g0-o0.png",
+        "state": {
+          "v": 1,
+          "parts": [
+            [
+              "clock::0",
+              null
+            ],
+            [
+              "slider:target continuous annual rate:0",
+              0.025
+            ],
+            [
+              "slider:crash terminal spot / initial spot:0",
+              0.65
+            ],
+            [
+              "slider:annual crash probability:0",
+              0.05
+            ],
+            [
+              "select:authored illustration:0",
+              [
+                0,
+                [
+                  "one authored crash",
+                  "no crash"
+                ]
+              ]
+            ],
+            [
+              "select:authored crash period:0",
+              [
+                11,
+                [
+                  "1",
+                  "2",
+                  "3",
+                  "4",
+                  "5",
+                  "6",
+                  "7",
+                  "8",
+                  "9",
+                  "10",
+                  "11",
+                  "12",
+                  "13",
+                  "14",
+                  "15",
+                  "16",
+                  "17",
+                  "18",
+                  "19",
+                  "20"
+                ]
+              ]
+            ]
+          ]
+        }
+      },
+      {
+        "id": 5,
+        "theme": "light",
+        "width": 320,
+        "group": "authored illustration",
+        "groupIndex": 0,
+        "option": "no crash",
+        "optionIndex": 1,
+        "file": "/workspace/scratch/wave6-macro-research/spacing-modes/5-light-320-mode-g0-o1.png",
+        "state": {
+          "v": 1,
+          "parts": [
+            [
+              "clock::0",
+              null
+            ],
+            [
+              "slider:target continuous annual rate:0",
+              0.025
+            ],
+            [
+              "slider:crash terminal spot / initial spot:0",
+              0.65
+            ],
+            [
+              "slider:annual crash probability:0",
+              0.05
+            ],
+            [
+              "select:authored illustration:0",
+              [
+                1,
+                [
+                  "one authored crash",
+                  "no crash"
+                ]
+              ]
+            ],
+            [
+              "select:authored crash period:0",
+              [
+                11,
+                [
+                  "1",
+                  "2",
+                  "3",
+                  "4",
+                  "5",
+                  "6",
+                  "7",
+                  "8",
+                  "9",
+                  "10",
+                  "11",
+                  "12",
+                  "13",
+                  "14",
+                  "15",
+                  "16",
+                  "17",
+                  "18",
+                  "19",
+                  "20"
+                ]
+              ]
+            ]
+          ]
+        }
+      },
+      {
+        "id": 5,
+        "theme": "light",
+        "width": 320,
+        "group": "authored crash period",
+        "groupIndex": 1,
+        "option": "1",
+        "optionIndex": 0,
+        "file": "/workspace/scratch/wave6-macro-research/spacing-modes/5-light-320-mode-g1-o0.png",
+        "state": {
+          "v": 1,
+          "parts": [
+            [
+              "clock::0",
+              null
+            ],
+            [
+              "slider:target continuous annual rate:0",
+              0.025
+            ],
+            [
+              "slider:crash terminal spot / initial spot:0",
+              0.65
+            ],
+            [
+              "slider:annual crash probability:0",
+              0.05
+            ],
+            [
+              "select:authored illustration:0",
+              [
+                0,
+                [
+                  "one authored crash",
+                  "no crash"
+                ]
+              ]
+            ],
+            [
+              "select:authored crash period:0",
+              [
+                0,
+                [
+                  "1",
+                  "2",
+                  "3",
+                  "4",
+                  "5",
+                  "6",
+                  "7",
+                  "8",
+                  "9",
+                  "10",
+                  "11",
+                  "12",
+                  "13",
+                  "14",
+                  "15",
+                  "16",
+                  "17",
+                  "18",
+                  "19",
+                  "20"
+                ]
+              ]
+            ]
+          ]
+        }
+      },
+      {
+        "id": 5,
+        "theme": "light",
+        "width": 320,
+        "group": "authored crash period",
+        "groupIndex": 1,
+        "option": "2",
+        "optionIndex": 1,
+        "file": "/workspace/scratch/wave6-macro-research/spacing-modes/5-light-320-mode-g1-o1.png",
+        "state": {
+          "v": 1,
+          "parts": [
+            [
+              "clock::0",
+              null
+            ],
+            [
+              "slider:target continuous annual rate:0",
+              0.025
+            ],
+            [
+              "slider:crash terminal spot / initial spot:0",
+              0.65
+            ],
+            [
+              "slider:annual crash probability:0",
+              0.05
+            ],
+            [
+              "select:authored illustration:0",
+              [
+                0,
+                [
+                  "one authored crash",
+                  "no crash"
+                ]
+              ]
+            ],
+            [
+              "select:authored crash period:0",
+              [
+                1,
+                [
+                  "1",
+                  "2",
+                  "3",
+                  "4",
+                  "5",
+                  "6",
+                  "7",
+                  "8",
+                  "9",
+                  "10",
+                  "11",
+                  "12",
+                  "13",
+                  "14",
+                  "15",
+                  "16",
+                  "17",
+                  "18",
+                  "19",
+                  "20"
+                ]
+              ]
+            ]
+          ]
+        }
+      },
+      {
+        "id": 5,
+        "theme": "light",
+        "width": 320,
+        "group": "authored crash period",
+        "groupIndex": 1,
+        "option": "3",
+        "optionIndex": 2,
+        "file": "/workspace/scratch/wave6-macro-research/spacing-modes/5-light-320-mode-g1-o2.png",
+        "state": {
+          "v": 1,
+          "parts": [
+            [
+              "clock::0",
+              null
+            ],
+            [
+              "slider:target continuous annual rate:0",
+              0.025
+            ],
+            [
+              "slider:crash terminal spot / initial spot:0",
+              0.65
+            ],
+            [
+              "slider:annual crash probability:0",
+              0.05
+            ],
+            [
+              "select:authored illustration:0",
+              [
+                0,
+                [
+                  "one authored crash",
+                  "no crash"
+                ]
+              ]
+            ],
+            [
+              "select:authored crash period:0",
+              [
+                2,
+                [
+                  "1",
+                  "2",
+                  "3",
+                  "4",
+                  "5",
+                  "6",
+                  "7",
+                  "8",
+                  "9",
+                  "10",
+                  "11",
+                  "12",
+                  "13",
+                  "14",
+                  "15",
+                  "16",
+                  "17",
+                  "18",
+                  "19",
+                  "20"
+                ]
+              ]
+            ]
+          ]
+        }
+      },
+      {
+        "id": 5,
+        "theme": "light",
+        "width": 320,
+        "group": "authored crash period",
+        "groupIndex": 1,
+        "option": "4",
+        "optionIndex": 3,
+        "file": "/workspace/scratch/wave6-macro-research/spacing-modes/5-light-320-mode-g1-o3.png",
+        "state": {
+          "v": 1,
+          "parts": [
+            [
+              "clock::0",
+              null
+            ],
+            [
+              "slider:target continuous annual rate:0",
+              0.025
+            ],
+            [
+              "slider:crash terminal spot / initial spot:0",
+              0.65
+            ],
+            [
+              "slider:annual crash probability:0",
+              0.05
+            ],
+            [
+              "select:authored illustration:0",
+              [
+                0,
+                [
+                  "one authored crash",
+                  "no crash"
+                ]
+              ]
+            ],
+            [
+              "select:authored crash period:0",
+              [
+                3,
+                [
+                  "1",
+                  "2",
+                  "3",
+                  "4",
+                  "5",
+                  "6",
+                  "7",
+                  "8",
+                  "9",
+                  "10",
+                  "11",
+                  "12",
+                  "13",
+                  "14",
+                  "15",
+                  "16",
+                  "17",
+                  "18",
+                  "19",
+                  "20"
+                ]
+              ]
+            ]
+          ]
+        }
+      },
+      {
+        "id": 5,
+        "theme": "light",
+        "width": 320,
+        "group": "authored crash period",
+        "groupIndex": 1,
+        "option": "5",
+        "optionIndex": 4,
+        "file": "/workspace/scratch/wave6-macro-research/spacing-modes/5-light-320-mode-g1-o4.png",
+        "state": {
+          "v": 1,
+          "parts": [
+            [
+              "clock::0",
+              null
+            ],
+            [
+              "slider:target continuous annual rate:0",
+              0.025
+            ],
+            [
+              "slider:crash terminal spot / initial spot:0",
+              0.65
+            ],
+            [
+              "slider:annual crash probability:0",
+              0.05
+            ],
+            [
+              "select:authored illustration:0",
+              [
+                0,
+                [
+                  "one authored crash",
+                  "no crash"
+                ]
+              ]
+            ],
+            [
+              "select:authored crash period:0",
+              [
+                4,
+                [
+                  "1",
+                  "2",
+                  "3",
+                  "4",
+                  "5",
+                  "6",
+                  "7",
+                  "8",
+                  "9",
+                  "10",
+                  "11",
+                  "12",
+                  "13",
+                  "14",
+                  "15",
+                  "16",
+                  "17",
+                  "18",
+                  "19",
+                  "20"
+                ]
+              ]
+            ]
+          ]
+        }
+      },
+      {
+        "id": 5,
+        "theme": "light",
+        "width": 320,
+        "group": "authored crash period",
+        "groupIndex": 1,
+        "option": "6",
+        "optionIndex": 5,
+        "file": "/workspace/scratch/wave6-macro-research/spacing-modes/5-light-320-mode-g1-o5.png",
+        "state": {
+          "v": 1,
+          "parts": [
+            [
+              "clock::0",
+              null
+            ],
+            [
+              "slider:target continuous annual rate:0",
+              0.025
+            ],
+            [
+              "slider:crash terminal spot / initial spot:0",
+              0.65
+            ],
+            [
+              "slider:annual crash probability:0",
+              0.05
+            ],
+            [
+              "select:authored illustration:0",
+              [
+                0,
+                [
+                  "one authored crash",
+                  "no crash"
+                ]
+              ]
+            ],
+            [
+              "select:authored crash period:0",
+              [
+                5,
+                [
+                  "1",
+                  "2",
+                  "3",
+                  "4",
+                  "5",
+                  "6",
+                  "7",
+                  "8",
+                  "9",
+                  "10",
+                  "11",
+                  "12",
+                  "13",
+                  "14",
+                  "15",
+                  "16",
+                  "17",
+                  "18",
+                  "19",
+                  "20"
+                ]
+              ]
+            ]
+          ]
+        }
+      },
+      {
+        "id": 5,
+        "theme": "light",
+        "width": 320,
+        "group": "authored crash period",
+        "groupIndex": 1,
+        "option": "7",
+        "optionIndex": 6,
+        "file": "/workspace/scratch/wave6-macro-research/spacing-modes/5-light-320-mode-g1-o6.png",
+        "state": {
+          "v": 1,
+          "parts": [
+            [
+              "clock::0",
+              null
+            ],
+            [
+              "slider:target continuous annual rate:0",
+              0.025
+            ],
+            [
+              "slider:crash terminal spot / initial spot:0",
+              0.65
+            ],
+            [
+              "slider:annual crash probability:0",
+              0.05
+            ],
+            [
+              "select:authored illustration:0",
+              [
+                0,
+                [
+                  "one authored crash",
+                  "no crash"
+                ]
+              ]
+            ],
+            [
+              "select:authored crash period:0",
+              [
+                6,
+                [
+                  "1",
+                  "2",
+                  "3",
+                  "4",
+                  "5",
+                  "6",
+                  "7",
+                  "8",
+                  "9",
+                  "10",
+                  "11",
+                  "12",
+                  "13",
+                  "14",
+                  "15",
+                  "16",
+                  "17",
+                  "18",
+                  "19",
+                  "20"
+                ]
+              ]
+            ]
+          ]
+        }
+      },
+      {
+        "id": 5,
+        "theme": "light",
+        "width": 320,
+        "group": "authored crash period",
+        "groupIndex": 1,
+        "option": "8",
+        "optionIndex": 7,
+        "file": "/workspace/scratch/wave6-macro-research/spacing-modes/5-light-320-mode-g1-o7.png",
+        "state": {
+          "v": 1,
+          "parts": [
+            [
+              "clock::0",
+              null
+            ],
+            [
+              "slider:target continuous annual rate:0",
+              0.025
+            ],
+            [
+              "slider:crash terminal spot / initial spot:0",
+              0.65
+            ],
+            [
+              "slider:annual crash probability:0",
+              0.05
+            ],
+            [
+              "select:authored illustration:0",
+              [
+                0,
+                [
+                  "one authored crash",
+                  "no crash"
+                ]
+              ]
+            ],
+            [
+              "select:authored crash period:0",
+              [
+                7,
+                [
+                  "1",
+                  "2",
+                  "3",
+                  "4",
+                  "5",
+                  "6",
+                  "7",
+                  "8",
+                  "9",
+                  "10",
+                  "11",
+                  "12",
+                  "13",
+                  "14",
+                  "15",
+                  "16",
+                  "17",
+                  "18",
+                  "19",
+                  "20"
+                ]
+              ]
+            ]
+          ]
+        }
+      },
+      {
+        "id": 5,
+        "theme": "light",
+        "width": 320,
+        "group": "authored crash period",
+        "groupIndex": 1,
+        "option": "9",
+        "optionIndex": 8,
+        "file": "/workspace/scratch/wave6-macro-research/spacing-modes/5-light-320-mode-g1-o8.png",
+        "state": {
+          "v": 1,
+          "parts": [
+            [
+              "clock::0",
+              null
+            ],
+            [
+              "slider:target continuous annual rate:0",
+              0.025
+            ],
+            [
+              "slider:crash terminal spot / initial spot:0",
+              0.65
+            ],
+            [
+              "slider:annual crash probability:0",
+              0.05
+            ],
+            [
+              "select:authored illustration:0",
+              [
+                0,
+                [
+                  "one authored crash",
+                  "no crash"
+                ]
+              ]
+            ],
+            [
+              "select:authored crash period:0",
+              [
+                8,
+                [
+                  "1",
+                  "2",
+                  "3",
+                  "4",
+                  "5",
+                  "6",
+                  "7",
+                  "8",
+                  "9",
+                  "10",
+                  "11",
+                  "12",
+                  "13",
+                  "14",
+                  "15",
+                  "16",
+                  "17",
+                  "18",
+                  "19",
+                  "20"
+                ]
+              ]
+            ]
+          ]
+        }
+      },
+      {
+        "id": 5,
+        "theme": "light",
+        "width": 320,
+        "group": "authored crash period",
+        "groupIndex": 1,
+        "option": "10",
+        "optionIndex": 9,
+        "file": "/workspace/scratch/wave6-macro-research/spacing-modes/5-light-320-mode-g1-o9.png",
+        "state": {
+          "v": 1,
+          "parts": [
+            [
+              "clock::0",
+              null
+            ],
+            [
+              "slider:target continuous annual rate:0",
+              0.025
+            ],
+            [
+              "slider:crash terminal spot / initial spot:0",
+              0.65
+            ],
+            [
+              "slider:annual crash probability:0",
+              0.05
+            ],
+            [
+              "select:authored illustration:0",
+              [
+                0,
+                [
+                  "one authored crash",
+                  "no crash"
+                ]
+              ]
+            ],
+            [
+              "select:authored crash period:0",
+              [
+                9,
+                [
+                  "1",
+                  "2",
+                  "3",
+                  "4",
+                  "5",
+                  "6",
+                  "7",
+                  "8",
+                  "9",
+                  "10",
+                  "11",
+                  "12",
+                  "13",
+                  "14",
+                  "15",
+                  "16",
+                  "17",
+                  "18",
+                  "19",
+                  "20"
+                ]
+              ]
+            ]
+          ]
+        }
+      },
+      {
+        "id": 5,
+        "theme": "light",
+        "width": 320,
+        "group": "authored crash period",
+        "groupIndex": 1,
+        "option": "11",
+        "optionIndex": 10,
+        "file": "/workspace/scratch/wave6-macro-research/spacing-modes/5-light-320-mode-g1-o10.png",
+        "state": {
+          "v": 1,
+          "parts": [
+            [
+              "clock::0",
+              null
+            ],
+            [
+              "slider:target continuous annual rate:0",
+              0.025
+            ],
+            [
+              "slider:crash terminal spot / initial spot:0",
+              0.65
+            ],
+            [
+              "slider:annual crash probability:0",
+              0.05
+            ],
+            [
+              "select:authored illustration:0",
+              [
+                0,
+                [
+                  "one authored crash",
+                  "no crash"
+                ]
+              ]
+            ],
+            [
+              "select:authored crash period:0",
+              [
+                10,
+                [
+                  "1",
+                  "2",
+                  "3",
+                  "4",
+                  "5",
+                  "6",
+                  "7",
+                  "8",
+                  "9",
+                  "10",
+                  "11",
+                  "12",
+                  "13",
+                  "14",
+                  "15",
+                  "16",
+                  "17",
+                  "18",
+                  "19",
+                  "20"
+                ]
+              ]
+            ]
+          ]
+        }
+      },
+      {
+        "id": 5,
+        "theme": "light",
+        "width": 320,
+        "group": "authored crash period",
+        "groupIndex": 1,
+        "option": "12",
+        "optionIndex": 11,
+        "file": "/workspace/scratch/wave6-macro-research/spacing-modes/5-light-320-mode-g1-o11.png",
+        "state": {
+          "v": 1,
+          "parts": [
+            [
+              "clock::0",
+              null
+            ],
+            [
+              "slider:target continuous annual rate:0",
+              0.025
+            ],
+            [
+              "slider:crash terminal spot / initial spot:0",
+              0.65
+            ],
+            [
+              "slider:annual crash probability:0",
+              0.05
+            ],
+            [
+              "select:authored illustration:0",
+              [
+                0,
+                [
+                  "one authored crash",
+                  "no crash"
+                ]
+              ]
+            ],
+            [
+              "select:authored crash period:0",
+              [
+                11,
+                [
+                  "1",
+                  "2",
+                  "3",
+                  "4",
+                  "5",
+                  "6",
+                  "7",
+                  "8",
+                  "9",
+                  "10",
+                  "11",
+                  "12",
+                  "13",
+                  "14",
+                  "15",
+                  "16",
+                  "17",
+                  "18",
+                  "19",
+                  "20"
+                ]
+              ]
+            ]
+          ]
+        }
+      },
+      {
+        "id": 5,
+        "theme": "light",
+        "width": 320,
+        "group": "authored crash period",
+        "groupIndex": 1,
+        "option": "13",
+        "optionIndex": 12,
+        "file": "/workspace/scratch/wave6-macro-research/spacing-modes/5-light-320-mode-g1-o12.png",
+        "state": {
+          "v": 1,
+          "parts": [
+            [
+              "clock::0",
+              null
+            ],
+            [
+              "slider:target continuous annual rate:0",
+              0.025
+            ],
+            [
+              "slider:crash terminal spot / initial spot:0",
+              0.65
+            ],
+            [
+              "slider:annual crash probability:0",
+              0.05
+            ],
+            [
+              "select:authored illustration:0",
+              [
+                0,
+                [
+                  "one authored crash",
+                  "no crash"
+                ]
+              ]
+            ],
+            [
+              "select:authored crash period:0",
+              [
+                12,
+                [
+                  "1",
+                  "2",
+                  "3",
+                  "4",
+                  "5",
+                  "6",
+                  "7",
+                  "8",
+                  "9",
+                  "10",
+                  "11",
+                  "12",
+                  "13",
+                  "14",
+                  "15",
+                  "16",
+                  "17",
+                  "18",
+                  "19",
+                  "20"
+                ]
+              ]
+            ]
+          ]
+        }
+      },
+      {
+        "id": 5,
+        "theme": "light",
+        "width": 320,
+        "group": "authored crash period",
+        "groupIndex": 1,
+        "option": "14",
+        "optionIndex": 13,
+        "file": "/workspace/scratch/wave6-macro-research/spacing-modes/5-light-320-mode-g1-o13.png",
+        "state": {
+          "v": 1,
+          "parts": [
+            [
+              "clock::0",
+              null
+            ],
+            [
+              "slider:target continuous annual rate:0",
+              0.025
+            ],
+            [
+              "slider:crash terminal spot / initial spot:0",
+              0.65
+            ],
+            [
+              "slider:annual crash probability:0",
+              0.05
+            ],
+            [
+              "select:authored illustration:0",
+              [
+                0,
+                [
+                  "one authored crash",
+                  "no crash"
+                ]
+              ]
+            ],
+            [
+              "select:authored crash period:0",
+              [
+                13,
+                [
+                  "1",
+                  "2",
+                  "3",
+                  "4",
+                  "5",
+                  "6",
+                  "7",
+                  "8",
+                  "9",
+                  "10",
+                  "11",
+                  "12",
+                  "13",
+                  "14",
+                  "15",
+                  "16",
+                  "17",
+                  "18",
+                  "19",
+                  "20"
+                ]
+              ]
+            ]
+          ]
+        }
+      },
+      {
+        "id": 5,
+        "theme": "light",
+        "width": 320,
+        "group": "authored crash period",
+        "groupIndex": 1,
+        "option": "15",
+        "optionIndex": 14,
+        "file": "/workspace/scratch/wave6-macro-research/spacing-modes/5-light-320-mode-g1-o14.png",
+        "state": {
+          "v": 1,
+          "parts": [
+            [
+              "clock::0",
+              null
+            ],
+            [
+              "slider:target continuous annual rate:0",
+              0.025
+            ],
+            [
+              "slider:crash terminal spot / initial spot:0",
+              0.65
+            ],
+            [
+              "slider:annual crash probability:0",
+              0.05
+            ],
+            [
+              "select:authored illustration:0",
+              [
+                0,
+                [
+                  "one authored crash",
+                  "no crash"
+                ]
+              ]
+            ],
+            [
+              "select:authored crash period:0",
+              [
+                14,
+                [
+                  "1",
+                  "2",
+                  "3",
+                  "4",
+                  "5",
+                  "6",
+                  "7",
+                  "8",
+                  "9",
+                  "10",
+                  "11",
+                  "12",
+                  "13",
+                  "14",
+                  "15",
+                  "16",
+                  "17",
+                  "18",
+                  "19",
+                  "20"
+                ]
+              ]
+            ]
+          ]
+        }
+      },
+      {
+        "id": 5,
+        "theme": "light",
+        "width": 320,
+        "group": "authored crash period",
+        "groupIndex": 1,
+        "option": "16",
+        "optionIndex": 15,
+        "file": "/workspace/scratch/wave6-macro-research/spacing-modes/5-light-320-mode-g1-o15.png",
+        "state": {
+          "v": 1,
+          "parts": [
+            [
+              "clock::0",
+              null
+            ],
+            [
+              "slider:target continuous annual rate:0",
+              0.025
+            ],
+            [
+              "slider:crash terminal spot / initial spot:0",
+              0.65
+            ],
+            [
+              "slider:annual crash probability:0",
+              0.05
+            ],
+            [
+              "select:authored illustration:0",
+              [
+                0,
+                [
+                  "one authored crash",
+                  "no crash"
+                ]
+              ]
+            ],
+            [
+              "select:authored crash period:0",
+              [
+                15,
+                [
+                  "1",
+                  "2",
+                  "3",
+                  "4",
+                  "5",
+                  "6",
+                  "7",
+                  "8",
+                  "9",
+                  "10",
+                  "11",
+                  "12",
+                  "13",
+                  "14",
+                  "15",
+                  "16",
+                  "17",
+                  "18",
+                  "19",
+                  "20"
+                ]
+              ]
+            ]
+          ]
+        }
+      },
+      {
+        "id": 5,
+        "theme": "light",
+        "width": 320,
+        "group": "authored crash period",
+        "groupIndex": 1,
+        "option": "17",
+        "optionIndex": 16,
+        "file": "/workspace/scratch/wave6-macro-research/spacing-modes/5-light-320-mode-g1-o16.png",
+        "state": {
+          "v": 1,
+          "parts": [
+            [
+              "clock::0",
+              null
+            ],
+            [
+              "slider:target continuous annual rate:0",
+              0.025
+            ],
+            [
+              "slider:crash terminal spot / initial spot:0",
+              0.65
+            ],
+            [
+              "slider:annual crash probability:0",
+              0.05
+            ],
+            [
+              "select:authored illustration:0",
+              [
+                0,
+                [
+                  "one authored crash",
+                  "no crash"
+                ]
+              ]
+            ],
+            [
+              "select:authored crash period:0",
+              [
+                16,
+                [
+                  "1",
+                  "2",
+                  "3",
+                  "4",
+                  "5",
+                  "6",
+                  "7",
+                  "8",
+                  "9",
+                  "10",
+                  "11",
+                  "12",
+                  "13",
+                  "14",
+                  "15",
+                  "16",
+                  "17",
+                  "18",
+                  "19",
+                  "20"
+                ]
+              ]
+            ]
+          ]
+        }
+      },
+      {
+        "id": 5,
+        "theme": "light",
+        "width": 320,
+        "group": "authored crash period",
+        "groupIndex": 1,
+        "option": "18",
+        "optionIndex": 17,
+        "file": "/workspace/scratch/wave6-macro-research/spacing-modes/5-light-320-mode-g1-o17.png",
+        "state": {
+          "v": 1,
+          "parts": [
+            [
+              "clock::0",
+              null
+            ],
+            [
+              "slider:target continuous annual rate:0",
+              0.025
+            ],
+            [
+              "slider:crash terminal spot / initial spot:0",
+              0.65
+            ],
+            [
+              "slider:annual crash probability:0",
+              0.05
+            ],
+            [
+              "select:authored illustration:0",
+              [
+                0,
+                [
+                  "one authored crash",
+                  "no crash"
+                ]
+              ]
+            ],
+            [
+              "select:authored crash period:0",
+              [
+                17,
+                [
+                  "1",
+                  "2",
+                  "3",
+                  "4",
+                  "5",
+                  "6",
+                  "7",
+                  "8",
+                  "9",
+                  "10",
+                  "11",
+                  "12",
+                  "13",
+                  "14",
+                  "15",
+                  "16",
+                  "17",
+                  "18",
+                  "19",
+                  "20"
+                ]
+              ]
+            ]
+          ]
+        }
+      },
+      {
+        "id": 5,
+        "theme": "light",
+        "width": 320,
+        "group": "authored crash period",
+        "groupIndex": 1,
+        "option": "19",
+        "optionIndex": 18,
+        "file": "/workspace/scratch/wave6-macro-research/spacing-modes/5-light-320-mode-g1-o18.png",
+        "state": {
+          "v": 1,
+          "parts": [
+            [
+              "clock::0",
+              null
+            ],
+            [
+              "slider:target continuous annual rate:0",
+              0.025
+            ],
+            [
+              "slider:crash terminal spot / initial spot:0",
+              0.65
+            ],
+            [
+              "slider:annual crash probability:0",
+              0.05
+            ],
+            [
+              "select:authored illustration:0",
+              [
+                0,
+                [
+                  "one authored crash",
+                  "no crash"
+                ]
+              ]
+            ],
+            [
+              "select:authored crash period:0",
+              [
+                18,
+                [
+                  "1",
+                  "2",
+                  "3",
+                  "4",
+                  "5",
+                  "6",
+                  "7",
+                  "8",
+                  "9",
+                  "10",
+                  "11",
+                  "12",
+                  "13",
+                  "14",
+                  "15",
+                  "16",
+                  "17",
+                  "18",
+                  "19",
+                  "20"
+                ]
+              ]
+            ]
+          ]
+        }
+      },
+      {
+        "id": 5,
+        "theme": "light",
+        "width": 320,
+        "group": "authored crash period",
+        "groupIndex": 1,
+        "option": "20",
+        "optionIndex": 19,
+        "file": "/workspace/scratch/wave6-macro-research/spacing-modes/5-light-320-mode-g1-o19.png",
+        "state": {
+          "v": 1,
+          "parts": [
+            [
+              "clock::0",
+              null
+            ],
+            [
+              "slider:target continuous annual rate:0",
+              0.025
+            ],
+            [
+              "slider:crash terminal spot / initial spot:0",
+              0.65
+            ],
+            [
+              "slider:annual crash probability:0",
+              0.05
+            ],
+            [
+              "select:authored illustration:0",
+              [
+                0,
+                [
+                  "one authored crash",
+                  "no crash"
+                ]
+              ]
+            ],
+            [
+              "select:authored crash period:0",
+              [
+                19,
+                [
+                  "1",
+                  "2",
+                  "3",
+                  "4",
+                  "5",
+                  "6",
+                  "7",
+                  "8",
+                  "9",
+                  "10",
+                  "11",
+                  "12",
+                  "13",
+                  "14",
+                  "15",
+                  "16",
+                  "17",
+                  "18",
+                  "19",
+                  "20"
+                ]
+              ]
+            ]
+          ]
+        }
+      },
+      {
+        "id": 5,
+        "theme": "dark",
+        "width": 320,
+        "group": "authored illustration",
+        "groupIndex": 0,
+        "option": "one authored crash",
+        "optionIndex": 0,
+        "file": "/workspace/scratch/wave6-macro-research/spacing-modes/5-dark-320-mode-g0-o0.png",
+        "state": {
+          "v": 1,
+          "parts": [
+            [
+              "clock::0",
+              null
+            ],
+            [
+              "slider:target continuous annual rate:0",
+              0.025
+            ],
+            [
+              "slider:crash terminal spot / initial spot:0",
+              0.65
+            ],
+            [
+              "slider:annual crash probability:0",
+              0.05
+            ],
+            [
+              "select:authored illustration:0",
+              [
+                0,
+                [
+                  "one authored crash",
+                  "no crash"
+                ]
+              ]
+            ],
+            [
+              "select:authored crash period:0",
+              [
+                11,
+                [
+                  "1",
+                  "2",
+                  "3",
+                  "4",
+                  "5",
+                  "6",
+                  "7",
+                  "8",
+                  "9",
+                  "10",
+                  "11",
+                  "12",
+                  "13",
+                  "14",
+                  "15",
+                  "16",
+                  "17",
+                  "18",
+                  "19",
+                  "20"
+                ]
+              ]
+            ]
+          ]
+        }
+      },
+      {
+        "id": 5,
+        "theme": "dark",
+        "width": 320,
+        "group": "authored illustration",
+        "groupIndex": 0,
+        "option": "no crash",
+        "optionIndex": 1,
+        "file": "/workspace/scratch/wave6-macro-research/spacing-modes/5-dark-320-mode-g0-o1.png",
+        "state": {
+          "v": 1,
+          "parts": [
+            [
+              "clock::0",
+              null
+            ],
+            [
+              "slider:target continuous annual rate:0",
+              0.025
+            ],
+            [
+              "slider:crash terminal spot / initial spot:0",
+              0.65
+            ],
+            [
+              "slider:annual crash probability:0",
+              0.05
+            ],
+            [
+              "select:authored illustration:0",
+              [
+                1,
+                [
+                  "one authored crash",
+                  "no crash"
+                ]
+              ]
+            ],
+            [
+              "select:authored crash period:0",
+              [
+                11,
+                [
+                  "1",
+                  "2",
+                  "3",
+                  "4",
+                  "5",
+                  "6",
+                  "7",
+                  "8",
+                  "9",
+                  "10",
+                  "11",
+                  "12",
+                  "13",
+                  "14",
+                  "15",
+                  "16",
+                  "17",
+                  "18",
+                  "19",
+                  "20"
+                ]
+              ]
+            ]
+          ]
+        }
+      },
+      {
+        "id": 5,
+        "theme": "dark",
+        "width": 320,
+        "group": "authored crash period",
+        "groupIndex": 1,
+        "option": "1",
+        "optionIndex": 0,
+        "file": "/workspace/scratch/wave6-macro-research/spacing-modes/5-dark-320-mode-g1-o0.png",
+        "state": {
+          "v": 1,
+          "parts": [
+            [
+              "clock::0",
+              null
+            ],
+            [
+              "slider:target continuous annual rate:0",
+              0.025
+            ],
+            [
+              "slider:crash terminal spot / initial spot:0",
+              0.65
+            ],
+            [
+              "slider:annual crash probability:0",
+              0.05
+            ],
+            [
+              "select:authored illustration:0",
+              [
+                0,
+                [
+                  "one authored crash",
+                  "no crash"
+                ]
+              ]
+            ],
+            [
+              "select:authored crash period:0",
+              [
+                0,
+                [
+                  "1",
+                  "2",
+                  "3",
+                  "4",
+                  "5",
+                  "6",
+                  "7",
+                  "8",
+                  "9",
+                  "10",
+                  "11",
+                  "12",
+                  "13",
+                  "14",
+                  "15",
+                  "16",
+                  "17",
+                  "18",
+                  "19",
+                  "20"
+                ]
+              ]
+            ]
+          ]
+        }
+      },
+      {
+        "id": 5,
+        "theme": "dark",
+        "width": 320,
+        "group": "authored crash period",
+        "groupIndex": 1,
+        "option": "2",
+        "optionIndex": 1,
+        "file": "/workspace/scratch/wave6-macro-research/spacing-modes/5-dark-320-mode-g1-o1.png",
+        "state": {
+          "v": 1,
+          "parts": [
+            [
+              "clock::0",
+              null
+            ],
+            [
+              "slider:target continuous annual rate:0",
+              0.025
+            ],
+            [
+              "slider:crash terminal spot / initial spot:0",
+              0.65
+            ],
+            [
+              "slider:annual crash probability:0",
+              0.05
+            ],
+            [
+              "select:authored illustration:0",
+              [
+                0,
+                [
+                  "one authored crash",
+                  "no crash"
+                ]
+              ]
+            ],
+            [
+              "select:authored crash period:0",
+              [
+                1,
+                [
+                  "1",
+                  "2",
+                  "3",
+                  "4",
+                  "5",
+                  "6",
+                  "7",
+                  "8",
+                  "9",
+                  "10",
+                  "11",
+                  "12",
+                  "13",
+                  "14",
+                  "15",
+                  "16",
+                  "17",
+                  "18",
+                  "19",
+                  "20"
+                ]
+              ]
+            ]
+          ]
+        }
+      },
+      {
+        "id": 5,
+        "theme": "dark",
+        "width": 320,
+        "group": "authored crash period",
+        "groupIndex": 1,
+        "option": "3",
+        "optionIndex": 2,
+        "file": "/workspace/scratch/wave6-macro-research/spacing-modes/5-dark-320-mode-g1-o2.png",
+        "state": {
+          "v": 1,
+          "parts": [
+            [
+              "clock::0",
+              null
+            ],
+            [
+              "slider:target continuous annual rate:0",
+              0.025
+            ],
+            [
+              "slider:crash terminal spot / initial spot:0",
+              0.65
+            ],
+            [
+              "slider:annual crash probability:0",
+              0.05
+            ],
+            [
+              "select:authored illustration:0",
+              [
+                0,
+                [
+                  "one authored crash",
+                  "no crash"
+                ]
+              ]
+            ],
+            [
+              "select:authored crash period:0",
+              [
+                2,
+                [
+                  "1",
+                  "2",
+                  "3",
+                  "4",
+                  "5",
+                  "6",
+                  "7",
+                  "8",
+                  "9",
+                  "10",
+                  "11",
+                  "12",
+                  "13",
+                  "14",
+                  "15",
+                  "16",
+                  "17",
+                  "18",
+                  "19",
+                  "20"
+                ]
+              ]
+            ]
+          ]
+        }
+      },
+      {
+        "id": 5,
+        "theme": "dark",
+        "width": 320,
+        "group": "authored crash period",
+        "groupIndex": 1,
+        "option": "4",
+        "optionIndex": 3,
+        "file": "/workspace/scratch/wave6-macro-research/spacing-modes/5-dark-320-mode-g1-o3.png",
+        "state": {
+          "v": 1,
+          "parts": [
+            [
+              "clock::0",
+              null
+            ],
+            [
+              "slider:target continuous annual rate:0",
+              0.025
+            ],
+            [
+              "slider:crash terminal spot / initial spot:0",
+              0.65
+            ],
+            [
+              "slider:annual crash probability:0",
+              0.05
+            ],
+            [
+              "select:authored illustration:0",
+              [
+                0,
+                [
+                  "one authored crash",
+                  "no crash"
+                ]
+              ]
+            ],
+            [
+              "select:authored crash period:0",
+              [
+                3,
+                [
+                  "1",
+                  "2",
+                  "3",
+                  "4",
+                  "5",
+                  "6",
+                  "7",
+                  "8",
+                  "9",
+                  "10",
+                  "11",
+                  "12",
+                  "13",
+                  "14",
+                  "15",
+                  "16",
+                  "17",
+                  "18",
+                  "19",
+                  "20"
+                ]
+              ]
+            ]
+          ]
+        }
+      },
+      {
+        "id": 5,
+        "theme": "dark",
+        "width": 320,
+        "group": "authored crash period",
+        "groupIndex": 1,
+        "option": "5",
+        "optionIndex": 4,
+        "file": "/workspace/scratch/wave6-macro-research/spacing-modes/5-dark-320-mode-g1-o4.png",
+        "state": {
+          "v": 1,
+          "parts": [
+            [
+              "clock::0",
+              null
+            ],
+            [
+              "slider:target continuous annual rate:0",
+              0.025
+            ],
+            [
+              "slider:crash terminal spot / initial spot:0",
+              0.65
+            ],
+            [
+              "slider:annual crash probability:0",
+              0.05
+            ],
+            [
+              "select:authored illustration:0",
+              [
+                0,
+                [
+                  "one authored crash",
+                  "no crash"
+                ]
+              ]
+            ],
+            [
+              "select:authored crash period:0",
+              [
+                4,
+                [
+                  "1",
+                  "2",
+                  "3",
+                  "4",
+                  "5",
+                  "6",
+                  "7",
+                  "8",
+                  "9",
+                  "10",
+                  "11",
+                  "12",
+                  "13",
+                  "14",
+                  "15",
+                  "16",
+                  "17",
+                  "18",
+                  "19",
+                  "20"
+                ]
+              ]
+            ]
+          ]
+        }
+      },
+      {
+        "id": 5,
+        "theme": "dark",
+        "width": 320,
+        "group": "authored crash period",
+        "groupIndex": 1,
+        "option": "6",
+        "optionIndex": 5,
+        "file": "/workspace/scratch/wave6-macro-research/spacing-modes/5-dark-320-mode-g1-o5.png",
+        "state": {
+          "v": 1,
+          "parts": [
+            [
+              "clock::0",
+              null
+            ],
+            [
+              "slider:target continuous annual rate:0",
+              0.025
+            ],
+            [
+              "slider:crash terminal spot / initial spot:0",
+              0.65
+            ],
+            [
+              "slider:annual crash probability:0",
+              0.05
+            ],
+            [
+              "select:authored illustration:0",
+              [
+                0,
+                [
+                  "one authored crash",
+                  "no crash"
+                ]
+              ]
+            ],
+            [
+              "select:authored crash period:0",
+              [
+                5,
+                [
+                  "1",
+                  "2",
+                  "3",
+                  "4",
+                  "5",
+                  "6",
+                  "7",
+                  "8",
+                  "9",
+                  "10",
+                  "11",
+                  "12",
+                  "13",
+                  "14",
+                  "15",
+                  "16",
+                  "17",
+                  "18",
+                  "19",
+                  "20"
+                ]
+              ]
+            ]
+          ]
+        }
+      },
+      {
+        "id": 5,
+        "theme": "dark",
+        "width": 320,
+        "group": "authored crash period",
+        "groupIndex": 1,
+        "option": "7",
+        "optionIndex": 6,
+        "file": "/workspace/scratch/wave6-macro-research/spacing-modes/5-dark-320-mode-g1-o6.png",
+        "state": {
+          "v": 1,
+          "parts": [
+            [
+              "clock::0",
+              null
+            ],
+            [
+              "slider:target continuous annual rate:0",
+              0.025
+            ],
+            [
+              "slider:crash terminal spot / initial spot:0",
+              0.65
+            ],
+            [
+              "slider:annual crash probability:0",
+              0.05
+            ],
+            [
+              "select:authored illustration:0",
+              [
+                0,
+                [
+                  "one authored crash",
+                  "no crash"
+                ]
+              ]
+            ],
+            [
+              "select:authored crash period:0",
+              [
+                6,
+                [
+                  "1",
+                  "2",
+                  "3",
+                  "4",
+                  "5",
+                  "6",
+                  "7",
+                  "8",
+                  "9",
+                  "10",
+                  "11",
+                  "12",
+                  "13",
+                  "14",
+                  "15",
+                  "16",
+                  "17",
+                  "18",
+                  "19",
+                  "20"
+                ]
+              ]
+            ]
+          ]
+        }
+      },
+      {
+        "id": 5,
+        "theme": "dark",
+        "width": 320,
+        "group": "authored crash period",
+        "groupIndex": 1,
+        "option": "8",
+        "optionIndex": 7,
+        "file": "/workspace/scratch/wave6-macro-research/spacing-modes/5-dark-320-mode-g1-o7.png",
+        "state": {
+          "v": 1,
+          "parts": [
+            [
+              "clock::0",
+              null
+            ],
+            [
+              "slider:target continuous annual rate:0",
+              0.025
+            ],
+            [
+              "slider:crash terminal spot / initial spot:0",
+              0.65
+            ],
+            [
+              "slider:annual crash probability:0",
+              0.05
+            ],
+            [
+              "select:authored illustration:0",
+              [
+                0,
+                [
+                  "one authored crash",
+                  "no crash"
+                ]
+              ]
+            ],
+            [
+              "select:authored crash period:0",
+              [
+                7,
+                [
+                  "1",
+                  "2",
+                  "3",
+                  "4",
+                  "5",
+                  "6",
+                  "7",
+                  "8",
+                  "9",
+                  "10",
+                  "11",
+                  "12",
+                  "13",
+                  "14",
+                  "15",
+                  "16",
+                  "17",
+                  "18",
+                  "19",
+                  "20"
+                ]
+              ]
+            ]
+          ]
+        }
+      },
+      {
+        "id": 5,
+        "theme": "dark",
+        "width": 320,
+        "group": "authored crash period",
+        "groupIndex": 1,
+        "option": "9",
+        "optionIndex": 8,
+        "file": "/workspace/scratch/wave6-macro-research/spacing-modes/5-dark-320-mode-g1-o8.png",
+        "state": {
+          "v": 1,
+          "parts": [
+            [
+              "clock::0",
+              null
+            ],
+            [
+              "slider:target continuous annual rate:0",
+              0.025
+            ],
+            [
+              "slider:crash terminal spot / initial spot:0",
+              0.65
+            ],
+            [
+              "slider:annual crash probability:0",
+              0.05
+            ],
+            [
+              "select:authored illustration:0",
+              [
+                0,
+                [
+                  "one authored crash",
+                  "no crash"
+                ]
+              ]
+            ],
+            [
+              "select:authored crash period:0",
+              [
+                8,
+                [
+                  "1",
+                  "2",
+                  "3",
+                  "4",
+                  "5",
+                  "6",
+                  "7",
+                  "8",
+                  "9",
+                  "10",
+                  "11",
+                  "12",
+                  "13",
+                  "14",
+                  "15",
+                  "16",
+                  "17",
+                  "18",
+                  "19",
+                  "20"
+                ]
+              ]
+            ]
+          ]
+        }
+      },
+      {
+        "id": 5,
+        "theme": "dark",
+        "width": 320,
+        "group": "authored crash period",
+        "groupIndex": 1,
+        "option": "10",
+        "optionIndex": 9,
+        "file": "/workspace/scratch/wave6-macro-research/spacing-modes/5-dark-320-mode-g1-o9.png",
+        "state": {
+          "v": 1,
+          "parts": [
+            [
+              "clock::0",
+              null
+            ],
+            [
+              "slider:target continuous annual rate:0",
+              0.025
+            ],
+            [
+              "slider:crash terminal spot / initial spot:0",
+              0.65
+            ],
+            [
+              "slider:annual crash probability:0",
+              0.05
+            ],
+            [
+              "select:authored illustration:0",
+              [
+                0,
+                [
+                  "one authored crash",
+                  "no crash"
+                ]
+              ]
+            ],
+            [
+              "select:authored crash period:0",
+              [
+                9,
+                [
+                  "1",
+                  "2",
+                  "3",
+                  "4",
+                  "5",
+                  "6",
+                  "7",
+                  "8",
+                  "9",
+                  "10",
+                  "11",
+                  "12",
+                  "13",
+                  "14",
+                  "15",
+                  "16",
+                  "17",
+                  "18",
+                  "19",
+                  "20"
+                ]
+              ]
+            ]
+          ]
+        }
+      },
+      {
+        "id": 5,
+        "theme": "dark",
+        "width": 320,
+        "group": "authored crash period",
+        "groupIndex": 1,
+        "option": "11",
+        "optionIndex": 10,
+        "file": "/workspace/scratch/wave6-macro-research/spacing-modes/5-dark-320-mode-g1-o10.png",
+        "state": {
+          "v": 1,
+          "parts": [
+            [
+              "clock::0",
+              null
+            ],
+            [
+              "slider:target continuous annual rate:0",
+              0.025
+            ],
+            [
+              "slider:crash terminal spot / initial spot:0",
+              0.65
+            ],
+            [
+              "slider:annual crash probability:0",
+              0.05
+            ],
+            [
+              "select:authored illustration:0",
+              [
+                0,
+                [
+                  "one authored crash",
+                  "no crash"
+                ]
+              ]
+            ],
+            [
+              "select:authored crash period:0",
+              [
+                10,
+                [
+                  "1",
+                  "2",
+                  "3",
+                  "4",
+                  "5",
+                  "6",
+                  "7",
+                  "8",
+                  "9",
+                  "10",
+                  "11",
+                  "12",
+                  "13",
+                  "14",
+                  "15",
+                  "16",
+                  "17",
+                  "18",
+                  "19",
+                  "20"
+                ]
+              ]
+            ]
+          ]
+        }
+      },
+      {
+        "id": 5,
+        "theme": "dark",
+        "width": 320,
+        "group": "authored crash period",
+        "groupIndex": 1,
+        "option": "12",
+        "optionIndex": 11,
+        "file": "/workspace/scratch/wave6-macro-research/spacing-modes/5-dark-320-mode-g1-o11.png",
+        "state": {
+          "v": 1,
+          "parts": [
+            [
+              "clock::0",
+              null
+            ],
+            [
+              "slider:target continuous annual rate:0",
+              0.025
+            ],
+            [
+              "slider:crash terminal spot / initial spot:0",
+              0.65
+            ],
+            [
+              "slider:annual crash probability:0",
+              0.05
+            ],
+            [
+              "select:authored illustration:0",
+              [
+                0,
+                [
+                  "one authored crash",
+                  "no crash"
+                ]
+              ]
+            ],
+            [
+              "select:authored crash period:0",
+              [
+                11,
+                [
+                  "1",
+                  "2",
+                  "3",
+                  "4",
+                  "5",
+                  "6",
+                  "7",
+                  "8",
+                  "9",
+                  "10",
+                  "11",
+                  "12",
+                  "13",
+                  "14",
+                  "15",
+                  "16",
+                  "17",
+                  "18",
+                  "19",
+                  "20"
+                ]
+              ]
+            ]
+          ]
+        }
+      },
+      {
+        "id": 5,
+        "theme": "dark",
+        "width": 320,
+        "group": "authored crash period",
+        "groupIndex": 1,
+        "option": "13",
+        "optionIndex": 12,
+        "file": "/workspace/scratch/wave6-macro-research/spacing-modes/5-dark-320-mode-g1-o12.png",
+        "state": {
+          "v": 1,
+          "parts": [
+            [
+              "clock::0",
+              null
+            ],
+            [
+              "slider:target continuous annual rate:0",
+              0.025
+            ],
+            [
+              "slider:crash terminal spot / initial spot:0",
+              0.65
+            ],
+            [
+              "slider:annual crash probability:0",
+              0.05
+            ],
+            [
+              "select:authored illustration:0",
+              [
+                0,
+                [
+                  "one authored crash",
+                  "no crash"
+                ]
+              ]
+            ],
+            [
+              "select:authored crash period:0",
+              [
+                12,
+                [
+                  "1",
+                  "2",
+                  "3",
+                  "4",
+                  "5",
+                  "6",
+                  "7",
+                  "8",
+                  "9",
+                  "10",
+                  "11",
+                  "12",
+                  "13",
+                  "14",
+                  "15",
+                  "16",
+                  "17",
+                  "18",
+                  "19",
+                  "20"
+                ]
+              ]
+            ]
+          ]
+        }
+      },
+      {
+        "id": 5,
+        "theme": "dark",
+        "width": 320,
+        "group": "authored crash period",
+        "groupIndex": 1,
+        "option": "14",
+        "optionIndex": 13,
+        "file": "/workspace/scratch/wave6-macro-research/spacing-modes/5-dark-320-mode-g1-o13.png",
+        "state": {
+          "v": 1,
+          "parts": [
+            [
+              "clock::0",
+              null
+            ],
+            [
+              "slider:target continuous annual rate:0",
+              0.025
+            ],
+            [
+              "slider:crash terminal spot / initial spot:0",
+              0.65
+            ],
+            [
+              "slider:annual crash probability:0",
+              0.05
+            ],
+            [
+              "select:authored illustration:0",
+              [
+                0,
+                [
+                  "one authored crash",
+                  "no crash"
+                ]
+              ]
+            ],
+            [
+              "select:authored crash period:0",
+              [
+                13,
+                [
+                  "1",
+                  "2",
+                  "3",
+                  "4",
+                  "5",
+                  "6",
+                  "7",
+                  "8",
+                  "9",
+                  "10",
+                  "11",
+                  "12",
+                  "13",
+                  "14",
+                  "15",
+                  "16",
+                  "17",
+                  "18",
+                  "19",
+                  "20"
+                ]
+              ]
+            ]
+          ]
+        }
+      },
+      {
+        "id": 5,
+        "theme": "dark",
+        "width": 320,
+        "group": "authored crash period",
+        "groupIndex": 1,
+        "option": "15",
+        "optionIndex": 14,
+        "file": "/workspace/scratch/wave6-macro-research/spacing-modes/5-dark-320-mode-g1-o14.png",
+        "state": {
+          "v": 1,
+          "parts": [
+            [
+              "clock::0",
+              null
+            ],
+            [
+              "slider:target continuous annual rate:0",
+              0.025
+            ],
+            [
+              "slider:crash terminal spot / initial spot:0",
+              0.65
+            ],
+            [
+              "slider:annual crash probability:0",
+              0.05
+            ],
+            [
+              "select:authored illustration:0",
+              [
+                0,
+                [
+                  "one authored crash",
+                  "no crash"
+                ]
+              ]
+            ],
+            [
+              "select:authored crash period:0",
+              [
+                14,
+                [
+                  "1",
+                  "2",
+                  "3",
+                  "4",
+                  "5",
+                  "6",
+                  "7",
+                  "8",
+                  "9",
+                  "10",
+                  "11",
+                  "12",
+                  "13",
+                  "14",
+                  "15",
+                  "16",
+                  "17",
+                  "18",
+                  "19",
+                  "20"
+                ]
+              ]
+            ]
+          ]
+        }
+      },
+      {
+        "id": 5,
+        "theme": "dark",
+        "width": 320,
+        "group": "authored crash period",
+        "groupIndex": 1,
+        "option": "16",
+        "optionIndex": 15,
+        "file": "/workspace/scratch/wave6-macro-research/spacing-modes/5-dark-320-mode-g1-o15.png",
+        "state": {
+          "v": 1,
+          "parts": [
+            [
+              "clock::0",
+              null
+            ],
+            [
+              "slider:target continuous annual rate:0",
+              0.025
+            ],
+            [
+              "slider:crash terminal spot / initial spot:0",
+              0.65
+            ],
+            [
+              "slider:annual crash probability:0",
+              0.05
+            ],
+            [
+              "select:authored illustration:0",
+              [
+                0,
+                [
+                  "one authored crash",
+                  "no crash"
+                ]
+              ]
+            ],
+            [
+              "select:authored crash period:0",
+              [
+                15,
+                [
+                  "1",
+                  "2",
+                  "3",
+                  "4",
+                  "5",
+                  "6",
+                  "7",
+                  "8",
+                  "9",
+                  "10",
+                  "11",
+                  "12",
+                  "13",
+                  "14",
+                  "15",
+                  "16",
+                  "17",
+                  "18",
+                  "19",
+                  "20"
+                ]
+              ]
+            ]
+          ]
+        }
+      },
+      {
+        "id": 5,
+        "theme": "dark",
+        "width": 320,
+        "group": "authored crash period",
+        "groupIndex": 1,
+        "option": "17",
+        "optionIndex": 16,
+        "file": "/workspace/scratch/wave6-macro-research/spacing-modes/5-dark-320-mode-g1-o16.png",
+        "state": {
+          "v": 1,
+          "parts": [
+            [
+              "clock::0",
+              null
+            ],
+            [
+              "slider:target continuous annual rate:0",
+              0.025
+            ],
+            [
+              "slider:crash terminal spot / initial spot:0",
+              0.65
+            ],
+            [
+              "slider:annual crash probability:0",
+              0.05
+            ],
+            [
+              "select:authored illustration:0",
+              [
+                0,
+                [
+                  "one authored crash",
+                  "no crash"
+                ]
+              ]
+            ],
+            [
+              "select:authored crash period:0",
+              [
+                16,
+                [
+                  "1",
+                  "2",
+                  "3",
+                  "4",
+                  "5",
+                  "6",
+                  "7",
+                  "8",
+                  "9",
+                  "10",
+                  "11",
+                  "12",
+                  "13",
+                  "14",
+                  "15",
+                  "16",
+                  "17",
+                  "18",
+                  "19",
+                  "20"
+                ]
+              ]
+            ]
+          ]
+        }
+      },
+      {
+        "id": 5,
+        "theme": "dark",
+        "width": 320,
+        "group": "authored crash period",
+        "groupIndex": 1,
+        "option": "18",
+        "optionIndex": 17,
+        "file": "/workspace/scratch/wave6-macro-research/spacing-modes/5-dark-320-mode-g1-o17.png",
+        "state": {
+          "v": 1,
+          "parts": [
+            [
+              "clock::0",
+              null
+            ],
+            [
+              "slider:target continuous annual rate:0",
+              0.025
+            ],
+            [
+              "slider:crash terminal spot / initial spot:0",
+              0.65
+            ],
+            [
+              "slider:annual crash probability:0",
+              0.05
+            ],
+            [
+              "select:authored illustration:0",
+              [
+                0,
+                [
+                  "one authored crash",
+                  "no crash"
+                ]
+              ]
+            ],
+            [
+              "select:authored crash period:0",
+              [
+                17,
+                [
+                  "1",
+                  "2",
+                  "3",
+                  "4",
+                  "5",
+                  "6",
+                  "7",
+                  "8",
+                  "9",
+                  "10",
+                  "11",
+                  "12",
+                  "13",
+                  "14",
+                  "15",
+                  "16",
+                  "17",
+                  "18",
+                  "19",
+                  "20"
+                ]
+              ]
+            ]
+          ]
+        }
+      },
+      {
+        "id": 5,
+        "theme": "dark",
+        "width": 320,
+        "group": "authored crash period",
+        "groupIndex": 1,
+        "option": "19",
+        "optionIndex": 18,
+        "file": "/workspace/scratch/wave6-macro-research/spacing-modes/5-dark-320-mode-g1-o18.png",
+        "state": {
+          "v": 1,
+          "parts": [
+            [
+              "clock::0",
+              null
+            ],
+            [
+              "slider:target continuous annual rate:0",
+              0.025
+            ],
+            [
+              "slider:crash terminal spot / initial spot:0",
+              0.65
+            ],
+            [
+              "slider:annual crash probability:0",
+              0.05
+            ],
+            [
+              "select:authored illustration:0",
+              [
+                0,
+                [
+                  "one authored crash",
+                  "no crash"
+                ]
+              ]
+            ],
+            [
+              "select:authored crash period:0",
+              [
+                18,
+                [
+                  "1",
+                  "2",
+                  "3",
+                  "4",
+                  "5",
+                  "6",
+                  "7",
+                  "8",
+                  "9",
+                  "10",
+                  "11",
+                  "12",
+                  "13",
+                  "14",
+                  "15",
+                  "16",
+                  "17",
+                  "18",
+                  "19",
+                  "20"
+                ]
+              ]
+            ]
+          ]
+        }
+      },
+      {
+        "id": 5,
+        "theme": "dark",
+        "width": 320,
+        "group": "authored crash period",
+        "groupIndex": 1,
+        "option": "20",
+        "optionIndex": 19,
+        "file": "/workspace/scratch/wave6-macro-research/spacing-modes/5-dark-320-mode-g1-o19.png",
+        "state": {
+          "v": 1,
+          "parts": [
+            [
+              "clock::0",
+              null
+            ],
+            [
+              "slider:target continuous annual rate:0",
+              0.025
+            ],
+            [
+              "slider:crash terminal spot / initial spot:0",
+              0.65
+            ],
+            [
+              "slider:annual crash probability:0",
+              0.05
+            ],
+            [
+              "select:authored illustration:0",
+              [
+                0,
+                [
+                  "one authored crash",
+                  "no crash"
+                ]
+              ]
+            ],
+            [
+              "select:authored crash period:0",
+              [
+                19,
+                [
+                  "1",
+                  "2",
+                  "3",
+                  "4",
+                  "5",
+                  "6",
+                  "7",
+                  "8",
+                  "9",
+                  "10",
+                  "11",
+                  "12",
+                  "13",
+                  "14",
+                  "15",
+                  "16",
+                  "17",
+                  "18",
+                  "19",
+                  "20"
+                ]
+              ]
+            ]
+          ]
+        }
+      },
+      {
+        "id": 7,
+        "theme": "light",
+        "width": 320,
+        "group": "hypothetical locus",
+        "groupIndex": 0,
+        "option": "both productivity channels",
+        "optionIndex": 0,
+        "file": "/workspace/scratch/wave6-macro-research/spacing-modes/7-light-320-mode-g0-o0.png",
+        "state": {
+          "v": 1,
+          "parts": [
+            [
+              "clock::0",
+              null
+            ],
+            [
+              "slider:traded output / worker:0",
+              2
+            ],
+            [
+              "slider:nontraded output / worker:0",
+              1
+            ],
+            [
+              "slider:traded expenditure share alpha:0",
+              0.5
+            ],
+            [
+              "select:hypothetical locus:0",
+              [
+                0,
+                [
+                  "both productivity channels",
+                  "vary traded productivity",
+                  "vary nontraded productivity"
+                ]
+              ]
+            ]
+          ]
+        }
+      },
+      {
+        "id": 7,
+        "theme": "light",
+        "width": 320,
+        "group": "hypothetical locus",
+        "groupIndex": 0,
+        "option": "vary traded productivity",
+        "optionIndex": 1,
+        "file": "/workspace/scratch/wave6-macro-research/spacing-modes/7-light-320-mode-g0-o1.png",
+        "state": {
+          "v": 1,
+          "parts": [
+            [
+              "clock::0",
+              null
+            ],
+            [
+              "slider:traded output / worker:0",
+              2
+            ],
+            [
+              "slider:nontraded output / worker:0",
+              1
+            ],
+            [
+              "slider:traded expenditure share alpha:0",
+              0.5
+            ],
+            [
+              "select:hypothetical locus:0",
+              [
+                1,
+                [
+                  "both productivity channels",
+                  "vary traded productivity",
+                  "vary nontraded productivity"
+                ]
+              ]
+            ]
+          ]
+        }
+      },
+      {
+        "id": 7,
+        "theme": "light",
+        "width": 320,
+        "group": "hypothetical locus",
+        "groupIndex": 0,
+        "option": "vary nontraded productivity",
+        "optionIndex": 2,
+        "file": "/workspace/scratch/wave6-macro-research/spacing-modes/7-light-320-mode-g0-o2.png",
+        "state": {
+          "v": 1,
+          "parts": [
+            [
+              "clock::0",
+              null
+            ],
+            [
+              "slider:traded output / worker:0",
+              2
+            ],
+            [
+              "slider:nontraded output / worker:0",
+              1
+            ],
+            [
+              "slider:traded expenditure share alpha:0",
+              0.5
+            ],
+            [
+              "select:hypothetical locus:0",
+              [
+                2,
+                [
+                  "both productivity channels",
+                  "vary traded productivity",
+                  "vary nontraded productivity"
+                ]
+              ]
+            ]
+          ]
+        }
+      },
+      {
+        "id": 7,
+        "theme": "dark",
+        "width": 320,
+        "group": "hypothetical locus",
+        "groupIndex": 0,
+        "option": "both productivity channels",
+        "optionIndex": 0,
+        "file": "/workspace/scratch/wave6-macro-research/spacing-modes/7-dark-320-mode-g0-o0.png",
+        "state": {
+          "v": 1,
+          "parts": [
+            [
+              "clock::0",
+              null
+            ],
+            [
+              "slider:traded output / worker:0",
+              2
+            ],
+            [
+              "slider:nontraded output / worker:0",
+              1
+            ],
+            [
+              "slider:traded expenditure share alpha:0",
+              0.5
+            ],
+            [
+              "select:hypothetical locus:0",
+              [
+                0,
+                [
+                  "both productivity channels",
+                  "vary traded productivity",
+                  "vary nontraded productivity"
+                ]
+              ]
+            ]
+          ]
+        }
+      },
+      {
+        "id": 7,
+        "theme": "dark",
+        "width": 320,
+        "group": "hypothetical locus",
+        "groupIndex": 0,
+        "option": "vary traded productivity",
+        "optionIndex": 1,
+        "file": "/workspace/scratch/wave6-macro-research/spacing-modes/7-dark-320-mode-g0-o1.png",
+        "state": {
+          "v": 1,
+          "parts": [
+            [
+              "clock::0",
+              null
+            ],
+            [
+              "slider:traded output / worker:0",
+              2
+            ],
+            [
+              "slider:nontraded output / worker:0",
+              1
+            ],
+            [
+              "slider:traded expenditure share alpha:0",
+              0.5
+            ],
+            [
+              "select:hypothetical locus:0",
+              [
+                1,
+                [
+                  "both productivity channels",
+                  "vary traded productivity",
+                  "vary nontraded productivity"
+                ]
+              ]
+            ]
+          ]
+        }
+      },
+      {
+        "id": 7,
+        "theme": "dark",
+        "width": 320,
+        "group": "hypothetical locus",
+        "groupIndex": 0,
+        "option": "vary nontraded productivity",
+        "optionIndex": 2,
+        "file": "/workspace/scratch/wave6-macro-research/spacing-modes/7-dark-320-mode-g0-o2.png",
+        "state": {
+          "v": 1,
+          "parts": [
+            [
+              "clock::0",
+              null
+            ],
+            [
+              "slider:traded output / worker:0",
+              2
+            ],
+            [
+              "slider:nontraded output / worker:0",
+              1
+            ],
+            [
+              "slider:traded expenditure share alpha:0",
+              0.5
+            ],
+            [
+              "select:hypothetical locus:0",
+              [
+                2,
+                [
+                  "both productivity channels",
+                  "vary traded productivity",
+                  "vary nontraded productivity"
+                ]
+              ]
+            ]
+          ]
+        }
+      }
+    ]
+  },
+  "defaultRich": {
+    "layouts": 28,
+    "issues": 0,
+    "errors": [],
+    "sourceHashes": {
+      "../content/macro/ch06.js": "cc4579337bef56a944a76be3334dc90f5bd598e53181d4808b49cee03c02e801",
+      "../content/macro/ch06.viz.js": "7c07d09521467ef9e469e5d734e3905fd4b78087b77ec416f114f5a2ea8a0a07",
+      "../content/macro/ch06.shared.js": "a2d165ce5bddde0fe46cc5ec95d92eeb3e4f472dcb41d9e462773dcd6246a9d1",
+      "../content/macro/ch06.exact.shared.js": "061a042de743211c0d63548b8b3570d7a444f8c924ff7f6cf1b4716a4201b982",
+      "../content/macro/ch06.data.shared.js": "06d95424bde31becd95addbe8cf827351f42cc2ab094b94b78adfd13fad1f8a5",
+      "../content/macro/syllabus.js": "5d3f8b0c610f6051e910d1b3a388bd5c5320bb034851a88916c0d91cf0ef1735",
+      "../assets/js/viz/core.js": "a6fa1753d9d9e8b9a05a7161fffc58dfd53b27002d9d393a3266aeb96515fe73",
+      "../assets/js/viz/math.js": "439c335e1cc47907bc72bb76559216aa093be4710e0589f41c70192729eb223e",
+      "../data/col/macro.json": "dbd370bad602a31a30d45fc1dbee72d0da0cac4b4fa707db8c38c0e73d170a5f",
+      "../data/index.json": "06ba16d020577b05893d191c3b0f75cfa41990f7dccacee4b5aa94d459a09eeb",
+      "./wave6-macro-browser.mjs": "ecd5b69f9e547f71414baa36e8e298407be1af362907502cba17d9f41244b1d0"
+    }
+  },
+  "rawScope": "24 continuous raw-state probes; PPP has discrete selectors only. All28layouts include invalid-state fallback.",
+  "sourceHashes": {
+    "../content/macro/ch06.js": "cc4579337bef56a944a76be3334dc90f5bd598e53181d4808b49cee03c02e801",
+    "../content/macro/ch06.viz.js": "7c07d09521467ef9e469e5d734e3905fd4b78087b77ec416f114f5a2ea8a0a07",
+    "../content/macro/ch06.shared.js": "a2d165ce5bddde0fe46cc5ec95d92eeb3e4f472dcb41d9e462773dcd6246a9d1",
+    "../content/macro/ch06.exact.shared.js": "061a042de743211c0d63548b8b3570d7a444f8c924ff7f6cf1b4716a4201b982",
+    "../content/macro/ch06.data.shared.js": "06d95424bde31becd95addbe8cf827351f42cc2ab094b94b78adfd13fad1f8a5",
+    "../content/macro/syllabus.js": "5d3f8b0c610f6051e910d1b3a388bd5c5320bb034851a88916c0d91cf0ef1735",
+    "../assets/js/viz/core.js": "a6fa1753d9d9e8b9a05a7161fffc58dfd53b27002d9d393a3266aeb96515fe73",
+    "../assets/js/viz/math.js": "439c335e1cc47907bc72bb76559216aa093be4710e0589f41c70192729eb223e",
+    "../assets/js/share-state.js": "13c6a9ac1237d566fc5d79c89e0f4d3029aa8c2817d2c08247a02b1b053a59b1",
+    "../data/col/macro.json": "dbd370bad602a31a30d45fc1dbee72d0da0cac4b4fa707db8c38c0e73d170a5f",
+    "../data/index.json": "06ba16d020577b05893d191c3b0f75cfa41990f7dccacee4b5aa94d459a09eeb",
+    "./wave6-macro-native.mjs": "493bfa1e293a9ca63b6cb35cb01b70b2bb743ab857110dfc2fda964b74b16d47",
+    "./wave6-macro-native-science.mjs": "df46d613eb1aca8f65ebfb17a2421e30663b891e4f69d7ecd8872494b18b8f98",
+    "./wave6-macro-native-cases.mjs": "f7c7e28600e7668c9a4db8fafad4af16ac52baaa7319660bfde5e0037a20781d",
+    "./wave6-macro-browser.shared.mjs": "4f1dd6a91cc8c3c33d742423eac73d2dbe72624daedb001bb0e617fa15498447"
+  },
+  "developmentFailures": [
+    "Initial default/rich outer-bounds audit passed, but personal review found a clipped UIP state label, clipped sector note and crowded spending labels. Labels were separated/shortened and the harness now audits the inner scientific clip.",
+    "A critical exchange-rate endpoint marker clipped during strong appreciation. Actual plot margins were enlarged.",
+    "Literal Chromium/Node complete model equality rejected an8.88e-16 Math.log difference. The harness applies the already declared8e-12 log and3e-13 physical gates; exact intended state, sign/range, signed zero and same-browser Share readouts stay strict.",
+    "Strong small-open-economy appreciation put the selected marker outside a linear q domain. The plot now uses a positive explicitly labelled logarithmic q axis and native axis/marker assertions.",
+    "The first complete content test looked for scope wording in the wrong field. That brittle wording assertion was removed; frozen identity/source and complete-content assertions remain.",
+    "Final pixel review found missing spaces in sample text and source attributions. Copy and syllabus mirrors were corrected, all28native layouts/all88modes/all28rich layouts rerun, and changed pixels personally reviewed again.",
+    "One production dark invocation used an unsupported --theme=dark flag and actually repeated light. It is not dark evidence. Correct --dark runs passed before and after the final copy repair.",
+    "A six-column default gallery was returned resized by the image tool. Those sheets were excluded from qualification; every complete widget was inspected again in five-column original-pixel sheets."
+  ],
+  "logs": {
+    "focused-spacing": {
+      "path": "/workspace/scratch/wave6-macro-research/focused-spacing.log",
+      "sha256": "438ea97d8a876a050d78adf24757da75c3bfcfbd20c1994553ba17b52e7536d1"
+    },
+    "build-spacing": {
+      "path": "/workspace/scratch/wave6-macro-research/build-spacing.log",
+      "sha256": "5f311993846c50bcb23bb78bd75031e9ae6eabaaeba098c6a55e6d83c7228246"
+    },
+    "static-spacing": {
+      "path": "/workspace/scratch/wave6-macro-research/static-spacing.log",
+      "sha256": "78545e7a59e0edeebc42342f90cdd34d5b3145eb4f35b78f04f80d14d796db7f"
+    },
+    "production-spacing-light": {
+      "path": "/workspace/scratch/wave6-macro-research/production-spacing-light.log",
+      "sha256": "2d82ecaa764472fa85f1860999abd3d6fc0f57e99087c2d6a08b3f88644b8d1f"
+    },
+    "production-spacing-dark": {
+      "path": "/workspace/scratch/wave6-macro-research/production-spacing-dark.log",
+      "sha256": "f0583b3745fc4be08a8990234c0b7215920726bb3b5bb9ae7d951588a1295193"
+    }
+  },
+  "allOwnedBrowsersAndServersClosed": true
+}

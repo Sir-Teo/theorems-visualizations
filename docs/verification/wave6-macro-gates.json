@@ -1,0 +1,146 @@
+{
+  "status": "author-verified; independent acceptance remains36",
+  "availability": {
+    "before": 842,
+    "after": 849,
+    "goal": 1057,
+    "historicalIndependentlyAccepted": 36,
+    "additionalAuthorVerified": 813
+  },
+  "lessonCount": 7,
+  "purposeBuiltPanels": 20,
+  "model": {
+    "referenceCases": 355,
+    "families": 7,
+    "comparisons": 40823,
+    "precision": {
+      "status": "PASS",
+      "cases": 355,
+      "ordinaryDigits": 1400,
+      "higherDigits": 2800,
+      "canonicalRepeatByteIdentical": true,
+      "completeExpectedObjectsExact": true,
+      "fixtureSHA256": "9e61a43a4166669f3d8433b458ba16d0f3e88d3ced41cadcc70f02dc700d67de",
+      "differences": [],
+      "comparisons": 40823
+    },
+    "observed": {
+      "worstPhysicalRelativeOutsideSubnormal": 0,
+      "worstLogAbsolute": 1.5005774400833616e-12
+    },
+    "gates": {
+      "physicalRelativeOutsideSubnormal": 3e-13,
+      "logAbsolute": 8e-12,
+      "subnormal": "two subnormal ulps plus independent exact sign/range and signed-zero checks"
+    },
+    "methods": [
+      "Independent Fraction account identities and original decimal source prices; no production import.",
+      "Independent mpmath exponential/logarithm expectations at1400digits, all complete physical expected objects rechecked at2800digits.",
+      "Production160-bit rational series enclosures with geometric tails, reciprocal/monotone transforms and outward dyadic rounding; quantities remain explicitly approximate when transcendental. Exact retained algebra/signs are separate."
+    ]
+  },
+  "focused": {
+    "pureGroups": 16,
+    "completeChapterGroups": 18,
+    "affectedPriorChapterGroups": 12,
+    "passed": 30,
+    "failures": 0,
+    "skipped": 0,
+    "cancelled": 0
+  },
+  "strictBuild": {
+    "written": 8564,
+    "planned": 5010,
+    "chapters": 590,
+    "collections": 85,
+    "errors": 0,
+    "warnings": 0
+  },
+  "globalStatic": {
+    "visualizations": 8501,
+    "errors": 0,
+    "warnings": 0
+  },
+  "productionModes": {
+    "light": 7,
+    "dark": 7,
+    "failed": 0,
+    "texOrBlankWarnings": 0,
+    "qualityWarnings": 0
+  },
+  "native": {
+    "layouts": 28,
+    "actions": 1080,
+    "shares": 528,
+    "invalid": 28,
+    "raw": 24,
+    "critical": 212,
+    "checks": 1900,
+    "modelComparisons": 669768
+  },
+  "groupModes": {
+    "layouts": 14,
+    "modes": 88,
+    "actions": 176,
+    "shares": 88,
+    "checks": 278,
+    "comparisons": 120294
+  },
+  "personalVisual": {
+    "status": "PASS",
+    "targets": 278,
+    "matched": 278,
+    "counts": {
+      "defaults": 28,
+      "rich": 56,
+      "critical": 106,
+      "modes": 88
+    },
+    "reviewedSheetCount": 80,
+    "usedSheetCount": 70,
+    "method": "Every crop is exact RGB equality to personally inspected original pixels. Every piece of every used tall source is bound by source and sheet SHA256 and exact placement/crop equality. No resizing, visual-similarity inference or unviewed sheets qualify."
+  },
+  "preservation": {
+    "precedingPins": 230,
+    "olderMacroAssetsFrozenPlans": 152,
+    "allExact": true,
+    "frozenIdentityAndOrderedDeps": true,
+    "syllabusOnlyChapter6RefsPic": true
+  },
+  "allOwnedBrowsersAndServersClosed": true,
+  "sourceStops": "All inherited stops remain binding. Exact source reading/empirical exclusions and restart limitations are in the source ledger/model report.",
+  "latestCompleteGlobalCheckpoint": "ff692f721d8d6930c7ee1cd4938b85ea06249067; MICRO12/MACRO6 reading/global integration follows this author chapter checkpoint.",
+  "logs": {
+    "focused-spacing": {
+      "path": "/workspace/scratch/wave6-macro-research/focused-spacing.log",
+      "sha256": "438ea97d8a876a050d78adf24757da75c3bfcfbd20c1994553ba17b52e7536d1"
+    },
+    "build-spacing": {
+      "path": "/workspace/scratch/wave6-macro-research/build-spacing.log",
+      "sha256": "5f311993846c50bcb23bb78bd75031e9ae6eabaaeba098c6a55e6d83c7228246"
+    },
+    "static-spacing": {
+      "path": "/workspace/scratch/wave6-macro-research/static-spacing.log",
+      "sha256": "78545e7a59e0edeebc42342f90cdd34d5b3145eb4f35b78f04f80d14d796db7f"
+    },
+    "production-spacing-light": {
+      "path": "/workspace/scratch/wave6-macro-research/production-spacing-light.log",
+      "sha256": "2d82ecaa764472fa85f1860999abd3d6fc0f57e99087c2d6a08b3f88644b8d1f"
+    },
+    "production-spacing-dark": {
+      "path": "/workspace/scratch/wave6-macro-research/production-spacing-dark.log",
+      "sha256": "f0583b3745fc4be08a8990234c0b7215920726bb3b5bb9ae7d951588a1295193"
+    }
+  },
+  "developmentFailures": [
+    "Initial default/rich outer-bounds audit passed, but personal review found a clipped UIP state label, clipped sector note and crowded spending labels. Labels were separated/shortened and the harness now audits the inner scientific clip.",
+    "A critical exchange-rate endpoint marker clipped during strong appreciation. Actual plot margins were enlarged.",
+    "Literal Chromium/Node complete model equality rejected an8.88e-16 Math.log difference. The harness applies the already declared8e-12 log and3e-13 physical gates; exact intended state, sign/range, signed zero and same-browser Share readouts stay strict.",
+    "Strong small-open-economy appreciation put the selected marker outside a linear q domain. The plot now uses a positive explicitly labelled logarithmic q axis and native axis/marker assertions.",
+    "The first complete content test looked for scope wording in the wrong field. That brittle wording assertion was removed; frozen identity/source and complete-content assertions remain.",
+    "Final pixel review found missing spaces in sample text and source attributions. Copy and syllabus mirrors were corrected, all28native layouts/all88modes/all28rich layouts rerun, and changed pixels personally reviewed again.",
+    "One production dark invocation used an unsupported --theme=dark flag and actually repeated light. It is not dark evidence. Correct --dark runs passed before and after the final copy repair.",
+    "A six-column default gallery was returned resized by the image tool. Those sheets were excluded from qualification; every complete widget was inspected again in five-column original-pixel sheets."
+  ],
+  "next": "Integrate exactly16MICRO12+7MACRO6 reading entries, preserve8541earlier projections/76aliases, run the full exact-export suite and272productionroutes/theme, then continue FIN7. Never stop at this chapter, commit or wave."
+}

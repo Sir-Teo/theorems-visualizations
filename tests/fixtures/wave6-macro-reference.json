@@ -25921,58 +25921,58 @@
           "aboveRange": false
         },
         "lowForeignPayoff": {
-          "value": 0.8,
+          "value": 1.0,
           "sign": 1,
-          "logMagnitude": -0.22314355131420976,
+          "logMagnitude": 0.0,
           "belowRange": false,
           "aboveRange": false
         },
         "highForeignPayoff": {
-          "value": 1.2,
+          "value": 1.0,
           "sign": 1,
-          "logMagnitude": 0.18232155679395465,
+          "logMagnitude": 0.0,
           "belowRange": false,
           "aboveRange": false
         },
         "lowExcessPayoff": {
-          "value": -0.2,
-          "sign": -1,
-          "logMagnitude": -1.6094379124341003,
+          "value": 0.0,
+          "sign": 0,
+          "logMagnitude": null,
           "belowRange": false,
           "aboveRange": false
         },
         "highExcessPayoff": {
-          "value": 0.2,
-          "sign": 1,
-          "logMagnitude": -1.6094379124341003,
+          "value": 0.0,
+          "sign": 0,
+          "logMagnitude": null,
           "belowRange": false,
           "aboveRange": false
         },
         "payoffStandardDeviation": {
-          "value": 0.2,
-          "sign": 1,
-          "logMagnitude": -1.6094379124341003,
+          "value": 0.0,
+          "sign": 0,
+          "logMagnitude": null,
           "belowRange": false,
           "aboveRange": false
         },
         "payoffVariance": {
-          "value": 0.04000000000000001,
-          "sign": 1,
-          "logMagnitude": -3.2188758248682006,
+          "value": 0.0,
+          "sign": 0,
+          "logMagnitude": null,
           "belowRange": false,
           "aboveRange": false
         },
         "jensenGap": {
-          "value": 0.020410997260127565,
-          "sign": 1,
-          "logMagnitude": -3.891681442005331,
+          "value": 0.0,
+          "sign": 0,
+          "logMagnitude": null,
           "belowRange": false,
           "aboveRange": false
         },
         "expectedLogDepreciation": {
-          "value": -0.020410997260127565,
-          "sign": -1,
-          "logMagnitude": -3.891681442005331,
+          "value": 0.0,
+          "sign": 0,
+          "logMagnitude": null,
           "belowRange": false,
           "aboveRange": false
         },

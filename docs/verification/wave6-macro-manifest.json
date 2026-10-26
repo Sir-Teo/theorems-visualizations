@@ -1,0 +1,33 @@
+{
+  "baseCommit": "e8359c6fcce3a66b176fc1cd934d4f566aad97b5",
+  "pureModelCheckpoint": "5cdc3f98d69eb34ce1c64ebde047b89406237f13",
+  "status": "7 lessons author-verified; availability849/1057; historical independent acceptance remains36; no publication",
+  "fileCount": 25,
+  "sha256": {
+    "content/macro/ch06.data.shared.js": "06d95424bde31becd95addbe8cf827351f42cc2ab094b94b78adfd13fad1f8a5",
+    "content/macro/ch06.exact.shared.js": "061a042de743211c0d63548b8b3570d7a444f8c924ff7f6cf1b4716a4201b982",
+    "content/macro/ch06.js": "cc4579337bef56a944a76be3334dc90f5bd598e53181d4808b49cee03c02e801",
+    "content/macro/ch06.shared.js": "a2d165ce5bddde0fe46cc5ec95d92eeb3e4f472dcb41d9e462773dcd6246a9d1",
+    "content/macro/ch06.viz.js": "7c07d09521467ef9e469e5d734e3905fd4b78087b77ec416f114f5a2ea8a0a07",
+    "content/macro/syllabus.js": "5d3f8b0c610f6051e910d1b3a388bd5c5320bb034851a88916c0d91cf0ef1735",
+    "docs/verification/wave6-macro-design.json": "05ac0ab89bb14b8e3fea1a804f4d7960fabc3a04805634b6c52bc1e6e4c7f683",
+    "docs/verification/wave6-macro-gates.json": "96c55c0e6e83208e90c9fa94ca49021f7b13456ea62f6b4dceae550e8c53d4a9",
+    "docs/verification/wave6-macro-model-receipt.json": "140f0612b09365cb14aed967dae3c307f293a06d25a3fee1f14bf9c5def68325",
+    "docs/verification/wave6-macro-native-receipt.json": "4c29aa1fcd6e08d6ae14ec2441e7a7cd4e35b70a610bf877fdafaab237d0d5f6",
+    "docs/verification/wave6-macro-preservation.json": "a3ce0a20dd3cb86fafda2dc588f6763eb6125ce2a773bc8c459bf7d1fcb252a8",
+    "docs/verification/wave6-macro-sources.json": "08ff61c060d76e35a41117c449ee6eccdf740ace2562c8f7a044be1ce239ce67",
+    "docs/verification/wave6-macro-visual-receipt.json": "fc51a234254b9d356118a1fe1db9f54bf5f9f39115c8c4344043af5ec472117e",
+    "docs/verification/wave6-macro.md": "67a8a06a360babf3a3dc5fd4b03e7cd7440d885be919b287ded16d109afa9b68",
+    "tests/fixtures/wave6-macro-price-source.json": "202cbc1ef6d9fc7be7399ad85a67fbd7574c974d914a9de58531ba447caab1a1",
+    "tests/fixtures/wave6-macro-reference.json": "9e61a43a4166669f3d8433b458ba16d0f3e88d3ced41cadcc70f02dc700d67de",
+    "tests/fixtures/wave6-macro-syllabus-before.json": "e77fc01e5e7ec4751db1d266aa03c3a39d0ece0b3a8e6516ae6b32e35cf85212",
+    "tests/wave6-macro-browser.mjs": "ecd5b69f9e547f71414baa36e8e298407be1af362907502cba17d9f41244b1d0",
+    "tests/wave6-macro-browser.shared.mjs": "4f1dd6a91cc8c3c33d742423eac73d2dbe72624daedb001bb0e617fa15498447",
+    "tests/wave6-macro-mode-coverage.mjs": "83ad85c3a7f3f49757ea3069ea4e27f974da96e792d128d30391a4c5f942b404",
+    "tests/wave6-macro-native-cases.mjs": "f7c7e28600e7668c9a4db8fafad4af16ac52baaa7319660bfde5e0037a20781d",
+    "tests/wave6-macro-native-science.mjs": "df46d613eb1aca8f65ebfb17a2421e30663b891e4f69d7ecd8872494b18b8f98",
+    "tests/wave6-macro-native.mjs": "493bfa1e293a9ca63b6cb35cb01b70b2bb743ab857110dfc2fda964b74b16d47",
+    "tests/wave6-macro-reference.py": "c0f949289ee7f040faad0bff46987420e22917bec51c50c6d4cbb99e8ba695e6",
+    "tests/wave6-macro.test.mjs": "1e025b2e6c3669437944244a949742c6069efbd4913e5d7d64ccf5aa7b8e91f5"
+  }
+}
