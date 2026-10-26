@@ -1,4 +1,4 @@
-// Aerospace Engineering — preserved inventory, chapter5 researched metadata.
+// Aerospace Engineering — preserved inventory, researched chapters5–6 metadata.
 export default {
   "collection": "aero",
   "chapters": [
@@ -597,9 +597,9 @@ export default {
             "ctrl-3.1"
           ],
           "refs": [
-            "Anderson ch. 7"
+            "J. P. How, MIT 16.333 (Fall 2004), lecture 2, pp.2–1–2–9"
           ],
-          "pic": "Plot pitching moment against angle of attack for the whole aircraft: a negative slope pushes the nose back after a gust, and moving the centre of gravity aft flattens the slope."
+          "pic": "Move the CG and apply a positive or negative gust angle. The lift arrows show increments at the wing and tail, while the selected point on the moment line gives their net pitching-moment increment. The elevator stays fixed during the disturbance."
         },
         {
           "num": "6.2",
@@ -609,9 +609,9 @@ export default {
             "aero-6.1"
           ],
           "refs": [
-            "Anderson ch. 7"
+            "J. P. How, MIT 16.333 (Fall 2004), lecture 2, pp.2–7–2–9"
           ],
-          "pic": "Slide the centre of gravity along the fuselage: the static margin to the neutral point is displayed, and the trimmed aircraft becomes unstable when the centre of gravity passes it."
+          "pic": "Slide the CG through the neutral point and change tail area. The enlarged chord ruler shows the signed CG-to-neutral-point separation; the companion graph measures the corresponding pitch stiffness on a fixed scale."
         },
         {
           "num": "6.3",
@@ -621,9 +621,9 @@ export default {
             "aero-6.1"
           ],
           "refs": [
-            "Anderson ch. 7"
+            "J. P. How, MIT 16.333 (Fall 2004), lecture 2, pp.2–10–2–12"
           ],
-          "pic": "Adjust tail incidence or elevator angle until the total pitching moment is zero at the desired lift coefficient; the trim point slides along the moment curve."
+          "pic": "Adjust angle of attack and elevator manually, then choose solved trim to satisfy both balances at once. Lift and moment residuals share the same controls. Try removing the tail: an absent control authority cannot be repaired by a large elevator number."
         },
         {
           "num": "6.4",
@@ -635,9 +635,9 @@ export default {
             "mech-3.6"
           ],
           "refs": [
-            "Anderson ch. 7"
+            "J. P. How, MIT 16.333 (Fall 2004), lecture 7, pp.6–7–6–10"
           ],
-          "pic": "Disturb an aircraft’s speed: it trades altitude and speed back and forth in a long, lightly damped oscillation whose period is close to Lanchester’s π√2 V/g."
+          "pic": "Give the aircraft an initial speed change and scrub time. Follow its computed height and flight-path angle while the two signed energy contributions exchange. Increase trim speed to lengthen the period; reduce lift-to-drag ratio to increase decay."
         },
         {
           "num": "6.5",
@@ -648,9 +648,9 @@ export default {
             "ctrl-3.3"
           ],
           "refs": [
-            "Anderson ch. 7"
+            "J. P. How, MIT 16.333 (Fall 2004), lecture 7, pp.6–4–6–6"
           ],
-          "pic": "Pulse the elevator: angle of attack and pitch rate respond in a fast, well-damped oscillation, and the linearised model’s eigenvalues are plotted beside the phugoid pair."
+          "pic": "Pulse the elevator, vary stiffness and damping, and compare angle of attack with pitch rate. The pole plane explains a fast oscillation or two decaying real motions. The aircraft’s pitch follows the integrated rate and its flow arrow follows the calculated flight-path angle."
         },
         {
           "num": "6.6",
@@ -660,9 +660,9 @@ export default {
             "aero-6.1"
           ],
           "refs": [
-            "Anderson ch. 7"
+            "J. P. How, MIT 16.333 (Fall 2004), lecture 8, pp.7–1–7–3, 7–6–7–7"
           ],
-          "pic": "Yaw an aircraft with a gust: the vertical fin produces a restoring moment like a weathervane, and shrinking the fin until the yawing-moment slope changes sign makes the aircraft diverge."
+          "pic": "Yaw the body relative to its velocity and resize the fin. In the top view, the fin force and its CG lever arm determine the restoring moment. The second panel shows where the fin contribution overtakes the opposing body contribution."
         },
         {
           "num": "6.7",
@@ -673,9 +673,9 @@ export default {
             "ctrl-3.3"
           ],
           "refs": [
-            "Anderson ch. 7"
+            "J. P. How, MIT 16.333 (Fall 2004), lecture 8, pp.7–1–7–8"
           ],
-          "pic": "Perturb the lateral motion: the eigenvalues of the lateral equations split into a fast roll mode, a slow spiral mode and an oscillatory Dutch roll, each animated on a model aircraft."
+          "pic": "Select roll subsidence, spiral or Dutch roll. The aircraft’s bank and yaw follow that mode’s calculated state, and the trace shows sideslip and bank angle on degree axes. Read the selected pole beside all four poles, then change dihedral or fin size."
         },
         {
           "num": "6.8",
@@ -685,9 +685,9 @@ export default {
             "aero-6.7"
           ],
           "refs": [
-            "Anderson ch. 7"
+            "J. P. How, MIT 16.333 (Fall 2004), lecture 8, pp.7–2, 7–6–7–8"
           ],
-          "pic": "Raise the wing dihedral: a sideslip now produces a restoring roll moment, which stabilises the spiral mode but makes the Dutch roll worse, shown by eigenvalues moving as dihedral changes."
+          "pic": "Raise the wing tips and give the aircraft a signed sideslip. Compare the two lift increments in the front view, then follow the spiral and Dutch-roll poles as dihedral changes. The selected poles stay on top of the complete locus."
         },
         {
           "num": "6.9",
@@ -698,9 +698,9 @@ export default {
             "ctrl-9.5"
           ],
           "refs": [
-            "Anderson ch. 7"
+            "J. P. How, MIT 16.333 (Fall 2004), lecture 9, pp.8–20–8–23, 8–26; local ideal pitch-model derivation"
           ],
-          "pic": "Move the centre of gravity behind the neutral point to cut trim drag: the bare airframe diverges, but a feedback controller on pitch rate places the closed-loop poles back in the stable region."
+          "pic": "Move the CG, compare bare airframe, rate-only feedback and combined attitude/rate feedback, and watch the actual pitch response. The pole plane and the two characteristic coefficients show which gain changes stiffness and which changes damping. The drag curve is an explicitly chosen load penalty."
         },
         {
           "num": "6.10",
@@ -711,9 +711,9 @@ export default {
             "ctrl-3.12"
           ],
           "refs": [
-            "Anderson ch. 7"
+            "Thelen, Stanford & Jacobson, Flutter and Stochastic Gust Constraint Studies of the Undeflected CRM using MPhys (NASA, 2024), pp.1–2, 5–6; separate two-coordinate circulatory teaching model"
           ],
-          "pic": "A wing section with bending and twisting springs sits in an airflow: as speed rises the two modes’ frequencies approach, merge, and a growing oscillation sets in at the flutter speed."
+          "pic": "Increase the flow-speed parameter and compare the damped poles with the frequency branches. Scrub the computed bending/twist motion and its energy exchange. Try zero damping at V=16 to expose defective coalescence rather than interpreting imaginary poles as sufficient for bounded motion."
         },
         {
           "num": "6.11",
@@ -731,8 +731,10 @@ export default {
             "aero-2.2",
             "aero-6.1"
           ],
-          "refs": [],
-          "pic": "Fly the Wrights’ glider: twist the wing tips to restore lateral balance instead of shifting the pilot’s body, trim with the forward elevator, and compare the lift actually obtained in a measured wind with the lift promised by Lilienthal’s tables, as Wilbur reported."
+          "refs": [
+            "Wilbur Wright, Some Aeronautical Experiments (1901); hosted transcription of his revised 1902 Smithsonian Annual Report reprint"
+          ],
+          "pic": "Warp the two wing ends and move the forward control surface in a schematic biplane. Then inspect the lift-prediction worksheet: each correction uses a stated overestimate convention. The unmeasured interference factor is adjustable and explicitly illustrative; the roughly 100 lb observation remains a historical bound, not a fitted curve."
         }
       ]
     },

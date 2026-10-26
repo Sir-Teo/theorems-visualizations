@@ -1,0 +1,44 @@
+{
+  "status": "pure-model author checks pass; native and complete personal visual review remain open",
+  "referenceCases": 352,
+  "families": 9,
+  "focusedGroups": 17,
+  "affectedPriorGroups": 17,
+  "totalGroups": 34,
+  "precision": {
+    "cases": 352,
+    "ordinaryDigits": {
+      "algebra": 1000,
+      "dynamics": 90
+    },
+    "higherDigits": {
+      "algebra": 2000,
+      "dynamics": 180
+    },
+    "completeExpectedObjectsExact": true,
+    "differences": [],
+    "fixtureSHA256": "89633268c796c84df8fc8007dd9c14a8ad47fdf04b2e82e926c46ca5edd11fa0"
+  },
+  "comparisons": 15572,
+  "worstPhysicalRelativeOutsideSubnormal": 1.3924792104428472e-11,
+  "physicalRelativeGate": 3e-11,
+  "classification": "Exact retained quantity signs, range statuses and characteristic-coefficient stability are checked separately from approximate trajectories and poles.",
+  "logs": {
+    "focusedPrior": "/tmp/wave6-aero-freeze-focused.log"
+  },
+  "sourceHashes": {
+    "content/aero/ch06.shared.js": "330fdaf5bbed698940847e8c3dea588ebfe6390d686424106831934697752a06",
+    "content/aero/ch06.exact.shared.js": "d7b620543a053c1282e31826ab8adbc082d27ac258fe0cb5b7f1f85b00c46858",
+    "tests/wave6-aero-reference.py": "ca12b037120f8dea90b0617ea18fb0b1018e050f7f0d8bec08b9fc3fca19a435",
+    "tests/fixtures/wave6-aero-reference.json": "89633268c796c84df8fc8007dd9c14a8ad47fdf04b2e82e926c46ca5edd11fa0"
+  },
+  "oracleFinding": "A generic mpmath eigenvalue solve perturbed analytically exact half-trace real parts at binary64 halfway rounding points. The independent quadratic reference now enforces its exact trace symmetry; no epsilon snaps roots or statuses. All352 complete expected objects match at1000/90 and2000/180 digits.",
+  "nativeStatus": "Incomplete prototypes only. Fresh whole-source full44-layout matrix, actual control/share checks, mode checks, complete rich/default screenshots and personal critical-state review are still required.",
+  "canonicalRegeneration": "byte-identical",
+  "preservation": {
+    "pins": 203,
+    "allExact": true,
+    "proofLog": "/tmp/wave6-aero-freeze-preservation.log",
+    "syllabus": "Only chapter6 refs/pic changed; all other fields exact"
+  }
+}

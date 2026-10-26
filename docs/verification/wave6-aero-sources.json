@@ -1,0 +1,317 @@
+{
+  "status": "research and draft; author/native/personal visual gates still open; no AERO availability count",
+  "sources": [
+    {
+      "name": "MIT16.333 lecture2",
+      "requestedURL": "https://ocw.mit.edu/courses/16-333-aircraft-stability-and-control-fall-2004/99dac83da0ad7eb8906ebac40e9e6ae1_lecture_2.pdf",
+      "finalURL": "https://ocw.mit.edu/courses/16-333-aircraft-stability-and-control-fall-2004/99dac83da0ad7eb8906ebac40e9e6ae1_lecture_2.pdf",
+      "status": 200,
+      "bytes": 268572,
+      "sha256": "6312f56d9bae8d892117aa559f624f610c2b85dbf31e6e2ea710eb2f13cbf02f",
+      "path": "/tmp/wave6-aero-research/sources/mit-lecture-2.pdf",
+      "accessStop": false,
+      "actualReading": {
+        "textPDFPages": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12,
+          13
+        ],
+        "personallyViewedPDFPages": [
+          5,
+          9,
+          10,
+          13
+        ],
+        "qualification": "Selected actual bodies only; downloading the PDF or reading the index does not verify other pages. Lecture6 was acquired but not read or used."
+      },
+      "textPages": 13,
+      "textCharacters": 14061,
+      "personallyViewedRenders": [
+        {
+          "pdfPage": 5,
+          "sha256": "b222b82e44ac3941b32fd814808816c22e5c94d2bb3c0ea1941c4962ade2501c",
+          "path": "/tmp/wave6-aero-research/sources/renders/mit2-p5.png"
+        },
+        {
+          "pdfPage": 9,
+          "sha256": "2243505954067b96e31577d59d6061a5039c485652bdd5cd79c87293631315d8",
+          "path": "/tmp/wave6-aero-research/sources/renders/mit2-p9.png"
+        },
+        {
+          "pdfPage": 10,
+          "sha256": "305021b60a674a037555d330212dd692b5aca48755ce176ebe96893c5a1aa055",
+          "path": "/tmp/wave6-aero-research/sources/renders/mit2-p10.png"
+        },
+        {
+          "pdfPage": 13,
+          "sha256": "0f36523ffff01a36d8ff1ab5346f8c9266f9d00046f8179bb12845ed8347e4a7",
+          "path": "/tmp/wave6-aero-research/sources/renders/mit2-p13.png"
+        }
+      ]
+    },
+    {
+      "name": "MIT16.333 lecture6",
+      "requestedURL": "https://ocw.mit.edu/courses/16-333-aircraft-stability-and-control-fall-2004/28b7f94207968c91ade88155ea9c5b00_lecture_6.pdf",
+      "finalURL": "https://ocw.mit.edu/courses/16-333-aircraft-stability-and-control-fall-2004/28b7f94207968c91ade88155ea9c5b00_lecture_6.pdf",
+      "status": 200,
+      "bytes": 662812,
+      "sha256": "d21cda99cbfc7a3b6222a1694745dcd3360e8dd4cf5731d346978420bb001c5b",
+      "path": "/tmp/wave6-aero-research/sources/mit-lecture-6.pdf",
+      "accessStop": false,
+      "actualReading": {
+        "textPDFPages": [],
+        "personallyViewedPDFPages": [],
+        "qualification": "Selected actual bodies only; downloading the PDF or reading the index does not verify other pages. Lecture6 was acquired but not read or used."
+      },
+      "textPages": 29,
+      "textCharacters": 63981
+    },
+    {
+      "name": "MIT16.333 lecture7",
+      "requestedURL": "https://ocw.mit.edu/courses/16-333-aircraft-stability-and-control-fall-2004/2aca82b5d1a5aacf39ceffcfe4e5b517_lecture_7.pdf",
+      "finalURL": "https://ocw.mit.edu/courses/16-333-aircraft-stability-and-control-fall-2004/2aca82b5d1a5aacf39ceffcfe4e5b517_lecture_7.pdf",
+      "status": 200,
+      "bytes": 495399,
+      "sha256": "52fb7d7429c83a9887199c002689c5861af75a79eac6f268581716fdd5ec1be6",
+      "path": "/tmp/wave6-aero-research/sources/mit-lecture-7.pdf",
+      "accessStop": false,
+      "actualReading": {
+        "textPDFPages": [
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          14,
+          15
+        ],
+        "personallyViewedPDFPages": [
+          6,
+          10,
+          11
+        ],
+        "qualification": "Selected actual bodies only; downloading the PDF or reading the index does not verify other pages. Lecture6 was acquired but not read or used."
+      },
+      "textPages": 15,
+      "textCharacters": 41063,
+      "personallyViewedRenders": [
+        {
+          "pdfPage": 6,
+          "sha256": "6bf6c385dd1a77bef5816878500f3a3c4a7ad3d50aeccf69f7b0447bbff63537",
+          "path": "/tmp/wave6-aero-research/sources/renders/mit7-p6.png"
+        },
+        {
+          "pdfPage": 10,
+          "sha256": "11bcfbd397e4fb25fca8a8930e82ab321dea79143710ea777b97032f4e9c8881",
+          "path": "/tmp/wave6-aero-research/sources/renders/mit7-p10.png"
+        },
+        {
+          "pdfPage": 11,
+          "sha256": "43390cf3f7055beba2f5c4e426506eb46054ea5896c33f763a1ebcefaca417a1",
+          "path": "/tmp/wave6-aero-research/sources/renders/mit7-p11.png"
+        }
+      ]
+    },
+    {
+      "name": "MIT16.333 lecture8",
+      "requestedURL": "https://ocw.mit.edu/courses/16-333-aircraft-stability-and-control-fall-2004/cd0b5972e3e365a692ca1de99d30bcb8_lecture_8.pdf",
+      "finalURL": "https://ocw.mit.edu/courses/16-333-aircraft-stability-and-control-fall-2004/cd0b5972e3e365a692ca1de99d30bcb8_lecture_8.pdf",
+      "status": 200,
+      "bytes": 904755,
+      "sha256": "2c29f24bcc6e00c36e8106d1f30c468e613a571acd7b96115a8396c930703d74",
+      "path": "/tmp/wave6-aero-research/sources/mit-lecture-8.pdf",
+      "accessStop": false,
+      "actualReading": {
+        "textPDFPages": [
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          12,
+          13
+        ],
+        "personallyViewedPDFPages": [
+          2,
+          7,
+          8
+        ],
+        "qualification": "Selected actual bodies only; downloading the PDF or reading the index does not verify other pages. Lecture6 was acquired but not read or used."
+      },
+      "textPages": 13,
+      "textCharacters": 38824,
+      "personallyViewedRenders": [
+        {
+          "pdfPage": 2,
+          "sha256": "f219b92c188a334e7d89c56efb15dc5a0e5b7d5cb2ff5e707f6a939dd037584e",
+          "path": "/tmp/wave6-aero-research/sources/renders/mit8-p2.png"
+        },
+        {
+          "pdfPage": 7,
+          "sha256": "56e136d9c5b527cefa5d4bc03e53426bb205fe58a0c78a376fca418dfd4285ca",
+          "path": "/tmp/wave6-aero-research/sources/renders/mit8-p7.png"
+        },
+        {
+          "pdfPage": 8,
+          "sha256": "af4fcaf857b37bde8c5016e60dab9498d2023226d7ddb86c393e0f955ffeaccd",
+          "path": "/tmp/wave6-aero-research/sources/renders/mit8-p8.png"
+        }
+      ]
+    },
+    {
+      "name": "MIT16.333 lecture9",
+      "requestedURL": "https://ocw.mit.edu/courses/16-333-aircraft-stability-and-control-fall-2004/c66c985646924af57b2f78b0ebf56d68_lecture_9.pdf",
+      "finalURL": "https://ocw.mit.edu/courses/16-333-aircraft-stability-and-control-fall-2004/c66c985646924af57b2f78b0ebf56d68_lecture_9.pdf",
+      "status": 200,
+      "bytes": 607375,
+      "sha256": "6e1fba66654b91ef371b7abd89277741517b0f08e357b45693c164b2b561b905",
+      "path": "/tmp/wave6-aero-research/sources/mit-lecture-9.pdf",
+      "accessStop": false,
+      "actualReading": {
+        "textPDFPages": [
+          2,
+          5,
+          21,
+          22,
+          23,
+          24,
+          27
+        ],
+        "personallyViewedPDFPages": [
+          24
+        ],
+        "qualification": "Selected actual bodies only; downloading the PDF or reading the index does not verify other pages. Lecture6 was acquired but not read or used."
+      },
+      "textPages": 33,
+      "textCharacters": 52713,
+      "personallyViewedRenders": [
+        {
+          "pdfPage": 24,
+          "sha256": "f58b642f68b93994d0a77a34bac33e37e2dab5efab324f1f4eb32240f9303f4a",
+          "path": "/tmp/wave6-aero-research/sources/renders/mit9-p24.png"
+        }
+      ]
+    },
+    {
+      "url": "https://invention.psychology.msstate.edu/i/Wrights/library/Aeronautical.html",
+      "status": 200,
+      "bytes": 49499,
+      "sha256": "cbeba07a90b9857dd49a2aad584ff20e237fea527a55bcb9583738c84cc38a29",
+      "actualReading": "All 47,826 visible-text characters: Chanute introduction, complete Wilbur Wright body, footnote and editorial edition note. Four original linked source images personally viewed.",
+      "editionQualification": "Hosted transcription of Wright’s author-revised 1902 Smithsonian Annual Report reprint of the 1901 address. Frozen Paper metadata remains1901. This is not an original1901 facsimile.",
+      "images": [
+        {
+          "url": "https://invention.psychology.msstate.edu/i/Wrights/gliders/1A12.jpeg",
+          "status": 200,
+          "sha256": "019bdfe7553338ba7de1d90437dd273938b9cd5554f0b14ad76fcd9615970486",
+          "bytes": 28312,
+          "path": "/tmp/wave6-aero-research/sources/1A12.jpeg",
+          "accessStop": false,
+          "visualReading": "personally viewed original JPEG"
+        },
+        {
+          "url": "https://invention.psychology.msstate.edu/i/Wrights/gliders/1A14.jpeg",
+          "status": 200,
+          "sha256": "5769356f4fc94e76ea85f8414bd47c2dfd65c49b11d66a64c45fb1d48c1b3513",
+          "bytes": 66655,
+          "path": "/tmp/wave6-aero-research/sources/1A14.jpeg",
+          "accessStop": false,
+          "visualReading": "personally viewed original JPEG"
+        },
+        {
+          "url": "https://invention.psychology.msstate.edu/i/Wrights/drawings/Wr_Recent1.gif",
+          "status": 200,
+          "sha256": "5e938c084dbdd062a43a9128cc682bb5e09b5358976eb167fad40b628c131cdb",
+          "bytes": 2047,
+          "path": "/tmp/wave6-aero-research/sources/Wr_Recent1.gif",
+          "accessStop": false,
+          "visualReading": "personally viewed faithful white-background PNG composite of the original linked GIF; original bytes preserved"
+        },
+        {
+          "url": "https://invention.psychology.msstate.edu/i/Wrights/drawings/Wr_Recent2.gif",
+          "status": 200,
+          "sha256": "25f014c01e21ad0830d849f3a3c85ab019d16ae9d860f8f8ecdaade6984cd8c3",
+          "bytes": 1450,
+          "path": "/tmp/wave6-aero-research/sources/Wr_Recent2.gif",
+          "accessStop": false,
+          "visualReading": "personally viewed faithful white-background PNG composite of the original linked GIF; original bytes preserved"
+        }
+      ],
+      "uses": "Biplane/forward-control arrangement; wing-warp control; unexpected CP travel and reduced camber; rounded1901 lift expectation/unsupported empty-weight comparison; stated approximate error estimates."
+    },
+    {
+      "url": "https://ntrs.nasa.gov/api/citations/20230016631/downloads/gust_constraints_scitech_2024-2023nov21.pdf",
+      "status": 200,
+      "bytes": 6408722,
+      "sha256": "b6f1daa288ffc81e963d7cf99480cbc2354cd2b8d272577cde9e7d5c552a0aa5",
+      "accessStop": false,
+      "actualReading": {
+        "textPDFPages": [
+          1,
+          2,
+          3,
+          5,
+          6,
+          7
+        ],
+        "personallyViewedPDFPages": [
+          6
+        ],
+        "qualification": "Generalized structural/aerodynamic equation and actual growth/frequency plots inspected. Other article pages and numerical results are not claimed read. The chapter uses its own circulatory teaching model, not NASA CRM coefficients."
+      }
+    }
+  ],
+  "mitIndex": {
+    "url": "https://ocw.mit.edu/courses/16-333-aircraft-stability-and-control-fall-2004/pages/lecture-notes/",
+    "status": 200,
+    "sha256": "b937010ddc4e066a5eca461245ca9b31e95c29578394c13188b46a7c24c756d5",
+    "actualReading": "Complete3126-character visible index; five original resource pages provided their direct PDF links."
+  },
+  "prerequisiteReading": {
+    "writtenCompleteBodies": [
+      "aero-2.2",
+      "aero-2.4",
+      "ctrl-3.1",
+      "ctrl-3.12",
+      "ctrl-3.3",
+      "ctrl-4.2",
+      "mech-3.6"
+    ],
+    "receipt": "/tmp/wave6-aero-research/written-prerequisites-read.json",
+    "laterUnwrittenNotClaimedRead": [
+      "ctrl-9.5",
+      "solid-7.9"
+    ],
+    "oldSignFinding": "AERO2.4 states xcp/c=.25−Cmac/CL but its separate moment-translation minus contradicts this identity. New AERO6 derives the plus sign in CG position explicitly, confirmed by MIT lecture2. Old prerequisite source is preserved; it is not silently used as a correct signed formula."
+  },
+  "scopeCorrections": [
+    "Static restoring slope does not prove dynamic attraction.",
+    "Tail arm changes with CG; neutral point uses the whole-aircraft lift slope.",
+    "Trim solves lift and moment together; zero authority and out-of-domain solutions are explicit.",
+    "A chosen dihedral/spiral/Dutch-roll tradeoff is family-specific.",
+    "Rate-only feedback cannot stabilize positive bare pitch stiffness in the chosen attitude model; combined attitude/rate feedback is shown.",
+    "With positive damping, stiffness-frequency coalescence precedes the flutter growth boundary in the chosen circulatory model. Exact undamped coalescence is defective.",
+    "Historical error percentages use explicit overestimate denominators. Unknown biplane interference is not fitted to make an exact historical reconstruction."
+  ],
+  "access": {
+    "newOriginalBodyStops": [],
+    "serviceFailure": "The available web-search service returned isError with no content. No source body was obtained through that service. NASA official search API and its directly linked original PDF returned200 normally.",
+    "commercialBodies": "Anderson Introduction to Flight chapter7 remains unread/unrequested; its frozen reference was replaced only in the current chapter by actually read public sources.",
+    "allInheritedStops": "Remain binding. No blocked original body or inaccessible figure was retrieved through alternate hosts, caches, reprints or mirrors. Inherited examples include IGNOU Unit16 PDF503; Sandia PHS/H2 Internal Error; Tester/MacKay403 and removed figure; prior CTRL original-body stops."
+  }
+}
