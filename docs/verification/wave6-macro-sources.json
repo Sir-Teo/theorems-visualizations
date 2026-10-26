@@ -1,0 +1,225 @@
+{
+  "status": "MACRO6 research and source reading only; no chapter availability promotion",
+  "availability": 842,
+  "historicalIndependentAcceptance": 36,
+  "writtenPrerequisites": [
+    {
+      "id": "fin-6.5",
+      "statement": "Let S be domestic money per foreign unit and F the same quote for delivery at T. With deterministic continuous domestic and foreign rates rd,rf and frictionless conversion, borrowing, lending and a deliverable forward, covered interest parity is\n$$F=S e^{(r_d-r_f)T}.$$\nStarting from one domestic unit, the home route pays exp(rdT), while conversion, foreign investment and forward sale pay F exp(rfT)/S.",
+      "idea": "The two routes have identical certain domestic cash flow only at the stated F. If the foreign-covered route pays more, borrow domestically, convert, invest abroad and sell its terminal proceeds forward; reverse the trades when it pays less. The cancellation removes exchange risk, but not costs or constraints omitted from the frictionless hypotheses. Observed cross-currency bases need not be executable riskless profits once balance-sheet, credit and funding restrictions matter.",
+      "scope": "One maturity, continuous deterministic rates, matched currencies, equal access to funding and exact cover. The BIS source's institutional explanation is qualitative here; its tables/graphs are not reconstructed. The authored basis is not a convention for quoting every market basis swap. Zero maturity has no accumulated basis discrepancy. No forecast or recommendation.",
+      "caption": "Compare both fully covered routes with the quote explicitly in domestic per foreign units. The basis control is an authored log-rate discrepancy, not an observed post-crisis time series.",
+      "deps": [
+        "fin-6.2"
+      ],
+      "refs": [
+        "BIS Borio\u2013McCauley\u2013McGuire\u2013Sushko (2016), Covered interest parity lost, BoxA and limits-to-arbitrage discussion; supplied continuous-rate derivation"
+      ]
+    },
+    {
+      "id": "macro-1.5",
+      "statement": "Let private saving be $S_p = Y - T - C$ (income after net taxes, not consumed) and public saving $S_g = T - G$ (the budget surplus). Then the expenditure identity $Y = C + I + G + NX$ (1.4) implies\n$$S_p + S_g \\;=\\; I + NX,$$\nnational saving equals domestic investment plus net exports, i.e. **net capital outflow** (net lending to the rest of the world). In a closed economy $S = I$. Consequently, with output given, a rise in the budget deficit $G - T$ must be matched by a rise in private saving, a fall in investment (\"crowding out\"), a fall in net exports (a current-account deficit \u2014 the \"twin deficits\"), or some mix of these; the identity alone does not say which.",
+      "idea": "Write output twice: as spending, $Y = C + I + G + NX$, and as the uses of income, $Y = C + T + S_p$. Both start with the same $C$, so the rests are equal: $I + G + NX = T + S_p$; moving $G$ across gives $S_p + (T - G) = I + NX$. It is an identity, not a theory of interest rates or exchange rates; which term adjusts depends on behaviour \u2014 the loanable-funds market (2.3) and the open-economy model decide that. The United States in the 1980s and 2000s had budget and trade deficits together, but in the late 1990s a budget surplus coexisted with a trade deficit, so \"twin\" is a tendency, not a law.",
+      "caption": "Left: output drawn as spending (top bar) and as the uses of income (second bar); cancel the common $C$ and swap $G$ for $T$ to get the two lower bars, which always end at the same point. Raise government purchases (taxes fixed) and choose **what gives**: investment, net exports, consumption (so that private saving rises), or a mix. Right: every term against $G$ for that choice. Switch on **nothing gives** to break the identity: the bars no longer match, which is impossible when output is fixed.",
+      "deps": [
+        "macro-1.4"
+      ],
+      "refs": [
+        "Mankiw ch. 3",
+        "Mankiw ch. 6"
+      ],
+      "links": {
+        "wikipedia": "https://en.wikipedia.org/wiki/Twin_deficits_hypothesis"
+      }
+    },
+    {
+      "id": "macro-2.3",
+      "statement": "In the long run output $Y$ is fixed by the factors of production, and the real interest rate $r$ adjusts to equate **national saving** $S(r)=Y-C-G$ \u2014 the supply of loanable funds \u2014 with **investment demand** $I(r)$, which falls as $r$ rises because fewer projects pay their cost of capital. In equilibrium\n$$S(r^*)=I(r^*),$$\nand comparative statics follow: a rise in government purchases $G$ (financed by borrowing, with taxes unchanged) lowers national saving, shifts the supply curve left, raises $r^*$ and **crowds out** investment by exactly the fall in $I$ along the demand curve; a rise in investment demand (a tax credit, better prospects) raises $r^*$ and, if saving responds to the interest rate, also raises $S$.\n\nScope: closed economy, output at its full-employment level, one real interest rate. In a small open economy $r$ is the world rate, and $S-I$ is net capital outflow instead.",
+      "idea": "This is the accounting identity $S=I$ (macro-1.5) turned into a market. A deficit means the government is a bigger borrower at every rate, so the interest rate must rise until private borrowers withdraw by the amount the government took. How much the rate has to rise depends on the slopes: steep investment demand means a large rate rise for a given crowding out; interest-sensitive saving means part of the burden is met by more saving rather than less investment. Opening the economy replaces the clearing rate by $r^*_{\\text{world}}$ and the crowding out by an inflow of foreign saving (macro-1.5, twin deficits).",
+      "caption": "Drag the sliders for **government purchases** $\\Delta G$ (percent of GDP), an **investment-demand shift** and the **interest-sensitivity of saving**. Dashed lines are the starting equilibrium; the hatched strip is crowding out $=I_0-I$. Switch to **open economy** and the interest rate is pinned at the world rate: the shortfall of saving is met by capital inflow, and domestic investment does not change.",
+      "deps": [
+        "macro-1.5"
+      ],
+      "refs": [
+        "Mankiw ch. 3"
+      ]
+    }
+  ],
+  "sources": [
+    {
+      "name": "rba-bop",
+      "requestedURL": "https://www.rba.gov.au/education/resources/explainers/the-balance-of-payments.html",
+      "actualReading": "Complete306 extracted visible-text lines read; both linked original JPEG diagrams personally viewed. Simplified RBA financial-flow sign is inflow-positive; product declares assets-acquired-minus-liabilities convention instead.",
+      "status": 200,
+      "url": "https://www.rba.gov.au/education/resources/explainers/the-balance-of-payments.html",
+      "bytes": 47336,
+      "sha256": "e4638d4891878b39a9e53038db2543a9cff404a1e4573edd6d93e2a210868a0d",
+      "contentType": "text/html; charset=UTF-8"
+    },
+    {
+      "name": "rba-fx",
+      "requestedURL": "https://www.rba.gov.au/education/resources/explainers/exchange-rates-and-their-measurement.html",
+      "actualReading": "Complete140 extracted visible-text lines read; original Australian-dollar SVG personally viewed through a browser render. Graph uses USD per AUD and a dated TWI; it is not copied/calibrated into product.",
+      "status": 200,
+      "url": "https://www.rba.gov.au/education/resources/explainers/exchange-rates-and-their-measurement.html",
+      "bytes": 33799,
+      "sha256": "b0d6066d1565381e430219472e122f1100f2e1b22547556751890e33dad2bfd9",
+      "contentType": "text/html; charset=UTF-8"
+    },
+    {
+      "name": "frbsf-carry",
+      "requestedURL": "https://www.frbsf.org/research-and-insights/publications/economic-letter/2006/11/interest-rates-carry-trades-and-exchange-rate-movements/",
+      "actualReading": "Complete44 extracted visible-text lines including actual body and references read. Dated2006 secondary account; cited Burnside/Galati/McGuire originals not read. No empirical regression or portfolio reconstruction.",
+      "status": 200,
+      "url": "https://www.frbsf.org/research-and-insights/publications/economic-letter/2006/11/interest-rates-carry-trades-and-exchange-rate-movements/",
+      "bytes": 129929,
+      "sha256": "a74975acfd1ba226ae09d6352f8fd7c38a221bf195de17cc43835fdb69bf9cdb",
+      "contentType": "text/html; charset=UTF-8"
+    },
+    {
+      "name": "big-mac-readme",
+      "requestedURL": "https://raw.githubusercontent.com/TheEconomist/big-mac-data/master/README.md",
+      "actualReading": "Complete9220-byte README read including methodology, codebook and licence. No installation commands executed. GDP_dollar codebook differs from actual GDP_bigmac; GDP field excluded.",
+      "status": 200,
+      "url": "https://raw.githubusercontent.com/TheEconomist/big-mac-data/master/README.md",
+      "bytes": 9220,
+      "sha256": "f7ff5ddb2e4878c00089586df4668c7120b38d0630424ce8482234873162f1c0",
+      "contentType": "text/plain; charset=utf-8"
+    },
+    {
+      "name": "big-mac-full",
+      "requestedURL": "https://raw.githubusercontent.com/TheEconomist/big-mac-data/master/output-data/big-mac-full-index.csv",
+      "actualReading": "All2056 records machine validated, not all personally read. All45 selected price-only records in five fixed countries across nine postJuly2022 dates personally read. No filling/interpolation/convergence fit.",
+      "status": 200,
+      "url": "https://raw.githubusercontent.com/TheEconomist/big-mac-data/master/output-data/big-mac-full-index.csv",
+      "bytes": 336855,
+      "sha256": "faf0bc0dd4e01b15d6c647c6229dbba0d992f073dc7bbbe9bd37a89d3cf85789",
+      "contentType": "text/plain; charset=utf-8"
+    },
+    {
+      "name": "cnb-balassa",
+      "requestedURL": "https://www.cnb.cz/en/monetary-policy/inflation-reports/boxes-and-annexes-contained-in-inflation-reports/The-Balassa-Samuelson-effect-00001",
+      "actualReading": "Complete9 extracted visible-text lines/body/equations read, Inflation ReportII/2002 attachment. Conditional historical scenario, not2026 estimate.",
+      "status": 200,
+      "url": "https://www.cnb.cz/en/monetary-policy/inflation-reports/boxes-and-annexes-contained-in-inflation-reports/The-Balassa-Samuelson-effect-00001",
+      "bytes": 61258,
+      "sha256": "99c7a3be3799a6d785c779764cd87951d29ae5e4383e7d40dfa111c7c54692b6",
+      "contentType": "text/html;charset=UTF-8"
+    }
+  ],
+  "figures": [
+    {
+      "requestedURL": "https://www.rba.gov.au/education/images/explainers/the-balance-of-payments-1.jpg",
+      "url": "https://www.rba.gov.au/education/images/explainers/the-balance-of-payments-1.jpg",
+      "status": 200,
+      "bytes": 30021,
+      "sha256": "2625b15c908fe1071d73dc8f7ee39bc7e1eba15a547920bb93726fef4a410c99",
+      "path": "/tmp/wave6-macro-research/sources/the-balance-of-payments-1.jpg",
+      "actualReading": "Complete original figure personally viewed; no product copying."
+    },
+    {
+      "requestedURL": "https://www.rba.gov.au/education/images/explainers/the-balance-of-payments-2.jpg",
+      "url": "https://www.rba.gov.au/education/images/explainers/the-balance-of-payments-2.jpg",
+      "status": 200,
+      "bytes": 23030,
+      "sha256": "10dc12b394a92850c33204f181190f5a91f2302fdf7fe91344196a4a7144d5e7",
+      "path": "/tmp/wave6-macro-research/sources/the-balance-of-payments-2.jpg",
+      "actualReading": "Complete original figure personally viewed; no product copying."
+    },
+    {
+      "requestedURL": "https://www.rba.gov.au/education/images/explainers/australian-dollar.svg",
+      "url": "https://www.rba.gov.au/education/images/explainers/australian-dollar.svg",
+      "status": 200,
+      "bytes": 364719,
+      "sha256": "196a2c7fd828d773d904b8828018d6269c38e47c9186aeebc0cb793880a545ff",
+      "path": "/tmp/wave6-macro-research/sources/australian-dollar.svg",
+      "actualReading": "Complete original figure personally viewed; no product copying."
+    }
+  ],
+  "SVGRender": {
+    "path": "/tmp/wave6-macro-research/sources/australian-dollar-render.png",
+    "sha256": "964bfc8804709058e6e48ebc30cf70475739c8aa050433163fe629dae2dd784a",
+    "scope": "Original SVG bytes loaded unchanged in Chromium; actual render personally viewed; browser closed exit0."
+  },
+  "priceSubset": {
+    "path": "/tmp/wave6-macro-research/sources/big-mac-selected.json",
+    "sha256": "202cbc1ef6d9fc7be7399ad85a67fbd7574c974d914a9de58531ba447caab1a1",
+    "records": 45,
+    "countries": [
+      "AUS",
+      "CHE",
+      "GBR",
+      "JPN",
+      "USA"
+    ],
+    "dates": [
+      "2022-07-01",
+      "2023-01-01",
+      "2023-07-01",
+      "2024-01-01",
+      "2024-07-01",
+      "2025-01-01",
+      "2025-07-01",
+      "2026-01-01",
+      "2026-07-01"
+    ],
+    "fields": [
+      "date",
+      "iso_a3",
+      "currency_code",
+      "name",
+      "local_price",
+      "dollar_ex",
+      "dollar_price",
+      "USD_raw"
+    ],
+    "actualReading": "Every one of the45 selected rows personally read.",
+    "licence": "Economist-generated data CC BY4.0; software MIT; licences exclude third-party content. Preserve attribution, exact source and subset; no copied article or source illustration.",
+    "scope": "Frozen illustrative price sample acquired2026-10-26; not a live feed, general CPI basket, nominal GDP data or definitive currency mispricing."
+  },
+  "validation": {
+    "rows": 2056,
+    "dateCount": 45,
+    "first": "2000-04-01",
+    "last": "2026-07-01",
+    "latestCount": 54,
+    "uniqueDateCountryCount": 2056,
+    "USAbenchmarkDates": 45,
+    "worstDollarPriceRelativeRoundingDifference": "4.65268456375841090921861627864673030742104142461936657474475E-15",
+    "worstUSDIndexAbsoluteRoundingDifference": "0.000004998777208510638297872340425531914893617021276595744681",
+    "invalid": [],
+    "post2022Dates": [
+      "2022-07-01",
+      "2023-01-01",
+      "2023-07-01",
+      "2024-01-01",
+      "2024-07-01",
+      "2025-01-01",
+      "2025-07-01",
+      "2026-01-01",
+      "2026-07-01"
+    ],
+    "missingPost2022ForSelectedCountries": {
+      "AUS": [],
+      "GBR": [],
+      "JPN": [],
+      "CHE": [],
+      "USA": []
+    },
+    "scope": "Price/index audit only. GDP_bigmac semantics unresolved; excluded from any nominal-GDP claim. No interpolation, filling or empirical convergence fit."
+  },
+  "accessStops": "No new acquisition failures. All inherited stops remain binding, including MICRO Coase full-text unavailability and Weitzman original-PDF timeout; no alternate original-body recovery.",
+  "unread": [
+    "Commercial Mankiw/Romer bodies",
+    "Original research cited by Cavallo2006",
+    "Economist R notebook/source generator code",
+    "All unselected CSV rows except the few previously inspected records"
+  ],
+  "resumption": {
+    "event": "Managed execution environment restarted after MICRO commit e8359c6f and MACRO source/model draft. Workspace files persisted; earlier /tmp research/pixels/logs did not.",
+    "sourceSubset": "tests/fixtures/wave6-macro-price-source.json",
+    "subsetRestoration": "Restored from the retained product data module; its complete JSON SHA256 equals the original personally read45-row source-subset hash. No new acquisition or original-body recovery.",
+    "researchDirectory": "/workspace/scratch/wave6-macro-research",
+    "priorMICROEvidence": "Complete committed source/model/native/personal receipts and hashes remain durable; original temporary PNG/log paths refer to the preceding environment."
+  }
+}

@@ -1,0 +1,47 @@
+{
+  "status": "Verified models; planned chapter-specific visuals not yet native/pixel verified",
+  "models": [
+    {
+      "lesson": "6.1",
+      "mechanism": "S-I=CA with primary/secondary income; CA+KA=FA in assets-minus-liabilities convention; stock change adds valuation separately.",
+      "visual": "A national-resource accounting bridge, matched cross-border payment flows and separate NIIP stock/valuation waterfall. Omitted-recording mode exposes a residual without rewriting the identity.",
+      "limits": "Explicit sign conversion from RBA inflow-positive convention; chosen recording omission is not a diagnosis of real statistical discrepancies."
+    },
+    {
+      "lesson": "6.2",
+      "mechanism": "S domestic per foreign; q=S P*/P. Exact original log-growth contributions and numerical basket paths.",
+      "visual": "Two labelled currency baskets with a conversion bridge, comparable price/real-rate paths and a signed decomposition of log real change.",
+      "limits": "Synthetic price/growth paths, no invented historical FX observations; index levels alone do not establish absolute PPP."
+    },
+    {
+      "lesson": "6.3",
+      "mechanism": "Same-date local price/market exchange conversion, US benchmark and implied burger parity rate.",
+      "visual": "Attributed observed price comparisons across five fixed countries; nine actual postJuly2022 observations per country with honest date spacing and no fitted convergence. Selected local/US basket conversion.",
+      "limits": "Raw burger-price deviation is not a full CPI real rate, definitive mispricing or a guaranteed return. July2022 methodology change is explicit. No GDP_bigmac/adjusted data."
+    },
+    {
+      "lesson": "6.4",
+      "mechanism": "Conditional expected domestic payoff equality, positive two-state spots, explicit expected-return wedge and Jensen correction.",
+      "visual": "Home/foreign investment routes with two terminal currency branches, expected versus realized payoffs and an arithmetic-mean/log-expectation comparison.",
+      "limits": "Preserve frozen Theorem kind but state risk-neutral expected-return assumptions; unlike covered parity, the realized payoff is risky."
+    },
+    {
+      "lesson": "6.5",
+      "mechanism": "Own normal/crash returns, probability-weighted mean/variance and independently computed fair crash probability; finite one-unit-notional cumulative payoff schedule.",
+      "visual": "Carry funding/target route, actual two-outcome risk/expectation curve and a labelled authored20-period cumulative payoff illustration.",
+      "limits": "Cavallo2006 reports historical puzzle evidence; no invented empirical regression. Illustration is not a random sample, compounded wealth, current forecast or recommendation."
+    },
+    {
+      "lesson": "6.6",
+      "mechanism": "Given world real rate fixes I=40-100r; S=50-dG; NX=S-I and q=exp(NX/eta).",
+      "visual": "Linked saving/investment funding gap and monotone net-export/real-rate intersection; fiscal-shift traces show investment fixed and exports changing.",
+      "limits": "Full-employment small economy, perfect capital mobility and specified NX closure; not a general short-run policy effect."
+    },
+    {
+      "lesson": "6.7",
+      "mechanism": "Labour-only traded/nontraded sectors: w=aT, PN=aT/aN, normalized Cobb-Douglas P=PN^(1-alpha), income=w/P and q=1/P.",
+      "visual": "Two-sector wage/price chain, a resource/expenditure check and a clearly hypothetical price-income locus that responds differently to aT versus aN.",
+      "limits": "Conditional productivity channel, not observed GDP regression or a universal causal income-price relationship; fixed foreign normalization and common wage stated."
+    }
+  ]
+}
