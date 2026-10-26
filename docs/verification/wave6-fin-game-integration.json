@@ -193,5 +193,27 @@
       "sha256": "2c319d27f44087619c5c2ac93800e2ec5369d0b321d39ad06c075a73788e36c2"
     }
   },
-  "next": "BEHAV7eight frozen lessons. Source/prerequisite/design preparation,638independent cases across11scratch families and8scratch teaching drafts exist; only visual lessons1\u20134are drafted. Complete product implementation/native/personal visual gates before any BEHAVavailability promotion. Do not stop."
+  "next": "BEHAV7eight frozen lessons. Source/prerequisite/design preparation,638independent cases across11scratch families and8scratch teaching drafts exist; only visual lessons1\u20134are drafted. Complete product implementation/native/personal visual gates before any BEHAVavailability promotion. Do not stop.",
+  "postRecordRootProof": {
+    "proof": {
+      "status": "PASS",
+      "root": "/workspace/theorems-visualizations",
+      "commit": "2cc915e4e5e08d043d8b67b9ac4f8875753071e5",
+      "readingIdeas": 8585,
+      "retainedEarlierProjections": 8564,
+      "aliases": 76,
+      "pinnedFiles": 410,
+      "unchangedBindingArrays": 4,
+      "snapshotDigest": "5b03e0163c816aeed36a13623b9f01a70ae53092badd86856e483fd6eb8884bf",
+      "dataDigest": "7418a573a75ab0fcac911850c7ca153c1dec642f5f4b913099a8d883a1166dee",
+      "sourceAssetsFrozenPlansExactExceptBoundPresentation": true,
+      "presentationFiles": [
+        "assets/js/app.js",
+        "assets/css/style.css"
+      ],
+      "cleanTrackedTree": true
+    },
+    "path": "/workspace/scratch/wave6-fin-game-integration/root-presentation-proof.json",
+    "sha256": "e88740c368f586bd41948bc18adf5c8d483d3bdc53f2c57a8ef7b2fc1fc69b94"
+  }
 }
