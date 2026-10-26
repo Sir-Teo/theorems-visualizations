@@ -1,0 +1,537 @@
+{
+  "status": "Provisional GAME6 source/own-derivation ledger; no complete chapter or availability promotion",
+  "baseCommit": "aa8f8b3d84b4a546f609a46d84736236102c8578",
+  "frozenChapter": {
+    "collection": "game",
+    "field": "econ",
+    "collectionTitle": "Game Theory & Social Choice",
+    "chapter": 6,
+    "title": "Evolution, learning and congestion",
+    "summary": "Evolutionary game theory replaces rational players with populations whose strategies spread according to payoff. An evolutionarily stable strategy resists invasion by rare mutants; under replicator dynamics such strategies are stable rest points and stable rest points are Nash equilibria, while Rock\u2013Paper\u2013Scissors cycles. In finite noisy populations, fixation probabilities and stochastic stability select among equilibria. Potential and congestion games always have pure equilibria reached by best-response dynamics, but selfish routing can be inefficient \u2014 Braess\u2019s paradox and the price of anarchy quantify how much.",
+    "syllabus": "content/game/syllabus.js",
+    "collectionSource": {
+      "type": "course",
+      "refs": [
+        "Osborne, An Introduction to Game Theory",
+        "Maschler, Solan & Zamir, Game Theory"
+      ]
+    },
+    "alreadyWritten": [],
+    "items": [
+      {
+        "id": "game-6.1",
+        "num": "6.1",
+        "kind": "Definition",
+        "name": "Evolutionarily stable strategy",
+        "deps": [
+          "game-2.1"
+        ],
+        "refs": [
+          "Osborne \u00a713.1",
+          "MSZ \u00a75.9"
+        ],
+        "pic": "Inject a small fraction of mutants playing another strategy into a population; the incumbent is stable if it earns more against the mix, checked for every mutant on a slider of invasion sizes."
+      },
+      {
+        "id": "game-6.2",
+        "num": "6.2",
+        "kind": "Model",
+        "name": "Hawk\u2013Dove game",
+        "deps": [
+          "game-6.1"
+        ],
+        "refs": [
+          "Osborne \u00a713.2"
+        ],
+        "pic": "Vary the value of the resource V and the cost of fighting C; the stable proportion of hawks V/C is computed and reached by a simulated population."
+      },
+      {
+        "id": "game-6.3",
+        "num": "6.3",
+        "kind": "Theorem",
+        "name": "ESS and Nash equilibrium",
+        "deps": [
+          "game-6.1",
+          "game-2.3"
+        ],
+        "refs": [
+          "MSZ \u00a75.9"
+        ],
+        "pic": "For random symmetric games, all symmetric equilibria are listed and tested for evolutionary stability: every ESS is an equilibrium, every strict equilibrium is an ESS, and some games have no ESS at all."
+      },
+      {
+        "id": "game-6.4",
+        "num": "6.4",
+        "kind": "Model",
+        "name": "Replicator dynamics",
+        "deps": [
+          "game-6.1"
+        ],
+        "refs": [
+          "MSZ \u00a75.9"
+        ],
+        "pic": "Strategy shares on the simplex flow in proportion to their payoff advantage; the vector field and trajectories are drawn for a chosen 3 \u00d7 3 game."
+      },
+      {
+        "id": "game-6.5",
+        "num": "6.5",
+        "kind": "Theorem",
+        "name": "ESS are asymptotically stable under the replicator dynamics",
+        "deps": [
+          "game-6.4",
+          "ode-5.9"
+        ],
+        "refs": [
+          "MSZ \u00a75.9"
+        ],
+        "pic": "The relative entropy from an ESS to the current state is plotted along trajectories; it decreases steadily, acting as a Lyapunov function, and fails to for non-ESS equilibria."
+      },
+      {
+        "id": "game-6.6",
+        "num": "6.6",
+        "kind": "Model",
+        "name": "Rock\u2013Paper\u2013Scissors cycles",
+        "deps": [
+          "game-6.4"
+        ],
+        "refs": [
+          "MSZ \u00a75.9"
+        ],
+        "pic": "Tune the win and loss payoffs of Rock\u2013Paper\u2013Scissors; replicator trajectories spiral inward, cycle on closed orbits or spiral out to the boundary, as for side-blotched lizards."
+      },
+      {
+        "id": "game-6.7",
+        "num": "6.7",
+        "kind": "Theorem",
+        "name": "Fixation probabilities in finite populations",
+        "deps": [
+          "game-6.1",
+          "popgen-2.5"
+        ],
+        "refs": [
+          "Osborne ch. 13"
+        ],
+        "pic": "Run a frequency-dependent Moran process for a 2 \u00d7 2 game in a population of N; the probability that one mutant takes over is compared with the neutral value 1/N to decide whether selection favours it."
+      },
+      {
+        "id": "game-6.8",
+        "num": "6.8",
+        "kind": "Theorem",
+        "name": "Stochastic stability selects the risk-dominant equilibrium",
+        "deps": [
+          "game-1.5",
+          "stoch-4.4"
+        ],
+        "refs": [
+          "Osborne ch. 13"
+        ],
+        "pic": "Players best-respond with rare mistakes in a Stag Hunt; the long-run time fractions concentrate on the risk-dominant convention as the mistake rate goes to 0, matching the stationary distribution of the perturbed chain."
+      },
+      {
+        "id": "game-6.9",
+        "num": "6.9",
+        "kind": "Theorem",
+        "name": "Potential games and best-response dynamics",
+        "deps": [
+          "game-1.3"
+        ],
+        "refs": [
+          "Osborne ch. 2"
+        ],
+        "pic": "For a game with an exact potential, each improving move raises the potential, drawn as a height map; best-response dynamics climb it and stop at a pure equilibrium."
+      },
+      {
+        "id": "game-6.10",
+        "num": "6.10",
+        "kind": "Theorem",
+        "name": "Rosenthal: congestion games have pure equilibria",
+        "deps": [
+          "game-6.9"
+        ],
+        "refs": [
+          "Osborne ch. 2"
+        ],
+        "pic": "Players choose routes whose costs depend on usage; Rosenthal\u2019s potential is computed and decreases with every selfish switch until no one can improve."
+      },
+      {
+        "id": "game-6.11",
+        "num": "6.11",
+        "kind": "Paradox",
+        "name": "Braess\u2019s paradox",
+        "deps": [
+          "game-6.10",
+          "algo-9.1"
+        ],
+        "refs": [
+          "Osborne ch. 2"
+        ],
+        "pic": "Add a zero-cost shortcut to a road network carrying selfish traffic; at the new Wardrop equilibrium everyone\u2019s travel time rises, and deleting the road restores the better outcome."
+      },
+      {
+        "id": "game-6.12",
+        "num": "6.12",
+        "kind": "Theorem",
+        "name": "Price of anarchy for selfish routing is 4/3",
+        "deps": [
+          "game-6.11"
+        ],
+        "refs": [
+          "Osborne ch. 2"
+        ],
+        "pic": "For networks with linear latencies, the cost of the selfish equilibrium is divided by the optimal cost; random instances never exceed 4/3, and Pigou\u2019s two-link example attains it."
+      }
+    ],
+    "prerequisites": {
+      "written": [
+        "algo-9.1",
+        "game-1.3",
+        "game-1.5",
+        "game-2.1",
+        "game-2.3",
+        "ode-5.9",
+        "popgen-2.5",
+        "stoch-4.4"
+      ],
+      "withinChapter": [
+        "game-6.1",
+        "game-6.10",
+        "game-6.11",
+        "game-6.4",
+        "game-6.9"
+      ],
+      "elsewhereInWave": [],
+      "later": [],
+      "unknown": []
+    }
+  },
+  "writtenPrerequisites": [
+    {
+      "file": "content/game/ch01.js",
+      "num": "1.3",
+      "kind": "Definition",
+      "name": "Nash equilibrium",
+      "credit": "John F. Nash, 1950",
+      "statement": "A **Nash equilibrium** of a strategic game is an action profile $a^*$ from which no player can gain by changing her own action while the others keep theirs:\n$$\\begin{gathered}u_i(a^*_i, a^*_{-i}) \\;\\ge\\; \\\\\n u_i(a_i, a^*_{-i})\\\\\n \\qquad\\text{for every player } i \\\\\n \\text{ and every action } a_i\\in A_i.\\end{gathered}$$\nEquivalently $a^*_i\\in B_i(a^*_{-i})$ for every $i$: each player's action is a best response to the others' \u2014 $a^*$ is a fixed point of the best-response correspondence $a\\mapsto B_1(a_{-1})\\times\\cdots\\times B_n(a_{-n})$. In a bimatrix the (pure) Nash equilibria are the cells in which both entries are best replies. A game may have no pure equilibrium (game-1.6), exactly one (game-1.4) or several (game-1.5).",
+      "idea": "The condition is stability against *unilateral* deviations and nothing more: it does not ask that the outcome be good for anyone (game-1.4), and it says nothing about how players get there. One reading is a steady state of players who have learned what others typically do and have no reason to change; another is a self-enforcing agreement \u2014 if everyone expects $a^*$, nobody wants to break it. Checking a cell takes one look down its column and one along its row. The arrows of profitable deviations form a directed graph on the cells whose sinks are exactly the equilibria. For two independent payoff arrays with independent identically distributed continuous entries in an $m$-by-$n$ game, each cell is a best reply for player 1 with probability $1/m$ and for player 2 with probability $1/n$, independently, so the expected number of pure equilibria is exactly $mn(1/m)(1/n)=1$. The chance of no pure equilibrium tends to $1/e$ when both m and n tend to infinity. Arbitrary dependent arrays, nonidentically distributed entries or ties need not satisfy these claims. Existence in general needs mixed strategies (game-2.3).\n\nFor the random-game calculation, take the two payoff arrays independently, with independent identically distributed continuous entries within each array. The indicator of each cell being a mutual best reply has mean $1/(mn)$; linearity of expectation (prob 1.6.1) then gives expected equilibrium count one without assuming that the cell indicators are independent. For the no-equilibrium probability, use the finite uniform space of column maxima for player 1 and row maxima for player 2. Only sets of cells in distinct rows and columns can all be equilibria. There are $\\binom mk\\binom nk k!$ such k-cell sets, each with joint probability $(mn)^{-k}$. Inclusion\u2013exclusion (comb 3.1), dividing finite event counts by the size of this uniform space, gives the alternating sum of these intersection probabilities. When both m and n grow, its kth term tends to $(-1)^k/k!$ and its absolute value is at most $1/k!$; summable tails give the limit $1/e$. These hypotheses exclude tied discrete-payoff tables and arbitrary dependent continuous arrays.",
+      "caption": "Every cell that is not an equilibrium sends an arrow: blue when player 1 gains by switching rows, orange when player 2 gains by switching columns (each to a best reply). Green cells have no outgoing arrow \u2014 they are the Nash equilibria. Pick a classic game, click a cell to inspect it and edit its payoffs, or draw a random game. Right: the number of pure equilibria in 4000 random $n\\times n$ games \u2014 the average is always 1, the share with none tends to $1/e$, and the gold bar is the game on the left.",
+      "deps": [
+        "game-1.2",
+        "prob-1.6.1",
+        "comb-3.1"
+      ],
+      "refs": [
+        "Osborne \u00a72.6",
+        "MSZ \u00a74.8"
+      ],
+      "tags": [
+        "Nash equilibrium"
+      ],
+      "links": {
+        "wikipedia": "https://en.wikipedia.org/wiki/Nash_equilibrium"
+      }
+    },
+    {
+      "file": "content/game/ch01.js",
+      "num": "1.5",
+      "kind": "Model",
+      "name": "Coordination games: Bach or Stravinsky and the Stag Hunt",
+      "credit": "Jean-Jacques Rousseau, 1755 (stag hunt); Luce & Raiffa, 1957; Harsanyi & Selten, 1988 (risk dominance)",
+      "statement": "In a **coordination game** both players gain from choosing matching actions, and there are two pure Nash equilibria. In the **Stag Hunt** each hunter either joins a stag hunt, which succeeds only if both join, or hunts hare alone; with payoffs $(\\text{Stag},\\text{Stag}) = (4,4)$, $(\\text{Stag},\\text{Hare}) = (0,3)$, $(\\text{Hare},\\text{Stag}) = (3,0)$, $(\\text{Hare},\\text{Hare}) = (3,3)$ both (Stag, Stag) and (Hare, Hare) are equilibria: the first is better for both (it is **payoff dominant**), the second is safer. In **Bach or Stravinsky** (the Battle of the Sexes) both want to attend the same concert but disagree on which; each of the two equilibria favours one player. In a $2\\times2$ game with equilibria $(r, c)$ and $(r', c')$, the first **risk-dominates** the second when the product of the players' losses from deviating alone is larger there:\n$$\\bigl[u_1(r,c) - u_1(r',c)\\bigr]\\bigl[u_2(r,c) - u_2(r,c')\\bigr] \\;>\\; \\bigl[u_1(r',c') - u_1(r,c')\\bigr]\\bigl[u_2(r',c') - u_2(r',c)\\bigr].$$",
+      "scope": "Nash equilibrium says which conventions are self-enforcing, not which one is played; that depends on expectations and history outside the model. The basins drawn here assume populations that adjust gradually towards best replies.",
+      "idea": "Equilibrium alone cannot choose between the two conventions; expectations do. A population picture makes this concrete: if a share $y$ of potential partners hunt stag, stag earns $4y$ and hare a sure 3, so stag is a best reply only when $y > 3/4$. If, round after round, some players switch to a best reply against the current mix on the other side, every starting mix flows to one of the two equilibria, and the shares at which each side is indifferent split the square of mixes into two **basins**. In symmetric games the risk-dominant equilibrium has the larger basin \u2014 here (Hare, Hare), although (Stag, Stag) pays more \u2014 which is why trust is fragile. In Bach or Stravinsky the basins are lopsided in a different way: each equilibrium is favoured by one side. The point where the basins meet is itself an equilibrium, in mixed strategies (game-2.2).",
+      "caption": "Pick a game, or click a cell and edit its payoffs. Right: a population of row players and one of column players; the horizontal axis is the share of row players choosing their first action, the vertical one the share of column players. Each round a tenth of each population switches to its best reply against the other side's current mix, so the gold path from the draggable start flows to an equilibrium corner. The background colours every start by where it ends up \u2014 the basins \u2014 divided at the indifference shares (dashed). In the Stag Hunt the hare basin is larger although stag pays more; raise the stag payoff and watch the basins trade places. Make the game a Prisoner's Dilemma and one basin swallows the square.",
+      "deps": [
+        "game-1.3"
+      ],
+      "refs": [
+        "Osborne \u00a72.3",
+        "Osborne \u00a72.5"
+      ],
+      "tags": [
+        "coordination",
+        "equilibrium selection"
+      ],
+      "links": {
+        "wikipedia": "https://en.wikipedia.org/wiki/Stag_hunt"
+      }
+    },
+    {
+      "file": "content/game/ch02.js",
+      "num": "2.1",
+      "kind": "Definition",
+      "name": "Mixed strategies and expected payoffs",
+      "credit": "von Neumann, 1928; von Neumann & Morgenstern, 1944",
+      "statement": "Let a finite strategic game have players $i$ with finite action sets $A_i$. A **mixed strategy** of player $i$ is a probability distribution $\\sigma_i$ on $A_i$, i.e. a vector $(\\sigma_i(a))_{a\\in A_i}$ with $\\sigma_i(a)\\ge 0$ and $\\sum_a\\sigma_i(a)=1$; the set of these is the simplex $\\Delta(A_i)$, and the pure strategies are its vertices. Players randomize **independently**, so the profile $\\sigma=(\\sigma_1,\\dots,\\sigma_n)$ induces the product distribution on action profiles, and player $i$'s **expected payoff** is\n$$U_i(\\sigma)=\\sum_{a\\in A}\\Bigl(\\prod_{j}\\sigma_j(a_j)\\Bigr)\\,u_i(a).$$\nThe payoffs $u_i$ are now meaningful **up to positive affine maps** $u_i\\mapsto\\alpha u_i+\\beta$, $\\alpha>0$ (they are von Neumann\u2013Morgenstern utilities, micro-13.2): the ranking of lotteries is unchanged by such a map, but a merely increasing transformation can reverse it. $U_i$ is linear in $\\sigma_i$ for fixed $\\sigma_{-i}$, so $U_i(\\sigma_i,\\sigma_{-i})=\\sum_a\\sigma_i(a)\\,U_i(a,\\sigma_{-i})$ is a weighted average of the pure-action payoffs.",
+      "idea": "A mixed strategy is the simplest way to let a player hide her choice: the opponents face a known distribution, not a known action. Independence is what makes the probability of a cell the *product* $p_iq_j$ \u2014 a picture of areas in the unit square \u2014 and what makes $U_i$ bilinear. Because the expectation is linear in one's own mixture, a mixture can never beat the best pure action it contains; this is the seed of the indifference principle (game-2.2). Interpreting the numbers $u_i$ as expected-utility payoffs is an extra assumption beyond the ordinal preferences of game-1.1, justified by the von Neumann\u2013Morgenstern axioms.\n\nWrite the realized payoff as the finite sum over profiles a of $u_i(a)\\prod_j I_{j,a_j}$, where $I_{j,a_j}$ indicates player j's sampled action. Linearity of expectation (prob 1.6.1) moves expectation inside that sum. Independent players' action indicators have factored product expectations by prob 2.1.13, giving exactly $\\prod_j\\sigma_j(a_j)$ and hence the displayed expected-payoff formula. Indicators for different actions of the same player are not independent; no such factorization is used. Holding the other mixtures fixed then leaves an affine, indeed linear, function of one's own probabilities.",
+      "caption": "Drag the gold point in the right panel, whose axes are $p$ (the row player's probability of the first row) and $q$ (the column player's probability of the first column). The left panel cuts the unit square into four rectangles of widths $q,1-q$ and heights $p,1-p$: the area of a rectangle is the probability of that cell, and the expected payoff is the area-weighted average of the payoffs printed in it. The right panel is the whole bilinear surface $U_1(p,q)$ or $U_2(p,q)$ as a heat map with level lines. Apply a transformation to player 1's payoffs: an affine one transforms $U_1$ the same way; the cubic one (increasing, not affine) can change which of two lotteries she prefers.",
+      "deps": [
+        "game-1.1",
+        "micro-13.2",
+        "prob-1.6.1",
+        "prob-2.1.13"
+      ],
+      "refs": [
+        "Osborne \u00a74.3",
+        "MSZ \u00a75.1"
+      ],
+      "tags": [
+        "mixed strategy",
+        "expected payoff"
+      ],
+      "links": {
+        "wikipedia": "https://en.wikipedia.org/wiki/Strategy_(game_theory)#Mixed_strategy"
+      }
+    },
+    {
+      "file": "content/game/ch02.js",
+      "num": "2.3",
+      "kind": "Theorem",
+      "name": "Nash\u2019s existence theorem",
+      "credit": "John F. Nash, Jr., 1950 (Kakutani proof); 1951 (Brouwer proof)",
+      "statement": "Every finite strategic game \u2014 finitely many players, each with finitely many actions, arbitrary payoffs \u2014 has at least one Nash equilibrium in mixed strategies. Equivalently, the product of simplices $\\Delta=\\prod_i\\Delta(A_i)$ contains a profile $\\sigma^*$ such that $U_i(\\sigma^*)\\ge U_i(\\tau_i,\\sigma^*_{-i})$ for every player $i$ and every mixed $\\tau_i$. Nash's second proof defines the continuous map $f:\\Delta\\to\\Delta$,\n$$\\begin{gathered}f(\\sigma)_{i}(a)=\\frac{\\sigma_i(a)+g_i^a(\\sigma)}{1+\\sum_{b}g_i^b(\\sigma)},\\\\\n \\qquad g_i^a(\\sigma)=\\max\\bigl\\{0,\\;\\\\\n U_i(a,\\sigma_{-i})-U_i(\\sigma)\\bigr\\},\\end{gathered}$$\nwhose fixed points are exactly the equilibria; Brouwer's theorem gives a fixed point. Existence is all that is asserted: the equilibrium need not be unique, and iterating $f$ need not converge to it.",
+      "idea": "The gain $g_i^a$ measures how much better the pure action $a$ is than the player's current mixture; $f$ shifts weight toward actions that do better. A profile is fixed by $f$ iff all gains vanish: if some gain were positive, linearity of $U_i$ (game-2.1) still makes the mixture's payoff the weighted average of its pure-action payoffs. Some supported action must therefore have payoff no greater than that average, and hence zero gain. Its positive weight is divided by a denominator greater than one, so it strictly decreases and the profile is not fixed. Thus a fixed point has no profitable deviation (game-2.2). The map is continuous (gains are continuous) and $\\Delta$ is compact and convex, so Brouwer (top-13.11, and its set-valued cousin in game-2.4) applies. Mixing is what supplies the convex, compact $\\Delta$: with pure strategies only, Matching Pennies has no fixed point (game-1.6).",
+      "caption": "Each triangle is a simplex of mixed strategies of a $3\\times3$ game (corners are pure actions): row player on the left, column player on the right. Drag the two gold starting points; the slider runs $n$ steps of Nash's map and draws the orbit. Green rings are all equilibria, found independently by solving every support. Whenever the orbit settles, it is on a green ring, and the regret curve (log scale) falls to zero. Not every game obliges \u2014 try the Rock\u2013Paper\u2013Scissors-type game and the *best-reply jump* map, which cycles forever.",
+      "deps": [
+        "game-2.2",
+        "top-13.11"
+      ],
+      "refs": [
+        "MSZ \u00a75.3"
+      ],
+      "tags": [
+        "existence",
+        "fixed point"
+      ],
+      "links": {
+        "wikipedia": "https://en.wikipedia.org/wiki/Nash_equilibrium#Proof_of_existence"
+      }
+    },
+    {
+      "file": "content/ode/ch05-b.js",
+      "num": "5.9",
+      "kind": "Theorem",
+      "name": "Lyapunov\u2019s stability theorem",
+      "statement": "Let f be locally Lipschitz near an equilibrium p and V be continuously differentiable there, positive definite relative to p. If $\\nabla V\\cdot f\\le0$, then p is stable. If $\\nabla V\\cdot f<0$ off p, then p is asymptotically stable. If these hypotheses hold on $\\R^n$ and V is radially unbounded, the strict case gives global forward existence and convergence to p.",
+      "idea": "A sufficiently small compact sublevel component lies inside any chosen neighbourhood and traps trajectories. Strict decrease excludes nontrivial omega-limit orbits. Radial unboundedness makes every sublevel compact, so the same argument works for every initial state.",
+      "caption": "For x\u2032=\u2212x\u00b3\u2212y, y\u2032=x\u2212y\u00b3, V=(x\u00b2+y\u00b2)/2 has V dot=\u2212x\u2074\u2212y\u2074. Drag the initial point. RK4 trajectories and V(t) are compared with the rigorous envelope V\u2080/(1+2V\u2080t); step halving reports a numerical discrepancy.",
+      "deps": [
+        "ode-5.8",
+        "ode-5.5"
+      ],
+      "refs": [
+        "Teschl \u00a76.6, Theorems 6.13\u20136.14"
+      ],
+      "tags": [
+        "stability",
+        "Lyapunov theorem"
+      ],
+      "links": {
+        "source": "https://www.mat.univie.ac.at/~gerald/ftp/book-ode/ode.pdf"
+      },
+      "scope": "The theorem concerns exact continuous-time solutions. Authored finite examples illustrate hypotheses; a finite plot is not a proof. Numerical trajectories, where used, are labelled with their method and a step-halving diagnostic."
+    },
+    {
+      "file": "content/popgen/ch02.js",
+      "num": "2.5",
+      "kind": "Model",
+      "name": "Moran model",
+      "statement": "A population has $n$ haploid individuals (equivalently $n$ gene copies), $k$ of them of type $A$. At each step one individual, chosen uniformly, reproduces and its offspring replaces another individual chosen uniformly (possibly itself). Then $k\\mapsto k+1$ with probability $p(1-p)$, $k\\mapsto k-1$ with probability $p(1-p)$, and $k$ is unchanged otherwise, where $p=k/n$. This is a birth\u2013death chain absorbed at $0$ and $n$. Measured in units of $n/2$ steps, it has the same mean and variance per unit time, $0$ and $p(1-p)/n$, as the Wright\u2013Fisher model with $n$ gene copies, and (in the limit of large $n$) the same absorption-time distribution.",
+      "idea": "One Moran step changes $k$ by at most one, so the process is a random walk with local variance $2p(1-p)/n^2$ per step in frequency. A Wright\u2013Fisher generation changes $p$ with variance $p(1-p)/n$. Equating the two, one Wright\u2013Fisher generation corresponds to $n/2$ Moran steps. The Moran chain is a time-reversible birth\u2013death chain, which makes exact calculation easy (absorption probabilities and times), while the Wright\u2013Fisher chain is more natural biologically; the diffusion limit of both is the same.",
+      "caption": "Left: a few Wright\u2013Fisher paths (blue) and Moran paths (purple, stepwise) from the same starting frequency, with Moran time divided by $n/2$ so both run on a generation axis. Right: the distributions of absorption times from 500 runs of each model; the means (vertical lines) agree with the diffusion value $-2n[p\\ln p+(1-p)\\ln(1-p)]$. **New run** reseeds.",
+      "deps": [
+        "popgen-2.1"
+      ],
+      "refs": [
+        "Ewens ch. 3",
+        "Ewens \u00a79.3.2"
+      ],
+      "credit": "P. A. P. Moran, 1958",
+      "scope": "Neutral, constant size, no mutation. The Moran model allows overlapping generations; its time scale (steps per generation) is a convention.",
+      "tags": [
+        "drift",
+        "Moran",
+        "birth\u2013death chain"
+      ],
+      "links": {
+        "wikipedia": "https://en.wikipedia.org/wiki/Moran_process"
+      }
+    },
+    {
+      "file": "content/stoch/ch04.js",
+      "num": "4.4",
+      "kind": "Theorem",
+      "name": "Uniqueness of the stationary distribution",
+      "statement": "If $P$ is an irreducible transition matrix on a finite state set, it has exactly one stationary distribution. More generally, a chain with $k$ closed communicating classes has stationary distributions exactly the convex combinations $\\sum_{c}t_c\\,\\pi^{(c)}$ of the stationary distributions $\\pi^{(c)}$ of those classes (each supported on its class), a $(k-1)$-dimensional family; transient states carry no mass.",
+      "idea": "A right eigenvector of $P$ for the eigenvalue $1$ is a harmonic function (2.9). For an irreducible finite chain the maximum principle forces it to be constant, so $\\ker(P-I)$ is one-dimensional; a matrix and its transpose have kernels of equal dimension, so the left kernel $\\{\\pi:\\pi P=\\pi\\}$ is a line, and positive normalised solutions on that line are unique. With several closed classes the harmonic functions are the functions constant on each class (and fixed by hitting probabilities elsewhere), giving a $k$-dimensional right kernel and hence a $k$-dimensional space of stationary vectors.",
+      "caption": "Five states: $\\{1,2\\}$ and $\\{3,4\\}$ are closed classes (blue and orange), and state 5 is transient. With the leak $\\varepsilon=0$ every mixture $\\pi(t)=(t\\pi^A,(1-t)\\pi^B,0)$ is stationary: the residual $\\|\\pi P-\\pi\\|_1$ (right) is zero for *all* $t$. Turn on the leak $\\varepsilon>0$, which joins the two classes into one, and the flat zero collapses to a single point $t^*$: uniqueness. The orange tick (at $\\varepsilon=0$) marks where a chain started at state 5 ends up on average, which depends on $a$.",
+      "deps": [
+        "stoch-4.1",
+        "stoch-2.9"
+      ],
+      "refs": [
+        "LPW \u00a71.5"
+      ],
+      "tags": [
+        "stationary distribution",
+        "uniqueness",
+        "closed classes"
+      ]
+    },
+    {
+      "file": "content/algo/ch09.js",
+      "num": "9.1",
+      "kind": "Definition",
+      "name": "Shortest paths and negative cycles",
+      "statement": "Let $G=(V,E)$ be a directed graph with real edge weights $w:E\\to\\R$ (an undirected graph counts each edge in both directions). The **weight** of a walk $P=v_0v_1\\cdots v_k$ is $w(P)=\\sum_{i=1}^{k}w(v_{i-1},v_i)$. The **shortest-path distance** from $s$ to $v$ is\n$$\\delta(s,v)=\\inf\\{\\,w(P): P \\text{ a walk from } s \\text{ to } v\\,\\},$$\nwith $\\delta(s,v)=\\infty$ when $v$ is unreachable. A **shortest path** is a walk attaining this value.\n\nA **negative cycle** is a closed walk of negative total weight. If some walk from $s$ to $v$ can pass through a negative cycle, going around it again and again makes the weight arbitrarily low, so $\\delta(s,v)=-\\infty$ and no shortest path exists. Otherwise, deleting a cycle from a walk never increases its weight, so $\\delta(s,v)$ is finite and is attained by a **simple** path, which has at most $n-1$ edges.",
+      "idea": "Everything in the chapter rests on the dichotomy in the last paragraph. If no negative cycle can be reached, every walk can be shortcut to a simple path that weighs no more. There are only finitely many simple paths, so the infimum is a minimum. If a negative cycle $C$ sits on some walk from $s$ to $v$, the walks that go around $C$ $k$ times weigh $c + k\\,w(C)$ with $c$ fixed, and these tend to $-\\infty$. Negative *edges* are harmless on their own; only negative *cycles* destroy the problem. In an undirected graph, though, a negative edge is itself a negative cycle (walk along it and back), which is why undirected shortest paths are usually studied with nonnegative weights.",
+      "caption": "Each vertex is labelled with $\\delta(s,\\cdot)$, computed by brute force over every simple path and every simple cycle. **Drag the slider** to lower the weight of c \u2192 b (or click any weight: +1, shift-click \u22121). Once the triangle a \u2192 c \u2192 b \u2192 a weighs less than 0 it turns red, and every vertex reachable from it drops to $-\\infty$. The chart shows why: the walk s \u21dd a, then $k$ times around the triangle, then a \u21dd t, gets cheaper with every lap. Click a vertex to move the source or the target (switch with the selector).",
+      "deps": [
+        "algo-8.1"
+      ],
+      "refs": [
+        "CLRS 4e Ch. 22",
+        "Erickson Ch. 8"
+      ],
+      "tags": [
+        "shortest paths",
+        "graphs"
+      ]
+    }
+  ],
+  "sources": {
+    "roughgarden-l11": {
+      "url": "https://timroughgarden.org/f13/l/l11.pdf",
+      "resolved": "https://timroughgarden.org/f13/l/l11.pdf",
+      "status": 200,
+      "bytes": 175885,
+      "sha256": "650f1343c58268f5d24c6fafc0b6eec9e5ad05802d55328e98831e30f137d7ca",
+      "readScope": "Acquired only; body/original figures not yet read",
+      "actualReadScope": "Complete extracted lines1\u2013463 /9pages read; original pages2and9personally inspected. Extraction flattens fraction order: Pigou optimum3/4and POA4/3 verified from original pixels."
+    },
+    "roughgarden-l16": {
+      "url": "https://timroughgarden.org/f13/l/l16.pdf",
+      "resolved": "https://timroughgarden.org/f13/l/l16.pdf",
+      "status": 200,
+      "bytes": 153493,
+      "sha256": "aafef643246d04faa18f290e40227cdad201c6187f85a8c21245323bcda4bc97",
+      "readScope": "Acquired only; body/original figures not yet read",
+      "actualReadScope": "Extracted lines1\u2013155read, including complete sections1\u20132and Proposition2.1. Remainder not read or consumed."
+    },
+    "roughgarden-l1": {
+      "url": "https://timroughgarden.org/f13/l/l1.pdf",
+      "resolved": "https://timroughgarden.org/f13/l/l1.pdf",
+      "status": 200,
+      "bytes": 105283,
+      "sha256": "fb65027298ca9fc6e15cbac28f17d71d71345effd9a5ed6f4382da5e87dac0f9",
+      "readScope": "Acquired only; body/original figures not yet read",
+      "actualReadScope": "Acquired only; excluded pending actual reading."
+    },
+    "yale11": {
+      "url": "https://oyc.yale.edu/economics/econ-159/lecture-11",
+      "resolved": "https://oyc.yale.edu/economics/econ-159/lecture-11",
+      "status": 200,
+      "bytes": 78486,
+      "sha256": "2914609421b7db96d1c0f1711771036faa4f553ab29159f2af3fd55adc5547f3",
+      "textLines": 152,
+      "links": [
+        "#main-content",
+        "http://www.yale.edu",
+        "/help",
+        "/",
+        "/courses",
+        "/about",
+        "/terms",
+        "/support-oyc",
+        "/",
+        "/economics",
+        "/economics/econ-159",
+        "#transcript-top",
+        "/sites/default/files/courses/fall07/econ159/mp3/econ159_11_101007.mp3",
+        "/economics/econ-159/lecture-10",
+        "/economics/econ-159/lecture-12",
+        "/sites/default/files/ess_handout_0_0.pdf",
+        "/sites/default/files/problemset5_1_0.pdf",
+        "/sites/default/files/blackboard11_0_0.pdf",
+        "http://www.yale.edu",
+        "https://usability.yale.edu/web-accessibility/accessibility-yale",
+        "https://privacy.yale.edu/resources/privacy-statement",
+        "https://www.facebook.com/YaleUniversity",
+        "http://www.twitter.com/yale",
+        "http://itunes.yale.edu/",
+        "http://www.youtube.com/yale",
+        "http://weibo.com/yaleuniversity",
+        "http://yaleuniversity.tumblr.com/"
+      ],
+      "readScope": "Acquired only; body scope to be recorded after actual reading",
+      "actualReadScope": "Wrapped extracted lines1\u2013165read. Course overview warns about a notation error in informal lecture; the supplemental proof is the formal source."
+    },
+    "yale12": {
+      "url": "https://oyc.yale.edu/economics/econ-159/lecture-12",
+      "resolved": "https://oyc.yale.edu/economics/econ-159/lecture-12",
+      "status": 200,
+      "bytes": 70618,
+      "sha256": "9e1b3df14a5e943934c48454eb810dcbaaf65a517c9693b80cd1f6207e58359f",
+      "textLines": 120,
+      "links": [
+        "#main-content",
+        "http://www.yale.edu",
+        "/help",
+        "/",
+        "/courses",
+        "/about",
+        "/terms",
+        "/support-oyc",
+        "/",
+        "/economics",
+        "/economics/econ-159",
+        "#transcript-top",
+        "/sites/default/files/courses/fall07/econ159/mp3/econ159_12_101507.mp3",
+        "/economics/econ-159/lecture-11",
+        "/economics/econ-159/exam-1",
+        "/sites/default/files/ess_handout_1_0.pdf",
+        "/sites/default/files/blackboard12_0_0.pdf",
+        "http://www.yale.edu",
+        "https://usability.yale.edu/web-accessibility/accessibility-yale",
+        "https://privacy.yale.edu/resources/privacy-statement",
+        "https://www.facebook.com/YaleUniversity",
+        "http://www.twitter.com/yale",
+        "http://itunes.yale.edu/",
+        "http://www.youtube.com/yale",
+        "http://weibo.com/yaleuniversity",
+        "http://yaleuniversity.tumblr.com/"
+      ],
+      "readScope": "Acquired only; body scope to be recorded after actual reading",
+      "actualReadScope": "Wrapped extracted lines120\u2013270read, including mixed-equilibrium discussion and its explicitly heuristic argument. Remaining lecture not claimed read."
+    },
+    "yale-ess-handout": {
+      "url": "https://oyc.yale.edu/sites/default/files/ess_handout_0_0.pdf",
+      "resolved": "https://oyc.yale.edu/sites/default/files/ess_handout_0_0.pdf",
+      "status": 200,
+      "bytes": 258836,
+      "sha256": "f06becaa8a7961dd449d387c0ede1fb56b88eea806d48dfc8bdbcc6663239d68",
+      "readScope": "Acquired only; original body not yet read",
+      "actualReadScope": "All215 extracted lines /5pages read; original pages4and5personally inspected. Formal scope is pure strategies against pure mutants. General mixed extension and all-mixture2\u00d72certificate use own bilinear proof, not a claim that this handout proves them."
+    }
+  },
+  "bindingAccessStops": [
+    {
+      "url": "https://timroughgarden.org/f13/l/l13.pdf",
+      "status": "Tunnel connection failed:403 Forbidden",
+      "acquisition": "failed",
+      "bodyRead": false,
+      "bindingRestriction": "Do not retry or recover this same lecture body through an alternate route. Other lecture PDFs were independently queued before this failure, not alternate copies."
+    }
+  ],
+  "inheritedStops": "Every preceding restriction remains binding, including the MM1958 original-body limit, Coase original-body unavailability and Weitzman author-PDF timeout. No alternate original recovery.",
+  "unreadOriginals": [
+    "Osborne commercial book body",
+    "Maschler/Solan/Zamir commercial book body",
+    "Maynard Smith/Price original ESS paper",
+    "Taylor/Jonker original replicator paper",
+    "Rosenthal original paper",
+    "Braess original paper",
+    "Kandori/Mailath/Rob and Young original stochastic-selection papers",
+    "Sinervo/Lively original lizard paper"
+  ],
+  "copying": "No source figures or substantial source prose copied into product code; original bounded mathematical illustrations and explicit own proofs."
+}

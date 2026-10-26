@@ -1,0 +1,49 @@
+{
+  "status": "Initial3selection families only; chapter/UI/native/visual gates remain open",
+  "availabilityUnchanged": 858,
+  "historicalIndependentAcceptance": 36,
+  "cases": 1101,
+  "families": [
+    "selection2",
+    "invasion",
+    "hawkDove"
+  ],
+  "statistics": {
+    "cases": 1101,
+    "comparisons": 70855,
+    "worstLogAbsolute": 4.549693954913892e-13
+  },
+  "physicalGate": "Exact independent Fraction-to-binary64 rounded values; strict sign/range/signed-zero/metadata and complete physical-output coverage.",
+  "logGateAbsolute": 8e-12,
+  "independentMethod": "Direct Fraction expected-payoff sums, Nash pure-deviation maximization and exact recovery of the secondary-advantage quadratic coefficient. No production imports. This coefficient is an analytic all-mixture certificate, not a sampled mutant grid.",
+  "precision": {
+    "cases": 1101,
+    "families": 3,
+    "canonicalDigits": 100,
+    "higherDigits": 200,
+    "canonicalRepeatByteIdentical": true,
+    "completeHigherExpectedObjectsAndBytesIdentical": true,
+    "fixtureSHA256": "b351d37b0b85c97ecebef0b8ee3396eb519913ccc7aa3d645fc2c40ff0cff402"
+  },
+  "focused": {
+    "newGroups": 6,
+    "priorGameGroups": 16,
+    "passed": 22,
+    "failed": 0,
+    "skipped": 0,
+    "cancelled": 0,
+    "durationMs": 570.465083,
+    "log": "/workspace/scratch/wave6-game-research/initial-focused.log",
+    "logSHA256": "fa6bf780f07a90d2596d5c5fde0c2064617c905c33f4b9e3477bb5f4c8bb86aa"
+  },
+  "preservedPins": 372,
+  "allExact": true,
+  "sourceHashes": {
+    "content/game/ch06.exact.shared.js": "f90c1849903788f0d3c2cd8fca77d5d0e2a3148f8368fbe2e68659377a2f62dd",
+    "content/game/ch06.selection.shared.js": "8a6c9aee856881cf5b94296146fea63733948b55a1cd69226a73c637bb85fdd7",
+    "tests/wave6-game-reference.py": "83b0c8242f3ce1e29ace8c15b2085bfc20587a8ae01462c5a2a37505b8981f73",
+    "tests/fixtures/wave6-game-reference.json": "b351d37b0b85c97ecebef0b8ee3396eb519913ccc7aa3d645fc2c40ff0cff402",
+    "tests/wave6-game.test.mjs": "b01c77cedf9bf85208e2dcc2f40205906f36c0243cdc005c16dfbb6ea389689d"
+  },
+  "next": "Finish remaining scientific models and independent references, then12complete frozen lessons /bespoke diagrams /all native controls /Share /original-pixel gates. Do not count or stop at this pure checkpoint."
+}

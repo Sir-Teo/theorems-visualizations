@@ -1,0 +1,17 @@
+{
+  "baseCommit": "aa8f8b3d84b4a546f609a46d84736236102c8578",
+  "status": "Initial3pure selection families only; no GAME lesson availability or independent acceptance promotion; continue full12chapter",
+  "fileCount": 10,
+  "sha256": {
+    "content/game/ch06.exact.shared.js": "f90c1849903788f0d3c2cd8fca77d5d0e2a3148f8368fbe2e68659377a2f62dd",
+    "content/game/ch06.selection.shared.js": "8a6c9aee856881cf5b94296146fea63733948b55a1cd69226a73c637bb85fdd7",
+    "tests/wave6-game-reference.py": "83b0c8242f3ce1e29ace8c15b2085bfc20587a8ae01462c5a2a37505b8981f73",
+    "tests/wave6-game.test.mjs": "b01c77cedf9bf85208e2dcc2f40205906f36c0243cdc005c16dfbb6ea389689d",
+    "tests/fixtures/wave6-game-reference.json": "b351d37b0b85c97ecebef0b8ee3396eb519913ccc7aa3d645fc2c40ff0cff402",
+    "docs/verification/wave6-game.md": "b68bfb587e8486091a49cfa6a2f9bca0dc192525445e01f0bd8a180a1f7ad224",
+    "docs/verification/wave6-game-sources.json": "2cffc0fcfd5f4e3b52fb575657e4133a4cb23ac82fe355a8c1416bafa7a4f779",
+    "docs/verification/wave6-game-design.json": "103eaf36ff2d0903186b732a85089d740be1e5b9de67a192faef1c9407f7ba30",
+    "docs/verification/wave6-game-initial-selection-receipt.json": "08dfd52e15df4c280cadecb2dfebef6c5e0e4addc23e427bb16885dcc8f2b339",
+    "docs/wave-continuation.md": "4e94ebee7bba3f7b0560e9d15f9aede3bad6bf48d04fe8a46c6f40ba0ba4dc22"
+  }
+}
