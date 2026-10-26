@@ -1,0 +1,1764 @@
+{
+  "collection": "fin",
+  "chapters": [
+    {
+      "n": 1,
+      "title": "The time value of money",
+      "summary": "A dollar today is worth more than a dollar next year because it can earn interest, and compounding makes that difference grow exponentially. Discounting turns any stream of cash flows into a single present value, which yields the net-present-value rule for investment decisions and closed forms for annuities, perpetuities and growing dividends. The internal rate of return is a popular summary with well-known pathologies.",
+      "items": [
+        {
+          "num": "1.1",
+          "kind": "Concept",
+          "name": "Simple and compound interest",
+          "deps": [
+            "pma-3.26"
+          ],
+          "refs": [
+            "Luenberger: Basic Theory of Interest",
+            "Hull ch. 4"
+          ],
+          "pic": "Two balances grow from the same deposit, one with simple and one with compound interest; the gap widens without bound, and a log-scale toggle turns the compound curve into a straight line."
+        },
+        {
+          "num": "1.2",
+          "kind": "Theorem",
+          "name": "Continuous compounding and eʳᵗ",
+          "deps": [
+            "fin-1.1",
+            "pma-3.31",
+            "pma-8.6"
+          ],
+          "refs": [
+            "Luenberger: Basic Theory of Interest",
+            "Hull ch. 4"
+          ],
+          "pic": "Compound annually, monthly, daily and continuously: the balances climb toward eʳᵗ and the readout shows (1 + r/m)^m approaching e^r as m grows."
+        },
+        {
+          "num": "1.3",
+          "kind": "Definition",
+          "name": "Effective annual rate",
+          "deps": [
+            "fin-1.2"
+          ],
+          "refs": [
+            "Luenberger: Basic Theory of Interest"
+          ],
+          "pic": "Quote a 12% nominal rate with different compounding frequencies; the effective annual rates are computed and the ranking of loan offers flips when you compare them properly."
+        },
+        {
+          "num": "1.4",
+          "kind": "Principle",
+          "name": "The rule of 72",
+          "deps": [
+            "fin-1.2",
+            "pma-5.15"
+          ],
+          "refs": [
+            "Luenberger: Basic Theory of Interest"
+          ],
+          "pic": "Exact doubling times ln 2 / ln(1 + r) against 72/r across interest rates; the approximation error is plotted and is smallest near 8%."
+        },
+        {
+          "num": "1.5",
+          "kind": "Definition",
+          "name": "Present value and discount factors",
+          "deps": [
+            "fin-1.2",
+            "micro-11.9"
+          ],
+          "refs": [
+            "Luenberger: Basic Theory of Interest"
+          ],
+          "pic": "Drag cash flows along a timeline; each one shrinks by its discount factor into a present-value bar, and the bars stack into the total value at time zero."
+        },
+        {
+          "num": "1.6",
+          "kind": "Principle",
+          "name": "The net-present-value rule",
+          "deps": [
+            "fin-1.5"
+          ],
+          "refs": [
+            "Luenberger: Basic Theory of Interest"
+          ],
+          "pic": "An investment with an upfront cost and later returns: its NPV as a function of the discount rate is a falling curve, and the project is accepted wherever the curve is above zero."
+        },
+        {
+          "num": "1.7",
+          "kind": "Definition",
+          "name": "Internal rate of return",
+          "deps": [
+            "fin-1.6",
+            "pma-4.23"
+          ],
+          "refs": [
+            "Luenberger: Basic Theory of Interest"
+          ],
+          "pic": "The IRR is where the NPV curve crosses zero; bisection homes in on it step by step, with the bracketing interval shrinking on screen."
+        },
+        {
+          "num": "1.8",
+          "kind": "Paradox",
+          "name": "Multiple IRRs and NPV–IRR conflicts",
+          "deps": [
+            "fin-1.7",
+            "pma-8.8"
+          ],
+          "refs": [
+            "Luenberger: Basic Theory of Interest"
+          ],
+          "pic": "Add a large negative cash flow at the end (a mine clean-up): the NPV curve crosses zero twice, and two projects whose IRR ranking disagrees with their NPV ranking are compared."
+        },
+        {
+          "num": "1.9",
+          "kind": "Theorem",
+          "name": "Annuities and perpetuities",
+          "deps": [
+            "fin-1.5",
+            "pma-3.26"
+          ],
+          "refs": [
+            "Luenberger: Basic Theory of Interest"
+          ],
+          "pic": "Lengthen an annuity term slider from 1 year to infinity; the present value climbs and saturates at C/r, the perpetuity value, with each payment’s contribution shaded."
+        },
+        {
+          "num": "1.10",
+          "kind": "Method",
+          "name": "Loan amortization",
+          "deps": [
+            "fin-1.9"
+          ],
+          "refs": [
+            "Luenberger: Basic Theory of Interest"
+          ],
+          "pic": "A mortgage’s fixed payment split each month into interest and principal; the interest share starts large and shrinks, and extra payments shorten the schedule visibly."
+        },
+        {
+          "num": "1.11",
+          "kind": "Model",
+          "name": "The Gordon growth (dividend discount) model",
+          "deps": [
+            "fin-1.9"
+          ],
+          "refs": [
+            "BKM ch. 18"
+          ],
+          "pic": "A dividend growing at g discounted at r: the price D/(r − g) explodes as g approaches r, and the sensitivity of the price to small changes in g is plotted."
+        },
+        {
+          "num": "1.12",
+          "alias": "micro-11.12",
+          "name": "Fisher separation theorem"
+        },
+        {
+          "num": "1.13",
+          "kind": "Principle",
+          "name": "No arbitrage and the law of one price",
+          "deps": [
+            "fin-1.5"
+          ],
+          "refs": [
+            "Luenberger: General Principles",
+            "Hull ch. 5"
+          ],
+          "pic": "Two portfolios with the same payoffs in every state but different prices; the page constructs the riskless profit trade and shows it shrinking as prices are pushed together."
+        }
+      ]
+    },
+    {
+      "n": 2,
+      "title": "Bonds and the term structure",
+      "summary": "A bond’s price is the present value of its coupons and principal; the yield to maturity is the single rate that makes them match. Price falls convexly as yield rises, and duration and convexity measure that sensitivity, which lets a portfolio be immunized against rate changes. Rates differ by maturity: the spot curve, forward rates and the yield curve encode expectations and risk premia.",
+      "items": [
+        {
+          "num": "2.1",
+          "kind": "Definition",
+          "name": "Bond prices and yield to maturity",
+          "deps": [
+            "fin-1.7",
+            "fin-1.9"
+          ],
+          "refs": [
+            "Luenberger: Fixed-Income Securities",
+            "BKM ch. 14"
+          ],
+          "pic": "Edit a bond’s coupon, maturity and price; the yield is solved live and the coupons are drawn as discounted bars summing to the price."
+        },
+        {
+          "num": "2.2",
+          "kind": "Theorem",
+          "name": "Prices fall convexly as yields rise",
+          "deps": [
+            "fin-2.1",
+            "rca-3.1"
+          ],
+          "refs": [
+            "Luenberger: Fixed-Income Securities"
+          ],
+          "pic": "The price–yield curve for bonds of different maturities; long and low-coupon bonds have the steepest curves, and the chord above each curve shows its convexity."
+        },
+        {
+          "num": "2.3",
+          "kind": "Definition",
+          "name": "Macaulay and modified duration",
+          "deps": [
+            "fin-2.2",
+            "pma-5.1"
+          ],
+          "refs": [
+            "Luenberger: Fixed-Income Securities",
+            "BKM ch. 16"
+          ],
+          "pic": "Cash flows as weights on a seesaw along the time axis; the balance point is the Macaulay duration, and the tangent slope to the price–yield curve gives modified duration."
+        },
+        {
+          "num": "2.4",
+          "kind": "Definition",
+          "name": "Convexity of a bond",
+          "deps": [
+            "fin-2.3",
+            "pma-5.15"
+          ],
+          "refs": [
+            "Luenberger: Fixed-Income Securities"
+          ],
+          "pic": "Approximate the price change for a yield shock by duration alone and with the convexity term; the second-order fit tracks the true curve far better for large shocks."
+        },
+        {
+          "num": "2.5",
+          "kind": "Method",
+          "name": "Immunization (Redington)",
+          "deps": [
+            "fin-2.3",
+            "fin-2.4"
+          ],
+          "refs": [
+            "Luenberger: Fixed-Income Securities",
+            "BKM ch. 16"
+          ],
+          "pic": "Match a liability with a portfolio of two bonds of equal present value and duration; parallel rate shocks leave the surplus non-negative, while a twist in the curve does not."
+        },
+        {
+          "num": "2.6",
+          "kind": "Definition",
+          "name": "Spot rates and the zero curve",
+          "deps": [
+            "fin-1.5"
+          ],
+          "refs": [
+            "Luenberger: Term Structure",
+            "Hull ch. 4"
+          ],
+          "pic": "Zero-coupon prices for maturities 1–30 years are converted into spot rates and plotted; discounting each coupon at its own spot rate prices a coupon bond."
+        },
+        {
+          "num": "2.7",
+          "kind": "Method",
+          "name": "Bootstrapping the zero curve",
+          "deps": [
+            "fin-2.6"
+          ],
+          "refs": [
+            "Hull ch. 4"
+          ],
+          "pic": "Coupon bonds of increasing maturity are peeled one at a time: each step solves for one new spot rate given the earlier ones, animated along the curve."
+        },
+        {
+          "num": "2.8",
+          "kind": "Definition",
+          "name": "Forward rates",
+          "deps": [
+            "fin-2.6"
+          ],
+          "refs": [
+            "Luenberger: Term Structure",
+            "Hull ch. 4"
+          ],
+          "pic": "Two routes from year 0 to year 2 — a two-year zero, or a one-year zero rolled at a locked-in forward rate — must give the same amount; the implied forward curve is drawn above the spot curve."
+        },
+        {
+          "num": "2.9",
+          "kind": "Concept",
+          "name": "The yield curve and its inversions",
+          "deps": [
+            "fin-2.6"
+          ],
+          "refs": [
+            "BKM ch. 15"
+          ],
+          "pic": "Historical yield curves animated month by month; the 10-year minus 3-month spread is plotted with recessions shaded, along with the false alarms."
+        },
+        {
+          "num": "2.10",
+          "kind": "Hypothesis",
+          "name": "The expectations hypothesis",
+          "deps": [
+            "fin-2.8"
+          ],
+          "refs": [
+            "Luenberger: Term Structure",
+            "BKM ch. 15"
+          ],
+          "pic": "Compare forward rates with the spot rates that later materialized; forwards systematically overpredict, the term premium the pure hypothesis leaves out."
+        },
+        {
+          "num": "2.11",
+          "kind": "Model",
+          "name": "Vasicek short-rate model",
+          "deps": [
+            "fin-2.10",
+            "stoch-13.15"
+          ],
+          "refs": [
+            "Hull ch. 31"
+          ],
+          "pic": "Simulated short-rate paths revert toward a long-run mean; the model’s closed-form yield curves take upward, downward and humped shapes as the current rate moves."
+        },
+        {
+          "num": "2.12",
+          "kind": "Concept",
+          "name": "Credit spreads and default probabilities",
+          "deps": [
+            "fin-2.1"
+          ],
+          "refs": [
+            "Hull ch. 24"
+          ],
+          "pic": "A risky bond’s yield split into the risk-free rate and a spread; with a recovery-rate slider the spread converts into an implied annual default probability."
+        }
+      ]
+    },
+    {
+      "n": 3,
+      "title": "Risk, return and mean–variance portfolios",
+      "summary": "Returns are random, and averaging them arithmetically or geometrically gives different answers. Combining imperfectly correlated assets lowers risk without lowering expected return, which is the whole case for diversification. Markowitz turned this into an optimization: the efficient frontier of portfolios with least variance for each mean. Adding a risk-free asset makes every investor hold the same risky portfolio, mixed with lending or borrowing.",
+      "items": [
+        {
+          "num": "3.1",
+          "kind": "Definition",
+          "name": "Arithmetic versus geometric mean returns",
+          "deps": [
+            "fin-1.1",
+            "rca-3.3a"
+          ],
+          "refs": [
+            "BKM ch. 5"
+          ],
+          "pic": "A stock that gains 50% then loses 50%: the arithmetic mean is 0% but you end with 75%; simulated return series show the geometric mean below the arithmetic one every time."
+        },
+        {
+          "num": "3.2",
+          "kind": "Phenomenon",
+          "name": "Volatility drag: growth ≈ mean − σ²/2",
+          "deps": [
+            "fin-3.1",
+            "pma-5.15"
+          ],
+          "refs": [
+            "Luenberger: Models of Asset Dynamics"
+          ],
+          "pic": "Hold the mean return fixed and raise volatility; the median terminal wealth of simulated paths falls along e^{(μ−σ²/2)T}, while the mean stays put."
+        },
+        {
+          "num": "3.3",
+          "kind": "Definition",
+          "name": "Portfolio mean, variance and covariance",
+          "deps": [
+            "fin-3.1"
+          ],
+          "refs": [
+            "Luenberger: Mean–Variance Portfolio Theory",
+            "BKM ch. 7"
+          ],
+          "pic": "Drag weights on three assets; the portfolio mean and variance are computed from the covariance matrix and the point moves in the mean–standard-deviation plane."
+        },
+        {
+          "num": "3.4",
+          "kind": "Theorem",
+          "name": "Diversification: variance falls to the average covariance",
+          "deps": [
+            "fin-3.3"
+          ],
+          "refs": [
+            "BKM ch. 7"
+          ],
+          "pic": "Add equally weighted stocks one at a time; portfolio variance drops like 1/n toward the average covariance, which is the floor no diversification removes."
+        },
+        {
+          "num": "3.5",
+          "kind": "Concept",
+          "name": "Systematic and idiosyncratic risk",
+          "deps": [
+            "fin-3.4"
+          ],
+          "refs": [
+            "BKM ch. 7"
+          ],
+          "pic": "Decompose each stock’s variance into market and firm-specific parts with a slider for market correlation; diversified portfolios keep only the market part."
+        },
+        {
+          "num": "3.6",
+          "kind": "Model",
+          "name": "The two-asset frontier and the role of correlation",
+          "deps": [
+            "fin-3.3"
+          ],
+          "refs": [
+            "Luenberger: Mean–Variance Portfolio Theory"
+          ],
+          "pic": "Combinations of two assets trace a curve between them; drag the correlation from +1 (a straight line) to −1 (a kinked line touching zero risk)."
+        },
+        {
+          "num": "3.7",
+          "kind": "Theorem",
+          "name": "The Markowitz efficient frontier",
+          "deps": [
+            "fin-3.6",
+            "micro-5.4"
+          ],
+          "refs": [
+            "Luenberger: Mean–Variance Portfolio Theory",
+            "BKM ch. 7"
+          ],
+          "pic": "Thousands of random portfolios of five assets fill a region whose left edge is the hyperbola of minimum variance solved by Lagrange multipliers; the efficient upper half is highlighted."
+        },
+        {
+          "num": "3.8",
+          "kind": "Theorem",
+          "name": "Two-fund separation",
+          "deps": [
+            "fin-3.7"
+          ],
+          "refs": [
+            "Luenberger: Mean–Variance Portfolio Theory"
+          ],
+          "pic": "Pick any two frontier portfolios; every other frontier portfolio is a mix of them, shown by sliding the mixing weight along the curve."
+        },
+        {
+          "num": "3.9",
+          "kind": "Definition",
+          "name": "The global minimum-variance portfolio",
+          "deps": [
+            "fin-3.7"
+          ],
+          "refs": [
+            "Luenberger: Mean–Variance Portfolio Theory"
+          ],
+          "pic": "The leftmost point of the frontier with its weights shown as bars; it needs no expected returns at all, only the covariance matrix."
+        },
+        {
+          "num": "3.10",
+          "kind": "Model",
+          "name": "The capital allocation line and the tangency portfolio",
+          "deps": [
+            "fin-3.7"
+          ],
+          "refs": [
+            "BKM ch. 6",
+            "BKM ch. 7"
+          ],
+          "pic": "Rotate a line from the risk-free rate until it just touches the frontier; the tangency portfolio maximizes the slope, and points beyond it require borrowing."
+        },
+        {
+          "num": "3.11",
+          "kind": "Theorem",
+          "name": "Tobin’s separation (one-fund) theorem",
+          "deps": [
+            "fin-3.10",
+            "fin-3.8"
+          ],
+          "refs": [
+            "Luenberger: Mean–Variance Portfolio Theory"
+          ],
+          "pic": "Investors with different risk aversion (indifference curves you drag) all pick points on the same line: they differ only in how much they put in the tangency portfolio."
+        },
+        {
+          "num": "3.12",
+          "kind": "Definition",
+          "name": "The Sharpe ratio",
+          "deps": [
+            "fin-3.10"
+          ],
+          "refs": [
+            "BKM ch. 6"
+          ],
+          "pic": "Excess return over volatility as a slope from the risk-free point; funds plotted as dots are ranked by slope, and leverage moves a fund along its line without changing its ratio."
+        },
+        {
+          "num": "3.13",
+          "kind": "Phenomenon",
+          "name": "Estimation error: optimizers maximize mistakes",
+          "deps": [
+            "fin-3.7"
+          ],
+          "refs": [
+            "BKM ch. 7"
+          ],
+          "pic": "Estimate means from five years of simulated data and optimize; the “optimal” weights swing wildly between samples, and the equally weighted portfolio often does better out of sample."
+        },
+        {
+          "num": "3.14",
+          "kind": "Proposition",
+          "name": "When mean–variance analysis is rational",
+          "deps": [
+            "fin-3.7",
+            "behav-1.7"
+          ],
+          "refs": [
+            "Luenberger: General Principles"
+          ],
+          "pic": "With CARA utility and normal returns, expected utility depends only on mean and variance; switch to a skewed return distribution and the expected-utility ranking departs from the mean–variance ranking."
+        },
+        {
+          "num": "3.15",
+          "kind": "Paper",
+          "name": "Portfolio Selection",
+          "paper": {
+            "authors": "Harry Markowitz",
+            "year": 1952,
+            "title": "Portfolio Selection",
+            "venue": "Journal of Finance 7 (1): 77–91",
+            "doi": "10.1111/j.1540-6261.1952.tb01525.x"
+          },
+          "introduces": [
+            "fin-3.7"
+          ],
+          "deps": [
+            "fin-3.3",
+            "micro-13.2"
+          ],
+          "refs": [],
+          "pic": "Markowitz’s three-security diagrams: in the plane of two portfolio weights (the third takes the remainder) isomean lines and isovariance ellipses are drawn, and the efficient set is the critical line through their points of tangency; drag the securities’ means, variances and correlations and watch the critical line, and the E–V frontier it maps to, move."
+        }
+      ]
+    },
+    {
+      "n": 4,
+      "title": "CAPM, factors and anomalies",
+      "summary": "If everyone holds the tangency portfolio, it must be the market portfolio, and every asset’s expected excess return is proportional to its beta with the market — the capital asset pricing model. Arbitrage pricing generalizes this to several factors. Empirically the security market line is too flat and characteristics like size, value and momentum earn returns beta does not explain, and the equity premium itself is puzzlingly large.",
+      "items": [
+        {
+          "num": "4.1",
+          "kind": "Concept",
+          "name": "The market portfolio and the capital market line",
+          "deps": [
+            "fin-3.11"
+          ],
+          "refs": [
+            "Luenberger: CAPM",
+            "BKM ch. 9"
+          ],
+          "pic": "Aggregate the identical risky holdings of many investors: the tangency portfolio becomes the value-weighted market, and the CML is drawn through it."
+        },
+        {
+          "num": "4.2",
+          "kind": "Theorem",
+          "name": "CAPM: the security market line",
+          "deps": [
+            "fin-4.1"
+          ],
+          "refs": [
+            "Luenberger: CAPM",
+            "BKM ch. 9"
+          ],
+          "pic": "Assets plotted by beta and expected return fall on a straight line from the risk-free rate through the market; push an asset off the line and the implied demand pushes it back."
+        },
+        {
+          "num": "4.3",
+          "kind": "Definition",
+          "name": "Beta as a regression slope",
+          "deps": [
+            "fin-4.2",
+            "stat-12.3"
+          ],
+          "refs": [
+            "Luenberger: Models and Data",
+            "BKM ch. 8"
+          ],
+          "pic": "Scatter a stock’s monthly excess returns against the market’s; the least-squares line’s slope is beta, its intercept alpha, and the residual spread the idiosyncratic risk."
+        },
+        {
+          "num": "4.4",
+          "kind": "Definition",
+          "name": "Jensen’s alpha",
+          "deps": [
+            "fin-4.3"
+          ],
+          "refs": [
+            "BKM ch. 9"
+          ],
+          "pic": "Fund returns with their SML predictions; alpha is the vertical gap, and its confidence interval shows how few funds have alphas distinguishable from zero."
+        },
+        {
+          "num": "4.5",
+          "kind": "Model",
+          "name": "The single-index model",
+          "deps": [
+            "fin-4.3"
+          ],
+          "refs": [
+            "BKM ch. 8"
+          ],
+          "pic": "Generate a 50-stock covariance matrix from betas and residual variances alone; compare its frontier with the full-sample one and count the parameters saved."
+        },
+        {
+          "num": "4.6",
+          "kind": "Theorem",
+          "name": "Arbitrage pricing theory (Ross)",
+          "deps": [
+            "fin-4.5",
+            "fin-1.13"
+          ],
+          "refs": [
+            "Luenberger: Models and Data",
+            "BKM ch. 10"
+          ],
+          "pic": "Three well-diversified portfolios with factor loadings; if one is mispriced relative to the plane through the others, the page builds a zero-cost, zero-risk arbitrage from them."
+        },
+        {
+          "num": "4.7",
+          "kind": "Model",
+          "name": "The Fama–French three-factor model",
+          "deps": [
+            "fin-4.6"
+          ],
+          "refs": [
+            "Fama & French (1993), §§2–3 and 5.3",
+            "French Data Library: factor and 25-portfolio descriptions"
+          ],
+          "pic": "Compare CAPM and three-factor intercept heatmaps for 25 empirical size × book-to-market portfolios; switch to SMB/HML loadings, with explicit sample dates, annualization and a shared adaptive color scale."
+        },
+        {
+          "num": "4.8",
+          "kind": "Phenomenon",
+          "name": "The security market line is too flat",
+          "deps": [
+            "fin-4.2"
+          ],
+          "refs": [
+            "BKM ch. 13"
+          ],
+          "pic": "Average returns of beta-sorted portfolios over decades against the CAPM line: low-beta stocks earn more and high-beta less than predicted, the low-beta anomaly."
+        },
+        {
+          "num": "4.9",
+          "kind": "Paradox",
+          "name": "Roll’s critique",
+          "deps": [
+            "fin-4.2"
+          ],
+          "refs": [
+            "BKM ch. 13"
+          ],
+          "pic": "Any mean–variance efficient proxy makes every asset lie exactly on its SML; move the proxy inside the frontier and the fit breaks, so tests of CAPM are tests of the proxy."
+        },
+        {
+          "num": "4.10",
+          "kind": "Phenomenon",
+          "name": "The momentum anomaly",
+          "deps": [
+            "fin-4.7"
+          ],
+          "refs": [
+            "BKM ch. 11"
+          ],
+          "pic": "Buy last year’s winners and sell the losers: cumulative returns of the strategy rise for decades, with its occasional sharp crashes highlighted."
+        },
+        {
+          "num": "4.11",
+          "kind": "Phenomenon",
+          "name": "The equity premium puzzle",
+          "deps": [
+            "behav-1.7",
+            "behav-2.12",
+            "prob-1.2.5",
+            "prob-2.7.1a"
+          ],
+          "refs": [
+            "Mehra & Prescott (1985), Table I and §§3–4",
+            "Mehra (2003), NBER w9525, pp. 23–28",
+            "Benartzi & Thaler (1995), pp. 79–84"
+          ],
+          "pic": "Convert historical arithmetic returns to a log-premium target, fit risk aversion under explicit lognormal assumptions, and compare the implied simple riskless rate; a separate Gaussian loss-aversion toy shows how evaluation periods change expected value."
+        },
+        {
+          "num": "4.12",
+          "kind": "Paper",
+          "name": "Capital Asset Prices: A Theory of Market Equilibrium",
+          "paper": {
+            "authors": "William F. Sharpe",
+            "year": 1964,
+            "title": "Capital Asset Prices: A Theory of Market Equilibrium under Conditions of Risk",
+            "venue": "Journal of Finance 19 (3): 425–442",
+            "doi": "10.1111/j.1540-6261.1964.tb02865.x"
+          },
+          "introduces": [
+            "fin-4.1",
+            "fin-4.2"
+          ],
+          "deps": [
+            "fin-3.15",
+            "fin-3.11"
+          ],
+          "refs": [],
+          "pic": "When every investor holds the same tangency portfolio it becomes the market: draw the capital market line from the riskless rate, then plot each asset’s expected return against its sensitivity to the market and watch the assets line up on one straight line while diversifiable risk earns nothing; push one asset’s price off the line and follow the shift in demand that brings it back."
+        }
+      ]
+    },
+    {
+      "n": 5,
+      "title": "Efficient markets, volatility and bubbles",
+      "summary": "Market efficiency is stated relative to information and a model of required returns: predictable raw returns can still compensate for risk. Tests distinguish that benchmark from abnormal returns, while examining price adjustment, manager performance, volatility and bubbles. Historical data and authored simulations make different kinds of evidence.",
+      "items": [
+        {
+          "num": "5.1",
+          "kind": "Hypothesis",
+          "name": "The efficient-market hypothesis",
+          "deps": [
+            "fin-1.5",
+            "prob-4.1.14"
+          ],
+          "refs": [
+            "Fama (1970), §§I–II, pp.383–388"
+          ],
+          "pic": "A separately specified risk benchmark distinguishes a testable fair-game restriction from a conditional-expectation identity; nested information sets, actual-dated daily sign-rule wealth with approximate signal-change charges including opening/closing and omitted daily rebalancing costs, and a clearly authored news-level response."
+        },
+        {
+          "num": "5.2",
+          "kind": "Model",
+          "name": "Random-walk model of prices (Bachelier)",
+          "deps": [
+            "fin-5.1",
+            "stoch-13.2"
+          ],
+          "refs": [
+            "BKM ch. 11",
+            "Luenberger: Models of Asset Dynamics"
+          ],
+          "pic": "Real index paths and simulated random walks side by side with labels hidden; guess which are real, then see the autocorrelation of returns near zero for both."
+        },
+        {
+          "num": "5.3",
+          "kind": "Paradox",
+          "name": "The Grossman–Stiglitz paradox",
+          "deps": [
+            "fin-5.1"
+          ],
+          "refs": [
+            "BKM ch. 11"
+          ],
+          "pic": "Traders choose whether to pay for information; if prices were fully efficient nobody would pay, so equilibrium has just enough mispricing to reward the informed share shown on the slider."
+        },
+        {
+          "num": "5.4",
+          "kind": "Phenomenon",
+          "name": "Event studies and price adjustment",
+          "deps": [
+            "fin-5.1",
+            "fin-4.3",
+            "prob-2.2.3",
+            "prob-1.2.5"
+          ],
+          "refs": [
+            "Ball & Brown (1968), pp.161–177"
+          ],
+          "pic": "Authored daily arithmetic-CAR paths with exact expected schedules and independent Gaussian group-mean noise, plus a separate minute response whose full 90% time is retained; historical monthly evidence and remaining model level changes are distinguished from trading profits."
+        },
+        {
+          "num": "5.5",
+          "kind": "Phenomenon",
+          "name": "Active funds versus the index",
+          "deps": [
+            "fin-5.1",
+            "fin-4.4",
+            "prob-1.2.5",
+            "prob-2.2.1"
+          ],
+          "refs": [
+            "Sharpe (1991), complete author reprint",
+            "Fama & French (2010), §§I,III,VI and AppendixA",
+            "SPIVA U.S. Year-End2024, Report 1a and glossary"
+          ],
+          "pic": "Five exact category-specific SPIVA 2024 observations are separate from a Gaussian negative-alpha probability model and all 500 unclamped period pairs, with theoretical/sample persistence and proper horizon-sign qualification."
+        },
+        {
+          "num": "5.6",
+          "kind": "Phenomenon",
+          "name": "Excess volatility (Shiller)",
+          "deps": [
+            "fin-1.5",
+            "prob-4.1.15"
+          ],
+          "see": [
+            "fin-5.1",
+            "fin-5.15"
+          ],
+          "refs": [
+            "Shiller (1981), §§I,V–VI and Appendix A",
+            "Shiller online monthly data and construction notes; annual means 1871–2022"
+          ],
+          "pic": "Later annual-mean/CPI price data and a finite dividend proxy with explicit beginning-price/end-dividend timing; sample SDs across discount rates are descriptive, distinct from the population conditional-forecast variance identity."
+        },
+        {
+          "num": "5.7",
+          "kind": "Concept",
+          "name": "Limits to arbitrage",
+          "deps": [
+            "fin-1.13",
+            "prob-2.2.3"
+          ],
+          "see": [
+            "fin-5.1"
+          ],
+          "refs": [
+            "Shleifer & Vishny (1997), introduction and §§I–II, pp.35–47; conclusion p.54"
+          ],
+          "pic": "A separate authored daily Gaussian spread shows actual first-hit exit wealth, refused initial margins and finite400-path liquidation/wealth comparisons; positive expected narrowing is distinct from certain recovery and daily overshoots are retained."
+        },
+        {
+          "num": "5.8",
+          "kind": "Phenomenon",
+          "name": "Fat tails and volatility clustering",
+          "deps": [
+            "fin-5.2"
+          ],
+          "refs": [
+            "Hull ch. 20",
+            "Hull ch. 23"
+          ],
+          "pic": "Daily returns’ histogram against the normal curve with tails on a log scale; a second panel shows absolute returns clustered in calm and stormy periods."
+        },
+        {
+          "num": "5.9",
+          "kind": "Model",
+          "name": "GARCH(1,1) volatility",
+          "deps": [
+            "fin-5.8"
+          ],
+          "refs": [
+            "Hull ch. 23"
+          ],
+          "pic": "Simulate returns whose variance responds to the last shock; sliders for α and β control persistence, and the simulated series reproduces clustering and fat tails."
+        },
+        {
+          "num": "5.10",
+          "kind": "Phenomenon",
+          "name": "Speculative bubbles: tulips, South Sea, dot-com",
+          "deps": [
+            "fin-1.1",
+            "prob-5.5.2a"
+          ],
+          "see": [
+            "fin-5.6",
+            "fin-5.7",
+            "fin-5.11",
+            "soc-5.4"
+          ],
+          "refs": [
+            "Garber (1989), §§I,IV,VI–VII",
+            "Temin & Voth (2004), introduction, §I and conclusions",
+            "Moran, Fosset, Kirman & Benzaquen (2021 preprint version), opening §III",
+            "Kenneth R. French Data Library, monthly factors and 10 industry portfolios, CRSP 202608"
+          ],
+          "pic": "Qualified historical interpretations accompany actual monthly portfolio total returns, all normalized at the same March 2000 high-tech peak date. A separate authored binary copying chain shows a complete finite history and exact stationary summaries, without an information-cascade claim or a guaranteed independent price range."
+        },
+        {
+          "num": "5.11",
+          "kind": "Theorem",
+          "name": "Rational bubbles and the transversality condition",
+          "deps": [
+            "fin-1.9",
+            "prob-4.1.13"
+          ],
+          "see": [
+            "fin-5.10"
+          ],
+          "refs": [
+            "Blanchard & Watson (1982), pricing and transversality sections, pp.296–300"
+          ],
+          "pic": "Compare certain/bursting infinite bubbles with a genuinely finite dividend asset; exact conditional expectations, realized paths, terminal violations and a finite Monte Carlo sample are distinguished."
+        },
+        {
+          "num": "5.12",
+          "kind": "Phenomenon",
+          "name": "Bubbles in the laboratory (Smith–Suchanek–Williams)",
+          "deps": [
+            "fin-1.5",
+            "prob-2.2.3"
+          ],
+          "see": [
+            "fin-5.10"
+          ],
+          "refs": [
+            "Smith, Suchanek & Williams (1988), §§1,3, Table I and §6.1, pp.1119–1126 and1147–1148"
+          ],
+          "pic": "Original design4 dividend benchmark and qualified22-experiment outcome; a separate authored trend/pull recurrence shows complete finite paths, matched-noise preset means and estimated sampling errors, with a distinct imposed terminal zero and no measured experience categories."
+        },
+        {
+          "num": "5.13",
+          "kind": "Paper",
+          "name": "Théorie de la spéculation",
+          "paper": {
+            "authors": "L. Bachelier",
+            "year": 1900,
+            "title": "Théorie de la spéculation",
+            "venue": "Annales scientifiques de l’École Normale Supérieure, 3e série, 17: 21–86",
+            "doi": "10.24033/asens.476"
+          },
+          "introduces": [
+            "fin-5.2"
+          ],
+          "deps": [
+            "prob-3.4.1",
+            "fin-5.2",
+            "pde-3.3"
+          ],
+          "refs": [
+            "Bachelier (1900), pp. 31–43, 46–51 and 70–75"
+          ],
+          "pic": "Separate daily paths, a normalized all-4000-terminal histogram and Gaussian density, and a call integrand with its own units; compare stable formula, quadrature and finite Monte Carlo while distinguishing continuous barrier crossing from daily monitoring and mapping the original premium coefficient to the heat kernel."
+        },
+        {
+          "num": "5.14",
+          "kind": "Paper",
+          "name": "Efficient Capital Markets",
+          "paper": {
+            "authors": "Eugene F. Fama",
+            "year": 1970,
+            "title": "Efficient Capital Markets: A Review of Theory and Empirical Work",
+            "venue": "Journal of Finance 25 (2): 383–417",
+            "doi": "10.1111/j.1540-6261.1970.tb00518.x"
+          },
+          "introduces": [
+            "fin-5.1"
+          ],
+          "deps": [
+            "fin-5.1",
+            "prob-4.1.14"
+          ],
+          "see": [
+            "fin-5.2",
+            "fin-5.4",
+            "fin-5.5"
+          ],
+          "refs": [
+            "Fama (1970), §§I–II, pp.383–388; §IV, pp.413–416"
+          ],
+          "pic": "Later real industry autocorrelations with a pointwise reference band; explicitly authored weighted split responses and complete Gaussian fund z-score samples; a four-state joint-hypothesis model separates raw predictability from a chosen risk benchmark."
+        },
+        {
+          "num": "5.15",
+          "kind": "Paper",
+          "name": "Do Stock Prices Move Too Much?",
+          "paper": {
+            "authors": "Robert J. Shiller",
+            "year": 1981,
+            "title": "Do Stock Prices Move Too Much to be Justified by Subsequent Changes in Dividends?",
+            "venue": "American Economic Review 71 (3): 421–436",
+            "url": "https://ms.mcmaster.ca/~grasselli/Shiller81.pdf"
+          },
+          "introduces": [
+            "fin-5.6"
+          ],
+          "deps": [
+            "fin-5.6",
+            "fin-1.5",
+            "prob-4.1.15"
+          ],
+          "see": [
+            "fin-5.14"
+          ],
+          "refs": [
+            "Shiller (1981), original paper pp.421–436, especially §§I,V–VI and Appendix A",
+            "Shiller online monthly data and construction notes; annual means 1871–2022"
+          ],
+          "pic": "The original paper’s January/WPI results are separated from later annual-mean/CPI curves. An authored stationary signed Gaussian cash-flow process has an exact conditional-PV forecast and population variance bound; all400 finite sample ratios are counted under explicit continuation rules."
+        }
+      ]
+    },
+    {
+      "n": 6,
+      "title": "Arbitrage, forwards and capital structure",
+      "summary": "No-arbitrage reasoning — identical payoffs must have identical prices — is the most powerful tool in finance. It fixes forward prices from spot prices and interest rates, links currencies through covered interest parity, and, by separating hyperplanes, guarantees state prices whenever there is no free lunch. Applied to firms, it shows that capital structure cannot create value in a frictionless market.",
+      "items": [
+        {
+          "num": "6.1",
+          "kind": "Method",
+          "name": "Pricing by replication",
+          "deps": [
+            "fin-1.13"
+          ],
+          "refs": [
+            "MIT Lo15.401 (2008), lecture8–9 slides17–22; supplied finite linear-system proof"
+          ],
+          "pic": "Edit three target payoffs and collapse the third asset. Requested hollow dots and achieved solid dots coincide only when replication exists; holdings and cost are computed, including singular compatible targets."
+        },
+        {
+          "num": "6.2",
+          "kind": "Theorem",
+          "name": "Forward prices by cost of carry",
+          "deps": [
+            "fin-6.1",
+            "fin-1.2"
+          ],
+          "refs": [
+            "MIT Lo15.401 (2008), lecture8–9 slides17–22; supplied continuous carry derivation"
+          ],
+          "pic": "Choose reinvested yield or one cash dividend, then change a declared quote offset. The table-equivalent terminal gain is constant across states only under the stated frictionless income and funding assumptions."
+        },
+        {
+          "num": "6.3",
+          "kind": "Concept",
+          "name": "Futures, margin and marking to market",
+          "deps": [
+            "fin-6.2"
+          ],
+          "refs": [
+            "MIT Lo15.401 (2008), lecture8–9 slides12–16; CME Money Calculations for Futures and Options (2015), settlement-variation section"
+          ],
+          "pic": "Move through a twelve-date authored price path. Red top-up markers restore the chosen initial margin after a maintenance breach; compare collateral cash with cumulative trading gain."
+        },
+        {
+          "num": "6.4",
+          "kind": "Method",
+          "name": "Minimum-variance hedge ratio",
+          "deps": [
+            "fin-6.3",
+            "fin-4.3"
+          ],
+          "refs": [
+            "Supplied covariance/completed-square derivation; fin4.3 written regression-slope definition"
+          ],
+          "pic": "The eight paired changes are authored, not commodity observations. Change common sensitivity, basis pattern and futures scale; the plotted variance is recomputed from actual residuals for each hedge."
+        },
+        {
+          "num": "6.5",
+          "kind": "Theorem",
+          "name": "Covered interest parity",
+          "deps": [
+            "fin-6.2"
+          ],
+          "refs": [
+            "BIS Borio–McCauley–McGuire–Sushko (2016), Covered interest parity lost, BoxA and limits-to-arbitrage discussion; supplied continuous-rate derivation"
+          ],
+          "pic": "Compare both fully covered routes with the quote explicitly in domestic per foreign units. The basis control is an authored log-rate discrepancy, not an observed post-crisis time series."
+        },
+        {
+          "num": "6.6",
+          "kind": "Concept",
+          "name": "Interest-rate swaps as bond portfolios",
+          "deps": [
+            "fin-2.6"
+          ],
+          "refs": [
+            "Supplied discount-factor replication and telescoping proof using fin2.6; MIT Lo15.401 lecture8–9 slide9 swap definition"
+          ],
+          "pic": "Change the positive discount curve, accrual schedule and fixed coupon. Compare actual discounted coupon bars; set the coupon to the computed par value and inspect the residual."
+        },
+        {
+          "num": "6.7",
+          "kind": "Theorem",
+          "name": "Fundamental theorem of asset pricing",
+          "deps": [
+            "fin-6.1",
+            "fa-3.4",
+            "algo-11.18"
+          ],
+          "refs": [
+            "Supplied finite-state separation and Farkas proof; written fa3.4 and algo11.18"
+          ],
+          "pic": "A unit bond and stock pay(1,1,1) and(0,1,2). Move the stock price across the exact open interval0<p<2B; display one positive state-price vector or an actual nonnegative-payoff arbitrage witness."
+        },
+        {
+          "num": "6.8",
+          "kind": "Theorem",
+          "name": "Modigliani–Miller proposition I",
+          "deps": [
+            "fin-6.1"
+          ],
+          "refs": [
+            "MIT Jenter15.402 (2003), Capital Structure1 slides11–18, PDF6–9"
+          ],
+          "pic": "Raise the promised debt payment through default states. The orange debt and blue equity pieces still sum to the same operating payoff, and their consistently priced values sum to the unchanged total."
+        },
+        {
+          "num": "6.9",
+          "kind": "Theorem",
+          "name": "Modigliani–Miller proposition II",
+          "deps": [
+            "fin-6.8"
+          ],
+          "refs": [
+            "MIT Jenter15.402 (2003), Capital Structure2 PDF2–3 WACC fallacy; supplied value-weighted expected-return derivation"
+          ],
+          "pic": "Track actual expected debt, equity and operating returns as the debt promise grows. Default changes debt returns; the weighted operating return remains unchanged where both claims have positive value."
+        },
+        {
+          "num": "6.10",
+          "kind": "Concept",
+          "name": "Taxes, distress and the trade-off theory",
+          "deps": [
+            "fin-6.9"
+          ],
+          "refs": [
+            "MIT Jenter15.402 (2003), Capital Structure2 PDF5–7 tax-shield assumptions and PDF12–13 financial distress; supplied quadratic closure"
+          ],
+          "pic": "Vary chosen tax-benefit and distress coefficients. The green shield and orange cost are separate inputs to an authored quadratic closure, with a computed maximizer and a flat case."
+        },
+        {
+          "num": "6.11",
+          "kind": "Paper",
+          "name": "The Cost of Capital, Corporation Finance and Investment",
+          "paper": {
+            "authors": "Franco Modigliani and Merton H. Miller",
+            "year": 1958,
+            "title": "The Cost of Capital, Corporation Finance and the Theory of Investment",
+            "venue": "American Economic Review 48 (3): 261–297",
+            "url": "https://www.jstor.org/stable/1809766"
+          },
+          "introduces": [
+            "fin-6.8",
+            "fin-6.9"
+          ],
+          "verify": true,
+          "deps": [
+            "fin-6.1",
+            "fin-1.13"
+          ],
+          "refs": [
+            "Modigliani–Miller (1958), preserved bibliographic record; original body unavailable",
+            "MIT Jenter15.402 (2003), Capital Structure1 PDF6–9; supplied finite replication"
+          ],
+          "pic": "Edit a declared hypothetical equity-price discrepancy and debt promise. Rebuild the payoff state by state; the initial gain and all later zero net cash flows are shown without invented historical utility or oil-company observations."
+        }
+      ]
+    },
+    {
+      "n": 7,
+      "title": "Options: payoffs and parity",
+      "summary": "Options give the right but not the obligation to buy or sell, so their payoffs are kinked. Without any model of the stock price, arbitrage alone pins down a great deal: put–call parity, price bounds, convexity in the strike, and the fact that an American call on a non-dividend stock should never be exercised early. Combinations of options build almost any payoff shape, and option prices across strikes reveal the market’s risk-neutral distribution.",
+      "items": [
+        {
+          "num": "7.1",
+          "kind": "Definition",
+          "name": "Calls and puts: payoffs and profits",
+          "deps": [],
+          "refs": [
+            "Hull ch. 10"
+          ],
+          "pic": "Drag the strike and premium; hockey-stick payoff and profit diagrams for long and short calls and puts update, with breakeven points marked."
+        },
+        {
+          "num": "7.2",
+          "kind": "Theorem",
+          "name": "Put–call parity",
+          "deps": [
+            "fin-7.1",
+            "fin-6.1"
+          ],
+          "refs": [
+            "Hull ch. 11"
+          ],
+          "pic": "Stack a call and a bond on one diagram and a put and the stock on another: the payoff lines coincide for every terminal price, so C + Ke^{−rT} = P + S."
+        },
+        {
+          "num": "7.3",
+          "kind": "Theorem",
+          "name": "Arbitrage bounds on option prices",
+          "deps": [
+            "fin-7.2"
+          ],
+          "refs": [
+            "Hull ch. 11"
+          ],
+          "pic": "The band between max(S − Ke^{−rT}, 0) and S where any call price must lie; enter a price outside the band and the page produces the arbitrage."
+        },
+        {
+          "num": "7.4",
+          "kind": "Theorem",
+          "name": "Never exercise an American call early (no dividends)",
+          "deps": [
+            "fin-7.3"
+          ],
+          "refs": [
+            "Hull ch. 11"
+          ],
+          "pic": "Compare exercising now (S − K) with the call’s lower bound S − Ke^{−rT}: the bound is always higher before expiry, and adding a dividend creates an early-exercise region."
+        },
+        {
+          "num": "7.5",
+          "kind": "Theorem",
+          "name": "Option prices are convex in the strike",
+          "deps": [
+            "fin-7.3",
+            "rca-3.1"
+          ],
+          "refs": [
+            "Hull ch. 11"
+          ],
+          "pic": "Plot call prices against strike; a butterfly spread’s cost is a second difference that must be non-negative, and a dented price curve produces a free butterfly."
+        },
+        {
+          "num": "7.6",
+          "kind": "Method",
+          "name": "Option strategies: spreads, straddles, butterflies",
+          "deps": [
+            "fin-7.1"
+          ],
+          "refs": [
+            "Hull ch. 12"
+          ],
+          "pic": "Build a position from a palette of calls, puts and stock; its payoff diagram is the sum of the pieces, and named strategies can be loaded and edited."
+        },
+        {
+          "num": "7.7",
+          "kind": "Theorem",
+          "name": "Breeden–Litzenberger: densities from option prices",
+          "deps": [
+            "fin-7.5",
+            "fin-6.7"
+          ],
+          "refs": [
+            "Hull ch. 20"
+          ],
+          "pic": "Take the second derivative of call prices with respect to strike; the risk-neutral density appears, and market prices with a skew give a left-skewed density."
+        },
+        {
+          "num": "7.8",
+          "kind": "Concept",
+          "name": "Protective puts and portfolio insurance",
+          "deps": [
+            "fin-7.1"
+          ],
+          "refs": [
+            "Hull ch. 12"
+          ],
+          "pic": "Stock plus put gives a floor; simulated return distributions with and without the put show the cost of the insurance as a shifted, truncated histogram."
+        },
+        {
+          "num": "7.9",
+          "kind": "Model",
+          "name": "Equity as a call on the firm (Merton)",
+          "deps": [
+            "fin-7.1",
+            "fin-6.8"
+          ],
+          "refs": [
+            "Hull ch. 24"
+          ],
+          "pic": "Firm assets evolve randomly; equity holders get max(V − D, 0) at maturity, so equity is a call and debt a risk-free bond minus a put, with the implied default probability read off."
+        },
+        {
+          "num": "7.10",
+          "kind": "Paper",
+          "name": "Theory of Rational Option Pricing",
+          "paper": {
+            "authors": "Robert C. Merton",
+            "year": 1973,
+            "title": "Theory of Rational Option Pricing",
+            "venue": "Bell Journal of Economics and Management Science 4 (1): 141–183",
+            "doi": "10.2307/3003143"
+          },
+          "introduces": [
+            "fin-7.3",
+            "fin-7.4",
+            "fin-7.5"
+          ],
+          "deps": [
+            "fin-7.1",
+            "fin-1.13"
+          ],
+          "refs": [],
+          "pic": "Option prices that break Merton’s restrictions are free money: drag a call price below max(0, S − Ke^(−rT)) or above S, or bend the prices across strikes into a non-convex shape, and the matching riskless trade lights up with its profit; for a stock paying no dividends, exercising an American call early is shown always to give up value."
+        }
+      ]
+    },
+    {
+      "n": 8,
+      "title": "Binomial pricing",
+      "summary": "In a one-period world where the stock goes up or down, an option can be replicated exactly by stock and borrowing, so its price follows without any assumption about investors’ risk preferences. That price equals a discounted expectation under artificial “risk-neutral” probabilities. Chaining periods into a tree prices American options by backward induction, and as the steps shrink, the binomial price converges to the Black–Scholes formula.",
+      "items": [
+        {
+          "num": "8.1",
+          "kind": "Model",
+          "name": "One-step binomial model and replication",
+          "deps": [
+            "fin-7.1",
+            "fin-6.1"
+          ],
+          "refs": [
+            "Hull ch. 13",
+            "Luenberger: Basic Options Theory"
+          ],
+          "pic": "A stock that moves up or down: solve for the shares and bonds that copy the call’s payoff in both states; the cost of that portfolio is the option price."
+        },
+        {
+          "num": "8.2",
+          "kind": "Concept",
+          "name": "Risk-neutral valuation",
+          "deps": [
+            "fin-8.1",
+            "fin-6.7"
+          ],
+          "refs": [
+            "Hull ch. 13"
+          ],
+          "pic": "Change the real-world probability of an up move: the replicating price does not move, and it equals the expectation under q = (e^{rΔt} − d)/(u − d) discounted at r."
+        },
+        {
+          "num": "8.3",
+          "kind": "Method",
+          "name": "Multi-period binomial trees (Cox–Ross–Rubinstein)",
+          "deps": [
+            "fin-8.2"
+          ],
+          "refs": [
+            "Hull ch. 13"
+          ],
+          "pic": "A recombining tree with a step-count slider; node values are filled backward from expiry, with the replicating hedge shown at each node on hover."
+        },
+        {
+          "num": "8.4",
+          "kind": "Method",
+          "name": "American options by backward induction",
+          "deps": [
+            "fin-8.3",
+            "fin-7.4"
+          ],
+          "refs": [
+            "Hull ch. 13",
+            "Hull ch. 21"
+          ],
+          "pic": "At each node compare holding with exercising; the nodes where early exercise wins are coloured, tracing the exercise boundary of an American put."
+        },
+        {
+          "num": "8.5",
+          "kind": "Concept",
+          "name": "Delta hedging in the tree",
+          "deps": [
+            "fin-8.1"
+          ],
+          "refs": [
+            "Hull ch. 13"
+          ],
+          "pic": "Walk a random path through the tree, rebalancing the hedge at each node; the hedged position’s value matches the option’s exactly at every step."
+        },
+        {
+          "num": "8.6",
+          "kind": "Theorem",
+          "name": "Binomial prices converge to Black–Scholes",
+          "deps": [
+            "fin-8.3",
+            "stoch-13.2"
+          ],
+          "refs": [
+            "Hull ch. 13"
+          ],
+          "pic": "Plot the binomial price against the number of steps: it oscillates and converges to the Black–Scholes value drawn as a horizontal line, with the error shrinking like 1/n."
+        },
+        {
+          "num": "8.7",
+          "kind": "Model",
+          "name": "Lognormal stock prices",
+          "deps": [
+            "fin-3.2",
+            "stoch-13.14"
+          ],
+          "refs": [
+            "Hull ch. 14",
+            "Luenberger: Models of Asset Dynamics"
+          ],
+          "pic": "Geometric Brownian paths fan out; the terminal histogram is lognormal with the mean, median and mode marked, and a log-scale toggle turns it into a normal curve."
+        }
+      ]
+    },
+    {
+      "n": 9,
+      "title": "Black–Scholes and the Greeks",
+      "summary": "Continuous hedging of an option with the stock removes all risk, so the option must earn the risk-free rate; this yields the Black–Scholes partial differential equation, which a change of variables turns into the heat equation. Its solution is the Black–Scholes formula. The Greeks — delta, gamma, theta, vega, rho — measure the option’s sensitivities and guide hedging, while implied volatilities that vary with strike show where the model’s assumptions fail.",
+      "items": [
+        {
+          "num": "9.1",
+          "kind": "Model",
+          "name": "The Black–Scholes–Merton PDE",
+          "deps": [
+            "stoch-13.13",
+            "fin-8.5",
+            "fin-8.7"
+          ],
+          "refs": [
+            "Hull ch. 15"
+          ],
+          "pic": "The option value surface V(S, t) with the PDE’s three terms (time decay, curvature, drift) drawn as coloured layers that sum to rV at every point."
+        },
+        {
+          "num": "9.2",
+          "kind": "Theorem",
+          "name": "Black–Scholes reduces to the heat equation",
+          "deps": [
+            "fin-9.1",
+            "pde-1.4",
+            "pde-3.4"
+          ],
+          "refs": [
+            "Hull ch. 15"
+          ],
+          "pic": "Change variables to log-price and time-to-expiry: the call’s payoff kink diffuses exactly like heat from a hot edge, animated side by side with the price surface."
+        },
+        {
+          "num": "9.3",
+          "kind": "Theorem",
+          "name": "The Black–Scholes formula",
+          "deps": [
+            "fin-9.2",
+            "fin-8.6"
+          ],
+          "refs": [
+            "Hull ch. 15"
+          ],
+          "pic": "Sliders for S, K, T, r and σ; the formula’s price and its two terms S·N(d₁) and Ke^{−rT}N(d₂) are drawn, along with a Monte Carlo estimate that agrees."
+        },
+        {
+          "num": "9.4",
+          "kind": "Definition",
+          "name": "Delta",
+          "deps": [
+            "fin-9.3"
+          ],
+          "refs": [
+            "Hull ch. 19"
+          ],
+          "pic": "Delta against the stock price for several maturities: a smooth step from 0 to 1 that sharpens toward expiry, with the tangent to the price curve shown at your chosen S."
+        },
+        {
+          "num": "9.5",
+          "kind": "Definition",
+          "name": "Gamma",
+          "deps": [
+            "fin-9.4"
+          ],
+          "refs": [
+            "Hull ch. 19"
+          ],
+          "pic": "Gamma peaks at the money and spikes as expiry approaches; the curvature of the price curve and the rebalancing it forces are shown together."
+        },
+        {
+          "num": "9.6",
+          "kind": "Theorem",
+          "name": "Theta and the theta–gamma relation",
+          "deps": [
+            "fin-9.5",
+            "fin-9.1"
+          ],
+          "refs": [
+            "Hull ch. 19"
+          ],
+          "pic": "A delta-hedged option loses value to time decay where it gains from gamma; the PDE’s balance θ + ½σ²S²Γ = r(V − SΔ) is checked numerically across S."
+        },
+        {
+          "num": "9.7",
+          "kind": "Definition",
+          "name": "Vega",
+          "deps": [
+            "fin-9.3"
+          ],
+          "refs": [
+            "Hull ch. 19"
+          ],
+          "pic": "Price against volatility for several strikes; vega is largest at the money for long maturities, read as the slope of each curve."
+        },
+        {
+          "num": "9.8",
+          "kind": "Definition",
+          "name": "Rho",
+          "deps": [
+            "fin-9.3"
+          ],
+          "refs": [
+            "Hull ch. 19"
+          ],
+          "pic": "Call and put prices against the interest rate: calls rise and puts fall, with rho growing with maturity and moneyness."
+        },
+        {
+          "num": "9.9",
+          "kind": "Method",
+          "name": "Dynamic delta hedging and its P&L",
+          "deps": [
+            "fin-9.4",
+            "fin-9.5"
+          ],
+          "refs": [
+            "Hull ch. 19"
+          ],
+          "pic": "Hedge a sold call along a simulated path with daily, weekly or monthly rebalancing; the hedging error’s spread shrinks with frequency, and realised versus implied volatility drives the P&L."
+        },
+        {
+          "num": "9.10",
+          "kind": "Concept",
+          "name": "Implied volatility",
+          "deps": [
+            "fin-9.3"
+          ],
+          "refs": [
+            "Hull ch. 15",
+            "Hull ch. 20"
+          ],
+          "pic": "Enter a market option price; Newton’s method finds the volatility that matches it, with iterations drawn on the price-versus-σ curve."
+        },
+        {
+          "num": "9.11",
+          "kind": "Phenomenon",
+          "name": "The volatility smile and skew",
+          "deps": [
+            "fin-9.10",
+            "fin-5.8"
+          ],
+          "refs": [
+            "Hull ch. 20"
+          ],
+          "pic": "Implied volatility across strikes for equity index options: a downward skew that was absent before 1987, and a fat-tailed return model that reproduces it."
+        },
+        {
+          "num": "9.12",
+          "kind": "Method",
+          "name": "Monte Carlo option pricing",
+          "deps": [
+            "fin-8.2",
+            "fin-8.7"
+          ],
+          "refs": [
+            "Hull ch. 21"
+          ],
+          "pic": "Simulate risk-neutral paths and average discounted payoffs; the estimate and its confidence interval narrow like 1/√n, and an Asian option with no closed form is priced the same way."
+        },
+        {
+          "num": "9.13",
+          "kind": "Paper",
+          "name": "The Pricing of Options and Corporate Liabilities",
+          "paper": {
+            "authors": "Fischer Black and Myron Scholes",
+            "year": 1973,
+            "title": "The Pricing of Options and Corporate Liabilities",
+            "venue": "Journal of Political Economy 81 (3): 637–654",
+            "doi": "10.1086/260062"
+          },
+          "introduces": [
+            "fin-9.1",
+            "fin-9.3",
+            "fin-7.9"
+          ],
+          "deps": [
+            "fin-8.5",
+            "fin-8.7",
+            "stoch-13.13"
+          ],
+          "refs": [],
+          "pic": "Their Figure 1: call value against stock price for several times to maturity, each curve lying above max(S − K, 0) and sinking onto it as expiry nears; drag volatility, interest rate and time, hold the hedge ratio read off the curve’s slope, and watch the hedged position earn the riskless rate."
+        }
+      ]
+    },
+    {
+      "n": 10,
+      "title": "Risk management",
+      "summary": "Banks and funds summarize their risk by quantiles of the loss distribution. Value at risk is easy to explain but ignores how bad losses beyond it can be and can even penalize diversification; expected shortfall fixes both. Crises expose the weak points of any model: correlations jump, liquidity vanishes, and leverage turns small losses into failures.",
+      "items": [
+        {
+          "num": "10.1",
+          "kind": "Definition",
+          "name": "Value at risk",
+          "deps": [
+            "fin-5.8"
+          ],
+          "refs": [
+            "Hull ch. 22"
+          ],
+          "pic": "A loss distribution with a confidence slider; VaR is the quantile line, and a fat-tailed toggle shows the 99% VaR moving much more than the 95%."
+        },
+        {
+          "num": "10.2",
+          "kind": "Definition",
+          "name": "Expected shortfall",
+          "deps": [
+            "fin-10.1"
+          ],
+          "refs": [
+            "Hull ch. 22"
+          ],
+          "pic": "Shade the tail beyond VaR and compute its average; two portfolios with equal VaR but very different tails have very different expected shortfalls."
+        },
+        {
+          "num": "10.3",
+          "kind": "Paradox",
+          "name": "VaR can punish diversification",
+          "deps": [
+            "fin-10.1",
+            "fin-10.2"
+          ],
+          "refs": [
+            "Hull ch. 22"
+          ],
+          "pic": "Two independent loans each with a 4% default chance: each has zero 95% VaR, but the pair has a positive one, while expected shortfall stays subadditive."
+        },
+        {
+          "num": "10.4",
+          "kind": "Method",
+          "name": "Historical simulation versus model-building VaR",
+          "deps": [
+            "fin-10.1"
+          ],
+          "refs": [
+            "Hull ch. 22"
+          ],
+          "pic": "Compute VaR from the last 500 days of returns and from a normal model; backtest both and count exceptions against the expected number."
+        },
+        {
+          "num": "10.5",
+          "kind": "Phenomenon",
+          "name": "Correlations rise in crises",
+          "deps": [
+            "fin-3.4"
+          ],
+          "refs": [
+            "Hull ch. 23"
+          ],
+          "pic": "Rolling correlations between asset classes jump during 2008 and 2020, and the diversified portfolio’s risk reduction shrinks exactly when it is needed."
+        },
+        {
+          "num": "10.6",
+          "kind": "Event",
+          "name": "Long-Term Capital Management (1998)",
+          "deps": [
+            "fin-10.1",
+            "fin-5.7"
+          ],
+          "refs": [
+            "Hull ch. 37"
+          ],
+          "pic": "LTCM’s equity over 1994–1998 with its leverage; a model of convergence trades under a correlation shock and forced selling shows how 25:1 leverage turned spreads into ruin."
+        }
+      ]
+    },
+    {
+      "n": 11,
+      "title": "Growth-optimal investing and betting",
+      "summary": "A bettor with an edge who stakes too much will eventually go broke; one who stakes too little grows slowly. Kelly showed that betting the fraction that maximizes expected log-wealth maximizes the long-run growth rate, and overbetting beyond twice that fraction makes growth negative. In continuous time the same idea gives an optimal leverage, and rebalancing can extract growth even from assets that go nowhere.",
+      "items": [
+        {
+          "num": "11.1",
+          "kind": "Phenomenon",
+          "name": "Ruin from betting too much",
+          "deps": [
+            "stoch-2.4"
+          ],
+          "refs": [
+            "Luenberger: Optimal Portfolio Growth"
+          ],
+          "pic": "A gambler with a 55% edge bets a fixed fraction of wealth; paths at 10%, 50% and 90% bets are drawn on a log scale, and the large bets drive almost every path toward zero."
+        },
+        {
+          "num": "11.2",
+          "kind": "Paradox",
+          "name": "The martingale (doubling) betting system",
+          "deps": [
+            "stoch-12.3"
+          ],
+          "refs": [
+            "Luenberger: Optimal Portfolio Growth"
+          ],
+          "pic": "Double after every loss at a fair table with a finite bankroll: frequent small wins are punctuated by rare catastrophic losses, and the average outcome stays at zero, as optional stopping demands."
+        },
+        {
+          "num": "11.3",
+          "kind": "Theorem",
+          "name": "The Kelly criterion",
+          "deps": [
+            "behav-1.2",
+            "fin-11.1"
+          ],
+          "refs": [
+            "Luenberger: Optimal Portfolio Growth"
+          ],
+          "pic": "Expected log-growth against bet fraction is a hump with its peak at f* = p − q/b; drag the odds and edge and the peak moves, matched by simulated growth rates."
+        },
+        {
+          "num": "11.4",
+          "kind": "Theorem",
+          "name": "Kelly maximizes long-run growth almost surely",
+          "deps": [
+            "fin-11.3",
+            "stoch-14.14"
+          ],
+          "refs": [
+            "Luenberger: Optimal Portfolio Growth"
+          ],
+          "pic": "Race a Kelly bettor against one betting any other fixed fraction over 10,000 rounds; the probability that Kelly is ahead climbs toward one as rounds increase."
+        },
+        {
+          "num": "11.5",
+          "kind": "Phenomenon",
+          "name": "Overbetting: growth turns negative beyond 2× Kelly",
+          "deps": [
+            "fin-11.3"
+          ],
+          "refs": [
+            "Luenberger: Optimal Portfolio Growth"
+          ],
+          "pic": "The growth-rate curve crosses zero near twice the Kelly fraction; simulated paths at 2.5× Kelly decline even though every single bet has positive expected value."
+        },
+        {
+          "num": "11.6",
+          "kind": "Concept",
+          "name": "Fractional Kelly",
+          "deps": [
+            "fin-11.5"
+          ],
+          "refs": [
+            "Luenberger: Optimal Portfolio Growth"
+          ],
+          "pic": "Half-Kelly gives up a quarter of the growth rate but halves volatility and drawdowns; the trade-off curve of growth against drawdown risk is plotted."
+        },
+        {
+          "num": "11.7",
+          "kind": "Theorem",
+          "name": "Continuous-time Kelly: leverage (μ − r)/σ²",
+          "deps": [
+            "fin-11.3",
+            "fin-8.7"
+          ],
+          "refs": [
+            "Luenberger: Optimal Portfolio Growth"
+          ],
+          "pic": "A stock-and-cash portfolio rebalanced continuously; growth rate against leverage is a parabola peaking at (μ − r)/σ², checked with simulated paths."
+        },
+        {
+          "num": "11.8",
+          "kind": "Method",
+          "name": "Volatility pumping (Shannon’s demon)",
+          "deps": [
+            "fin-3.2",
+            "fin-11.3"
+          ],
+          "refs": [
+            "Luenberger: Optimal Portfolio Growth"
+          ],
+          "pic": "A stock that doubles or halves each period goes nowhere, but a 50/50 stock–cash mix rebalanced every period grows steadily; the gain is the volatility drag recovered."
+        },
+        {
+          "num": "11.9",
+          "kind": "Concept",
+          "name": "The log-optimal portfolio and Samuelson’s critique",
+          "deps": [
+            "fin-11.4",
+            "behav-1.7"
+          ],
+          "refs": [
+            "Luenberger: Optimal Portfolio Growth"
+          ],
+          "pic": "Compare log-optimal and CRRA-optimal investors over a finite horizon: Kelly wins almost surely in the long run, yet a more risk-averse investor rationally prefers less risk, as the utility readouts show."
+        }
+      ]
+    }
+  ]
+}

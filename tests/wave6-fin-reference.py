@@ -154,7 +154,23 @@ def positions_rows():
       p={'mode':mode,'physicalMode':physicalMode,'strike':K,'discount':B,'terminal':X};rows.append({'name':'protectivePut','parameters':p,'expected':protective_case(p)})
  return rows
 
-rows=triangular_rows()+cashflow_rows()+positions_rows()
+def ui_default_rows():
+ rows=[]
+ defaults=[
+  ('payoff',payoff_case,dict(kind='call',side='long',convention='terminal financed',strike=100,premium=8,terminal=120,discount=.875)),
+  ('parity',parity_case,dict(spot=100,strike=100,discount=.875,timeValue=10,callOffset=0,terminal=120)),
+  ('bounds',bounds_case,dict(kind='call',spot=100,strike=100,discount=.875,reference='lower',quoteOffset=-5,terminal=120)),
+  ('earlyCall',early_case,dict(spot=100,strike=80,discount=.875,dividendFraction=0)),
+  ('strikeConvexity',convexity_case,dict(mode=100,strike=100,leftWidth=15,rightWidth=25,discount=.875,reference='chord',quoteOffset=1,terminal=100)),
+  ('strategies',strategies_case,dict(stockUnits=0,spot=100,terminal=120,discount=.875,legs=[dict(kind='call',strike=80,units=1,premium=24),dict(kind='call',strike=120,units=-1,premium=5),dict(kind='put',strike=100,units=0,premium=8)])),
+  ('densityRecovery',density_case,dict(mode=100,strike=100,discount=.875,bandwidth=5)),
+  ('protectivePut',protective_case,dict(mode=100,physicalMode=80,strike=90,discount=.875,terminal=100)),
+  ('claims',claims_case,dict(mode=100,physicalMode=80,face=100,discount=.875,terminalAssets=100)),
+ ]
+ for name,calculate,parameters in defaults:rows.append(dict(name=name,parameters=parameters,expected=calculate(parameters)))
+ return rows
+
+rows=triangular_rows()+cashflow_rows()+positions_rows()+ui_default_rows()
 out={'scope':'Independent exact Fraction integration and cash-flow/holding arithmetic; no production imports. All physical rounding is exact Fraction-to-binary64. Mpmath100digits (recheck200) formats only final logarithmic magnitudes. Chosen risk-neutral/physical laws are not market observations.','cases':len(rows),'families':9,'rows':rows}
 path=Path(os.environ.get('FIN_REFERENCE_OUTPUT',str(Path(__file__).parent/'fixtures/wave6-fin-reference.json')))
 path.write_text(json.dumps(out,indent=2)+'\n')

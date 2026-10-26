@@ -1,16 +1,17 @@
 {
-  "status": "Pure model checkpoint only. No FIN7 author-availability promotion; complete lesson/native/Share/personal visual gates open.",
+  "status": "PASS: final complete1950-case model reference, all original1941expected objects preserved;9UIdefaults appended",
   "availability": {
-    "unchanged": 849,
+    "before": 849,
+    "afterAuthorVisualGates": 858,
     "goal": 1057,
     "historicalIndependentAcceptance": 36
   },
-  "referenceCases": 1941,
+  "referenceCases": 1950,
   "families": 9,
-  "comparisons": 232847,
+  "comparisons": 233821,
   "precision": {
     "status": "PASS",
-    "cases": 1941,
+    "cases": 1950,
     "families": [
       "bounds",
       "claims",
@@ -30,27 +31,28 @@
     "canonicalRepeatByteIdentical": true,
     "completeHigherExpectedObjectsEqual": true,
     "higherBytesIdentical": true,
-    "fixtureSHA256": "9a2adcc80a57860e2fdb33bca2305be6b98cc4c373459e3b50bf4508f6087f93"
+    "fixtureSHA256": "771902bef6635506b16701b6c6287029c07f3eb1adaa8d812b0955e258e68db1",
+    "original1941CompleteObjectsPreserved": true,
+    "additionalUIdefaults": 9
   },
   "physicalGate": "Exact correctly rounded independent Fraction-to-binary64 agreement with strict sign/range and signed-zero checks.",
   "logGateAbsolute": 8e-12,
   "worstLogAbsolute": 4.547473508864641e-13,
   "focused": {
-    "pureGroups": 13,
+    "newGroups": 17,
     "affectedPriorFinanceGroups": 15,
-    "passed": 28,
+    "passed": 32,
     "failed": 0,
     "skipped": 0,
     "cancelled": 0,
-    "durationMs": 321.620952,
-    "log": "/workspace/scratch/wave6-fin-research/focused-pure-corrected.log",
-    "logSHA256": "ba2ed67219c7a41501d71103dda05f1f1b0b3a02d156cbff4a2ef718478a6c83"
+    "durationMs": 377.014338,
+    "log": "/workspace/scratch/wave6-fin-research/focused-final-v2.log",
+    "logSHA256": "2fe779da8fca1abd995a243ad2846cb464782fcc8f2415e465eb33d8ee5ee203"
   },
   "preservation": {
-    "preFINPinnedFiles": 311,
-    "allExact": true,
-    "sourceLedger": "docs/verification/wave6-fin-sources.json",
-    "existingPaper": "fin-7.10 and all its file bytes remain exact"
+    "rawPreFINPins": 310,
+    "wholeSyllabusSemanticPreservation": true,
+    "existingPaperExact": true
   },
   "sourceHashes": {
     "content/fin/ch07.cashflow.shared.js": "275c8cdb2cb287452243c92c1129d3da4390ef307db5c95a2e9896af3e9d232e",
@@ -58,9 +60,9 @@
     "content/fin/ch07.law.shared.js": "47a774d128fb23d89835b5f3a1b53ed1f72af4ed377e03e298ddccb399bacc92",
     "content/fin/ch07.positions.shared.js": "247a444fa766dcc2bc449918ae5582450e8d3d3e1b08e47e63af7562df67d2ea",
     "content/fin/ch07.shared.js": "e9048278d8b6d0bf6cc4bd6548bee9005471b6c528fc59eddfd03e19c9d32e03",
-    "tests/fixtures/wave6-fin-reference.json": "9a2adcc80a57860e2fdb33bca2305be6b98cc4c373459e3b50bf4508f6087f93",
-    "tests/wave6-fin-reference.py": "b5f7284069b1907f056c15c0479066342576b3c49002f80fff79087b273c727f",
-    "tests/wave6-fin.test.mjs": "4be7a047f79a1fb14e1a6915f29e32225f63990daa903a17b681924d6081f857"
+    "tests/fixtures/wave6-fin-reference.json": "771902bef6635506b16701b6c6287029c07f3eb1adaa8d812b0955e258e68db1",
+    "tests/wave6-fin-reference.py": "abede89438bbdbb216966fbd8fa13de27c0f94b710d7d2cc1c3c1158f57ad367",
+    "tests/wave6-fin.test.mjs": "15539868e825829f68190b8bcb4ac592eca923fed180d165fe630c347ec1be6c"
   },
   "developmentFailures": [
     {
@@ -70,5 +72,22 @@
       "initialLogSHA256": "6f59504439d26490138909677cc5cc385e9fe82a60865e0157e2120206a5f027"
     }
   ],
-  "next": "Author all9 complete frozen lessons with purpose-built visuals; synchronize only chapter7 refs/pic, preserve the already written7.10Paper, run complete metadata/native/Share/critical/original-pixel gates before counting. No stopping at this checkpoint."
+  "next": "FIN9completeauthorgates pass; continue GAME6. No independent acceptance/publication/deployment.",
+  "initialPureCheckpoint": {
+    "commit": "045df609",
+    "referenceCases": 1941,
+    "comparisons": 232847,
+    "originalFixtureSHA256": "9a2adcc80a57860e2fdb33bca2305be6b98cc4c373459e3b50bf4508f6087f93",
+    "originalFocused": {
+      "pureGroups": 13,
+      "affectedPriorFinanceGroups": 15,
+      "passed": 28,
+      "failed": 0,
+      "skipped": 0,
+      "cancelled": 0,
+      "durationMs": 321.620952,
+      "log": "/workspace/scratch/wave6-fin-research/focused-pure-corrected.log",
+      "logSHA256": "ba2ed67219c7a41501d71103dda05f1f1b0b3a02d156cbff4a2ef718478a6c83"
+    }
+  }
 }

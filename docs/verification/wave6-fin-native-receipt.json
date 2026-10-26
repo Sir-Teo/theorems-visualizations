@@ -1,0 +1,7591 @@
+{
+  "status": "PASS",
+  "scope": "Complete native controls and actual Share; later decimal labels and lesson4 equation wrapping rechecked in every final boundary state, all62modes and all36default/rich layouts. Scientific render consistency is not another independent numerical oracle.",
+  "completeControlRun": {
+    "totals": {
+      "layouts": 36,
+      "actions": 1516,
+      "shares": 684,
+      "invalid": 36,
+      "raw": 36,
+      "critical": 312,
+      "checks": 2620,
+      "modelComparisons": 1211346
+    },
+    "runs": [
+      {
+        "status": "PASS",
+        "totals": {
+          "layouts": 20,
+          "actions": 728,
+          "shares": 344,
+          "invalid": 20,
+          "raw": 20,
+          "critical": 172,
+          "checks": 1304,
+          "modelComparisons": 376412
+        },
+        "rows": [
+          {
+            "id": 1,
+            "theme": "light",
+            "width": 320,
+            "criticalCases": 9,
+            "totals": {
+              "layouts": 1,
+              "actions": 41,
+              "shares": 20,
+              "invalid": 1,
+              "raw": 1,
+              "critical": 9,
+              "checks": 73,
+              "modelComparisons": 21958
+            }
+          },
+          {
+            "id": 1,
+            "theme": "light",
+            "width": 1200,
+            "criticalCases": 9,
+            "totals": {
+              "layouts": 1,
+              "actions": 41,
+              "shares": 20,
+              "invalid": 1,
+              "raw": 1,
+              "critical": 9,
+              "checks": 73,
+              "modelComparisons": 21958
+            }
+          },
+          {
+            "id": 1,
+            "theme": "dark",
+            "width": 320,
+            "criticalCases": 9,
+            "totals": {
+              "layouts": 1,
+              "actions": 41,
+              "shares": 20,
+              "invalid": 1,
+              "raw": 1,
+              "critical": 9,
+              "checks": 73,
+              "modelComparisons": 21958
+            }
+          },
+          {
+            "id": 1,
+            "theme": "dark",
+            "width": 1200,
+            "criticalCases": 9,
+            "totals": {
+              "layouts": 1,
+              "actions": 41,
+              "shares": 20,
+              "invalid": 1,
+              "raw": 1,
+              "critical": 9,
+              "checks": 73,
+              "modelComparisons": 21958
+            }
+          },
+          {
+            "id": 2,
+            "theme": "light",
+            "width": 320,
+            "criticalCases": 8,
+            "totals": {
+              "layouts": 1,
+              "actions": 33,
+              "shares": 15,
+              "invalid": 1,
+              "raw": 1,
+              "critical": 8,
+              "checks": 59,
+              "modelComparisons": 19055
+            }
+          },
+          {
+            "id": 2,
+            "theme": "light",
+            "width": 1200,
+            "criticalCases": 8,
+            "totals": {
+              "layouts": 1,
+              "actions": 33,
+              "shares": 15,
+              "invalid": 1,
+              "raw": 1,
+              "critical": 8,
+              "checks": 59,
+              "modelComparisons": 19055
+            }
+          },
+          {
+            "id": 2,
+            "theme": "dark",
+            "width": 320,
+            "criticalCases": 8,
+            "totals": {
+              "layouts": 1,
+              "actions": 33,
+              "shares": 15,
+              "invalid": 1,
+              "raw": 1,
+              "critical": 8,
+              "checks": 59,
+              "modelComparisons": 19055
+            }
+          },
+          {
+            "id": 2,
+            "theme": "dark",
+            "width": 1200,
+            "criticalCases": 8,
+            "totals": {
+              "layouts": 1,
+              "actions": 33,
+              "shares": 15,
+              "invalid": 1,
+              "raw": 1,
+              "critical": 8,
+              "checks": 59,
+              "modelComparisons": 19055
+            }
+          },
+          {
+            "id": 3,
+            "theme": "light",
+            "width": 320,
+            "criticalCases": 9,
+            "totals": {
+              "layouts": 1,
+              "actions": 40,
+              "shares": 19,
+              "invalid": 1,
+              "raw": 1,
+              "critical": 9,
+              "checks": 71,
+              "modelComparisons": 11231
+            }
+          },
+          {
+            "id": 3,
+            "theme": "light",
+            "width": 1200,
+            "criticalCases": 9,
+            "totals": {
+              "layouts": 1,
+              "actions": 40,
+              "shares": 19,
+              "invalid": 1,
+              "raw": 1,
+              "critical": 9,
+              "checks": 71,
+              "modelComparisons": 11231
+            }
+          },
+          {
+            "id": 3,
+            "theme": "dark",
+            "width": 320,
+            "criticalCases": 9,
+            "totals": {
+              "layouts": 1,
+              "actions": 40,
+              "shares": 19,
+              "invalid": 1,
+              "raw": 1,
+              "critical": 9,
+              "checks": 71,
+              "modelComparisons": 11231
+            }
+          },
+          {
+            "id": 3,
+            "theme": "dark",
+            "width": 1200,
+            "criticalCases": 9,
+            "totals": {
+              "layouts": 1,
+              "actions": 40,
+              "shares": 19,
+              "invalid": 1,
+              "raw": 1,
+              "critical": 9,
+              "checks": 71,
+              "modelComparisons": 11231
+            }
+          },
+          {
+            "id": 4,
+            "theme": "light",
+            "width": 320,
+            "criticalCases": 9,
+            "totals": {
+              "layouts": 1,
+              "actions": 26,
+              "shares": 14,
+              "invalid": 1,
+              "raw": 1,
+              "critical": 9,
+              "checks": 52,
+              "modelComparisons": 15620
+            }
+          },
+          {
+            "id": 4,
+            "theme": "light",
+            "width": 1200,
+            "criticalCases": 9,
+            "totals": {
+              "layouts": 1,
+              "actions": 26,
+              "shares": 14,
+              "invalid": 1,
+              "raw": 1,
+              "critical": 9,
+              "checks": 52,
+              "modelComparisons": 15618
+            }
+          },
+          {
+            "id": 4,
+            "theme": "dark",
+            "width": 320,
+            "criticalCases": 9,
+            "totals": {
+              "layouts": 1,
+              "actions": 26,
+              "shares": 14,
+              "invalid": 1,
+              "raw": 1,
+              "critical": 9,
+              "checks": 52,
+              "modelComparisons": 15620
+            }
+          },
+          {
+            "id": 4,
+            "theme": "dark",
+            "width": 1200,
+            "criticalCases": 9,
+            "totals": {
+              "layouts": 1,
+              "actions": 26,
+              "shares": 14,
+              "invalid": 1,
+              "raw": 1,
+              "critical": 9,
+              "checks": 52,
+              "modelComparisons": 15618
+            }
+          },
+          {
+            "id": 5,
+            "theme": "light",
+            "width": 320,
+            "criticalCases": 8,
+            "totals": {
+              "layouts": 1,
+              "actions": 42,
+              "shares": 18,
+              "invalid": 1,
+              "raw": 1,
+              "critical": 8,
+              "checks": 71,
+              "modelComparisons": 26240
+            }
+          },
+          {
+            "id": 5,
+            "theme": "light",
+            "width": 1200,
+            "criticalCases": 8,
+            "totals": {
+              "layouts": 1,
+              "actions": 42,
+              "shares": 18,
+              "invalid": 1,
+              "raw": 1,
+              "critical": 8,
+              "checks": 71,
+              "modelComparisons": 26240
+            }
+          },
+          {
+            "id": 5,
+            "theme": "dark",
+            "width": 320,
+            "criticalCases": 8,
+            "totals": {
+              "layouts": 1,
+              "actions": 42,
+              "shares": 18,
+              "invalid": 1,
+              "raw": 1,
+              "critical": 8,
+              "checks": 71,
+              "modelComparisons": 26240
+            }
+          },
+          {
+            "id": 5,
+            "theme": "dark",
+            "width": 1200,
+            "criticalCases": 8,
+            "totals": {
+              "layouts": 1,
+              "actions": 42,
+              "shares": 18,
+              "invalid": 1,
+              "raw": 1,
+              "critical": 8,
+              "checks": 71,
+              "modelComparisons": 26240
+            }
+          }
+        ],
+        "errors": [],
+        "sourceHashes": {
+          "../content/fin/ch07.js": "04debf4dffaa2d6a5135cd1284f4371a2d216ec43cf2953298976f1d2728584f",
+          "../content/fin/ch07.viz.js": "8c7dc2eb949bffa6553946aef6292eecf720c52735e022a5244d7a3d5f7d64c9",
+          "../content/fin/ch07.shared.js": "e9048278d8b6d0bf6cc4bd6548bee9005471b6c528fc59eddfd03e19c9d32e03",
+          "../content/fin/ch07.exact.shared.js": "6823e77ed583d3f1294b6033c7e031395cb26f571b6726c3d8b3472fcfb369d2",
+          "../content/fin/ch07.law.shared.js": "47a774d128fb23d89835b5f3a1b53ed1f72af4ed377e03e298ddccb399bacc92",
+          "../content/fin/ch07.cashflow.shared.js": "275c8cdb2cb287452243c92c1129d3da4390ef307db5c95a2e9896af3e9d232e",
+          "../content/fin/ch07.positions.shared.js": "247a444fa766dcc2bc449918ae5582450e8d3d3e1b08e47e63af7562df67d2ea",
+          "../content/fin/syllabus.js": "150e89cc0fa70e44b2b78ae829a216797e2e7c418dd590ac4592e3c6d1ed6c0f",
+          "../assets/js/viz/core.js": "a6fa1753d9d9e8b9a05a7161fffc58dfd53b27002d9d393a3266aeb96515fe73",
+          "../assets/js/viz/math.js": "439c335e1cc47907bc72bb76559216aa093be4710e0589f41c70192729eb223e",
+          "../assets/js/share-state.js": "13c6a9ac1237d566fc5d79c89e0f4d3029aa8c2817d2c08247a02b1b053a59b1",
+          "../data/col/fin.json": "67445315f186c963a4d7a234252d6a78a4d2b3442ec068d3680120fa1220ae67",
+          "../data/index.json": "4dd0ce4a48747e5b9901ca39203966d5a0cf4d044dccb32280526a43b712e382",
+          "./wave6-fin-native.mjs": "6ed0c8ffa3eaaf1130c680c82ecafee3f309443eee14d85739320e8fb7a348e3",
+          "./wave6-fin-native-science.mjs": "ccec6e49b7a3cfdcd98d3dff2a214d83ad5118342f25c9c4d4083270aa4db8bf",
+          "./wave6-fin-native-cases.mjs": "b6f70a710fd0013c82ed483e1566f6a78b0a0494a0c7a129e5dace8fefbadfd3",
+          "./wave6-fin-browser.shared.mjs": "741075cc4b9209a57b5cfdc1f1f530e0abfd6aafd28ae682c1a11261146fd13c"
+        }
+      },
+      {
+        "status": "PASS",
+        "totals": {
+          "layouts": 16,
+          "actions": 788,
+          "shares": 340,
+          "invalid": 16,
+          "raw": 16,
+          "critical": 140,
+          "checks": 1316,
+          "modelComparisons": 834934
+        },
+        "rows": [
+          {
+            "id": 6,
+            "theme": "light",
+            "width": 320,
+            "criticalCases": 8,
+            "totals": {
+              "layouts": 1,
+              "actions": 111,
+              "shares": 41,
+              "invalid": 1,
+              "raw": 1,
+              "critical": 8,
+              "checks": 163,
+              "modelComparisons": 119660
+            }
+          },
+          {
+            "id": 6,
+            "theme": "light",
+            "width": 1200,
+            "criticalCases": 8,
+            "totals": {
+              "layouts": 1,
+              "actions": 111,
+              "shares": 41,
+              "invalid": 1,
+              "raw": 1,
+              "critical": 8,
+              "checks": 163,
+              "modelComparisons": 119660
+            }
+          },
+          {
+            "id": 6,
+            "theme": "dark",
+            "width": 320,
+            "criticalCases": 8,
+            "totals": {
+              "layouts": 1,
+              "actions": 111,
+              "shares": 41,
+              "invalid": 1,
+              "raw": 1,
+              "critical": 8,
+              "checks": 163,
+              "modelComparisons": 119660
+            }
+          },
+          {
+            "id": 6,
+            "theme": "dark",
+            "width": 1200,
+            "criticalCases": 8,
+            "totals": {
+              "layouts": 1,
+              "actions": 111,
+              "shares": 41,
+              "invalid": 1,
+              "raw": 1,
+              "critical": 8,
+              "checks": 163,
+              "modelComparisons": 119660
+            }
+          },
+          {
+            "id": 7,
+            "theme": "light",
+            "width": 320,
+            "criticalCases": 9,
+            "totals": {
+              "layouts": 1,
+              "actions": 26,
+              "shares": 14,
+              "invalid": 1,
+              "raw": 1,
+              "critical": 9,
+              "checks": 52,
+              "modelComparisons": 17202
+            }
+          },
+          {
+            "id": 7,
+            "theme": "light",
+            "width": 1200,
+            "criticalCases": 9,
+            "totals": {
+              "layouts": 1,
+              "actions": 26,
+              "shares": 14,
+              "invalid": 1,
+              "raw": 1,
+              "critical": 9,
+              "checks": 52,
+              "modelComparisons": 17202
+            }
+          },
+          {
+            "id": 7,
+            "theme": "dark",
+            "width": 320,
+            "criticalCases": 9,
+            "totals": {
+              "layouts": 1,
+              "actions": 26,
+              "shares": 14,
+              "invalid": 1,
+              "raw": 1,
+              "critical": 9,
+              "checks": 52,
+              "modelComparisons": 17202
+            }
+          },
+          {
+            "id": 7,
+            "theme": "dark",
+            "width": 1200,
+            "criticalCases": 9,
+            "totals": {
+              "layouts": 1,
+              "actions": 26,
+              "shares": 14,
+              "invalid": 1,
+              "raw": 1,
+              "critical": 9,
+              "checks": 52,
+              "modelComparisons": 17202
+            }
+          },
+          {
+            "id": 8,
+            "theme": "light",
+            "width": 320,
+            "criticalCases": 9,
+            "totals": {
+              "layouts": 1,
+              "actions": 30,
+              "shares": 15,
+              "invalid": 1,
+              "raw": 1,
+              "critical": 9,
+              "checks": 57,
+              "modelComparisons": 45756
+            }
+          },
+          {
+            "id": 8,
+            "theme": "light",
+            "width": 1200,
+            "criticalCases": 9,
+            "totals": {
+              "layouts": 1,
+              "actions": 30,
+              "shares": 15,
+              "invalid": 1,
+              "raw": 1,
+              "critical": 9,
+              "checks": 57,
+              "modelComparisons": 45765
+            }
+          },
+          {
+            "id": 8,
+            "theme": "dark",
+            "width": 320,
+            "criticalCases": 9,
+            "totals": {
+              "layouts": 1,
+              "actions": 30,
+              "shares": 15,
+              "invalid": 1,
+              "raw": 1,
+              "critical": 9,
+              "checks": 57,
+              "modelComparisons": 45756
+            }
+          },
+          {
+            "id": 8,
+            "theme": "dark",
+            "width": 1200,
+            "criticalCases": 9,
+            "totals": {
+              "layouts": 1,
+              "actions": 30,
+              "shares": 15,
+              "invalid": 1,
+              "raw": 1,
+              "critical": 9,
+              "checks": 57,
+              "modelComparisons": 45765
+            }
+          },
+          {
+            "id": 9,
+            "theme": "light",
+            "width": 320,
+            "criticalCases": 9,
+            "totals": {
+              "layouts": 1,
+              "actions": 30,
+              "shares": 15,
+              "invalid": 1,
+              "raw": 1,
+              "critical": 9,
+              "checks": 57,
+              "modelComparisons": 26111
+            }
+          },
+          {
+            "id": 9,
+            "theme": "light",
+            "width": 1200,
+            "criticalCases": 9,
+            "totals": {
+              "layouts": 1,
+              "actions": 30,
+              "shares": 15,
+              "invalid": 1,
+              "raw": 1,
+              "critical": 9,
+              "checks": 57,
+              "modelComparisons": 26111
+            }
+          },
+          {
+            "id": 9,
+            "theme": "dark",
+            "width": 320,
+            "criticalCases": 9,
+            "totals": {
+              "layouts": 1,
+              "actions": 30,
+              "shares": 15,
+              "invalid": 1,
+              "raw": 1,
+              "critical": 9,
+              "checks": 57,
+              "modelComparisons": 26111
+            }
+          },
+          {
+            "id": 9,
+            "theme": "dark",
+            "width": 1200,
+            "criticalCases": 9,
+            "totals": {
+              "layouts": 1,
+              "actions": 30,
+              "shares": 15,
+              "invalid": 1,
+              "raw": 1,
+              "critical": 9,
+              "checks": 57,
+              "modelComparisons": 26111
+            }
+          }
+        ],
+        "errors": [],
+        "sourceHashes": {
+          "../content/fin/ch07.js": "04debf4dffaa2d6a5135cd1284f4371a2d216ec43cf2953298976f1d2728584f",
+          "../content/fin/ch07.viz.js": "8c7dc2eb949bffa6553946aef6292eecf720c52735e022a5244d7a3d5f7d64c9",
+          "../content/fin/ch07.shared.js": "e9048278d8b6d0bf6cc4bd6548bee9005471b6c528fc59eddfd03e19c9d32e03",
+          "../content/fin/ch07.exact.shared.js": "6823e77ed583d3f1294b6033c7e031395cb26f571b6726c3d8b3472fcfb369d2",
+          "../content/fin/ch07.law.shared.js": "47a774d128fb23d89835b5f3a1b53ed1f72af4ed377e03e298ddccb399bacc92",
+          "../content/fin/ch07.cashflow.shared.js": "275c8cdb2cb287452243c92c1129d3da4390ef307db5c95a2e9896af3e9d232e",
+          "../content/fin/ch07.positions.shared.js": "247a444fa766dcc2bc449918ae5582450e8d3d3e1b08e47e63af7562df67d2ea",
+          "../content/fin/syllabus.js": "150e89cc0fa70e44b2b78ae829a216797e2e7c418dd590ac4592e3c6d1ed6c0f",
+          "../assets/js/viz/core.js": "a6fa1753d9d9e8b9a05a7161fffc58dfd53b27002d9d393a3266aeb96515fe73",
+          "../assets/js/viz/math.js": "439c335e1cc47907bc72bb76559216aa093be4710e0589f41c70192729eb223e",
+          "../assets/js/share-state.js": "13c6a9ac1237d566fc5d79c89e0f4d3029aa8c2817d2c08247a02b1b053a59b1",
+          "../data/col/fin.json": "67445315f186c963a4d7a234252d6a78a4d2b3442ec068d3680120fa1220ae67",
+          "../data/index.json": "4dd0ce4a48747e5b9901ca39203966d5a0cf4d044dccb32280526a43b712e382",
+          "./wave6-fin-native.mjs": "6ed0c8ffa3eaaf1130c680c82ecafee3f309443eee14d85739320e8fb7a348e3",
+          "./wave6-fin-native-science.mjs": "ccec6e49b7a3cfdcd98d3dff2a214d83ad5118342f25c9c4d4083270aa4db8bf",
+          "./wave6-fin-native-cases.mjs": "b6f70a710fd0013c82ed483e1566f6a78b0a0494a0c7a129e5dace8fefbadfd3",
+          "./wave6-fin-browser.shared.mjs": "741075cc4b9209a57b5cfdc1f1f530e0abfd6aafd28ae682c1a11261146fd13c"
+        }
+      }
+    ]
+  },
+  "finalCriticalLabelReplay": {
+    "totals": {
+      "layouts": 36,
+      "actions": 348,
+      "shares": 348,
+      "invalid": 36,
+      "raw": 36,
+      "critical": 312,
+      "checks": 1116,
+      "modelComparisons": 464068
+    },
+    "runs": [
+      {
+        "status": "PASS",
+        "totals": {
+          "layouts": 20,
+          "actions": 192,
+          "shares": 192,
+          "invalid": 20,
+          "raw": 20,
+          "critical": 172,
+          "checks": 616,
+          "modelComparisons": 176140
+        },
+        "rows": [
+          {
+            "id": 1,
+            "theme": "light",
+            "width": 320,
+            "criticalCases": 9,
+            "totals": {
+              "layouts": 1,
+              "actions": 10,
+              "shares": 10,
+              "invalid": 1,
+              "raw": 1,
+              "critical": 9,
+              "checks": 32,
+              "modelComparisons": 9563
+            }
+          },
+          {
+            "id": 1,
+            "theme": "light",
+            "width": 1200,
+            "criticalCases": 9,
+            "totals": {
+              "layouts": 1,
+              "actions": 10,
+              "shares": 10,
+              "invalid": 1,
+              "raw": 1,
+              "critical": 9,
+              "checks": 32,
+              "modelComparisons": 9563
+            }
+          },
+          {
+            "id": 1,
+            "theme": "dark",
+            "width": 320,
+            "criticalCases": 9,
+            "totals": {
+              "layouts": 1,
+              "actions": 10,
+              "shares": 10,
+              "invalid": 1,
+              "raw": 1,
+              "critical": 9,
+              "checks": 32,
+              "modelComparisons": 9563
+            }
+          },
+          {
+            "id": 1,
+            "theme": "dark",
+            "width": 1200,
+            "criticalCases": 9,
+            "totals": {
+              "layouts": 1,
+              "actions": 10,
+              "shares": 10,
+              "invalid": 1,
+              "raw": 1,
+              "critical": 9,
+              "checks": 32,
+              "modelComparisons": 9563
+            }
+          },
+          {
+            "id": 2,
+            "theme": "light",
+            "width": 320,
+            "criticalCases": 8,
+            "totals": {
+              "layouts": 1,
+              "actions": 9,
+              "shares": 9,
+              "invalid": 1,
+              "raw": 1,
+              "critical": 8,
+              "checks": 29,
+              "modelComparisons": 9361
+            }
+          },
+          {
+            "id": 2,
+            "theme": "light",
+            "width": 1200,
+            "criticalCases": 8,
+            "totals": {
+              "layouts": 1,
+              "actions": 9,
+              "shares": 9,
+              "invalid": 1,
+              "raw": 1,
+              "critical": 8,
+              "checks": 29,
+              "modelComparisons": 9361
+            }
+          },
+          {
+            "id": 2,
+            "theme": "dark",
+            "width": 320,
+            "criticalCases": 8,
+            "totals": {
+              "layouts": 1,
+              "actions": 9,
+              "shares": 9,
+              "invalid": 1,
+              "raw": 1,
+              "critical": 8,
+              "checks": 29,
+              "modelComparisons": 9361
+            }
+          },
+          {
+            "id": 2,
+            "theme": "dark",
+            "width": 1200,
+            "criticalCases": 8,
+            "totals": {
+              "layouts": 1,
+              "actions": 9,
+              "shares": 9,
+              "invalid": 1,
+              "raw": 1,
+              "critical": 8,
+              "checks": 29,
+              "modelComparisons": 9361
+            }
+          },
+          {
+            "id": 3,
+            "theme": "light",
+            "width": 320,
+            "criticalCases": 9,
+            "totals": {
+              "layouts": 1,
+              "actions": 10,
+              "shares": 10,
+              "invalid": 1,
+              "raw": 1,
+              "critical": 9,
+              "checks": 32,
+              "modelComparisons": 5053
+            }
+          },
+          {
+            "id": 3,
+            "theme": "light",
+            "width": 1200,
+            "criticalCases": 9,
+            "totals": {
+              "layouts": 1,
+              "actions": 10,
+              "shares": 10,
+              "invalid": 1,
+              "raw": 1,
+              "critical": 9,
+              "checks": 32,
+              "modelComparisons": 5053
+            }
+          },
+          {
+            "id": 3,
+            "theme": "dark",
+            "width": 320,
+            "criticalCases": 9,
+            "totals": {
+              "layouts": 1,
+              "actions": 10,
+              "shares": 10,
+              "invalid": 1,
+              "raw": 1,
+              "critical": 9,
+              "checks": 32,
+              "modelComparisons": 5053
+            }
+          },
+          {
+            "id": 3,
+            "theme": "dark",
+            "width": 1200,
+            "criticalCases": 9,
+            "totals": {
+              "layouts": 1,
+              "actions": 10,
+              "shares": 10,
+              "invalid": 1,
+              "raw": 1,
+              "critical": 9,
+              "checks": 32,
+              "modelComparisons": 5053
+            }
+          },
+          {
+            "id": 4,
+            "theme": "light",
+            "width": 320,
+            "criticalCases": 9,
+            "totals": {
+              "layouts": 1,
+              "actions": 10,
+              "shares": 10,
+              "invalid": 1,
+              "raw": 1,
+              "critical": 9,
+              "checks": 32,
+              "modelComparisons": 9412
+            }
+          },
+          {
+            "id": 4,
+            "theme": "light",
+            "width": 1200,
+            "criticalCases": 9,
+            "totals": {
+              "layouts": 1,
+              "actions": 10,
+              "shares": 10,
+              "invalid": 1,
+              "raw": 1,
+              "critical": 9,
+              "checks": 32,
+              "modelComparisons": 9412
+            }
+          },
+          {
+            "id": 4,
+            "theme": "dark",
+            "width": 320,
+            "criticalCases": 9,
+            "totals": {
+              "layouts": 1,
+              "actions": 10,
+              "shares": 10,
+              "invalid": 1,
+              "raw": 1,
+              "critical": 9,
+              "checks": 32,
+              "modelComparisons": 9412
+            }
+          },
+          {
+            "id": 4,
+            "theme": "dark",
+            "width": 1200,
+            "criticalCases": 9,
+            "totals": {
+              "layouts": 1,
+              "actions": 10,
+              "shares": 10,
+              "invalid": 1,
+              "raw": 1,
+              "critical": 9,
+              "checks": 32,
+              "modelComparisons": 9412
+            }
+          },
+          {
+            "id": 5,
+            "theme": "light",
+            "width": 320,
+            "criticalCases": 8,
+            "totals": {
+              "layouts": 1,
+              "actions": 9,
+              "shares": 9,
+              "invalid": 1,
+              "raw": 1,
+              "critical": 8,
+              "checks": 29,
+              "modelComparisons": 10646
+            }
+          },
+          {
+            "id": 5,
+            "theme": "light",
+            "width": 1200,
+            "criticalCases": 8,
+            "totals": {
+              "layouts": 1,
+              "actions": 9,
+              "shares": 9,
+              "invalid": 1,
+              "raw": 1,
+              "critical": 8,
+              "checks": 29,
+              "modelComparisons": 10646
+            }
+          },
+          {
+            "id": 5,
+            "theme": "dark",
+            "width": 320,
+            "criticalCases": 8,
+            "totals": {
+              "layouts": 1,
+              "actions": 9,
+              "shares": 9,
+              "invalid": 1,
+              "raw": 1,
+              "critical": 8,
+              "checks": 29,
+              "modelComparisons": 10646
+            }
+          },
+          {
+            "id": 5,
+            "theme": "dark",
+            "width": 1200,
+            "criticalCases": 8,
+            "totals": {
+              "layouts": 1,
+              "actions": 9,
+              "shares": 9,
+              "invalid": 1,
+              "raw": 1,
+              "critical": 8,
+              "checks": 29,
+              "modelComparisons": 10646
+            }
+          }
+        ],
+        "errors": [],
+        "sourceHashes": {
+          "../content/fin/ch07.js": "367916914ffff9c1e3631654f36f94e92aab793aeb04ed460461c87cf8f80afe",
+          "../content/fin/ch07.viz.js": "1e25e2f286ec1c3b8feb255d93185f2b74200d115a3cf7d1a152a99eadc5623c",
+          "../content/fin/ch07.shared.js": "e9048278d8b6d0bf6cc4bd6548bee9005471b6c528fc59eddfd03e19c9d32e03",
+          "../content/fin/ch07.exact.shared.js": "6823e77ed583d3f1294b6033c7e031395cb26f571b6726c3d8b3472fcfb369d2",
+          "../content/fin/ch07.law.shared.js": "47a774d128fb23d89835b5f3a1b53ed1f72af4ed377e03e298ddccb399bacc92",
+          "../content/fin/ch07.cashflow.shared.js": "275c8cdb2cb287452243c92c1129d3da4390ef307db5c95a2e9896af3e9d232e",
+          "../content/fin/ch07.positions.shared.js": "247a444fa766dcc2bc449918ae5582450e8d3d3e1b08e47e63af7562df67d2ea",
+          "../content/fin/syllabus.js": "150e89cc0fa70e44b2b78ae829a216797e2e7c418dd590ac4592e3c6d1ed6c0f",
+          "../assets/js/viz/core.js": "a6fa1753d9d9e8b9a05a7161fffc58dfd53b27002d9d393a3266aeb96515fe73",
+          "../assets/js/viz/math.js": "439c335e1cc47907bc72bb76559216aa093be4710e0589f41c70192729eb223e",
+          "../assets/js/share-state.js": "13c6a9ac1237d566fc5d79c89e0f4d3029aa8c2817d2c08247a02b1b053a59b1",
+          "../data/col/fin.json": "be135ad7f99a15d917516e988475595a8fdaf3b93515599cf152cb315545226a",
+          "../data/index.json": "3d6b76c97bbbb2cbbf16b90139eccc368fec43ccad731b33cab1bea5969b4f5d",
+          "./wave6-fin-native.mjs": "6ed0c8ffa3eaaf1130c680c82ecafee3f309443eee14d85739320e8fb7a348e3",
+          "./wave6-fin-native-science.mjs": "ccec6e49b7a3cfdcd98d3dff2a214d83ad5118342f25c9c4d4083270aa4db8bf",
+          "./wave6-fin-native-cases.mjs": "b6f70a710fd0013c82ed483e1566f6a78b0a0494a0c7a129e5dace8fefbadfd3",
+          "./wave6-fin-browser.shared.mjs": "741075cc4b9209a57b5cfdc1f1f530e0abfd6aafd28ae682c1a11261146fd13c"
+        }
+      },
+      {
+        "status": "PASS",
+        "totals": {
+          "layouts": 16,
+          "actions": 156,
+          "shares": 156,
+          "invalid": 16,
+          "raw": 16,
+          "critical": 140,
+          "checks": 500,
+          "modelComparisons": 287928
+        },
+        "rows": [
+          {
+            "id": 6,
+            "theme": "light",
+            "width": 320,
+            "criticalCases": 8,
+            "totals": {
+              "layouts": 1,
+              "actions": 9,
+              "shares": 9,
+              "invalid": 1,
+              "raw": 1,
+              "critical": 8,
+              "checks": 29,
+              "modelComparisons": 21076
+            }
+          },
+          {
+            "id": 6,
+            "theme": "light",
+            "width": 1200,
+            "criticalCases": 8,
+            "totals": {
+              "layouts": 1,
+              "actions": 9,
+              "shares": 9,
+              "invalid": 1,
+              "raw": 1,
+              "critical": 8,
+              "checks": 29,
+              "modelComparisons": 21076
+            }
+          },
+          {
+            "id": 6,
+            "theme": "dark",
+            "width": 320,
+            "criticalCases": 8,
+            "totals": {
+              "layouts": 1,
+              "actions": 9,
+              "shares": 9,
+              "invalid": 1,
+              "raw": 1,
+              "critical": 8,
+              "checks": 29,
+              "modelComparisons": 21076
+            }
+          },
+          {
+            "id": 6,
+            "theme": "dark",
+            "width": 1200,
+            "criticalCases": 8,
+            "totals": {
+              "layouts": 1,
+              "actions": 9,
+              "shares": 9,
+              "invalid": 1,
+              "raw": 1,
+              "critical": 8,
+              "checks": 29,
+              "modelComparisons": 21076
+            }
+          },
+          {
+            "id": 7,
+            "theme": "light",
+            "width": 320,
+            "criticalCases": 9,
+            "totals": {
+              "layouts": 1,
+              "actions": 10,
+              "shares": 10,
+              "invalid": 1,
+              "raw": 1,
+              "critical": 9,
+              "checks": 32,
+              "modelComparisons": 10552
+            }
+          },
+          {
+            "id": 7,
+            "theme": "light",
+            "width": 1200,
+            "criticalCases": 9,
+            "totals": {
+              "layouts": 1,
+              "actions": 10,
+              "shares": 10,
+              "invalid": 1,
+              "raw": 1,
+              "critical": 9,
+              "checks": 32,
+              "modelComparisons": 10552
+            }
+          },
+          {
+            "id": 7,
+            "theme": "dark",
+            "width": 320,
+            "criticalCases": 9,
+            "totals": {
+              "layouts": 1,
+              "actions": 10,
+              "shares": 10,
+              "invalid": 1,
+              "raw": 1,
+              "critical": 9,
+              "checks": 32,
+              "modelComparisons": 10552
+            }
+          },
+          {
+            "id": 7,
+            "theme": "dark",
+            "width": 1200,
+            "criticalCases": 9,
+            "totals": {
+              "layouts": 1,
+              "actions": 10,
+              "shares": 10,
+              "invalid": 1,
+              "raw": 1,
+              "critical": 9,
+              "checks": 32,
+              "modelComparisons": 10552
+            }
+          },
+          {
+            "id": 8,
+            "theme": "light",
+            "width": 320,
+            "criticalCases": 9,
+            "totals": {
+              "layouts": 1,
+              "actions": 10,
+              "shares": 10,
+              "invalid": 1,
+              "raw": 1,
+              "critical": 9,
+              "checks": 32,
+              "modelComparisons": 25682
+            }
+          },
+          {
+            "id": 8,
+            "theme": "light",
+            "width": 1200,
+            "criticalCases": 9,
+            "totals": {
+              "layouts": 1,
+              "actions": 10,
+              "shares": 10,
+              "invalid": 1,
+              "raw": 1,
+              "critical": 9,
+              "checks": 32,
+              "modelComparisons": 25682
+            }
+          },
+          {
+            "id": 8,
+            "theme": "dark",
+            "width": 320,
+            "criticalCases": 9,
+            "totals": {
+              "layouts": 1,
+              "actions": 10,
+              "shares": 10,
+              "invalid": 1,
+              "raw": 1,
+              "critical": 9,
+              "checks": 32,
+              "modelComparisons": 25682
+            }
+          },
+          {
+            "id": 8,
+            "theme": "dark",
+            "width": 1200,
+            "criticalCases": 9,
+            "totals": {
+              "layouts": 1,
+              "actions": 10,
+              "shares": 10,
+              "invalid": 1,
+              "raw": 1,
+              "critical": 9,
+              "checks": 32,
+              "modelComparisons": 25682
+            }
+          },
+          {
+            "id": 9,
+            "theme": "light",
+            "width": 320,
+            "criticalCases": 9,
+            "totals": {
+              "layouts": 1,
+              "actions": 10,
+              "shares": 10,
+              "invalid": 1,
+              "raw": 1,
+              "critical": 9,
+              "checks": 32,
+              "modelComparisons": 14672
+            }
+          },
+          {
+            "id": 9,
+            "theme": "light",
+            "width": 1200,
+            "criticalCases": 9,
+            "totals": {
+              "layouts": 1,
+              "actions": 10,
+              "shares": 10,
+              "invalid": 1,
+              "raw": 1,
+              "critical": 9,
+              "checks": 32,
+              "modelComparisons": 14672
+            }
+          },
+          {
+            "id": 9,
+            "theme": "dark",
+            "width": 320,
+            "criticalCases": 9,
+            "totals": {
+              "layouts": 1,
+              "actions": 10,
+              "shares": 10,
+              "invalid": 1,
+              "raw": 1,
+              "critical": 9,
+              "checks": 32,
+              "modelComparisons": 14672
+            }
+          },
+          {
+            "id": 9,
+            "theme": "dark",
+            "width": 1200,
+            "criticalCases": 9,
+            "totals": {
+              "layouts": 1,
+              "actions": 10,
+              "shares": 10,
+              "invalid": 1,
+              "raw": 1,
+              "critical": 9,
+              "checks": 32,
+              "modelComparisons": 14672
+            }
+          }
+        ],
+        "errors": [],
+        "sourceHashes": {
+          "../content/fin/ch07.js": "367916914ffff9c1e3631654f36f94e92aab793aeb04ed460461c87cf8f80afe",
+          "../content/fin/ch07.viz.js": "1e25e2f286ec1c3b8feb255d93185f2b74200d115a3cf7d1a152a99eadc5623c",
+          "../content/fin/ch07.shared.js": "e9048278d8b6d0bf6cc4bd6548bee9005471b6c528fc59eddfd03e19c9d32e03",
+          "../content/fin/ch07.exact.shared.js": "6823e77ed583d3f1294b6033c7e031395cb26f571b6726c3d8b3472fcfb369d2",
+          "../content/fin/ch07.law.shared.js": "47a774d128fb23d89835b5f3a1b53ed1f72af4ed377e03e298ddccb399bacc92",
+          "../content/fin/ch07.cashflow.shared.js": "275c8cdb2cb287452243c92c1129d3da4390ef307db5c95a2e9896af3e9d232e",
+          "../content/fin/ch07.positions.shared.js": "247a444fa766dcc2bc449918ae5582450e8d3d3e1b08e47e63af7562df67d2ea",
+          "../content/fin/syllabus.js": "150e89cc0fa70e44b2b78ae829a216797e2e7c418dd590ac4592e3c6d1ed6c0f",
+          "../assets/js/viz/core.js": "a6fa1753d9d9e8b9a05a7161fffc58dfd53b27002d9d393a3266aeb96515fe73",
+          "../assets/js/viz/math.js": "439c335e1cc47907bc72bb76559216aa093be4710e0589f41c70192729eb223e",
+          "../assets/js/share-state.js": "13c6a9ac1237d566fc5d79c89e0f4d3029aa8c2817d2c08247a02b1b053a59b1",
+          "../data/col/fin.json": "be135ad7f99a15d917516e988475595a8fdaf3b93515599cf152cb315545226a",
+          "../data/index.json": "3d6b76c97bbbb2cbbf16b90139eccc368fec43ccad731b33cab1bea5969b4f5d",
+          "./wave6-fin-native.mjs": "6ed0c8ffa3eaaf1130c680c82ecafee3f309443eee14d85739320e8fb7a348e3",
+          "./wave6-fin-native-science.mjs": "ccec6e49b7a3cfdcd98d3dff2a214d83ad5118342f25c9c4d4083270aa4db8bf",
+          "./wave6-fin-native-cases.mjs": "b6f70a710fd0013c82ed483e1566f6a78b0a0494a0c7a129e5dace8fefbadfd3",
+          "./wave6-fin-browser.shared.mjs": "741075cc4b9209a57b5cfdc1f1f530e0abfd6aafd28ae682c1a11261146fd13c"
+        }
+      }
+    ]
+  },
+  "finalOfferedGroupsAndActuallyLoadedRecipes": {
+    "status": "PASS",
+    "layouts": 18,
+    "modes": 62,
+    "actions": 142,
+    "shares": 62,
+    "checks": 222,
+    "comparisons": 122638,
+    "errors": [],
+    "sourceHashes": {
+      "../content/fin/ch07.js": "367916914ffff9c1e3631654f36f94e92aab793aeb04ed460461c87cf8f80afe",
+      "../content/fin/ch07.viz.js": "1e25e2f286ec1c3b8feb255d93185f2b74200d115a3cf7d1a152a99eadc5623c",
+      "../content/fin/ch07.shared.js": "e9048278d8b6d0bf6cc4bd6548bee9005471b6c528fc59eddfd03e19c9d32e03",
+      "../content/fin/ch07.exact.shared.js": "6823e77ed583d3f1294b6033c7e031395cb26f571b6726c3d8b3472fcfb369d2",
+      "../content/fin/ch07.law.shared.js": "47a774d128fb23d89835b5f3a1b53ed1f72af4ed377e03e298ddccb399bacc92",
+      "../content/fin/ch07.cashflow.shared.js": "275c8cdb2cb287452243c92c1129d3da4390ef307db5c95a2e9896af3e9d232e",
+      "../content/fin/ch07.positions.shared.js": "247a444fa766dcc2bc449918ae5582450e8d3d3e1b08e47e63af7562df67d2ea",
+      "../content/fin/syllabus.js": "150e89cc0fa70e44b2b78ae829a216797e2e7c418dd590ac4592e3c6d1ed6c0f",
+      "../assets/js/viz/core.js": "a6fa1753d9d9e8b9a05a7161fffc58dfd53b27002d9d393a3266aeb96515fe73",
+      "../assets/js/viz/math.js": "439c335e1cc47907bc72bb76559216aa093be4710e0589f41c70192729eb223e",
+      "../assets/js/share-state.js": "13c6a9ac1237d566fc5d79c89e0f4d3029aa8c2817d2c08247a02b1b053a59b1",
+      "../data/col/fin.json": "be135ad7f99a15d917516e988475595a8fdaf3b93515599cf152cb315545226a",
+      "../data/index.json": "3d6b76c97bbbb2cbbf16b90139eccc368fec43ccad731b33cab1bea5969b4f5d",
+      "./wave6-fin-browser.shared.mjs": "741075cc4b9209a57b5cfdc1f1f530e0abfd6aafd28ae682c1a11261146fd13c",
+      "./wave6-fin-native-science.mjs": "ccec6e49b7a3cfdcd98d3dff2a214d83ad5118342f25c9c4d4083270aa4db8bf",
+      "./wave6-fin-mode-coverage.mjs": "576add421d9615cfc616334ab01079df12ba50a2f04a8d64f693f2e729378ccf"
+    },
+    "rows": [
+      {
+        "id": 1,
+        "theme": "light",
+        "width": 320,
+        "group": "option right",
+        "groupIndex": 0,
+        "option": "call",
+        "optionIndex": 0,
+        "file": "/workspace/scratch/wave6-fin-research/modes-final-v2/1-light-320-mode-g0-o0.png",
+        "state": {
+          "v": 1,
+          "parts": [
+            [
+              "clock::0",
+              null
+            ],
+            [
+              "select:option right:0",
+              [
+                0,
+                [
+                  "call",
+                  "put"
+                ]
+              ]
+            ],
+            [
+              "select:position:0",
+              [
+                0,
+                [
+                  "long",
+                  "short"
+                ]
+              ]
+            ],
+            [
+              "select:profit convention:0",
+              [
+                0,
+                [
+                  "terminal financed",
+                  "nominal premium"
+                ]
+              ]
+            ],
+            [
+              "slider:strike / money per share:0",
+              100
+            ],
+            [
+              "slider:premium paid today / money:0",
+              8
+            ],
+            [
+              "slider:terminal stock price / money:0",
+              120
+            ],
+            [
+              "slider:bond price B / terminal money unit:0",
+              0.875
+            ]
+          ]
+        }
+      },
+      {
+        "id": 1,
+        "theme": "light",
+        "width": 320,
+        "group": "option right",
+        "groupIndex": 0,
+        "option": "put",
+        "optionIndex": 1,
+        "file": "/workspace/scratch/wave6-fin-research/modes-final-v2/1-light-320-mode-g0-o1.png",
+        "state": {
+          "v": 1,
+          "parts": [
+            [
+              "clock::0",
+              null
+            ],
+            [
+              "select:option right:0",
+              [
+                1,
+                [
+                  "call",
+                  "put"
+                ]
+              ]
+            ],
+            [
+              "select:position:0",
+              [
+                0,
+                [
+                  "long",
+                  "short"
+                ]
+              ]
+            ],
+            [
+              "select:profit convention:0",
+              [
+                0,
+                [
+                  "terminal financed",
+                  "nominal premium"
+                ]
+              ]
+            ],
+            [
+              "slider:strike / money per share:0",
+              100
+            ],
+            [
+              "slider:premium paid today / money:0",
+              8
+            ],
+            [
+              "slider:terminal stock price / money:0",
+              120
+            ],
+            [
+              "slider:bond price B / terminal money unit:0",
+              0.875
+            ]
+          ]
+        }
+      },
+      {
+        "id": 1,
+        "theme": "light",
+        "width": 320,
+        "group": "position",
+        "groupIndex": 1,
+        "option": "long",
+        "optionIndex": 0,
+        "file": "/workspace/scratch/wave6-fin-research/modes-final-v2/1-light-320-mode-g1-o0.png",
+        "state": {
+          "v": 1,
+          "parts": [
+            [
+              "clock::0",
+              null
+            ],
+            [
+              "select:option right:0",
+              [
+                0,
+                [
+                  "call",
+                  "put"
+                ]
+              ]
+            ],
+            [
+              "select:position:0",
+              [
+                0,
+                [
+                  "long",
+                  "short"
+                ]
+              ]
+            ],
+            [
+              "select:profit convention:0",
+              [
+                0,
+                [
+                  "terminal financed",
+                  "nominal premium"
+                ]
+              ]
+            ],
+            [
+              "slider:strike / money per share:0",
+              100
+            ],
+            [
+              "slider:premium paid today / money:0",
+              8
+            ],
+            [
+              "slider:terminal stock price / money:0",
+              120
+            ],
+            [
+              "slider:bond price B / terminal money unit:0",
+              0.875
+            ]
+          ]
+        }
+      },
+      {
+        "id": 1,
+        "theme": "light",
+        "width": 320,
+        "group": "position",
+        "groupIndex": 1,
+        "option": "short",
+        "optionIndex": 1,
+        "file": "/workspace/scratch/wave6-fin-research/modes-final-v2/1-light-320-mode-g1-o1.png",
+        "state": {
+          "v": 1,
+          "parts": [
+            [
+              "clock::0",
+              null
+            ],
+            [
+              "select:option right:0",
+              [
+                0,
+                [
+                  "call",
+                  "put"
+                ]
+              ]
+            ],
+            [
+              "select:position:0",
+              [
+                1,
+                [
+                  "long",
+                  "short"
+                ]
+              ]
+            ],
+            [
+              "select:profit convention:0",
+              [
+                0,
+                [
+                  "terminal financed",
+                  "nominal premium"
+                ]
+              ]
+            ],
+            [
+              "slider:strike / money per share:0",
+              100
+            ],
+            [
+              "slider:premium paid today / money:0",
+              8
+            ],
+            [
+              "slider:terminal stock price / money:0",
+              120
+            ],
+            [
+              "slider:bond price B / terminal money unit:0",
+              0.875
+            ]
+          ]
+        }
+      },
+      {
+        "id": 1,
+        "theme": "light",
+        "width": 320,
+        "group": "profit convention",
+        "groupIndex": 2,
+        "option": "terminal financed",
+        "optionIndex": 0,
+        "file": "/workspace/scratch/wave6-fin-research/modes-final-v2/1-light-320-mode-g2-o0.png",
+        "state": {
+          "v": 1,
+          "parts": [
+            [
+              "clock::0",
+              null
+            ],
+            [
+              "select:option right:0",
+              [
+                0,
+                [
+                  "call",
+                  "put"
+                ]
+              ]
+            ],
+            [
+              "select:position:0",
+              [
+                0,
+                [
+                  "long",
+                  "short"
+                ]
+              ]
+            ],
+            [
+              "select:profit convention:0",
+              [
+                0,
+                [
+                  "terminal financed",
+                  "nominal premium"
+                ]
+              ]
+            ],
+            [
+              "slider:strike / money per share:0",
+              100
+            ],
+            [
+              "slider:premium paid today / money:0",
+              8
+            ],
+            [
+              "slider:terminal stock price / money:0",
+              120
+            ],
+            [
+              "slider:bond price B / terminal money unit:0",
+              0.875
+            ]
+          ]
+        }
+      },
+      {
+        "id": 1,
+        "theme": "light",
+        "width": 320,
+        "group": "profit convention",
+        "groupIndex": 2,
+        "option": "nominal premium",
+        "optionIndex": 1,
+        "file": "/workspace/scratch/wave6-fin-research/modes-final-v2/1-light-320-mode-g2-o1.png",
+        "state": {
+          "v": 1,
+          "parts": [
+            [
+              "clock::0",
+              null
+            ],
+            [
+              "select:option right:0",
+              [
+                0,
+                [
+                  "call",
+                  "put"
+                ]
+              ]
+            ],
+            [
+              "select:position:0",
+              [
+                0,
+                [
+                  "long",
+                  "short"
+                ]
+              ]
+            ],
+            [
+              "select:profit convention:0",
+              [
+                1,
+                [
+                  "terminal financed",
+                  "nominal premium"
+                ]
+              ]
+            ],
+            [
+              "slider:strike / money per share:0",
+              100
+            ],
+            [
+              "slider:premium paid today / money:0",
+              8
+            ],
+            [
+              "slider:terminal stock price / money:0",
+              120
+            ],
+            [
+              "slider:bond price B / terminal money unit:0",
+              0.875
+            ]
+          ]
+        }
+      },
+      {
+        "id": 1,
+        "theme": "dark",
+        "width": 320,
+        "group": "option right",
+        "groupIndex": 0,
+        "option": "call",
+        "optionIndex": 0,
+        "file": "/workspace/scratch/wave6-fin-research/modes-final-v2/1-dark-320-mode-g0-o0.png",
+        "state": {
+          "v": 1,
+          "parts": [
+            [
+              "clock::0",
+              null
+            ],
+            [
+              "select:option right:0",
+              [
+                0,
+                [
+                  "call",
+                  "put"
+                ]
+              ]
+            ],
+            [
+              "select:position:0",
+              [
+                0,
+                [
+                  "long",
+                  "short"
+                ]
+              ]
+            ],
+            [
+              "select:profit convention:0",
+              [
+                0,
+                [
+                  "terminal financed",
+                  "nominal premium"
+                ]
+              ]
+            ],
+            [
+              "slider:strike / money per share:0",
+              100
+            ],
+            [
+              "slider:premium paid today / money:0",
+              8
+            ],
+            [
+              "slider:terminal stock price / money:0",
+              120
+            ],
+            [
+              "slider:bond price B / terminal money unit:0",
+              0.875
+            ]
+          ]
+        }
+      },
+      {
+        "id": 1,
+        "theme": "dark",
+        "width": 320,
+        "group": "option right",
+        "groupIndex": 0,
+        "option": "put",
+        "optionIndex": 1,
+        "file": "/workspace/scratch/wave6-fin-research/modes-final-v2/1-dark-320-mode-g0-o1.png",
+        "state": {
+          "v": 1,
+          "parts": [
+            [
+              "clock::0",
+              null
+            ],
+            [
+              "select:option right:0",
+              [
+                1,
+                [
+                  "call",
+                  "put"
+                ]
+              ]
+            ],
+            [
+              "select:position:0",
+              [
+                0,
+                [
+                  "long",
+                  "short"
+                ]
+              ]
+            ],
+            [
+              "select:profit convention:0",
+              [
+                0,
+                [
+                  "terminal financed",
+                  "nominal premium"
+                ]
+              ]
+            ],
+            [
+              "slider:strike / money per share:0",
+              100
+            ],
+            [
+              "slider:premium paid today / money:0",
+              8
+            ],
+            [
+              "slider:terminal stock price / money:0",
+              120
+            ],
+            [
+              "slider:bond price B / terminal money unit:0",
+              0.875
+            ]
+          ]
+        }
+      },
+      {
+        "id": 1,
+        "theme": "dark",
+        "width": 320,
+        "group": "position",
+        "groupIndex": 1,
+        "option": "long",
+        "optionIndex": 0,
+        "file": "/workspace/scratch/wave6-fin-research/modes-final-v2/1-dark-320-mode-g1-o0.png",
+        "state": {
+          "v": 1,
+          "parts": [
+            [
+              "clock::0",
+              null
+            ],
+            [
+              "select:option right:0",
+              [
+                0,
+                [
+                  "call",
+                  "put"
+                ]
+              ]
+            ],
+            [
+              "select:position:0",
+              [
+                0,
+                [
+                  "long",
+                  "short"
+                ]
+              ]
+            ],
+            [
+              "select:profit convention:0",
+              [
+                0,
+                [
+                  "terminal financed",
+                  "nominal premium"
+                ]
+              ]
+            ],
+            [
+              "slider:strike / money per share:0",
+              100
+            ],
+            [
+              "slider:premium paid today / money:0",
+              8
+            ],
+            [
+              "slider:terminal stock price / money:0",
+              120
+            ],
+            [
+              "slider:bond price B / terminal money unit:0",
+              0.875
+            ]
+          ]
+        }
+      },
+      {
+        "id": 1,
+        "theme": "dark",
+        "width": 320,
+        "group": "position",
+        "groupIndex": 1,
+        "option": "short",
+        "optionIndex": 1,
+        "file": "/workspace/scratch/wave6-fin-research/modes-final-v2/1-dark-320-mode-g1-o1.png",
+        "state": {
+          "v": 1,
+          "parts": [
+            [
+              "clock::0",
+              null
+            ],
+            [
+              "select:option right:0",
+              [
+                0,
+                [
+                  "call",
+                  "put"
+                ]
+              ]
+            ],
+            [
+              "select:position:0",
+              [
+                1,
+                [
+                  "long",
+                  "short"
+                ]
+              ]
+            ],
+            [
+              "select:profit convention:0",
+              [
+                0,
+                [
+                  "terminal financed",
+                  "nominal premium"
+                ]
+              ]
+            ],
+            [
+              "slider:strike / money per share:0",
+              100
+            ],
+            [
+              "slider:premium paid today / money:0",
+              8
+            ],
+            [
+              "slider:terminal stock price / money:0",
+              120
+            ],
+            [
+              "slider:bond price B / terminal money unit:0",
+              0.875
+            ]
+          ]
+        }
+      },
+      {
+        "id": 1,
+        "theme": "dark",
+        "width": 320,
+        "group": "profit convention",
+        "groupIndex": 2,
+        "option": "terminal financed",
+        "optionIndex": 0,
+        "file": "/workspace/scratch/wave6-fin-research/modes-final-v2/1-dark-320-mode-g2-o0.png",
+        "state": {
+          "v": 1,
+          "parts": [
+            [
+              "clock::0",
+              null
+            ],
+            [
+              "select:option right:0",
+              [
+                0,
+                [
+                  "call",
+                  "put"
+                ]
+              ]
+            ],
+            [
+              "select:position:0",
+              [
+                0,
+                [
+                  "long",
+                  "short"
+                ]
+              ]
+            ],
+            [
+              "select:profit convention:0",
+              [
+                0,
+                [
+                  "terminal financed",
+                  "nominal premium"
+                ]
+              ]
+            ],
+            [
+              "slider:strike / money per share:0",
+              100
+            ],
+            [
+              "slider:premium paid today / money:0",
+              8
+            ],
+            [
+              "slider:terminal stock price / money:0",
+              120
+            ],
+            [
+              "slider:bond price B / terminal money unit:0",
+              0.875
+            ]
+          ]
+        }
+      },
+      {
+        "id": 1,
+        "theme": "dark",
+        "width": 320,
+        "group": "profit convention",
+        "groupIndex": 2,
+        "option": "nominal premium",
+        "optionIndex": 1,
+        "file": "/workspace/scratch/wave6-fin-research/modes-final-v2/1-dark-320-mode-g2-o1.png",
+        "state": {
+          "v": 1,
+          "parts": [
+            [
+              "clock::0",
+              null
+            ],
+            [
+              "select:option right:0",
+              [
+                0,
+                [
+                  "call",
+                  "put"
+                ]
+              ]
+            ],
+            [
+              "select:position:0",
+              [
+                0,
+                [
+                  "long",
+                  "short"
+                ]
+              ]
+            ],
+            [
+              "select:profit convention:0",
+              [
+                1,
+                [
+                  "terminal financed",
+                  "nominal premium"
+                ]
+              ]
+            ],
+            [
+              "slider:strike / money per share:0",
+              100
+            ],
+            [
+              "slider:premium paid today / money:0",
+              8
+            ],
+            [
+              "slider:terminal stock price / money:0",
+              120
+            ],
+            [
+              "slider:bond price B / terminal money unit:0",
+              0.875
+            ]
+          ]
+        }
+      },
+      {
+        "id": 3,
+        "theme": "light",
+        "width": 320,
+        "group": "option being quoted",
+        "groupIndex": 0,
+        "option": "call",
+        "optionIndex": 0,
+        "file": "/workspace/scratch/wave6-fin-research/modes-final-v2/3-light-320-mode-g0-o0.png",
+        "state": {
+          "v": 1,
+          "parts": [
+            [
+              "clock::0",
+              null
+            ],
+            [
+              "select:option being quoted:0",
+              [
+                0,
+                [
+                  "call",
+                  "put"
+                ]
+              ]
+            ],
+            [
+              "select:quote reference bound:0",
+              [
+                0,
+                [
+                  "lower",
+                  "upper"
+                ]
+              ]
+            ],
+            [
+              "slider:stock price today / money:0",
+              100
+            ],
+            [
+              "slider:strike / money:0",
+              100
+            ],
+            [
+              "slider:bond price B / terminal money unit:0",
+              0.875
+            ],
+            [
+              "slider:quote offset from reference / money:0",
+              -5
+            ],
+            [
+              "slider:terminal stock price / money:0",
+              120
+            ]
+          ]
+        }
+      },
+      {
+        "id": 3,
+        "theme": "light",
+        "width": 320,
+        "group": "option being quoted",
+        "groupIndex": 0,
+        "option": "put",
+        "optionIndex": 1,
+        "file": "/workspace/scratch/wave6-fin-research/modes-final-v2/3-light-320-mode-g0-o1.png",
+        "state": {
+          "v": 1,
+          "parts": [
+            [
+              "clock::0",
+              null
+            ],
+            [
+              "select:option being quoted:0",
+              [
+                1,
+                [
+                  "call",
+                  "put"
+                ]
+              ]
+            ],
+            [
+              "select:quote reference bound:0",
+              [
+                0,
+                [
+                  "lower",
+                  "upper"
+                ]
+              ]
+            ],
+            [
+              "slider:stock price today / money:0",
+              100
+            ],
+            [
+              "slider:strike / money:0",
+              100
+            ],
+            [
+              "slider:bond price B / terminal money unit:0",
+              0.875
+            ],
+            [
+              "slider:quote offset from reference / money:0",
+              -5
+            ],
+            [
+              "slider:terminal stock price / money:0",
+              120
+            ]
+          ]
+        }
+      },
+      {
+        "id": 3,
+        "theme": "light",
+        "width": 320,
+        "group": "quote reference bound",
+        "groupIndex": 1,
+        "option": "lower",
+        "optionIndex": 0,
+        "file": "/workspace/scratch/wave6-fin-research/modes-final-v2/3-light-320-mode-g1-o0.png",
+        "state": {
+          "v": 1,
+          "parts": [
+            [
+              "clock::0",
+              null
+            ],
+            [
+              "select:option being quoted:0",
+              [
+                0,
+                [
+                  "call",
+                  "put"
+                ]
+              ]
+            ],
+            [
+              "select:quote reference bound:0",
+              [
+                0,
+                [
+                  "lower",
+                  "upper"
+                ]
+              ]
+            ],
+            [
+              "slider:stock price today / money:0",
+              100
+            ],
+            [
+              "slider:strike / money:0",
+              100
+            ],
+            [
+              "slider:bond price B / terminal money unit:0",
+              0.875
+            ],
+            [
+              "slider:quote offset from reference / money:0",
+              -5
+            ],
+            [
+              "slider:terminal stock price / money:0",
+              120
+            ]
+          ]
+        }
+      },
+      {
+        "id": 3,
+        "theme": "light",
+        "width": 320,
+        "group": "quote reference bound",
+        "groupIndex": 1,
+        "option": "upper",
+        "optionIndex": 1,
+        "file": "/workspace/scratch/wave6-fin-research/modes-final-v2/3-light-320-mode-g1-o1.png",
+        "state": {
+          "v": 1,
+          "parts": [
+            [
+              "clock::0",
+              null
+            ],
+            [
+              "select:option being quoted:0",
+              [
+                0,
+                [
+                  "call",
+                  "put"
+                ]
+              ]
+            ],
+            [
+              "select:quote reference bound:0",
+              [
+                1,
+                [
+                  "lower",
+                  "upper"
+                ]
+              ]
+            ],
+            [
+              "slider:stock price today / money:0",
+              100
+            ],
+            [
+              "slider:strike / money:0",
+              100
+            ],
+            [
+              "slider:bond price B / terminal money unit:0",
+              0.875
+            ],
+            [
+              "slider:quote offset from reference / money:0",
+              -5
+            ],
+            [
+              "slider:terminal stock price / money:0",
+              120
+            ]
+          ]
+        }
+      },
+      {
+        "id": 3,
+        "theme": "dark",
+        "width": 320,
+        "group": "option being quoted",
+        "groupIndex": 0,
+        "option": "call",
+        "optionIndex": 0,
+        "file": "/workspace/scratch/wave6-fin-research/modes-final-v2/3-dark-320-mode-g0-o0.png",
+        "state": {
+          "v": 1,
+          "parts": [
+            [
+              "clock::0",
+              null
+            ],
+            [
+              "select:option being quoted:0",
+              [
+                0,
+                [
+                  "call",
+                  "put"
+                ]
+              ]
+            ],
+            [
+              "select:quote reference bound:0",
+              [
+                0,
+                [
+                  "lower",
+                  "upper"
+                ]
+              ]
+            ],
+            [
+              "slider:stock price today / money:0",
+              100
+            ],
+            [
+              "slider:strike / money:0",
+              100
+            ],
+            [
+              "slider:bond price B / terminal money unit:0",
+              0.875
+            ],
+            [
+              "slider:quote offset from reference / money:0",
+              -5
+            ],
+            [
+              "slider:terminal stock price / money:0",
+              120
+            ]
+          ]
+        }
+      },
+      {
+        "id": 3,
+        "theme": "dark",
+        "width": 320,
+        "group": "option being quoted",
+        "groupIndex": 0,
+        "option": "put",
+        "optionIndex": 1,
+        "file": "/workspace/scratch/wave6-fin-research/modes-final-v2/3-dark-320-mode-g0-o1.png",
+        "state": {
+          "v": 1,
+          "parts": [
+            [
+              "clock::0",
+              null
+            ],
+            [
+              "select:option being quoted:0",
+              [
+                1,
+                [
+                  "call",
+                  "put"
+                ]
+              ]
+            ],
+            [
+              "select:quote reference bound:0",
+              [
+                0,
+                [
+                  "lower",
+                  "upper"
+                ]
+              ]
+            ],
+            [
+              "slider:stock price today / money:0",
+              100
+            ],
+            [
+              "slider:strike / money:0",
+              100
+            ],
+            [
+              "slider:bond price B / terminal money unit:0",
+              0.875
+            ],
+            [
+              "slider:quote offset from reference / money:0",
+              -5
+            ],
+            [
+              "slider:terminal stock price / money:0",
+              120
+            ]
+          ]
+        }
+      },
+      {
+        "id": 3,
+        "theme": "dark",
+        "width": 320,
+        "group": "quote reference bound",
+        "groupIndex": 1,
+        "option": "lower",
+        "optionIndex": 0,
+        "file": "/workspace/scratch/wave6-fin-research/modes-final-v2/3-dark-320-mode-g1-o0.png",
+        "state": {
+          "v": 1,
+          "parts": [
+            [
+              "clock::0",
+              null
+            ],
+            [
+              "select:option being quoted:0",
+              [
+                0,
+                [
+                  "call",
+                  "put"
+                ]
+              ]
+            ],
+            [
+              "select:quote reference bound:0",
+              [
+                0,
+                [
+                  "lower",
+                  "upper"
+                ]
+              ]
+            ],
+            [
+              "slider:stock price today / money:0",
+              100
+            ],
+            [
+              "slider:strike / money:0",
+              100
+            ],
+            [
+              "slider:bond price B / terminal money unit:0",
+              0.875
+            ],
+            [
+              "slider:quote offset from reference / money:0",
+              -5
+            ],
+            [
+              "slider:terminal stock price / money:0",
+              120
+            ]
+          ]
+        }
+      },
+      {
+        "id": 3,
+        "theme": "dark",
+        "width": 320,
+        "group": "quote reference bound",
+        "groupIndex": 1,
+        "option": "upper",
+        "optionIndex": 1,
+        "file": "/workspace/scratch/wave6-fin-research/modes-final-v2/3-dark-320-mode-g1-o1.png",
+        "state": {
+          "v": 1,
+          "parts": [
+            [
+              "clock::0",
+              null
+            ],
+            [
+              "select:option being quoted:0",
+              [
+                0,
+                [
+                  "call",
+                  "put"
+                ]
+              ]
+            ],
+            [
+              "select:quote reference bound:0",
+              [
+                1,
+                [
+                  "lower",
+                  "upper"
+                ]
+              ]
+            ],
+            [
+              "slider:stock price today / money:0",
+              100
+            ],
+            [
+              "slider:strike / money:0",
+              100
+            ],
+            [
+              "slider:bond price B / terminal money unit:0",
+              0.875
+            ],
+            [
+              "slider:quote offset from reference / money:0",
+              -5
+            ],
+            [
+              "slider:terminal stock price / money:0",
+              120
+            ]
+          ]
+        }
+      },
+      {
+        "id": 5,
+        "theme": "light",
+        "width": 320,
+        "group": "middle quote reference",
+        "groupIndex": 0,
+        "option": "fair",
+        "optionIndex": 0,
+        "file": "/workspace/scratch/wave6-fin-research/modes-final-v2/5-light-320-mode-g0-o0.png",
+        "state": {
+          "v": 1,
+          "parts": [
+            [
+              "clock::0",
+              null
+            ],
+            [
+              "slider:constructed Q-law mode / terminal money:0",
+              100
+            ],
+            [
+              "slider:middle strike / money:0",
+              100
+            ],
+            [
+              "slider:left strike spacing / money:0",
+              15
+            ],
+            [
+              "slider:right strike spacing / money:0",
+              25
+            ],
+            [
+              "slider:bond price B / terminal money unit:0",
+              0.875
+            ],
+            [
+              "select:middle quote reference:0",
+              [
+                0,
+                [
+                  "fair",
+                  "chord"
+                ]
+              ]
+            ],
+            [
+              "slider:middle quote offset / money:0",
+              1
+            ],
+            [
+              "slider:terminal stock price / money:0",
+              100
+            ]
+          ]
+        }
+      },
+      {
+        "id": 5,
+        "theme": "light",
+        "width": 320,
+        "group": "middle quote reference",
+        "groupIndex": 0,
+        "option": "chord",
+        "optionIndex": 1,
+        "file": "/workspace/scratch/wave6-fin-research/modes-final-v2/5-light-320-mode-g0-o1.png",
+        "state": {
+          "v": 1,
+          "parts": [
+            [
+              "clock::0",
+              null
+            ],
+            [
+              "slider:constructed Q-law mode / terminal money:0",
+              100
+            ],
+            [
+              "slider:middle strike / money:0",
+              100
+            ],
+            [
+              "slider:left strike spacing / money:0",
+              15
+            ],
+            [
+              "slider:right strike spacing / money:0",
+              25
+            ],
+            [
+              "slider:bond price B / terminal money unit:0",
+              0.875
+            ],
+            [
+              "select:middle quote reference:0",
+              [
+                1,
+                [
+                  "fair",
+                  "chord"
+                ]
+              ]
+            ],
+            [
+              "slider:middle quote offset / money:0",
+              1
+            ],
+            [
+              "slider:terminal stock price / money:0",
+              100
+            ]
+          ]
+        }
+      },
+      {
+        "id": 5,
+        "theme": "dark",
+        "width": 320,
+        "group": "middle quote reference",
+        "groupIndex": 0,
+        "option": "fair",
+        "optionIndex": 0,
+        "file": "/workspace/scratch/wave6-fin-research/modes-final-v2/5-dark-320-mode-g0-o0.png",
+        "state": {
+          "v": 1,
+          "parts": [
+            [
+              "clock::0",
+              null
+            ],
+            [
+              "slider:constructed Q-law mode / terminal money:0",
+              100
+            ],
+            [
+              "slider:middle strike / money:0",
+              100
+            ],
+            [
+              "slider:left strike spacing / money:0",
+              15
+            ],
+            [
+              "slider:right strike spacing / money:0",
+              25
+            ],
+            [
+              "slider:bond price B / terminal money unit:0",
+              0.875
+            ],
+            [
+              "select:middle quote reference:0",
+              [
+                0,
+                [
+                  "fair",
+                  "chord"
+                ]
+              ]
+            ],
+            [
+              "slider:middle quote offset / money:0",
+              1
+            ],
+            [
+              "slider:terminal stock price / money:0",
+              100
+            ]
+          ]
+        }
+      },
+      {
+        "id": 5,
+        "theme": "dark",
+        "width": 320,
+        "group": "middle quote reference",
+        "groupIndex": 0,
+        "option": "chord",
+        "optionIndex": 1,
+        "file": "/workspace/scratch/wave6-fin-research/modes-final-v2/5-dark-320-mode-g0-o1.png",
+        "state": {
+          "v": 1,
+          "parts": [
+            [
+              "clock::0",
+              null
+            ],
+            [
+              "slider:constructed Q-law mode / terminal money:0",
+              100
+            ],
+            [
+              "slider:middle strike / money:0",
+              100
+            ],
+            [
+              "slider:left strike spacing / money:0",
+              15
+            ],
+            [
+              "slider:right strike spacing / money:0",
+              25
+            ],
+            [
+              "slider:bond price B / terminal money unit:0",
+              0.875
+            ],
+            [
+              "select:middle quote reference:0",
+              [
+                1,
+                [
+                  "fair",
+                  "chord"
+                ]
+              ]
+            ],
+            [
+              "slider:middle quote offset / money:0",
+              1
+            ],
+            [
+              "slider:terminal stock price / money:0",
+              100
+            ]
+          ]
+        }
+      },
+      {
+        "id": 6,
+        "theme": "light",
+        "width": 320,
+        "group": "recipe to load",
+        "groupIndex": 0,
+        "option": "bull call spread",
+        "optionIndex": 0,
+        "file": "/workspace/scratch/wave6-fin-research/modes-final-v2/6-light-320-mode-g0-o0.png",
+        "state": {
+          "v": 1,
+          "parts": [
+            [
+              "clock::0",
+              null
+            ],
+            [
+              "select:recipe to load:0",
+              [
+                0,
+                [
+                  "bull call spread",
+                  "bear put spread",
+                  "straddle",
+                  "butterfly",
+                  "protective put"
+                ]
+              ]
+            ],
+            [
+              "select:leg to edit:0",
+              [
+                0,
+                [
+                  "1",
+                  "2",
+                  "3"
+                ]
+              ]
+            ],
+            [
+              "slider:stock units:0",
+              0
+            ],
+            [
+              "slider:stock price paid today / money:0",
+              100
+            ],
+            [
+              "slider:terminal stock price / money:0",
+              120
+            ],
+            [
+              "slider:bond price B / terminal money unit:0",
+              0.875
+            ],
+            [
+              "select:leg 1 option right:0",
+              [
+                0,
+                [
+                  "call",
+                  "put"
+                ]
+              ]
+            ],
+            [
+              "slider:leg 1 strike / money:0",
+              80
+            ],
+            [
+              "slider:leg 1 signed units:0",
+              1
+            ],
+            [
+              "slider:leg 1 premium paid today / money:0",
+              24
+            ],
+            [
+              "select:leg 2 option right:0",
+              [
+                0,
+                [
+                  "call",
+                  "put"
+                ]
+              ]
+            ],
+            [
+              "slider:leg 2 strike / money:0",
+              120
+            ],
+            [
+              "slider:leg 2 signed units:0",
+              -1
+            ],
+            [
+              "slider:leg 2 premium paid today / money:0",
+              5
+            ],
+            [
+              "select:leg 3 option right:0",
+              [
+                1,
+                [
+                  "call",
+                  "put"
+                ]
+              ]
+            ],
+            [
+              "slider:leg 3 strike / money:0",
+              100
+            ],
+            [
+              "slider:leg 3 signed units:0",
+              0
+            ],
+            [
+              "slider:leg 3 premium paid today / money:0",
+              8
+            ]
+          ]
+        }
+      },
+      {
+        "id": 6,
+        "theme": "light",
+        "width": 320,
+        "group": "recipe to load",
+        "groupIndex": 0,
+        "option": "bear put spread",
+        "optionIndex": 1,
+        "file": "/workspace/scratch/wave6-fin-research/modes-final-v2/6-light-320-mode-g0-o1.png",
+        "state": {
+          "v": 1,
+          "parts": [
+            [
+              "clock::0",
+              null
+            ],
+            [
+              "select:recipe to load:0",
+              [
+                1,
+                [
+                  "bull call spread",
+                  "bear put spread",
+                  "straddle",
+                  "butterfly",
+                  "protective put"
+                ]
+              ]
+            ],
+            [
+              "select:leg to edit:0",
+              [
+                0,
+                [
+                  "1",
+                  "2",
+                  "3"
+                ]
+              ]
+            ],
+            [
+              "slider:stock units:0",
+              0
+            ],
+            [
+              "slider:stock price paid today / money:0",
+              100
+            ],
+            [
+              "slider:terminal stock price / money:0",
+              120
+            ],
+            [
+              "slider:bond price B / terminal money unit:0",
+              0.875
+            ],
+            [
+              "select:leg 1 option right:0",
+              [
+                0,
+                [
+                  "call",
+                  "put"
+                ]
+              ]
+            ],
+            [
+              "slider:leg 1 strike / money:0",
+              80
+            ],
+            [
+              "slider:leg 1 signed units:0",
+              1
+            ],
+            [
+              "slider:leg 1 premium paid today / money:0",
+              24
+            ],
+            [
+              "select:leg 2 option right:0",
+              [
+                0,
+                [
+                  "call",
+                  "put"
+                ]
+              ]
+            ],
+            [
+              "slider:leg 2 strike / money:0",
+              120
+            ],
+            [
+              "slider:leg 2 signed units:0",
+              -1
+            ],
+            [
+              "slider:leg 2 premium paid today / money:0",
+              5
+            ],
+            [
+              "select:leg 3 option right:0",
+              [
+                1,
+                [
+                  "call",
+                  "put"
+                ]
+              ]
+            ],
+            [
+              "slider:leg 3 strike / money:0",
+              100
+            ],
+            [
+              "slider:leg 3 signed units:0",
+              0
+            ],
+            [
+              "slider:leg 3 premium paid today / money:0",
+              8
+            ]
+          ]
+        }
+      },
+      {
+        "id": 6,
+        "theme": "light",
+        "width": 320,
+        "group": "recipe to load",
+        "groupIndex": 0,
+        "option": "straddle",
+        "optionIndex": 2,
+        "file": "/workspace/scratch/wave6-fin-research/modes-final-v2/6-light-320-mode-g0-o2.png",
+        "state": {
+          "v": 1,
+          "parts": [
+            [
+              "clock::0",
+              null
+            ],
+            [
+              "select:recipe to load:0",
+              [
+                2,
+                [
+                  "bull call spread",
+                  "bear put spread",
+                  "straddle",
+                  "butterfly",
+                  "protective put"
+                ]
+              ]
+            ],
+            [
+              "select:leg to edit:0",
+              [
+                0,
+                [
+                  "1",
+                  "2",
+                  "3"
+                ]
+              ]
+            ],
+            [
+              "slider:stock units:0",
+              0
+            ],
+            [
+              "slider:stock price paid today / money:0",
+              100
+            ],
+            [
+              "slider:terminal stock price / money:0",
+              120
+            ],
+            [
+              "slider:bond price B / terminal money unit:0",
+              0.875
+            ],
+            [
+              "select:leg 1 option right:0",
+              [
+                0,
+                [
+                  "call",
+                  "put"
+                ]
+              ]
+            ],
+            [
+              "slider:leg 1 strike / money:0",
+              80
+            ],
+            [
+              "slider:leg 1 signed units:0",
+              1
+            ],
+            [
+              "slider:leg 1 premium paid today / money:0",
+              24
+            ],
+            [
+              "select:leg 2 option right:0",
+              [
+                0,
+                [
+                  "call",
+                  "put"
+                ]
+              ]
+            ],
+            [
+              "slider:leg 2 strike / money:0",
+              120
+            ],
+            [
+              "slider:leg 2 signed units:0",
+              -1
+            ],
+            [
+              "slider:leg 2 premium paid today / money:0",
+              5
+            ],
+            [
+              "select:leg 3 option right:0",
+              [
+                1,
+                [
+                  "call",
+                  "put"
+                ]
+              ]
+            ],
+            [
+              "slider:leg 3 strike / money:0",
+              100
+            ],
+            [
+              "slider:leg 3 signed units:0",
+              0
+            ],
+            [
+              "slider:leg 3 premium paid today / money:0",
+              8
+            ]
+          ]
+        }
+      },
+      {
+        "id": 6,
+        "theme": "light",
+        "width": 320,
+        "group": "recipe to load",
+        "groupIndex": 0,
+        "option": "butterfly",
+        "optionIndex": 3,
+        "file": "/workspace/scratch/wave6-fin-research/modes-final-v2/6-light-320-mode-g0-o3.png",
+        "state": {
+          "v": 1,
+          "parts": [
+            [
+              "clock::0",
+              null
+            ],
+            [
+              "select:recipe to load:0",
+              [
+                3,
+                [
+                  "bull call spread",
+                  "bear put spread",
+                  "straddle",
+                  "butterfly",
+                  "protective put"
+                ]
+              ]
+            ],
+            [
+              "select:leg to edit:0",
+              [
+                0,
+                [
+                  "1",
+                  "2",
+                  "3"
+                ]
+              ]
+            ],
+            [
+              "slider:stock units:0",
+              0
+            ],
+            [
+              "slider:stock price paid today / money:0",
+              100
+            ],
+            [
+              "slider:terminal stock price / money:0",
+              120
+            ],
+            [
+              "slider:bond price B / terminal money unit:0",
+              0.875
+            ],
+            [
+              "select:leg 1 option right:0",
+              [
+                0,
+                [
+                  "call",
+                  "put"
+                ]
+              ]
+            ],
+            [
+              "slider:leg 1 strike / money:0",
+              80
+            ],
+            [
+              "slider:leg 1 signed units:0",
+              1
+            ],
+            [
+              "slider:leg 1 premium paid today / money:0",
+              24
+            ],
+            [
+              "select:leg 2 option right:0",
+              [
+                0,
+                [
+                  "call",
+                  "put"
+                ]
+              ]
+            ],
+            [
+              "slider:leg 2 strike / money:0",
+              120
+            ],
+            [
+              "slider:leg 2 signed units:0",
+              -1
+            ],
+            [
+              "slider:leg 2 premium paid today / money:0",
+              5
+            ],
+            [
+              "select:leg 3 option right:0",
+              [
+                1,
+                [
+                  "call",
+                  "put"
+                ]
+              ]
+            ],
+            [
+              "slider:leg 3 strike / money:0",
+              100
+            ],
+            [
+              "slider:leg 3 signed units:0",
+              0
+            ],
+            [
+              "slider:leg 3 premium paid today / money:0",
+              8
+            ]
+          ]
+        }
+      },
+      {
+        "id": 6,
+        "theme": "light",
+        "width": 320,
+        "group": "recipe to load",
+        "groupIndex": 0,
+        "option": "protective put",
+        "optionIndex": 4,
+        "file": "/workspace/scratch/wave6-fin-research/modes-final-v2/6-light-320-mode-g0-o4.png",
+        "state": {
+          "v": 1,
+          "parts": [
+            [
+              "clock::0",
+              null
+            ],
+            [
+              "select:recipe to load:0",
+              [
+                4,
+                [
+                  "bull call spread",
+                  "bear put spread",
+                  "straddle",
+                  "butterfly",
+                  "protective put"
+                ]
+              ]
+            ],
+            [
+              "select:leg to edit:0",
+              [
+                0,
+                [
+                  "1",
+                  "2",
+                  "3"
+                ]
+              ]
+            ],
+            [
+              "slider:stock units:0",
+              0
+            ],
+            [
+              "slider:stock price paid today / money:0",
+              100
+            ],
+            [
+              "slider:terminal stock price / money:0",
+              120
+            ],
+            [
+              "slider:bond price B / terminal money unit:0",
+              0.875
+            ],
+            [
+              "select:leg 1 option right:0",
+              [
+                0,
+                [
+                  "call",
+                  "put"
+                ]
+              ]
+            ],
+            [
+              "slider:leg 1 strike / money:0",
+              80
+            ],
+            [
+              "slider:leg 1 signed units:0",
+              1
+            ],
+            [
+              "slider:leg 1 premium paid today / money:0",
+              24
+            ],
+            [
+              "select:leg 2 option right:0",
+              [
+                0,
+                [
+                  "call",
+                  "put"
+                ]
+              ]
+            ],
+            [
+              "slider:leg 2 strike / money:0",
+              120
+            ],
+            [
+              "slider:leg 2 signed units:0",
+              -1
+            ],
+            [
+              "slider:leg 2 premium paid today / money:0",
+              5
+            ],
+            [
+              "select:leg 3 option right:0",
+              [
+                1,
+                [
+                  "call",
+                  "put"
+                ]
+              ]
+            ],
+            [
+              "slider:leg 3 strike / money:0",
+              100
+            ],
+            [
+              "slider:leg 3 signed units:0",
+              0
+            ],
+            [
+              "slider:leg 3 premium paid today / money:0",
+              8
+            ]
+          ]
+        }
+      },
+      {
+        "id": 6,
+        "theme": "light",
+        "width": 320,
+        "group": "leg to edit",
+        "groupIndex": 1,
+        "option": "1",
+        "optionIndex": 0,
+        "file": "/workspace/scratch/wave6-fin-research/modes-final-v2/6-light-320-mode-g1-o0.png",
+        "state": {
+          "v": 1,
+          "parts": [
+            [
+              "clock::0",
+              null
+            ],
+            [
+              "select:recipe to load:0",
+              [
+                0,
+                [
+                  "bull call spread",
+                  "bear put spread",
+                  "straddle",
+                  "butterfly",
+                  "protective put"
+                ]
+              ]
+            ],
+            [
+              "select:leg to edit:0",
+              [
+                0,
+                [
+                  "1",
+                  "2",
+                  "3"
+                ]
+              ]
+            ],
+            [
+              "slider:stock units:0",
+              0
+            ],
+            [
+              "slider:stock price paid today / money:0",
+              100
+            ],
+            [
+              "slider:terminal stock price / money:0",
+              120
+            ],
+            [
+              "slider:bond price B / terminal money unit:0",
+              0.875
+            ],
+            [
+              "select:leg 1 option right:0",
+              [
+                0,
+                [
+                  "call",
+                  "put"
+                ]
+              ]
+            ],
+            [
+              "slider:leg 1 strike / money:0",
+              80
+            ],
+            [
+              "slider:leg 1 signed units:0",
+              1
+            ],
+            [
+              "slider:leg 1 premium paid today / money:0",
+              24
+            ],
+            [
+              "select:leg 2 option right:0",
+              [
+                0,
+                [
+                  "call",
+                  "put"
+                ]
+              ]
+            ],
+            [
+              "slider:leg 2 strike / money:0",
+              120
+            ],
+            [
+              "slider:leg 2 signed units:0",
+              -1
+            ],
+            [
+              "slider:leg 2 premium paid today / money:0",
+              5
+            ],
+            [
+              "select:leg 3 option right:0",
+              [
+                1,
+                [
+                  "call",
+                  "put"
+                ]
+              ]
+            ],
+            [
+              "slider:leg 3 strike / money:0",
+              100
+            ],
+            [
+              "slider:leg 3 signed units:0",
+              0
+            ],
+            [
+              "slider:leg 3 premium paid today / money:0",
+              8
+            ]
+          ]
+        }
+      },
+      {
+        "id": 6,
+        "theme": "light",
+        "width": 320,
+        "group": "leg to edit",
+        "groupIndex": 1,
+        "option": "2",
+        "optionIndex": 1,
+        "file": "/workspace/scratch/wave6-fin-research/modes-final-v2/6-light-320-mode-g1-o1.png",
+        "state": {
+          "v": 1,
+          "parts": [
+            [
+              "clock::0",
+              null
+            ],
+            [
+              "select:recipe to load:0",
+              [
+                0,
+                [
+                  "bull call spread",
+                  "bear put spread",
+                  "straddle",
+                  "butterfly",
+                  "protective put"
+                ]
+              ]
+            ],
+            [
+              "select:leg to edit:0",
+              [
+                1,
+                [
+                  "1",
+                  "2",
+                  "3"
+                ]
+              ]
+            ],
+            [
+              "slider:stock units:0",
+              0
+            ],
+            [
+              "slider:stock price paid today / money:0",
+              100
+            ],
+            [
+              "slider:terminal stock price / money:0",
+              120
+            ],
+            [
+              "slider:bond price B / terminal money unit:0",
+              0.875
+            ],
+            [
+              "select:leg 1 option right:0",
+              [
+                0,
+                [
+                  "call",
+                  "put"
+                ]
+              ]
+            ],
+            [
+              "slider:leg 1 strike / money:0",
+              80
+            ],
+            [
+              "slider:leg 1 signed units:0",
+              1
+            ],
+            [
+              "slider:leg 1 premium paid today / money:0",
+              24
+            ],
+            [
+              "select:leg 2 option right:0",
+              [
+                0,
+                [
+                  "call",
+                  "put"
+                ]
+              ]
+            ],
+            [
+              "slider:leg 2 strike / money:0",
+              120
+            ],
+            [
+              "slider:leg 2 signed units:0",
+              -1
+            ],
+            [
+              "slider:leg 2 premium paid today / money:0",
+              5
+            ],
+            [
+              "select:leg 3 option right:0",
+              [
+                1,
+                [
+                  "call",
+                  "put"
+                ]
+              ]
+            ],
+            [
+              "slider:leg 3 strike / money:0",
+              100
+            ],
+            [
+              "slider:leg 3 signed units:0",
+              0
+            ],
+            [
+              "slider:leg 3 premium paid today / money:0",
+              8
+            ]
+          ]
+        }
+      },
+      {
+        "id": 6,
+        "theme": "light",
+        "width": 320,
+        "group": "leg to edit",
+        "groupIndex": 1,
+        "option": "3",
+        "optionIndex": 2,
+        "file": "/workspace/scratch/wave6-fin-research/modes-final-v2/6-light-320-mode-g1-o2.png",
+        "state": {
+          "v": 1,
+          "parts": [
+            [
+              "clock::0",
+              null
+            ],
+            [
+              "select:recipe to load:0",
+              [
+                0,
+                [
+                  "bull call spread",
+                  "bear put spread",
+                  "straddle",
+                  "butterfly",
+                  "protective put"
+                ]
+              ]
+            ],
+            [
+              "select:leg to edit:0",
+              [
+                2,
+                [
+                  "1",
+                  "2",
+                  "3"
+                ]
+              ]
+            ],
+            [
+              "slider:stock units:0",
+              0
+            ],
+            [
+              "slider:stock price paid today / money:0",
+              100
+            ],
+            [
+              "slider:terminal stock price / money:0",
+              120
+            ],
+            [
+              "slider:bond price B / terminal money unit:0",
+              0.875
+            ],
+            [
+              "select:leg 1 option right:0",
+              [
+                0,
+                [
+                  "call",
+                  "put"
+                ]
+              ]
+            ],
+            [
+              "slider:leg 1 strike / money:0",
+              80
+            ],
+            [
+              "slider:leg 1 signed units:0",
+              1
+            ],
+            [
+              "slider:leg 1 premium paid today / money:0",
+              24
+            ],
+            [
+              "select:leg 2 option right:0",
+              [
+                0,
+                [
+                  "call",
+                  "put"
+                ]
+              ]
+            ],
+            [
+              "slider:leg 2 strike / money:0",
+              120
+            ],
+            [
+              "slider:leg 2 signed units:0",
+              -1
+            ],
+            [
+              "slider:leg 2 premium paid today / money:0",
+              5
+            ],
+            [
+              "select:leg 3 option right:0",
+              [
+                1,
+                [
+                  "call",
+                  "put"
+                ]
+              ]
+            ],
+            [
+              "slider:leg 3 strike / money:0",
+              100
+            ],
+            [
+              "slider:leg 3 signed units:0",
+              0
+            ],
+            [
+              "slider:leg 3 premium paid today / money:0",
+              8
+            ]
+          ]
+        }
+      },
+      {
+        "id": 6,
+        "theme": "light",
+        "width": 320,
+        "group": "leg 1 option right",
+        "groupIndex": 2,
+        "option": "call",
+        "optionIndex": 0,
+        "file": "/workspace/scratch/wave6-fin-research/modes-final-v2/6-light-320-mode-g2-o0.png",
+        "state": {
+          "v": 1,
+          "parts": [
+            [
+              "clock::0",
+              null
+            ],
+            [
+              "select:recipe to load:0",
+              [
+                0,
+                [
+                  "bull call spread",
+                  "bear put spread",
+                  "straddle",
+                  "butterfly",
+                  "protective put"
+                ]
+              ]
+            ],
+            [
+              "select:leg to edit:0",
+              [
+                0,
+                [
+                  "1",
+                  "2",
+                  "3"
+                ]
+              ]
+            ],
+            [
+              "slider:stock units:0",
+              0
+            ],
+            [
+              "slider:stock price paid today / money:0",
+              100
+            ],
+            [
+              "slider:terminal stock price / money:0",
+              120
+            ],
+            [
+              "slider:bond price B / terminal money unit:0",
+              0.875
+            ],
+            [
+              "select:leg 1 option right:0",
+              [
+                0,
+                [
+                  "call",
+                  "put"
+                ]
+              ]
+            ],
+            [
+              "slider:leg 1 strike / money:0",
+              80
+            ],
+            [
+              "slider:leg 1 signed units:0",
+              1
+            ],
+            [
+              "slider:leg 1 premium paid today / money:0",
+              24
+            ],
+            [
+              "select:leg 2 option right:0",
+              [
+                0,
+                [
+                  "call",
+                  "put"
+                ]
+              ]
+            ],
+            [
+              "slider:leg 2 strike / money:0",
+              120
+            ],
+            [
+              "slider:leg 2 signed units:0",
+              -1
+            ],
+            [
+              "slider:leg 2 premium paid today / money:0",
+              5
+            ],
+            [
+              "select:leg 3 option right:0",
+              [
+                1,
+                [
+                  "call",
+                  "put"
+                ]
+              ]
+            ],
+            [
+              "slider:leg 3 strike / money:0",
+              100
+            ],
+            [
+              "slider:leg 3 signed units:0",
+              0
+            ],
+            [
+              "slider:leg 3 premium paid today / money:0",
+              8
+            ]
+          ]
+        }
+      },
+      {
+        "id": 6,
+        "theme": "light",
+        "width": 320,
+        "group": "leg 1 option right",
+        "groupIndex": 2,
+        "option": "put",
+        "optionIndex": 1,
+        "file": "/workspace/scratch/wave6-fin-research/modes-final-v2/6-light-320-mode-g2-o1.png",
+        "state": {
+          "v": 1,
+          "parts": [
+            [
+              "clock::0",
+              null
+            ],
+            [
+              "select:recipe to load:0",
+              [
+                0,
+                [
+                  "bull call spread",
+                  "bear put spread",
+                  "straddle",
+                  "butterfly",
+                  "protective put"
+                ]
+              ]
+            ],
+            [
+              "select:leg to edit:0",
+              [
+                0,
+                [
+                  "1",
+                  "2",
+                  "3"
+                ]
+              ]
+            ],
+            [
+              "slider:stock units:0",
+              0
+            ],
+            [
+              "slider:stock price paid today / money:0",
+              100
+            ],
+            [
+              "slider:terminal stock price / money:0",
+              120
+            ],
+            [
+              "slider:bond price B / terminal money unit:0",
+              0.875
+            ],
+            [
+              "select:leg 1 option right:0",
+              [
+                1,
+                [
+                  "call",
+                  "put"
+                ]
+              ]
+            ],
+            [
+              "slider:leg 1 strike / money:0",
+              80
+            ],
+            [
+              "slider:leg 1 signed units:0",
+              1
+            ],
+            [
+              "slider:leg 1 premium paid today / money:0",
+              24
+            ],
+            [
+              "select:leg 2 option right:0",
+              [
+                0,
+                [
+                  "call",
+                  "put"
+                ]
+              ]
+            ],
+            [
+              "slider:leg 2 strike / money:0",
+              120
+            ],
+            [
+              "slider:leg 2 signed units:0",
+              -1
+            ],
+            [
+              "slider:leg 2 premium paid today / money:0",
+              5
+            ],
+            [
+              "select:leg 3 option right:0",
+              [
+                1,
+                [
+                  "call",
+                  "put"
+                ]
+              ]
+            ],
+            [
+              "slider:leg 3 strike / money:0",
+              100
+            ],
+            [
+              "slider:leg 3 signed units:0",
+              0
+            ],
+            [
+              "slider:leg 3 premium paid today / money:0",
+              8
+            ]
+          ]
+        }
+      },
+      {
+        "id": 6,
+        "theme": "light",
+        "width": 320,
+        "group": "leg 2 option right",
+        "groupIndex": 3,
+        "option": "call",
+        "optionIndex": 0,
+        "file": "/workspace/scratch/wave6-fin-research/modes-final-v2/6-light-320-mode-g3-o0.png",
+        "state": {
+          "v": 1,
+          "parts": [
+            [
+              "clock::0",
+              null
+            ],
+            [
+              "select:recipe to load:0",
+              [
+                0,
+                [
+                  "bull call spread",
+                  "bear put spread",
+                  "straddle",
+                  "butterfly",
+                  "protective put"
+                ]
+              ]
+            ],
+            [
+              "select:leg to edit:0",
+              [
+                1,
+                [
+                  "1",
+                  "2",
+                  "3"
+                ]
+              ]
+            ],
+            [
+              "slider:stock units:0",
+              0
+            ],
+            [
+              "slider:stock price paid today / money:0",
+              100
+            ],
+            [
+              "slider:terminal stock price / money:0",
+              120
+            ],
+            [
+              "slider:bond price B / terminal money unit:0",
+              0.875
+            ],
+            [
+              "select:leg 1 option right:0",
+              [
+                0,
+                [
+                  "call",
+                  "put"
+                ]
+              ]
+            ],
+            [
+              "slider:leg 1 strike / money:0",
+              80
+            ],
+            [
+              "slider:leg 1 signed units:0",
+              1
+            ],
+            [
+              "slider:leg 1 premium paid today / money:0",
+              24
+            ],
+            [
+              "select:leg 2 option right:0",
+              [
+                0,
+                [
+                  "call",
+                  "put"
+                ]
+              ]
+            ],
+            [
+              "slider:leg 2 strike / money:0",
+              120
+            ],
+            [
+              "slider:leg 2 signed units:0",
+              -1
+            ],
+            [
+              "slider:leg 2 premium paid today / money:0",
+              5
+            ],
+            [
+              "select:leg 3 option right:0",
+              [
+                1,
+                [
+                  "call",
+                  "put"
+                ]
+              ]
+            ],
+            [
+              "slider:leg 3 strike / money:0",
+              100
+            ],
+            [
+              "slider:leg 3 signed units:0",
+              0
+            ],
+            [
+              "slider:leg 3 premium paid today / money:0",
+              8
+            ]
+          ]
+        }
+      },
+      {
+        "id": 6,
+        "theme": "light",
+        "width": 320,
+        "group": "leg 2 option right",
+        "groupIndex": 3,
+        "option": "put",
+        "optionIndex": 1,
+        "file": "/workspace/scratch/wave6-fin-research/modes-final-v2/6-light-320-mode-g3-o1.png",
+        "state": {
+          "v": 1,
+          "parts": [
+            [
+              "clock::0",
+              null
+            ],
+            [
+              "select:recipe to load:0",
+              [
+                0,
+                [
+                  "bull call spread",
+                  "bear put spread",
+                  "straddle",
+                  "butterfly",
+                  "protective put"
+                ]
+              ]
+            ],
+            [
+              "select:leg to edit:0",
+              [
+                1,
+                [
+                  "1",
+                  "2",
+                  "3"
+                ]
+              ]
+            ],
+            [
+              "slider:stock units:0",
+              0
+            ],
+            [
+              "slider:stock price paid today / money:0",
+              100
+            ],
+            [
+              "slider:terminal stock price / money:0",
+              120
+            ],
+            [
+              "slider:bond price B / terminal money unit:0",
+              0.875
+            ],
+            [
+              "select:leg 1 option right:0",
+              [
+                0,
+                [
+                  "call",
+                  "put"
+                ]
+              ]
+            ],
+            [
+              "slider:leg 1 strike / money:0",
+              80
+            ],
+            [
+              "slider:leg 1 signed units:0",
+              1
+            ],
+            [
+              "slider:leg 1 premium paid today / money:0",
+              24
+            ],
+            [
+              "select:leg 2 option right:0",
+              [
+                1,
+                [
+                  "call",
+                  "put"
+                ]
+              ]
+            ],
+            [
+              "slider:leg 2 strike / money:0",
+              120
+            ],
+            [
+              "slider:leg 2 signed units:0",
+              -1
+            ],
+            [
+              "slider:leg 2 premium paid today / money:0",
+              5
+            ],
+            [
+              "select:leg 3 option right:0",
+              [
+                1,
+                [
+                  "call",
+                  "put"
+                ]
+              ]
+            ],
+            [
+              "slider:leg 3 strike / money:0",
+              100
+            ],
+            [
+              "slider:leg 3 signed units:0",
+              0
+            ],
+            [
+              "slider:leg 3 premium paid today / money:0",
+              8
+            ]
+          ]
+        }
+      },
+      {
+        "id": 6,
+        "theme": "light",
+        "width": 320,
+        "group": "leg 3 option right",
+        "groupIndex": 4,
+        "option": "call",
+        "optionIndex": 0,
+        "file": "/workspace/scratch/wave6-fin-research/modes-final-v2/6-light-320-mode-g4-o0.png",
+        "state": {
+          "v": 1,
+          "parts": [
+            [
+              "clock::0",
+              null
+            ],
+            [
+              "select:recipe to load:0",
+              [
+                0,
+                [
+                  "bull call spread",
+                  "bear put spread",
+                  "straddle",
+                  "butterfly",
+                  "protective put"
+                ]
+              ]
+            ],
+            [
+              "select:leg to edit:0",
+              [
+                2,
+                [
+                  "1",
+                  "2",
+                  "3"
+                ]
+              ]
+            ],
+            [
+              "slider:stock units:0",
+              0
+            ],
+            [
+              "slider:stock price paid today / money:0",
+              100
+            ],
+            [
+              "slider:terminal stock price / money:0",
+              120
+            ],
+            [
+              "slider:bond price B / terminal money unit:0",
+              0.875
+            ],
+            [
+              "select:leg 1 option right:0",
+              [
+                0,
+                [
+                  "call",
+                  "put"
+                ]
+              ]
+            ],
+            [
+              "slider:leg 1 strike / money:0",
+              80
+            ],
+            [
+              "slider:leg 1 signed units:0",
+              1
+            ],
+            [
+              "slider:leg 1 premium paid today / money:0",
+              24
+            ],
+            [
+              "select:leg 2 option right:0",
+              [
+                0,
+                [
+                  "call",
+                  "put"
+                ]
+              ]
+            ],
+            [
+              "slider:leg 2 strike / money:0",
+              120
+            ],
+            [
+              "slider:leg 2 signed units:0",
+              -1
+            ],
+            [
+              "slider:leg 2 premium paid today / money:0",
+              5
+            ],
+            [
+              "select:leg 3 option right:0",
+              [
+                0,
+                [
+                  "call",
+                  "put"
+                ]
+              ]
+            ],
+            [
+              "slider:leg 3 strike / money:0",
+              100
+            ],
+            [
+              "slider:leg 3 signed units:0",
+              0
+            ],
+            [
+              "slider:leg 3 premium paid today / money:0",
+              8
+            ]
+          ]
+        }
+      },
+      {
+        "id": 6,
+        "theme": "light",
+        "width": 320,
+        "group": "leg 3 option right",
+        "groupIndex": 4,
+        "option": "put",
+        "optionIndex": 1,
+        "file": "/workspace/scratch/wave6-fin-research/modes-final-v2/6-light-320-mode-g4-o1.png",
+        "state": {
+          "v": 1,
+          "parts": [
+            [
+              "clock::0",
+              null
+            ],
+            [
+              "select:recipe to load:0",
+              [
+                0,
+                [
+                  "bull call spread",
+                  "bear put spread",
+                  "straddle",
+                  "butterfly",
+                  "protective put"
+                ]
+              ]
+            ],
+            [
+              "select:leg to edit:0",
+              [
+                2,
+                [
+                  "1",
+                  "2",
+                  "3"
+                ]
+              ]
+            ],
+            [
+              "slider:stock units:0",
+              0
+            ],
+            [
+              "slider:stock price paid today / money:0",
+              100
+            ],
+            [
+              "slider:terminal stock price / money:0",
+              120
+            ],
+            [
+              "slider:bond price B / terminal money unit:0",
+              0.875
+            ],
+            [
+              "select:leg 1 option right:0",
+              [
+                0,
+                [
+                  "call",
+                  "put"
+                ]
+              ]
+            ],
+            [
+              "slider:leg 1 strike / money:0",
+              80
+            ],
+            [
+              "slider:leg 1 signed units:0",
+              1
+            ],
+            [
+              "slider:leg 1 premium paid today / money:0",
+              24
+            ],
+            [
+              "select:leg 2 option right:0",
+              [
+                0,
+                [
+                  "call",
+                  "put"
+                ]
+              ]
+            ],
+            [
+              "slider:leg 2 strike / money:0",
+              120
+            ],
+            [
+              "slider:leg 2 signed units:0",
+              -1
+            ],
+            [
+              "slider:leg 2 premium paid today / money:0",
+              5
+            ],
+            [
+              "select:leg 3 option right:0",
+              [
+                1,
+                [
+                  "call",
+                  "put"
+                ]
+              ]
+            ],
+            [
+              "slider:leg 3 strike / money:0",
+              100
+            ],
+            [
+              "slider:leg 3 signed units:0",
+              0
+            ],
+            [
+              "slider:leg 3 premium paid today / money:0",
+              8
+            ]
+          ]
+        }
+      },
+      {
+        "id": 6,
+        "theme": "light",
+        "width": 320,
+        "group": "actually loaded recipe",
+        "option": "bull call spread",
+        "file": "/workspace/scratch/wave6-fin-research/modes-final-v2/6-light-320-mode-loaded-0.png",
+        "state": {
+          "v": 1,
+          "parts": [
+            [
+              "clock::0",
+              null
+            ],
+            [
+              "select:recipe to load:0",
+              [
+                0,
+                [
+                  "bull call spread",
+                  "bear put spread",
+                  "straddle",
+                  "butterfly",
+                  "protective put"
+                ]
+              ]
+            ],
+            [
+              "select:leg to edit:0",
+              [
+                0,
+                [
+                  "1",
+                  "2",
+                  "3"
+                ]
+              ]
+            ],
+            [
+              "slider:stock units:0",
+              0
+            ],
+            [
+              "slider:stock price paid today / money:0",
+              100
+            ],
+            [
+              "slider:terminal stock price / money:0",
+              120
+            ],
+            [
+              "slider:bond price B / terminal money unit:0",
+              0.875
+            ],
+            [
+              "select:leg 1 option right:0",
+              [
+                0,
+                [
+                  "call",
+                  "put"
+                ]
+              ]
+            ],
+            [
+              "slider:leg 1 strike / money:0",
+              80
+            ],
+            [
+              "slider:leg 1 signed units:0",
+              1
+            ],
+            [
+              "slider:leg 1 premium paid today / money:0",
+              24
+            ],
+            [
+              "select:leg 2 option right:0",
+              [
+                0,
+                [
+                  "call",
+                  "put"
+                ]
+              ]
+            ],
+            [
+              "slider:leg 2 strike / money:0",
+              120
+            ],
+            [
+              "slider:leg 2 signed units:0",
+              -1
+            ],
+            [
+              "slider:leg 2 premium paid today / money:0",
+              5
+            ],
+            [
+              "select:leg 3 option right:0",
+              [
+                1,
+                [
+                  "call",
+                  "put"
+                ]
+              ]
+            ],
+            [
+              "slider:leg 3 strike / money:0",
+              100
+            ],
+            [
+              "slider:leg 3 signed units:0",
+              0
+            ],
+            [
+              "slider:leg 3 premium paid today / money:0",
+              8
+            ]
+          ]
+        }
+      },
+      {
+        "id": 6,
+        "theme": "light",
+        "width": 320,
+        "group": "actually loaded recipe",
+        "option": "bear put spread",
+        "file": "/workspace/scratch/wave6-fin-research/modes-final-v2/6-light-320-mode-loaded-1.png",
+        "state": {
+          "v": 1,
+          "parts": [
+            [
+              "clock::0",
+              null
+            ],
+            [
+              "select:recipe to load:0",
+              [
+                1,
+                [
+                  "bull call spread",
+                  "bear put spread",
+                  "straddle",
+                  "butterfly",
+                  "protective put"
+                ]
+              ]
+            ],
+            [
+              "select:leg to edit:0",
+              [
+                0,
+                [
+                  "1",
+                  "2",
+                  "3"
+                ]
+              ]
+            ],
+            [
+              "slider:stock units:0",
+              0
+            ],
+            [
+              "slider:stock price paid today / money:0",
+              100
+            ],
+            [
+              "slider:terminal stock price / money:0",
+              120
+            ],
+            [
+              "slider:bond price B / terminal money unit:0",
+              0.875
+            ],
+            [
+              "select:leg 1 option right:0",
+              [
+                1,
+                [
+                  "call",
+                  "put"
+                ]
+              ]
+            ],
+            [
+              "slider:leg 1 strike / money:0",
+              120
+            ],
+            [
+              "slider:leg 1 signed units:0",
+              1
+            ],
+            [
+              "slider:leg 1 premium paid today / money:0",
+              23
+            ],
+            [
+              "select:leg 2 option right:0",
+              [
+                1,
+                [
+                  "call",
+                  "put"
+                ]
+              ]
+            ],
+            [
+              "slider:leg 2 strike / money:0",
+              80
+            ],
+            [
+              "slider:leg 2 signed units:0",
+              -1
+            ],
+            [
+              "slider:leg 2 premium paid today / money:0",
+              4
+            ],
+            [
+              "select:leg 3 option right:0",
+              [
+                0,
+                [
+                  "call",
+                  "put"
+                ]
+              ]
+            ],
+            [
+              "slider:leg 3 strike / money:0",
+              100
+            ],
+            [
+              "slider:leg 3 signed units:0",
+              0
+            ],
+            [
+              "slider:leg 3 premium paid today / money:0",
+              8
+            ]
+          ]
+        }
+      },
+      {
+        "id": 6,
+        "theme": "light",
+        "width": 320,
+        "group": "actually loaded recipe",
+        "option": "straddle",
+        "file": "/workspace/scratch/wave6-fin-research/modes-final-v2/6-light-320-mode-loaded-2.png",
+        "state": {
+          "v": 1,
+          "parts": [
+            [
+              "clock::0",
+              null
+            ],
+            [
+              "select:recipe to load:0",
+              [
+                2,
+                [
+                  "bull call spread",
+                  "bear put spread",
+                  "straddle",
+                  "butterfly",
+                  "protective put"
+                ]
+              ]
+            ],
+            [
+              "select:leg to edit:0",
+              [
+                0,
+                [
+                  "1",
+                  "2",
+                  "3"
+                ]
+              ]
+            ],
+            [
+              "slider:stock units:0",
+              0
+            ],
+            [
+              "slider:stock price paid today / money:0",
+              100
+            ],
+            [
+              "slider:terminal stock price / money:0",
+              120
+            ],
+            [
+              "slider:bond price B / terminal money unit:0",
+              0.875
+            ],
+            [
+              "select:leg 1 option right:0",
+              [
+                0,
+                [
+                  "call",
+                  "put"
+                ]
+              ]
+            ],
+            [
+              "slider:leg 1 strike / money:0",
+              100
+            ],
+            [
+              "slider:leg 1 signed units:0",
+              1
+            ],
+            [
+              "slider:leg 1 premium paid today / money:0",
+              8
+            ],
+            [
+              "select:leg 2 option right:0",
+              [
+                1,
+                [
+                  "call",
+                  "put"
+                ]
+              ]
+            ],
+            [
+              "slider:leg 2 strike / money:0",
+              100
+            ],
+            [
+              "slider:leg 2 signed units:0",
+              1
+            ],
+            [
+              "slider:leg 2 premium paid today / money:0",
+              7
+            ],
+            [
+              "select:leg 3 option right:0",
+              [
+                0,
+                [
+                  "call",
+                  "put"
+                ]
+              ]
+            ],
+            [
+              "slider:leg 3 strike / money:0",
+              120
+            ],
+            [
+              "slider:leg 3 signed units:0",
+              0
+            ],
+            [
+              "slider:leg 3 premium paid today / money:0",
+              3
+            ]
+          ]
+        }
+      },
+      {
+        "id": 6,
+        "theme": "light",
+        "width": 320,
+        "group": "actually loaded recipe",
+        "option": "butterfly",
+        "file": "/workspace/scratch/wave6-fin-research/modes-final-v2/6-light-320-mode-loaded-3.png",
+        "state": {
+          "v": 1,
+          "parts": [
+            [
+              "clock::0",
+              null
+            ],
+            [
+              "select:recipe to load:0",
+              [
+                3,
+                [
+                  "bull call spread",
+                  "bear put spread",
+                  "straddle",
+                  "butterfly",
+                  "protective put"
+                ]
+              ]
+            ],
+            [
+              "select:leg to edit:0",
+              [
+                0,
+                [
+                  "1",
+                  "2",
+                  "3"
+                ]
+              ]
+            ],
+            [
+              "slider:stock units:0",
+              0
+            ],
+            [
+              "slider:stock price paid today / money:0",
+              100
+            ],
+            [
+              "slider:terminal stock price / money:0",
+              120
+            ],
+            [
+              "slider:bond price B / terminal money unit:0",
+              0.875
+            ],
+            [
+              "select:leg 1 option right:0",
+              [
+                0,
+                [
+                  "call",
+                  "put"
+                ]
+              ]
+            ],
+            [
+              "slider:leg 1 strike / money:0",
+              80
+            ],
+            [
+              "slider:leg 1 signed units:0",
+              1
+            ],
+            [
+              "slider:leg 1 premium paid today / money:0",
+              24
+            ],
+            [
+              "select:leg 2 option right:0",
+              [
+                0,
+                [
+                  "call",
+                  "put"
+                ]
+              ]
+            ],
+            [
+              "slider:leg 2 strike / money:0",
+              100
+            ],
+            [
+              "slider:leg 2 signed units:0",
+              -2
+            ],
+            [
+              "slider:leg 2 premium paid today / money:0",
+              10
+            ],
+            [
+              "select:leg 3 option right:0",
+              [
+                0,
+                [
+                  "call",
+                  "put"
+                ]
+              ]
+            ],
+            [
+              "slider:leg 3 strike / money:0",
+              120
+            ],
+            [
+              "slider:leg 3 signed units:0",
+              1
+            ],
+            [
+              "slider:leg 3 premium paid today / money:0",
+              5
+            ]
+          ]
+        }
+      },
+      {
+        "id": 6,
+        "theme": "light",
+        "width": 320,
+        "group": "actually loaded recipe",
+        "option": "protective put",
+        "file": "/workspace/scratch/wave6-fin-research/modes-final-v2/6-light-320-mode-loaded-4.png",
+        "state": {
+          "v": 1,
+          "parts": [
+            [
+              "clock::0",
+              null
+            ],
+            [
+              "select:recipe to load:0",
+              [
+                4,
+                [
+                  "bull call spread",
+                  "bear put spread",
+                  "straddle",
+                  "butterfly",
+                  "protective put"
+                ]
+              ]
+            ],
+            [
+              "select:leg to edit:0",
+              [
+                0,
+                [
+                  "1",
+                  "2",
+                  "3"
+                ]
+              ]
+            ],
+            [
+              "slider:stock units:0",
+              1
+            ],
+            [
+              "slider:stock price paid today / money:0",
+              100
+            ],
+            [
+              "slider:terminal stock price / money:0",
+              120
+            ],
+            [
+              "slider:bond price B / terminal money unit:0",
+              0.875
+            ],
+            [
+              "select:leg 1 option right:0",
+              [
+                1,
+                [
+                  "call",
+                  "put"
+                ]
+              ]
+            ],
+            [
+              "slider:leg 1 strike / money:0",
+              90
+            ],
+            [
+              "slider:leg 1 signed units:0",
+              1
+            ],
+            [
+              "slider:leg 1 premium paid today / money:0",
+              5
+            ],
+            [
+              "select:leg 2 option right:0",
+              [
+                0,
+                [
+                  "call",
+                  "put"
+                ]
+              ]
+            ],
+            [
+              "slider:leg 2 strike / money:0",
+              100
+            ],
+            [
+              "slider:leg 2 signed units:0",
+              0
+            ],
+            [
+              "slider:leg 2 premium paid today / money:0",
+              8
+            ],
+            [
+              "select:leg 3 option right:0",
+              [
+                1,
+                [
+                  "call",
+                  "put"
+                ]
+              ]
+            ],
+            [
+              "slider:leg 3 strike / money:0",
+              120
+            ],
+            [
+              "slider:leg 3 signed units:0",
+              0
+            ],
+            [
+              "slider:leg 3 premium paid today / money:0",
+              22
+            ]
+          ]
+        }
+      },
+      {
+        "id": 6,
+        "theme": "dark",
+        "width": 320,
+        "group": "recipe to load",
+        "groupIndex": 0,
+        "option": "bull call spread",
+        "optionIndex": 0,
+        "file": "/workspace/scratch/wave6-fin-research/modes-final-v2/6-dark-320-mode-g0-o0.png",
+        "state": {
+          "v": 1,
+          "parts": [
+            [
+              "clock::0",
+              null
+            ],
+            [
+              "select:recipe to load:0",
+              [
+                0,
+                [
+                  "bull call spread",
+                  "bear put spread",
+                  "straddle",
+                  "butterfly",
+                  "protective put"
+                ]
+              ]
+            ],
+            [
+              "select:leg to edit:0",
+              [
+                0,
+                [
+                  "1",
+                  "2",
+                  "3"
+                ]
+              ]
+            ],
+            [
+              "slider:stock units:0",
+              0
+            ],
+            [
+              "slider:stock price paid today / money:0",
+              100
+            ],
+            [
+              "slider:terminal stock price / money:0",
+              120
+            ],
+            [
+              "slider:bond price B / terminal money unit:0",
+              0.875
+            ],
+            [
+              "select:leg 1 option right:0",
+              [
+                0,
+                [
+                  "call",
+                  "put"
+                ]
+              ]
+            ],
+            [
+              "slider:leg 1 strike / money:0",
+              80
+            ],
+            [
+              "slider:leg 1 signed units:0",
+              1
+            ],
+            [
+              "slider:leg 1 premium paid today / money:0",
+              24
+            ],
+            [
+              "select:leg 2 option right:0",
+              [
+                0,
+                [
+                  "call",
+                  "put"
+                ]
+              ]
+            ],
+            [
+              "slider:leg 2 strike / money:0",
+              120
+            ],
+            [
+              "slider:leg 2 signed units:0",
+              -1
+            ],
+            [
+              "slider:leg 2 premium paid today / money:0",
+              5
+            ],
+            [
+              "select:leg 3 option right:0",
+              [
+                1,
+                [
+                  "call",
+                  "put"
+                ]
+              ]
+            ],
+            [
+              "slider:leg 3 strike / money:0",
+              100
+            ],
+            [
+              "slider:leg 3 signed units:0",
+              0
+            ],
+            [
+              "slider:leg 3 premium paid today / money:0",
+              8
+            ]
+          ]
+        }
+      },
+      {
+        "id": 6,
+        "theme": "dark",
+        "width": 320,
+        "group": "recipe to load",
+        "groupIndex": 0,
+        "option": "bear put spread",
+        "optionIndex": 1,
+        "file": "/workspace/scratch/wave6-fin-research/modes-final-v2/6-dark-320-mode-g0-o1.png",
+        "state": {
+          "v": 1,
+          "parts": [
+            [
+              "clock::0",
+              null
+            ],
+            [
+              "select:recipe to load:0",
+              [
+                1,
+                [
+                  "bull call spread",
+                  "bear put spread",
+                  "straddle",
+                  "butterfly",
+                  "protective put"
+                ]
+              ]
+            ],
+            [
+              "select:leg to edit:0",
+              [
+                0,
+                [
+                  "1",
+                  "2",
+                  "3"
+                ]
+              ]
+            ],
+            [
+              "slider:stock units:0",
+              0
+            ],
+            [
+              "slider:stock price paid today / money:0",
+              100
+            ],
+            [
+              "slider:terminal stock price / money:0",
+              120
+            ],
+            [
+              "slider:bond price B / terminal money unit:0",
+              0.875
+            ],
+            [
+              "select:leg 1 option right:0",
+              [
+                0,
+                [
+                  "call",
+                  "put"
+                ]
+              ]
+            ],
+            [
+              "slider:leg 1 strike / money:0",
+              80
+            ],
+            [
+              "slider:leg 1 signed units:0",
+              1
+            ],
+            [
+              "slider:leg 1 premium paid today / money:0",
+              24
+            ],
+            [
+              "select:leg 2 option right:0",
+              [
+                0,
+                [
+                  "call",
+                  "put"
+                ]
+              ]
+            ],
+            [
+              "slider:leg 2 strike / money:0",
+              120
+            ],
+            [
+              "slider:leg 2 signed units:0",
+              -1
+            ],
+            [
+              "slider:leg 2 premium paid today / money:0",
+              5
+            ],
+            [
+              "select:leg 3 option right:0",
+              [
+                1,
+                [
+                  "call",
+                  "put"
+                ]
+              ]
+            ],
+            [
+              "slider:leg 3 strike / money:0",
+              100
+            ],
+            [
+              "slider:leg 3 signed units:0",
+              0
+            ],
+            [
+              "slider:leg 3 premium paid today / money:0",
+              8
+            ]
+          ]
+        }
+      },
+      {
+        "id": 6,
+        "theme": "dark",
+        "width": 320,
+        "group": "recipe to load",
+        "groupIndex": 0,
+        "option": "straddle",
+        "optionIndex": 2,
+        "file": "/workspace/scratch/wave6-fin-research/modes-final-v2/6-dark-320-mode-g0-o2.png",
+        "state": {
+          "v": 1,
+          "parts": [
+            [
+              "clock::0",
+              null
+            ],
+            [
+              "select:recipe to load:0",
+              [
+                2,
+                [
+                  "bull call spread",
+                  "bear put spread",
+                  "straddle",
+                  "butterfly",
+                  "protective put"
+                ]
+              ]
+            ],
+            [
+              "select:leg to edit:0",
+              [
+                0,
+                [
+                  "1",
+                  "2",
+                  "3"
+                ]
+              ]
+            ],
+            [
+              "slider:stock units:0",
+              0
+            ],
+            [
+              "slider:stock price paid today / money:0",
+              100
+            ],
+            [
+              "slider:terminal stock price / money:0",
+              120
+            ],
+            [
+              "slider:bond price B / terminal money unit:0",
+              0.875
+            ],
+            [
+              "select:leg 1 option right:0",
+              [
+                0,
+                [
+                  "call",
+                  "put"
+                ]
+              ]
+            ],
+            [
+              "slider:leg 1 strike / money:0",
+              80
+            ],
+            [
+              "slider:leg 1 signed units:0",
+              1
+            ],
+            [
+              "slider:leg 1 premium paid today / money:0",
+              24
+            ],
+            [
+              "select:leg 2 option right:0",
+              [
+                0,
+                [
+                  "call",
+                  "put"
+                ]
+              ]
+            ],
+            [
+              "slider:leg 2 strike / money:0",
+              120
+            ],
+            [
+              "slider:leg 2 signed units:0",
+              -1
+            ],
+            [
+              "slider:leg 2 premium paid today / money:0",
+              5
+            ],
+            [
+              "select:leg 3 option right:0",
+              [
+                1,
+                [
+                  "call",
+                  "put"
+                ]
+              ]
+            ],
+            [
+              "slider:leg 3 strike / money:0",
+              100
+            ],
+            [
+              "slider:leg 3 signed units:0",
+              0
+            ],
+            [
+              "slider:leg 3 premium paid today / money:0",
+              8
+            ]
+          ]
+        }
+      },
+      {
+        "id": 6,
+        "theme": "dark",
+        "width": 320,
+        "group": "recipe to load",
+        "groupIndex": 0,
+        "option": "butterfly",
+        "optionIndex": 3,
+        "file": "/workspace/scratch/wave6-fin-research/modes-final-v2/6-dark-320-mode-g0-o3.png",
+        "state": {
+          "v": 1,
+          "parts": [
+            [
+              "clock::0",
+              null
+            ],
+            [
+              "select:recipe to load:0",
+              [
+                3,
+                [
+                  "bull call spread",
+                  "bear put spread",
+                  "straddle",
+                  "butterfly",
+                  "protective put"
+                ]
+              ]
+            ],
+            [
+              "select:leg to edit:0",
+              [
+                0,
+                [
+                  "1",
+                  "2",
+                  "3"
+                ]
+              ]
+            ],
+            [
+              "slider:stock units:0",
+              0
+            ],
+            [
+              "slider:stock price paid today / money:0",
+              100
+            ],
+            [
+              "slider:terminal stock price / money:0",
+              120
+            ],
+            [
+              "slider:bond price B / terminal money unit:0",
+              0.875
+            ],
+            [
+              "select:leg 1 option right:0",
+              [
+                0,
+                [
+                  "call",
+                  "put"
+                ]
+              ]
+            ],
+            [
+              "slider:leg 1 strike / money:0",
+              80
+            ],
+            [
+              "slider:leg 1 signed units:0",
+              1
+            ],
+            [
+              "slider:leg 1 premium paid today / money:0",
+              24
+            ],
+            [
+              "select:leg 2 option right:0",
+              [
+                0,
+                [
+                  "call",
+                  "put"
+                ]
+              ]
+            ],
+            [
+              "slider:leg 2 strike / money:0",
+              120
+            ],
+            [
+              "slider:leg 2 signed units:0",
+              -1
+            ],
+            [
+              "slider:leg 2 premium paid today / money:0",
+              5
+            ],
+            [
+              "select:leg 3 option right:0",
+              [
+                1,
+                [
+                  "call",
+                  "put"
+                ]
+              ]
+            ],
+            [
+              "slider:leg 3 strike / money:0",
+              100
+            ],
+            [
+              "slider:leg 3 signed units:0",
+              0
+            ],
+            [
+              "slider:leg 3 premium paid today / money:0",
+              8
+            ]
+          ]
+        }
+      },
+      {
+        "id": 6,
+        "theme": "dark",
+        "width": 320,
+        "group": "recipe to load",
+        "groupIndex": 0,
+        "option": "protective put",
+        "optionIndex": 4,
+        "file": "/workspace/scratch/wave6-fin-research/modes-final-v2/6-dark-320-mode-g0-o4.png",
+        "state": {
+          "v": 1,
+          "parts": [
+            [
+              "clock::0",
+              null
+            ],
+            [
+              "select:recipe to load:0",
+              [
+                4,
+                [
+                  "bull call spread",
+                  "bear put spread",
+                  "straddle",
+                  "butterfly",
+                  "protective put"
+                ]
+              ]
+            ],
+            [
+              "select:leg to edit:0",
+              [
+                0,
+                [
+                  "1",
+                  "2",
+                  "3"
+                ]
+              ]
+            ],
+            [
+              "slider:stock units:0",
+              0
+            ],
+            [
+              "slider:stock price paid today / money:0",
+              100
+            ],
+            [
+              "slider:terminal stock price / money:0",
+              120
+            ],
+            [
+              "slider:bond price B / terminal money unit:0",
+              0.875
+            ],
+            [
+              "select:leg 1 option right:0",
+              [
+                0,
+                [
+                  "call",
+                  "put"
+                ]
+              ]
+            ],
+            [
+              "slider:leg 1 strike / money:0",
+              80
+            ],
+            [
+              "slider:leg 1 signed units:0",
+              1
+            ],
+            [
+              "slider:leg 1 premium paid today / money:0",
+              24
+            ],
+            [
+              "select:leg 2 option right:0",
+              [
+                0,
+                [
+                  "call",
+                  "put"
+                ]
+              ]
+            ],
+            [
+              "slider:leg 2 strike / money:0",
+              120
+            ],
+            [
+              "slider:leg 2 signed units:0",
+              -1
+            ],
+            [
+              "slider:leg 2 premium paid today / money:0",
+              5
+            ],
+            [
+              "select:leg 3 option right:0",
+              [
+                1,
+                [
+                  "call",
+                  "put"
+                ]
+              ]
+            ],
+            [
+              "slider:leg 3 strike / money:0",
+              100
+            ],
+            [
+              "slider:leg 3 signed units:0",
+              0
+            ],
+            [
+              "slider:leg 3 premium paid today / money:0",
+              8
+            ]
+          ]
+        }
+      },
+      {
+        "id": 6,
+        "theme": "dark",
+        "width": 320,
+        "group": "leg to edit",
+        "groupIndex": 1,
+        "option": "1",
+        "optionIndex": 0,
+        "file": "/workspace/scratch/wave6-fin-research/modes-final-v2/6-dark-320-mode-g1-o0.png",
+        "state": {
+          "v": 1,
+          "parts": [
+            [
+              "clock::0",
+              null
+            ],
+            [
+              "select:recipe to load:0",
+              [
+                0,
+                [
+                  "bull call spread",
+                  "bear put spread",
+                  "straddle",
+                  "butterfly",
+                  "protective put"
+                ]
+              ]
+            ],
+            [
+              "select:leg to edit:0",
+              [
+                0,
+                [
+                  "1",
+                  "2",
+                  "3"
+                ]
+              ]
+            ],
+            [
+              "slider:stock units:0",
+              0
+            ],
+            [
+              "slider:stock price paid today / money:0",
+              100
+            ],
+            [
+              "slider:terminal stock price / money:0",
+              120
+            ],
+            [
+              "slider:bond price B / terminal money unit:0",
+              0.875
+            ],
+            [
+              "select:leg 1 option right:0",
+              [
+                0,
+                [
+                  "call",
+                  "put"
+                ]
+              ]
+            ],
+            [
+              "slider:leg 1 strike / money:0",
+              80
+            ],
+            [
+              "slider:leg 1 signed units:0",
+              1
+            ],
+            [
+              "slider:leg 1 premium paid today / money:0",
+              24
+            ],
+            [
+              "select:leg 2 option right:0",
+              [
+                0,
+                [
+                  "call",
+                  "put"
+                ]
+              ]
+            ],
+            [
+              "slider:leg 2 strike / money:0",
+              120
+            ],
+            [
+              "slider:leg 2 signed units:0",
+              -1
+            ],
+            [
+              "slider:leg 2 premium paid today / money:0",
+              5
+            ],
+            [
+              "select:leg 3 option right:0",
+              [
+                1,
+                [
+                  "call",
+                  "put"
+                ]
+              ]
+            ],
+            [
+              "slider:leg 3 strike / money:0",
+              100
+            ],
+            [
+              "slider:leg 3 signed units:0",
+              0
+            ],
+            [
+              "slider:leg 3 premium paid today / money:0",
+              8
+            ]
+          ]
+        }
+      },
+      {
+        "id": 6,
+        "theme": "dark",
+        "width": 320,
+        "group": "leg to edit",
+        "groupIndex": 1,
+        "option": "2",
+        "optionIndex": 1,
+        "file": "/workspace/scratch/wave6-fin-research/modes-final-v2/6-dark-320-mode-g1-o1.png",
+        "state": {
+          "v": 1,
+          "parts": [
+            [
+              "clock::0",
+              null
+            ],
+            [
+              "select:recipe to load:0",
+              [
+                0,
+                [
+                  "bull call spread",
+                  "bear put spread",
+                  "straddle",
+                  "butterfly",
+                  "protective put"
+                ]
+              ]
+            ],
+            [
+              "select:leg to edit:0",
+              [
+                1,
+                [
+                  "1",
+                  "2",
+                  "3"
+                ]
+              ]
+            ],
+            [
+              "slider:stock units:0",
+              0
+            ],
+            [
+              "slider:stock price paid today / money:0",
+              100
+            ],
+            [
+              "slider:terminal stock price / money:0",
+              120
+            ],
+            [
+              "slider:bond price B / terminal money unit:0",
+              0.875
+            ],
+            [
+              "select:leg 1 option right:0",
+              [
+                0,
+                [
+                  "call",
+                  "put"
+                ]
+              ]
+            ],
+            [
+              "slider:leg 1 strike / money:0",
+              80
+            ],
+            [
+              "slider:leg 1 signed units:0",
+              1
+            ],
+            [
+              "slider:leg 1 premium paid today / money:0",
+              24
+            ],
+            [
+              "select:leg 2 option right:0",
+              [
+                0,
+                [
+                  "call",
+                  "put"
+                ]
+              ]
+            ],
+            [
+              "slider:leg 2 strike / money:0",
+              120
+            ],
+            [
+              "slider:leg 2 signed units:0",
+              -1
+            ],
+            [
+              "slider:leg 2 premium paid today / money:0",
+              5
+            ],
+            [
+              "select:leg 3 option right:0",
+              [
+                1,
+                [
+                  "call",
+                  "put"
+                ]
+              ]
+            ],
+            [
+              "slider:leg 3 strike / money:0",
+              100
+            ],
+            [
+              "slider:leg 3 signed units:0",
+              0
+            ],
+            [
+              "slider:leg 3 premium paid today / money:0",
+              8
+            ]
+          ]
+        }
+      },
+      {
+        "id": 6,
+        "theme": "dark",
+        "width": 320,
+        "group": "leg to edit",
+        "groupIndex": 1,
+        "option": "3",
+        "optionIndex": 2,
+        "file": "/workspace/scratch/wave6-fin-research/modes-final-v2/6-dark-320-mode-g1-o2.png",
+        "state": {
+          "v": 1,
+          "parts": [
+            [
+              "clock::0",
+              null
+            ],
+            [
+              "select:recipe to load:0",
+              [
+                0,
+                [
+                  "bull call spread",
+                  "bear put spread",
+                  "straddle",
+                  "butterfly",
+                  "protective put"
+                ]
+              ]
+            ],
+            [
+              "select:leg to edit:0",
+              [
+                2,
+                [
+                  "1",
+                  "2",
+                  "3"
+                ]
+              ]
+            ],
+            [
+              "slider:stock units:0",
+              0
+            ],
+            [
+              "slider:stock price paid today / money:0",
+              100
+            ],
+            [
+              "slider:terminal stock price / money:0",
+              120
+            ],
+            [
+              "slider:bond price B / terminal money unit:0",
+              0.875
+            ],
+            [
+              "select:leg 1 option right:0",
+              [
+                0,
+                [
+                  "call",
+                  "put"
+                ]
+              ]
+            ],
+            [
+              "slider:leg 1 strike / money:0",
+              80
+            ],
+            [
+              "slider:leg 1 signed units:0",
+              1
+            ],
+            [
+              "slider:leg 1 premium paid today / money:0",
+              24
+            ],
+            [
+              "select:leg 2 option right:0",
+              [
+                0,
+                [
+                  "call",
+                  "put"
+                ]
+              ]
+            ],
+            [
+              "slider:leg 2 strike / money:0",
+              120
+            ],
+            [
+              "slider:leg 2 signed units:0",
+              -1
+            ],
+            [
+              "slider:leg 2 premium paid today / money:0",
+              5
+            ],
+            [
+              "select:leg 3 option right:0",
+              [
+                1,
+                [
+                  "call",
+                  "put"
+                ]
+              ]
+            ],
+            [
+              "slider:leg 3 strike / money:0",
+              100
+            ],
+            [
+              "slider:leg 3 signed units:0",
+              0
+            ],
+            [
+              "slider:leg 3 premium paid today / money:0",
+              8
+            ]
+          ]
+        }
+      },
+      {
+        "id": 6,
+        "theme": "dark",
+        "width": 320,
+        "group": "leg 1 option right",
+        "groupIndex": 2,
+        "option": "call",
+        "optionIndex": 0,
+        "file": "/workspace/scratch/wave6-fin-research/modes-final-v2/6-dark-320-mode-g2-o0.png",
+        "state": {
+          "v": 1,
+          "parts": [
+            [
+              "clock::0",
+              null
+            ],
+            [
+              "select:recipe to load:0",
+              [
+                0,
+                [
+                  "bull call spread",
+                  "bear put spread",
+                  "straddle",
+                  "butterfly",
+                  "protective put"
+                ]
+              ]
+            ],
+            [
+              "select:leg to edit:0",
+              [
+                0,
+                [
+                  "1",
+                  "2",
+                  "3"
+                ]
+              ]
+            ],
+            [
+              "slider:stock units:0",
+              0
+            ],
+            [
+              "slider:stock price paid today / money:0",
+              100
+            ],
+            [
+              "slider:terminal stock price / money:0",
+              120
+            ],
+            [
+              "slider:bond price B / terminal money unit:0",
+              0.875
+            ],
+            [
+              "select:leg 1 option right:0",
+              [
+                0,
+                [
+                  "call",
+                  "put"
+                ]
+              ]
+            ],
+            [
+              "slider:leg 1 strike / money:0",
+              80
+            ],
+            [
+              "slider:leg 1 signed units:0",
+              1
+            ],
+            [
+              "slider:leg 1 premium paid today / money:0",
+              24
+            ],
+            [
+              "select:leg 2 option right:0",
+              [
+                0,
+                [
+                  "call",
+                  "put"
+                ]
+              ]
+            ],
+            [
+              "slider:leg 2 strike / money:0",
+              120
+            ],
+            [
+              "slider:leg 2 signed units:0",
+              -1
+            ],
+            [
+              "slider:leg 2 premium paid today / money:0",
+              5
+            ],
+            [
+              "select:leg 3 option right:0",
+              [
+                1,
+                [
+                  "call",
+                  "put"
+                ]
+              ]
+            ],
+            [
+              "slider:leg 3 strike / money:0",
+              100
+            ],
+            [
+              "slider:leg 3 signed units:0",
+              0
+            ],
+            [
+              "slider:leg 3 premium paid today / money:0",
+              8
+            ]
+          ]
+        }
+      },
+      {
+        "id": 6,
+        "theme": "dark",
+        "width": 320,
+        "group": "leg 1 option right",
+        "groupIndex": 2,
+        "option": "put",
+        "optionIndex": 1,
+        "file": "/workspace/scratch/wave6-fin-research/modes-final-v2/6-dark-320-mode-g2-o1.png",
+        "state": {
+          "v": 1,
+          "parts": [
+            [
+              "clock::0",
+              null
+            ],
+            [
+              "select:recipe to load:0",
+              [
+                0,
+                [
+                  "bull call spread",
+                  "bear put spread",
+                  "straddle",
+                  "butterfly",
+                  "protective put"
+                ]
+              ]
+            ],
+            [
+              "select:leg to edit:0",
+              [
+                0,
+                [
+                  "1",
+                  "2",
+                  "3"
+                ]
+              ]
+            ],
+            [
+              "slider:stock units:0",
+              0
+            ],
+            [
+              "slider:stock price paid today / money:0",
+              100
+            ],
+            [
+              "slider:terminal stock price / money:0",
+              120
+            ],
+            [
+              "slider:bond price B / terminal money unit:0",
+              0.875
+            ],
+            [
+              "select:leg 1 option right:0",
+              [
+                1,
+                [
+                  "call",
+                  "put"
+                ]
+              ]
+            ],
+            [
+              "slider:leg 1 strike / money:0",
+              80
+            ],
+            [
+              "slider:leg 1 signed units:0",
+              1
+            ],
+            [
+              "slider:leg 1 premium paid today / money:0",
+              24
+            ],
+            [
+              "select:leg 2 option right:0",
+              [
+                0,
+                [
+                  "call",
+                  "put"
+                ]
+              ]
+            ],
+            [
+              "slider:leg 2 strike / money:0",
+              120
+            ],
+            [
+              "slider:leg 2 signed units:0",
+              -1
+            ],
+            [
+              "slider:leg 2 premium paid today / money:0",
+              5
+            ],
+            [
+              "select:leg 3 option right:0",
+              [
+                1,
+                [
+                  "call",
+                  "put"
+                ]
+              ]
+            ],
+            [
+              "slider:leg 3 strike / money:0",
+              100
+            ],
+            [
+              "slider:leg 3 signed units:0",
+              0
+            ],
+            [
+              "slider:leg 3 premium paid today / money:0",
+              8
+            ]
+          ]
+        }
+      },
+      {
+        "id": 6,
+        "theme": "dark",
+        "width": 320,
+        "group": "leg 2 option right",
+        "groupIndex": 3,
+        "option": "call",
+        "optionIndex": 0,
+        "file": "/workspace/scratch/wave6-fin-research/modes-final-v2/6-dark-320-mode-g3-o0.png",
+        "state": {
+          "v": 1,
+          "parts": [
+            [
+              "clock::0",
+              null
+            ],
+            [
+              "select:recipe to load:0",
+              [
+                0,
+                [
+                  "bull call spread",
+                  "bear put spread",
+                  "straddle",
+                  "butterfly",
+                  "protective put"
+                ]
+              ]
+            ],
+            [
+              "select:leg to edit:0",
+              [
+                1,
+                [
+                  "1",
+                  "2",
+                  "3"
+                ]
+              ]
+            ],
+            [
+              "slider:stock units:0",
+              0
+            ],
+            [
+              "slider:stock price paid today / money:0",
+              100
+            ],
+            [
+              "slider:terminal stock price / money:0",
+              120
+            ],
+            [
+              "slider:bond price B / terminal money unit:0",
+              0.875
+            ],
+            [
+              "select:leg 1 option right:0",
+              [
+                0,
+                [
+                  "call",
+                  "put"
+                ]
+              ]
+            ],
+            [
+              "slider:leg 1 strike / money:0",
+              80
+            ],
+            [
+              "slider:leg 1 signed units:0",
+              1
+            ],
+            [
+              "slider:leg 1 premium paid today / money:0",
+              24
+            ],
+            [
+              "select:leg 2 option right:0",
+              [
+                0,
+                [
+                  "call",
+                  "put"
+                ]
+              ]
+            ],
+            [
+              "slider:leg 2 strike / money:0",
+              120
+            ],
+            [
+              "slider:leg 2 signed units:0",
+              -1
+            ],
+            [
+              "slider:leg 2 premium paid today / money:0",
+              5
+            ],
+            [
+              "select:leg 3 option right:0",
+              [
+                1,
+                [
+                  "call",
+                  "put"
+                ]
+              ]
+            ],
+            [
+              "slider:leg 3 strike / money:0",
+              100
+            ],
+            [
+              "slider:leg 3 signed units:0",
+              0
+            ],
+            [
+              "slider:leg 3 premium paid today / money:0",
+              8
+            ]
+          ]
+        }
+      },
+      {
+        "id": 6,
+        "theme": "dark",
+        "width": 320,
+        "group": "leg 2 option right",
+        "groupIndex": 3,
+        "option": "put",
+        "optionIndex": 1,
+        "file": "/workspace/scratch/wave6-fin-research/modes-final-v2/6-dark-320-mode-g3-o1.png",
+        "state": {
+          "v": 1,
+          "parts": [
+            [
+              "clock::0",
+              null
+            ],
+            [
+              "select:recipe to load:0",
+              [
+                0,
+                [
+                  "bull call spread",
+                  "bear put spread",
+                  "straddle",
+                  "butterfly",
+                  "protective put"
+                ]
+              ]
+            ],
+            [
+              "select:leg to edit:0",
+              [
+                1,
+                [
+                  "1",
+                  "2",
+                  "3"
+                ]
+              ]
+            ],
+            [
+              "slider:stock units:0",
+              0
+            ],
+            [
+              "slider:stock price paid today / money:0",
+              100
+            ],
+            [
+              "slider:terminal stock price / money:0",
+              120
+            ],
+            [
+              "slider:bond price B / terminal money unit:0",
+              0.875
+            ],
+            [
+              "select:leg 1 option right:0",
+              [
+                0,
+                [
+                  "call",
+                  "put"
+                ]
+              ]
+            ],
+            [
+              "slider:leg 1 strike / money:0",
+              80
+            ],
+            [
+              "slider:leg 1 signed units:0",
+              1
+            ],
+            [
+              "slider:leg 1 premium paid today / money:0",
+              24
+            ],
+            [
+              "select:leg 2 option right:0",
+              [
+                1,
+                [
+                  "call",
+                  "put"
+                ]
+              ]
+            ],
+            [
+              "slider:leg 2 strike / money:0",
+              120
+            ],
+            [
+              "slider:leg 2 signed units:0",
+              -1
+            ],
+            [
+              "slider:leg 2 premium paid today / money:0",
+              5
+            ],
+            [
+              "select:leg 3 option right:0",
+              [
+                1,
+                [
+                  "call",
+                  "put"
+                ]
+              ]
+            ],
+            [
+              "slider:leg 3 strike / money:0",
+              100
+            ],
+            [
+              "slider:leg 3 signed units:0",
+              0
+            ],
+            [
+              "slider:leg 3 premium paid today / money:0",
+              8
+            ]
+          ]
+        }
+      },
+      {
+        "id": 6,
+        "theme": "dark",
+        "width": 320,
+        "group": "leg 3 option right",
+        "groupIndex": 4,
+        "option": "call",
+        "optionIndex": 0,
+        "file": "/workspace/scratch/wave6-fin-research/modes-final-v2/6-dark-320-mode-g4-o0.png",
+        "state": {
+          "v": 1,
+          "parts": [
+            [
+              "clock::0",
+              null
+            ],
+            [
+              "select:recipe to load:0",
+              [
+                0,
+                [
+                  "bull call spread",
+                  "bear put spread",
+                  "straddle",
+                  "butterfly",
+                  "protective put"
+                ]
+              ]
+            ],
+            [
+              "select:leg to edit:0",
+              [
+                2,
+                [
+                  "1",
+                  "2",
+                  "3"
+                ]
+              ]
+            ],
+            [
+              "slider:stock units:0",
+              0
+            ],
+            [
+              "slider:stock price paid today / money:0",
+              100
+            ],
+            [
+              "slider:terminal stock price / money:0",
+              120
+            ],
+            [
+              "slider:bond price B / terminal money unit:0",
+              0.875
+            ],
+            [
+              "select:leg 1 option right:0",
+              [
+                0,
+                [
+                  "call",
+                  "put"
+                ]
+              ]
+            ],
+            [
+              "slider:leg 1 strike / money:0",
+              80
+            ],
+            [
+              "slider:leg 1 signed units:0",
+              1
+            ],
+            [
+              "slider:leg 1 premium paid today / money:0",
+              24
+            ],
+            [
+              "select:leg 2 option right:0",
+              [
+                0,
+                [
+                  "call",
+                  "put"
+                ]
+              ]
+            ],
+            [
+              "slider:leg 2 strike / money:0",
+              120
+            ],
+            [
+              "slider:leg 2 signed units:0",
+              -1
+            ],
+            [
+              "slider:leg 2 premium paid today / money:0",
+              5
+            ],
+            [
+              "select:leg 3 option right:0",
+              [
+                0,
+                [
+                  "call",
+                  "put"
+                ]
+              ]
+            ],
+            [
+              "slider:leg 3 strike / money:0",
+              100
+            ],
+            [
+              "slider:leg 3 signed units:0",
+              0
+            ],
+            [
+              "slider:leg 3 premium paid today / money:0",
+              8
+            ]
+          ]
+        }
+      },
+      {
+        "id": 6,
+        "theme": "dark",
+        "width": 320,
+        "group": "leg 3 option right",
+        "groupIndex": 4,
+        "option": "put",
+        "optionIndex": 1,
+        "file": "/workspace/scratch/wave6-fin-research/modes-final-v2/6-dark-320-mode-g4-o1.png",
+        "state": {
+          "v": 1,
+          "parts": [
+            [
+              "clock::0",
+              null
+            ],
+            [
+              "select:recipe to load:0",
+              [
+                0,
+                [
+                  "bull call spread",
+                  "bear put spread",
+                  "straddle",
+                  "butterfly",
+                  "protective put"
+                ]
+              ]
+            ],
+            [
+              "select:leg to edit:0",
+              [
+                2,
+                [
+                  "1",
+                  "2",
+                  "3"
+                ]
+              ]
+            ],
+            [
+              "slider:stock units:0",
+              0
+            ],
+            [
+              "slider:stock price paid today / money:0",
+              100
+            ],
+            [
+              "slider:terminal stock price / money:0",
+              120
+            ],
+            [
+              "slider:bond price B / terminal money unit:0",
+              0.875
+            ],
+            [
+              "select:leg 1 option right:0",
+              [
+                0,
+                [
+                  "call",
+                  "put"
+                ]
+              ]
+            ],
+            [
+              "slider:leg 1 strike / money:0",
+              80
+            ],
+            [
+              "slider:leg 1 signed units:0",
+              1
+            ],
+            [
+              "slider:leg 1 premium paid today / money:0",
+              24
+            ],
+            [
+              "select:leg 2 option right:0",
+              [
+                0,
+                [
+                  "call",
+                  "put"
+                ]
+              ]
+            ],
+            [
+              "slider:leg 2 strike / money:0",
+              120
+            ],
+            [
+              "slider:leg 2 signed units:0",
+              -1
+            ],
+            [
+              "slider:leg 2 premium paid today / money:0",
+              5
+            ],
+            [
+              "select:leg 3 option right:0",
+              [
+                1,
+                [
+                  "call",
+                  "put"
+                ]
+              ]
+            ],
+            [
+              "slider:leg 3 strike / money:0",
+              100
+            ],
+            [
+              "slider:leg 3 signed units:0",
+              0
+            ],
+            [
+              "slider:leg 3 premium paid today / money:0",
+              8
+            ]
+          ]
+        }
+      },
+      {
+        "id": 6,
+        "theme": "dark",
+        "width": 320,
+        "group": "actually loaded recipe",
+        "option": "bull call spread",
+        "file": "/workspace/scratch/wave6-fin-research/modes-final-v2/6-dark-320-mode-loaded-0.png",
+        "state": {
+          "v": 1,
+          "parts": [
+            [
+              "clock::0",
+              null
+            ],
+            [
+              "select:recipe to load:0",
+              [
+                0,
+                [
+                  "bull call spread",
+                  "bear put spread",
+                  "straddle",
+                  "butterfly",
+                  "protective put"
+                ]
+              ]
+            ],
+            [
+              "select:leg to edit:0",
+              [
+                0,
+                [
+                  "1",
+                  "2",
+                  "3"
+                ]
+              ]
+            ],
+            [
+              "slider:stock units:0",
+              0
+            ],
+            [
+              "slider:stock price paid today / money:0",
+              100
+            ],
+            [
+              "slider:terminal stock price / money:0",
+              120
+            ],
+            [
+              "slider:bond price B / terminal money unit:0",
+              0.875
+            ],
+            [
+              "select:leg 1 option right:0",
+              [
+                0,
+                [
+                  "call",
+                  "put"
+                ]
+              ]
+            ],
+            [
+              "slider:leg 1 strike / money:0",
+              80
+            ],
+            [
+              "slider:leg 1 signed units:0",
+              1
+            ],
+            [
+              "slider:leg 1 premium paid today / money:0",
+              24
+            ],
+            [
+              "select:leg 2 option right:0",
+              [
+                0,
+                [
+                  "call",
+                  "put"
+                ]
+              ]
+            ],
+            [
+              "slider:leg 2 strike / money:0",
+              120
+            ],
+            [
+              "slider:leg 2 signed units:0",
+              -1
+            ],
+            [
+              "slider:leg 2 premium paid today / money:0",
+              5
+            ],
+            [
+              "select:leg 3 option right:0",
+              [
+                1,
+                [
+                  "call",
+                  "put"
+                ]
+              ]
+            ],
+            [
+              "slider:leg 3 strike / money:0",
+              100
+            ],
+            [
+              "slider:leg 3 signed units:0",
+              0
+            ],
+            [
+              "slider:leg 3 premium paid today / money:0",
+              8
+            ]
+          ]
+        }
+      },
+      {
+        "id": 6,
+        "theme": "dark",
+        "width": 320,
+        "group": "actually loaded recipe",
+        "option": "bear put spread",
+        "file": "/workspace/scratch/wave6-fin-research/modes-final-v2/6-dark-320-mode-loaded-1.png",
+        "state": {
+          "v": 1,
+          "parts": [
+            [
+              "clock::0",
+              null
+            ],
+            [
+              "select:recipe to load:0",
+              [
+                1,
+                [
+                  "bull call spread",
+                  "bear put spread",
+                  "straddle",
+                  "butterfly",
+                  "protective put"
+                ]
+              ]
+            ],
+            [
+              "select:leg to edit:0",
+              [
+                0,
+                [
+                  "1",
+                  "2",
+                  "3"
+                ]
+              ]
+            ],
+            [
+              "slider:stock units:0",
+              0
+            ],
+            [
+              "slider:stock price paid today / money:0",
+              100
+            ],
+            [
+              "slider:terminal stock price / money:0",
+              120
+            ],
+            [
+              "slider:bond price B / terminal money unit:0",
+              0.875
+            ],
+            [
+              "select:leg 1 option right:0",
+              [
+                1,
+                [
+                  "call",
+                  "put"
+                ]
+              ]
+            ],
+            [
+              "slider:leg 1 strike / money:0",
+              120
+            ],
+            [
+              "slider:leg 1 signed units:0",
+              1
+            ],
+            [
+              "slider:leg 1 premium paid today / money:0",
+              23
+            ],
+            [
+              "select:leg 2 option right:0",
+              [
+                1,
+                [
+                  "call",
+                  "put"
+                ]
+              ]
+            ],
+            [
+              "slider:leg 2 strike / money:0",
+              80
+            ],
+            [
+              "slider:leg 2 signed units:0",
+              -1
+            ],
+            [
+              "slider:leg 2 premium paid today / money:0",
+              4
+            ],
+            [
+              "select:leg 3 option right:0",
+              [
+                0,
+                [
+                  "call",
+                  "put"
+                ]
+              ]
+            ],
+            [
+              "slider:leg 3 strike / money:0",
+              100
+            ],
+            [
+              "slider:leg 3 signed units:0",
+              0
+            ],
+            [
+              "slider:leg 3 premium paid today / money:0",
+              8
+            ]
+          ]
+        }
+      },
+      {
+        "id": 6,
+        "theme": "dark",
+        "width": 320,
+        "group": "actually loaded recipe",
+        "option": "straddle",
+        "file": "/workspace/scratch/wave6-fin-research/modes-final-v2/6-dark-320-mode-loaded-2.png",
+        "state": {
+          "v": 1,
+          "parts": [
+            [
+              "clock::0",
+              null
+            ],
+            [
+              "select:recipe to load:0",
+              [
+                2,
+                [
+                  "bull call spread",
+                  "bear put spread",
+                  "straddle",
+                  "butterfly",
+                  "protective put"
+                ]
+              ]
+            ],
+            [
+              "select:leg to edit:0",
+              [
+                0,
+                [
+                  "1",
+                  "2",
+                  "3"
+                ]
+              ]
+            ],
+            [
+              "slider:stock units:0",
+              0
+            ],
+            [
+              "slider:stock price paid today / money:0",
+              100
+            ],
+            [
+              "slider:terminal stock price / money:0",
+              120
+            ],
+            [
+              "slider:bond price B / terminal money unit:0",
+              0.875
+            ],
+            [
+              "select:leg 1 option right:0",
+              [
+                0,
+                [
+                  "call",
+                  "put"
+                ]
+              ]
+            ],
+            [
+              "slider:leg 1 strike / money:0",
+              100
+            ],
+            [
+              "slider:leg 1 signed units:0",
+              1
+            ],
+            [
+              "slider:leg 1 premium paid today / money:0",
+              8
+            ],
+            [
+              "select:leg 2 option right:0",
+              [
+                1,
+                [
+                  "call",
+                  "put"
+                ]
+              ]
+            ],
+            [
+              "slider:leg 2 strike / money:0",
+              100
+            ],
+            [
+              "slider:leg 2 signed units:0",
+              1
+            ],
+            [
+              "slider:leg 2 premium paid today / money:0",
+              7
+            ],
+            [
+              "select:leg 3 option right:0",
+              [
+                0,
+                [
+                  "call",
+                  "put"
+                ]
+              ]
+            ],
+            [
+              "slider:leg 3 strike / money:0",
+              120
+            ],
+            [
+              "slider:leg 3 signed units:0",
+              0
+            ],
+            [
+              "slider:leg 3 premium paid today / money:0",
+              3
+            ]
+          ]
+        }
+      },
+      {
+        "id": 6,
+        "theme": "dark",
+        "width": 320,
+        "group": "actually loaded recipe",
+        "option": "butterfly",
+        "file": "/workspace/scratch/wave6-fin-research/modes-final-v2/6-dark-320-mode-loaded-3.png",
+        "state": {
+          "v": 1,
+          "parts": [
+            [
+              "clock::0",
+              null
+            ],
+            [
+              "select:recipe to load:0",
+              [
+                3,
+                [
+                  "bull call spread",
+                  "bear put spread",
+                  "straddle",
+                  "butterfly",
+                  "protective put"
+                ]
+              ]
+            ],
+            [
+              "select:leg to edit:0",
+              [
+                0,
+                [
+                  "1",
+                  "2",
+                  "3"
+                ]
+              ]
+            ],
+            [
+              "slider:stock units:0",
+              0
+            ],
+            [
+              "slider:stock price paid today / money:0",
+              100
+            ],
+            [
+              "slider:terminal stock price / money:0",
+              120
+            ],
+            [
+              "slider:bond price B / terminal money unit:0",
+              0.875
+            ],
+            [
+              "select:leg 1 option right:0",
+              [
+                0,
+                [
+                  "call",
+                  "put"
+                ]
+              ]
+            ],
+            [
+              "slider:leg 1 strike / money:0",
+              80
+            ],
+            [
+              "slider:leg 1 signed units:0",
+              1
+            ],
+            [
+              "slider:leg 1 premium paid today / money:0",
+              24
+            ],
+            [
+              "select:leg 2 option right:0",
+              [
+                0,
+                [
+                  "call",
+                  "put"
+                ]
+              ]
+            ],
+            [
+              "slider:leg 2 strike / money:0",
+              100
+            ],
+            [
+              "slider:leg 2 signed units:0",
+              -2
+            ],
+            [
+              "slider:leg 2 premium paid today / money:0",
+              10
+            ],
+            [
+              "select:leg 3 option right:0",
+              [
+                0,
+                [
+                  "call",
+                  "put"
+                ]
+              ]
+            ],
+            [
+              "slider:leg 3 strike / money:0",
+              120
+            ],
+            [
+              "slider:leg 3 signed units:0",
+              1
+            ],
+            [
+              "slider:leg 3 premium paid today / money:0",
+              5
+            ]
+          ]
+        }
+      },
+      {
+        "id": 6,
+        "theme": "dark",
+        "width": 320,
+        "group": "actually loaded recipe",
+        "option": "protective put",
+        "file": "/workspace/scratch/wave6-fin-research/modes-final-v2/6-dark-320-mode-loaded-4.png",
+        "state": {
+          "v": 1,
+          "parts": [
+            [
+              "clock::0",
+              null
+            ],
+            [
+              "select:recipe to load:0",
+              [
+                4,
+                [
+                  "bull call spread",
+                  "bear put spread",
+                  "straddle",
+                  "butterfly",
+                  "protective put"
+                ]
+              ]
+            ],
+            [
+              "select:leg to edit:0",
+              [
+                0,
+                [
+                  "1",
+                  "2",
+                  "3"
+                ]
+              ]
+            ],
+            [
+              "slider:stock units:0",
+              1
+            ],
+            [
+              "slider:stock price paid today / money:0",
+              100
+            ],
+            [
+              "slider:terminal stock price / money:0",
+              120
+            ],
+            [
+              "slider:bond price B / terminal money unit:0",
+              0.875
+            ],
+            [
+              "select:leg 1 option right:0",
+              [
+                1,
+                [
+                  "call",
+                  "put"
+                ]
+              ]
+            ],
+            [
+              "slider:leg 1 strike / money:0",
+              90
+            ],
+            [
+              "slider:leg 1 signed units:0",
+              1
+            ],
+            [
+              "slider:leg 1 premium paid today / money:0",
+              5
+            ],
+            [
+              "select:leg 2 option right:0",
+              [
+                0,
+                [
+                  "call",
+                  "put"
+                ]
+              ]
+            ],
+            [
+              "slider:leg 2 strike / money:0",
+              100
+            ],
+            [
+              "slider:leg 2 signed units:0",
+              0
+            ],
+            [
+              "slider:leg 2 premium paid today / money:0",
+              8
+            ],
+            [
+              "select:leg 3 option right:0",
+              [
+                1,
+                [
+                  "call",
+                  "put"
+                ]
+              ]
+            ],
+            [
+              "slider:leg 3 strike / money:0",
+              120
+            ],
+            [
+              "slider:leg 3 signed units:0",
+              0
+            ],
+            [
+              "slider:leg 3 premium paid today / money:0",
+              22
+            ]
+          ]
+        }
+      }
+    ]
+  },
+  "finalDefaultRich": {
+    "status": "PASS",
+    "layouts": 36,
+    "issues": 0,
+    "sourceHashes": {
+      "../content/fin/ch07.js": "367916914ffff9c1e3631654f36f94e92aab793aeb04ed460461c87cf8f80afe",
+      "../content/fin/ch07.viz.js": "1e25e2f286ec1c3b8feb255d93185f2b74200d115a3cf7d1a152a99eadc5623c",
+      "../content/fin/ch07.shared.js": "e9048278d8b6d0bf6cc4bd6548bee9005471b6c528fc59eddfd03e19c9d32e03",
+      "../content/fin/ch07.exact.shared.js": "6823e77ed583d3f1294b6033c7e031395cb26f571b6726c3d8b3472fcfb369d2",
+      "../content/fin/ch07.law.shared.js": "47a774d128fb23d89835b5f3a1b53ed1f72af4ed377e03e298ddccb399bacc92",
+      "../content/fin/ch07.cashflow.shared.js": "275c8cdb2cb287452243c92c1129d3da4390ef307db5c95a2e9896af3e9d232e",
+      "../content/fin/ch07.positions.shared.js": "247a444fa766dcc2bc449918ae5582450e8d3d3e1b08e47e63af7562df67d2ea",
+      "../content/fin/syllabus.js": "150e89cc0fa70e44b2b78ae829a216797e2e7c418dd590ac4592e3c6d1ed6c0f",
+      "../assets/js/viz/core.js": "a6fa1753d9d9e8b9a05a7161fffc58dfd53b27002d9d393a3266aeb96515fe73",
+      "../assets/js/viz/math.js": "439c335e1cc47907bc72bb76559216aa093be4710e0589f41c70192729eb223e",
+      "../data/col/fin.json": "be135ad7f99a15d917516e988475595a8fdaf3b93515599cf152cb315545226a",
+      "../data/index.json": "3d6b76c97bbbb2cbbf16b90139eccc368fec43ccad731b33cab1bea5969b4f5d",
+      "./wave6-fin-browser.mjs": "15412cb5d604a70f9cd1cd18c222f11bf5fb4a9f7950da1f3de7a14722f77644"
+    }
+  },
+  "controlRenderPreservation": {
+    "status": "PASS",
+    "proof": "All viz bytes from const label = onward match the sealed full-control run exactly. This includes every control registration, callback, Load recipe, state handling, scientific geometry and readout body. Only the common amount formatter changed; final critical/mode/default ink gates all pass.",
+    "sealedSnapshotSHA256": "8c7dc2eb949bffa6553946aef6292eecf720c52735e022a5244d7a3d5f7d64c9",
+    "unchangedTailSHA256": "33c173a6df60b9af77309a47a25feca71ba6493e1442c2ccd59216ed3d2c06db"
+  },
+  "allOwnedBrowserServerSessionsExplicitlyClosed": true
+}

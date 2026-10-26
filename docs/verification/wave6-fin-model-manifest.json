@@ -1,6 +1,6 @@
 {
   "baseCommit": "b7f625b0bf2934385a4835e8c5f03b8f7370652d",
-  "status": "Nine pure families independently verified; complete lesson/native/Share/personal visual gates open; availability849unchanged; independent acceptance36unchanged",
+  "status": "Historical pure checkpoint at045df609. Listed hashes refer to that commit, not later final chapter bytes. Final chapter manifest supersedes for current files.",
   "fileCount": 12,
   "sha256": {
     "content/fin/ch07.cashflow.shared.js": "275c8cdb2cb287452243c92c1129d3da4390ef307db5c95a2e9896af3e9d232e",
@@ -15,5 +15,6 @@
     "tests/fixtures/wave6-fin-reference.json": "9a2adcc80a57860e2fdb33bca2305be6b98cc4c373459e3b50bf4508f6087f93",
     "tests/wave6-fin-reference.py": "b5f7284069b1907f056c15c0479066342576b3c49002f80fff79087b273c727f",
     "tests/wave6-fin.test.mjs": "4be7a047f79a1fb14e1a6915f29e32225f63990daa903a17b681924d6081f857"
-  }
+  },
+  "checkpointCommit": "045df609"
 }

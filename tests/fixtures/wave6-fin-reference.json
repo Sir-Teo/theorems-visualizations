@@ -1,6 +1,6 @@
 {
   "scope": "Independent exact Fraction integration and cash-flow/holding arithmetic; no production imports. All physical rounding is exact Fraction-to-binary64. Mpmath100digits (recheck200) formats only final logarithmic magnitudes. Chosen risk-neutral/physical laws are not market observations.",
-  "cases": 1941,
+  "cases": 1950,
   "families": 9,
   "rows": [
     {
@@ -345898,6 +345898,1469 @@
             }
           }
         ]
+      }
+    },
+    {
+      "name": "payoff",
+      "parameters": {
+        "kind": "call",
+        "side": "long",
+        "convention": "terminal financed",
+        "strike": 100,
+        "premium": 8,
+        "terminal": 120,
+        "discount": 0.875
+      },
+      "expected": {
+        "intrinsic": {
+          "value": 20.0,
+          "sign": 1,
+          "logMagnitude": 2.995732273553991,
+          "belowRange": false,
+          "aboveRange": false,
+          "approximate": false
+        },
+        "signedPayoff": {
+          "value": 20.0,
+          "sign": 1,
+          "logMagnitude": 2.995732273553991,
+          "belowRange": false,
+          "aboveRange": false,
+          "approximate": false
+        },
+        "signedPremiumCost": {
+          "value": 8.0,
+          "sign": 1,
+          "logMagnitude": 2.0794415416798357,
+          "belowRange": false,
+          "aboveRange": false,
+          "approximate": false
+        },
+        "effectivePremium": {
+          "value": 9.142857142857142,
+          "sign": 1,
+          "logMagnitude": 2.2129729343043585,
+          "belowRange": false,
+          "aboveRange": false,
+          "approximate": false
+        },
+        "signedEffectivePremium": {
+          "value": 9.142857142857142,
+          "sign": 1,
+          "logMagnitude": 2.2129729343043585,
+          "belowRange": false,
+          "aboveRange": false,
+          "approximate": false
+        },
+        "profit": {
+          "value": 10.857142857142858,
+          "sign": 1,
+          "logMagnitude": 2.3848231912310176,
+          "belowRange": false,
+          "aboveRange": false,
+          "approximate": false
+        },
+        "payoffProfitResidual": {
+          "value": 0.0,
+          "sign": 0,
+          "logMagnitude": null,
+          "belowRange": false,
+          "aboveRange": false,
+          "approximate": false
+        },
+        "zeroProfitSet": {
+          "kind": "single price",
+          "lower": {
+            "value": 109.14285714285714,
+            "sign": 1,
+            "logMagnitude": 4.692657640111207,
+            "belowRange": false,
+            "aboveRange": false,
+            "approximate": false
+          },
+          "upper": {
+            "value": 109.14285714285714,
+            "sign": 1,
+            "logMagnitude": 4.692657640111207,
+            "belowRange": false,
+            "aboveRange": false,
+            "approximate": false
+          }
+        }
+      }
+    },
+    {
+      "name": "parity",
+      "parameters": {
+        "spot": 100,
+        "strike": 100,
+        "discount": 0.875,
+        "timeValue": 10,
+        "callOffset": 0,
+        "terminal": 120
+      },
+      "expected": {
+        "strikeBondPrice": {
+          "value": 87.5,
+          "sign": 1,
+          "logMagnitude": 4.471638793363569,
+          "belowRange": false,
+          "aboveRange": false,
+          "approximate": false
+        },
+        "consistentCall": {
+          "value": 22.5,
+          "sign": 1,
+          "logMagnitude": 3.1135153092103742,
+          "belowRange": false,
+          "aboveRange": false,
+          "approximate": false
+        },
+        "consistentPut": {
+          "value": 10.0,
+          "sign": 1,
+          "logMagnitude": 2.302585092994046,
+          "belowRange": false,
+          "aboveRange": false,
+          "approximate": false
+        },
+        "quotedCall": {
+          "value": 22.5,
+          "sign": 1,
+          "logMagnitude": 3.1135153092103742,
+          "belowRange": false,
+          "aboveRange": false,
+          "approximate": false
+        },
+        "parityGap": {
+          "value": 0.0,
+          "sign": 0,
+          "logMagnitude": null,
+          "belowRange": false,
+          "aboveRange": false,
+          "approximate": false
+        },
+        "callBondTerminal": {
+          "value": 120.0,
+          "sign": 1,
+          "logMagnitude": 4.787491742782046,
+          "belowRange": false,
+          "aboveRange": false,
+          "approximate": false
+        },
+        "putStockTerminal": {
+          "value": 120.0,
+          "sign": 1,
+          "logMagnitude": 4.787491742782046,
+          "belowRange": false,
+          "aboveRange": false,
+          "approximate": false
+        },
+        "terminalIdentityResidual": {
+          "value": 0.0,
+          "sign": 0,
+          "logMagnitude": null,
+          "belowRange": false,
+          "aboveRange": false,
+          "approximate": false
+        },
+        "arbitrageInitialReceipt": {
+          "value": 0.0,
+          "sign": 0,
+          "logMagnitude": null,
+          "belowRange": false,
+          "aboveRange": false,
+          "approximate": false
+        },
+        "arbitrageTerminalPayoff": {
+          "value": 0.0,
+          "sign": 0,
+          "logMagnitude": null,
+          "belowRange": false,
+          "aboveRange": false,
+          "approximate": false
+        },
+        "holdingUnits": {
+          "call": 0,
+          "strikeBond": 0,
+          "put": 0,
+          "stock": 0
+        }
+      }
+    },
+    {
+      "name": "bounds",
+      "parameters": {
+        "kind": "call",
+        "spot": 100,
+        "strike": 100,
+        "discount": 0.875,
+        "reference": "lower",
+        "quoteOffset": -5,
+        "terminal": 120
+      },
+      "expected": {
+        "strikeBondPrice": {
+          "value": 87.5,
+          "sign": 1,
+          "logMagnitude": 4.471638793363569,
+          "belowRange": false,
+          "aboveRange": false,
+          "approximate": false
+        },
+        "lowerBound": {
+          "value": 12.5,
+          "sign": 1,
+          "logMagnitude": 2.5257286443082556,
+          "belowRange": false,
+          "aboveRange": false,
+          "approximate": false
+        },
+        "upperBound": {
+          "value": 100.0,
+          "sign": 1,
+          "logMagnitude": 4.605170185988092,
+          "belowRange": false,
+          "aboveRange": false,
+          "approximate": false
+        },
+        "quotedPrice": {
+          "value": 7.5,
+          "sign": 1,
+          "logMagnitude": 2.0149030205422647,
+          "belowRange": false,
+          "aboveRange": false,
+          "approximate": false
+        },
+        "gapAboveLower": {
+          "value": -5.0,
+          "sign": -1,
+          "logMagnitude": 1.6094379124341003,
+          "belowRange": false,
+          "aboveRange": false,
+          "approximate": false
+        },
+        "gapAboveUpper": {
+          "value": -92.5,
+          "sign": -1,
+          "logMagnitude": 4.52720864451838,
+          "belowRange": false,
+          "aboveRange": false,
+          "approximate": false
+        },
+        "witnessInitialReceipt": {
+          "value": 5.0,
+          "sign": 1,
+          "logMagnitude": 1.6094379124341003,
+          "belowRange": false,
+          "aboveRange": false,
+          "approximate": false
+        },
+        "witnessTerminalPayoff": {
+          "value": 0.0,
+          "sign": 0,
+          "logMagnitude": null,
+          "belowRange": false,
+          "aboveRange": false,
+          "approximate": false
+        },
+        "holdingUnits": {
+          "option": 1,
+          "stock": -1,
+          "strikeBond": 1
+        }
+      }
+    },
+    {
+      "name": "earlyCall",
+      "parameters": {
+        "spot": 100,
+        "strike": 80,
+        "discount": 0.875,
+        "dividendFraction": 0
+      },
+      "expected": {
+        "dividend": {
+          "value": 0.0,
+          "sign": 0,
+          "logMagnitude": null,
+          "belowRange": false,
+          "aboveRange": false,
+          "approximate": false
+        },
+        "strikeBondPrice": {
+          "value": 70.0,
+          "sign": 1,
+          "logMagnitude": 4.248495242049359,
+          "belowRange": false,
+          "aboveRange": false,
+          "approximate": false
+        },
+        "exercisePayoff": {
+          "value": 20.0,
+          "sign": 1,
+          "logMagnitude": 2.995732273553991,
+          "belowRange": false,
+          "aboveRange": false,
+          "approximate": false
+        },
+        "noDividendLowerBound": {
+          "value": 30.0,
+          "sign": 1,
+          "logMagnitude": 3.4011973816621555,
+          "belowRange": false,
+          "aboveRange": false,
+          "approximate": false
+        },
+        "noDividendBoundAdvantage": {
+          "value": 10.0,
+          "sign": 1,
+          "logMagnitude": 2.302585092994046,
+          "belowRange": false,
+          "aboveRange": false,
+          "approximate": false
+        },
+        "strikeFinancingBenefit": {
+          "value": 10.0,
+          "sign": 1,
+          "logMagnitude": 2.302585092994046,
+          "belowRange": false,
+          "aboveRange": false,
+          "approximate": false
+        },
+        "deterministicContinuation": {
+          "value": 30.0,
+          "sign": 1,
+          "logMagnitude": 3.4011973816621555,
+          "belowRange": false,
+          "aboveRange": false,
+          "approximate": false
+        },
+        "deterministicAmericanValue": {
+          "value": 30.0,
+          "sign": 1,
+          "logMagnitude": 3.4011973816621555,
+          "belowRange": false,
+          "aboveRange": false,
+          "approximate": false
+        },
+        "continuationAdvantage": {
+          "value": 10.0,
+          "sign": 1,
+          "logMagnitude": 2.302585092994046,
+          "belowRange": false,
+          "aboveRange": false,
+          "approximate": false
+        },
+        "noDividendNonnegativeRateAssumptions": true,
+        "deterministicChoice": "continue"
+      }
+    },
+    {
+      "name": "strikeConvexity",
+      "parameters": {
+        "mode": 100,
+        "strike": 100,
+        "leftWidth": 15,
+        "rightWidth": 25,
+        "discount": 0.875,
+        "reference": "chord",
+        "quoteOffset": 1,
+        "terminal": 100
+      },
+      "expected": {
+        "lowStrike": {
+          "value": 85.0,
+          "sign": 1,
+          "logMagnitude": 4.442651256490317,
+          "belowRange": false,
+          "aboveRange": false,
+          "approximate": false
+        },
+        "highStrike": {
+          "value": 125.0,
+          "sign": 1,
+          "logMagnitude": 4.8283137373023015,
+          "belowRange": false,
+          "aboveRange": false,
+          "approximate": false
+        },
+        "leftWeight": {
+          "value": 0.625,
+          "sign": 1,
+          "logMagnitude": -0.4700036292457356,
+          "belowRange": false,
+          "aboveRange": false,
+          "approximate": false
+        },
+        "rightWeight": {
+          "value": 0.375,
+          "sign": 1,
+          "logMagnitude": -0.9808292530117262,
+          "belowRange": false,
+          "aboveRange": false,
+          "approximate": false
+        },
+        "leftPrice": {
+          "value": 16.81640625,
+          "sign": 1,
+          "logMagnitude": 2.8223549723822687,
+          "belowRange": false,
+          "aboveRange": false,
+          "approximate": false
+        },
+        "rightPrice": {
+          "value": 1.7368344907407407,
+          "sign": 1,
+          "logMagnitude": 0.552064198171462,
+          "belowRange": false,
+          "aboveRange": false,
+          "approximate": false
+        },
+        "fairMiddlePrice": {
+          "value": 8.75,
+          "sign": 1,
+          "logMagnitude": 2.169053700369523,
+          "belowRange": false,
+          "aboveRange": false,
+          "approximate": false
+        },
+        "chordPrice": {
+          "value": 11.161566840277779,
+          "sign": 1,
+          "logMagnitude": 2.4124763449726587,
+          "belowRange": false,
+          "aboveRange": false,
+          "approximate": false
+        },
+        "quotedMiddlePrice": {
+          "value": 12.161566840277779,
+          "sign": 1,
+          "logMagnitude": 2.498280720233843,
+          "belowRange": false,
+          "aboveRange": false,
+          "approximate": false
+        },
+        "fairConvexityGap": {
+          "value": 2.4115668402777777,
+          "sign": 1,
+          "logMagnitude": 0.8802766774464329,
+          "belowRange": false,
+          "aboveRange": false,
+          "approximate": false
+        },
+        "butterflyCost": {
+          "value": -1.0,
+          "sign": -1,
+          "logMagnitude": 0.0,
+          "belowRange": false,
+          "aboveRange": false,
+          "approximate": false
+        },
+        "leftWingPayoff": {
+          "value": 9.375,
+          "sign": 1,
+          "logMagnitude": 2.2380465718564744,
+          "belowRange": false,
+          "aboveRange": false,
+          "approximate": false
+        },
+        "rightWingPayoff": {
+          "value": 0.0,
+          "sign": 0,
+          "logMagnitude": null,
+          "belowRange": false,
+          "aboveRange": false,
+          "approximate": false
+        },
+        "middleCallPayoff": {
+          "value": 0.0,
+          "sign": 0,
+          "logMagnitude": null,
+          "belowRange": false,
+          "aboveRange": false,
+          "approximate": false
+        },
+        "butterflyPayoff": {
+          "value": 9.375,
+          "sign": 1,
+          "logMagnitude": 2.2380465718564744,
+          "belowRange": false,
+          "aboveRange": false,
+          "approximate": false
+        },
+        "strictNegativeCostReceipt": {
+          "value": 1.0,
+          "sign": 1,
+          "logMagnitude": 0.0,
+          "belowRange": false,
+          "aboveRange": false,
+          "approximate": false
+        },
+        "verdict": "negative-cost nonnegative-payoff butterfly"
+      }
+    },
+    {
+      "name": "strategies",
+      "parameters": {
+        "stockUnits": 0,
+        "spot": 100,
+        "terminal": 120,
+        "discount": 0.875,
+        "legs": [
+          {
+            "kind": "call",
+            "strike": 80,
+            "units": 1,
+            "premium": 24
+          },
+          {
+            "kind": "call",
+            "strike": 120,
+            "units": -1,
+            "premium": 5
+          },
+          {
+            "kind": "put",
+            "strike": 100,
+            "units": 0,
+            "premium": 8
+          }
+        ]
+      },
+      "expected": {
+        "stockPayoff": {
+          "value": 0.0,
+          "sign": 0,
+          "logMagnitude": null,
+          "belowRange": false,
+          "aboveRange": false,
+          "approximate": false
+        },
+        "stockInitialCost": {
+          "value": 0.0,
+          "sign": 0,
+          "logMagnitude": null,
+          "belowRange": false,
+          "aboveRange": false,
+          "approximate": false
+        },
+        "totalPayoff": {
+          "value": 40.0,
+          "sign": 1,
+          "logMagnitude": 3.6888794541139363,
+          "belowRange": false,
+          "aboveRange": false,
+          "approximate": false
+        },
+        "totalInitialCost": {
+          "value": 19.0,
+          "sign": 1,
+          "logMagnitude": 2.9444389791664403,
+          "belowRange": false,
+          "aboveRange": false,
+          "approximate": false
+        },
+        "terminalFinancedCost": {
+          "value": 21.714285714285715,
+          "sign": 1,
+          "logMagnitude": 3.077970371790963,
+          "belowRange": false,
+          "aboveRange": false,
+          "approximate": false
+        },
+        "terminalFinancedProfit": {
+          "value": 18.285714285714285,
+          "sign": 1,
+          "logMagnitude": 2.906120114864304,
+          "belowRange": false,
+          "aboveRange": false,
+          "approximate": false
+        },
+        "nominalProfit": {
+          "value": 21.0,
+          "sign": 1,
+          "logMagnitude": 3.044522437723423,
+          "belowRange": false,
+          "aboveRange": false,
+          "approximate": false
+        },
+        "leftTailSlope": {
+          "value": 0.0,
+          "sign": 0,
+          "logMagnitude": null,
+          "belowRange": false,
+          "aboveRange": false,
+          "approximate": false
+        },
+        "rightTailSlope": {
+          "value": 0.0,
+          "sign": 0,
+          "logMagnitude": null,
+          "belowRange": false,
+          "aboveRange": false,
+          "approximate": false
+        },
+        "sumResidual": {
+          "value": 0.0,
+          "sign": 0,
+          "logMagnitude": null,
+          "belowRange": false,
+          "aboveRange": false,
+          "approximate": false
+        },
+        "components": [
+          {
+            "slot": 1,
+            "payoff": {
+              "value": 40.0,
+              "sign": 1,
+              "logMagnitude": 3.6888794541139363,
+              "belowRange": false,
+              "aboveRange": false,
+              "approximate": false
+            },
+            "initialCost": {
+              "value": 24.0,
+              "sign": 1,
+              "logMagnitude": 3.1780538303479458,
+              "belowRange": false,
+              "aboveRange": false,
+              "approximate": false
+            }
+          },
+          {
+            "slot": 2,
+            "payoff": {
+              "value": 0.0,
+              "sign": 0,
+              "logMagnitude": null,
+              "belowRange": false,
+              "aboveRange": false,
+              "approximate": false
+            },
+            "initialCost": {
+              "value": -5.0,
+              "sign": -1,
+              "logMagnitude": 1.6094379124341003,
+              "belowRange": false,
+              "aboveRange": false,
+              "approximate": false
+            }
+          },
+          {
+            "slot": 3,
+            "payoff": {
+              "value": 0.0,
+              "sign": 0,
+              "logMagnitude": null,
+              "belowRange": false,
+              "aboveRange": false,
+              "approximate": false
+            },
+            "initialCost": {
+              "value": 0.0,
+              "sign": 0,
+              "logMagnitude": null,
+              "belowRange": false,
+              "aboveRange": false,
+              "approximate": false
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "densityRecovery",
+      "parameters": {
+        "mode": 100,
+        "strike": 100,
+        "discount": 0.875,
+        "bandwidth": 5
+      },
+      "expected": {
+        "mean": {
+          "value": 100.0,
+          "sign": 1,
+          "logMagnitude": 4.605170185988092,
+          "belowRange": false,
+          "aboveRange": false,
+          "approximate": false
+        },
+        "stockPrice": {
+          "value": 87.5,
+          "sign": 1,
+          "logMagnitude": 4.471638793363569,
+          "belowRange": false,
+          "aboveRange": false,
+          "approximate": false
+        },
+        "callPrice": {
+          "value": 8.75,
+          "sign": 1,
+          "logMagnitude": 2.169053700369523,
+          "belowRange": false,
+          "aboveRange": false,
+          "approximate": false
+        },
+        "putPrice": {
+          "value": 8.75,
+          "sign": 1,
+          "logMagnitude": 2.169053700369523,
+          "belowRange": false,
+          "aboveRange": false,
+          "approximate": false
+        },
+        "callSlope": {
+          "value": -0.4375,
+          "sign": -1,
+          "logMagnitude": -0.8266785731844679,
+          "belowRange": false,
+          "aboveRange": false,
+          "approximate": false
+        },
+        "callCurvature": {
+          "value": 0.014583333333333334,
+          "sign": 1,
+          "logMagnitude": -4.227875954846623,
+          "belowRange": false,
+          "aboveRange": false,
+          "approximate": false
+        },
+        "cdf": {
+          "value": 0.5,
+          "sign": 1,
+          "logMagnitude": -0.6931471805599453,
+          "belowRange": false,
+          "aboveRange": false,
+          "approximate": false
+        },
+        "survival": {
+          "value": 0.5,
+          "sign": 1,
+          "logMagnitude": -0.6931471805599453,
+          "belowRange": false,
+          "aboveRange": false,
+          "approximate": false
+        },
+        "density": {
+          "value": 0.016666666666666666,
+          "sign": 1,
+          "logMagnitude": -4.0943445622221,
+          "belowRange": false,
+          "aboveRange": false,
+          "approximate": false
+        },
+        "probabilityMass": {
+          "value": 1.0,
+          "sign": 1,
+          "logMagnitude": 0.0,
+          "belowRange": false,
+          "aboveRange": false,
+          "approximate": false
+        },
+        "butterflyCost": {
+          "value": 0.35445601851851855,
+          "sign": 1,
+          "logMagnitude": -1.037171006945119,
+          "belowRange": false,
+          "aboveRange": false,
+          "approximate": false
+        },
+        "discountedBandwidthSquare": {
+          "value": 21.875,
+          "sign": 1,
+          "logMagnitude": 3.0853444322436783,
+          "belowRange": false,
+          "aboveRange": false,
+          "approximate": false
+        },
+        "parityResidual": {
+          "value": 0.0,
+          "sign": 0,
+          "logMagnitude": null,
+          "belowRange": false,
+          "aboveRange": false,
+          "approximate": false
+        },
+        "recoveredDensity": {
+          "value": 0.016203703703703703,
+          "sign": 1,
+          "logMagnitude": -4.122515439188797,
+          "belowRange": false,
+          "aboveRange": false,
+          "approximate": false
+        },
+        "recoveryError": {
+          "value": -0.000462962962962963,
+          "sign": -1,
+          "logMagnitude": -7.67786350067821,
+          "belowRange": false,
+          "aboveRange": false,
+          "approximate": false
+        }
+      }
+    },
+    {
+      "name": "protectivePut",
+      "parameters": {
+        "mode": 100,
+        "physicalMode": 80,
+        "strike": 90,
+        "discount": 0.875,
+        "terminal": 100
+      },
+      "expected": {
+        "stockPrice": {
+          "value": 87.5,
+          "sign": 1,
+          "logMagnitude": 4.471638793363569,
+          "belowRange": false,
+          "aboveRange": false,
+          "approximate": false
+        },
+        "putPremium": {
+          "value": 5.063657407407407,
+          "sign": 1,
+          "logMagnitude": 1.6220890299876591,
+          "belowRange": false,
+          "aboveRange": false,
+          "approximate": false
+        },
+        "totalInitialCost": {
+          "value": 92.5636574074074,
+          "sign": 1,
+          "logMagnitude": 4.5278965960136635,
+          "belowRange": false,
+          "aboveRange": false,
+          "approximate": false
+        },
+        "terminalFinancedCost": {
+          "value": 105.78703703703704,
+          "sign": 1,
+          "logMagnitude": 4.661427988638186,
+          "belowRange": false,
+          "aboveRange": false,
+          "approximate": false
+        },
+        "putPayoff": {
+          "value": 0.0,
+          "sign": 0,
+          "logMagnitude": null,
+          "belowRange": false,
+          "aboveRange": false,
+          "approximate": false
+        },
+        "protectedPayoff": {
+          "value": 100.0,
+          "sign": 1,
+          "logMagnitude": 4.605170185988092,
+          "belowRange": false,
+          "aboveRange": false,
+          "approximate": false
+        },
+        "protectedProfit": {
+          "value": -5.787037037037037,
+          "sign": -1,
+          "logMagnitude": 1.7556204226121819,
+          "belowRange": false,
+          "aboveRange": false,
+          "approximate": false
+        },
+        "uninsuredFinancedProfit": {
+          "value": 0.0,
+          "sign": 0,
+          "logMagnitude": null,
+          "belowRange": false,
+          "aboveRange": false,
+          "approximate": false
+        },
+        "terminalFloor": {
+          "value": 90.0,
+          "sign": 1,
+          "logMagnitude": 4.499809670330265,
+          "belowRange": false,
+          "aboveRange": false,
+          "approximate": false
+        },
+        "floorProfit": {
+          "value": -15.787037037037036,
+          "sign": -1,
+          "logMagnitude": 2.7591891625933975,
+          "belowRange": false,
+          "aboveRange": false,
+          "approximate": false
+        },
+        "physicalFloorAtom": {
+          "value": 0.4895833333333333,
+          "sign": 1,
+          "logMagnitude": -0.7142005897577777,
+          "belowRange": false,
+          "aboveRange": false,
+          "approximate": false
+        },
+        "plainProbabilityMass": {
+          "value": 1.0,
+          "sign": 1,
+          "logMagnitude": 0.0,
+          "belowRange": false,
+          "aboveRange": false,
+          "approximate": false
+        },
+        "insuredContinuousMass": {
+          "value": 0.5104166666666666,
+          "sign": 1,
+          "logMagnitude": -0.6725278933572096,
+          "belowRange": false,
+          "aboveRange": false,
+          "approximate": false
+        },
+        "insuredTotalProbability": {
+          "value": 1.0,
+          "sign": 1,
+          "logMagnitude": 0.0,
+          "belowRange": false,
+          "aboveRange": false,
+          "approximate": false
+        },
+        "payoffIdentityResidual": {
+          "value": 0.0,
+          "sign": 0,
+          "logMagnitude": null,
+          "belowRange": false,
+          "aboveRange": false,
+          "approximate": false
+        },
+        "bins": [
+          {
+            "index": 0,
+            "low": {
+              "value": 0.0,
+              "sign": 0,
+              "logMagnitude": null,
+              "belowRange": false,
+              "aboveRange": false,
+              "approximate": false
+            },
+            "high": {
+              "value": 13.333333333333334,
+              "sign": 1,
+              "logMagnitude": 2.5902671654458267,
+              "belowRange": false,
+              "aboveRange": false,
+              "approximate": false
+            },
+            "plainMass": {
+              "value": 0.0,
+              "sign": 0,
+              "logMagnitude": null,
+              "belowRange": false,
+              "aboveRange": false,
+              "approximate": false
+            },
+            "insuredContinuousMass": {
+              "value": 0.0,
+              "sign": 0,
+              "logMagnitude": null,
+              "belowRange": false,
+              "aboveRange": false,
+              "approximate": false
+            }
+          },
+          {
+            "index": 1,
+            "low": {
+              "value": 13.333333333333334,
+              "sign": 1,
+              "logMagnitude": 2.5902671654458267,
+              "belowRange": false,
+              "aboveRange": false,
+              "approximate": false
+            },
+            "high": {
+              "value": 26.666666666666668,
+              "sign": 1,
+              "logMagnitude": 3.283414346005772,
+              "belowRange": false,
+              "aboveRange": false,
+              "approximate": false
+            },
+            "plainMass": {
+              "value": 0.0,
+              "sign": 0,
+              "logMagnitude": null,
+              "belowRange": false,
+              "aboveRange": false,
+              "approximate": false
+            },
+            "insuredContinuousMass": {
+              "value": 0.0,
+              "sign": 0,
+              "logMagnitude": null,
+              "belowRange": false,
+              "aboveRange": false,
+              "approximate": false
+            }
+          },
+          {
+            "index": 2,
+            "low": {
+              "value": 26.666666666666668,
+              "sign": 1,
+              "logMagnitude": 3.283414346005772,
+              "belowRange": false,
+              "aboveRange": false,
+              "approximate": false
+            },
+            "high": {
+              "value": 40.0,
+              "sign": 1,
+              "logMagnitude": 3.6888794541139363,
+              "belowRange": false,
+              "aboveRange": false,
+              "approximate": false
+            },
+            "plainMass": {
+              "value": 0.0,
+              "sign": 0,
+              "logMagnitude": null,
+              "belowRange": false,
+              "aboveRange": false,
+              "approximate": false
+            },
+            "insuredContinuousMass": {
+              "value": 0.0,
+              "sign": 0,
+              "logMagnitude": null,
+              "belowRange": false,
+              "aboveRange": false,
+              "approximate": false
+            }
+          },
+          {
+            "index": 3,
+            "low": {
+              "value": 40.0,
+              "sign": 1,
+              "logMagnitude": 3.6888794541139363,
+              "belowRange": false,
+              "aboveRange": false,
+              "approximate": false
+            },
+            "high": {
+              "value": 53.333333333333336,
+              "sign": 1,
+              "logMagnitude": 3.976561526565717,
+              "belowRange": false,
+              "aboveRange": false,
+              "approximate": false
+            },
+            "plainMass": {
+              "value": 0.037037037037037035,
+              "sign": 1,
+              "logMagnitude": -3.295836866004329,
+              "belowRange": false,
+              "aboveRange": false,
+              "approximate": false
+            },
+            "insuredContinuousMass": {
+              "value": 0.0,
+              "sign": 0,
+              "logMagnitude": null,
+              "belowRange": false,
+              "aboveRange": false,
+              "approximate": false
+            }
+          },
+          {
+            "index": 4,
+            "low": {
+              "value": 53.333333333333336,
+              "sign": 1,
+              "logMagnitude": 3.976561526565717,
+              "belowRange": false,
+              "aboveRange": false,
+              "approximate": false
+            },
+            "high": {
+              "value": 66.66666666666667,
+              "sign": 1,
+              "logMagnitude": 4.199705077879927,
+              "belowRange": false,
+              "aboveRange": false,
+              "approximate": false
+            },
+            "plainMass": {
+              "value": 0.1111111111111111,
+              "sign": 1,
+              "logMagnitude": -2.1972245773362196,
+              "belowRange": false,
+              "aboveRange": false,
+              "approximate": false
+            },
+            "insuredContinuousMass": {
+              "value": 0.0,
+              "sign": 0,
+              "logMagnitude": null,
+              "belowRange": false,
+              "aboveRange": false,
+              "approximate": false
+            }
+          },
+          {
+            "index": 5,
+            "low": {
+              "value": 66.66666666666667,
+              "sign": 1,
+              "logMagnitude": 4.199705077879927,
+              "belowRange": false,
+              "aboveRange": false,
+              "approximate": false
+            },
+            "high": {
+              "value": 80.0,
+              "sign": 1,
+              "logMagnitude": 4.382026634673881,
+              "belowRange": false,
+              "aboveRange": false,
+              "approximate": false
+            },
+            "plainMass": {
+              "value": 0.18518518518518517,
+              "sign": 1,
+              "logMagnitude": -1.6863989535702286,
+              "belowRange": false,
+              "aboveRange": false,
+              "approximate": false
+            },
+            "insuredContinuousMass": {
+              "value": 0.0,
+              "sign": 0,
+              "logMagnitude": null,
+              "belowRange": false,
+              "aboveRange": false,
+              "approximate": false
+            }
+          },
+          {
+            "index": 6,
+            "low": {
+              "value": 80.0,
+              "sign": 1,
+              "logMagnitude": 4.382026634673881,
+              "belowRange": false,
+              "aboveRange": false,
+              "approximate": false
+            },
+            "high": {
+              "value": 93.33333333333333,
+              "sign": 1,
+              "logMagnitude": 4.53617731450114,
+              "belowRange": false,
+              "aboveRange": false,
+              "approximate": false
+            },
+            "plainMass": {
+              "value": 0.2037037037037037,
+              "sign": 1,
+              "logMagnitude": -1.5910887737659039,
+              "belowRange": false,
+              "aboveRange": false,
+              "approximate": false
+            },
+            "insuredContinuousMass": {
+              "value": 0.047453703703703706,
+              "sign": 1,
+              "logMagnitude": -3.0480007020997477,
+              "belowRange": false,
+              "aboveRange": false,
+              "approximate": false
+            }
+          },
+          {
+            "index": 7,
+            "low": {
+              "value": 93.33333333333333,
+              "sign": 1,
+              "logMagnitude": 4.53617731450114,
+              "belowRange": false,
+              "aboveRange": false,
+              "approximate": false
+            },
+            "high": {
+              "value": 106.66666666666667,
+              "sign": 1,
+              "logMagnitude": 4.669708707125663,
+              "belowRange": false,
+              "aboveRange": false,
+              "approximate": false
+            },
+            "plainMass": {
+              "value": 0.16666666666666666,
+              "sign": 1,
+              "logMagnitude": -1.791759469228055,
+              "belowRange": false,
+              "aboveRange": false,
+              "approximate": false
+            },
+            "insuredContinuousMass": {
+              "value": 0.16666666666666666,
+              "sign": 1,
+              "logMagnitude": -1.791759469228055,
+              "belowRange": false,
+              "aboveRange": false,
+              "approximate": false
+            }
+          },
+          {
+            "index": 8,
+            "low": {
+              "value": 106.66666666666667,
+              "sign": 1,
+              "logMagnitude": 4.669708707125663,
+              "belowRange": false,
+              "aboveRange": false,
+              "approximate": false
+            },
+            "high": {
+              "value": 120.0,
+              "sign": 1,
+              "logMagnitude": 4.787491742782046,
+              "belowRange": false,
+              "aboveRange": false,
+              "approximate": false
+            },
+            "plainMass": {
+              "value": 0.12962962962962962,
+              "sign": 1,
+              "logMagnitude": -2.043073897508961,
+              "belowRange": false,
+              "aboveRange": false,
+              "approximate": false
+            },
+            "insuredContinuousMass": {
+              "value": 0.12962962962962962,
+              "sign": 1,
+              "logMagnitude": -2.043073897508961,
+              "belowRange": false,
+              "aboveRange": false,
+              "approximate": false
+            }
+          },
+          {
+            "index": 9,
+            "low": {
+              "value": 120.0,
+              "sign": 1,
+              "logMagnitude": 4.787491742782046,
+              "belowRange": false,
+              "aboveRange": false,
+              "approximate": false
+            },
+            "high": {
+              "value": 133.33333333333334,
+              "sign": 1,
+              "logMagnitude": 4.892852258439873,
+              "belowRange": false,
+              "aboveRange": false,
+              "approximate": false
+            },
+            "plainMass": {
+              "value": 0.09259259259259259,
+              "sign": 1,
+              "logMagnitude": -2.379546134130174,
+              "belowRange": false,
+              "aboveRange": false,
+              "approximate": false
+            },
+            "insuredContinuousMass": {
+              "value": 0.09259259259259259,
+              "sign": 1,
+              "logMagnitude": -2.379546134130174,
+              "belowRange": false,
+              "aboveRange": false,
+              "approximate": false
+            }
+          },
+          {
+            "index": 10,
+            "low": {
+              "value": 133.33333333333334,
+              "sign": 1,
+              "logMagnitude": 4.892852258439873,
+              "belowRange": false,
+              "aboveRange": false,
+              "approximate": false
+            },
+            "high": {
+              "value": 146.66666666666666,
+              "sign": 1,
+              "logMagnitude": 4.988162438244197,
+              "belowRange": false,
+              "aboveRange": false,
+              "approximate": false
+            },
+            "plainMass": {
+              "value": 0.05555555555555555,
+              "sign": 1,
+              "logMagnitude": -2.8903717578961645,
+              "belowRange": false,
+              "aboveRange": false,
+              "approximate": false
+            },
+            "insuredContinuousMass": {
+              "value": 0.05555555555555555,
+              "sign": 1,
+              "logMagnitude": -2.8903717578961645,
+              "belowRange": false,
+              "aboveRange": false,
+              "approximate": false
+            }
+          },
+          {
+            "index": 11,
+            "low": {
+              "value": 146.66666666666666,
+              "sign": 1,
+              "logMagnitude": 4.988162438244197,
+              "belowRange": false,
+              "aboveRange": false,
+              "approximate": false
+            },
+            "high": {
+              "value": 160.0,
+              "sign": 1,
+              "logMagnitude": 5.075173815233827,
+              "belowRange": false,
+              "aboveRange": false,
+              "approximate": false
+            },
+            "plainMass": {
+              "value": 0.018518518518518517,
+              "sign": 1,
+              "logMagnitude": -3.9889840465642745,
+              "belowRange": false,
+              "aboveRange": false,
+              "approximate": false
+            },
+            "insuredContinuousMass": {
+              "value": 0.018518518518518517,
+              "sign": 1,
+              "logMagnitude": -3.9889840465642745,
+              "belowRange": false,
+              "aboveRange": false,
+              "approximate": false
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "claims",
+      "parameters": {
+        "mode": 100,
+        "physicalMode": 80,
+        "face": 100,
+        "discount": 0.875,
+        "terminalAssets": 100
+      },
+      "expected": {
+        "equityPayoff": {
+          "value": 0.0,
+          "sign": 0,
+          "logMagnitude": null,
+          "belowRange": false,
+          "aboveRange": false,
+          "approximate": false
+        },
+        "debtPayoff": {
+          "value": 100.0,
+          "sign": 1,
+          "logMagnitude": 4.605170185988092,
+          "belowRange": false,
+          "aboveRange": false,
+          "approximate": false
+        },
+        "defaultLoss": {
+          "value": 0.0,
+          "sign": 0,
+          "logMagnitude": null,
+          "belowRange": false,
+          "aboveRange": false,
+          "approximate": false
+        },
+        "payoffResidual": {
+          "value": 0.0,
+          "sign": 0,
+          "logMagnitude": null,
+          "belowRange": false,
+          "aboveRange": false,
+          "approximate": false
+        },
+        "promiseDecompositionResidual": {
+          "value": 0.0,
+          "sign": 0,
+          "logMagnitude": null,
+          "belowRange": false,
+          "aboveRange": false,
+          "approximate": false
+        },
+        "equityValue": {
+          "value": 8.75,
+          "sign": 1,
+          "logMagnitude": 2.169053700369523,
+          "belowRange": false,
+          "aboveRange": false,
+          "approximate": false
+        },
+        "debtValue": {
+          "value": 78.75,
+          "sign": 1,
+          "logMagnitude": 4.366278277705742,
+          "belowRange": false,
+          "aboveRange": false,
+          "approximate": false
+        },
+        "assetValue": {
+          "value": 87.5,
+          "sign": 1,
+          "logMagnitude": 4.471638793363569,
+          "belowRange": false,
+          "aboveRange": false,
+          "approximate": false
+        },
+        "valueResidual": {
+          "value": 0.0,
+          "sign": 0,
+          "logMagnitude": null,
+          "belowRange": false,
+          "aboveRange": false,
+          "approximate": false
+        },
+        "riskNeutralDefault": {
+          "value": 0.5,
+          "sign": 1,
+          "logMagnitude": -0.6931471805599453,
+          "belowRange": false,
+          "aboveRange": false,
+          "approximate": false
+        },
+        "physicalDefault": {
+          "value": 0.625,
+          "sign": 1,
+          "logMagnitude": -0.4700036292457356,
+          "belowRange": false,
+          "aboveRange": false,
+          "approximate": false
+        },
+        "putValue": {
+          "value": 8.75,
+          "sign": 1,
+          "logMagnitude": 2.169053700369523,
+          "belowRange": false,
+          "aboveRange": false,
+          "approximate": false
+        }
       }
     }
   ]

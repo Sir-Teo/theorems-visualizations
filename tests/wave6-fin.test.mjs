@@ -2,6 +2,9 @@ import test, {after} from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import * as H from '../content/fin/ch07.shared.js';
+import chapter from '../content/fin/ch07.js';
+import syllabus from '../content/fin/syllabus.js';
+import {amount} from '../content/fin/ch07.viz.js';
 
 const reference = JSON.parse(fs.readFileSync(new URL('./fixtures/wave6-fin-reference.json', import.meta.url)));
 const statistics = {cases: 0, comparisons: 0, worstLogAbsolute: 0};
@@ -104,6 +107,44 @@ test('FIN7 declared pricing, payoff and law domains reject malformed or impossib
 });
 
 after(() => {
-  assert.equal(statistics.cases, 1941);
+  assert.equal(statistics.cases, 1950);
   console.log('FIN7 independent reference statistics ' + JSON.stringify(statistics));
+});
+
+test('FIN7 nine complete lessons preserve frozen identities, ordered prerequisites and exact source mirrors', () => {
+  const plan = JSON.parse(fs.readFileSync(new URL('../docs/wave-6-plan.json', import.meta.url))).chapters.find(c => c.collection === 'fin');
+  const outline = syllabus.chapters.find(c => c.n === 7).items;
+  assert.equal(chapter.items.length, 9);
+  for (const [index, item] of chapter.items.entries()) {
+    for (const key of ['num', 'kind', 'name', 'deps', 'paper', 'introduces', 'verify', 'see']) assert.deepEqual(item[key], plan.items[index][key], item.num + ' frozen ' + key);
+    const row = outline.find(row => row.num === item.num);
+    for (const key of ['num', 'kind', 'name', 'deps', 'refs']) assert.deepEqual(item[key], row[key], item.num + ' syllabus ' + key);
+    assert.equal(item.caption, row.pic);
+    for (const key of ['statement', 'idea', 'scope', 'caption']) assert.ok(item[key].length > 120, item.num + ' substantive ' + key);
+    assert.equal(typeof item.viz, 'function');
+  }
+  assert.ok(!chapter.items.some(item => item.num === '7.10'), 'existing Paper stays in its original file');
+});
+
+test('FIN7 syllabus changes only new chapter7 researched refs and picture captions; the existing Paper stays exact', () => {
+  const before = JSON.parse(fs.readFileSync(new URL('./fixtures/wave6-fin-syllabus-before.json', import.meta.url)));
+  const omit = chapter => chapter.n !== 7 ? chapter : {...chapter, items: chapter.items.map(item => item.num === '7.10' ? item : Object.fromEntries(Object.entries(item).filter(([key]) => !['refs', 'pic'].includes(key))))};
+  assert.deepEqual({...syllabus, chapters: syllabus.chapters.map(omit)}, {...before, chapters: before.chapters.map(omit)});
+});
+
+test('FIN7 money labels mark literal decimal rounding, including subnormal values', () => {
+  assert.equal(amount(H.quantity(H.Q.rational(1,8))), '0.125');
+  assert.equal(amount(H.quantity(H.Q.rational(1,10))), '0.1');
+  assert.equal(amount(H.quantity(.1)), '≈0.1');
+  assert.equal(amount(H.quantity(H.Q.rational(1,3))), '≈0.33333');
+  assert.equal(amount(H.quantity(Number.MIN_VALUE)), '≈4.941e−324');
+  assert.equal(amount(H.quantity(-Number.MIN_VALUE)), '≈−4.941e−324');
+  assert.equal(amount(H.quantity(0)), '0');
+});
+
+test('FIN7 money labels retain nonzero signs below representable physical range', () => {
+  const tiny=H.Q.mul(Number.MIN_VALUE,Number.MIN_VALUE);
+  assert.match(amount(H.quantity(tiny)), /^≈10\^−\d+\.\d+ \(beyond plot precision\)$/);
+  assert.match(amount(H.quantity(H.Q.neg(tiny))), /^≈−10\^−\d+\.\d+ \(beyond plot precision\)$/);
+  assert.doesNotMatch(amount(H.quantity(tiny),true), /beyond plot precision/);
 });
