@@ -67,7 +67,12 @@ test('chapter identities and all future syllabus chapters remain preserved',asyn
  const crypto=await import('node:crypto'),syllabus=(await import('../content/behav/syllabus.js')).default,a=(await import('../content/behav/ch06.js')).default,b=(await import('../content/behav/ch06-b.js')).default;
  const items=[...a.items,...b.items],planned=syllabus.chapters.find(c=>c.n===6).items;assert.equal(items.length,9);
  assert.deepEqual(items.map(({num,kind,name})=>({num,kind,name})),planned.map(({num,kind,name})=>({num,kind,name})));
- assert.equal(crypto.createHash('sha256').update(JSON.stringify(syllabus.chapters.filter(c=>c.n!==6))).digest('hex'),'5496a33e262855a59212bb01c8aa4dee147a6a832b65154033b73ea5b964fb7c');
+ // BEHAV7 now has researched references and captions. Restore only those two
+ // metadata fields for the original whole-future-syllabus hash; every identity,
+ // dependency, flag, chapter summary and later chapter remains in that hash.
+ const fs=await import('node:fs'),before=JSON.parse(fs.readFileSync(new URL('./fixtures/wave6-behav-syllabus-before.json',import.meta.url))),old7=before.chapters.find(c=>c.n===7);
+ const historical=syllabus.chapters.map(c=>c.n!==7?c:{...c,items:c.items.map(i=>{const old=old7.items.find(x=>x.num===i.num);assert.ok(old);return{...i,refs:old.refs,pic:old.pic};})});
+ assert.equal(crypto.createHash('sha256').update(JSON.stringify(historical.filter(c=>c.n!==6))).digest('hex'),'5496a33e262855a59212bb01c8aa4dee147a6a832b65154033b73ea5b964fb7c');
  assert.equal(items.filter(i=>i.verify).map(i=>i.num).join(','),'6.5');
  assert.deepEqual(items.find(i=>i.num==='6.3').deps,['game-1.9']);assert.ok(items.find(i=>i.num==='6.7').deps.includes('pma-4.23'));
 });

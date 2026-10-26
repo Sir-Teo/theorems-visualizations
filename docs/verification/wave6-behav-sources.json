@@ -1,0 +1,426 @@
+{
+  "status": "Final8lesson/25panel author-verified chapter; scientific/native/personal gates PASS. Actual reading scopes and all binding source stops retained. Independent acceptance remains36.",
+  "frozenChapter": {
+    "collection": "behav",
+    "field": "econ",
+    "collectionTitle": "Behavioral Economics & Decisions",
+    "chapter": 7,
+    "title": "Well-being and the two selves",
+    "summary": "The experiencing self lives through moments; the remembering self keeps score and makes decisions, and it judges episodes by their peak and their end while largely ignoring duration. People also adapt to good and bad fortune more than they expect. How income relates to happiness — a satiation point, a log-linear relation, or national averages that do not rise at all — has been fought over with ever larger data sets.",
+    "syllabus": "content/behav/syllabus.js",
+    "collectionSource": {
+      "type": "course",
+      "refs": [
+        "Kahneman, Thinking, Fast and Slow",
+        "Wilkinson & Klaes, An Introduction to Behavioral Economics",
+        "Thaler & Sunstein, Nudge"
+      ]
+    },
+    "alreadyWritten": [],
+    "items": [
+      {
+        "id": "behav-7.1",
+        "num": "7.1",
+        "kind": "Concept",
+        "name": "Experienced versus remembered utility",
+        "deps": [],
+        "refs": [
+          "Kahneman ch. 35"
+        ],
+        "pic": "Draw a moment-by-moment pain curve for an episode; its area (experienced utility) is compared with the retrospective rating predicted from the curve’s shape."
+      },
+      {
+        "id": "behav-7.2",
+        "num": "7.2",
+        "kind": "Phenomenon",
+        "name": "The peak–end rule",
+        "deps": [
+          "behav-7.1"
+        ],
+        "refs": [
+          "Kahneman ch. 35"
+        ],
+        "pic": "Two colonoscopy-style pain profiles: the longer one with a gentler end has more total pain but a better remembered rating, computed as the average of peak and end."
+      },
+      {
+        "id": "behav-7.3",
+        "num": "7.3",
+        "kind": "Phenomenon",
+        "name": "Duration neglect (the cold-hand experiment)",
+        "deps": [
+          "behav-7.2"
+        ],
+        "refs": [
+          "Kahneman ch. 35"
+        ],
+        "pic": "Sixty seconds in cold water versus ninety seconds with a slightly warmer last thirty: most participants choose to repeat the longer trial, and the area and peak–end readouts show why."
+      },
+      {
+        "id": "behav-7.4",
+        "num": "7.4",
+        "kind": "Phenomenon",
+        "name": "Hedonic adaptation",
+        "deps": [
+          "behav-2.1"
+        ],
+        "refs": [
+          "Kahneman ch. 37"
+        ],
+        "pic": "Life satisfaction around marriage, widowhood and disability from panel data: some events show return to baseline, others lasting shifts, unlike the strong set-point claim."
+      },
+      {
+        "id": "behav-7.5",
+        "num": "7.5",
+        "kind": "Phenomenon",
+        "name": "The focusing illusion",
+        "deps": [
+          "behav-7.4"
+        ],
+        "refs": [
+          "Kahneman ch. 38"
+        ],
+        "pic": "Rate how happy Californians are compared with Midwesterners, then see the survey data showing almost no difference; asking about weather first exaggerates the gap."
+      },
+      {
+        "id": "behav-7.6",
+        "num": "7.6",
+        "kind": "Phenomenon",
+        "name": "Affective forecasting and the impact bias",
+        "deps": [
+          "behav-7.4"
+        ],
+        "refs": [
+          "Kahneman ch. 37"
+        ],
+        "pic": "Predicted versus actual happiness after tenure decisions or elections: forecasts overshoot in both directions and the bars show how quickly the actual gap closes."
+      },
+      {
+        "id": "behav-7.7",
+        "num": "7.7",
+        "kind": "Paradox",
+        "name": "The Easterlin paradox (contested)",
+        "deps": [
+          "behav-7.4"
+        ],
+        "refs": [
+          "Kahneman ch. 38"
+        ],
+        "pic": "Within a country richer people are happier, but national average happiness over decades is flat in some series; toggling in more countries and years (Stevenson–Wolfers) restores a log-income slope."
+      },
+      {
+        "id": "behav-7.8",
+        "num": "7.8",
+        "kind": "Phenomenon",
+        "name": "Income and well-being: satiation or log-linear?",
+        "deps": [
+          "behav-7.7",
+          "behav-1.2"
+        ],
+        "refs": [
+          "Kahneman ch. 37"
+        ],
+        "pic": "Emotional well-being against log income from the 2010 and 2021 studies and their 2023 adversarial collaboration: the plateau appears only for the least happy group."
+      }
+    ],
+    "prerequisites": {
+      "written": [
+        "behav-1.2",
+        "behav-2.1"
+      ],
+      "withinChapter": [
+        "behav-7.1",
+        "behav-7.2",
+        "behav-7.4",
+        "behav-7.7"
+      ],
+      "elsewhereInWave": [],
+      "later": [],
+      "unknown": []
+    }
+  },
+  "writtenPrerequisites": [
+    {
+      "num": "1.2",
+      "kind": "Model",
+      "name": "Bernoulli’s logarithmic utility",
+      "statement": "Bernoulli's hypothesis: the utility of a small gain $dx$ is proportional to the gain and inversely proportional to the wealth $w$ already held, $du=b\\,dx/w$, so utility is logarithmic, $u(w)=b\\ln(w/\\alpha)$, and a risky prospect is worth the sure amount whose utility equals the prospect's expected utility (its **certainty equivalent**). Equal *proportional* gains are worth the same to rich and poor. For the St Petersburg game (behav-1.1) played with wealth $w$, the expected utility gain $\\sum_k2^{-k}\\ln\\!\\big(1+2^{k-1}/w\\big)$ is finite, and the game is worth\n$$D(w)=\\prod_{k\\ge1}(w+2^{k-1})^{2^{-k}}-w$$\nto its owner: exactly 2 ducats at $w=0$, about 3.04 at $w=10$, 4.39 at $w=100$ and 5.97 at $w=1000$, rising like $\\tfrac12\\log_2w$; a buyer should pay slightly less.",
+      "scope": "A concave utility defuses this game but not every game: for any unbounded utility the payouts can be raised (Menger's super-Petersburg game, here $w(e^{2^{k-1}}-1)$ on toss $k$) until the expected utility is infinite again. Only a bounded utility rules out every such paradox. As a description of behaviour, utility of total wealth is the target of chapter 2 (gains and losses relative to a reference point).",
+      "idea": "While the prize $2^{k-1}$ is small next to $w$, $\\ln(1+x/w)\\approx x/w$, so toss $k$ still contributes about half a ducat's worth. Once the prize exceeds the player's wealth its utility grows only like $(k-1)\\ln2$ while its probability keeps halving, so the contributions fall geometrically and the series converges. Roughly the first $\\log_2w$ tosses count, which is why the certainty equivalent grows like $\\tfrac12\\log_2w$, the same logarithm that governed the running average in behav-1.1. The exponential function (pma-8.6) turns the expected logarithm into Menger's product formula for $D$. Cramer's square root (1728) does the same job; the logarithm returns in finance as the growth-optimal Kelly criterion.",
+      "caption": "Pick a utility and your wealth. Left: the game stopped after $N$ tosses (no heads by then, no payout). Its expected payout $N/2$ (red) grows without bound, while the certainty equivalents under Cramer's square root (purple) and Bernoulli's logarithm (blue) level off; the selected utility is drawn thick. Right: the full game's certainty equivalent against wealth, with Bernoulli's own \"about 3, 4 and 6 ducats\" at fortunes 10, 100 and 1,000 as gold rings. Switch to **Menger's super-game**, whose payouts are raised so that every toss adds the same expected log-utility, and the logarithm's certainty equivalent grows without bound too (the left axis turns logarithmic).",
+      "deps": [
+        "behav-1.1",
+        "pma-8.6"
+      ],
+      "refs": [
+        "Kahneman ch. 25"
+      ],
+      "tags": [
+        "utility",
+        "risk",
+        "expected utility"
+      ],
+      "see": [
+        "micro-4.9",
+        "fin-11.3",
+        "phil-5.8"
+      ],
+      "credit": "Daniel Bernoulli, 1738 (Gabriel Cramer, 1728)",
+      "links": {
+        "wikipedia": "https://en.wikipedia.org/wiki/St._Petersburg_paradox"
+      },
+      "col": "behav",
+      "chapter": 1,
+      "file": "content/behav/ch01.js",
+      "id": "behav-1.2"
+    },
+    {
+      "num": "2.1",
+      "kind": "Concept",
+      "name": "Reference dependence: gains and losses",
+      "statement": "**Reference dependence**: people evaluate outcomes as **changes** (gains and losses) relative to a reference point, usually the status quo, an expectation or a recent level, rather than as final states of wealth. Bernoulli's expected utility (behav-1.2) assigns a utility $u(w)$ to final wealth $w$, so two people facing the same distribution of final wealth must make the same choice and two people with the same wealth must be equally well off. A reference-dependent evaluation instead uses a value function $v(w-r)$ of the change from a reference point $r$, so the same final positions can be gains for one person and losses for another. Kahneman's illustrations: Anthony (owning 1 million) and Betty (owning 4 million) choose between owning 2 million for sure and an even chance of owning 1 or 4 million: identical in final wealth, but a choice between gains for Anthony and between losses for Betty. And of two people with the same wealth today, the one who had less yesterday is happier.",
+      "scope": "A descriptive principle about how outcomes are coded, not a normative one. What serves as the reference point (status quo, expectations, aspirations, a purchase price) depends on the situation and can be shifted by framing; theories of expectation-based reference points (Kőszegi–Rabin) make it endogenous.",
+      "idea": "Perception is relative: the same water feels warm to a hand that was in cold water and cold to one that was in hot water, and sensitivity diminishes with distance from the adaptation level, as in Fechner's law. Kahneman and Tversky carried this psychophysics to money: the carrier of value is the change, and the value function is concave above the reference point and convex below it. Bernoulli's model, which ignores where a person starts, cannot distinguish Anthony from Betty; the reference-dependent model predicts that Betty, facing a sure loss, is the one more willing to gamble (the reflection effect, behav-2.7), and that losses hurt more than equal gains please (loss aversion, behav-2.2).",
+      "caption": "Answer the question first (click a card; in the Anthony-and-Betty example answer once as each). Left: Bernoulli's utility of final wealth (curvature $\\rho$; $\\rho=1$ is his logarithm). It sees one lottery for both people, so its certainty equivalent (where the dashed chord's midpoint meets the curve) is the same for both. Right: the value of changes from each person's own reference point, with Anthony's options in blue and Betty's in red; the sure option is a dot on the curve and the gamble's value the midpoint of the chord. Switch to **Jack and Jill** to compare two people with the same wealth today.",
+      "deps": [
+        "behav-1.2"
+      ],
+      "refs": [
+        "Kahneman ch. 25",
+        "W&K ch. 5"
+      ],
+      "tags": [
+        "reference dependence",
+        "prospect theory",
+        "value"
+      ],
+      "see": [
+        "behav-2.3",
+        "behav-2.7"
+      ],
+      "credit": "Markowitz, 1952; Kahneman & Tversky, 1979",
+      "links": {
+        "wikipedia": "https://en.wikipedia.org/wiki/Reference_dependence"
+      },
+      "col": "behav",
+      "chapter": 2,
+      "file": "content/behav/ch02.js",
+      "id": "behav-2.1"
+    }
+  ],
+  "sources": {
+    "coldhand1993": {
+      "url": "https://www.ius.uzh.ch/dam/jcr%3A5ae9adc9-61ec-4174-b37c-4b752f36c23b/Kahnemann%20et%20al.%20-%20When%20More%20Pain%20is%20Preferred%20to%20Less%20%281993%29.pdf",
+      "requestedBeforeAnyFailure": true,
+      "readScope": "Acquired only; not yet read",
+      "status": 200,
+      "resolved": "https://www.ius.uzh.ch/dam/jcr%3A5ae9adc9-61ec-4174-b37c-4b752f36c23b/Kahnemann%20et%20al.%20-%20When%20More%20Pain%20is%20Preferred%20to%20Less%20%281993%29.pdf",
+      "bytes": 1281771,
+      "sha256": "b51d67893e0e22d377a81f68a4c7605de5b86ceedd301be0cb8881b537227f84",
+      "actualReadScope": "Article argument/methods/results/discussion pp401–404read. Original p403personally inspected. Bibliography acquired, not claimed fully read."
+    },
+    "focusing1998": {
+      "url": "https://web.mit.edu/curhan/www/docs/Articles/15341_Readings/Affect/Schkade_Kahneman_1998_Does_living_in_Calif_make_people_happy.pdf",
+      "requestedBeforeAnyFailure": true,
+      "readScope": "Acquired only; not yet read",
+      "status": 200,
+      "resolved": "https://web.mit.edu/curhan/www/docs/Articles/15341_Readings/Affect/Schkade_Kahneman_1998_Does_living_in_Calif_make_people_happy.pdf",
+      "bytes": 123432,
+      "sha256": "538cfcea753384faa692a627286309e3b9660e5a34f1e432435aa455cb717f90",
+      "actualReadScope": "Selected introduction/methods/results/discussion read. Original p342Table1personally inspected. Priming result null; no weather-first causal effect claimed."
+    },
+    "adaptation2006": {
+      "url": "https://labs.psychology.illinois.edu/~ediener/Documents/Diener-Lucas-Scollon_2006.pdf",
+      "requestedBeforeAnyFailure": true,
+      "readScope": "Acquired only; not yet read",
+      "status": 200,
+      "resolved": "https://labs.psychology.illinois.edu/~ediener/Documents/Diener-Lucas-Scollon_2006.pdf",
+      "bytes": 318457,
+      "sha256": "30d1d0c739b55c4a966ef383a017f4ec108535cc48f58e3dff78140c5266b090",
+      "actualReadScope": "Selected abstract/introduction/revisions and longitudinal discussion (extracted1–170and250–415selected portions). Original p310Figure2personally inspected. Remaining body acquired/unread."
+    },
+    "forecast1998": {
+      "url": "https://dtg.sites.fas.harvard.edu/Gilbert%20et%20al%20%28IMMUNE%20NEGLECT%29.pdf",
+      "requestedBeforeAnyFailure": true,
+      "readScope": "Acquired only; not yet read",
+      "status": 200,
+      "resolved": "https://dtg.sites.fas.harvard.edu/Gilbert%20et%20al%20%28IMMUNE%20NEGLECT%29.pdf",
+      "bytes": 2657987,
+      "sha256": "5954e2624f796e7691c18acda6c3bd1c42733ed16750ee9468fe87473f61aee7",
+      "actualReadScope": "Selected Study2methods/results and transition toStudy3read (extracted347–572selected portions). Original p624Table3personally inspected. Remaining studies not claimed read."
+    },
+    "income2023": {
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC10013834/",
+      "requestedBeforeAnyFailure": true,
+      "readScope": "Acquired and extracted only; actual reading pending.",
+      "status": 200,
+      "resolved": "https://pmc.ncbi.nlm.nih.gov/articles/PMC10013834/",
+      "bytes": 142727,
+      "sha256": "0840531c36fd7aada9abfa8264abfa7df222b1978f2e9557f02f54ae33836303",
+      "localExtractionFailure": "No module named 'bs4'",
+      "title": "\n            Income and emotional well-being: A conflict resolved - PMC\n        ",
+      "extraction": "Recovered from the already successfully acquired local HTML using standard-library HTMLParser. No network retry or access-barrier recovery.",
+      "actualReadScope": "Complete main argument/results/methods/availability through wrapped330; selected reference entries330–355. Original Figure2personally inspected. Remaining bibliography not claimed read."
+    },
+    "sacks2010": {
+      "url": "https://users.nber.org/~bstevens/papers/SWBIncomeEconomicGrowth_OLD.pdf",
+      "requestedBeforeAnyRound3Failure": true,
+      "readScope": "Acquired only; not yet read",
+      "status": 200,
+      "resolved": "https://users.nber.org/~bstevens/papers/SWBIncomeEconomicGrowth_OLD.pdf",
+      "bytes": 1104342,
+      "sha256": "7a8f8ab42e5f9f709335619d1c366d08fe52b4d4c819dc864945fbe9bdca7ed6",
+      "actualReadScope": "Abstract/introduction extracted1–218; selected time-series methods937–1000andlong-difference argument1160–1225. Remaining paper acquired/unread. Distinct3-author May2010body, not a recovered copy of the stopped2008two-author article."
+    }
+  },
+  "bindingAccessStops": [
+    {
+      "url": "https://kahneman.scholar.princeton.edu/publications",
+      "requestedBeforeAnyFailure": true,
+      "readScope": "Acquired only; not yet read",
+      "error": "HTTP Error 403: Forbidden",
+      "accessStop": true,
+      "restriction": "Do not retry or recover this same body through an alternate route."
+    },
+    {
+      "url": "https://www.brookings.edu/wp-content/uploads/2008/03/2008a_bpea_stevenson.pdf",
+      "requestedBeforeAnyFailure": true,
+      "readScope": "Acquired only; not yet read",
+      "error": "HTTP Error 403: Forbidden",
+      "accessStop": true,
+      "restriction": "Do not retry or recover this same body through an alternate route."
+    },
+    {
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC3012515/",
+      "requestedBeforeAnyRound3Failure": true,
+      "readScope": "Acquired only; not yet read",
+      "status": 200,
+      "resolved": "https://pmc.ncbi.nlm.nih.gov/articles/PMC3012515/",
+      "bytes": 21358,
+      "sha256": "fdad5d53469cb643d1f7e58351a55bf1bb5edad4aa91917f084b9f7e4e435737",
+      "title": "Checking your browser - reCAPTCHA",
+      "accessStop": true,
+      "restriction": "Original body unread; no alternate recovery."
+    },
+    {
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC11572929/",
+      "requestedBeforeAnyRound3Failure": true,
+      "readScope": "Acquired only; not yet read",
+      "status": 200,
+      "resolved": "https://pmc.ncbi.nlm.nih.gov/articles/PMC11572929/",
+      "bytes": 21360,
+      "sha256": "9d2723ff419a39b84d7e3d2311140f62b6f26b4000c714a27673d32f8ddff5dd",
+      "title": "Checking your browser - reCAPTCHA",
+      "accessStop": true,
+      "restriction": "Original body unread; no alternate recovery."
+    },
+    {
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC11572976/",
+      "requestedBeforeAnyRound3Failure": true,
+      "readScope": "Acquired only; not yet read",
+      "status": 200,
+      "resolved": "https://pmc.ncbi.nlm.nih.gov/articles/PMC11572976/",
+      "bytes": 21359,
+      "sha256": "abfb91495cdb737b4057be17c9b43c507082450175b9fa9ff25a6d91e447afc0",
+      "title": "Checking your browser - reCAPTCHA",
+      "accessStop": true,
+      "restriction": "Original body unread; no alternate recovery."
+    }
+  ],
+  "sourceFiguresPersonallyInspected": [
+    {
+      "path": "/workspace/scratch/wave6-behav-research/coldhand1993-page403.png",
+      "sha256": "9e803fe99eff99af74d0bde569eb987aa4de336034efb35c9fbe345233e1626c",
+      "copiedIntoProduct": false
+    },
+    {
+      "path": "/workspace/scratch/wave6-behav-research/focusing1998-page342.png",
+      "sha256": "9283249f31926642f263ad4f37943cfa24c6933b1ee730efb48def13f51a5b2f",
+      "copiedIntoProduct": false
+    },
+    {
+      "path": "/workspace/scratch/wave6-behav-research/adaptation2006-page310.png",
+      "sha256": "fccb1d0f037c456ecf9cb5a18804d3171de11670fc486af52ea99342225da03b",
+      "copiedIntoProduct": false
+    },
+    {
+      "path": "/workspace/scratch/wave6-behav-research/forecast1998-page624.png",
+      "sha256": "d14a6b488e1ea3baf3716e3fbf3e8ead68e245fcddfcc4a16bf5c0a4be3ed78c",
+      "copiedIntoProduct": false
+    },
+    {
+      "path": "/workspace/scratch/wave6-behav-research/income2023-figure2.jpg",
+      "sha256": "7691979d8ef93b500fced29e884a2c761a2a0606c3dc2fece5a5ca54195544fb",
+      "copiedIntoProduct": false
+    }
+  ],
+  "inheritedStops": "Every preceding original-body and figure restriction remains binding; no retry/cache/mirror/alternate recovery of stopped bodies.",
+  "unreadOriginals": [
+    "Commercial Kahneman2011book",
+    "Wilkinson/Klaes and Nudge commercial books",
+    "Original1974Easterlinchapter",
+    "Easterlin2010stoppedbody",
+    "Stevenson/Wolfers2008stoppedbody",
+    "Kahneman/Deaton2010original",
+    "Killingsworth2021original",
+    "Rohrer/Wenz2024stoppedletter",
+    "Killingsworth/Mellers2024stoppedreply"
+  ],
+  "original2010and2021Comparison": "Only as reported by actually read2023reanalysis, not independent verification of either original.",
+  "copying": "No source figure, substantial source prose or digitized historical trajectory copied. All teaching curves are explicitly authored illustrations; exact study means/counts are separately labeled with source/page/table.",
+  "designNotes": {
+    "path": "/workspace/scratch/wave6-behav-research/design-notes.md",
+    "sha256": "f89d166e8f962acd54e470b2dc978aefdb7e6476a683c16ce747cbe7e2c54e19"
+  },
+  "scratchModels": {
+    "cases": 565,
+    "families": 10,
+    "comparisons": 75716,
+    "worstLogAbsolute": 4.547473508864641e-13,
+    "canonicalRepeatAnd200DigitCompleteBytesIdentical": true,
+    "fixtureSHA256": "49f2bed840a3d94014dc4504c4dd04372a943f297657742372b94cb95e81a249",
+    "original535CompleteObjectsPreserved": true
+  },
+  "prototypeFailures": [
+    "Wrong web search argument initially returnedisError; documented system2_search_query succeeded.",
+    "Successful200incomeHTMLdownload followed by missingbs4local parser error was initially mislabelled asaccessStop by genericcatch; corrected and extracted local bytes with HTMLParser, without network retry.",
+    "Reference dispatcher initially used episode name for an epfunction, then Fractionconstructor received numerator/denominator strings; both generator plumbing defects repaired before any reference agreement claim.",
+    "Reference extreme OLS at subnormal income growth overflowed floatconversion. Exact rational value/sign/log retained; JSONusesnullplusaboveRange=true and the test reconstructs signedInfinity, rather than dropping the case or clipping the result."
+  ],
+  "next": "Await clean FIN/GAMEintegration close/proof; install independently checked BEHAVkernels/fixtures and all8complete lessons withpurpose-built visual/native/personal gates. Do not stop.",
+  "teachingDraft": {
+    "path": "/workspace/scratch/wave6-behav-research/ch07.js",
+    "sha256": "b1f5491f62f91ef63de2b075a143836546bca1e66398d1ce6690e6af77416671",
+    "status": "Scratch only; visual implementation and phone rich-field inspection pending"
+  },
+  "currentModelStatistics": {
+    "cases": 640,
+    "families": 11,
+    "comparisons": 77525,
+    "worstLogAbsolute": 4.547473508864641e-13,
+    "fixtureSHA256": "28ffb89d6db1bb44940014d67358d0106891cfab840bb432961b4a2038d54e08",
+    "old638CompleteObjectsPreserved": true,
+    "canonical100RepeatAnd200CompleteBytesIdentical": true
+  },
+  "provisionalGates": {
+    "status": "Superseded by final receipts",
+    "availability": 878,
+    "independentAcceptance": 36
+  },
+  "actualRepairs": [
+    "Phone protocol heading clipped, then overlapped Short trial: removed redundant inside-canvas header.",
+    "Phone quantile formula overflow: moved conditions into separate prose; retained font size.",
+    "Rank data-unit circles stretched on desktop: fixed pixel-radius markers.",
+    "Subnormal cumulative tick clipped left phone gutter: compact scientific ticks retain sign/scale; full quantities unchanged.",
+    "Coincident markers use exact-coordinate nested radii, and coincident memory traces retain wide dashed/solid distinction.",
+    "Proofread missing spaces and source citation typography; synchronized only8new refs/pic.",
+    "Historical wave5 preservation guard reconstructs only newchapter7refs/pic before checking unchanged original whole-future hash; remaining semantic metadata and newchapter mirror independently checked.",
+    "Personally observed placeholder axes at zero duration removed; centered empty-state message inspected at both widths/themes and complete32-layout native rerun passes."
+  ],
+  "retainedHarnessFailures": [
+    "First cross-engine log3comparison differed by2.22e-16; corrected harness to apply already-declared8e-12log budget only. Exact fractions, rounded physical values, sign/range/signedzero remain strict.",
+    "Unbounded assignment regex matched suffix e in base, overwriting the current-income probe with starting-income model. Word-boundary assignment matching plus exact12call-site assertions fix this instrumentation error; all numerical/geometry assertions retained.",
+    "Authoring metadata-edit script stopped on two legitimate chapter refs occurrences; exact per-item refs/pic reconciliation completed before fresh checks."
+  ],
+  "authorAvailability": 878,
+  "independentAcceptance": 36
+}

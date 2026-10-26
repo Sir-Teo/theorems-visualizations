@@ -1,0 +1,141 @@
+{
+  "status": "author-verified; independent acceptance remains36",
+  "availability": {
+    "before": 870,
+    "after": 878,
+    "goal": 1057,
+    "historicalIndependentlyAccepted": 36,
+    "additionalAuthorVerified": 842
+  },
+  "lessonCount": 8,
+  "purposeBuiltPanels": 25,
+  "independentCases": 640,
+  "families": 11,
+  "totalReferenceComparisons": 77525,
+  "focused": {
+    "passed": 28,
+    "failed": 0,
+    "skipped": 0,
+    "cancelled": 0,
+    "durationMs": 194.691718
+  },
+  "strictBuild": {
+    "written": 8593,
+    "planned": 4981,
+    "chapters": 592,
+    "collections": 85,
+    "errors": 0,
+    "warnings": 0
+  },
+  "globalStatic": {
+    "items": 8530,
+    "errors": 0,
+    "warnings": 0
+  },
+  "productionThemes": {
+    "light": {
+      "run": 8,
+      "failed": 0,
+      "texBlankWarnings": 0,
+      "qualityWarnings": 0
+    },
+    "dark": {
+      "run": 8,
+      "failed": 0,
+      "texBlankWarnings": 0,
+      "qualityWarnings": 0
+    }
+  },
+  "native": {
+    "layouts": 32,
+    "actions": 868,
+    "shares": 388,
+    "invalid": 32,
+    "raw": 32,
+    "critical": 172,
+    "checks": 1524,
+    "modelComparisons": 744748
+  },
+  "visual": {
+    "targets": 204,
+    "counts": {
+      "defaults": 32,
+      "rich": 64,
+      "critical": 86,
+      "modes": 22
+    },
+    "reviewedSheets": 81,
+    "usedSheets": 62,
+    "missing": 0
+  },
+  "preservation": {
+    "rawPinsExact": 444,
+    "syllabusOnly8RefsPic": true,
+    "frozenIdsDepsFlagsExact": true
+  },
+  "latestFullGlobalExport": {
+    "commit": "019944fb3335f86d3501348cbf819fcecb1e7d22",
+    "tests": 4965,
+    "productionRoutesPerTheme": 272,
+    "scope": "Prior FIN9/GAME12 exact integration; predates subsequent home cosmetic repair and BEHAV7. Later home cosmetics have their separately bound8-layout check. No full global-suite claim for this chapter."
+  },
+  "readingIntegration": "Roster8585/76aliases; BEHAV8not yet integrated. Batch with appropriate subsequent chapters.",
+  "genuineFailures": [
+    "Phone protocol heading clipped, then overlapped Short trial: removed redundant inside-canvas header.",
+    "Phone quantile formula overflow: moved conditions into separate prose; retained font size.",
+    "Rank data-unit circles stretched on desktop: fixed pixel-radius markers.",
+    "Subnormal cumulative tick clipped left phone gutter: compact scientific ticks retain sign/scale; full quantities unchanged.",
+    "Coincident markers use exact-coordinate nested radii, and coincident memory traces retain wide dashed/solid distinction.",
+    "Proofread missing spaces and source citation typography; synchronized only8new refs/pic.",
+    "Historical wave5 preservation guard reconstructs only newchapter7refs/pic before checking unchanged original whole-future hash; remaining semantic metadata and newchapter mirror independently checked.",
+    "Personally observed placeholder axes at zero duration removed; centered empty-state message inspected at both widths/themes and complete32-layout native rerun passes.",
+    "First cross-engine log3comparison differed by2.22e-16; corrected harness to apply already-declared8e-12log budget only. Exact fractions, rounded physical values, sign/range/signedzero remain strict.",
+    "Unbounded assignment regex matched suffix e in base, overwriting the current-income probe with starting-income model. Word-boundary assignment matching plus exact12call-site assertions fix this instrumentation error; all numerical/geometry assertions retained.",
+    "Authoring metadata-edit script stopped on two legitimate chapter refs occurrences; exact per-item refs/pic reconciliation completed before fresh checks.",
+    "Initial Python reference dispatcher used ep/episode names inconsistently; fixed generator dispatch.",
+    "Initial Fraction conversion of string numerator/denominator failed; corrected integer parsing.",
+    "Extreme exact OLS slope overflowed Python float: retained exact fraction/sign/log/range metadata and null JSON physical value above range; no extreme case removed.",
+    "Default preview-v1 retained16inkissues; preview-v2 fixed bounds but personal review still caught the protocol heading overlap.",
+    "Native-v4-pilot retained a1.35pxsubnormal tick clipping failure.",
+    "Native-v5-other-pilot retained cross-engine logarithm mismatch; native-v5b-other-pilot retained primary-probe suffix matching failure.",
+    "Complete native-v6 passed all32layouts before personal empty-state repair; it is historical. Complete native-v7 replaces it for current bytes."
+  ],
+  "logs": {
+    "final-models-focused.log": {
+      "path": "/workspace/scratch/wave6-behav-research/final-models-focused.log",
+      "sha256": "5f3bbb1db25c6a2fc1e437b6d2311ad5654825b32dd5b22a7308fde30b6bab2c"
+    },
+    "build-v7b.log": {
+      "path": "/workspace/scratch/wave6-behav-research/build-v7b.log",
+      "sha256": "8497dfd574a3602c19e9a7348f3ac958452fbd6e61026175310bfdcc7490e10c"
+    },
+    "final-static.log": {
+      "path": "/workspace/scratch/wave6-behav-research/final-static.log",
+      "sha256": "c026af98d62bd91cb43c3a32cf3a50bad09d1a80e0433b6ae6495c5787938fbf"
+    },
+    "final-production-light.log": {
+      "path": "/workspace/scratch/wave6-behav-research/final-production-light.log",
+      "sha256": "cf93f55335cef8ab2eba2a58d07547efac9aa00415baa85f7c8ec575bf90a1c1"
+    },
+    "final-production-dark.log": {
+      "path": "/workspace/scratch/wave6-behav-research/final-production-dark.log",
+      "sha256": "cf93f55335cef8ab2eba2a58d07547efac9aa00415baa85f7c8ec575bf90a1c1"
+    },
+    "native-final-v7-a.log": {
+      "path": "/workspace/scratch/wave6-behav-research/native-final-v7-a.log",
+      "sha256": "b017f13ef1f8a2ca4d2a0ada93456a120fb7669ed10195c58ee0a21b72c34152"
+    },
+    "native-final-v7-b.log": {
+      "path": "/workspace/scratch/wave6-behav-research/native-final-v7-b.log",
+      "sha256": "8764aa0b877705576db2d11db160e6f860d02d2990d51aef3a6f419de12ba130"
+    },
+    "preview-final-v7.log": {
+      "path": "/workspace/scratch/wave6-behav-research/preview-final-v7.log",
+      "sha256": "e531318780f8a5db85ad0af5c6ef3d450153ed9b133f66ae9c67051795eb4df1"
+    }
+  },
+  "ownedBrowsersServersClosed": true,
+  "sourceStopsPreserved": true,
+  "publicationDeploymentIndependentAcceptanceClaimed": false,
+  "next": "Continue frozen PSYCH6:17organization/depth/size lessons. User continuous goal remains active; do not stop at chapter, commit, integration or wave."
+}
