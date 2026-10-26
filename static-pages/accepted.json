@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
-  "acceptedCommit": "cdca5ccd5644602d9d14bc00b88a0644b62fce94",
-  "snapshotDigest": "bfb25478881e953e3fc964753235c2d7a094126cb72c9bb6170e7e6f7673a2e5",
+  "acceptedCommit": "b9759f451a82f7b4b7be5d1fc3b3a911d8dce34f",
+  "snapshotDigest": "5b03e0163c816aeed36a13623b9f01a70ae53092badd86856e483fd6eb8884bf",
   "ids": [
     "aero-1.1",
     "aero-1.2",
@@ -2463,7 +2463,16 @@
     "fin-6.7",
     "fin-6.8",
     "fin-6.9",
+    "fin-7.1",
     "fin-7.10",
+    "fin-7.2",
+    "fin-7.3",
+    "fin-7.4",
+    "fin-7.5",
+    "fin-7.6",
+    "fin-7.7",
+    "fin-7.8",
+    "fin-7.9",
     "fin-9.13",
     "fluid-1.1",
     "fluid-1.10",
@@ -2594,6 +2603,18 @@
     "game-5.7",
     "game-5.8",
     "game-5.9",
+    "game-6.1",
+    "game-6.10",
+    "game-6.11",
+    "game-6.12",
+    "game-6.2",
+    "game-6.3",
+    "game-6.4",
+    "game-6.5",
+    "game-6.6",
+    "game-6.7",
+    "game-6.8",
+    "game-6.9",
     "geo-1.1",
     "geo-1.10",
     "geo-1.11",
@@ -8874,12 +8895,12 @@
       "to": "sig-4.4"
     }
   ],
-  "dataDigest": "2b92f420d0c1229fbf7a2f55d42c82fc30487cf45cd7d946755bb585c8d5b7f5",
+  "dataDigest": "7418a573a75ab0fcac911850c7ca153c1dec642f5f4b913099a8d883a1166dee",
   "sourceReconciliation": {
     "checkedOn": "2026-10-26",
-    "basis": "Source-backed author verification of MICRO12 and MACRO6 under the continuous content goal; no additional independent review claimed",
-    "evidencePath": "docs/integration/wave6-micro-macro-content.json",
-    "evidenceSha256": "603ed2ca3695d6fa489e8faaef2561e9f4d320b20691c6275f82b97917cdca15",
-    "verificationPath": "docs/verification/wave6-micro-macro-integration.md"
+    "basis": "Source-backed author verification of FIN7 and GAME6 under the continuous content goal; no additional independent review claimed",
+    "evidencePath": "docs/integration/wave6-fin-game-content.json",
+    "evidenceSha256": "f5b0b105c6a725113f89725bc3de779befa5be1b6e1bfadc952059cc78d3e666",
+    "verificationPath": "docs/verification/wave6-fin-game-integration.md"
   }
 }

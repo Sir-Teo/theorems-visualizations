@@ -380,8 +380,8 @@
     "scope": "local-preview",
     "author": "atlas-editor",
     "checkedOn": "2026-10-26",
-    "contentDigest": "01ba8e0b7b1eaf435309c5ea95fbc3f270fbcd19a370c16082b90d026870a2f1",
+    "contentDigest": "8d96a247d5af19004e50b863ffd0b78dfb056ff636462ac4bdeef143600acacc",
     "artifactDigest": "ff19c4a9828fd3b260c199c4963c1f85265be51d9cf59bd0c7e9e94aadd9f56e",
-    "evidencePath": "docs/verification/wave6-micro-macro-integration.md"
+    "evidencePath": "docs/verification/wave6-fin-game-integration.md"
   }
 }
