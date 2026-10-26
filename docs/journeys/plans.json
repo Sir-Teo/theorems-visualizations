@@ -380,8 +380,8 @@
     "scope": "local-preview",
     "author": "atlas-editor",
     "checkedOn": "2026-10-26",
-    "contentDigest": "8d96a247d5af19004e50b863ffd0b78dfb056ff636462ac4bdeef143600acacc",
+    "contentDigest": "b312ac5698e496bf66fec5f77711846a119d48a8b2001ac93ccf3801b7afcc57",
     "artifactDigest": "ff19c4a9828fd3b260c199c4963c1f85265be51d9cf59bd0c7e9e94aadd9f56e",
-    "evidencePath": "docs/verification/wave6-fin-game-integration.md"
+    "evidencePath": "docs/verification/wave6-behav-psych-integration.md"
   }
 }
