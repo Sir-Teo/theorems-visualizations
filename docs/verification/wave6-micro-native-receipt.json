@@ -1,0 +1,508 @@
+{
+  "status": "PASS",
+  "scope": "64 distinct native layouts:56 retain byte-identical tested consumers from the full guarded matrix;8 final tax/network layouts supersede their earlier counterparts. Exact reconstruction of original whole-file hashes proves all other consumer/model/control bytes stay unchanged. Prose clarifies existing model domains and request rules, saturating benefit outside the displayed game domain, mathematical typography, word spacing and two verified section hrefs. No independent acceptance or publication is claimed.",
+  "fullMatrix": {
+    "directories": [
+      "/tmp/wave6-micro-native-current-a",
+      "/tmp/wave6-micro-native-current-b"
+    ],
+    "sourceHashes": {
+      "../content/micro/ch12.js": "7e8d2bc7cdb9992fa2bf2130a3b57a5cb1eb3bdaca41bd61e7e5241c2b0bed90",
+      "../content/micro/ch12.viz.js": "1657fba3c74f3e5251e0b5d0c4d37e7eae44aaf665a9403a3324c62730dc0632",
+      "../content/micro/ch12.shared.js": "13d28dd7a155561abe7d3c453f1eb95704af8d7e72f0d5a39cd110261bc68283",
+      "../content/micro/ch12.exact.shared.js": "a7868454c77521590098fc6828ff2af2b862eedbd7d8b93e296a8d26b823152f",
+      "../content/micro/syllabus.js": "a02806129101e9f0719e3fa5005acd9c6b309c7f5eb2323b6e09ee503c42e7da",
+      "../assets/js/viz/core.js": "a6fa1753d9d9e8b9a05a7161fffc58dfd53b27002d9d393a3266aeb96515fe73",
+      "../assets/js/viz/math.js": "439c335e1cc47907bc72bb76559216aa093be4710e0589f41c70192729eb223e",
+      "../assets/js/share-state.js": "13c6a9ac1237d566fc5d79c89e0f4d3029aa8c2817d2c08247a02b1b053a59b1",
+      "../data/col/micro.json": "cde2bb54d65c0f47109a08d9921bf34bed72a84e6f9f25055b7a8f54b5a0ca2c",
+      "../data/index.json": "86106a6f90e3aede222b2f5f879811c965349052b0e87dc057564400ccb22c3d",
+      "./wave6-micro-native.mjs": "a8176185b95731e6288cf37973f3c7057d7194ab3948325f289977b6c670181a",
+      "./wave6-micro-native-science.mjs": "97695ebf3f394d3956a9e6fc47a1a1fa7ab8a2f7732ee10cd1cd666db52684bf",
+      "./wave6-micro-native-cases.mjs": "1604ac6fef95d679671375f03965f9961290e659ce8a7f399d26bdaaeaa46949",
+      "./wave6-micro-browser.shared.mjs": "f6ea01272bbcff2393f33d783b36fc006632687230fb7095299118fe4ea70c3d"
+    }
+  },
+  "superseding": {
+    "tax": {
+      "directory": "/tmp/wave6-micro-tax-exact-final",
+      "status": "PASS",
+      "totals": {
+        "layouts": 4,
+        "actions": 124,
+        "shares": 64,
+        "invalid": 4,
+        "raw": 4,
+        "critical": 40,
+        "checks": 240,
+        "modelComparisons": 66240
+      },
+      "rows": [
+        {
+          "id": 3,
+          "theme": "light",
+          "width": 320,
+          "criticalCases": 10,
+          "totals": {
+            "layouts": 1,
+            "actions": 31,
+            "shares": 16,
+            "invalid": 1,
+            "raw": 1,
+            "critical": 10,
+            "checks": 60,
+            "modelComparisons": 16560
+          }
+        },
+        {
+          "id": 3,
+          "theme": "light",
+          "width": 1200,
+          "criticalCases": 10,
+          "totals": {
+            "layouts": 1,
+            "actions": 31,
+            "shares": 16,
+            "invalid": 1,
+            "raw": 1,
+            "critical": 10,
+            "checks": 60,
+            "modelComparisons": 16560
+          }
+        },
+        {
+          "id": 3,
+          "theme": "dark",
+          "width": 320,
+          "criticalCases": 10,
+          "totals": {
+            "layouts": 1,
+            "actions": 31,
+            "shares": 16,
+            "invalid": 1,
+            "raw": 1,
+            "critical": 10,
+            "checks": 60,
+            "modelComparisons": 16560
+          }
+        },
+        {
+          "id": 3,
+          "theme": "dark",
+          "width": 1200,
+          "criticalCases": 10,
+          "totals": {
+            "layouts": 1,
+            "actions": 31,
+            "shares": 16,
+            "invalid": 1,
+            "raw": 1,
+            "critical": 10,
+            "checks": 60,
+            "modelComparisons": 16560
+          }
+        }
+      ],
+      "errors": [],
+      "sourceHashes": {
+        "../content/micro/ch12.js": "db0b7914ba201ecef0e811ca8105d037dcebcf488b312b27bd70d67dd122f4c6",
+        "../content/micro/ch12.viz.js": "ffdb5b80e969d88536de56d87a6adcf440372ec6b8e51ee9cf984fda8b76d360",
+        "../content/micro/ch12.shared.js": "13d28dd7a155561abe7d3c453f1eb95704af8d7e72f0d5a39cd110261bc68283",
+        "../content/micro/ch12.exact.shared.js": "a7868454c77521590098fc6828ff2af2b862eedbd7d8b93e296a8d26b823152f",
+        "../content/micro/syllabus.js": "2d44235b70f313fe9b8eab896adaca41d87ed982df504e3c8368ad1715382aa0",
+        "../assets/js/viz/core.js": "a6fa1753d9d9e8b9a05a7161fffc58dfd53b27002d9d393a3266aeb96515fe73",
+        "../assets/js/viz/math.js": "439c335e1cc47907bc72bb76559216aa093be4710e0589f41c70192729eb223e",
+        "../assets/js/share-state.js": "13c6a9ac1237d566fc5d79c89e0f4d3029aa8c2817d2c08247a02b1b053a59b1",
+        "../data/col/micro.json": "d712f035a7505c8a7521db4b90186bc07e134d56bcb43786444c5f2ce69f0221",
+        "../data/index.json": "a413fe27b9895b94e67d516b5b6c5857c008d77941dfaba552f265978fc92660",
+        "./wave6-micro-native.mjs": "09b4190a9a6b8b8145c9151de24394b45081063ce6c96c06723c3f32fc1133a3",
+        "./wave6-micro-native-science.mjs": "19a8800237c1c53b7735ccf058f3a2b6fefcef10fd321587a5c896bf55d6f05b",
+        "./wave6-micro-native-cases.mjs": "4e6c60443cdf807bc0db3f10fd286ed8dc6c04f44ee63c2718369d049c17a4a8",
+        "./wave6-micro-browser.shared.mjs": "f6ea01272bbcff2393f33d783b36fc006632687230fb7095299118fe4ea70c3d"
+      }
+    },
+    "network": {
+      "directory": "/tmp/wave6-micro-network-exact-final",
+      "status": "PASS",
+      "totals": {
+        "layouts": 4,
+        "actions": 168,
+        "shares": 96,
+        "invalid": 4,
+        "raw": 4,
+        "critical": 68,
+        "checks": 340,
+        "modelComparisons": 38424
+      },
+      "rows": [
+        {
+          "id": 12,
+          "theme": "light",
+          "width": 320,
+          "criticalCases": 17,
+          "totals": {
+            "layouts": 1,
+            "actions": 42,
+            "shares": 24,
+            "invalid": 1,
+            "raw": 1,
+            "critical": 17,
+            "checks": 85,
+            "modelComparisons": 9606
+          }
+        },
+        {
+          "id": 12,
+          "theme": "light",
+          "width": 1200,
+          "criticalCases": 17,
+          "totals": {
+            "layouts": 1,
+            "actions": 42,
+            "shares": 24,
+            "invalid": 1,
+            "raw": 1,
+            "critical": 17,
+            "checks": 85,
+            "modelComparisons": 9606
+          }
+        },
+        {
+          "id": 12,
+          "theme": "dark",
+          "width": 320,
+          "criticalCases": 17,
+          "totals": {
+            "layouts": 1,
+            "actions": 42,
+            "shares": 24,
+            "invalid": 1,
+            "raw": 1,
+            "critical": 17,
+            "checks": 85,
+            "modelComparisons": 9606
+          }
+        },
+        {
+          "id": 12,
+          "theme": "dark",
+          "width": 1200,
+          "criticalCases": 17,
+          "totals": {
+            "layouts": 1,
+            "actions": 42,
+            "shares": 24,
+            "invalid": 1,
+            "raw": 1,
+            "critical": 17,
+            "checks": 85,
+            "modelComparisons": 9606
+          }
+        }
+      ],
+      "errors": [],
+      "sourceHashes": {
+        "../content/micro/ch12.js": "db0b7914ba201ecef0e811ca8105d037dcebcf488b312b27bd70d67dd122f4c6",
+        "../content/micro/ch12.viz.js": "ffdb5b80e969d88536de56d87a6adcf440372ec6b8e51ee9cf984fda8b76d360",
+        "../content/micro/ch12.shared.js": "13d28dd7a155561abe7d3c453f1eb95704af8d7e72f0d5a39cd110261bc68283",
+        "../content/micro/ch12.exact.shared.js": "a7868454c77521590098fc6828ff2af2b862eedbd7d8b93e296a8d26b823152f",
+        "../content/micro/syllabus.js": "2d44235b70f313fe9b8eab896adaca41d87ed982df504e3c8368ad1715382aa0",
+        "../assets/js/viz/core.js": "a6fa1753d9d9e8b9a05a7161fffc58dfd53b27002d9d393a3266aeb96515fe73",
+        "../assets/js/viz/math.js": "439c335e1cc47907bc72bb76559216aa093be4710e0589f41c70192729eb223e",
+        "../assets/js/share-state.js": "13c6a9ac1237d566fc5d79c89e0f4d3029aa8c2817d2c08247a02b1b053a59b1",
+        "../data/col/micro.json": "d712f035a7505c8a7521db4b90186bc07e134d56bcb43786444c5f2ce69f0221",
+        "../data/index.json": "a413fe27b9895b94e67d516b5b6c5857c008d77941dfaba552f265978fc92660",
+        "./wave6-micro-native.mjs": "09b4190a9a6b8b8145c9151de24394b45081063ce6c96c06723c3f32fc1133a3",
+        "./wave6-micro-native-science.mjs": "19a8800237c1c53b7735ccf058f3a2b6fefcef10fd321587a5c896bf55d6f05b",
+        "./wave6-micro-native-cases.mjs": "4e6c60443cdf807bc0db3f10fd286ed8dc6c04f44ee63c2718369d049c17a4a8",
+        "./wave6-micro-browser.shared.mjs": "f6ea01272bbcff2393f33d783b36fc006632687230fb7095299118fe4ea70c3d"
+      }
+    }
+  },
+  "effective64Totals": {
+    "layouts": 64,
+    "actions": 2136,
+    "shares": 1028,
+    "invalid": 64,
+    "raw": 64,
+    "critical": 488,
+    "checks": 3840,
+    "modelComparisons": 617164
+  },
+  "changedInputs": [
+    {
+      "file": "../content/micro/ch12.js",
+      "beforeSHA256": "7e8d2bc7cdb9992fa2bf2130a3b57a5cb1eb3bdaca41bd61e7e5241c2b0bed90",
+      "currentSHA256": "db0b7914ba201ecef0e811ca8105d037dcebcf488b312b27bd70d67dd122f4c6"
+    },
+    {
+      "file": "../content/micro/ch12.viz.js",
+      "beforeSHA256": "1657fba3c74f3e5251e0b5d0c4d37e7eae44aaf665a9403a3324c62730dc0632",
+      "currentSHA256": "ffdb5b80e969d88536de56d87a6adcf440372ec6b8e51ee9cf984fda8b76d360"
+    },
+    {
+      "file": "../content/micro/syllabus.js",
+      "beforeSHA256": "a02806129101e9f0719e3fa5005acd9c6b309c7f5eb2323b6e09ee503c42e7da",
+      "currentSHA256": "2d44235b70f313fe9b8eab896adaca41d87ed982df504e3c8368ad1715382aa0"
+    },
+    {
+      "file": "../data/col/micro.json",
+      "beforeSHA256": "cde2bb54d65c0f47109a08d9921bf34bed72a84e6f9f25055b7a8f54b5a0ca2c",
+      "currentSHA256": "d712f035a7505c8a7521db4b90186bc07e134d56bcb43786444c5f2ce69f0221"
+    },
+    {
+      "file": "../data/index.json",
+      "beforeSHA256": "86106a6f90e3aede222b2f5f879811c965349052b0e87dc057564400ccb22c3d",
+      "currentSHA256": "a413fe27b9895b94e67d516b5b6c5857c008d77941dfaba552f265978fc92660"
+    },
+    {
+      "file": "./wave6-micro-native.mjs",
+      "beforeSHA256": "a8176185b95731e6288cf37973f3c7057d7194ab3948325f289977b6c670181a",
+      "currentSHA256": "09b4190a9a6b8b8145c9151de24394b45081063ce6c96c06723c3f32fc1133a3"
+    },
+    {
+      "file": "./wave6-micro-native-science.mjs",
+      "beforeSHA256": "97695ebf3f394d3956a9e6fc47a1a1fa7ab8a2f7732ee10cd1cd666db52684bf",
+      "currentSHA256": "19a8800237c1c53b7735ccf058f3a2b6fefcef10fd321587a5c896bf55d6f05b"
+    },
+    {
+      "file": "./wave6-micro-native-cases.mjs",
+      "beforeSHA256": "1604ac6fef95d679671375f03965f9961290e659ce8a7f399d26bdaaeaa46949",
+      "currentSHA256": "4e6c60443cdf807bc0db3f10fd286ed8dc6c04f44ee63c2718369d049c17a4a8"
+    }
+  ],
+  "mainFieldChanges": [
+    {
+      "num": "12.4",
+      "field": "scope",
+      "before": "\n  scope:'Nonnegative constant marginal spillover, decreasing affine private benefit, increasing private cost, quasilinear welfare and fixed0–16 capacity. No budget-financing distortion or administrative cost. The model does not describe herd immunity, observed agricultural yields or a measured subsidy response.',",
+      "after": "\n  scope:'Nonnegative constant marginal spillover, decreasing affine private benefit, increasing private cost, quasilinear welfare and fixed 0–16 capacity. No budget-financing distortion or administrative cost. The model does not describe herd immunity, observed agricultural yields or a measured subsidy response.',"
+    },
+    {
+      "num": "12.5",
+      "field": "scope",
+      "before": "\n  scope:'An authored two-party quasilinear model with known, strictly concave joint surplus and activity0–16. Π(q)=(a−c)q−(b+d)q²/2 is a chosen activity-owner return, not competitive producer profit obtained by integrating inverse demand. Transaction costs are split equally. An exactly indifferent deal can be accepted or rejected explicitly. Limited funds, private information, enforcement failure and income effects are outside the theorem’s benchmark.',",
+      "after": "\n  scope:'An authored two-party quasilinear model with known, strictly concave joint surplus and activity 0–16. Π(q)=(a−c)q−(b+d)q²/2 is a chosen activity-owner return, not competitive producer profit obtained by integrating inverse demand. Transaction costs are split equally. An exactly indifferent deal can be accepted or rejected explicitly. Limited funds, private information, enforcement failure and income effects are outside the theorem’s benchmark.',"
+    },
+    {
+      "num": "12.8",
+      "field": "scope",
+      "before": "\n  scope:'A deliberately discrete admission test, with explicit rivalry and gate assumptions, a finite number of users and available entry passes. Rival units are shared among admitted users; non-rival provision is experienced by each. The diagram illustrates definitions, not universal labels for parks, roads, fisheries or particular technologies.',",
+      "after": "\n  scope:'A deliberately discrete admission test, with explicit rivalry and gate assumptions, a finite number of users and available entry passes. Each rival user requests at most one unit; shortages are shared evenly. A non-rival provision level is experienced in full by every admitted user. The diagram illustrates definitions, not universal labels for parks, roads, fisheries or particular technologies.',"
+    },
+    {
+      "num": "12.9",
+      "field": "idea",
+      "before": "\n  idea:String.raw`The same additional unit is available to both consumers. Its total benefit is therefore the sum of their marginal benefits at that same G. In this economy, $MB_i(G)=\\max\\{0,a_i-b_iG\\}$, so the efficient level solves the crossing of the piecewise-linear vertical sum with c, or is zero when the initial sum does not cover cost. For a private good at price p, instead add the individual quantities $q_i(p)=\\max\\{0,(a_i-p)/b_i\\}$. These are different aggregation operations.`,",
+      "after": "\n  idea:String.raw`The same additional unit is available to both consumers. Its total benefit is therefore the sum of their marginal benefits at that same G. In this economy, $MB_i(G)=\\max\\{0,a_i-b_iG\\}$ with $a_i,b_i,c>0$, so the efficient level solves the crossing of the piecewise-linear vertical sum with c, or is zero when the initial sum does not cover cost. For a private good at price p, instead add the individual quantities $q_i(p)=\\max\\{0,(a_i-p)/b_i\\}$. These are different aggregation operations.`,"
+    },
+    {
+      "num": "12.10",
+      "field": "statement",
+      "before": "\n  statement:String.raw`A non-excludable benefit can be enjoyed without contributing to its provision. In the chosen one-shot game, n identical players choose nonnegative contributions gᵢ, total provision is G=Σgᵢ, and each receives $B(G)-cg_i$, with $B(G)=aG-bG^2/2$ up to satiation. The Nash total and efficient total are\n$$G_N=\\max\\{0,(a-c)/b\\},$$\n$$G_S=\\max\\{0,(na-c)/(nb)\\}.$$\nFor n>1 and a positive efficient level, voluntary provision can fall short.`,",
+      "after": "\n  statement:String.raw`A non-excludable benefit can be enjoyed without contributing to its provision. In the chosen one-shot game, n is a positive integer and a,b,c>0. The n identical players choose nonnegative contributions gᵢ, total provision is G=Σgᵢ, and each receives $B(G)-cg_i$, with $B(G)=aG-bG^2/2$ up to G=a/b and constant benefit thereafter. The Nash total and efficient total are\n$$G_N=\\max\\{0,(a-c)/b\\},$$\n$$G_S=\\max\\{0,(na-c)/(nb)\\}.$$\nFor n>1 and a positive efficient level, voluntary provision can fall short.`,"
+    },
+    {
+      "num": "12.10",
+      "field": "idea",
+      "before": "\n  idea:String.raw`A contributor pays the full marginal cost c but receives only their own marginal benefit a−bG. The planner counts n times that benefit. A player’s best response to others’ total H is max{0,G_N−H}. Thus any nonnegative vector summing to a positive G_N is Nash; the symmetric split shown here is one representative, not a unique contribution pattern. When G_N=0, all contributions are zero.`,",
+      "after": "\n  idea:String.raw`A contributor pays the full marginal cost c but receives only their own marginal benefit a−bG. The planner counts n times that benefit. A player’s best response to others’ total H is $\\max\\{0,G_N-H\\}$. Thus any nonnegative vector summing to a positive $G_N$ is Nash; the symmetric split shown here is one representative, not a unique contribution pattern. When $G_N$=0, all contributions are zero.`,"
+    },
+    {
+      "num": "12.11",
+      "field": "idea",
+      "before": "\n  idea:String.raw`An entrant compares their average product A−BN/2 with their cost. Their entry also reduces the returns to existing effort, a congestion effect they do not pay for. A resource owner instead compares marginal product A−BN with cost. The rent curve $R(N)=(A-c)N-BN^2/2$ peaks at N_S and returns to zero at N_OA.`,",
+      "after": "\n  idea:String.raw`An entrant compares their average product A−BN/2 with their cost. Their entry also reduces the returns to existing effort, a congestion effect they do not pay for. A resource owner instead compares marginal product A−BN with cost. The rent curve $R(N)=(A-c)N-BN^2/2$ peaks at $N_S$ and returns to zero at $N_{OA}$.`,"
+    },
+    {
+      "num": "12.12",
+      "field": "statement",
+      "before": "\n  statement:String.raw`A network externality occurs when the value of joining depends on how many others participate. The chosen fulfilled-expectations inverse demand is $p=vx(1-x)$ for adoption share x∈[0,1]. Under the explicitly chosen adjustment rule\n$$\\dot x=\\kappa x[vx(1-x)-p],$$\npositive fixed points exist when 4p≤v. With 0<4p<v, the lower fixed point is an unstable critical mass and the upper one is stable; zero is also stable.`,",
+      "after": "\n  statement:String.raw`A network externality occurs when the value of joining depends on how many others participate. The chosen fulfilled-expectations inverse demand is $p=vx(1-x)$ for adoption share x∈[0,1]. Take v>0, κ>0 and p≥0. Under the explicitly chosen adjustment rule\n$$\\dot x=\\kappa x[vx(1-x)-p],$$\npositive fixed points exist when 4p≤v. With 0<4p<v, the lower fixed point is an unstable critical mass and the upper one is stable; zero is also stable.`,"
+    },
+    {
+      "num": "12.12",
+      "field": "links",
+      "before": "\n  links:{'CORE · network effects':'https://books.core-econ.org/the-economy-v1/book/text/21.html#214-increasing-returns-to-scale-and-winner-take-all-competition'},viz:lesson12",
+      "after": "\n  links:{'CORE · network effects':'https://books.core-econ.org/the-economy-v1/book/text/21.html#214-economies-of-scale-and-winner-take-all-competition'},viz:lesson12"
+    },
+    {
+      "num": "12.13",
+      "field": "idea",
+      "before": "\n  idea:String.raw`Set A₀=5, a=20, h=a+(b+d)A₀ and price τ=a+bA₀. A cap fixes abatement at A_Q=A₀, while the price induces A_P=A₀−u/b. Full information gives A*=A₀−u/(b+d). Integrating the marginal-benefit/cost gap gives $L_Q=u^2/[2(b+d)]$ and $L_P=u^2d^2/[2b^2(b+d)]$. Take expectations and subtract. The chosen uniform shock support ±0.8ρbA₀ keeps all outcomes strictly inside capacity 10.`,",
+      "after": "\n  idea:String.raw`Set A₀=5, a=20, h=a+(b+d)A₀ and price τ=a+bA₀. A cap fixes abatement at $A_Q=A_0$, while the price induces $A_P=A_0-u/b$. Full information gives A*=A₀−u/(b+d). Integrating the marginal-benefit/cost gap gives $L_Q=u^2/[2(b+d)]$ and $L_P=u^2d^2/[2b^2(b+d)]$. Take expectations and subtract. The chosen uniform shock support ±0.8ρbA₀ keeps all outcomes strictly inside capacity 10.`,"
+    },
+    {
+      "num": "12.13",
+      "field": "refs",
+      "before": "\n  refs:['Weitzman 1974 bibliography identified; original body unavailable after timeout','Hilary Hoynes, PG-Externalities, Winter 2012, slides23–27 read; figures26–27 viewed','Own complete linear-quadratic derivation'],",
+      "after": "\n  refs:['Weitzman 1974 bibliography identified; original body unavailable after timeout','Hilary Hoynes, PG-Externalities, Winter 2012, slides 23–27 read; figures 26–27 viewed','Own complete linear-quadratic derivation'],"
+    },
+    {
+      "num": "12.15",
+      "field": "links",
+      "before": "\n  links:{'Coase · official bibliographic record':'https://chicagounbound.uchicago.edu/journal_articles/3178/','CORE · distinct bargaining account':'https://books.core-econ.org/the-economy-v1/book/text/12.html#122-property-rights-contracts-and-market-failures'},viz:lesson15",
+      "after": "\n  links:{'Coase · official bibliographic record':'https://chicagounbound.uchicago.edu/journal_articles/3178/','CORE · distinct bargaining account':'https://books.core-econ.org/the-economy-v1/book/text/12.html#122-external-effects-and-bargaining'},viz:lesson15"
+    },
+    {
+      "num": "12.16",
+      "field": "idea",
+      "before": "\n  idea:String.raw`The displayed special case has $u_i=\\log x_i+a_i\\log(1+G)$ and resource constraint $x_A+x_B+cG=R$. For weight λ∈(0,1), let A=λa_A+(1−λ)a_B. Maximizing the weighted utility sum gives\n$$G^*=\\max\\{0,g_0\\},$$\n$$g_0=\\frac{AR-c}{c(A+1)},$$\nwith x_A=λ(R−cG*) and x_B=(1−λ)(R−cG*). Compute $\\operatorname{MRS}_i=a_i x_i/(1+G)$ to verify the sum condition, or its zero-provision inequality. Lower A’s reported taste while either holding allocation fixed or replanning from reports: the two experiments distinguish an informational shortfall from an actual allocation change.`,",
+      "after": "\n  idea:String.raw`The displayed special case has $u_i=\\log x_i+a_i\\log(1+G)$ and resource constraint $x_A+x_B+cG=R$. Here $a_i,c,R>0$, private consumption satisfies $x_i>0$, and $G\\ge0$. For weight λ∈(0,1), let $A=\\lambda a_A+(1-\\lambda)a_B$. Maximizing the weighted utility sum gives\n$$G^*=\\max\\{0,g_0\\},$$\n$$g_0=\\frac{AR-c}{c(A+1)},$$\nwith $x_A=\\lambda(R-cG^*)$ and $x_B=(1-\\lambda)(R-cG^*)$. Compute $\\operatorname{MRS}_i=a_i x_i/(1+G)$ to verify the sum condition, or its zero-provision inequality. Lower A’s reported taste while either holding allocation fixed or replanning from reports: the two experiments distinguish an informational shortfall from an actual allocation change.`,"
+    }
+  ],
+  "sourceSections": {
+    "tax": {
+      "before": "export function lesson3(v){\n const input=marketControls(v,{tax:true}),A=graph(v,'A tax shifts private marginal cost','output q / units','money per unit'),B=panel(v,'Real surplus and the separate tax transfer'),C=graph(v,'Loss as the tax crosses its corrective value','tax / money per unit','lost model money',{height:330});let z,at;\n v.render(()=>{z=H.externality(input());at=H.externality({...z.parameters,quantity:n(z.taxQuantity)});marketGraph(A,z.parameters,{quantity:n(z.taxQuantity),tax:z.parameters.tax,shade:true});ledger(B,[['benefit',at.benefit,'blue'],['private resource cost',at.privateCost,'teal'],['external damage',at.externalCost,'orange'],['real welfare',z.taxWelfare,'purple'],['tax revenue · transfer',z.taxRevenue,'gold']]);const rows=H.lin(65,0,16).map(t=>[t,n(H.externality({...z.parameters,tax:t}).taxLoss)]),m=Math.max(1,...rows.map(r=>r[1]));view(C,[-.5,16.7],[-.05*m,1.13*m]);path(C,rows,'red');mark(C,z.parameters.tax,n(z.taxLoss));C.dot(n(z.optimalTax),0,{color:'purple',r:5});});\n v.legend([['blue','marginal benefit'],['teal','private marginal cost'],['purple','social cost / corrective tax'],['orange','private marginal cost + tax',{dash:true}],['red','real loss'],['gold','selected output / tax transfer']]);\n v.readout(()=> '**Tax-induced output='+qf(z.taxQuantity)+'; real welfare loss='+qf(z.taxLoss)+'.** Corrective tax t*='+qf(z.optimalTax)+' at efficient qₛ='+qf(z.socialQuantity)+'. Tax minus t*='+qf(H.quantity(H.Q.sub(z.parameters.tax,z.optimalTax.exact)))+'.\\n\\nRevenue t q='+qf(z.taxRevenue)+' is a transfer, not an extra resource loss. '+(z.taxQuantity.sign===0?'No trade occurs; there is no observed transaction price.':n(z.taxQuantity)===z.parameters.capacity?'Capacity binds; the curves need not imply equality between the tax and the benefit/private-cost gap.':'At the interior market quantity, marginal benefit equals private marginal cost plus the tax.')+' A corner may be implemented by more than one tax.');\n}",
+      "after": "export function lesson3(v){\n const input=marketControls(v,{tax:true}),A=graph(v,'A tax shifts private marginal cost','output q / units','money per unit'),B=panel(v,'Real surplus and the separate tax transfer'),C=graph(v,'Loss as the tax crosses its corrective value','tax / money per unit','lost model money',{height:330});let z,at;\n v.render(()=>{z=H.externality(input());const Q=H.Q,p=z.parameters,x=z.taxQuantity.exact,xx=Q.mul(x,x);at={benefit:H.quantity(Q.sub(Q.mul(p.demand,x),Q.div(Q.mul(p.demandSlope,xx),2))),privateCost:H.quantity(Q.add(Q.mul(p.privateIntercept,x),Q.div(Q.mul(p.privateSlope,xx),2))),externalCost:H.quantity(Q.add(Q.mul(p.damage,x),Q.div(Q.mul(p.damageSlope,xx),2)))};marketGraph(A,z.parameters,{quantity:n(z.taxQuantity),tax:z.parameters.tax,shade:true});ledger(B,[['benefit',at.benefit,'blue'],['private resource cost',at.privateCost,'teal'],['external damage',at.externalCost,'orange'],['real welfare',z.taxWelfare,'purple'],['tax revenue · transfer',z.taxRevenue,'gold']]);const rows=H.lin(65,0,16).map(t=>[t,n(H.externality({...z.parameters,tax:t}).taxLoss)]),m=Math.max(1,...rows.map(r=>r[1]));view(C,[-.5,16.7],[-.05*m,1.13*m]);path(C,rows,'red');mark(C,z.parameters.tax,n(z.taxLoss));C.dot(n(z.optimalTax),0,{color:'purple',r:5});});\n v.legend([['blue','marginal benefit'],['teal','private marginal cost'],['purple','social cost / corrective tax'],['orange','private marginal cost + tax',{dash:true}],['red','real loss'],['gold','selected output / tax transfer']]);\n v.readout(()=> '**Tax-induced output='+qf(z.taxQuantity)+'; real welfare loss='+qf(z.taxLoss)+'.** Corrective tax t*='+qf(z.optimalTax)+' at efficient qₛ='+qf(z.socialQuantity)+'. Tax minus t*='+qf(H.quantity(H.Q.sub(z.parameters.tax,z.optimalTax.exact)))+'.\\n\\nRevenue t q='+qf(z.taxRevenue)+' is a transfer, not an extra resource loss. '+(z.taxQuantity.sign===0?'No trade occurs; there is no observed transaction price.':H.Q.sign(H.Q.sub(z.taxQuantity.exact,z.parameters.capacity))===0?'Capacity binds; the curves need not imply equality between the tax and the benefit/private-cost gap.':'At the interior market quantity, marginal benefit equals private marginal cost plus the tax.'+(n(z.taxQuantity)===z.parameters.capacity?' Remaining capacity='+qf(H.quantity(H.Q.sub(z.parameters.capacity,z.taxQuantity.exact)))+' units.':''))+' A corner may be implemented by more than one tax.');\n}"
+    },
+    "network": {
+      "before": "function networkPicture(s,z){view(s,[-.3,10.3],[-.45,6.2]);const share=n(z.state),nodes=12;for(let i=0;i<nodes;i++)for(let j=i+1;j<nodes;j++){const a=i*2*Math.PI/nodes,b=j*2*Math.PI/nodes,active=(i+.5)/nodes<share&&(j+.5)/nodes<share;s.line(3+1.8*Math.cos(a),3+1.8*Math.sin(a),3+1.8*Math.cos(b),3+1.8*Math.sin(b),{color:active?'purple':'muted',alpha:active?.23:.06,width:1});}for(let i=0;i<nodes;i++){const a=i*2*Math.PI/nodes;s.dot(3+1.8*Math.cos(a),3+1.8*Math.sin(a),{color:(i+.5)/nodes<share?'purple':'muted',r:6,hollow:(i+.5)/nodes>=share});}s.rect(6.4,1,8.9,5,{fill:'muted',fillAlpha:.06,color:'grid'});if(share>0)s.rect(6.4,1,8.9,1+4*share,{fill:'purple',fillAlpha:.26,stroke:false});txt(s,f(100*share)+'%',7.65,5.5,'purple',{align:'center',size:15});txt(s,'continuous adoption',7.65,.35,'muted',{align:'center',size:10});txt(s,'Schematic nodes · computed continuous share',5,-.05,'muted',{align:'center',size:10});}",
+      "after": "function networkPicture(s,z){view(s,[-.3,10.3],[-.45,6.2]);const share=n(z.state),nodes=12;for(let i=0;i<nodes;i++)for(let j=i+1;j<nodes;j++){const a=i*2*Math.PI/nodes,b=j*2*Math.PI/nodes,active=(i+.5)/nodes<share&&(j+.5)/nodes<share;s.line(3+1.8*Math.cos(a),3+1.8*Math.sin(a),3+1.8*Math.cos(b),3+1.8*Math.sin(b),{color:active?'purple':'muted',alpha:active?.23:.06,width:1});}for(let i=0;i<nodes;i++){const a=i*2*Math.PI/nodes;s.dot(3+1.8*Math.cos(a),3+1.8*Math.sin(a),{color:(i+.5)/nodes<share?'purple':'muted',r:6,hollow:(i+.5)/nodes>=share});}s.rect(6.4,1,8.9,5,{fill:'muted',fillAlpha:.06,color:'grid'});if(share>0)s.rect(6.4,1,8.9,1+4*share,{fill:'purple',fillAlpha:.26,stroke:false});txt(s,z.state.belowRange?'> 0%':(z.state.approximate?'≈':'')+f(100*share)+'%',7.65,5.5,'purple',{align:'center',size:15});txt(s,z.state.belowRange?'too small to draw':'continuous adoption',7.65,.35,'muted',{align:'center',size:10});txt(s,'Schematic nodes · computed continuous share',5,-.05,'muted',{align:'center',size:10});}"
+    },
+    "taxScience": {
+      "before": "if(id===3){trace(0,'orange',a=>[a[0],mc(a[0])+p.tax]);trace(2,'red',a=>[a[0],H.externality({...p,tax:a[0]}).taxLoss.value]);marker(2,'gold',p.tax,n(expected.taxLoss));}}",
+      "after": "if(id===3){const Q=H.Q,x=expected.taxQuantity.exact,xx=Q.mul(x,x),amounts=[H.quantity(Q.sub(Q.mul(p.demand,x),Q.div(Q.mul(p.demandSlope,xx),2))),H.quantity(Q.add(Q.mul(p.privateIntercept,x),Q.div(Q.mul(p.privateSlope,xx),2))),H.quantity(Q.add(Q.mul(p.damage,x),Q.div(Q.mul(p.damageSlope,xx),2)))];amounts.forEach((value,j)=>{walk(q.stages[1].ledger.rows[j][1],value,'actual tax-quantity ledger '+j);assert.equal(q.stages[1].ledger.rows[j][1].value,value.value,'correctly rounded physical amount before presentation');checks++;});assert.equal(Q.sign(Q.sub(Q.sub(amounts[0].exact,Q.add(amounts[1].exact,amounts[2].exact)),expected.taxWelfare.exact)),0,'real tax-policy accounts close before rounding');const gap=H.quantity(Q.sub(p.capacity,x));if(expected.taxQuantity.sign===0)assert.ok(q.readout.includes('No trade occurs'));else if(gap.sign===0)assert.ok(q.readout.includes('Capacity binds'));else{assert.ok(q.readout.includes('At the interior market quantity'));if(expected.taxQuantity.value===p.capacity)assert.ok(q.readout.includes('Remaining capacity='+qf(gap)),'positive capacity gap retained despite rounded output');}checks+=2;trace(0,'orange',a=>[a[0],mc(a[0])+p.tax]);trace(2,'red',a=>[a[0],H.externality({...p,tax:a[0]}).taxLoss.value]);marker(2,'gold',p.tax,n(expected.taxLoss));}}"
+    },
+    "networkScience": {
+      "before": " if(id===12){trace(1,'purple',a=>[a[0],p.strength*a[0]*(1-a[0])]);const history=H.networkHistory(p,201);trace(2,'purple',(a,j)=>[history[j].time,n(history[j].state)]);marker(2,'gold',p.time,n(expected.state));for(const a of q.stages[1].arrows){const x=(a.points[0][0]+a.points[1][0])/2,sign=H.quantity(H.Q.mul(x,H.Q.sub(H.Q.mul(p.strength,H.Q.mul(x,H.Q.sub(1,x))),p.price))).sign;assert.equal(Math.sign(a.points[1][0]-a.points[0][0]),sign,'actual phase-arrow sign');checks++;}if(expected.lower){if(expected.margin.sign===0){marker(1,'purple',n(expected.lower),p.price);assert.ok(q.stages[1].glyphs.some(g=>g.text==='double root'),'coalesced root has its own explicit label');assert.equal(q.stages[2].lines.filter(r=>r.style.color==='purple'&&r.style.dash).length,1,'one coalesced root reference line');checks+=2;}else{marker(1,'red',n(expected.lower),p.price);marker(1,'teal',n(expected.upper),p.price);}assert.ok(q.readout.includes(qf(H.quantity(H.Q.sub(expected.upper.exact,expected.lower.exact)))),'retained root separation is visible');checks++;}}\n",
+      "after": " if(id===12){const gauge=expected.state.belowRange?'> 0%':(expected.state.approximate?'≈':'')+f(100*n(expected.state))+'%';assert.ok(q.stages[0].glyphs.some(g=>g.text===gauge),'gauge distinguishes tiny positive adoption and approximate percentages');if(expected.state.belowRange)assert.ok(q.stages[0].glyphs.some(g=>g.text==='too small to draw'),'underflow gauge is explicitly qualified');checks++;trace(1,'purple',a=>[a[0],p.strength*a[0]*(1-a[0])]);const history=H.networkHistory(p,201);trace(2,'purple',(a,j)=>[history[j].time,n(history[j].state)]);marker(2,'gold',p.time,n(expected.state));for(const a of q.stages[1].arrows){const x=(a.points[0][0]+a.points[1][0])/2,sign=H.quantity(H.Q.mul(x,H.Q.sub(H.Q.mul(p.strength,H.Q.mul(x,H.Q.sub(1,x))),p.price))).sign;assert.equal(Math.sign(a.points[1][0]-a.points[0][0]),sign,'actual phase-arrow sign');checks++;}if(expected.lower){if(expected.margin.sign===0){marker(1,'purple',n(expected.lower),p.price);assert.ok(q.stages[1].glyphs.some(g=>g.text==='double root'),'coalesced root has its own explicit label');assert.equal(q.stages[2].lines.filter(r=>r.style.color==='purple'&&r.style.dash).length,1,'one coalesced root reference line');checks+=2;}else{marker(1,'red',n(expected.lower),p.price);marker(1,'teal',n(expected.upper),p.price);}assert.ok(q.readout.includes(qf(H.quantity(H.Q.sub(expected.upper.exact,expected.lower.exact)))),'retained root separation is visible');checks++;}}\n"
+    },
+    "taxCases": {
+      "before": "\n 3:[c('no tax',{'tax t / money per unit':0}),c('corrective tax',{'tax t / money per unit':3.6}),c('no-trade corner',{'tax t / money per unit':16}),c('capacity binds',{'private cost slope d':.1,'tax t / money per unit':0}),c('zero damage and tax',{'damage intercept e':0,'damage slope f':0,'tax t / money per unit':0}),c('retained tiny tax',{'tax t / money per unit':Number.MIN_VALUE}),c('efficient zero',{'demand intercept a':8,'damage intercept e':8,'damage slope f':0,'tax t / money per unit':10})],",
+      "after": "\n 3:[c('exact capacity with zero rent',{'private cost slope d':.125,'tax t / money per unit':0}),c('strict interior rounds to capacity',{'private cost slope d':.125,'tax t / money per unit':Number.MIN_VALUE}),c('external cost just above subnormal half',{'private cost slope d':before(.5),'tax t / money per unit':9.5,'damage intercept e':Number.MIN_VALUE,'damage slope f':0}),c('no tax',{'tax t / money per unit':0}),c('corrective tax',{'tax t / money per unit':3.6}),c('no-trade corner',{'tax t / money per unit':16}),c('capacity binds',{'private cost slope d':.1,'tax t / money per unit':0}),c('zero damage and tax',{'damage intercept e':0,'damage slope f':0,'tax t / money per unit':0}),c('retained tiny tax',{'tax t / money per unit':Number.MIN_VALUE}),c('efficient zero',{'demand intercept a':8,'damage intercept e':8,'damage slope f':0,'tax t / money per unit':10})],"
+    }
+  },
+  "indexTimestamp": {
+    "original": "2026-10-26T04:24:37.530Z",
+    "current": "2026-10-26T06:09:42.492Z"
+  },
+  "retainedLimits": "All13 pure-model sources and the410-case independent reference fixture remain unchanged. Native scientific consistency uses those separately validated models and exact intended browser state; it is not a second independent mathematical oracle.",
+  "finalSupplemental": {
+    "scope": "Additional32 final narrow layouts recapture critical pixels and repeat model/Share/invalid/raw checks; they do not inflate the effective64 distinct control-matrix counts.",
+    "totals": {
+      "layouts": 32,
+      "actions": 276,
+      "shares": 276,
+      "invalid": 32,
+      "raw": 32,
+      "critical": 244,
+      "checks": 892,
+      "modelComparisons": 149062
+    },
+    "lanes": [
+      {
+        "path": "/tmp/wave6-micro-critical-sealed-a/summary.json",
+        "sha256": "6300b3b8781dfd4e6f070163174c2a05317438d147749bd37f2dc9610305d3cb",
+        "status": "PASS",
+        "totals": {
+          "layouts": 16,
+          "actions": 126,
+          "shares": 126,
+          "invalid": 16,
+          "raw": 16,
+          "critical": 110,
+          "checks": 410,
+          "modelComparisons": 75756
+        },
+        "errors": [],
+        "sourceHashes": {
+          "../content/micro/ch12.js": "db0b7914ba201ecef0e811ca8105d037dcebcf488b312b27bd70d67dd122f4c6",
+          "../content/micro/ch12.viz.js": "ffdb5b80e969d88536de56d87a6adcf440372ec6b8e51ee9cf984fda8b76d360",
+          "../content/micro/ch12.shared.js": "13d28dd7a155561abe7d3c453f1eb95704af8d7e72f0d5a39cd110261bc68283",
+          "../content/micro/ch12.exact.shared.js": "a7868454c77521590098fc6828ff2af2b862eedbd7d8b93e296a8d26b823152f",
+          "../content/micro/syllabus.js": "2d44235b70f313fe9b8eab896adaca41d87ed982df504e3c8368ad1715382aa0",
+          "../assets/js/viz/core.js": "a6fa1753d9d9e8b9a05a7161fffc58dfd53b27002d9d393a3266aeb96515fe73",
+          "../assets/js/viz/math.js": "439c335e1cc47907bc72bb76559216aa093be4710e0589f41c70192729eb223e",
+          "../assets/js/share-state.js": "13c6a9ac1237d566fc5d79c89e0f4d3029aa8c2817d2c08247a02b1b053a59b1",
+          "../data/col/micro.json": "d712f035a7505c8a7521db4b90186bc07e134d56bcb43786444c5f2ce69f0221",
+          "../data/index.json": "a413fe27b9895b94e67d516b5b6c5857c008d77941dfaba552f265978fc92660",
+          "./wave6-micro-native.mjs": "09b4190a9a6b8b8145c9151de24394b45081063ce6c96c06723c3f32fc1133a3",
+          "./wave6-micro-native-science.mjs": "19a8800237c1c53b7735ccf058f3a2b6fefcef10fd321587a5c896bf55d6f05b",
+          "./wave6-micro-native-cases.mjs": "4e6c60443cdf807bc0db3f10fd286ed8dc6c04f44ee63c2718369d049c17a4a8",
+          "./wave6-micro-browser.shared.mjs": "f6ea01272bbcff2393f33d783b36fc006632687230fb7095299118fe4ea70c3d"
+        }
+      },
+      {
+        "path": "/tmp/wave6-micro-critical-sealed-b/summary.json",
+        "sha256": "2f2dc755675d9f21bcee795557d44ed712096b0131a39091368be29f5b9f7429",
+        "status": "PASS",
+        "totals": {
+          "layouts": 16,
+          "actions": 150,
+          "shares": 150,
+          "invalid": 16,
+          "raw": 16,
+          "critical": 134,
+          "checks": 482,
+          "modelComparisons": 73306
+        },
+        "errors": [],
+        "sourceHashes": {
+          "../content/micro/ch12.js": "db0b7914ba201ecef0e811ca8105d037dcebcf488b312b27bd70d67dd122f4c6",
+          "../content/micro/ch12.viz.js": "ffdb5b80e969d88536de56d87a6adcf440372ec6b8e51ee9cf984fda8b76d360",
+          "../content/micro/ch12.shared.js": "13d28dd7a155561abe7d3c453f1eb95704af8d7e72f0d5a39cd110261bc68283",
+          "../content/micro/ch12.exact.shared.js": "a7868454c77521590098fc6828ff2af2b862eedbd7d8b93e296a8d26b823152f",
+          "../content/micro/syllabus.js": "2d44235b70f313fe9b8eab896adaca41d87ed982df504e3c8368ad1715382aa0",
+          "../assets/js/viz/core.js": "a6fa1753d9d9e8b9a05a7161fffc58dfd53b27002d9d393a3266aeb96515fe73",
+          "../assets/js/viz/math.js": "439c335e1cc47907bc72bb76559216aa093be4710e0589f41c70192729eb223e",
+          "../assets/js/share-state.js": "13c6a9ac1237d566fc5d79c89e0f4d3029aa8c2817d2c08247a02b1b053a59b1",
+          "../data/col/micro.json": "d712f035a7505c8a7521db4b90186bc07e134d56bcb43786444c5f2ce69f0221",
+          "../data/index.json": "a413fe27b9895b94e67d516b5b6c5857c008d77941dfaba552f265978fc92660",
+          "./wave6-micro-native.mjs": "09b4190a9a6b8b8145c9151de24394b45081063ce6c96c06723c3f32fc1133a3",
+          "./wave6-micro-native-science.mjs": "19a8800237c1c53b7735ccf058f3a2b6fefcef10fd321587a5c896bf55d6f05b",
+          "./wave6-micro-native-cases.mjs": "4e6c60443cdf807bc0db3f10fd286ed8dc6c04f44ee63c2718369d049c17a4a8",
+          "./wave6-micro-browser.shared.mjs": "f6ea01272bbcff2393f33d783b36fc006632687230fb7095299118fe4ea70c3d"
+        }
+      }
+    ]
+  },
+  "finalModeCoverage": {
+    "path": "/tmp/wave6-micro-modes-sealed/summary.json",
+    "sha256": "8563b70cfa95df0c695f7a6b91dd1c266997eb458158611997994c6e9fda3cda",
+    "status": "PASS",
+    "layouts": 32,
+    "modes": 92,
+    "actions": 184,
+    "shares": 92,
+    "checks": 308,
+    "comparisons": 32084,
+    "errors": [],
+    "sourceHashes": {
+      "../content/micro/ch12.js": "db0b7914ba201ecef0e811ca8105d037dcebcf488b312b27bd70d67dd122f4c6",
+      "../content/micro/ch12.viz.js": "ffdb5b80e969d88536de56d87a6adcf440372ec6b8e51ee9cf984fda8b76d360",
+      "../content/micro/ch12.shared.js": "13d28dd7a155561abe7d3c453f1eb95704af8d7e72f0d5a39cd110261bc68283",
+      "../content/micro/ch12.exact.shared.js": "a7868454c77521590098fc6828ff2af2b862eedbd7d8b93e296a8d26b823152f",
+      "../content/micro/syllabus.js": "2d44235b70f313fe9b8eab896adaca41d87ed982df504e3c8368ad1715382aa0",
+      "../assets/js/viz/core.js": "a6fa1753d9d9e8b9a05a7161fffc58dfd53b27002d9d393a3266aeb96515fe73",
+      "../assets/js/viz/math.js": "439c335e1cc47907bc72bb76559216aa093be4710e0589f41c70192729eb223e",
+      "../assets/js/share-state.js": "13c6a9ac1237d566fc5d79c89e0f4d3029aa8c2817d2c08247a02b1b053a59b1",
+      "../data/col/micro.json": "d712f035a7505c8a7521db4b90186bc07e134d56bcb43786444c5f2ce69f0221",
+      "../data/index.json": "a413fe27b9895b94e67d516b5b6c5857c008d77941dfaba552f265978fc92660",
+      "./wave6-micro-browser.shared.mjs": "f6ea01272bbcff2393f33d783b36fc006632687230fb7095299118fe4ea70c3d",
+      "./wave6-micro-native-science.mjs": "19a8800237c1c53b7735ccf058f3a2b6fefcef10fd321587a5c896bf55d6f05b",
+      "./wave6-micro-mode-coverage.mjs": "ec593ac0ecfc73d5a3103af4e797cc317118a07dabd0fe44e4186461c42b316a"
+    }
+  },
+  "finalDefaultRich": {
+    "path": "/tmp/wave6-micro-rich-sealed/summary.json",
+    "sha256": "1b7b96476aac7a4b144e2c1ce45c5474c8edfc19d691b750afc250f617df3af7",
+    "status": "PASS",
+    "scope": "Complete default widgets and rich fields; native controls gated separately",
+    "issues": 0,
+    "errors": [],
+    "sourceHashes": {
+      "../content/micro/ch12.js": "db0b7914ba201ecef0e811ca8105d037dcebcf488b312b27bd70d67dd122f4c6",
+      "../content/micro/ch12.viz.js": "ffdb5b80e969d88536de56d87a6adcf440372ec6b8e51ee9cf984fda8b76d360",
+      "../content/micro/ch12.shared.js": "13d28dd7a155561abe7d3c453f1eb95704af8d7e72f0d5a39cd110261bc68283",
+      "../content/micro/ch12.exact.shared.js": "a7868454c77521590098fc6828ff2af2b862eedbd7d8b93e296a8d26b823152f",
+      "../content/micro/syllabus.js": "2d44235b70f313fe9b8eab896adaca41d87ed982df504e3c8368ad1715382aa0",
+      "../assets/js/viz/core.js": "a6fa1753d9d9e8b9a05a7161fffc58dfd53b27002d9d393a3266aeb96515fe73",
+      "../assets/js/viz/math.js": "439c335e1cc47907bc72bb76559216aa093be4710e0589f41c70192729eb223e",
+      "../data/col/micro.json": "d712f035a7505c8a7521db4b90186bc07e134d56bcb43786444c5f2ce69f0221",
+      "../data/index.json": "a413fe27b9895b94e67d516b5b6c5857c008d77941dfaba552f265978fc92660",
+      "./wave6-micro-browser.mjs": "c911826e3b4c492798fe95816dea01d25f55bbfd57c2faae95f82b6da15678ff"
+    }
+  },
+  "allOwnedRunsClosed": "Every owned browser/server run was polled to completion, including the superseded genuine failures; final guarded captures and both production checks exited0."
+}

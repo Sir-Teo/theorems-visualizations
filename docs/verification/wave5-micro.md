@@ -57,3 +57,5 @@ The eight owned author files are frozen by `/tmp/wave5-micro-author-freeze-v1.sh
 
 
 A coordinator source/model review also found that Array.every skips sparse cash-array holes. The finite-PV helper now explicitly checks dense own indices and rejects sparse input before mapping; a regression includes[1,,3]. Actual UI streams are dense and unchanged. The repair passes final focused and actual native/Share checks; source/model metadata is frozen for independent review.
+
+Wave6 continuation: chapter12's newly researched refs/pic are normalized to the complete pre-edit syllabus fixture solely for the original non11 SHA256 check; the literal historical hash is unchanged. `tests/wave6-micro.test.mjs` separately permits only those two chapter12 fields and compares every other top-level/chapter/item field exactly. The first affected run exposed this historical test conflict; after the scoped normalization, all40 Wave5/Wave6 groups pass. This does not revise the historical acceptance or chapter11 files.

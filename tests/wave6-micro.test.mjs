@@ -2,6 +2,8 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import * as H from '../content/micro/ch12.shared.js';
+import chapter from '../content/micro/ch12.js';
+import syllabus from '../content/micro/syllabus.js';
 const reference=JSON.parse(fs.readFileSync(new URL('./fixtures/wave6-micro-reference.json',import.meta.url)));
 const at=(o,path)=>path.split('.').reduce((v,k)=>v?.[k],o);
 const families=[...new Set(reference.rows.map(r=>r.name))];
@@ -53,4 +55,16 @@ test('MICRO12 uncertainty comparison includes perfect flat-benefit pricing and e
 test('MICRO12 underreporting records actual utility and changes the correct marginal balance',()=>{
  assert.ok(H.lindahl({report:.9}).reportGainA.sign>0);assert.ok(H.lindahl({benefitA:6,benefitB:6,cost:11.8,report:.85}).reportGainA.sign<0);
  const hold=H.samuelson({report:.5,mode:'hold allocation'}),plan=H.samuelson({report:.5,mode:'plan from reports'});assert.equal(hold.trueMarginalResidual.sign,0);assert.ok(hold.reportedMarginalResidual.sign<0);assert.equal(plan.reportedMarginalResidual.sign,0);assert.ok(plan.trueMarginalResidual.sign>0);assert.ok(plan.provision.value<hold.provision.value);
+});
+
+test('MICRO12 frozen identities and complete source-scoped teaching content',()=>{
+ const frozen=JSON.parse(fs.readFileSync(new URL('../docs/wave-6-plan.json',import.meta.url))).chapters.find(c=>c.collection==='micro').items,outline=syllabus.chapters.find(c=>c.n===12).items;
+ assert.equal(chapter.items.length,16);assert.equal(outline.length,16);
+ chapter.items.forEach((item,j)=>{for(const k of ['num','kind','name','deps','paper','introduces','verify','see'])assert.deepEqual(item[k],frozen[j][k],item.num+' '+k);for(const k of ['num','kind','name','deps','refs'])assert.deepEqual(item[k],outline[j][k]);assert.equal(item.caption,outline[j].pic);for(const k of ['statement','idea','caption','scope'])assert.ok(item[k].length>120,item.num+' complete '+k);assert.equal(typeof item.viz,'function');assert.ok(item.refs.length);});
+ assert.match(chapter.items[14].scope,/original article body and historical cattle table not read/);assert.match(chapter.items[12].scope,/original author PDF timed out/);
+});
+test('MICRO12 syllabus changes only researched chapter12 references and picture captions',()=>{
+ const before=JSON.parse(fs.readFileSync(new URL('./fixtures/wave6-micro-syllabus-before.json',import.meta.url)));
+ const omit=c=>c.n!==12?c:{...c,items:c.items.map(({refs,pic,...rest})=>rest)};
+ assert.deepEqual({...syllabus,chapters:syllabus.chapters.map(omit)},{...before,chapters:before.chapters.map(omit)});
 });

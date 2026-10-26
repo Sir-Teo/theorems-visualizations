@@ -51,7 +51,7 @@
       "repairedLog": "/tmp/wave6-micro-focused-final-model.log"
     },
     {
-      "finding": "Harness compared a negative quantity rounded to−0 against literal+0.",
+      "finding": "Harness compared a negative quantity rounded to\u22120 against literal+0.",
       "repair": "Compare the expected signed0 while preserving separate exact sign/range tests; no product sign/range change."
     }
   ],
@@ -76,5 +76,11 @@
     "No MICRO12 lesson module or visualization yet.",
     "Pure-model evidence does not imply native/Share, final visual review or new global-suite coverage.",
     "Chosen economies and adjustment laws are teaching models, not measured/calibrated markets or behavior."
-  ]
+  ],
+  "checkpointContext": {
+    "commit": "d4fbb933",
+    "scope": "Historical pure-model checkpoint before UI authoring; source hashes, then-open status and availability refer to that checkpoint.",
+    "finalChapterGates": "wave6-micro-gates.json",
+    "finalChapterStatus": "16 lessons author-verified; original helpers/reference and22 model test bodies remain exact; independent acceptance remains36."
+  }
 }

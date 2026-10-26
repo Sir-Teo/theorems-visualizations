@@ -1,0 +1,32 @@
+{
+  "baseCommit": "e1b734f40986abba674c1fcf04f09d8182c3d45c",
+  "pureModelCheckpoint": "d4fbb933f9c3f4fdeed7c581755d7185cb35d825",
+  "status": "16 lessons author-verified; availability842/1057; historical independent acceptance remains36; no publication",
+  "fileCount": 24,
+  "sha256": {
+    "content/micro/ch12.exact.shared.js": "a7868454c77521590098fc6828ff2af2b862eedbd7d8b93e296a8d26b823152f",
+    "content/micro/ch12.js": "db0b7914ba201ecef0e811ca8105d037dcebcf488b312b27bd70d67dd122f4c6",
+    "content/micro/ch12.shared.js": "13d28dd7a155561abe7d3c453f1eb95704af8d7e72f0d5a39cd110261bc68283",
+    "content/micro/ch12.viz.js": "ffdb5b80e969d88536de56d87a6adcf440372ec6b8e51ee9cf984fda8b76d360",
+    "content/micro/syllabus.js": "2d44235b70f313fe9b8eab896adaca41d87ed982df504e3c8368ad1715382aa0",
+    "docs/verification/wave5-micro.md": "2286dbc7c1b87518676cbb9b5b52d45b99928318879a6d3d816f8b6be80d2a83",
+    "docs/verification/wave6-micro-gates.json": "1096450549fdefd9771fb7d1d269f7d9cb0e9a02687d440ab89c780c6ee8dd0b",
+    "docs/verification/wave6-micro-model-receipt.json": "b3277fe2a1a72794ef8e50c1cfae9950e2e757c6a129b5da4ab69647162ddb0a",
+    "docs/verification/wave6-micro-native-receipt.json": "7dbde8af0f4a356d48bbe58add129f0c51e9dbf11073405246efe1df21541d67",
+    "docs/verification/wave6-micro-preservation.json": "8dc2f4436ede13e06ac0a38624a9197c6d12407c8e637fbaacf52bbcf3e2233d",
+    "docs/verification/wave6-micro-sources.json": "d721448e44b44e44fd8532598ea83d092f3ca07ecef5e4fa7ab2a2af4ea9f9e3",
+    "docs/verification/wave6-micro-visual-receipt.json": "1b803c433985adf3ffb379a45eb48b1c77c42944aa5e387660310a10949291df",
+    "docs/verification/wave6-micro.md": "f10d847ac6c79d867884022541a6c83f8be6b8754f60f2be00a6bed35e958468",
+    "tests/fixtures/wave6-micro-reference.json": "49e6b441609a7de52b0b1b8aff6f99602e5317ab74d9a21e4bb3bef5c223623f",
+    "tests/fixtures/wave6-micro-syllabus-before.json": "782172a1d155bda36137fb9697dc3566d310c62b6172f53322cf0d707d7e37bc",
+    "tests/wave5-micro.test.mjs": "9f3f1cab0d14625209d8a340c27fe22ce7e57718fef4160fc0cd207a4dc3b46c",
+    "tests/wave6-micro-browser.mjs": "c911826e3b4c492798fe95816dea01d25f55bbfd57c2faae95f82b6da15678ff",
+    "tests/wave6-micro-browser.shared.mjs": "f6ea01272bbcff2393f33d783b36fc006632687230fb7095299118fe4ea70c3d",
+    "tests/wave6-micro-mode-coverage.mjs": "ec593ac0ecfc73d5a3103af4e797cc317118a07dabd0fe44e4186461c42b316a",
+    "tests/wave6-micro-native-cases.mjs": "4e6c60443cdf807bc0db3f10fd286ed8dc6c04f44ee63c2718369d049c17a4a8",
+    "tests/wave6-micro-native-science.mjs": "19a8800237c1c53b7735ccf058f3a2b6fefcef10fd321587a5c896bf55d6f05b",
+    "tests/wave6-micro-native.mjs": "09b4190a9a6b8b8145c9151de24394b45081063ce6c96c06723c3f32fc1133a3",
+    "tests/wave6-micro-reference.py": "a394c217cde1b4925aef6853610cdf45855f90f46e5d1748ef49495db70a25f1",
+    "tests/wave6-micro.test.mjs": "b653330b0f353904e85bfded66f4534dea25b2c59ec419161894b4013711d093"
+  }
+}
