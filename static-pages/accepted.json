@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
-  "acceptedCommit": "7c9f315400a6d8bef573ef24b7418cf193cbc09c",
-  "snapshotDigest": "7b31c0e100c824255ca62285a529154791baabe7ea29ceb9540f9661015089a8",
+  "acceptedCommit": "cdca5ccd5644602d9d14bc00b88a0644b62fce94",
+  "snapshotDigest": "bfb25478881e953e3fc964753235c2d7a094126cb72c9bb6170e7e6f7673a2e5",
   "ids": [
     "aero-1.1",
     "aero-1.2",
@@ -3807,6 +3807,13 @@
     "macro-5.7",
     "macro-5.8",
     "macro-5.9",
+    "macro-6.1",
+    "macro-6.2",
+    "macro-6.3",
+    "macro-6.4",
+    "macro-6.5",
+    "macro-6.6",
+    "macro-6.7",
     "macro-9.11",
     "mat-1.1",
     "mat-1.2",
@@ -4314,6 +4321,22 @@
     "micro-11.7",
     "micro-11.8",
     "micro-11.9",
+    "micro-12.1",
+    "micro-12.10",
+    "micro-12.11",
+    "micro-12.12",
+    "micro-12.13",
+    "micro-12.14",
+    "micro-12.15",
+    "micro-12.16",
+    "micro-12.2",
+    "micro-12.3",
+    "micro-12.4",
+    "micro-12.5",
+    "micro-12.6",
+    "micro-12.7",
+    "micro-12.8",
+    "micro-12.9",
     "micro-13.19",
     "micro-13.20",
     "micro-13.21",
@@ -8851,12 +8874,12 @@
       "to": "sig-4.4"
     }
   ],
-  "dataDigest": "6fad0e74cc158f4cea7ba58c0c9907a6b97e63beafb4dafea78872e29bbe3413",
+  "dataDigest": "2b92f420d0c1229fbf7a2f55d42c82fc30487cf45cd7d946755bb585c8d5b7f5",
   "sourceReconciliation": {
     "checkedOn": "2026-10-26",
-    "basis": "Source-backed author verification of ROBOT6 and AERO6 under the continuous content goal; no additional independent review claimed",
-    "evidencePath": "docs/integration/wave6-robot-aero-content.json",
-    "evidenceSha256": "42dfe80f8297ff3503c3eb6ca6dec369eca38dd329bd935c52a8e5b303d01aef",
-    "verificationPath": "docs/verification/wave6-robot-aero-integration.md"
+    "basis": "Source-backed author verification of MICRO12 and MACRO6 under the continuous content goal; no additional independent review claimed",
+    "evidencePath": "docs/integration/wave6-micro-macro-content.json",
+    "evidenceSha256": "603ed2ca3695d6fa489e8faaef2561e9f4d320b20691c6275f82b97917cdca15",
+    "verificationPath": "docs/verification/wave6-micro-macro-integration.md"
   }
 }

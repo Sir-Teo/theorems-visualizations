@@ -1,0 +1,5 @@
+# MICRO12/MACRO6 · reading integration
+
+The 16 author-verified MICRO12 lessons and seven author-verified MACRO6 lessons are being integrated into the local reading snapshot. The chapter source checkpoint is cdca5ccd5644602d9d14bc00b88a0644b62fce94. All 8541 prior complete reading projections and 76 aliases must remain exact; only these 23 frozen lesson identities are added. Existing journey, curriculum and deeper-route arrays remain unchanged while snapshot metadata is rebound.
+
+The chapter reports and exact manifests retain source scope, independent numerical evidence, complete visual qualification, genuine failures and binding access stops. Availability is 849/1057, including 36 historical independently accepted; no additional independent acceptance, release or deployment is claimed. The47scoped reading/journey/curriculum/program groups, coverage structure and24read-only continuation records pass. Strict8564/5010/590/85 is clean. All276chapter pins are exact. Full exact-export checks are in progress. Continue the next frozen chapter after the gate; do not stop at this checkpoint.
