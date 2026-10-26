@@ -1,0 +1,74 @@
+{
+  "status": "Pure model checkpoint only. No FIN7 author-availability promotion; complete lesson/native/Share/personal visual gates open.",
+  "availability": {
+    "unchanged": 849,
+    "goal": 1057,
+    "historicalIndependentAcceptance": 36
+  },
+  "referenceCases": 1941,
+  "families": 9,
+  "comparisons": 232847,
+  "precision": {
+    "status": "PASS",
+    "cases": 1941,
+    "families": [
+      "bounds",
+      "claims",
+      "densityRecovery",
+      "earlyCall",
+      "parity",
+      "payoff",
+      "protectivePut",
+      "strategies",
+      "strikeConvexity"
+    ],
+    "method": "All physical results use exact Fraction expressions/integration and correctly rounded conversion. Only final log-magnitude formatting uses mpmath.",
+    "logFormattingDigits": {
+      "canonical": 100,
+      "higher": 200
+    },
+    "canonicalRepeatByteIdentical": true,
+    "completeHigherExpectedObjectsEqual": true,
+    "higherBytesIdentical": true,
+    "fixtureSHA256": "9a2adcc80a57860e2fdb33bca2305be6b98cc4c373459e3b50bf4508f6087f93"
+  },
+  "physicalGate": "Exact correctly rounded independent Fraction-to-binary64 agreement with strict sign/range and signed-zero checks.",
+  "logGateAbsolute": 8e-12,
+  "worstLogAbsolute": 4.547473508864641e-13,
+  "focused": {
+    "pureGroups": 13,
+    "affectedPriorFinanceGroups": 15,
+    "passed": 28,
+    "failed": 0,
+    "skipped": 0,
+    "cancelled": 0,
+    "durationMs": 321.620952,
+    "log": "/workspace/scratch/wave6-fin-research/focused-pure-corrected.log",
+    "logSHA256": "ba2ed67219c7a41501d71103dda05f1f1b0b3a02d156cbff4a2ef718478a6c83"
+  },
+  "preservation": {
+    "preFINPinnedFiles": 311,
+    "allExact": true,
+    "sourceLedger": "docs/verification/wave6-fin-sources.json",
+    "existingPaper": "fin-7.10 and all its file bytes remain exact"
+  },
+  "sourceHashes": {
+    "content/fin/ch07.cashflow.shared.js": "275c8cdb2cb287452243c92c1129d3da4390ef307db5c95a2e9896af3e9d232e",
+    "content/fin/ch07.exact.shared.js": "6823e77ed583d3f1294b6033c7e031395cb26f571b6726c3d8b3472fcfb369d2",
+    "content/fin/ch07.law.shared.js": "47a774d128fb23d89835b5f3a1b53ed1f72af4ed377e03e298ddccb399bacc92",
+    "content/fin/ch07.positions.shared.js": "247a444fa766dcc2bc449918ae5582450e8d3d3e1b08e47e63af7562df67d2ea",
+    "content/fin/ch07.shared.js": "e9048278d8b6d0bf6cc4bd6548bee9005471b6c528fc59eddfd03e19c9d32e03",
+    "tests/fixtures/wave6-fin-reference.json": "9a2adcc80a57860e2fdb33bca2305be6b98cc4c373459e3b50bf4508f6087f93",
+    "tests/wave6-fin-reference.py": "b5f7284069b1907f056c15c0479066342576b3c49002f80fff79087b273c727f",
+    "tests/wave6-fin.test.mjs": "4be7a047f79a1fb14e1a6915f29e32225f63990daa903a17b681924d6081f857"
+  },
+  "developmentFailures": [
+    {
+      "scope": "Test assertion, not a product calculation error",
+      "detail": "Initial combined run27/28: an invisible-MIN-quote example assumed the defaultB=.95 displayed price would not move. Its exact price lies on a binary64 rounding midpoint; positiveMIN correctly rounds to the next value. Independent Fraction fixtures already confirmed both values. The invisible-offset example now usesB=1, and a separate midpoint regression retains the original default case. No model fix, removed case or numerical tolerance change.",
+      "initialLog": "/workspace/scratch/wave6-fin-research/focused-pure.log",
+      "initialLogSHA256": "6f59504439d26490138909677cc5cc385e9fe82a60865e0157e2120206a5f027"
+    }
+  ],
+  "next": "Author all9 complete frozen lessons with purpose-built visuals; synchronize only chapter7 refs/pic, preserve the already written7.10Paper, run complete metadata/native/Share/critical/original-pixel gates before counting. No stopping at this checkpoint."
+}

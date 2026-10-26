@@ -1,0 +1,19 @@
+{
+  "baseCommit": "b7f625b0bf2934385a4835e8c5f03b8f7370652d",
+  "status": "Nine pure families independently verified; complete lesson/native/Share/personal visual gates open; availability849unchanged; independent acceptance36unchanged",
+  "fileCount": 12,
+  "sha256": {
+    "content/fin/ch07.cashflow.shared.js": "275c8cdb2cb287452243c92c1129d3da4390ef307db5c95a2e9896af3e9d232e",
+    "content/fin/ch07.exact.shared.js": "6823e77ed583d3f1294b6033c7e031395cb26f571b6726c3d8b3472fcfb369d2",
+    "content/fin/ch07.law.shared.js": "47a774d128fb23d89835b5f3a1b53ed1f72af4ed377e03e298ddccb399bacc92",
+    "content/fin/ch07.positions.shared.js": "247a444fa766dcc2bc449918ae5582450e8d3d3e1b08e47e63af7562df67d2ea",
+    "content/fin/ch07.shared.js": "e9048278d8b6d0bf6cc4bd6548bee9005471b6c528fc59eddfd03e19c9d32e03",
+    "docs/verification/wave6-fin-design.json": "955823bf7f9b1398cfb847a9c5d9453e78945ec296d3ad5efc20bc7b4a7368ab",
+    "docs/verification/wave6-fin-model-receipt.json": "19a1febb3883d3e77381f9f4889fd99915619d79c5c22a7221843996b0f8f190",
+    "docs/verification/wave6-fin-sources.json": "38ed90b5ad13d68f398c7f2be2fa7757d4191383b366953dbfaf94e54de1a647",
+    "docs/verification/wave6-fin.md": "ede5dd8c92e79cb4f0dfeb710225c470da3a656837fbf3362b66a972a11bc219",
+    "tests/fixtures/wave6-fin-reference.json": "9a2adcc80a57860e2fdb33bca2305be6b98cc4c373459e3b50bf4508f6087f93",
+    "tests/wave6-fin-reference.py": "b5f7284069b1907f056c15c0479066342576b3c49002f80fff79087b273c727f",
+    "tests/wave6-fin.test.mjs": "4be7a047f79a1fb14e1a6915f29e32225f63990daa903a17b681924d6081f857"
+  }
+}
