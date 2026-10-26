@@ -1,0 +1,92 @@
+{
+  "status": "12complete teaching drafts /38purpose-built panels; native and personal visual gates OPEN; no GAME availability promotion",
+  "authorAvailabilityUnchanged": 858,
+  "independentAcceptanceUnchanged": 36,
+  "independentCases": 2269,
+  "families": 12,
+  "statistics": [
+    {
+      "cases": 244,
+      "comparisons": 92831,
+      "worstLogAbsolute": 4.547473508864641e-13
+    },
+    {
+      "cases": 88,
+      "exactComparisons": 9937,
+      "numericalComparisons": 33169,
+      "worstPathAbsolute": 2.246355990109805e-09,
+      "worstLogShareAbsolute": 1.1745726169465343e-08,
+      "worstLogMagnitude": 4.547473508864641e-13
+    },
+    {
+      "cases": 1937,
+      "comparisons": 825967,
+      "worstLogAbsolute": 4.549693954913892e-13
+    }
+  ],
+  "canonicalFinite1937Repeat100And200BytesIdentical": true,
+  "canonicalChains244Repeat100And200BytesIdentical": true,
+  "dynamicsCases": 88,
+  "independentDOP853HalvedMaxStepWorstAbsolute": 3.979039320256561e-12,
+  "priorRawPinsExact": 371,
+  "syllabusException": "Only chapter6refs/pic; complete semantic preservation tested",
+  "focused42PassedBeforeLatestEquationAndMarkerFormatting": true,
+  "strictBuild": {
+    "written": 8585,
+    "planned": 4989,
+    "chapters": 591,
+    "collections": 85,
+    "errors": 0,
+    "warnings": 0
+  },
+  "visualGate": "Early phone/default audits found genuine equation/label/marker issues; repairs and full native review continue. No failed or superseded capture is a final acceptance.",
+  "genuineFailures": [
+    "Chain reference near-unit log suffered cancellation at100vs200digits; stable log1p(complement/part) repaired it and complete expected bytes now match.",
+    "Draft harness naive substring replacement altered find/finally; caught before browser launch and repaired; subsequent native adaptation is token-scoped.",
+    "Initial frozen-name check caught a missing space in6.12; exact frozen title restored before build.",
+    "First phone capture43ink issues: canvas top-label font metrics and four overlong equations; top labels moved through existing KaTeX API and equations split without font shrinking.",
+    "Subsequent review caught coincident markers hiding one another; nested radii now retain both states.",
+    "Native pilot found initial-time marker too close to data boundary; proportional horizontal margin repaired.",
+    "Tiny nonatomic-flow labels initially used rounded floats; they now retain original rational sums and range-aware labels.",
+    "Personal original-pixel review found adjacent subnormal potential labels overlapping despite passing bounding-box checks. Final grid uses two-line mantissa/exponent labels and wider cells, preserving font sizes.",
+    "Cross-engine RK4 conservation residual differed by one floating ulp (zero versus2e-16). Render consistency now applies its existing numerical2e-12bound to numerical path diagnostics, including zero; original-factor quantity rounding/sign/range and raw input mapping remain strict.",
+    "Neutral-centre colour reused a strategy colour; final diagrams use an ink marker, with an explicit legend. Coincident atomic cost/potential curves now retain solid/dashed distinction."
+  ],
+  "modelHashes": {
+    "content/game/ch06.exact.shared.js": "f90c1849903788f0d3c2cd8fca77d5d0e2a3148f8368fbe2e68659377a2f62dd",
+    "content/game/ch06.selection.shared.js": "8a6c9aee856881cf5b94296146fea63733948b55a1cd69226a73c637bb85fdd7",
+    "content/game/ch06.routing.shared.js": "27cbe9f9c973a338c028d1b3fcf4c0a89af0fab60ee19d097d7fdc14b6fb150c",
+    "content/game/ch06.potential.shared.js": "114cd9107181cdf99ea2d310829e4cfbc7fee44c65bb3b9de833d0b36ac2c5b5",
+    "content/game/ch06.congestion.shared.js": "face199800420efe63dfc8af62758db8e37ab1abd491c868554cbd9b7973dfd8",
+    "content/game/ch06.enclosure.shared.js": "16acb8b7deb05480f0e047f9a8607e24739eee5ec0519c41fe3b7615715df6b9",
+    "content/game/ch06.chains.shared.js": "9051cfdd9e259d390c6e4206b684574022990bbab6a7eae8d6d71a33b46073fd",
+    "content/game/ch06.dynamics.shared.js": "a7796de6a9c2787b48c6ee6f40c0cbdff0466f3406389cfd846acc90969850f3",
+    "content/game/ch06.shared.js": "f4b1c4e484439faad92cd22f00aea179dd493a71ff6e3eefaef7f42b6ef43328"
+  },
+  "next": "Complete native controls/actualShare/critical/raw tests, personally review original pixels in both themes at phone/desktop, final preservation/model/source gates, then integrateFIN9+GAME12and continue next frozen chapter. Do not stop.",
+  "phoneNativePilotBeforeFinalVisualPolish": {
+    "layouts": 12,
+    "actions": 338,
+    "actualShares": 143,
+    "invalid": 12,
+    "raw": 12,
+    "critical": 49,
+    "audits": 566,
+    "renderConsistencyComparisons": 708931,
+    "status": "PASS; source snapshots native-controls-v1-a/b; later table-label/centre-colour/dashed-cost polish requires final replay"
+  },
+  "focusedFinalDraft": {
+    "passed": 42,
+    "failed": 0,
+    "skipped": 0,
+    "cancelled": 0,
+    "durationMs": 5348.502877,
+    "log": "/workspace/scratch/wave6-game-research/draft-models-final.log",
+    "logSHA256": "ea1484855b09a7a2932f8330128089e53c504c35e691e3c75fcdb8631bbdfb21"
+  },
+  "static": {
+    "items": 8522,
+    "errors": 0,
+    "warnings": 0
+  }
+}

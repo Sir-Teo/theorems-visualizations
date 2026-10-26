@@ -245,3 +245,6 @@ AERO6 final author checkpoint supersedes its earlier draft/root/presentation par
 
 
 ROBOT6/AERO6 integration final checkpoint: exact exportff692f72 passes4878full tests and272routes per theme; all225 pins and all8521 prior projections exact. This supersedes the preceding pending-integration paragraphs. Continue MICRO12’s16 lessons under the provisional source/scientific/visual design, preserving binding original-body limits.
+
+
+GAME6 current draft: 12 complete frozen lesson bodies, 38 bespoke panels and 2,269 independent cases (1,937 finite-game/routing, 244 finite-chain, 88 numerical-dynamics). Complete 100/200-digit fixture regeneration agrees; the independent DOP853 reference changes by at most 3.979e-12 under step halving. All 12 light/320 native pilot layouts pass 338 actions, 143 actual Shares, 12 invalid states, 12 raw restores, 49 critical states, 566 audits and 708,931 render comparisons. Personal review then prompted two-line tiny potential labels, a separate neutral-centre colour and dashed total-cost traces. Final native replay and both-theme/full-size personal review remain OPEN. This draft adds no availability: 858 author-available and 36 independently accepted. Integrate FIN9 + GAME12 reading/global records after GAME completion, then continue the next frozen chapters. Do not stop at a commit, chapter or wave.

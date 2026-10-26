@@ -1,5 +1,5 @@
 {
-  "status": "Provisional GAME6 source/own-derivation ledger; no complete chapter or availability promotion",
+  "status": "Actual source-reading scopes retained; complete scoped own derivations accompany 12 teaching drafts; native/visual gates remain open",
   "baseCommit": "aa8f8b3d84b4a546f609a46d84736236102c8578",
   "frozenChapter": {
     "collection": "game",
@@ -533,5 +533,14 @@
     "Kandori/Mailath/Rob and Young original stochastic-selection papers",
     "Sinervo/Lively original lizard paper"
   ],
-  "copying": "No source figures or substantial source prose copied into product code; original bounded mathematical illustrations and explicit own proofs."
+  "copying": "No source figures or substantial source prose copied into product code; original bounded mathematical illustrations and explicit own proofs.",
+  "ownDerivationsNowImplemented": [
+    "Exact bilinear two-strategy ESS and all Nash/ESS candidates, including neutral continua and weak endpoints.",
+    "Replicator simplex invariance, log-ratio integration and separately exact instantaneous conservation; compact feasible-direction ESS local superiority and relative-entropy Lyapunov proof.",
+    "Cyclic-matrix ESS criterion and exact log-product identity; periodicity from regular compact product level sets in the zero-sum interior.",
+    "Finite Moran harmonic-equation solution from birth/death ratios, with no self-play and explicitly exponential fitness.",
+    "Specific asynchronous all-to-all logit coordination stationary law by link detailed balance, including count multiplicities and the endpoint risk-dominance limit.",
+    "Finite exact-potential deviation identity and strict ascent; resource-by-resource Rosenthal identity with retained resources cancelling.",
+    "Full symmetric nonatomic Braess regimes and global convex reduction; affine variational-inequality4/3bound and exact Pigou optimization."
+  ]
 }
