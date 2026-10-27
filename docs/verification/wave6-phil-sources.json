@@ -1,0 +1,292 @@
+{
+  "status": "Selected commentary and two complete prerequisite bodies actually read; chapter draft in product; native and final author gates remain open.",
+  "checkedOn": "2026-10-27",
+  "sources": [
+    {
+      "title": "Bayes’ Theorem (Stanford Encyclopedia of Philosophy)",
+      "url": "https://plato.stanford.edu/entries/bayes-theorem/",
+      "extracts": [
+        "web-source-read-1.json",
+        "web-source-read-2.json",
+        "web-source-read-5.json",
+        "web-source-read-6.json"
+      ],
+      "actualReadLineRanges": [
+        [
+          0,
+          161
+        ]
+      ],
+      "wholeEntryRead": false,
+      "access": "Selected body sections read through web-rendered excerpts; this is not an index-only receipt.",
+      "limits": "Original works mentioned in bibliography were not read. Figures were not visually inspected. Mathematical constructions and finite proofs are separately supplied."
+    },
+    {
+      "title": "Bayesian Epistemology (Stanford Encyclopedia of Philosophy)",
+      "url": "https://plato.stanford.edu/entries/epistemology-bayesian/",
+      "extracts": [
+        "web-source-read-1.json",
+        "web-source-read-2.json",
+        "web-source-read-3.json",
+        "web-source-read-3.json",
+        "web-source-read-4.json",
+        "web-source-read-5.json",
+        "web-source-read-6.json"
+      ],
+      "actualReadLineRanges": [
+        [
+          0,
+          106
+        ],
+        [
+          109,
+          130
+        ],
+        [
+          183,
+          186
+        ],
+        [
+          209,
+          270
+        ],
+        [
+          465,
+          495
+        ],
+        [
+          675,
+          679
+        ],
+        [
+          793,
+          803
+        ],
+        [
+          822,
+          828
+        ]
+      ],
+      "wholeEntryRead": false,
+      "access": "Selected body sections read through web-rendered excerpts; this is not an index-only receipt.",
+      "limits": "Original works mentioned in bibliography were not read. Figures were not visually inspected. Mathematical constructions and finite proofs are separately supplied."
+    },
+    {
+      "title": "Dutch Book Arguments (Stanford Encyclopedia of Philosophy)",
+      "url": "https://plato.stanford.edu/entries/dutch-book/",
+      "extracts": [
+        "web-source-read-1.json",
+        "web-source-read-2.json",
+        "web-source-read-3.json",
+        "web-source-read-4.json"
+      ],
+      "actualReadLineRanges": [
+        [
+          0,
+          113
+        ],
+        [
+          234,
+          266
+        ]
+      ],
+      "wholeEntryRead": false,
+      "access": "Selected body sections read through web-rendered excerpts; this is not an index-only receipt.",
+      "limits": "Original works mentioned in bibliography were not read. Figures were not visually inspected. Mathematical constructions and finite proofs are separately supplied."
+    },
+    {
+      "title": "Interpretations of Probability (Stanford Encyclopedia of Philosophy)",
+      "url": "https://plato.stanford.edu/entries/probability-interpret/",
+      "extracts": [
+        "web-source-read-2.json",
+        "web-source-read-3.json",
+        "web-source-read-4.json",
+        "web-source-read-4.json",
+        "web-source-read-5.json",
+        "web-source-read-5.json"
+      ],
+      "actualReadLineRanges": [
+        [
+          0,
+          50
+        ],
+        [
+          101,
+          101
+        ],
+        [
+          110,
+          110
+        ],
+        [
+          220,
+          247
+        ],
+        [
+          253,
+          253
+        ],
+        [
+          263,
+          263
+        ],
+        [
+          281,
+          281
+        ],
+        [
+          286,
+          288
+        ],
+        [
+          299,
+          299
+        ],
+        [
+          301,
+          305
+        ],
+        [
+          330,
+          330
+        ],
+        [
+          332,
+          332
+        ],
+        [
+          339,
+          356
+        ],
+        [
+          380,
+          399
+        ],
+        [
+          407,
+          430
+        ],
+        [
+          498,
+          498
+        ],
+        [
+          521,
+          523
+        ],
+        [
+          569,
+          572
+        ],
+        [
+          607,
+          610
+        ],
+        [
+          651,
+          651
+        ],
+        [
+          699,
+          702
+        ]
+      ],
+      "wholeEntryRead": false,
+      "access": "Selected body sections read through web-rendered excerpts; this is not an index-only receipt.",
+      "limits": "Original works mentioned in bibliography were not read. Figures were not visually inspected. Mathematical constructions and finite proofs are separately supplied."
+    },
+    {
+      "title": "Epistemic Paradoxes (Stanford Encyclopedia of Philosophy)",
+      "url": "https://plato.stanford.edu/entries/epistemic-paradoxes/",
+      "extracts": [
+        "web-source-read-2.json",
+        "web-source-read-3.json",
+        "web-source-read-4.json",
+        "web-source-read-5.json",
+        "web-source-read-6.json"
+      ],
+      "actualReadLineRanges": [
+        [
+          0,
+          44
+        ],
+        [
+          100,
+          155
+        ],
+        [
+          168,
+          203
+        ],
+        [
+          348,
+          355
+        ]
+      ],
+      "wholeEntryRead": false,
+      "access": "Selected body sections read through web-rendered excerpts; this is not an index-only receipt.",
+      "limits": "Original works mentioned in bibliography were not read. Figures were not visually inspected. Mathematical constructions and finite proofs are separately supplied."
+    }
+  ],
+  "extracts": [
+    {
+      "path": "web-source-read-1.json",
+      "sha256": "c8fc96c53f2c4db0f0a60a3268f859b1a21adf27a4569996de0f1a20f2969b99",
+      "bytes": 30795
+    },
+    {
+      "path": "web-source-read-2.json",
+      "sha256": "3b29afcf6635f88cd6852dcc81f3bf6b9547516070c7752f365acbe21d423899",
+      "bytes": 35198
+    },
+    {
+      "path": "web-source-read-3.json",
+      "sha256": "46e4ba41fb048bbf791c8d6bf6372cd53092177d6a4cd5d44c920f7f6e8a2a3a",
+      "bytes": 32378
+    },
+    {
+      "path": "web-source-read-4.json",
+      "sha256": "8c9bc2ed55b458c75d9259e737817ffc6ca12e105513d496d7fce3b7a13347d2",
+      "bytes": 36404
+    },
+    {
+      "path": "web-source-read-5.json",
+      "sha256": "7d7c00c4c505562bc772004f4cd38c7328d8c02520836eaa154f75d01b8c74e3",
+      "bytes": 36646
+    },
+    {
+      "path": "web-source-read-6.json",
+      "sha256": "c28a4fe272d4c44603a678e450c84453e0c55f6b76e61145acf5cd7b0ef47847",
+      "bytes": 35432
+    }
+  ],
+  "prerequisites": [
+    {
+      "path": "content/stat/ch10.js",
+      "sha256": "8ab2ade4484bb5e9ec35d3d71cbfa2c081ef1da3c295b6461ae92217b8946cde",
+      "items": [
+        "10.1"
+      ],
+      "readFields": "Complete written statement, idea, caption, scope, dependencies, references, links and tags; visualization provider not claimed as mathematical evidence."
+    },
+    {
+      "path": "content/stat/ch10-b.js",
+      "sha256": "b58455c83c62f706d1b3baa6b15112a3e880dbb1de1498674b1703901ce64a48",
+      "items": [
+        "10.13"
+      ],
+      "readFields": "Complete written statement, idea, caption, scope, dependencies, references, links and tags; visualization provider not claimed as mathematical evidence."
+    }
+  ],
+  "newAccessStops": [],
+  "originalBodiesNotRead": [
+    "Ramsey1926",
+    "deFinetti1937",
+    "Lewis1999",
+    "BlackwellDubins1962",
+    "Kyburg1961",
+    "Makinson1965",
+    "Sainsbury Paradoxes"
+  ],
+  "scope": "Only the selected line ranges are source evidence. Original bibliography works and source figure pixels were not read or inspected. Own finite derivations and diagrams are separately authored. Source excerpt transcripts remain in scratch; this ledger stores access bounds and hashes."
+}
