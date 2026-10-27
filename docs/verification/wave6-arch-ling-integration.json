@@ -1,0 +1,258 @@
+{
+  "status": "PASS",
+  "checkedOn": "2026-10-27",
+  "scope": "Author integration with user-authorized subsequent Git push and main merge. No additional independent acceptance.",
+  "chapterSourceCommit": "fcf3033f56195834800f6e492cb82e929a58c679",
+  "exactExportCommit": "427a7608585adaf1f70803da4cc34b342d1a2660",
+  "archive": {
+    "status": "PASS",
+    "path": "/workspace/scratch/wave6-arch-ling-export-427a7608",
+    "commit": "427a7608585adaf1f70803da4cc34b342d1a2660",
+    "trackedRegularFiles": 7251,
+    "trackedBytes": 325812984,
+    "archivePath": "/workspace/scratch/wave6-arch-ling-integration/exact-export-427a7608.tar",
+    "archiveSHA256": "bdef671ab1a7ae727afe4f6350bbff78448f962ec1413dc5df835b1188794217",
+    "allTrackedBytesEqualGitArchive": true
+  },
+  "reading": {
+    "retainedCompleteProjections": 8668,
+    "addedIdeas": 27,
+    "total": 8695,
+    "aliases": 76,
+    "snapshotDigest": "2fbb8e2d22791d69962fff68a520710027c0230e59a7a117d10d4fcaf7dbcc07",
+    "dataDigest": "aedfa503aa922feaa242be16af6f58dae961d7e5eb97ab95d73072ad3c6bd263"
+  },
+  "availability": {
+    "authorAvailable": 980,
+    "goal": 1057,
+    "historicalIndependent": 36,
+    "additionalAuthorVerified": 944,
+    "independentAcceptanceAdded": 0
+  },
+  "preservation": {
+    "preimages": 7243,
+    "rawByteExactFiles": 7234,
+    "wholeOriginalGuardReconstructions": 3,
+    "changedSnapshotMetadataBindings": 5,
+    "unchangedRouteArrays": 4,
+    "mutableHandoff": "docs/wave-continuation.md",
+    "sourceAssetsScriptsFrozenPlansExact": true
+  },
+  "checks": {
+    "focusedIntegration": {
+      "tests": 149,
+      "suites": 0,
+      "pass": 149,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "todo": 0,
+      "duration_ms": 5683.121837
+    },
+    "fullNode22": {
+      "version": "22.23.3",
+      "fileConcurrency": 1,
+      "ranAlone": true,
+      "tests": 5202,
+      "suites": 0,
+      "pass": 5202,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "todo": 0,
+      "duration_ms": 880664.40116
+    },
+    "strict": {
+      "written": 8695,
+      "planned": 4879,
+      "chapters": 600,
+      "collections": 85,
+      "errors": 0,
+      "warnings": 0
+    },
+    "static": {
+      "visualizations": 8632,
+      "errors": 0,
+      "warnings": 0
+    },
+    "productionSmoke": {
+      "light": 272,
+      "dark": 272,
+      "routesWithErrors": 0
+    },
+    "coverage": {
+      "domains": 30,
+      "primaryCollections": 85,
+      "result": "PASS"
+    },
+    "readOnlyContinuation": {
+      "records": 24,
+      "modelChecks": "passed"
+    },
+    "studyRoutes": {
+      "routes": 3,
+      "steps": 14,
+      "lessonStops": 11,
+      "uniqueAcceptedTargets": 11,
+      "externalReadingStops": 3,
+      "gapStops": 0,
+      "transitions": 11,
+      "sources": 5,
+      "stoppedCandidates": 2,
+      "newLessons": 0,
+      "acceptedJourneys": 3,
+      "publishedJourneys": 0
+    }
+  },
+  "proofs": {
+    "root-preflight-proof.json": {
+      "status": "PASS",
+      "root": "/workspace/theorems-visualizations",
+      "commit": "427a7608585adaf1f70803da4cc34b342d1a2660",
+      "readingIdeas": 8695,
+      "retainedEarlierProjections": 8668,
+      "aliases": 76,
+      "pinnedFiles": 7234,
+      "wholeOriginalGuardReconstructions": 3,
+      "unchangedBindingArrays": 4,
+      "snapshotDigest": "2fbb8e2d22791d69962fff68a520710027c0230e59a7a117d10d4fcaf7dbcc07",
+      "dataDigest": "aedfa503aa922feaa242be16af6f58dae961d7e5eb97ab95d73072ad3c6bd263",
+      "sourceAssetsFrozenPlansExact": true,
+      "cleanTrackedTree": true
+    },
+    "export-preflight-proof.json": {
+      "status": "PASS",
+      "root": "/workspace/scratch/wave6-arch-ling-export-427a7608",
+      "commit": "427a7608585adaf1f70803da4cc34b342d1a2660",
+      "readingIdeas": 8695,
+      "retainedEarlierProjections": 8668,
+      "aliases": 76,
+      "pinnedFiles": 7234,
+      "wholeOriginalGuardReconstructions": 3,
+      "unchangedBindingArrays": 4,
+      "snapshotDigest": "2fbb8e2d22791d69962fff68a520710027c0230e59a7a117d10d4fcaf7dbcc07",
+      "dataDigest": "aedfa503aa922feaa242be16af6f58dae961d7e5eb97ab95d73072ad3c6bd263",
+      "sourceAssetsFrozenPlansExact": true,
+      "cleanTrackedTree": true
+    },
+    "root-final-proof.json": {
+      "status": "PASS",
+      "root": "/workspace/theorems-visualizations",
+      "commit": "427a7608585adaf1f70803da4cc34b342d1a2660",
+      "readingIdeas": 8695,
+      "retainedEarlierProjections": 8668,
+      "aliases": 76,
+      "pinnedFiles": 7234,
+      "wholeOriginalGuardReconstructions": 3,
+      "unchangedBindingArrays": 4,
+      "snapshotDigest": "2fbb8e2d22791d69962fff68a520710027c0230e59a7a117d10d4fcaf7dbcc07",
+      "dataDigest": "aedfa503aa922feaa242be16af6f58dae961d7e5eb97ab95d73072ad3c6bd263",
+      "sourceAssetsFrozenPlansExact": true,
+      "cleanTrackedTree": true
+    },
+    "export-final-proof.json": {
+      "status": "PASS",
+      "root": "/workspace/scratch/wave6-arch-ling-export-427a7608",
+      "commit": "427a7608585adaf1f70803da4cc34b342d1a2660",
+      "readingIdeas": 8695,
+      "retainedEarlierProjections": 8668,
+      "aliases": 76,
+      "pinnedFiles": 7234,
+      "wholeOriginalGuardReconstructions": 3,
+      "unchangedBindingArrays": 4,
+      "snapshotDigest": "2fbb8e2d22791d69962fff68a520710027c0230e59a7a117d10d4fcaf7dbcc07",
+      "dataDigest": "aedfa503aa922feaa242be16af6f58dae961d7e5eb97ab95d73072ad3c6bd263",
+      "sourceAssetsFrozenPlansExact": true,
+      "cleanTrackedTree": true
+    }
+  },
+  "sessions": {
+    "fullSuiteSession": 18569,
+    "fullSuiteClosed": true,
+    "staticSession": 52627,
+    "staticClosed": true,
+    "smokeLightSession": 13335,
+    "smokeLightClosed": true,
+    "smokeDarkSession": 29491,
+    "smokeDarkClosed": true,
+    "allExitCodes": 0
+  },
+  "historicalScopes": "Earlier chapter manifests bind their original author commits; the mutable handoff and exactly reconstructed pin-read adapters are documented later changes. The earlier 5138-test fcae13ea export retains its earlier scope. Final report/receipt edits follow the tested candidate and do not alter runtime, content or test code.",
+  "retainedDiagnostic": {
+    "log": {
+      "path": "/workspace/scratch/wave6-arch-ling-integration/continuation.log",
+      "sha256": "48abbb8d83b79e7a714763f8acd48ed9eff47ab8c624dcdb9a2b29c593eb4687",
+      "bytes": 63
+    },
+    "explanation": "The fixed historical universal snapshot checker was initially invoked in the current expanded tree and correctly rejected the changed MASTER_PLAN.md. No rule was relaxed. The applicable read-only local continuation check passes all24 records."
+  },
+  "sourceStops": "All inherited access stops remain binding. New LING stops are Kroeger book231 index429 and Frege original1892 restricted body. No alternate recovery. Current source limits remain in chapter reports.",
+  "logs": {
+    "reconcile.log": {
+      "path": "/workspace/scratch/wave6-arch-ling-integration/reconcile.log",
+      "sha256": "4b387c62f1f08d06c805f643f15bcc7d865bc9250d54696082e0979ff427904d",
+      "bytes": 442
+    },
+    "focused-integration.log": {
+      "path": "/workspace/scratch/wave6-arch-ling-integration/focused-integration.log",
+      "sha256": "052f6d92d3ee5362946f7449291978fc49ad52155ff719c97d9c8aa38e5d293f",
+      "bytes": 33201
+    },
+    "build.log": {
+      "path": "/workspace/scratch/wave6-arch-ling-integration/build.log",
+      "sha256": "df914fb76d130d39068946f9e254326b27051ef782460a447368e9d200dd0e68",
+      "bytes": 217
+    },
+    "static-candidate.log": {
+      "path": "/workspace/scratch/wave6-arch-ling-integration/static-candidate.log",
+      "sha256": "24e4dd610d2b3a48896761dab2c52633e9b4abba8bda577b5a735fe6a83bef64",
+      "bytes": 1485
+    },
+    "export-static.log": {
+      "path": "/workspace/scratch/wave6-arch-ling-integration/export-static.log",
+      "sha256": "fa154b7a97bc15e018420ccd9a95cf321a567f8b6f0612ef54eb5941f05f94f8",
+      "bytes": 54
+    },
+    "coverage.log": {
+      "path": "/workspace/scratch/wave6-arch-ling-integration/coverage.log",
+      "sha256": "65134ca2bcf2f6f352c7ab87781ed45ee451e736df09efb7f37cd819f7786e0a",
+      "bytes": 363
+    },
+    "local.log": {
+      "path": "/workspace/scratch/wave6-arch-ling-integration/local.log",
+      "sha256": "b4a95b8406bd356992f0f774c2f9c5083b1c8c343685f94dd2ce397d9873c231",
+      "bytes": 384
+    },
+    "journey-plans.log": {
+      "path": "/workspace/scratch/wave6-arch-ling-integration/journey-plans.log",
+      "sha256": "f5c2466b60cc2da5f6a5cb77e0e45c174020d5e076954b97015e86decd4fe6ad",
+      "bytes": 264
+    },
+    "export-build.log": {
+      "path": "/workspace/scratch/wave6-arch-ling-integration/export-build.log",
+      "sha256": "4fbe869f35fbf0c87ebb45268d82b51f28e62b6a123eacf18a16ca826d799a71",
+      "bytes": 217
+    },
+    "export-node-version.log": {
+      "path": "/workspace/scratch/wave6-arch-ling-integration/export-node-version.log",
+      "sha256": "33e26f35db6e57ce0c486ddc815fe966867e4f649e418eaf323f75f4720eb8e9",
+      "bytes": 9
+    },
+    "export-full-suite.log": {
+      "path": "/workspace/scratch/wave6-arch-ling-integration/export-full-suite.log",
+      "sha256": "27e6142314801b40e907733481e7e7804fa8f937cf36f0d9e943c994e7a724d5",
+      "bytes": 1325846
+    },
+    "export-smoke-light.log": {
+      "path": "/workspace/scratch/wave6-arch-ling-integration/export-smoke-light.log",
+      "sha256": "cc036ad2be5c310e4e9e65a8c6914b837f91e9627872eb733b75f1f6f724f0c0",
+      "bytes": 25522
+    },
+    "export-smoke-dark.log": {
+      "path": "/workspace/scratch/wave6-arch-ling-integration/export-smoke-dark.log",
+      "sha256": "cc036ad2be5c310e4e9e65a8c6914b837f91e9627872eb733b75f1f6f724f0c0",
+      "bytes": 25522
+    }
+  },
+  "next": "Push verified branch, create/update and attach PR, verify CI, merge expected head as explicitly requested, then continue PHIL6 eleven locally with source/scientific/native/personal visual gates. No stop at chapter, integration or wave boundary."
+}
