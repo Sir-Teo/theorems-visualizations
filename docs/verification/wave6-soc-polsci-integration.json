@@ -1,0 +1,159 @@
+{
+  "status": "PASS",
+  "checkedOn": "2026-10-27",
+  "scope": "Local author integration; no additional independent acceptance, publication or deployment.",
+  "exactExportCommit": "a71d15c0a0d8df636c87f61ede18e53b00b4ef9b",
+  "exactExportPath": "/workspace/scratch/wave6-soc-polsci-export-a71d15c0",
+  "archive": {
+    "status": "PASS",
+    "commit": "a71d15c0a0d8df636c87f61ede18e53b00b4ef9b",
+    "path": "/workspace/scratch/wave6-soc-polsci-export-a71d15c0",
+    "archive": "/workspace/scratch/wave6-soc-polsci-integration/exact-export-a71d15c0.tar",
+    "archiveSHA256": "92996a3ab5ca630d8b2407b8686768c9b36e26e1968584cc6d7960a86e6b0f40",
+    "trackedRegularFilesExactlyEqual": 7085
+  },
+  "chapterSourceCommit": "174addab9f7c63bd9183632d27a3ee6540184478",
+  "reading": {
+    "retainedCompleteProjections": 8610,
+    "addedIdeas": 19,
+    "total": 8629,
+    "aliases": 76,
+    "snapshotDigest": "500b8bf46048649b1bb40792e2a3980562a5179d8f1ad4aa1ed0609d0d9f174d",
+    "dataDigest": "f794079f596b31b5c0703f54895700ed51fe4f7a028fc807a2182be1cc0bcd65"
+  },
+  "availability": {
+    "authorAvailable": 914,
+    "goal": 1057,
+    "historicalIndependent": 36,
+    "additionalAuthorVerified": 878,
+    "independentAcceptanceAdded": 0
+  },
+  "preservation": {
+    "chapterSourcePins": 606,
+    "earlierCompleteProjections": 8610,
+    "aliases": 76,
+    "unchangedBindingArrays": 4,
+    "fiveSnapshotBindingFilesPreimageChecked": true,
+    "sourceAssetsScriptsFrozenPlansExact": true
+  },
+  "checks": {
+    "focusedIntegration": {
+      "passed": 46,
+      "failed": 0,
+      "skipped": 0,
+      "cancelled": 0,
+      "durationMs": 18430.8268
+    },
+    "strict": {
+      "written": 8629,
+      "planned": 4945,
+      "chapters": 595,
+      "collections": 85,
+      "errors": 0,
+      "warnings": 0
+    },
+    "static": {
+      "visualizations": 8566,
+      "errors": 0,
+      "warnings": 0
+    },
+    "fullNode22": {
+      "version": "22.23.3",
+      "fileConcurrency": 1,
+      "passed": 5053,
+      "failed": 0,
+      "skipped": 0,
+      "cancelled": 0,
+      "durationMs": 862224.782693,
+      "ranAlone": true,
+      "ownedSessionExplicitlyPolledClosed": 49599
+    },
+    "productionSmoke": {
+      "light": 272,
+      "dark": 272,
+      "routesWithErrors": 0,
+      "ownedSessionsExplicitlyPolledClosed": [
+        32983,
+        13013
+      ]
+    },
+    "coverageStructure": {
+      "result": "PASS",
+      "domains": 30,
+      "primaryCollections": 85
+    },
+    "readOnlyContinuation": {
+      "records": 24,
+      "modelChecks": "passed"
+    }
+  },
+  "proofs": [
+    {
+      "status": "PASS",
+      "root": "/workspace/theorems-visualizations",
+      "commit": "a71d15c0a0d8df636c87f61ede18e53b00b4ef9b",
+      "readingIdeas": 8629,
+      "retainedEarlierProjections": 8610,
+      "aliases": 76,
+      "pinnedFiles": 606,
+      "unchangedBindingArrays": 4,
+      "snapshotDigest": "500b8bf46048649b1bb40792e2a3980562a5179d8f1ad4aa1ed0609d0d9f174d",
+      "dataDigest": "f794079f596b31b5c0703f54895700ed51fe4f7a028fc807a2182be1cc0bcd65",
+      "sourceAssetsFrozenPlansExact": true,
+      "cleanTrackedTree": true
+    },
+    {
+      "status": "PASS",
+      "root": "/workspace/scratch/wave6-soc-polsci-export-a71d15c0",
+      "commit": "a71d15c0a0d8df636c87f61ede18e53b00b4ef9b",
+      "readingIdeas": 8629,
+      "retainedEarlierProjections": 8610,
+      "aliases": 76,
+      "pinnedFiles": 606,
+      "unchangedBindingArrays": 4,
+      "snapshotDigest": "500b8bf46048649b1bb40792e2a3980562a5179d8f1ad4aa1ed0609d0d9f174d",
+      "dataDigest": "f794079f596b31b5c0703f54895700ed51fe4f7a028fc807a2182be1cc0bcd65",
+      "sourceAssetsFrozenPlansExact": true,
+      "cleanTrackedTree": true
+    }
+  ],
+  "retainedFailures": [],
+  "historicalScope": "Previous32b07974BEHAV/PSYCH5006-test export remains historical and predatesSOC/POLSCI. This exact5053-test export includes both new chapters. Historical chapter manifests bind their own commits; later mutable handoff changes do not retroactively match those hashes.",
+  "allOwnedBrowsersAndServersClosed": true,
+  "sourceStops": "All inherited source access stops remain binding. DEMO research additionally stops at the challenged Arthur ergodic-theorems repository item; no alternate body recovery. Actual2013MPIreprints of1911and1957works, a distinct Rodriguez5-page note and selected Schoen2001pages were read with precise scope in scratch.",
+  "logs": {
+    "scoped.log": {
+      "path": "/workspace/scratch/wave6-soc-polsci-integration/scoped.log",
+      "sha256": "81677d241471751e234f9bc6d265595c129fc5cfc9459fa050b1f48e0928b81c"
+    },
+    "coverage.log": {
+      "path": "/workspace/scratch/wave6-soc-polsci-integration/coverage.log",
+      "sha256": "65134ca2bcf2f6f352c7ab87781ed45ee451e736df09efb7f37cd819f7786e0a"
+    },
+    "local.log": {
+      "path": "/workspace/scratch/wave6-soc-polsci-integration/local.log",
+      "sha256": "b4a95b8406bd356992f0f774c2f9c5083b1c8c343685f94dd2ce397d9873c231"
+    },
+    "export-build.log": {
+      "path": "/workspace/scratch/wave6-soc-polsci-integration/export-build.log",
+      "sha256": "8d823e7127a60352a86ca422d0d6a9b1cf86e443cb4d5c8381eb3d1b67f74dbd"
+    },
+    "export-static.log": {
+      "path": "/workspace/scratch/wave6-soc-polsci-integration/export-static.log",
+      "sha256": "d275b76407e4791a6ccf17dbcdb2a4ab30f0021e478f414c1fd0c5601d507eae"
+    },
+    "export-full-suite.log": {
+      "path": "/workspace/scratch/wave6-soc-polsci-integration/export-full-suite.log",
+      "sha256": "ab99e134d3b8b569f55ac4e914cabc2c26139f59e17c42d21fa4a58520f5df1b"
+    },
+    "export-smoke-light.log": {
+      "path": "/workspace/scratch/wave6-soc-polsci-integration/export-smoke-light.log",
+      "sha256": "cc036ad2be5c310e4e9e65a8c6914b837f91e9627872eb733b75f1f6f724f0c0"
+    },
+    "export-smoke-dark.log": {
+      "path": "/workspace/scratch/wave6-soc-polsci-integration/export-smoke-dark.log",
+      "sha256": "cc036ad2be5c310e4e9e65a8c6914b837f91e9627872eb733b75f1f6f724f0c0"
+    }
+  },
+  "next": "ContinueDEMO6twelve, thenMUSIC10thirteen andART6fourteen under the frozen plan. DEMO36-panel design, eight actual written prerequisites, source scopes and50retained-source schedules exist only in scratch. No DEMOproduct/count yet. Continuous goal/highestvisualquality remain active; do not stop at chapters, commits, integration or waves."
+}
