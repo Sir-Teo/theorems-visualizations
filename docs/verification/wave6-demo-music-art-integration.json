@@ -1,0 +1,211 @@
+{
+  "status": "PASS",
+  "checkedOn": "2026-10-27",
+  "scope": "Local author integration; no additional independent acceptance, publication or deployment.",
+  "exactExportCommit": "fcae13ea6a5bab4778e0d532b0d1495c1d53346a",
+  "exactExportPath": "/workspace/scratch/wave6-demo-music-art-export-fcae13ea",
+  "archive": {
+    "status": "PASS",
+    "path": "/workspace/scratch/wave6-demo-music-art-export-fcae13ea",
+    "commit": "fcae13ea6a5bab4778e0d532b0d1495c1d53346a",
+    "archive": "/workspace/scratch/wave6-demo-music-art-integration/exact-export-fcae13ea.tar",
+    "archiveSHA256": "7f80858559da72106d38fceecb50978dd2bf4afafa7f03b63bc9ee454595655b",
+    "trackedRegularFilesExactlyEqual": 7176
+  },
+  "chapterSourceCommit": "1e6a920246c75ceb1ee786c5c326108a0451fe5a",
+  "reading": {
+    "retainedCompleteProjections": 8629,
+    "addedIdeas": 39,
+    "total": 8668,
+    "aliases": 76,
+    "snapshotDigest": "876f44aa9fe754015b37d3f0dd8dd2ae0042aedcf5888f41af84fe3c7ddfa49e",
+    "dataDigest": "f9d9e0dd7d8a94475834ffc729438652a956c687949f0a89ef605dc78b1b8df0"
+  },
+  "availability": {
+    "authorAvailable": 953,
+    "goal": 1057,
+    "historicalIndependent": 36,
+    "additionalAuthorVerified": 917,
+    "independentAcceptanceAdded": 0
+  },
+  "preservation": {
+    "all860PriorPinsPrechecked": true,
+    "currentPins": 855,
+    "rawByteExactPriorPins": 852,
+    "exactOriginalTestReconstructions": 3,
+    "fiveSnapshotBindingFilesPreimageChecked": true,
+    "earlierCompleteProjections": 8629,
+    "aliases": 76,
+    "unchangedBindingArrays": 4,
+    "sourceAssetsScriptsFrozenPlansExact": true
+  },
+  "checks": {
+    "chapterAndAdapterRegression": {
+      "passed": 85,
+      "failed": 0,
+      "skipped": 0,
+      "cancelled": 0,
+      "durationMs": 6355.183092
+    },
+    "focusedIntegration": {
+      "passed": 32,
+      "failed": 0,
+      "skipped": 0,
+      "cancelled": 0,
+      "durationMs": 11437.826271
+    },
+    "strict": {
+      "written": 8668,
+      "planned": 4906,
+      "chapters": 598,
+      "collections": 85,
+      "errors": 0,
+      "warnings": 0
+    },
+    "static": {
+      "visualizations": 8605,
+      "errors": 0,
+      "warnings": 0
+    },
+    "fullNode22": {
+      "version": "22.23.3",
+      "fileConcurrency": 1,
+      "passed": 5138,
+      "failed": 0,
+      "skipped": 0,
+      "cancelled": 0,
+      "durationMs": 865409.060983,
+      "ranAlone": true,
+      "ownedSessionExplicitlyPolledClosed": 40847
+    },
+    "productionSmoke": {
+      "light": 272,
+      "dark": 272,
+      "routesWithErrors": 0,
+      "ownedSessionsExplicitlyPolledClosed": [
+        4691,
+        36871
+      ]
+    },
+    "coverageStructure": {
+      "result": "PASS",
+      "domains": 30,
+      "primaryCollections": 85
+    },
+    "readOnlyContinuation": {
+      "records": 24,
+      "modelChecks": "passed"
+    }
+  },
+  "proofs": [
+    {
+      "status": "PASS",
+      "root": "/workspace/theorems-visualizations",
+      "commit": "fcae13ea6a5bab4778e0d532b0d1495c1d53346a",
+      "readingIdeas": 8668,
+      "retainedEarlierProjections": 8629,
+      "aliases": 76,
+      "pinnedFiles": 855,
+      "unchangedBindingArrays": 4,
+      "snapshotDigest": "876f44aa9fe754015b37d3f0dd8dd2ae0042aedcf5888f41af84fe3c7ddfa49e",
+      "dataDigest": "f9d9e0dd7d8a94475834ffc729438652a956c687949f0a89ef605dc78b1b8df0",
+      "sourceAssetsFrozenPlansExact": true,
+      "cleanTrackedTree": true
+    },
+    {
+      "status": "PASS",
+      "root": "/workspace/scratch/wave6-demo-music-art-export-fcae13ea",
+      "commit": "fcae13ea6a5bab4778e0d532b0d1495c1d53346a",
+      "readingIdeas": 8668,
+      "retainedEarlierProjections": 8629,
+      "aliases": 76,
+      "pinnedFiles": 855,
+      "unchangedBindingArrays": 4,
+      "snapshotDigest": "876f44aa9fe754015b37d3f0dd8dd2ae0042aedcf5888f41af84fe3c7ddfa49e",
+      "dataDigest": "f9d9e0dd7d8a94475834ffc729438652a956c687949f0a89ef605dc78b1b8df0",
+      "sourceAssetsFrozenPlansExact": true,
+      "cleanTrackedTree": true
+    }
+  ],
+  "retainedFailures": [
+    {
+      "log": {
+        "path": "/workspace/scratch/wave6-demo-music-art-integration/chapter-adapter-initial-failed.log",
+        "bytes": 22462,
+        "sha256": "144cfe68442366a84ba8b33187649dabf27f2beac9dd5d0d33bb2cf4360ea83a"
+      },
+      "cause": "The first adapter setup detected two matching DEMO reads and stopped before mutating tests; the premature check then correctly reported the intentional stale metadata pins and missing not-yet-written transition receipt. The final adapter targets only the raw-preimage read; source-fact checks and all original assertions remain exact."
+    }
+  ],
+  "historicalScope": "Previous a71d15c0 SOC/POLSCI5053-test export remains historical. This exact5138-test export includes DEMO6/MUSIC10/ART6 and their reading reconciliation. Historical chapter manifests bind their own author commits; later handoff and exact guarded pin-adapter transitions are explicit.",
+  "allOwnedBrowsersAndServersClosed": true,
+  "sourceStops": "Every inherited access stop remains binding. ARCH preparation additionally stops the Connelly/Guest2009originalPDF after502, Schek1974at publisher purchase/organizational access, and Barnes1999at restricted publisher access. No alternate recovery. A distinct1977Barnes thesis was selected as a separate earlier work and actually read only at recorded pages; it does not recover the1999article.",
+  "logs": {
+    "reconcile.log": {
+      "path": "/workspace/scratch/wave6-demo-music-art-integration/reconcile.log",
+      "bytes": 441,
+      "sha256": "93eb94197493a11953914bac680e71954c699f991b7a71506f9c5731052a2b29"
+    },
+    "build.log": {
+      "path": "/workspace/scratch/wave6-demo-music-art-integration/build.log",
+      "bytes": 217,
+      "sha256": "41d76732cfd5804385ba97dbeeac309eef45f082efd433d441bfa288cbd067a3"
+    },
+    "static.log": {
+      "path": "/workspace/scratch/wave6-demo-music-art-integration/static.log",
+      "bytes": 54,
+      "sha256": "bcf178a88af57aa0cb78db1466896b3edd6c0d8b9d70a7fe966dd4a027e98e77"
+    },
+    "chapter-adapter-check.log": {
+      "path": "/workspace/scratch/wave6-demo-music-art-integration/chapter-adapter-check.log",
+      "bytes": 18429,
+      "sha256": "4f751633ce965b5f4b36f0496028cc7212c88154bca7047ac73c3001e2b3ecee"
+    },
+    "scoped.log": {
+      "path": "/workspace/scratch/wave6-demo-music-art-integration/scoped.log",
+      "bytes": 7707,
+      "sha256": "05228f509c5e5e5782cf4f24b3b10e00e173158c72cd24e8bb680ed56e80fc7a"
+    },
+    "coverage.log": {
+      "path": "/workspace/scratch/wave6-demo-music-art-integration/coverage.log",
+      "bytes": 363,
+      "sha256": "65134ca2bcf2f6f352c7ab87781ed45ee451e736df09efb7f37cd819f7786e0a"
+    },
+    "local.log": {
+      "path": "/workspace/scratch/wave6-demo-music-art-integration/local.log",
+      "bytes": 384,
+      "sha256": "b4a95b8406bd356992f0f774c2f9c5083b1c8c343685f94dd2ce397d9873c231"
+    },
+    "export-build.log": {
+      "path": "/workspace/scratch/wave6-demo-music-art-integration/export-build.log",
+      "bytes": 217,
+      "sha256": "41d76732cfd5804385ba97dbeeac309eef45f082efd433d441bfa288cbd067a3"
+    },
+    "export-static.log": {
+      "path": "/workspace/scratch/wave6-demo-music-art-integration/export-static.log",
+      "bytes": 54,
+      "sha256": "bcf178a88af57aa0cb78db1466896b3edd6c0d8b9d70a7fe966dd4a027e98e77"
+    },
+    "export-node-version.log": {
+      "path": "/workspace/scratch/wave6-demo-music-art-integration/export-node-version.log",
+      "bytes": 9,
+      "sha256": "33e26f35db6e57ce0c486ddc815fe966867e4f649e418eaf323f75f4720eb8e9"
+    },
+    "export-full-suite.log": {
+      "path": "/workspace/scratch/wave6-demo-music-art-integration/export-full-suite.log",
+      "bytes": 1310995,
+      "sha256": "18f8abf48b383e86cc484d2bf0ab60624636ddc4adc4a887bec62037b8626690"
+    },
+    "export-smoke-light.log": {
+      "path": "/workspace/scratch/wave6-demo-music-art-integration/export-smoke-light.log",
+      "bytes": 25522,
+      "sha256": "cc036ad2be5c310e4e9e65a8c6914b837f91e9627872eb733b75f1f6f724f0c0"
+    },
+    "export-smoke-dark.log": {
+      "path": "/workspace/scratch/wave6-demo-music-art-integration/export-smoke-dark.log",
+      "bytes": 25522,
+      "sha256": "cc036ad2be5c310e4e9e65a8c6914b837f91e9627872eb733b75f1f6f724f0c0"
+    }
+  },
+  "next": "ContinueARCH6eleven, thenLING6sixteen, PHIL6eleven, TECH7fourteen andBIGHIST6eleven from the frozen plan. Six complete written prerequisites and four bounded PDF source witnesses and two official historical web pages are read in scratch, with14actual source-page image views; solid10.10remains planned. NoARCHproduct/count yet. Continuous goal/highestvisualqualityremainactive; no stop at chapters, commits, integration or waves."
+}
