@@ -1,0 +1,1296 @@
+{
+  "status": "Retained observed failures, repairs and interrupted executions; not added to current passing totals",
+  "records": {
+    "native-pilot-v1/receipt.json": {
+      "file": "/workspace/scratch/wave6-tech-research/native-pilot-v1/receipt.json",
+      "sha256": "c380a62dbc98098d9642d8ba02f89a5c27068e68ec288a195f15c2d69bfd6255",
+      "record": {
+        "sourceHashes": {
+          "content/tech/ch07.js": "197079132905cb71605c99229bff3974e42802ccc726df5b7d0bec068550e173",
+          "content/tech/ch07.shared.js": "5802ee0b01c7e16f3c8f7175e6ec46d720e6f81223bc6682471f18083c868a64",
+          "content/tech/ch07.viz.js": "fc68f9e1984e1d24074d4aeb35c36c7e9b977d53fa64b771f2ef527f300c1b60",
+          "content/tech/ch07.viz.shared.js": "0237d9e656a30fe5ef0d4bbb1ab845990d2202455d0d2dfe60854d7e497fe4a4",
+          "content/phil/ch05.shared.js": "9dae491fabd3aee126113b57f393b61a51740710873a532871f0c8e74c7cc2bb",
+          "content/tech/syllabus.js": "8674c3455f881a7803dbf72190fe7ea9c58222d34ca8d7ca0bd79fc844c500ae",
+          "assets/js/viz/core.js": "a6fa1753d9d9e8b9a05a7161fffc58dfd53b27002d9d393a3266aeb96515fe73",
+          "assets/js/viz/math.js": "439c335e1cc47907bc72bb76559216aa093be4710e0589f41c70192729eb223e",
+          "assets/js/share-state.js": "13c6a9ac1237d566fc5d79c89e0f4d3029aa8c2817d2c08247a02b1b053a59b1",
+          "assets/js/app.js": "2f5762e6bf80723a5cb8691f8b19c552dd1d731ab998d5bfcdb27828e2e9a6ce",
+          "assets/css/style.css": "eef34e3d7aaf8b38233a78d9dc6545e5e0c9d00b09a3a6876d19f3e0e0af15b6",
+          "data/index.json": "a3de6a67b21c0d5b60bb63db460a438cb7a1a090c4e90fce9c4bb24d9764828a",
+          "data/col/tech.json": "bb6ed57a63ce54d15956b38fac36a3909fce8113ba927e3542af3829c93c1dfc",
+          "tests/fixtures/wave6-tech-reference.json": "41f17458f58ee928e4f5d6edae8507de840d67f8a17f9fb724394c710c3f6088",
+          "tests/wave6-tech-native.mjs": "ab264f5b2bf40c8a4130f8e08fec7a320da29f48d43362024edc3f5a3fc163a3",
+          "tests/wave6-tech-native-science.mjs": "7cf727cfec6b469850a37427dfdd85297ee4d402817418d385cd63f94842f746",
+          "tests/wave6-tech-native-cases.mjs": "1aa3675296be96d64f5f21e5419ba44ba742cb484ec076f144cf7cfdd4f707d7",
+          "tests/wave6-tech-browser.shared.mjs": "3532145eff8f13888192f2042fc008c5c3c4e4b780577faea9ca897b6b5075c8",
+          "tests/wave6-tech-native-probe.mjs": "0156ec37d1a38009384549febc3f67a50eeb6df26fb4c7a0fb8ebee00dc141bc",
+          "tests/wave6-ling-glyph.shared.mjs": "87e31d5f01c0e93492f901a8c411e88c7e1e9c551d9c2843c128c6538b9b9eb0"
+        },
+        "afterHashes": {
+          "content/tech/ch07.js": "197079132905cb71605c99229bff3974e42802ccc726df5b7d0bec068550e173",
+          "content/tech/ch07.shared.js": "5802ee0b01c7e16f3c8f7175e6ec46d720e6f81223bc6682471f18083c868a64",
+          "content/tech/ch07.viz.js": "fc68f9e1984e1d24074d4aeb35c36c7e9b977d53fa64b771f2ef527f300c1b60",
+          "content/tech/ch07.viz.shared.js": "0237d9e656a30fe5ef0d4bbb1ab845990d2202455d0d2dfe60854d7e497fe4a4",
+          "content/phil/ch05.shared.js": "9dae491fabd3aee126113b57f393b61a51740710873a532871f0c8e74c7cc2bb",
+          "content/tech/syllabus.js": "8674c3455f881a7803dbf72190fe7ea9c58222d34ca8d7ca0bd79fc844c500ae",
+          "assets/js/viz/core.js": "a6fa1753d9d9e8b9a05a7161fffc58dfd53b27002d9d393a3266aeb96515fe73",
+          "assets/js/viz/math.js": "439c335e1cc47907bc72bb76559216aa093be4710e0589f41c70192729eb223e",
+          "assets/js/share-state.js": "13c6a9ac1237d566fc5d79c89e0f4d3029aa8c2817d2c08247a02b1b053a59b1",
+          "assets/js/app.js": "2f5762e6bf80723a5cb8691f8b19c552dd1d731ab998d5bfcdb27828e2e9a6ce",
+          "assets/css/style.css": "eef34e3d7aaf8b38233a78d9dc6545e5e0c9d00b09a3a6876d19f3e0e0af15b6",
+          "data/index.json": "a3de6a67b21c0d5b60bb63db460a438cb7a1a090c4e90fce9c4bb24d9764828a",
+          "data/col/tech.json": "bb6ed57a63ce54d15956b38fac36a3909fce8113ba927e3542af3829c93c1dfc",
+          "tests/fixtures/wave6-tech-reference.json": "41f17458f58ee928e4f5d6edae8507de840d67f8a17f9fb724394c710c3f6088",
+          "tests/wave6-tech-native.mjs": "ab264f5b2bf40c8a4130f8e08fec7a320da29f48d43362024edc3f5a3fc163a3",
+          "tests/wave6-tech-native-science.mjs": "7cf727cfec6b469850a37427dfdd85297ee4d402817418d385cd63f94842f746",
+          "tests/wave6-tech-native-cases.mjs": "1aa3675296be96d64f5f21e5419ba44ba742cb484ec076f144cf7cfdd4f707d7",
+          "tests/wave6-tech-browser.shared.mjs": "3532145eff8f13888192f2042fc008c5c3c4e4b780577faea9ca897b6b5075c8",
+          "tests/wave6-tech-native-probe.mjs": "0156ec37d1a38009384549febc3f67a50eeb6df26fb4c7a0fb8ebee00dc141bc",
+          "tests/wave6-ling-glyph.shared.mjs": "87e31d5f01c0e93492f901a8c411e88c7e1e9c551d9c2843c128c6538b9b9eb0"
+        },
+        "sourceDataHarnessUnchanged": true,
+        "totals": {
+          "layouts": 1,
+          "actions": 62,
+          "shares": 20,
+          "trustedShares": 20,
+          "invalid": 7,
+          "raw": 5,
+          "critical": 6,
+          "checks": 81,
+          "modelComparisons": 59822,
+          "geometryComparisons": 23415,
+          "paintedPixelAudits": 243,
+          "pixelSamples": 1452,
+          "domRangeRounding": 6
+        },
+        "rows": [
+          {
+            "label": "tech-7.1-light-320",
+            "counts": {
+              "layouts": 1,
+              "actions": 60,
+              "shares": 20,
+              "trustedShares": 20,
+              "invalid": 7,
+              "raw": 5,
+              "critical": 6,
+              "checks": 79,
+              "modelComparisons": 58776,
+              "geometryComparisons": 22041,
+              "paintedPixelAudits": 237,
+              "pixelSamples": 1420,
+              "domRangeRounding": 6
+            }
+          }
+        ],
+        "failure": {
+          "label": "tech-7.6-light-320 carrier angle (radians) End",
+          "message": "page.evaluate: Error: A visualization value cannot be shared in its current form.\n    at StateRegistry.capture (http://localhost:40875/assets/js/share-state.js:63:90)\n    at eval (eval at evaluate (:370:30), <anonymous>:10:69)\n    at UtilityScript.evaluate (<anonymous>:372:16)\n    at UtilityScript.<anonymous> (<anonymous>:1:44)",
+          "stack": "page.evaluate: Error: A visualization value cannot be shared in its current form.\n    at StateRegistry.capture (http://localhost:40875/assets/js/share-state.js:63:90)\n    at eval (eval at evaluate (:370:30), <anonymous>:10:69)\n    at UtilityScript.evaluate (<anonymous>:372:16)\n    at UtilityScript.<anonymous> (<anonymous>:1:44)\n    at captureTech (/workspace/theorems-visualizations/tests/wave6-tech-browser.shared.mjs:34:14)\n    at async captureTechNative (/workspace/theorems-visualizations/tests/wave6-tech-native-probe.mjs:5:10)\n    at async check (/workspace/theorems-visualizations/tests/wave6-tech-native.mjs:21:10)\n    at async visible (/workspace/theorems-visualizations/tests/wave6-tech-native.mjs:31:398)\n    at async controls (/workspace/theorems-visualizations/tests/wave6-tech-native.mjs:32:2)\n    at async file:///workspace/theorems-visualizations/tests/wave6-tech-native.mjs:36:242"
+        }
+      }
+    },
+    "native-pilot-v2/receipt.json": {
+      "file": "/workspace/scratch/wave6-tech-research/native-pilot-v2/receipt.json",
+      "sha256": "80cc3bd491e2566a9814aa409678a5583546c2feaac450cf23dd028e740a3b26",
+      "record": {
+        "sourceHashes": {
+          "content/tech/ch07.js": "197079132905cb71605c99229bff3974e42802ccc726df5b7d0bec068550e173",
+          "content/tech/ch07.shared.js": "5802ee0b01c7e16f3c8f7175e6ec46d720e6f81223bc6682471f18083c868a64",
+          "content/tech/ch07.viz.js": "fc68f9e1984e1d24074d4aeb35c36c7e9b977d53fa64b771f2ef527f300c1b60",
+          "content/tech/ch07.viz.shared.js": "be41ddb890d23b2c07fed0e2e12c6f0d705369f9fa0c6dc20b69821e629e6ffd",
+          "content/phil/ch05.shared.js": "9dae491fabd3aee126113b57f393b61a51740710873a532871f0c8e74c7cc2bb",
+          "content/tech/syllabus.js": "8674c3455f881a7803dbf72190fe7ea9c58222d34ca8d7ca0bd79fc844c500ae",
+          "assets/js/viz/core.js": "a6fa1753d9d9e8b9a05a7161fffc58dfd53b27002d9d393a3266aeb96515fe73",
+          "assets/js/viz/math.js": "439c335e1cc47907bc72bb76559216aa093be4710e0589f41c70192729eb223e",
+          "assets/js/share-state.js": "13c6a9ac1237d566fc5d79c89e0f4d3029aa8c2817d2c08247a02b1b053a59b1",
+          "assets/js/app.js": "2f5762e6bf80723a5cb8691f8b19c552dd1d731ab998d5bfcdb27828e2e9a6ce",
+          "assets/css/style.css": "eef34e3d7aaf8b38233a78d9dc6545e5e0c9d00b09a3a6876d19f3e0e0af15b6",
+          "data/index.json": "a3de6a67b21c0d5b60bb63db460a438cb7a1a090c4e90fce9c4bb24d9764828a",
+          "data/col/tech.json": "bb6ed57a63ce54d15956b38fac36a3909fce8113ba927e3542af3829c93c1dfc",
+          "tests/fixtures/wave6-tech-reference.json": "41f17458f58ee928e4f5d6edae8507de840d67f8a17f9fb724394c710c3f6088",
+          "tests/wave6-tech-native.mjs": "4053502fa5767b82ee25a2ac9bf1b0f1c72ead77ef43a6b6a181b3ada711e068",
+          "tests/wave6-tech-native-science.mjs": "7cf727cfec6b469850a37427dfdd85297ee4d402817418d385cd63f94842f746",
+          "tests/wave6-tech-native-cases.mjs": "1aa3675296be96d64f5f21e5419ba44ba742cb484ec076f144cf7cfdd4f707d7",
+          "tests/wave6-tech-browser.shared.mjs": "3532145eff8f13888192f2042fc008c5c3c4e4b780577faea9ca897b6b5075c8",
+          "tests/wave6-tech-native-probe.mjs": "0156ec37d1a38009384549febc3f67a50eeb6df26fb4c7a0fb8ebee00dc141bc",
+          "tests/wave6-ling-glyph.shared.mjs": "87e31d5f01c0e93492f901a8c411e88c7e1e9c551d9c2843c128c6538b9b9eb0"
+        },
+        "afterHashes": {
+          "content/tech/ch07.js": "197079132905cb71605c99229bff3974e42802ccc726df5b7d0bec068550e173",
+          "content/tech/ch07.shared.js": "5802ee0b01c7e16f3c8f7175e6ec46d720e6f81223bc6682471f18083c868a64",
+          "content/tech/ch07.viz.js": "fc68f9e1984e1d24074d4aeb35c36c7e9b977d53fa64b771f2ef527f300c1b60",
+          "content/tech/ch07.viz.shared.js": "be41ddb890d23b2c07fed0e2e12c6f0d705369f9fa0c6dc20b69821e629e6ffd",
+          "content/phil/ch05.shared.js": "9dae491fabd3aee126113b57f393b61a51740710873a532871f0c8e74c7cc2bb",
+          "content/tech/syllabus.js": "8674c3455f881a7803dbf72190fe7ea9c58222d34ca8d7ca0bd79fc844c500ae",
+          "assets/js/viz/core.js": "a6fa1753d9d9e8b9a05a7161fffc58dfd53b27002d9d393a3266aeb96515fe73",
+          "assets/js/viz/math.js": "439c335e1cc47907bc72bb76559216aa093be4710e0589f41c70192729eb223e",
+          "assets/js/share-state.js": "13c6a9ac1237d566fc5d79c89e0f4d3029aa8c2817d2c08247a02b1b053a59b1",
+          "assets/js/app.js": "2f5762e6bf80723a5cb8691f8b19c552dd1d731ab998d5bfcdb27828e2e9a6ce",
+          "assets/css/style.css": "eef34e3d7aaf8b38233a78d9dc6545e5e0c9d00b09a3a6876d19f3e0e0af15b6",
+          "data/index.json": "a3de6a67b21c0d5b60bb63db460a438cb7a1a090c4e90fce9c4bb24d9764828a",
+          "data/col/tech.json": "bb6ed57a63ce54d15956b38fac36a3909fce8113ba927e3542af3829c93c1dfc",
+          "tests/fixtures/wave6-tech-reference.json": "41f17458f58ee928e4f5d6edae8507de840d67f8a17f9fb724394c710c3f6088",
+          "tests/wave6-tech-native.mjs": "4053502fa5767b82ee25a2ac9bf1b0f1c72ead77ef43a6b6a181b3ada711e068",
+          "tests/wave6-tech-native-science.mjs": "7cf727cfec6b469850a37427dfdd85297ee4d402817418d385cd63f94842f746",
+          "tests/wave6-tech-native-cases.mjs": "1aa3675296be96d64f5f21e5419ba44ba742cb484ec076f144cf7cfdd4f707d7",
+          "tests/wave6-tech-browser.shared.mjs": "3532145eff8f13888192f2042fc008c5c3c4e4b780577faea9ca897b6b5075c8",
+          "tests/wave6-tech-native-probe.mjs": "0156ec37d1a38009384549febc3f67a50eeb6df26fb4c7a0fb8ebee00dc141bc",
+          "tests/wave6-ling-glyph.shared.mjs": "87e31d5f01c0e93492f901a8c411e88c7e1e9c551d9c2843c128c6538b9b9eb0"
+        },
+        "sourceDataHarnessUnchanged": true,
+        "totals": {
+          "layouts": 2,
+          "actions": 106,
+          "shares": 36,
+          "trustedShares": 36,
+          "invalid": 15,
+          "raw": 11,
+          "critical": 12,
+          "checks": 146,
+          "modelComparisons": 62552,
+          "geometryComparisons": 100632,
+          "paintedPixelAudits": 438,
+          "pixelSamples": 1946,
+          "domRangeRounding": 15
+        },
+        "rows": [
+          {
+            "label": "tech-7.6-light-320",
+            "counts": {
+              "layouts": 1,
+              "actions": 49,
+              "shares": 17,
+              "trustedShares": 17,
+              "invalid": 7,
+              "raw": 5,
+              "critical": 6,
+              "checks": 68,
+              "modelComparisons": 35564,
+              "geometryComparisons": 46716,
+              "paintedPixelAudits": 204,
+              "pixelSamples": 1076,
+              "domRangeRounding": 9
+            }
+          },
+          {
+            "label": "tech-7.8-light-320",
+            "counts": {
+              "layouts": 1,
+              "actions": 57,
+              "shares": 19,
+              "trustedShares": 19,
+              "invalid": 8,
+              "raw": 6,
+              "critical": 6,
+              "checks": 78,
+              "modelComparisons": 26988,
+              "geometryComparisons": 53916,
+              "paintedPixelAudits": 234,
+              "pixelSamples": 870,
+              "domRangeRounding": 6
+            }
+          }
+        ],
+        "failure": {
+          "label": "14/light/320",
+          "message": "14/light/320 ink/geometry [{\"type\":\"no visible chart-series RGB sample\",\"stage\":1,\"length\":661.9166666666667}]\n+ actual - expected\n\n+ [\n+   {\n+     length: 661.9166666666667,\n+     stage: 1,\n+     type: 'no visible chart-series RGB sample'\n+   }\n+ ]\n- []\n",
+          "stack": "AssertionError [ERR_ASSERTION]: 14/light/320 ink/geometry [{\"type\":\"no visible chart-series RGB sample\",\"stage\":1,\"length\":661.9166666666667}]\n+ actual - expected\n\n+ [\n+   {\n+     length: 661.9166666666667,\n+     stage: 1,\n+     type: 'no visible chart-series RGB sample'\n+   }\n+ ]\n- []\n\n    at check (file:///workspace/theorems-visualizations/tests/wave6-tech-native.mjs:21:180)\n    at async open (file:///workspace/theorems-visualizations/tests/wave6-tech-native.mjs:27:420)\n    at async file:///workspace/theorems-visualizations/tests/wave6-tech-native.mjs:36:82"
+        }
+      }
+    },
+    "carrier-end-diagnostic.json": {
+      "file": "/workspace/scratch/wave6-tech-research/carrier-end-diagnostic.json",
+      "sha256": "7b8c346db24f01e32fb9a8e46dd9e219fc6db94470decc07f461f21c67082a4a",
+      "record": {
+        "controls": [
+          {
+            "name": "carrier angle (radians)",
+            "min": "0",
+            "max": "12.566370614359172",
+            "value": "12.5663706143592"
+          },
+          {
+            "name": "feedback gain",
+            "min": "0",
+            "max": "5",
+            "value": "1.5"
+          },
+          {
+            "name": "throttle lag",
+            "min": "0.1",
+            "max": "4",
+            "value": "0.8"
+          },
+          {
+            "name": "step load",
+            "min": "0",
+            "max": "0.5",
+            "value": "0.3"
+          },
+          {
+            "name": "selected response time",
+            "min": "0",
+            "max": "20",
+            "value": "4"
+          }
+        ],
+        "parts": [
+          {
+            "key": "clock::0",
+            "value": null,
+            "valid": true
+          },
+          {
+            "key": "slider:carrier angle (radians):0",
+            "value": 12.5663706143592,
+            "valid": false
+          },
+          {
+            "key": "slider:feedback gain:0",
+            "value": 1.5,
+            "valid": true
+          },
+          {
+            "key": "slider:throttle lag:0",
+            "value": 0.8,
+            "valid": true
+          },
+          {
+            "key": "slider:step load:0",
+            "value": 0.3,
+            "valid": true
+          },
+          {
+            "key": "slider:selected response time:0",
+            "value": 4,
+            "valid": true
+          }
+        ],
+        "drawErrors": [
+          "RangeError: input outside declared domain\n    at bounded (http://localhost:40761/content/phil/ch05.shared.js:12:85)\n    at sunPlanet (http://localhost:40761/content/tech/ch07.shared.js:35:56)\n    at Object.sunPlanet (http://localhost:40761/content/tech/ch07.viz.js:2:106)\n    at http://localhost:40761/content/tech/ch07.viz.js:57:26\n    at http://localhost:40761/assets/js/viz/core.js:1544:123\n    at Runtime.frame (http://localhost:40761/assets/js/viz/core.js:1400:39)\n    at Runtime.loop (http://localhost:40761/assets/js/viz/core.js:1394:79)"
+        ],
+        "readout": "Carrierφ=1.2, absolute planetα=0.16777, sunθ=2.2322 radians; equal-gear constraint θ+α=2φ. Shaft turns 0.35527. Selected time 4: speed deviation −0.11811, throttle correction 0.17986. Steady droop −0.12 at gain 1.5. Ball cue angle 1.3107 radians at unit arm length and chosen gravity 0.2. Gear motion, static ball geometry and the stable linear throttle response have distinct stated assumptions; this is not a historical hunting-instability simulation."
+      }
+    },
+    "governor-low-speed-label-finding.json": {
+      "file": "/workspace/scratch/wave6-tech-research/governor-low-speed-label-finding.json",
+      "sha256": "4d320efaafc27c4f12a8328b9b044fde0b53203517928f9144aa5a2c030ade4b",
+      "record": {
+        "status": "observed; repair deferred until both owned frozen native sessions close",
+        "lesson": "tech-7.6",
+        "case": "open-loop-low-speed",
+        "sourceSHA256": "11b5354eaab938cee5980acb9b9758d28aca96a53ea21832cdabb5c047ca4cc0",
+        "evidence": "native-final-light/tech-7.6-light-320-critical-1.png",
+        "actualView": "Original full widget and focused unscaled crop personally displayed; dashed path crosses feedback cue label at omega=0.5.",
+        "plannedRepair": "Move cue label into reserved footer below both the mechanism and explanatory note; retain all exact native/model/geometry/Share assertions.",
+        "pending": [
+          "close native sessions71933/24422",
+          "archive all guarded preimage bytes",
+          "minimal label-position-only product edit",
+          "add envelope check",
+          "four-layout native6 supplement",
+          "current critical6 personal recapture"
+        ]
+      }
+    },
+    "governor-feedback-footer-repair.json": {
+      "file": "/workspace/scratch/wave6-tech-research/governor-feedback-footer-repair.json",
+      "sha256": "ccda514a2b9e84ed9fc00550d05aa526946a2ce73afff56b884a007ce88e0405",
+      "record": {
+        "status": "Minimal product edit completed after interrupted sessions closed and owned orphan was terminated",
+        "path": "content/tech/ch07.viz.js",
+        "beforeSHA256": "11b5354eaab938cee5980acb9b9758d28aca96a53ea21832cdabb5c047ca4cc0",
+        "afterSHA256": "72f44a0c8ffcf69abe3498a4585609397ac451f26361cee8af6d91c1df4f6e35",
+        "before": "text(B,'feedback cue',7.2,4.4,'orange',{size:11,align:'center'});",
+        "after": "text(B,'Dashed line: feedback cue',1,.65,'orange',{size:10.5});",
+        "wholeOriginalReconstructedExactly": true,
+        "scope": "Only label text/position/size in lesson6; no mathematical model, chart, control, state or other lesson change. Current56-layout rerun in shorter bounded capture chunks is required before promotion.",
+        "nativeScienceEnvelopeCheck": "Footer glyph is below complete moving mechanism envelope and all other explanatory glyphs with explicit pixel gaps."
+      }
+    },
+    "native-interruption.json": {
+      "file": "/workspace/scratch/wave6-tech-research/native-interruption.json",
+      "sha256": "49ea0d59febbe8d553ba500ff785100306d58e5d828f6766e390f48a2c748b7d",
+      "record": {
+        "status": "Interrupted without final runner receipts; no complete56-layout success claimed",
+        "sessions": [
+          "71933",
+          "24422"
+        ],
+        "sessionPolls": "Both unknown/closed; root Node processes absent/defunct. One surviving owned Chromium profile was explicitly terminated.",
+        "cause": "Not established. cgroup memory.events reports zero OOM and OOM kills. Both progress logs stop during twentieth layout.",
+        "terminatedOwned": [
+          {
+            "pid": 267012,
+            "cmd": "/usr/lib/chromium/chromium --show-component-extension-options --enable-gpu-rasterization --no-default-browser-check --disable-pings --media-router=0 --enable-remote-extensions --load-extension= --disable-field-trial-config --disable-background-networking --disable-background-timer-throttling --disable-backgrounding-occluded-windows --disable-back-forward-cache --disable-breakpad --disable-client-side-phishing-detection --disable-component-extensions-with-background-pages --disable-component-update --no-default-browser-check --disable-default-apps --disable-dev-shm-usage --disable-edgeupdater --disable-extensions --disable-features=AvoidUnnecessaryBeforeUnloadCheckSync,DestroyProfileOnBrowserClose,DialMediaRouteProvider,GlobalMediaControls,HttpsUpgrades,LensOverlay,MediaRouter,PaintHolding,ThirdPartyStoragePartitioning,BlockOriginHeaderModificationOnRedirect,Translate,AutoDeElevate,OptimizationHints,NetworkTimeServiceQuerying,AimEnabled,msForceBrowserSignIn,msEdgeUpdateLaunchServicesPreferredVersion --enable-features=CDPScreenshotNewSurface --allow-pre-commit-input --disable-hang-monitor --disable-ipc-flooding-protection --disable-popup-blocking --disable-prompt-on-repost --disable-renderer-backgrounding --disable-updater-scheduler --force-color-profile=srgb --metrics-recording-only --no-first-run --password-store=basic --use-mock-keychain --no-service-autorun --export-tagged-pdf --disable-search-engine-choice-screen --unsafely-disable-devtools-self-xss-warnings --edge-skip-compat-layer-relaunch --disable-infobars --disable-search-engine-choice-screen --disable-sync --enable-unsafe-swiftshader --headless --hide-scrollbars --mute-audio --blink-settings=primaryHoverType=2,availableHoverTypes=2,primaryPointerType=4,availablePointerTypes=4 --no-sandbox --user-data-dir=/tmp/playwright_chromiumdev_profile-Cdrj3v --remote-debugging-pipe --no-startup-window "
+          }
+        ],
+        "lanes": [
+          {
+            "theme": "light",
+            "completedTotals": {
+              "layouts": 19,
+              "actions": 890,
+              "shares": 298,
+              "trustedShares": 298,
+              "invalid": 119,
+              "raw": 88,
+              "critical": 98,
+              "checks": 1214,
+              "modelComparisons": 1784716,
+              "geometryComparisons": 627496,
+              "paintedPixelAudits": 3642,
+              "pixelSamples": 28165,
+              "domRangeRounding": 102
+            },
+            "completedRows": [
+              {
+                "label": "tech-7.1-light-320",
+                "counts": {
+                  "layouts": 1,
+                  "actions": 60,
+                  "shares": 20,
+                  "trustedShares": 20,
+                  "invalid": 7,
+                  "raw": 5,
+                  "critical": 6,
+                  "checks": 79,
+                  "modelComparisons": 58776,
+                  "geometryComparisons": 22041,
+                  "paintedPixelAudits": 237,
+                  "pixelSamples": 2511,
+                  "domRangeRounding": 6
+                }
+              },
+              {
+                "label": "tech-7.1-light-1200",
+                "counts": {
+                  "layouts": 1,
+                  "actions": 60,
+                  "shares": 20,
+                  "trustedShares": 20,
+                  "invalid": 7,
+                  "raw": 5,
+                  "critical": 6,
+                  "checks": 79,
+                  "modelComparisons": 58776,
+                  "geometryComparisons": 22041,
+                  "paintedPixelAudits": 237,
+                  "pixelSamples": 2511,
+                  "domRangeRounding": 6
+                }
+              },
+              {
+                "label": "tech-7.2-light-320",
+                "counts": {
+                  "layouts": 1,
+                  "actions": 59,
+                  "shares": 19,
+                  "trustedShares": 19,
+                  "invalid": 8,
+                  "raw": 7,
+                  "critical": 5,
+                  "checks": 80,
+                  "modelComparisons": 1680,
+                  "geometryComparisons": 3796,
+                  "paintedPixelAudits": 240,
+                  "pixelSamples": 2333,
+                  "domRangeRounding": 9
+                }
+              },
+              {
+                "label": "tech-7.2-light-1200",
+                "counts": {
+                  "layouts": 1,
+                  "actions": 59,
+                  "shares": 19,
+                  "trustedShares": 19,
+                  "invalid": 8,
+                  "raw": 7,
+                  "critical": 5,
+                  "checks": 80,
+                  "modelComparisons": 1680,
+                  "geometryComparisons": 3796,
+                  "paintedPixelAudits": 240,
+                  "pixelSamples": 2402,
+                  "domRangeRounding": 9
+                }
+              },
+              {
+                "label": "tech-7.3-light-320",
+                "counts": {
+                  "layouts": 1,
+                  "actions": 52,
+                  "shares": 17,
+                  "trustedShares": 17,
+                  "invalid": 7,
+                  "raw": 5,
+                  "critical": 5,
+                  "checks": 70,
+                  "modelComparisons": 1470,
+                  "geometryComparisons": 682,
+                  "paintedPixelAudits": 210,
+                  "pixelSamples": 877,
+                  "domRangeRounding": 3
+                }
+              },
+              {
+                "label": "tech-7.3-light-1200",
+                "counts": {
+                  "layouts": 1,
+                  "actions": 52,
+                  "shares": 17,
+                  "trustedShares": 17,
+                  "invalid": 7,
+                  "raw": 5,
+                  "critical": 5,
+                  "checks": 70,
+                  "modelComparisons": 1470,
+                  "geometryComparisons": 682,
+                  "paintedPixelAudits": 210,
+                  "pixelSamples": 877,
+                  "domRangeRounding": 3
+                }
+              },
+              {
+                "label": "tech-7.4-light-320",
+                "counts": {
+                  "layouts": 1,
+                  "actions": 43,
+                  "shares": 14,
+                  "trustedShares": 14,
+                  "invalid": 6,
+                  "raw": 4,
+                  "critical": 4,
+                  "checks": 58,
+                  "modelComparisons": 618280,
+                  "geometryComparisons": 37983,
+                  "paintedPixelAudits": 174,
+                  "pixelSamples": 931,
+                  "domRangeRounding": 9
+                }
+              },
+              {
+                "label": "tech-7.4-light-1200",
+                "counts": {
+                  "layouts": 1,
+                  "actions": 43,
+                  "shares": 14,
+                  "trustedShares": 14,
+                  "invalid": 6,
+                  "raw": 4,
+                  "critical": 4,
+                  "checks": 58,
+                  "modelComparisons": 618280,
+                  "geometryComparisons": 37983,
+                  "paintedPixelAudits": 174,
+                  "pixelSamples": 938,
+                  "domRangeRounding": 9
+                }
+              },
+              {
+                "label": "tech-7.5-light-320",
+                "counts": {
+                  "layouts": 1,
+                  "actions": 45,
+                  "shares": 15,
+                  "trustedShares": 15,
+                  "invalid": 6,
+                  "raw": 4,
+                  "critical": 5,
+                  "checks": 61,
+                  "modelComparisons": 64294,
+                  "geometryComparisons": 15877,
+                  "paintedPixelAudits": 183,
+                  "pixelSamples": 1371,
+                  "domRangeRounding": 3
+                }
+              },
+              {
+                "label": "tech-7.5-light-1200",
+                "counts": {
+                  "layouts": 1,
+                  "actions": 45,
+                  "shares": 15,
+                  "trustedShares": 15,
+                  "invalid": 6,
+                  "raw": 4,
+                  "critical": 5,
+                  "checks": 61,
+                  "modelComparisons": 64294,
+                  "geometryComparisons": 15877,
+                  "paintedPixelAudits": 183,
+                  "pixelSamples": 1374,
+                  "domRangeRounding": 3
+                }
+              },
+              {
+                "label": "tech-7.6-light-320",
+                "counts": {
+                  "layouts": 1,
+                  "actions": 49,
+                  "shares": 17,
+                  "trustedShares": 17,
+                  "invalid": 7,
+                  "raw": 5,
+                  "critical": 6,
+                  "checks": 68,
+                  "modelComparisons": 35564,
+                  "geometryComparisons": 46716,
+                  "paintedPixelAudits": 204,
+                  "pixelSamples": 1825,
+                  "domRangeRounding": 9
+                }
+              },
+              {
+                "label": "tech-7.6-light-1200",
+                "counts": {
+                  "layouts": 1,
+                  "actions": 49,
+                  "shares": 17,
+                  "trustedShares": 17,
+                  "invalid": 7,
+                  "raw": 5,
+                  "critical": 6,
+                  "checks": 68,
+                  "modelComparisons": 35564,
+                  "geometryComparisons": 46716,
+                  "paintedPixelAudits": 204,
+                  "pixelSamples": 1825,
+                  "domRangeRounding": 9
+                }
+              },
+              {
+                "label": "tech-7.7-light-320",
+                "counts": {
+                  "layouts": 1,
+                  "actions": 19,
+                  "shares": 8,
+                  "trustedShares": 8,
+                  "invalid": 2,
+                  "raw": 1,
+                  "critical": 6,
+                  "checks": 29,
+                  "modelComparisons": 522,
+                  "geometryComparisons": 56666,
+                  "paintedPixelAudits": 87,
+                  "pixelSamples": 634,
+                  "domRangeRounding": 3
+                }
+              },
+              {
+                "label": "tech-7.7-light-1200",
+                "counts": {
+                  "layouts": 1,
+                  "actions": 19,
+                  "shares": 8,
+                  "trustedShares": 8,
+                  "invalid": 2,
+                  "raw": 1,
+                  "critical": 6,
+                  "checks": 29,
+                  "modelComparisons": 522,
+                  "geometryComparisons": 56666,
+                  "paintedPixelAudits": 87,
+                  "pixelSamples": 634,
+                  "domRangeRounding": 3
+                }
+              },
+              {
+                "label": "tech-7.8-light-320",
+                "counts": {
+                  "layouts": 1,
+                  "actions": 57,
+                  "shares": 19,
+                  "trustedShares": 19,
+                  "invalid": 8,
+                  "raw": 6,
+                  "critical": 6,
+                  "checks": 78,
+                  "modelComparisons": 26988,
+                  "geometryComparisons": 54072,
+                  "paintedPixelAudits": 234,
+                  "pixelSamples": 1951,
+                  "domRangeRounding": 6
+                }
+              },
+              {
+                "label": "tech-7.8-light-1200",
+                "counts": {
+                  "layouts": 1,
+                  "actions": 57,
+                  "shares": 19,
+                  "trustedShares": 19,
+                  "invalid": 8,
+                  "raw": 6,
+                  "critical": 6,
+                  "checks": 78,
+                  "modelComparisons": 26988,
+                  "geometryComparisons": 54072,
+                  "paintedPixelAudits": 234,
+                  "pixelSamples": 1950,
+                  "domRangeRounding": 6
+                }
+              },
+              {
+                "label": "tech-7.9-light-320",
+                "counts": {
+                  "layouts": 1,
+                  "actions": 41,
+                  "shares": 13,
+                  "trustedShares": 13,
+                  "invalid": 6,
+                  "raw": 5,
+                  "critical": 3,
+                  "checks": 56,
+                  "modelComparisons": 50512,
+                  "geometryComparisons": 54768,
+                  "paintedPixelAudits": 168,
+                  "pixelSamples": 1115,
+                  "domRangeRounding": 3
+                }
+              },
+              {
+                "label": "tech-7.9-light-1200",
+                "counts": {
+                  "layouts": 1,
+                  "actions": 41,
+                  "shares": 13,
+                  "trustedShares": 13,
+                  "invalid": 6,
+                  "raw": 5,
+                  "critical": 3,
+                  "checks": 56,
+                  "modelComparisons": 50512,
+                  "geometryComparisons": 54768,
+                  "paintedPixelAudits": 168,
+                  "pixelSamples": 1116,
+                  "domRangeRounding": 3
+                }
+              },
+              {
+                "label": "tech-7.10-light-320",
+                "counts": {
+                  "layouts": 1,
+                  "actions": 40,
+                  "shares": 14,
+                  "trustedShares": 14,
+                  "invalid": 5,
+                  "raw": 4,
+                  "critical": 6,
+                  "checks": 56,
+                  "modelComparisons": 68544,
+                  "geometryComparisons": 42294,
+                  "paintedPixelAudits": 168,
+                  "pixelSamples": 990,
+                  "domRangeRounding": 0
+                }
+              }
+            ],
+            "sourceHashes": {
+              "content/tech/ch07.js": "197079132905cb71605c99229bff3974e42802ccc726df5b7d0bec068550e173",
+              "content/tech/ch07.shared.js": "5802ee0b01c7e16f3c8f7175e6ec46d720e6f81223bc6682471f18083c868a64",
+              "content/tech/ch07.viz.js": "11b5354eaab938cee5980acb9b9758d28aca96a53ea21832cdabb5c047ca4cc0",
+              "content/tech/ch07.viz.shared.js": "223eaa9c66c431afda6606b393376c56bcc5fa9ad581520af98cedbf1c28d763",
+              "content/phil/ch05.shared.js": "9dae491fabd3aee126113b57f393b61a51740710873a532871f0c8e74c7cc2bb",
+              "content/tech/syllabus.js": "8674c3455f881a7803dbf72190fe7ea9c58222d34ca8d7ca0bd79fc844c500ae",
+              "assets/js/viz/core.js": "a6fa1753d9d9e8b9a05a7161fffc58dfd53b27002d9d393a3266aeb96515fe73",
+              "assets/js/viz/math.js": "439c335e1cc47907bc72bb76559216aa093be4710e0589f41c70192729eb223e",
+              "assets/js/share-state.js": "13c6a9ac1237d566fc5d79c89e0f4d3029aa8c2817d2c08247a02b1b053a59b1",
+              "assets/js/app.js": "2f5762e6bf80723a5cb8691f8b19c552dd1d731ab998d5bfcdb27828e2e9a6ce",
+              "assets/css/style.css": "eef34e3d7aaf8b38233a78d9dc6545e5e0c9d00b09a3a6876d19f3e0e0af15b6",
+              "data/index.json": "a3de6a67b21c0d5b60bb63db460a438cb7a1a090c4e90fce9c4bb24d9764828a",
+              "data/col/tech.json": "bb6ed57a63ce54d15956b38fac36a3909fce8113ba927e3542af3829c93c1dfc",
+              "tests/fixtures/wave6-tech-reference.json": "41f17458f58ee928e4f5d6edae8507de840d67f8a17f9fb724394c710c3f6088",
+              "tests/wave6-tech-native.mjs": "4053502fa5767b82ee25a2ac9bf1b0f1c72ead77ef43a6b6a181b3ada711e068",
+              "tests/wave6-tech-native-science.mjs": "691430b8f8386d28910efcceb1538dc7cc4ae21ba2a9094937ebdb82b0768181",
+              "tests/wave6-tech-native-cases.mjs": "1aa3675296be96d64f5f21e5419ba44ba742cb484ec076f144cf7cfdd4f707d7",
+              "tests/wave6-tech-browser.shared.mjs": "3532145eff8f13888192f2042fc008c5c3c4e4b780577faea9ca897b6b5075c8",
+              "tests/wave6-tech-native-probe.mjs": "70cb57871eebc566b8aef43003fbca7c878127ef8e855dd92fe693e6aad2b241",
+              "tests/wave6-ling-glyph.shared.mjs": "87e31d5f01c0e93492f901a8c411e88c7e1e9c551d9c2843c128c6538b9b9eb0"
+            },
+            "manualAfterHashes": {
+              "content/tech/ch07.js": "197079132905cb71605c99229bff3974e42802ccc726df5b7d0bec068550e173",
+              "content/tech/ch07.shared.js": "5802ee0b01c7e16f3c8f7175e6ec46d720e6f81223bc6682471f18083c868a64",
+              "content/tech/ch07.viz.js": "11b5354eaab938cee5980acb9b9758d28aca96a53ea21832cdabb5c047ca4cc0",
+              "content/tech/ch07.viz.shared.js": "223eaa9c66c431afda6606b393376c56bcc5fa9ad581520af98cedbf1c28d763",
+              "content/phil/ch05.shared.js": "9dae491fabd3aee126113b57f393b61a51740710873a532871f0c8e74c7cc2bb",
+              "content/tech/syllabus.js": "8674c3455f881a7803dbf72190fe7ea9c58222d34ca8d7ca0bd79fc844c500ae",
+              "assets/js/viz/core.js": "a6fa1753d9d9e8b9a05a7161fffc58dfd53b27002d9d393a3266aeb96515fe73",
+              "assets/js/viz/math.js": "439c335e1cc47907bc72bb76559216aa093be4710e0589f41c70192729eb223e",
+              "assets/js/share-state.js": "13c6a9ac1237d566fc5d79c89e0f4d3029aa8c2817d2c08247a02b1b053a59b1",
+              "assets/js/app.js": "2f5762e6bf80723a5cb8691f8b19c552dd1d731ab998d5bfcdb27828e2e9a6ce",
+              "assets/css/style.css": "eef34e3d7aaf8b38233a78d9dc6545e5e0c9d00b09a3a6876d19f3e0e0af15b6",
+              "data/index.json": "a3de6a67b21c0d5b60bb63db460a438cb7a1a090c4e90fce9c4bb24d9764828a",
+              "data/col/tech.json": "bb6ed57a63ce54d15956b38fac36a3909fce8113ba927e3542af3829c93c1dfc",
+              "tests/fixtures/wave6-tech-reference.json": "41f17458f58ee928e4f5d6edae8507de840d67f8a17f9fb724394c710c3f6088",
+              "tests/wave6-tech-native.mjs": "4053502fa5767b82ee25a2ac9bf1b0f1c72ead77ef43a6b6a181b3ada711e068",
+              "tests/wave6-tech-native-science.mjs": "691430b8f8386d28910efcceb1538dc7cc4ae21ba2a9094937ebdb82b0768181",
+              "tests/wave6-tech-native-cases.mjs": "1aa3675296be96d64f5f21e5419ba44ba742cb484ec076f144cf7cfdd4f707d7",
+              "tests/wave6-tech-browser.shared.mjs": "3532145eff8f13888192f2042fc008c5c3c4e4b780577faea9ca897b6b5075c8",
+              "tests/wave6-tech-native-probe.mjs": "70cb57871eebc566b8aef43003fbca7c878127ef8e855dd92fe693e6aad2b241",
+              "tests/wave6-ling-glyph.shared.mjs": "87e31d5f01c0e93492f901a8c411e88c7e1e9c551d9c2843c128c6538b9b9eb0"
+            },
+            "manualAfterGuardEqual": true,
+            "runnerFinallyReceiptExists": false
+          },
+          {
+            "theme": "dark",
+            "completedTotals": {
+              "layouts": 19,
+              "actions": 890,
+              "shares": 298,
+              "trustedShares": 298,
+              "invalid": 119,
+              "raw": 88,
+              "critical": 98,
+              "checks": 1214,
+              "modelComparisons": 1784716,
+              "geometryComparisons": 627496,
+              "paintedPixelAudits": 3642,
+              "pixelSamples": 28006,
+              "domRangeRounding": 102
+            },
+            "completedRows": [
+              {
+                "label": "tech-7.1-dark-320",
+                "counts": {
+                  "layouts": 1,
+                  "actions": 60,
+                  "shares": 20,
+                  "trustedShares": 20,
+                  "invalid": 7,
+                  "raw": 5,
+                  "critical": 6,
+                  "checks": 79,
+                  "modelComparisons": 58776,
+                  "geometryComparisons": 22041,
+                  "paintedPixelAudits": 237,
+                  "pixelSamples": 2511,
+                  "domRangeRounding": 6
+                }
+              },
+              {
+                "label": "tech-7.1-dark-1200",
+                "counts": {
+                  "layouts": 1,
+                  "actions": 60,
+                  "shares": 20,
+                  "trustedShares": 20,
+                  "invalid": 7,
+                  "raw": 5,
+                  "critical": 6,
+                  "checks": 79,
+                  "modelComparisons": 58776,
+                  "geometryComparisons": 22041,
+                  "paintedPixelAudits": 237,
+                  "pixelSamples": 2511,
+                  "domRangeRounding": 6
+                }
+              },
+              {
+                "label": "tech-7.2-dark-320",
+                "counts": {
+                  "layouts": 1,
+                  "actions": 59,
+                  "shares": 19,
+                  "trustedShares": 19,
+                  "invalid": 8,
+                  "raw": 7,
+                  "critical": 5,
+                  "checks": 80,
+                  "modelComparisons": 1680,
+                  "geometryComparisons": 3796,
+                  "paintedPixelAudits": 240,
+                  "pixelSamples": 2333,
+                  "domRangeRounding": 9
+                }
+              },
+              {
+                "label": "tech-7.2-dark-1200",
+                "counts": {
+                  "layouts": 1,
+                  "actions": 59,
+                  "shares": 19,
+                  "trustedShares": 19,
+                  "invalid": 8,
+                  "raw": 7,
+                  "critical": 5,
+                  "checks": 80,
+                  "modelComparisons": 1680,
+                  "geometryComparisons": 3796,
+                  "paintedPixelAudits": 240,
+                  "pixelSamples": 2402,
+                  "domRangeRounding": 9
+                }
+              },
+              {
+                "label": "tech-7.3-dark-320",
+                "counts": {
+                  "layouts": 1,
+                  "actions": 52,
+                  "shares": 17,
+                  "trustedShares": 17,
+                  "invalid": 7,
+                  "raw": 5,
+                  "critical": 5,
+                  "checks": 70,
+                  "modelComparisons": 1470,
+                  "geometryComparisons": 682,
+                  "paintedPixelAudits": 210,
+                  "pixelSamples": 877,
+                  "domRangeRounding": 3
+                }
+              },
+              {
+                "label": "tech-7.3-dark-1200",
+                "counts": {
+                  "layouts": 1,
+                  "actions": 52,
+                  "shares": 17,
+                  "trustedShares": 17,
+                  "invalid": 7,
+                  "raw": 5,
+                  "critical": 5,
+                  "checks": 70,
+                  "modelComparisons": 1470,
+                  "geometryComparisons": 682,
+                  "paintedPixelAudits": 210,
+                  "pixelSamples": 877,
+                  "domRangeRounding": 3
+                }
+              },
+              {
+                "label": "tech-7.4-dark-320",
+                "counts": {
+                  "layouts": 1,
+                  "actions": 43,
+                  "shares": 14,
+                  "trustedShares": 14,
+                  "invalid": 6,
+                  "raw": 4,
+                  "critical": 4,
+                  "checks": 58,
+                  "modelComparisons": 618280,
+                  "geometryComparisons": 37983,
+                  "paintedPixelAudits": 174,
+                  "pixelSamples": 931,
+                  "domRangeRounding": 9
+                }
+              },
+              {
+                "label": "tech-7.4-dark-1200",
+                "counts": {
+                  "layouts": 1,
+                  "actions": 43,
+                  "shares": 14,
+                  "trustedShares": 14,
+                  "invalid": 6,
+                  "raw": 4,
+                  "critical": 4,
+                  "checks": 58,
+                  "modelComparisons": 618280,
+                  "geometryComparisons": 37983,
+                  "paintedPixelAudits": 174,
+                  "pixelSamples": 938,
+                  "domRangeRounding": 9
+                }
+              },
+              {
+                "label": "tech-7.5-dark-320",
+                "counts": {
+                  "layouts": 1,
+                  "actions": 45,
+                  "shares": 15,
+                  "trustedShares": 15,
+                  "invalid": 6,
+                  "raw": 4,
+                  "critical": 5,
+                  "checks": 61,
+                  "modelComparisons": 64294,
+                  "geometryComparisons": 15877,
+                  "paintedPixelAudits": 183,
+                  "pixelSamples": 1371,
+                  "domRangeRounding": 3
+                }
+              },
+              {
+                "label": "tech-7.5-dark-1200",
+                "counts": {
+                  "layouts": 1,
+                  "actions": 45,
+                  "shares": 15,
+                  "trustedShares": 15,
+                  "invalid": 6,
+                  "raw": 4,
+                  "critical": 5,
+                  "checks": 61,
+                  "modelComparisons": 64294,
+                  "geometryComparisons": 15877,
+                  "paintedPixelAudits": 183,
+                  "pixelSamples": 1374,
+                  "domRangeRounding": 3
+                }
+              },
+              {
+                "label": "tech-7.6-dark-320",
+                "counts": {
+                  "layouts": 1,
+                  "actions": 49,
+                  "shares": 17,
+                  "trustedShares": 17,
+                  "invalid": 7,
+                  "raw": 5,
+                  "critical": 6,
+                  "checks": 68,
+                  "modelComparisons": 35564,
+                  "geometryComparisons": 46716,
+                  "paintedPixelAudits": 204,
+                  "pixelSamples": 1825,
+                  "domRangeRounding": 9
+                }
+              },
+              {
+                "label": "tech-7.6-dark-1200",
+                "counts": {
+                  "layouts": 1,
+                  "actions": 49,
+                  "shares": 17,
+                  "trustedShares": 17,
+                  "invalid": 7,
+                  "raw": 5,
+                  "critical": 6,
+                  "checks": 68,
+                  "modelComparisons": 35564,
+                  "geometryComparisons": 46716,
+                  "paintedPixelAudits": 204,
+                  "pixelSamples": 1825,
+                  "domRangeRounding": 9
+                }
+              },
+              {
+                "label": "tech-7.7-dark-320",
+                "counts": {
+                  "layouts": 1,
+                  "actions": 19,
+                  "shares": 8,
+                  "trustedShares": 8,
+                  "invalid": 2,
+                  "raw": 1,
+                  "critical": 6,
+                  "checks": 29,
+                  "modelComparisons": 522,
+                  "geometryComparisons": 56666,
+                  "paintedPixelAudits": 87,
+                  "pixelSamples": 634,
+                  "domRangeRounding": 3
+                }
+              },
+              {
+                "label": "tech-7.7-dark-1200",
+                "counts": {
+                  "layouts": 1,
+                  "actions": 19,
+                  "shares": 8,
+                  "trustedShares": 8,
+                  "invalid": 2,
+                  "raw": 1,
+                  "critical": 6,
+                  "checks": 29,
+                  "modelComparisons": 522,
+                  "geometryComparisons": 56666,
+                  "paintedPixelAudits": 87,
+                  "pixelSamples": 634,
+                  "domRangeRounding": 3
+                }
+              },
+              {
+                "label": "tech-7.8-dark-320",
+                "counts": {
+                  "layouts": 1,
+                  "actions": 57,
+                  "shares": 19,
+                  "trustedShares": 19,
+                  "invalid": 8,
+                  "raw": 6,
+                  "critical": 6,
+                  "checks": 78,
+                  "modelComparisons": 26988,
+                  "geometryComparisons": 54072,
+                  "paintedPixelAudits": 234,
+                  "pixelSamples": 1873,
+                  "domRangeRounding": 6
+                }
+              },
+              {
+                "label": "tech-7.8-dark-1200",
+                "counts": {
+                  "layouts": 1,
+                  "actions": 57,
+                  "shares": 19,
+                  "trustedShares": 19,
+                  "invalid": 8,
+                  "raw": 6,
+                  "critical": 6,
+                  "checks": 78,
+                  "modelComparisons": 26988,
+                  "geometryComparisons": 54072,
+                  "paintedPixelAudits": 234,
+                  "pixelSamples": 1869,
+                  "domRangeRounding": 6
+                }
+              },
+              {
+                "label": "tech-7.9-dark-320",
+                "counts": {
+                  "layouts": 1,
+                  "actions": 41,
+                  "shares": 13,
+                  "trustedShares": 13,
+                  "invalid": 6,
+                  "raw": 5,
+                  "critical": 3,
+                  "checks": 56,
+                  "modelComparisons": 50512,
+                  "geometryComparisons": 54768,
+                  "paintedPixelAudits": 168,
+                  "pixelSamples": 1115,
+                  "domRangeRounding": 3
+                }
+              },
+              {
+                "label": "tech-7.9-dark-1200",
+                "counts": {
+                  "layouts": 1,
+                  "actions": 41,
+                  "shares": 13,
+                  "trustedShares": 13,
+                  "invalid": 6,
+                  "raw": 5,
+                  "critical": 3,
+                  "checks": 56,
+                  "modelComparisons": 50512,
+                  "geometryComparisons": 54768,
+                  "paintedPixelAudits": 168,
+                  "pixelSamples": 1116,
+                  "domRangeRounding": 3
+                }
+              },
+              {
+                "label": "tech-7.10-dark-320",
+                "counts": {
+                  "layouts": 1,
+                  "actions": 40,
+                  "shares": 14,
+                  "trustedShares": 14,
+                  "invalid": 5,
+                  "raw": 4,
+                  "critical": 6,
+                  "checks": 56,
+                  "modelComparisons": 68544,
+                  "geometryComparisons": 42294,
+                  "paintedPixelAudits": 168,
+                  "pixelSamples": 990,
+                  "domRangeRounding": 0
+                }
+              }
+            ],
+            "sourceHashes": {
+              "content/tech/ch07.js": "197079132905cb71605c99229bff3974e42802ccc726df5b7d0bec068550e173",
+              "content/tech/ch07.shared.js": "5802ee0b01c7e16f3c8f7175e6ec46d720e6f81223bc6682471f18083c868a64",
+              "content/tech/ch07.viz.js": "11b5354eaab938cee5980acb9b9758d28aca96a53ea21832cdabb5c047ca4cc0",
+              "content/tech/ch07.viz.shared.js": "223eaa9c66c431afda6606b393376c56bcc5fa9ad581520af98cedbf1c28d763",
+              "content/phil/ch05.shared.js": "9dae491fabd3aee126113b57f393b61a51740710873a532871f0c8e74c7cc2bb",
+              "content/tech/syllabus.js": "8674c3455f881a7803dbf72190fe7ea9c58222d34ca8d7ca0bd79fc844c500ae",
+              "assets/js/viz/core.js": "a6fa1753d9d9e8b9a05a7161fffc58dfd53b27002d9d393a3266aeb96515fe73",
+              "assets/js/viz/math.js": "439c335e1cc47907bc72bb76559216aa093be4710e0589f41c70192729eb223e",
+              "assets/js/share-state.js": "13c6a9ac1237d566fc5d79c89e0f4d3029aa8c2817d2c08247a02b1b053a59b1",
+              "assets/js/app.js": "2f5762e6bf80723a5cb8691f8b19c552dd1d731ab998d5bfcdb27828e2e9a6ce",
+              "assets/css/style.css": "eef34e3d7aaf8b38233a78d9dc6545e5e0c9d00b09a3a6876d19f3e0e0af15b6",
+              "data/index.json": "a3de6a67b21c0d5b60bb63db460a438cb7a1a090c4e90fce9c4bb24d9764828a",
+              "data/col/tech.json": "bb6ed57a63ce54d15956b38fac36a3909fce8113ba927e3542af3829c93c1dfc",
+              "tests/fixtures/wave6-tech-reference.json": "41f17458f58ee928e4f5d6edae8507de840d67f8a17f9fb724394c710c3f6088",
+              "tests/wave6-tech-native.mjs": "4053502fa5767b82ee25a2ac9bf1b0f1c72ead77ef43a6b6a181b3ada711e068",
+              "tests/wave6-tech-native-science.mjs": "691430b8f8386d28910efcceb1538dc7cc4ae21ba2a9094937ebdb82b0768181",
+              "tests/wave6-tech-native-cases.mjs": "1aa3675296be96d64f5f21e5419ba44ba742cb484ec076f144cf7cfdd4f707d7",
+              "tests/wave6-tech-browser.shared.mjs": "3532145eff8f13888192f2042fc008c5c3c4e4b780577faea9ca897b6b5075c8",
+              "tests/wave6-tech-native-probe.mjs": "70cb57871eebc566b8aef43003fbca7c878127ef8e855dd92fe693e6aad2b241",
+              "tests/wave6-ling-glyph.shared.mjs": "87e31d5f01c0e93492f901a8c411e88c7e1e9c551d9c2843c128c6538b9b9eb0"
+            },
+            "manualAfterHashes": {
+              "content/tech/ch07.js": "197079132905cb71605c99229bff3974e42802ccc726df5b7d0bec068550e173",
+              "content/tech/ch07.shared.js": "5802ee0b01c7e16f3c8f7175e6ec46d720e6f81223bc6682471f18083c868a64",
+              "content/tech/ch07.viz.js": "11b5354eaab938cee5980acb9b9758d28aca96a53ea21832cdabb5c047ca4cc0",
+              "content/tech/ch07.viz.shared.js": "223eaa9c66c431afda6606b393376c56bcc5fa9ad581520af98cedbf1c28d763",
+              "content/phil/ch05.shared.js": "9dae491fabd3aee126113b57f393b61a51740710873a532871f0c8e74c7cc2bb",
+              "content/tech/syllabus.js": "8674c3455f881a7803dbf72190fe7ea9c58222d34ca8d7ca0bd79fc844c500ae",
+              "assets/js/viz/core.js": "a6fa1753d9d9e8b9a05a7161fffc58dfd53b27002d9d393a3266aeb96515fe73",
+              "assets/js/viz/math.js": "439c335e1cc47907bc72bb76559216aa093be4710e0589f41c70192729eb223e",
+              "assets/js/share-state.js": "13c6a9ac1237d566fc5d79c89e0f4d3029aa8c2817d2c08247a02b1b053a59b1",
+              "assets/js/app.js": "2f5762e6bf80723a5cb8691f8b19c552dd1d731ab998d5bfcdb27828e2e9a6ce",
+              "assets/css/style.css": "eef34e3d7aaf8b38233a78d9dc6545e5e0c9d00b09a3a6876d19f3e0e0af15b6",
+              "data/index.json": "a3de6a67b21c0d5b60bb63db460a438cb7a1a090c4e90fce9c4bb24d9764828a",
+              "data/col/tech.json": "bb6ed57a63ce54d15956b38fac36a3909fce8113ba927e3542af3829c93c1dfc",
+              "tests/fixtures/wave6-tech-reference.json": "41f17458f58ee928e4f5d6edae8507de840d67f8a17f9fb724394c710c3f6088",
+              "tests/wave6-tech-native.mjs": "4053502fa5767b82ee25a2ac9bf1b0f1c72ead77ef43a6b6a181b3ada711e068",
+              "tests/wave6-tech-native-science.mjs": "691430b8f8386d28910efcceb1538dc7cc4ae21ba2a9094937ebdb82b0768181",
+              "tests/wave6-tech-native-cases.mjs": "1aa3675296be96d64f5f21e5419ba44ba742cb484ec076f144cf7cfdd4f707d7",
+              "tests/wave6-tech-browser.shared.mjs": "3532145eff8f13888192f2042fc008c5c3c4e4b780577faea9ca897b6b5075c8",
+              "tests/wave6-tech-native-probe.mjs": "70cb57871eebc566b8aef43003fbca7c878127ef8e855dd92fe693e6aad2b241",
+              "tests/wave6-ling-glyph.shared.mjs": "87e31d5f01c0e93492f901a8c411e88c7e1e9c551d9c2843c128c6538b9b9eb0"
+            },
+            "manualAfterGuardEqual": true,
+            "runnerFinallyReceiptExists": false
+          }
+        ]
+      }
+    },
+    "ordinary-interruption.json": {
+      "file": "/workspace/scratch/wave6-tech-research/ordinary-interruption.json",
+      "sha256": "e7ad0f7668ab2455e967610a7ca9e0201983bb0a3108072e419005a111bba990",
+      "record": {
+        "status": "No final receipt; interrupted captures not used as complete ordinary gate",
+        "sessions": [
+          "42155",
+          "81178"
+        ],
+        "completedLoggedLayoutsPerTheme": 9,
+        "timing": "Long tool jobs were cancelled across asynchronous environment/user context; parent Node processes absent, owned Chromium parents survived. Cause beyond observed lifecycle not asserted.",
+        "terminatedOwnedBrowserPIDs": [
+          268983,
+          268993
+        ],
+        "supersedingPlan": "Detached explicitly owned supervisor jobs with PID/status/log records; full56ordinary layouts rerun, normal harness finally close and frozen source receipts required."
+      }
+    },
+    "default-personal-repairs.json": {
+      "file": "/workspace/scratch/wave6-tech-research/default-personal-repairs.json",
+      "sha256": "84269f03e5e837dea0f63cd449e54b4b8568323c64b614c13d01936535477cbd",
+      "record": {
+        "baseCommit": "bb72a50a",
+        "path": "content/tech/ch07.viz.js",
+        "beforeSHA256": "d51c1440a805221e92dcc6d54a12b6a4f3e2886d2a7cbe719d866ff6795d81da",
+        "afterSHA256": "a8950211e740f262bcaf319d829cd50eeecf76b73baa09759de2634ca0749757",
+        "replacements": [
+          {
+            "before": "text(A,'receiver',3.5,7.9,",
+            "after": "text(A,'receiver',1.8,7.9,",
+            "occurrences": 1
+          },
+          {
+            "before": "text(A,'arm ratio '+fmt(r),.8,8.9,'ink',{size:13});wrap(A,'Sector heads and chains keep the rod paths vertical. Stroke position is selected, not dynamically solved.',.8,8.1,8.4,{size:11});",
+            "after": "text(A,'r = '+fmt(r),cx,.65,'ink',{size:11,align:'center'});text(A,'Sector heads keep rods vertical.',.8,9.4,'muted',{size:11});text(A,'Selected geometry · no dynamics',.8,8.8,'muted',{size:11});",
+            "occurrences": 1
+          }
+        ],
+        "reasons": [
+          "Actually viewed current phone/desktop TECH7.1 receiver label crossed the steam riser.",
+          "Moving Newcomen beam could enter the long annotation at extreme arm/stroke settings; keep both short notes above the full geometric envelope."
+        ],
+        "affectedLessons": [
+          1,
+          2
+        ],
+        "noModelChanges": true
+      }
+    },
+    "linear-bar-assumption-repair.json": {
+      "file": "/workspace/scratch/wave6-tech-research/linear-bar-assumption-repair.json",
+      "sha256": "790ff3e38ee3b3a43e34e07a57c6bb9c4aa6619d3cfceb8cebe7e62ae966a557",
+      "record": {
+        "affectedLessons": [
+          4
+        ],
+        "reason": "At extreme allowed inputs the linear deflection exceeds5percent of span. Label the result as a linear estimate/extrapolation and say separately scaled rather than universally magnified. The threshold is a display diagnostic, not a universal validity certificate.",
+        "changedSources": [
+          {
+            "path": "content/tech/ch07.viz.js",
+            "beforeSHA256": "a8950211e740f262bcaf319d829cd50eeecf76b73baa09759de2634ca0749757",
+            "afterSHA256": "33f94d7e7a49dd54889f9722f52d1f6e8bd444f50bd4fd5965ada722185cfc9b",
+            "replacements": [
+              {
+                "before": "B=panel(v,'Actual elastic deflection')",
+                "after": "B=panel(v,'Linear elastic deflection')",
+                "occurrences": 1
+              },
+              {
+                "before": "Deflection is magnified relative to the machine sketch. The two alternatives also use different load positions.",
+                "after": "Deflection has a separate display scale. The alternatives also use different load positions.",
+                "occurrences": 1
+              },
+              {
+                "before": "no historical accuracy measurement is inferred.`",
+                "after": "no historical accuracy measurement is inferred. ${z.cantilever/(1000*z.length)>.05?'The linear estimate is a large fraction of span; the small-deflection model is being extrapolated.':''}`",
+                "occurrences": 1
+              }
+            ]
+          },
+          {
+            "path": "content/tech/ch07.js",
+            "beforeSHA256": "b9a35600edf884f2ceec938c656d1e6128d0432f7ea365aeef6eb15695bbcf6a",
+            "afterSHA256": "197079132905cb71605c99229bff3974e42802ccc726df5b7d0bec068550e173",
+            "replacements": [
+              {
+                "before": "The highlighted deflection is magnified in the machine sketch and remains quantitatively labelled.",
+                "after": "Deflection uses a separate display scale in the machine sketch and remains quantitatively labelled.",
+                "occurrences": 1
+              }
+            ]
+          }
+        ],
+        "noModelChanges": true
+      }
+    },
+    "pump-stroke-envelope-repair.json": {
+      "file": "/workspace/scratch/wave6-tech-research/pump-stroke-envelope-repair.json",
+      "sha256": "c2498f11cd5aede1575e888e438f4d444d29dadd4f19ea900104861f1ae7b145",
+      "record": {
+        "path": "content/tech/ch07.viz.js",
+        "beforeSHA256": "33f94d7e7a49dd54889f9722f52d1f6e8bd444f50bd4fd5965ada722185cfc9b",
+        "afterSHA256": "16862d24ebbe2cf38119b37283293450679013337d8f6a5c6cce0d7efb7593c4",
+        "replacements": [
+          {
+            "before": "box(A,6.5,1.2,1,1.4,'blue',{fillAlpha:.15});A.line(6.5,pumpY,7.5,pumpY",
+            "after": "box(A,6.5,1.2,1,pumpY-1.2,'blue',{fillAlpha:.15});A.path([[6.5,4.6],[6.5,1.2],[7.5,1.2],[7.5,4.6]],{color:'blue',width:1.3});A.line(6.5,pumpY,7.5,pumpY",
+            "occurrences": 1
+          }
+        ],
+        "affectedLessons": [
+          2
+        ],
+        "reason": "Contain the complete allowed plunger stroke in a visible pump cylinder; fill the chamber below the selected plunger rather than drawing a fixed shallow water patch.",
+        "noModelChanges": true
+      }
+    },
+    "sector-head-note-envelope-repair.json": {
+      "file": "/workspace/scratch/wave6-tech-research/sector-head-note-envelope-repair.json",
+      "sha256": "785ec264a0e4f88f1ce1fdb6bc423c283e50eee2d7bcacf6216607be57ee59a7",
+      "record": {
+        "path": "content/tech/ch07.viz.js",
+        "beforeSHA256": "8a81b318423ee36316659fd132793b486500fbebd4262cc4b6f62206e66b9c0e",
+        "afterSHA256": "11b5354eaab938cee5980acb9b9758d28aca96a53ea21832cdabb5c047ca4cc0",
+        "replacements": [
+          {
+            "before": "text(A,'Sector heads keep rods vertical.',.8,9.4,'muted',{size:11});text(A,'Selected geometry · no dynamics',.8,8.8,'muted',{size:11});",
+            "after": "text(A,'Sector heads · selected geometry',.8,9.5,'muted',{size:11});",
+            "occurrences": 1
+          }
+        ],
+        "affectedLessons": [
+          2
+        ],
+        "reason": "The full sector-head arc extends beyond the beam endpoint: at arm ratio3/input-end its top is8.756units. Keep the single note above this complete moving envelope; the previous second line at8.8could intersect it.",
+        "noModelChanges": true
+      }
+    }
+  },
+  "rawHistoricalSourceBundles": [
+    "/workspace/scratch/wave6-tech-research/native-pilot-v1-sources",
+    "/workspace/scratch/wave6-tech-research/native-pilot-v2-sources",
+    "/workspace/scratch/wave6-tech-research/native-interrupted-sources"
+  ],
+  "scope": "Root source/model/reference fields retain exact stored bounds. Two native pilot failures were genuine native carrier-end rounding and an over-strict opaque-stroke probe; no numerical tolerances or critical cases were removed. Long interrupted executions lack final runner receipts and are excluded; current56native and56ordinary layouts have complete frozen-source receipts and closed ownership records."
+}

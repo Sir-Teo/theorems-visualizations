@@ -1,0 +1,254 @@
+{
+  "collection": "tech",
+  "chapter": 7,
+  "title": "Steam, iron and the Industrial Revolution",
+  "items": [
+    {
+      "id": "tech-7.1",
+      "num": "7.1",
+      "kind": "Invention",
+      "name": "Savery’s and Papin’s steam devices",
+      "deps": [
+        "tech-6.11"
+      ],
+      "refs": [
+        "Mokyr ch. 4"
+      ],
+      "tags": [
+        "early-modern",
+        "1698"
+      ],
+      "pic": "Condense steam in a closed vessel: the pressure drop sucks water up, limited to about 10 m by the atmosphere; Papin’s cylinder raises a weight with a piston."
+    },
+    {
+      "id": "tech-7.2",
+      "num": "7.2",
+      "kind": "Invention",
+      "name": "The Newcomen atmospheric engine",
+      "deps": [
+        "tech-7.1",
+        "tech-2.1"
+      ],
+      "refs": [
+        "Mokyr ch. 4",
+        "Cardwell"
+      ],
+      "tags": [
+        "early-modern",
+        "1712"
+      ],
+      "pic": "Cycle a Newcomen engine: steam fills the cylinder, a cold jet condenses it, and atmospheric pressure drives the piston down to rock the beam and pump; heat wasted reheating the cylinder is tallied."
+    },
+    {
+      "id": "tech-7.3",
+      "num": "7.3",
+      "kind": "Invention",
+      "name": "Coke smelting of iron (Darby)",
+      "deps": [
+        "tech-3.3"
+      ],
+      "refs": [
+        "Mokyr ch. 5"
+      ],
+      "tags": [
+        "industrial",
+        "1709"
+      ],
+      "pic": "Replace charcoal with coke in a blast furnace: fuel cost per tonne and the forest area saved are computed, and furnace size can grow."
+    },
+    {
+      "id": "tech-7.4",
+      "num": "7.4",
+      "kind": "Invention",
+      "name": "The cylinder-boring machine (Wilkinson)",
+      "deps": [
+        "tech-7.3"
+      ],
+      "refs": [
+        "Usher, “Machine tools and quantity production”"
+      ],
+      "tags": [
+        "industrial",
+        "1774"
+      ],
+      "pic": "Bore a cylinder with the cutter supported at both ends: the out-of-roundness falls from a shilling’s thickness to a fraction of it, and steam leakage past the piston drops accordingly."
+    },
+    {
+      "id": "tech-7.5",
+      "num": "7.5",
+      "kind": "Invention",
+      "name": "Watt’s separate condenser",
+      "deps": [
+        "tech-7.2",
+        "tech-7.4"
+      ],
+      "refs": [
+        "Mokyr ch. 5",
+        "Cardwell"
+      ],
+      "tags": [
+        "industrial",
+        "1769"
+      ],
+      "pic": "Toggle between condensing in the cylinder and in a separate cold vessel: the cylinder stays hot, and coal per unit of work falls by roughly two thirds."
+    },
+    {
+      "id": "tech-7.6",
+      "num": "7.6",
+      "kind": "Invention",
+      "name": "The rotative engine: sun-and-planet gear and governor",
+      "deps": [
+        "tech-7.5",
+        "tech-2.10",
+        "ctrl-1.2"
+      ],
+      "refs": [
+        "Mokyr ch. 5"
+      ],
+      "tags": [
+        "industrial",
+        "1781"
+      ],
+      "pic": "Couple the beam to a flywheel through sun-and-planet gearing, then add the centrifugal governor: under changing mill load the speed drifts less with the governor on."
+    },
+    {
+      "id": "tech-7.7",
+      "num": "7.7",
+      "kind": "Invention",
+      "name": "Watt’s parallel motion linkage",
+      "deps": [
+        "tech-7.6"
+      ],
+      "refs": [
+        "Mokyr ch. 5"
+      ],
+      "tags": [
+        "industrial",
+        "1784"
+      ],
+      "pic": "Animate Watt’s linkage: the coupler midpoint traces a nearly straight line through the stroke, with deviation from straightness plotted."
+    },
+    {
+      "id": "tech-7.8",
+      "num": "7.8",
+      "kind": "Method",
+      "name": "The indicator diagram",
+      "deps": [
+        "tech-7.5",
+        "mech-3.1"
+      ],
+      "refs": [
+        "Cardwell"
+      ],
+      "tags": [
+        "industrial",
+        "c. 1796"
+      ],
+      "pic": "Trace pressure against piston position over a cycle: the enclosed area is the work per stroke, and changing cut-off reshapes the loop."
+    },
+    {
+      "id": "tech-7.9",
+      "num": "7.9",
+      "kind": "Invention",
+      "name": "High-pressure steam (Trevithick, Evans)",
+      "deps": [
+        "tech-7.5",
+        "tech-3.4"
+      ],
+      "refs": [
+        "Mokyr ch. 5"
+      ],
+      "tags": [
+        "industrial",
+        "1800"
+      ],
+      "pic": "Raise boiler pressure: engine size per horsepower shrinks enough to move on wheels, while boiler-wall stress rises toward the bursting limit."
+    },
+    {
+      "id": "tech-7.10",
+      "num": "7.10",
+      "kind": "Concept",
+      "name": "Carnot’s analysis of heat engines",
+      "deps": [
+        "tech-7.8",
+        "thermo-2.7"
+      ],
+      "refs": [
+        "Cardwell"
+      ],
+      "tags": [
+        "industrial",
+        "1824"
+      ],
+      "pic": "Run an ideal engine between a hot and a cold reservoir: its efficiency 1 − T_c/T_h is compared with real engines from Newcomen to modern turbines on one chart."
+    },
+    {
+      "id": "tech-7.11",
+      "num": "7.11",
+      "kind": "Invention",
+      "name": "Puddling and rolling (Cort)",
+      "deps": [
+        "tech-7.3"
+      ],
+      "refs": [
+        "Mokyr ch. 5"
+      ],
+      "tags": [
+        "industrial",
+        "1784"
+      ],
+      "pic": "Stir molten pig iron in a reverberatory furnace to burn off carbon, then pass it through grooved rolls: output per worker is compared with hammering."
+    },
+    {
+      "id": "tech-7.12",
+      "num": "7.12",
+      "kind": "Invention",
+      "name": "The Bessemer converter",
+      "deps": [
+        "tech-7.11"
+      ],
+      "refs": [
+        "Mokyr ch. 6"
+      ],
+      "tags": [
+        "industrial",
+        "1856"
+      ],
+      "pic": "Blow air through molten iron: carbon content falls over minutes while the heat of oxidation keeps the bath molten; the price of steel drops on a timeline."
+    },
+    {
+      "id": "tech-7.13",
+      "num": "7.13",
+      "kind": "Invention",
+      "name": "The screw-cutting lathe and standard threads",
+      "deps": [
+        "tech-7.4",
+        "tech-2.4"
+      ],
+      "refs": [
+        "Usher, “Machine tools and quantity production”"
+      ],
+      "tags": [
+        "industrial",
+        "c. 1800"
+      ],
+      "pic": "Gear a lathe’s lead screw to the spindle: change gears to cut any pitch, and the thread error is copied from the lead screw onto the work."
+    },
+    {
+      "id": "tech-7.14",
+      "num": "7.14",
+      "kind": "Invention",
+      "name": "Interchangeable parts",
+      "deps": [
+        "tech-7.13"
+      ],
+      "refs": [
+        "Usher, “Machine tools and quantity production”"
+      ],
+      "tags": [
+        "industrial"
+      ],
+      "pic": "Assemble muskets from random parts made to tolerances of different widths: the fraction that fit without filing rises sharply as tolerances tighten."
+    }
+  ]
+}

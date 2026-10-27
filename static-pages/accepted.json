@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
-  "acceptedCommit": "fcf3033f56195834800f6e492cb82e929a58c679",
-  "snapshotDigest": "2fbb8e2d22791d69962fff68a520710027c0230e59a7a117d10d4fcaf7dbcc07",
+  "acceptedCommit": "952469b156f0bb9a926ceb2f772aef2151191b56",
+  "snapshotDigest": "9baee7f62b3f22e67cd10194803127576c3d6bb0a9bb495e60681686b88fa027",
   "ids": [
     "aero-1.1",
     "aero-1.2",
@@ -5500,6 +5500,17 @@
     "phil-5.6",
     "phil-5.8",
     "phil-5.9",
+    "phil-6.1",
+    "phil-6.10",
+    "phil-6.11",
+    "phil-6.2",
+    "phil-6.3",
+    "phil-6.4",
+    "phil-6.5",
+    "phil-6.6",
+    "phil-6.7",
+    "phil-6.8",
+    "phil-6.9",
     "physio-1.1",
     "physio-1.10",
     "physio-1.11",
@@ -8150,6 +8161,20 @@
     "tech-6.7",
     "tech-6.8",
     "tech-6.9",
+    "tech-7.1",
+    "tech-7.10",
+    "tech-7.11",
+    "tech-7.12",
+    "tech-7.13",
+    "tech-7.14",
+    "tech-7.2",
+    "tech-7.3",
+    "tech-7.4",
+    "tech-7.5",
+    "tech-7.6",
+    "tech-7.7",
+    "tech-7.8",
+    "tech-7.9",
     "thermo-1.1",
     "thermo-1.10",
     "thermo-1.11",
@@ -9005,12 +9030,12 @@
       "to": "sig-4.4"
     }
   ],
-  "dataDigest": "aedfa503aa922feaa242be16af6f58dae961d7e5eb97ab95d73072ad3c6bd263",
+  "dataDigest": "7b664022ccd1fc5fec93c9214d0d28c219ef953c75fdb57d39786c91235de3c7",
   "sourceReconciliation": {
     "checkedOn": "2026-10-27",
-    "basis": "Source-backed author verification of ARCH6 and LING6 under the continuous content goal; no additional independent review claimed",
-    "evidencePath": "docs/integration/wave6-arch-ling-content.json",
-    "evidenceSha256": "65b94ac06807f5a2676b64d63a075ccbd0da8672764058476fdb35cea521c235",
-    "verificationPath": "docs/verification/wave6-arch-ling-integration.md"
+    "basis": "Source-backed author verification of PHIL6 and TECH7 under the continuous content goal; no additional independent review claimed",
+    "evidencePath": "docs/integration/wave6-phil-tech-content.json",
+    "evidenceSha256": "b3c2433209a147b8168166b28fcf49f10e1fe5277d919c23504df9066fdf49b8",
+    "verificationPath": "docs/verification/wave6-phil-tech-integration.md"
   }
 }

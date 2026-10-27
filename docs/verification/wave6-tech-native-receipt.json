@@ -1,0 +1,2659 @@
+{
+  "status": "PASS: complete current56 layouts from six closed guarded batches",
+  "sourceHashes": {
+    "content/tech/ch07.js": "197079132905cb71605c99229bff3974e42802ccc726df5b7d0bec068550e173",
+    "content/tech/ch07.shared.js": "5802ee0b01c7e16f3c8f7175e6ec46d720e6f81223bc6682471f18083c868a64",
+    "content/tech/ch07.viz.js": "72f44a0c8ffcf69abe3498a4585609397ac451f26361cee8af6d91c1df4f6e35",
+    "content/tech/ch07.viz.shared.js": "223eaa9c66c431afda6606b393376c56bcc5fa9ad581520af98cedbf1c28d763",
+    "content/phil/ch05.shared.js": "9dae491fabd3aee126113b57f393b61a51740710873a532871f0c8e74c7cc2bb",
+    "content/tech/syllabus.js": "8674c3455f881a7803dbf72190fe7ea9c58222d34ca8d7ca0bd79fc844c500ae",
+    "assets/js/viz/core.js": "a6fa1753d9d9e8b9a05a7161fffc58dfd53b27002d9d393a3266aeb96515fe73",
+    "assets/js/viz/math.js": "439c335e1cc47907bc72bb76559216aa093be4710e0589f41c70192729eb223e",
+    "assets/js/share-state.js": "13c6a9ac1237d566fc5d79c89e0f4d3029aa8c2817d2c08247a02b1b053a59b1",
+    "assets/js/app.js": "2f5762e6bf80723a5cb8691f8b19c552dd1d731ab998d5bfcdb27828e2e9a6ce",
+    "assets/css/style.css": "eef34e3d7aaf8b38233a78d9dc6545e5e0c9d00b09a3a6876d19f3e0e0af15b6",
+    "data/index.json": "a3de6a67b21c0d5b60bb63db460a438cb7a1a090c4e90fce9c4bb24d9764828a",
+    "data/col/tech.json": "bb6ed57a63ce54d15956b38fac36a3909fce8113ba927e3542af3829c93c1dfc",
+    "tests/fixtures/wave6-tech-reference.json": "41f17458f58ee928e4f5d6edae8507de840d67f8a17f9fb724394c710c3f6088",
+    "tests/wave6-tech-native.mjs": "4053502fa5767b82ee25a2ac9bf1b0f1c72ead77ef43a6b6a181b3ada711e068",
+    "tests/wave6-tech-native-science.mjs": "b24981d999c92a52d4c7ab14924a0232c3343f1743157f4fcfc6ce2832e7d868",
+    "tests/wave6-tech-native-cases.mjs": "1aa3675296be96d64f5f21e5419ba44ba742cb484ec076f144cf7cfdd4f707d7",
+    "tests/wave6-tech-browser.shared.mjs": "3532145eff8f13888192f2042fc008c5c3c4e4b780577faea9ca897b6b5075c8",
+    "tests/wave6-tech-native-probe.mjs": "70cb57871eebc566b8aef43003fbca7c878127ef8e855dd92fe693e6aad2b241",
+    "tests/wave6-ling-glyph.shared.mjs": "87e31d5f01c0e93492f901a8c411e88c7e1e9c551d9c2843c128c6538b9b9eb0"
+  },
+  "totals": {
+    "layouts": 56,
+    "actions": 2648,
+    "shares": 880,
+    "trustedShares": 880,
+    "invalid": 356,
+    "raw": 256,
+    "critical": 300,
+    "checks": 3616,
+    "modelComparisons": 3871732,
+    "geometryComparisons": 1661544,
+    "paintedPixelAudits": 10848,
+    "pixelSamples": 97205,
+    "domRangeRounding": 312
+  },
+  "rows": [
+    {
+      "label": "tech-7.6-light-320",
+      "counts": {
+        "layouts": 1,
+        "actions": 49,
+        "shares": 17,
+        "trustedShares": 17,
+        "invalid": 7,
+        "raw": 5,
+        "critical": 6,
+        "checks": 68,
+        "modelComparisons": 35564,
+        "geometryComparisons": 46716,
+        "paintedPixelAudits": 204,
+        "pixelSamples": 1825,
+        "domRangeRounding": 9
+      }
+    },
+    {
+      "label": "tech-7.6-light-1200",
+      "counts": {
+        "layouts": 1,
+        "actions": 49,
+        "shares": 17,
+        "trustedShares": 17,
+        "invalid": 7,
+        "raw": 5,
+        "critical": 6,
+        "checks": 68,
+        "modelComparisons": 35564,
+        "geometryComparisons": 46716,
+        "paintedPixelAudits": 204,
+        "pixelSamples": 1825,
+        "domRangeRounding": 9
+      }
+    },
+    {
+      "label": "tech-7.1-light-320",
+      "counts": {
+        "layouts": 1,
+        "actions": 60,
+        "shares": 20,
+        "trustedShares": 20,
+        "invalid": 7,
+        "raw": 5,
+        "critical": 6,
+        "checks": 79,
+        "modelComparisons": 58776,
+        "geometryComparisons": 22041,
+        "paintedPixelAudits": 237,
+        "pixelSamples": 2511,
+        "domRangeRounding": 6
+      }
+    },
+    {
+      "label": "tech-7.1-light-1200",
+      "counts": {
+        "layouts": 1,
+        "actions": 60,
+        "shares": 20,
+        "trustedShares": 20,
+        "invalid": 7,
+        "raw": 5,
+        "critical": 6,
+        "checks": 79,
+        "modelComparisons": 58776,
+        "geometryComparisons": 22041,
+        "paintedPixelAudits": 237,
+        "pixelSamples": 2511,
+        "domRangeRounding": 6
+      }
+    },
+    {
+      "label": "tech-7.2-light-320",
+      "counts": {
+        "layouts": 1,
+        "actions": 59,
+        "shares": 19,
+        "trustedShares": 19,
+        "invalid": 8,
+        "raw": 7,
+        "critical": 5,
+        "checks": 80,
+        "modelComparisons": 1680,
+        "geometryComparisons": 3796,
+        "paintedPixelAudits": 240,
+        "pixelSamples": 2333,
+        "domRangeRounding": 9
+      }
+    },
+    {
+      "label": "tech-7.2-light-1200",
+      "counts": {
+        "layouts": 1,
+        "actions": 59,
+        "shares": 19,
+        "trustedShares": 19,
+        "invalid": 8,
+        "raw": 7,
+        "critical": 5,
+        "checks": 80,
+        "modelComparisons": 1680,
+        "geometryComparisons": 3796,
+        "paintedPixelAudits": 240,
+        "pixelSamples": 2402,
+        "domRangeRounding": 9
+      }
+    },
+    {
+      "label": "tech-7.3-light-320",
+      "counts": {
+        "layouts": 1,
+        "actions": 52,
+        "shares": 17,
+        "trustedShares": 17,
+        "invalid": 7,
+        "raw": 5,
+        "critical": 5,
+        "checks": 70,
+        "modelComparisons": 1470,
+        "geometryComparisons": 682,
+        "paintedPixelAudits": 210,
+        "pixelSamples": 877,
+        "domRangeRounding": 3
+      }
+    },
+    {
+      "label": "tech-7.3-light-1200",
+      "counts": {
+        "layouts": 1,
+        "actions": 52,
+        "shares": 17,
+        "trustedShares": 17,
+        "invalid": 7,
+        "raw": 5,
+        "critical": 5,
+        "checks": 70,
+        "modelComparisons": 1470,
+        "geometryComparisons": 682,
+        "paintedPixelAudits": 210,
+        "pixelSamples": 877,
+        "domRangeRounding": 3
+      }
+    },
+    {
+      "label": "tech-7.4-light-320",
+      "counts": {
+        "layouts": 1,
+        "actions": 43,
+        "shares": 14,
+        "trustedShares": 14,
+        "invalid": 6,
+        "raw": 4,
+        "critical": 4,
+        "checks": 58,
+        "modelComparisons": 618280,
+        "geometryComparisons": 37983,
+        "paintedPixelAudits": 174,
+        "pixelSamples": 931,
+        "domRangeRounding": 9
+      }
+    },
+    {
+      "label": "tech-7.4-light-1200",
+      "counts": {
+        "layouts": 1,
+        "actions": 43,
+        "shares": 14,
+        "trustedShares": 14,
+        "invalid": 6,
+        "raw": 4,
+        "critical": 4,
+        "checks": 58,
+        "modelComparisons": 618280,
+        "geometryComparisons": 37983,
+        "paintedPixelAudits": 174,
+        "pixelSamples": 938,
+        "domRangeRounding": 9
+      }
+    },
+    {
+      "label": "tech-7.5-light-320",
+      "counts": {
+        "layouts": 1,
+        "actions": 45,
+        "shares": 15,
+        "trustedShares": 15,
+        "invalid": 6,
+        "raw": 4,
+        "critical": 5,
+        "checks": 61,
+        "modelComparisons": 64294,
+        "geometryComparisons": 15877,
+        "paintedPixelAudits": 183,
+        "pixelSamples": 1371,
+        "domRangeRounding": 3
+      }
+    },
+    {
+      "label": "tech-7.5-light-1200",
+      "counts": {
+        "layouts": 1,
+        "actions": 45,
+        "shares": 15,
+        "trustedShares": 15,
+        "invalid": 6,
+        "raw": 4,
+        "critical": 5,
+        "checks": 61,
+        "modelComparisons": 64294,
+        "geometryComparisons": 15877,
+        "paintedPixelAudits": 183,
+        "pixelSamples": 1374,
+        "domRangeRounding": 3
+      }
+    },
+    {
+      "label": "tech-7.7-light-320",
+      "counts": {
+        "layouts": 1,
+        "actions": 19,
+        "shares": 8,
+        "trustedShares": 8,
+        "invalid": 2,
+        "raw": 1,
+        "critical": 6,
+        "checks": 29,
+        "modelComparisons": 522,
+        "geometryComparisons": 56666,
+        "paintedPixelAudits": 87,
+        "pixelSamples": 634,
+        "domRangeRounding": 3
+      }
+    },
+    {
+      "label": "tech-7.7-light-1200",
+      "counts": {
+        "layouts": 1,
+        "actions": 19,
+        "shares": 8,
+        "trustedShares": 8,
+        "invalid": 2,
+        "raw": 1,
+        "critical": 6,
+        "checks": 29,
+        "modelComparisons": 522,
+        "geometryComparisons": 56666,
+        "paintedPixelAudits": 87,
+        "pixelSamples": 634,
+        "domRangeRounding": 3
+      }
+    },
+    {
+      "label": "tech-7.8-light-320",
+      "counts": {
+        "layouts": 1,
+        "actions": 57,
+        "shares": 19,
+        "trustedShares": 19,
+        "invalid": 8,
+        "raw": 6,
+        "critical": 6,
+        "checks": 78,
+        "modelComparisons": 26988,
+        "geometryComparisons": 54072,
+        "paintedPixelAudits": 234,
+        "pixelSamples": 1951,
+        "domRangeRounding": 6
+      }
+    },
+    {
+      "label": "tech-7.8-light-1200",
+      "counts": {
+        "layouts": 1,
+        "actions": 57,
+        "shares": 19,
+        "trustedShares": 19,
+        "invalid": 8,
+        "raw": 6,
+        "critical": 6,
+        "checks": 78,
+        "modelComparisons": 26988,
+        "geometryComparisons": 54072,
+        "paintedPixelAudits": 234,
+        "pixelSamples": 1950,
+        "domRangeRounding": 6
+      }
+    },
+    {
+      "label": "tech-7.9-light-320",
+      "counts": {
+        "layouts": 1,
+        "actions": 41,
+        "shares": 13,
+        "trustedShares": 13,
+        "invalid": 6,
+        "raw": 5,
+        "critical": 3,
+        "checks": 56,
+        "modelComparisons": 50512,
+        "geometryComparisons": 54768,
+        "paintedPixelAudits": 168,
+        "pixelSamples": 1115,
+        "domRangeRounding": 3
+      }
+    },
+    {
+      "label": "tech-7.9-light-1200",
+      "counts": {
+        "layouts": 1,
+        "actions": 41,
+        "shares": 13,
+        "trustedShares": 13,
+        "invalid": 6,
+        "raw": 5,
+        "critical": 3,
+        "checks": 56,
+        "modelComparisons": 50512,
+        "geometryComparisons": 54768,
+        "paintedPixelAudits": 168,
+        "pixelSamples": 1116,
+        "domRangeRounding": 3
+      }
+    },
+    {
+      "label": "tech-7.10-light-320",
+      "counts": {
+        "layouts": 1,
+        "actions": 40,
+        "shares": 14,
+        "trustedShares": 14,
+        "invalid": 5,
+        "raw": 4,
+        "critical": 6,
+        "checks": 56,
+        "modelComparisons": 68544,
+        "geometryComparisons": 42294,
+        "paintedPixelAudits": 168,
+        "pixelSamples": 990,
+        "domRangeRounding": 0
+      }
+    },
+    {
+      "label": "tech-7.10-light-1200",
+      "counts": {
+        "layouts": 1,
+        "actions": 40,
+        "shares": 14,
+        "trustedShares": 14,
+        "invalid": 5,
+        "raw": 4,
+        "critical": 6,
+        "checks": 56,
+        "modelComparisons": 68544,
+        "geometryComparisons": 42294,
+        "paintedPixelAudits": 168,
+        "pixelSamples": 990,
+        "domRangeRounding": 0
+      }
+    },
+    {
+      "label": "tech-7.11-light-320",
+      "counts": {
+        "layouts": 1,
+        "actions": 45,
+        "shares": 15,
+        "trustedShares": 15,
+        "invalid": 6,
+        "raw": 5,
+        "critical": 5,
+        "checks": 62,
+        "modelComparisons": 20088,
+        "geometryComparisons": 16306,
+        "paintedPixelAudits": 186,
+        "pixelSamples": 806,
+        "domRangeRounding": 0
+      }
+    },
+    {
+      "label": "tech-7.11-light-1200",
+      "counts": {
+        "layouts": 1,
+        "actions": 45,
+        "shares": 15,
+        "trustedShares": 15,
+        "invalid": 6,
+        "raw": 5,
+        "critical": 5,
+        "checks": 62,
+        "modelComparisons": 20088,
+        "geometryComparisons": 16306,
+        "paintedPixelAudits": 186,
+        "pixelSamples": 806,
+        "domRangeRounding": 0
+      }
+    },
+    {
+      "label": "tech-7.12-light-320",
+      "counts": {
+        "layouts": 1,
+        "actions": 45,
+        "shares": 15,
+        "trustedShares": 15,
+        "invalid": 6,
+        "raw": 5,
+        "critical": 5,
+        "checks": 62,
+        "modelComparisons": 930,
+        "geometryComparisons": 1844,
+        "paintedPixelAudits": 186,
+        "pixelSamples": 1866,
+        "domRangeRounding": 6
+      }
+    },
+    {
+      "label": "tech-7.12-light-1200",
+      "counts": {
+        "layouts": 1,
+        "actions": 45,
+        "shares": 15,
+        "trustedShares": 15,
+        "invalid": 6,
+        "raw": 5,
+        "critical": 5,
+        "checks": 62,
+        "modelComparisons": 930,
+        "geometryComparisons": 1844,
+        "paintedPixelAudits": 186,
+        "pixelSamples": 1866,
+        "domRangeRounding": 6
+      }
+    },
+    {
+      "label": "tech-7.13-light-320",
+      "counts": {
+        "layouts": 1,
+        "actions": 53,
+        "shares": 16,
+        "trustedShares": 16,
+        "invalid": 8,
+        "raw": 4,
+        "critical": 5,
+        "checks": 71,
+        "modelComparisons": 1065,
+        "geometryComparisons": 60002,
+        "paintedPixelAudits": 213,
+        "pixelSamples": 2240,
+        "domRangeRounding": 9
+      }
+    },
+    {
+      "label": "tech-7.13-light-1200",
+      "counts": {
+        "layouts": 1,
+        "actions": 53,
+        "shares": 16,
+        "trustedShares": 16,
+        "invalid": 8,
+        "raw": 4,
+        "critical": 5,
+        "checks": 71,
+        "modelComparisons": 1065,
+        "geometryComparisons": 60002,
+        "paintedPixelAudits": 213,
+        "pixelSamples": 2067,
+        "domRangeRounding": 9
+      }
+    },
+    {
+      "label": "tech-7.14-light-320",
+      "counts": {
+        "layouts": 1,
+        "actions": 54,
+        "shares": 18,
+        "trustedShares": 18,
+        "invalid": 7,
+        "raw": 4,
+        "critical": 8,
+        "checks": 74,
+        "modelComparisons": 19172,
+        "geometryComparisons": 2339,
+        "paintedPixelAudits": 222,
+        "pixelSamples": 4988,
+        "domRangeRounding": 12
+      }
+    },
+    {
+      "label": "tech-7.14-light-1200",
+      "counts": {
+        "layouts": 1,
+        "actions": 54,
+        "shares": 18,
+        "trustedShares": 18,
+        "invalid": 7,
+        "raw": 4,
+        "critical": 8,
+        "checks": 74,
+        "modelComparisons": 19268,
+        "geometryComparisons": 2339,
+        "paintedPixelAudits": 222,
+        "pixelSamples": 5015,
+        "domRangeRounding": 12
+      }
+    },
+    {
+      "label": "tech-7.6-dark-320",
+      "counts": {
+        "layouts": 1,
+        "actions": 49,
+        "shares": 17,
+        "trustedShares": 17,
+        "invalid": 7,
+        "raw": 5,
+        "critical": 6,
+        "checks": 68,
+        "modelComparisons": 35564,
+        "geometryComparisons": 46716,
+        "paintedPixelAudits": 204,
+        "pixelSamples": 1825,
+        "domRangeRounding": 9
+      }
+    },
+    {
+      "label": "tech-7.6-dark-1200",
+      "counts": {
+        "layouts": 1,
+        "actions": 49,
+        "shares": 17,
+        "trustedShares": 17,
+        "invalid": 7,
+        "raw": 5,
+        "critical": 6,
+        "checks": 68,
+        "modelComparisons": 35564,
+        "geometryComparisons": 46716,
+        "paintedPixelAudits": 204,
+        "pixelSamples": 1825,
+        "domRangeRounding": 9
+      }
+    },
+    {
+      "label": "tech-7.1-dark-320",
+      "counts": {
+        "layouts": 1,
+        "actions": 60,
+        "shares": 20,
+        "trustedShares": 20,
+        "invalid": 7,
+        "raw": 5,
+        "critical": 6,
+        "checks": 79,
+        "modelComparisons": 58776,
+        "geometryComparisons": 22041,
+        "paintedPixelAudits": 237,
+        "pixelSamples": 2511,
+        "domRangeRounding": 6
+      }
+    },
+    {
+      "label": "tech-7.1-dark-1200",
+      "counts": {
+        "layouts": 1,
+        "actions": 60,
+        "shares": 20,
+        "trustedShares": 20,
+        "invalid": 7,
+        "raw": 5,
+        "critical": 6,
+        "checks": 79,
+        "modelComparisons": 58776,
+        "geometryComparisons": 22041,
+        "paintedPixelAudits": 237,
+        "pixelSamples": 2511,
+        "domRangeRounding": 6
+      }
+    },
+    {
+      "label": "tech-7.2-dark-320",
+      "counts": {
+        "layouts": 1,
+        "actions": 59,
+        "shares": 19,
+        "trustedShares": 19,
+        "invalid": 8,
+        "raw": 7,
+        "critical": 5,
+        "checks": 80,
+        "modelComparisons": 1680,
+        "geometryComparisons": 3796,
+        "paintedPixelAudits": 240,
+        "pixelSamples": 2333,
+        "domRangeRounding": 9
+      }
+    },
+    {
+      "label": "tech-7.2-dark-1200",
+      "counts": {
+        "layouts": 1,
+        "actions": 59,
+        "shares": 19,
+        "trustedShares": 19,
+        "invalid": 8,
+        "raw": 7,
+        "critical": 5,
+        "checks": 80,
+        "modelComparisons": 1680,
+        "geometryComparisons": 3796,
+        "paintedPixelAudits": 240,
+        "pixelSamples": 2402,
+        "domRangeRounding": 9
+      }
+    },
+    {
+      "label": "tech-7.3-dark-320",
+      "counts": {
+        "layouts": 1,
+        "actions": 52,
+        "shares": 17,
+        "trustedShares": 17,
+        "invalid": 7,
+        "raw": 5,
+        "critical": 5,
+        "checks": 70,
+        "modelComparisons": 1470,
+        "geometryComparisons": 682,
+        "paintedPixelAudits": 210,
+        "pixelSamples": 877,
+        "domRangeRounding": 3
+      }
+    },
+    {
+      "label": "tech-7.3-dark-1200",
+      "counts": {
+        "layouts": 1,
+        "actions": 52,
+        "shares": 17,
+        "trustedShares": 17,
+        "invalid": 7,
+        "raw": 5,
+        "critical": 5,
+        "checks": 70,
+        "modelComparisons": 1470,
+        "geometryComparisons": 682,
+        "paintedPixelAudits": 210,
+        "pixelSamples": 877,
+        "domRangeRounding": 3
+      }
+    },
+    {
+      "label": "tech-7.4-dark-320",
+      "counts": {
+        "layouts": 1,
+        "actions": 43,
+        "shares": 14,
+        "trustedShares": 14,
+        "invalid": 6,
+        "raw": 4,
+        "critical": 4,
+        "checks": 58,
+        "modelComparisons": 618280,
+        "geometryComparisons": 37983,
+        "paintedPixelAudits": 174,
+        "pixelSamples": 931,
+        "domRangeRounding": 9
+      }
+    },
+    {
+      "label": "tech-7.4-dark-1200",
+      "counts": {
+        "layouts": 1,
+        "actions": 43,
+        "shares": 14,
+        "trustedShares": 14,
+        "invalid": 6,
+        "raw": 4,
+        "critical": 4,
+        "checks": 58,
+        "modelComparisons": 618280,
+        "geometryComparisons": 37983,
+        "paintedPixelAudits": 174,
+        "pixelSamples": 938,
+        "domRangeRounding": 9
+      }
+    },
+    {
+      "label": "tech-7.5-dark-320",
+      "counts": {
+        "layouts": 1,
+        "actions": 45,
+        "shares": 15,
+        "trustedShares": 15,
+        "invalid": 6,
+        "raw": 4,
+        "critical": 5,
+        "checks": 61,
+        "modelComparisons": 64294,
+        "geometryComparisons": 15877,
+        "paintedPixelAudits": 183,
+        "pixelSamples": 1371,
+        "domRangeRounding": 3
+      }
+    },
+    {
+      "label": "tech-7.5-dark-1200",
+      "counts": {
+        "layouts": 1,
+        "actions": 45,
+        "shares": 15,
+        "trustedShares": 15,
+        "invalid": 6,
+        "raw": 4,
+        "critical": 5,
+        "checks": 61,
+        "modelComparisons": 64294,
+        "geometryComparisons": 15877,
+        "paintedPixelAudits": 183,
+        "pixelSamples": 1374,
+        "domRangeRounding": 3
+      }
+    },
+    {
+      "label": "tech-7.7-dark-320",
+      "counts": {
+        "layouts": 1,
+        "actions": 19,
+        "shares": 8,
+        "trustedShares": 8,
+        "invalid": 2,
+        "raw": 1,
+        "critical": 6,
+        "checks": 29,
+        "modelComparisons": 522,
+        "geometryComparisons": 56666,
+        "paintedPixelAudits": 87,
+        "pixelSamples": 634,
+        "domRangeRounding": 3
+      }
+    },
+    {
+      "label": "tech-7.7-dark-1200",
+      "counts": {
+        "layouts": 1,
+        "actions": 19,
+        "shares": 8,
+        "trustedShares": 8,
+        "invalid": 2,
+        "raw": 1,
+        "critical": 6,
+        "checks": 29,
+        "modelComparisons": 522,
+        "geometryComparisons": 56666,
+        "paintedPixelAudits": 87,
+        "pixelSamples": 634,
+        "domRangeRounding": 3
+      }
+    },
+    {
+      "label": "tech-7.8-dark-320",
+      "counts": {
+        "layouts": 1,
+        "actions": 57,
+        "shares": 19,
+        "trustedShares": 19,
+        "invalid": 8,
+        "raw": 6,
+        "critical": 6,
+        "checks": 78,
+        "modelComparisons": 26988,
+        "geometryComparisons": 54072,
+        "paintedPixelAudits": 234,
+        "pixelSamples": 1873,
+        "domRangeRounding": 6
+      }
+    },
+    {
+      "label": "tech-7.8-dark-1200",
+      "counts": {
+        "layouts": 1,
+        "actions": 57,
+        "shares": 19,
+        "trustedShares": 19,
+        "invalid": 8,
+        "raw": 6,
+        "critical": 6,
+        "checks": 78,
+        "modelComparisons": 26988,
+        "geometryComparisons": 54072,
+        "paintedPixelAudits": 234,
+        "pixelSamples": 1869,
+        "domRangeRounding": 6
+      }
+    },
+    {
+      "label": "tech-7.9-dark-320",
+      "counts": {
+        "layouts": 1,
+        "actions": 41,
+        "shares": 13,
+        "trustedShares": 13,
+        "invalid": 6,
+        "raw": 5,
+        "critical": 3,
+        "checks": 56,
+        "modelComparisons": 50512,
+        "geometryComparisons": 54768,
+        "paintedPixelAudits": 168,
+        "pixelSamples": 1115,
+        "domRangeRounding": 3
+      }
+    },
+    {
+      "label": "tech-7.9-dark-1200",
+      "counts": {
+        "layouts": 1,
+        "actions": 41,
+        "shares": 13,
+        "trustedShares": 13,
+        "invalid": 6,
+        "raw": 5,
+        "critical": 3,
+        "checks": 56,
+        "modelComparisons": 50512,
+        "geometryComparisons": 54768,
+        "paintedPixelAudits": 168,
+        "pixelSamples": 1116,
+        "domRangeRounding": 3
+      }
+    },
+    {
+      "label": "tech-7.10-dark-320",
+      "counts": {
+        "layouts": 1,
+        "actions": 40,
+        "shares": 14,
+        "trustedShares": 14,
+        "invalid": 5,
+        "raw": 4,
+        "critical": 6,
+        "checks": 56,
+        "modelComparisons": 68544,
+        "geometryComparisons": 42294,
+        "paintedPixelAudits": 168,
+        "pixelSamples": 990,
+        "domRangeRounding": 0
+      }
+    },
+    {
+      "label": "tech-7.10-dark-1200",
+      "counts": {
+        "layouts": 1,
+        "actions": 40,
+        "shares": 14,
+        "trustedShares": 14,
+        "invalid": 5,
+        "raw": 4,
+        "critical": 6,
+        "checks": 56,
+        "modelComparisons": 68544,
+        "geometryComparisons": 42294,
+        "paintedPixelAudits": 168,
+        "pixelSamples": 990,
+        "domRangeRounding": 0
+      }
+    },
+    {
+      "label": "tech-7.11-dark-320",
+      "counts": {
+        "layouts": 1,
+        "actions": 45,
+        "shares": 15,
+        "trustedShares": 15,
+        "invalid": 6,
+        "raw": 5,
+        "critical": 5,
+        "checks": 62,
+        "modelComparisons": 20088,
+        "geometryComparisons": 16306,
+        "paintedPixelAudits": 186,
+        "pixelSamples": 806,
+        "domRangeRounding": 0
+      }
+    },
+    {
+      "label": "tech-7.11-dark-1200",
+      "counts": {
+        "layouts": 1,
+        "actions": 45,
+        "shares": 15,
+        "trustedShares": 15,
+        "invalid": 6,
+        "raw": 5,
+        "critical": 5,
+        "checks": 62,
+        "modelComparisons": 20088,
+        "geometryComparisons": 16306,
+        "paintedPixelAudits": 186,
+        "pixelSamples": 806,
+        "domRangeRounding": 0
+      }
+    },
+    {
+      "label": "tech-7.12-dark-320",
+      "counts": {
+        "layouts": 1,
+        "actions": 45,
+        "shares": 15,
+        "trustedShares": 15,
+        "invalid": 6,
+        "raw": 5,
+        "critical": 5,
+        "checks": 62,
+        "modelComparisons": 930,
+        "geometryComparisons": 1844,
+        "paintedPixelAudits": 186,
+        "pixelSamples": 1866,
+        "domRangeRounding": 6
+      }
+    },
+    {
+      "label": "tech-7.12-dark-1200",
+      "counts": {
+        "layouts": 1,
+        "actions": 45,
+        "shares": 15,
+        "trustedShares": 15,
+        "invalid": 6,
+        "raw": 5,
+        "critical": 5,
+        "checks": 62,
+        "modelComparisons": 930,
+        "geometryComparisons": 1844,
+        "paintedPixelAudits": 186,
+        "pixelSamples": 1866,
+        "domRangeRounding": 6
+      }
+    },
+    {
+      "label": "tech-7.13-dark-320",
+      "counts": {
+        "layouts": 1,
+        "actions": 53,
+        "shares": 16,
+        "trustedShares": 16,
+        "invalid": 8,
+        "raw": 4,
+        "critical": 5,
+        "checks": 71,
+        "modelComparisons": 1065,
+        "geometryComparisons": 60002,
+        "paintedPixelAudits": 213,
+        "pixelSamples": 2042,
+        "domRangeRounding": 9
+      }
+    },
+    {
+      "label": "tech-7.13-dark-1200",
+      "counts": {
+        "layouts": 1,
+        "actions": 53,
+        "shares": 16,
+        "trustedShares": 16,
+        "invalid": 8,
+        "raw": 4,
+        "critical": 5,
+        "checks": 71,
+        "modelComparisons": 1065,
+        "geometryComparisons": 60002,
+        "paintedPixelAudits": 213,
+        "pixelSamples": 2011,
+        "domRangeRounding": 9
+      }
+    },
+    {
+      "label": "tech-7.14-dark-320",
+      "counts": {
+        "layouts": 1,
+        "actions": 54,
+        "shares": 18,
+        "trustedShares": 18,
+        "invalid": 7,
+        "raw": 4,
+        "critical": 8,
+        "checks": 74,
+        "modelComparisons": 19172,
+        "geometryComparisons": 2339,
+        "paintedPixelAudits": 222,
+        "pixelSamples": 4988,
+        "domRangeRounding": 12
+      }
+    },
+    {
+      "label": "tech-7.14-dark-1200",
+      "counts": {
+        "layouts": 1,
+        "actions": 54,
+        "shares": 18,
+        "trustedShares": 18,
+        "invalid": 7,
+        "raw": 4,
+        "critical": 8,
+        "checks": 74,
+        "modelComparisons": 19268,
+        "geometryComparisons": 2339,
+        "paintedPixelAudits": 222,
+        "pixelSamples": 5015,
+        "domRangeRounding": 12
+      }
+    }
+  ],
+  "closedSessions": [
+    "82654",
+    "1588",
+    "23981",
+    "66606",
+    "13929",
+    "67151"
+  ],
+  "batches": [
+    {
+      "file": "/workspace/scratch/wave6-tech-research/native-current-light/receipt-6.json",
+      "sha256": "8e4870fbb8452423dc49a3b2aae2119e770c59d8d837c1fcb9c37db477d48aac",
+      "receipt": {
+        "sourceHashes": {
+          "content/tech/ch07.js": "197079132905cb71605c99229bff3974e42802ccc726df5b7d0bec068550e173",
+          "content/tech/ch07.shared.js": "5802ee0b01c7e16f3c8f7175e6ec46d720e6f81223bc6682471f18083c868a64",
+          "content/tech/ch07.viz.js": "72f44a0c8ffcf69abe3498a4585609397ac451f26361cee8af6d91c1df4f6e35",
+          "content/tech/ch07.viz.shared.js": "223eaa9c66c431afda6606b393376c56bcc5fa9ad581520af98cedbf1c28d763",
+          "content/phil/ch05.shared.js": "9dae491fabd3aee126113b57f393b61a51740710873a532871f0c8e74c7cc2bb",
+          "content/tech/syllabus.js": "8674c3455f881a7803dbf72190fe7ea9c58222d34ca8d7ca0bd79fc844c500ae",
+          "assets/js/viz/core.js": "a6fa1753d9d9e8b9a05a7161fffc58dfd53b27002d9d393a3266aeb96515fe73",
+          "assets/js/viz/math.js": "439c335e1cc47907bc72bb76559216aa093be4710e0589f41c70192729eb223e",
+          "assets/js/share-state.js": "13c6a9ac1237d566fc5d79c89e0f4d3029aa8c2817d2c08247a02b1b053a59b1",
+          "assets/js/app.js": "2f5762e6bf80723a5cb8691f8b19c552dd1d731ab998d5bfcdb27828e2e9a6ce",
+          "assets/css/style.css": "eef34e3d7aaf8b38233a78d9dc6545e5e0c9d00b09a3a6876d19f3e0e0af15b6",
+          "data/index.json": "a3de6a67b21c0d5b60bb63db460a438cb7a1a090c4e90fce9c4bb24d9764828a",
+          "data/col/tech.json": "bb6ed57a63ce54d15956b38fac36a3909fce8113ba927e3542af3829c93c1dfc",
+          "tests/fixtures/wave6-tech-reference.json": "41f17458f58ee928e4f5d6edae8507de840d67f8a17f9fb724394c710c3f6088",
+          "tests/wave6-tech-native.mjs": "4053502fa5767b82ee25a2ac9bf1b0f1c72ead77ef43a6b6a181b3ada711e068",
+          "tests/wave6-tech-native-science.mjs": "b24981d999c92a52d4c7ab14924a0232c3343f1743157f4fcfc6ce2832e7d868",
+          "tests/wave6-tech-native-cases.mjs": "1aa3675296be96d64f5f21e5419ba44ba742cb484ec076f144cf7cfdd4f707d7",
+          "tests/wave6-tech-browser.shared.mjs": "3532145eff8f13888192f2042fc008c5c3c4e4b780577faea9ca897b6b5075c8",
+          "tests/wave6-tech-native-probe.mjs": "70cb57871eebc566b8aef43003fbca7c878127ef8e855dd92fe693e6aad2b241",
+          "tests/wave6-ling-glyph.shared.mjs": "87e31d5f01c0e93492f901a8c411e88c7e1e9c551d9c2843c128c6538b9b9eb0"
+        },
+        "afterHashes": {
+          "content/tech/ch07.js": "197079132905cb71605c99229bff3974e42802ccc726df5b7d0bec068550e173",
+          "content/tech/ch07.shared.js": "5802ee0b01c7e16f3c8f7175e6ec46d720e6f81223bc6682471f18083c868a64",
+          "content/tech/ch07.viz.js": "72f44a0c8ffcf69abe3498a4585609397ac451f26361cee8af6d91c1df4f6e35",
+          "content/tech/ch07.viz.shared.js": "223eaa9c66c431afda6606b393376c56bcc5fa9ad581520af98cedbf1c28d763",
+          "content/phil/ch05.shared.js": "9dae491fabd3aee126113b57f393b61a51740710873a532871f0c8e74c7cc2bb",
+          "content/tech/syllabus.js": "8674c3455f881a7803dbf72190fe7ea9c58222d34ca8d7ca0bd79fc844c500ae",
+          "assets/js/viz/core.js": "a6fa1753d9d9e8b9a05a7161fffc58dfd53b27002d9d393a3266aeb96515fe73",
+          "assets/js/viz/math.js": "439c335e1cc47907bc72bb76559216aa093be4710e0589f41c70192729eb223e",
+          "assets/js/share-state.js": "13c6a9ac1237d566fc5d79c89e0f4d3029aa8c2817d2c08247a02b1b053a59b1",
+          "assets/js/app.js": "2f5762e6bf80723a5cb8691f8b19c552dd1d731ab998d5bfcdb27828e2e9a6ce",
+          "assets/css/style.css": "eef34e3d7aaf8b38233a78d9dc6545e5e0c9d00b09a3a6876d19f3e0e0af15b6",
+          "data/index.json": "a3de6a67b21c0d5b60bb63db460a438cb7a1a090c4e90fce9c4bb24d9764828a",
+          "data/col/tech.json": "bb6ed57a63ce54d15956b38fac36a3909fce8113ba927e3542af3829c93c1dfc",
+          "tests/fixtures/wave6-tech-reference.json": "41f17458f58ee928e4f5d6edae8507de840d67f8a17f9fb724394c710c3f6088",
+          "tests/wave6-tech-native.mjs": "4053502fa5767b82ee25a2ac9bf1b0f1c72ead77ef43a6b6a181b3ada711e068",
+          "tests/wave6-tech-native-science.mjs": "b24981d999c92a52d4c7ab14924a0232c3343f1743157f4fcfc6ce2832e7d868",
+          "tests/wave6-tech-native-cases.mjs": "1aa3675296be96d64f5f21e5419ba44ba742cb484ec076f144cf7cfdd4f707d7",
+          "tests/wave6-tech-browser.shared.mjs": "3532145eff8f13888192f2042fc008c5c3c4e4b780577faea9ca897b6b5075c8",
+          "tests/wave6-tech-native-probe.mjs": "70cb57871eebc566b8aef43003fbca7c878127ef8e855dd92fe693e6aad2b241",
+          "tests/wave6-ling-glyph.shared.mjs": "87e31d5f01c0e93492f901a8c411e88c7e1e9c551d9c2843c128c6538b9b9eb0"
+        },
+        "sourceDataHarnessUnchanged": true,
+        "totals": {
+          "layouts": 2,
+          "actions": 98,
+          "shares": 34,
+          "trustedShares": 34,
+          "invalid": 14,
+          "raw": 10,
+          "critical": 12,
+          "checks": 136,
+          "modelComparisons": 71128,
+          "geometryComparisons": 93432,
+          "paintedPixelAudits": 408,
+          "pixelSamples": 3650,
+          "domRangeRounding": 18
+        },
+        "rows": [
+          {
+            "label": "tech-7.6-light-320",
+            "counts": {
+              "layouts": 1,
+              "actions": 49,
+              "shares": 17,
+              "trustedShares": 17,
+              "invalid": 7,
+              "raw": 5,
+              "critical": 6,
+              "checks": 68,
+              "modelComparisons": 35564,
+              "geometryComparisons": 46716,
+              "paintedPixelAudits": 204,
+              "pixelSamples": 1825,
+              "domRangeRounding": 9
+            }
+          },
+          {
+            "label": "tech-7.6-light-1200",
+            "counts": {
+              "layouts": 1,
+              "actions": 49,
+              "shares": 17,
+              "trustedShares": 17,
+              "invalid": 7,
+              "raw": 5,
+              "critical": 6,
+              "checks": 68,
+              "modelComparisons": 35564,
+              "geometryComparisons": 46716,
+              "paintedPixelAudits": 204,
+              "pixelSamples": 1825,
+              "domRangeRounding": 9
+            }
+          }
+        ],
+        "failure": null
+      }
+    },
+    {
+      "file": "/workspace/scratch/wave6-tech-research/native-current-light/receipt-a.json",
+      "sha256": "aed447b8d606e3a583673798b9023f1fe418e588ce22952a60ad9d613019aab3",
+      "receipt": {
+        "sourceHashes": {
+          "content/tech/ch07.js": "197079132905cb71605c99229bff3974e42802ccc726df5b7d0bec068550e173",
+          "content/tech/ch07.shared.js": "5802ee0b01c7e16f3c8f7175e6ec46d720e6f81223bc6682471f18083c868a64",
+          "content/tech/ch07.viz.js": "72f44a0c8ffcf69abe3498a4585609397ac451f26361cee8af6d91c1df4f6e35",
+          "content/tech/ch07.viz.shared.js": "223eaa9c66c431afda6606b393376c56bcc5fa9ad581520af98cedbf1c28d763",
+          "content/phil/ch05.shared.js": "9dae491fabd3aee126113b57f393b61a51740710873a532871f0c8e74c7cc2bb",
+          "content/tech/syllabus.js": "8674c3455f881a7803dbf72190fe7ea9c58222d34ca8d7ca0bd79fc844c500ae",
+          "assets/js/viz/core.js": "a6fa1753d9d9e8b9a05a7161fffc58dfd53b27002d9d393a3266aeb96515fe73",
+          "assets/js/viz/math.js": "439c335e1cc47907bc72bb76559216aa093be4710e0589f41c70192729eb223e",
+          "assets/js/share-state.js": "13c6a9ac1237d566fc5d79c89e0f4d3029aa8c2817d2c08247a02b1b053a59b1",
+          "assets/js/app.js": "2f5762e6bf80723a5cb8691f8b19c552dd1d731ab998d5bfcdb27828e2e9a6ce",
+          "assets/css/style.css": "eef34e3d7aaf8b38233a78d9dc6545e5e0c9d00b09a3a6876d19f3e0e0af15b6",
+          "data/index.json": "a3de6a67b21c0d5b60bb63db460a438cb7a1a090c4e90fce9c4bb24d9764828a",
+          "data/col/tech.json": "bb6ed57a63ce54d15956b38fac36a3909fce8113ba927e3542af3829c93c1dfc",
+          "tests/fixtures/wave6-tech-reference.json": "41f17458f58ee928e4f5d6edae8507de840d67f8a17f9fb724394c710c3f6088",
+          "tests/wave6-tech-native.mjs": "4053502fa5767b82ee25a2ac9bf1b0f1c72ead77ef43a6b6a181b3ada711e068",
+          "tests/wave6-tech-native-science.mjs": "b24981d999c92a52d4c7ab14924a0232c3343f1743157f4fcfc6ce2832e7d868",
+          "tests/wave6-tech-native-cases.mjs": "1aa3675296be96d64f5f21e5419ba44ba742cb484ec076f144cf7cfdd4f707d7",
+          "tests/wave6-tech-browser.shared.mjs": "3532145eff8f13888192f2042fc008c5c3c4e4b780577faea9ca897b6b5075c8",
+          "tests/wave6-tech-native-probe.mjs": "70cb57871eebc566b8aef43003fbca7c878127ef8e855dd92fe693e6aad2b241",
+          "tests/wave6-ling-glyph.shared.mjs": "87e31d5f01c0e93492f901a8c411e88c7e1e9c551d9c2843c128c6538b9b9eb0"
+        },
+        "afterHashes": {
+          "content/tech/ch07.js": "197079132905cb71605c99229bff3974e42802ccc726df5b7d0bec068550e173",
+          "content/tech/ch07.shared.js": "5802ee0b01c7e16f3c8f7175e6ec46d720e6f81223bc6682471f18083c868a64",
+          "content/tech/ch07.viz.js": "72f44a0c8ffcf69abe3498a4585609397ac451f26361cee8af6d91c1df4f6e35",
+          "content/tech/ch07.viz.shared.js": "223eaa9c66c431afda6606b393376c56bcc5fa9ad581520af98cedbf1c28d763",
+          "content/phil/ch05.shared.js": "9dae491fabd3aee126113b57f393b61a51740710873a532871f0c8e74c7cc2bb",
+          "content/tech/syllabus.js": "8674c3455f881a7803dbf72190fe7ea9c58222d34ca8d7ca0bd79fc844c500ae",
+          "assets/js/viz/core.js": "a6fa1753d9d9e8b9a05a7161fffc58dfd53b27002d9d393a3266aeb96515fe73",
+          "assets/js/viz/math.js": "439c335e1cc47907bc72bb76559216aa093be4710e0589f41c70192729eb223e",
+          "assets/js/share-state.js": "13c6a9ac1237d566fc5d79c89e0f4d3029aa8c2817d2c08247a02b1b053a59b1",
+          "assets/js/app.js": "2f5762e6bf80723a5cb8691f8b19c552dd1d731ab998d5bfcdb27828e2e9a6ce",
+          "assets/css/style.css": "eef34e3d7aaf8b38233a78d9dc6545e5e0c9d00b09a3a6876d19f3e0e0af15b6",
+          "data/index.json": "a3de6a67b21c0d5b60bb63db460a438cb7a1a090c4e90fce9c4bb24d9764828a",
+          "data/col/tech.json": "bb6ed57a63ce54d15956b38fac36a3909fce8113ba927e3542af3829c93c1dfc",
+          "tests/fixtures/wave6-tech-reference.json": "41f17458f58ee928e4f5d6edae8507de840d67f8a17f9fb724394c710c3f6088",
+          "tests/wave6-tech-native.mjs": "4053502fa5767b82ee25a2ac9bf1b0f1c72ead77ef43a6b6a181b3ada711e068",
+          "tests/wave6-tech-native-science.mjs": "b24981d999c92a52d4c7ab14924a0232c3343f1743157f4fcfc6ce2832e7d868",
+          "tests/wave6-tech-native-cases.mjs": "1aa3675296be96d64f5f21e5419ba44ba742cb484ec076f144cf7cfdd4f707d7",
+          "tests/wave6-tech-browser.shared.mjs": "3532145eff8f13888192f2042fc008c5c3c4e4b780577faea9ca897b6b5075c8",
+          "tests/wave6-tech-native-probe.mjs": "70cb57871eebc566b8aef43003fbca7c878127ef8e855dd92fe693e6aad2b241",
+          "tests/wave6-ling-glyph.shared.mjs": "87e31d5f01c0e93492f901a8c411e88c7e1e9c551d9c2843c128c6538b9b9eb0"
+        },
+        "sourceDataHarnessUnchanged": true,
+        "totals": {
+          "layouts": 12,
+          "actions": 556,
+          "shares": 186,
+          "trustedShares": 186,
+          "invalid": 72,
+          "raw": 52,
+          "critical": 62,
+          "checks": 754,
+          "modelComparisons": 1490044,
+          "geometryComparisons": 274090,
+          "paintedPixelAudits": 2262,
+          "pixelSamples": 17393,
+          "domRangeRounding": 66
+        },
+        "rows": [
+          {
+            "label": "tech-7.1-light-320",
+            "counts": {
+              "layouts": 1,
+              "actions": 60,
+              "shares": 20,
+              "trustedShares": 20,
+              "invalid": 7,
+              "raw": 5,
+              "critical": 6,
+              "checks": 79,
+              "modelComparisons": 58776,
+              "geometryComparisons": 22041,
+              "paintedPixelAudits": 237,
+              "pixelSamples": 2511,
+              "domRangeRounding": 6
+            }
+          },
+          {
+            "label": "tech-7.1-light-1200",
+            "counts": {
+              "layouts": 1,
+              "actions": 60,
+              "shares": 20,
+              "trustedShares": 20,
+              "invalid": 7,
+              "raw": 5,
+              "critical": 6,
+              "checks": 79,
+              "modelComparisons": 58776,
+              "geometryComparisons": 22041,
+              "paintedPixelAudits": 237,
+              "pixelSamples": 2511,
+              "domRangeRounding": 6
+            }
+          },
+          {
+            "label": "tech-7.2-light-320",
+            "counts": {
+              "layouts": 1,
+              "actions": 59,
+              "shares": 19,
+              "trustedShares": 19,
+              "invalid": 8,
+              "raw": 7,
+              "critical": 5,
+              "checks": 80,
+              "modelComparisons": 1680,
+              "geometryComparisons": 3796,
+              "paintedPixelAudits": 240,
+              "pixelSamples": 2333,
+              "domRangeRounding": 9
+            }
+          },
+          {
+            "label": "tech-7.2-light-1200",
+            "counts": {
+              "layouts": 1,
+              "actions": 59,
+              "shares": 19,
+              "trustedShares": 19,
+              "invalid": 8,
+              "raw": 7,
+              "critical": 5,
+              "checks": 80,
+              "modelComparisons": 1680,
+              "geometryComparisons": 3796,
+              "paintedPixelAudits": 240,
+              "pixelSamples": 2402,
+              "domRangeRounding": 9
+            }
+          },
+          {
+            "label": "tech-7.3-light-320",
+            "counts": {
+              "layouts": 1,
+              "actions": 52,
+              "shares": 17,
+              "trustedShares": 17,
+              "invalid": 7,
+              "raw": 5,
+              "critical": 5,
+              "checks": 70,
+              "modelComparisons": 1470,
+              "geometryComparisons": 682,
+              "paintedPixelAudits": 210,
+              "pixelSamples": 877,
+              "domRangeRounding": 3
+            }
+          },
+          {
+            "label": "tech-7.3-light-1200",
+            "counts": {
+              "layouts": 1,
+              "actions": 52,
+              "shares": 17,
+              "trustedShares": 17,
+              "invalid": 7,
+              "raw": 5,
+              "critical": 5,
+              "checks": 70,
+              "modelComparisons": 1470,
+              "geometryComparisons": 682,
+              "paintedPixelAudits": 210,
+              "pixelSamples": 877,
+              "domRangeRounding": 3
+            }
+          },
+          {
+            "label": "tech-7.4-light-320",
+            "counts": {
+              "layouts": 1,
+              "actions": 43,
+              "shares": 14,
+              "trustedShares": 14,
+              "invalid": 6,
+              "raw": 4,
+              "critical": 4,
+              "checks": 58,
+              "modelComparisons": 618280,
+              "geometryComparisons": 37983,
+              "paintedPixelAudits": 174,
+              "pixelSamples": 931,
+              "domRangeRounding": 9
+            }
+          },
+          {
+            "label": "tech-7.4-light-1200",
+            "counts": {
+              "layouts": 1,
+              "actions": 43,
+              "shares": 14,
+              "trustedShares": 14,
+              "invalid": 6,
+              "raw": 4,
+              "critical": 4,
+              "checks": 58,
+              "modelComparisons": 618280,
+              "geometryComparisons": 37983,
+              "paintedPixelAudits": 174,
+              "pixelSamples": 938,
+              "domRangeRounding": 9
+            }
+          },
+          {
+            "label": "tech-7.5-light-320",
+            "counts": {
+              "layouts": 1,
+              "actions": 45,
+              "shares": 15,
+              "trustedShares": 15,
+              "invalid": 6,
+              "raw": 4,
+              "critical": 5,
+              "checks": 61,
+              "modelComparisons": 64294,
+              "geometryComparisons": 15877,
+              "paintedPixelAudits": 183,
+              "pixelSamples": 1371,
+              "domRangeRounding": 3
+            }
+          },
+          {
+            "label": "tech-7.5-light-1200",
+            "counts": {
+              "layouts": 1,
+              "actions": 45,
+              "shares": 15,
+              "trustedShares": 15,
+              "invalid": 6,
+              "raw": 4,
+              "critical": 5,
+              "checks": 61,
+              "modelComparisons": 64294,
+              "geometryComparisons": 15877,
+              "paintedPixelAudits": 183,
+              "pixelSamples": 1374,
+              "domRangeRounding": 3
+            }
+          },
+          {
+            "label": "tech-7.7-light-320",
+            "counts": {
+              "layouts": 1,
+              "actions": 19,
+              "shares": 8,
+              "trustedShares": 8,
+              "invalid": 2,
+              "raw": 1,
+              "critical": 6,
+              "checks": 29,
+              "modelComparisons": 522,
+              "geometryComparisons": 56666,
+              "paintedPixelAudits": 87,
+              "pixelSamples": 634,
+              "domRangeRounding": 3
+            }
+          },
+          {
+            "label": "tech-7.7-light-1200",
+            "counts": {
+              "layouts": 1,
+              "actions": 19,
+              "shares": 8,
+              "trustedShares": 8,
+              "invalid": 2,
+              "raw": 1,
+              "critical": 6,
+              "checks": 29,
+              "modelComparisons": 522,
+              "geometryComparisons": 56666,
+              "paintedPixelAudits": 87,
+              "pixelSamples": 634,
+              "domRangeRounding": 3
+            }
+          }
+        ],
+        "failure": null
+      }
+    },
+    {
+      "file": "/workspace/scratch/wave6-tech-research/native-current-light/receipt-b.json",
+      "sha256": "5ac4f1c823924a6d85eabdf657ac8e38844c47675287f2c024317690b103c27c",
+      "receipt": {
+        "sourceHashes": {
+          "content/tech/ch07.js": "197079132905cb71605c99229bff3974e42802ccc726df5b7d0bec068550e173",
+          "content/tech/ch07.shared.js": "5802ee0b01c7e16f3c8f7175e6ec46d720e6f81223bc6682471f18083c868a64",
+          "content/tech/ch07.viz.js": "72f44a0c8ffcf69abe3498a4585609397ac451f26361cee8af6d91c1df4f6e35",
+          "content/tech/ch07.viz.shared.js": "223eaa9c66c431afda6606b393376c56bcc5fa9ad581520af98cedbf1c28d763",
+          "content/phil/ch05.shared.js": "9dae491fabd3aee126113b57f393b61a51740710873a532871f0c8e74c7cc2bb",
+          "content/tech/syllabus.js": "8674c3455f881a7803dbf72190fe7ea9c58222d34ca8d7ca0bd79fc844c500ae",
+          "assets/js/viz/core.js": "a6fa1753d9d9e8b9a05a7161fffc58dfd53b27002d9d393a3266aeb96515fe73",
+          "assets/js/viz/math.js": "439c335e1cc47907bc72bb76559216aa093be4710e0589f41c70192729eb223e",
+          "assets/js/share-state.js": "13c6a9ac1237d566fc5d79c89e0f4d3029aa8c2817d2c08247a02b1b053a59b1",
+          "assets/js/app.js": "2f5762e6bf80723a5cb8691f8b19c552dd1d731ab998d5bfcdb27828e2e9a6ce",
+          "assets/css/style.css": "eef34e3d7aaf8b38233a78d9dc6545e5e0c9d00b09a3a6876d19f3e0e0af15b6",
+          "data/index.json": "a3de6a67b21c0d5b60bb63db460a438cb7a1a090c4e90fce9c4bb24d9764828a",
+          "data/col/tech.json": "bb6ed57a63ce54d15956b38fac36a3909fce8113ba927e3542af3829c93c1dfc",
+          "tests/fixtures/wave6-tech-reference.json": "41f17458f58ee928e4f5d6edae8507de840d67f8a17f9fb724394c710c3f6088",
+          "tests/wave6-tech-native.mjs": "4053502fa5767b82ee25a2ac9bf1b0f1c72ead77ef43a6b6a181b3ada711e068",
+          "tests/wave6-tech-native-science.mjs": "b24981d999c92a52d4c7ab14924a0232c3343f1743157f4fcfc6ce2832e7d868",
+          "tests/wave6-tech-native-cases.mjs": "1aa3675296be96d64f5f21e5419ba44ba742cb484ec076f144cf7cfdd4f707d7",
+          "tests/wave6-tech-browser.shared.mjs": "3532145eff8f13888192f2042fc008c5c3c4e4b780577faea9ca897b6b5075c8",
+          "tests/wave6-tech-native-probe.mjs": "70cb57871eebc566b8aef43003fbca7c878127ef8e855dd92fe693e6aad2b241",
+          "tests/wave6-ling-glyph.shared.mjs": "87e31d5f01c0e93492f901a8c411e88c7e1e9c551d9c2843c128c6538b9b9eb0"
+        },
+        "afterHashes": {
+          "content/tech/ch07.js": "197079132905cb71605c99229bff3974e42802ccc726df5b7d0bec068550e173",
+          "content/tech/ch07.shared.js": "5802ee0b01c7e16f3c8f7175e6ec46d720e6f81223bc6682471f18083c868a64",
+          "content/tech/ch07.viz.js": "72f44a0c8ffcf69abe3498a4585609397ac451f26361cee8af6d91c1df4f6e35",
+          "content/tech/ch07.viz.shared.js": "223eaa9c66c431afda6606b393376c56bcc5fa9ad581520af98cedbf1c28d763",
+          "content/phil/ch05.shared.js": "9dae491fabd3aee126113b57f393b61a51740710873a532871f0c8e74c7cc2bb",
+          "content/tech/syllabus.js": "8674c3455f881a7803dbf72190fe7ea9c58222d34ca8d7ca0bd79fc844c500ae",
+          "assets/js/viz/core.js": "a6fa1753d9d9e8b9a05a7161fffc58dfd53b27002d9d393a3266aeb96515fe73",
+          "assets/js/viz/math.js": "439c335e1cc47907bc72bb76559216aa093be4710e0589f41c70192729eb223e",
+          "assets/js/share-state.js": "13c6a9ac1237d566fc5d79c89e0f4d3029aa8c2817d2c08247a02b1b053a59b1",
+          "assets/js/app.js": "2f5762e6bf80723a5cb8691f8b19c552dd1d731ab998d5bfcdb27828e2e9a6ce",
+          "assets/css/style.css": "eef34e3d7aaf8b38233a78d9dc6545e5e0c9d00b09a3a6876d19f3e0e0af15b6",
+          "data/index.json": "a3de6a67b21c0d5b60bb63db460a438cb7a1a090c4e90fce9c4bb24d9764828a",
+          "data/col/tech.json": "bb6ed57a63ce54d15956b38fac36a3909fce8113ba927e3542af3829c93c1dfc",
+          "tests/fixtures/wave6-tech-reference.json": "41f17458f58ee928e4f5d6edae8507de840d67f8a17f9fb724394c710c3f6088",
+          "tests/wave6-tech-native.mjs": "4053502fa5767b82ee25a2ac9bf1b0f1c72ead77ef43a6b6a181b3ada711e068",
+          "tests/wave6-tech-native-science.mjs": "b24981d999c92a52d4c7ab14924a0232c3343f1743157f4fcfc6ce2832e7d868",
+          "tests/wave6-tech-native-cases.mjs": "1aa3675296be96d64f5f21e5419ba44ba742cb484ec076f144cf7cfdd4f707d7",
+          "tests/wave6-tech-browser.shared.mjs": "3532145eff8f13888192f2042fc008c5c3c4e4b780577faea9ca897b6b5075c8",
+          "tests/wave6-tech-native-probe.mjs": "70cb57871eebc566b8aef43003fbca7c878127ef8e855dd92fe693e6aad2b241",
+          "tests/wave6-ling-glyph.shared.mjs": "87e31d5f01c0e93492f901a8c411e88c7e1e9c551d9c2843c128c6538b9b9eb0"
+        },
+        "sourceDataHarnessUnchanged": true,
+        "totals": {
+          "layouts": 14,
+          "actions": 670,
+          "shares": 220,
+          "trustedShares": 220,
+          "invalid": 92,
+          "raw": 66,
+          "critical": 76,
+          "checks": 918,
+          "modelComparisons": 374694,
+          "geometryComparisons": 463250,
+          "paintedPixelAudits": 2754,
+          "pixelSamples": 27766,
+          "domRangeRounding": 72
+        },
+        "rows": [
+          {
+            "label": "tech-7.8-light-320",
+            "counts": {
+              "layouts": 1,
+              "actions": 57,
+              "shares": 19,
+              "trustedShares": 19,
+              "invalid": 8,
+              "raw": 6,
+              "critical": 6,
+              "checks": 78,
+              "modelComparisons": 26988,
+              "geometryComparisons": 54072,
+              "paintedPixelAudits": 234,
+              "pixelSamples": 1951,
+              "domRangeRounding": 6
+            }
+          },
+          {
+            "label": "tech-7.8-light-1200",
+            "counts": {
+              "layouts": 1,
+              "actions": 57,
+              "shares": 19,
+              "trustedShares": 19,
+              "invalid": 8,
+              "raw": 6,
+              "critical": 6,
+              "checks": 78,
+              "modelComparisons": 26988,
+              "geometryComparisons": 54072,
+              "paintedPixelAudits": 234,
+              "pixelSamples": 1950,
+              "domRangeRounding": 6
+            }
+          },
+          {
+            "label": "tech-7.9-light-320",
+            "counts": {
+              "layouts": 1,
+              "actions": 41,
+              "shares": 13,
+              "trustedShares": 13,
+              "invalid": 6,
+              "raw": 5,
+              "critical": 3,
+              "checks": 56,
+              "modelComparisons": 50512,
+              "geometryComparisons": 54768,
+              "paintedPixelAudits": 168,
+              "pixelSamples": 1115,
+              "domRangeRounding": 3
+            }
+          },
+          {
+            "label": "tech-7.9-light-1200",
+            "counts": {
+              "layouts": 1,
+              "actions": 41,
+              "shares": 13,
+              "trustedShares": 13,
+              "invalid": 6,
+              "raw": 5,
+              "critical": 3,
+              "checks": 56,
+              "modelComparisons": 50512,
+              "geometryComparisons": 54768,
+              "paintedPixelAudits": 168,
+              "pixelSamples": 1116,
+              "domRangeRounding": 3
+            }
+          },
+          {
+            "label": "tech-7.10-light-320",
+            "counts": {
+              "layouts": 1,
+              "actions": 40,
+              "shares": 14,
+              "trustedShares": 14,
+              "invalid": 5,
+              "raw": 4,
+              "critical": 6,
+              "checks": 56,
+              "modelComparisons": 68544,
+              "geometryComparisons": 42294,
+              "paintedPixelAudits": 168,
+              "pixelSamples": 990,
+              "domRangeRounding": 0
+            }
+          },
+          {
+            "label": "tech-7.10-light-1200",
+            "counts": {
+              "layouts": 1,
+              "actions": 40,
+              "shares": 14,
+              "trustedShares": 14,
+              "invalid": 5,
+              "raw": 4,
+              "critical": 6,
+              "checks": 56,
+              "modelComparisons": 68544,
+              "geometryComparisons": 42294,
+              "paintedPixelAudits": 168,
+              "pixelSamples": 990,
+              "domRangeRounding": 0
+            }
+          },
+          {
+            "label": "tech-7.11-light-320",
+            "counts": {
+              "layouts": 1,
+              "actions": 45,
+              "shares": 15,
+              "trustedShares": 15,
+              "invalid": 6,
+              "raw": 5,
+              "critical": 5,
+              "checks": 62,
+              "modelComparisons": 20088,
+              "geometryComparisons": 16306,
+              "paintedPixelAudits": 186,
+              "pixelSamples": 806,
+              "domRangeRounding": 0
+            }
+          },
+          {
+            "label": "tech-7.11-light-1200",
+            "counts": {
+              "layouts": 1,
+              "actions": 45,
+              "shares": 15,
+              "trustedShares": 15,
+              "invalid": 6,
+              "raw": 5,
+              "critical": 5,
+              "checks": 62,
+              "modelComparisons": 20088,
+              "geometryComparisons": 16306,
+              "paintedPixelAudits": 186,
+              "pixelSamples": 806,
+              "domRangeRounding": 0
+            }
+          },
+          {
+            "label": "tech-7.12-light-320",
+            "counts": {
+              "layouts": 1,
+              "actions": 45,
+              "shares": 15,
+              "trustedShares": 15,
+              "invalid": 6,
+              "raw": 5,
+              "critical": 5,
+              "checks": 62,
+              "modelComparisons": 930,
+              "geometryComparisons": 1844,
+              "paintedPixelAudits": 186,
+              "pixelSamples": 1866,
+              "domRangeRounding": 6
+            }
+          },
+          {
+            "label": "tech-7.12-light-1200",
+            "counts": {
+              "layouts": 1,
+              "actions": 45,
+              "shares": 15,
+              "trustedShares": 15,
+              "invalid": 6,
+              "raw": 5,
+              "critical": 5,
+              "checks": 62,
+              "modelComparisons": 930,
+              "geometryComparisons": 1844,
+              "paintedPixelAudits": 186,
+              "pixelSamples": 1866,
+              "domRangeRounding": 6
+            }
+          },
+          {
+            "label": "tech-7.13-light-320",
+            "counts": {
+              "layouts": 1,
+              "actions": 53,
+              "shares": 16,
+              "trustedShares": 16,
+              "invalid": 8,
+              "raw": 4,
+              "critical": 5,
+              "checks": 71,
+              "modelComparisons": 1065,
+              "geometryComparisons": 60002,
+              "paintedPixelAudits": 213,
+              "pixelSamples": 2240,
+              "domRangeRounding": 9
+            }
+          },
+          {
+            "label": "tech-7.13-light-1200",
+            "counts": {
+              "layouts": 1,
+              "actions": 53,
+              "shares": 16,
+              "trustedShares": 16,
+              "invalid": 8,
+              "raw": 4,
+              "critical": 5,
+              "checks": 71,
+              "modelComparisons": 1065,
+              "geometryComparisons": 60002,
+              "paintedPixelAudits": 213,
+              "pixelSamples": 2067,
+              "domRangeRounding": 9
+            }
+          },
+          {
+            "label": "tech-7.14-light-320",
+            "counts": {
+              "layouts": 1,
+              "actions": 54,
+              "shares": 18,
+              "trustedShares": 18,
+              "invalid": 7,
+              "raw": 4,
+              "critical": 8,
+              "checks": 74,
+              "modelComparisons": 19172,
+              "geometryComparisons": 2339,
+              "paintedPixelAudits": 222,
+              "pixelSamples": 4988,
+              "domRangeRounding": 12
+            }
+          },
+          {
+            "label": "tech-7.14-light-1200",
+            "counts": {
+              "layouts": 1,
+              "actions": 54,
+              "shares": 18,
+              "trustedShares": 18,
+              "invalid": 7,
+              "raw": 4,
+              "critical": 8,
+              "checks": 74,
+              "modelComparisons": 19268,
+              "geometryComparisons": 2339,
+              "paintedPixelAudits": 222,
+              "pixelSamples": 5015,
+              "domRangeRounding": 12
+            }
+          }
+        ],
+        "failure": null
+      }
+    },
+    {
+      "file": "/workspace/scratch/wave6-tech-research/native-current-dark/receipt-6.json",
+      "sha256": "9949ec4ced7bdcbced2bc883b2efdf6a9c8fd6f627687f04b55b7579e8c4d5ca",
+      "receipt": {
+        "sourceHashes": {
+          "content/tech/ch07.js": "197079132905cb71605c99229bff3974e42802ccc726df5b7d0bec068550e173",
+          "content/tech/ch07.shared.js": "5802ee0b01c7e16f3c8f7175e6ec46d720e6f81223bc6682471f18083c868a64",
+          "content/tech/ch07.viz.js": "72f44a0c8ffcf69abe3498a4585609397ac451f26361cee8af6d91c1df4f6e35",
+          "content/tech/ch07.viz.shared.js": "223eaa9c66c431afda6606b393376c56bcc5fa9ad581520af98cedbf1c28d763",
+          "content/phil/ch05.shared.js": "9dae491fabd3aee126113b57f393b61a51740710873a532871f0c8e74c7cc2bb",
+          "content/tech/syllabus.js": "8674c3455f881a7803dbf72190fe7ea9c58222d34ca8d7ca0bd79fc844c500ae",
+          "assets/js/viz/core.js": "a6fa1753d9d9e8b9a05a7161fffc58dfd53b27002d9d393a3266aeb96515fe73",
+          "assets/js/viz/math.js": "439c335e1cc47907bc72bb76559216aa093be4710e0589f41c70192729eb223e",
+          "assets/js/share-state.js": "13c6a9ac1237d566fc5d79c89e0f4d3029aa8c2817d2c08247a02b1b053a59b1",
+          "assets/js/app.js": "2f5762e6bf80723a5cb8691f8b19c552dd1d731ab998d5bfcdb27828e2e9a6ce",
+          "assets/css/style.css": "eef34e3d7aaf8b38233a78d9dc6545e5e0c9d00b09a3a6876d19f3e0e0af15b6",
+          "data/index.json": "a3de6a67b21c0d5b60bb63db460a438cb7a1a090c4e90fce9c4bb24d9764828a",
+          "data/col/tech.json": "bb6ed57a63ce54d15956b38fac36a3909fce8113ba927e3542af3829c93c1dfc",
+          "tests/fixtures/wave6-tech-reference.json": "41f17458f58ee928e4f5d6edae8507de840d67f8a17f9fb724394c710c3f6088",
+          "tests/wave6-tech-native.mjs": "4053502fa5767b82ee25a2ac9bf1b0f1c72ead77ef43a6b6a181b3ada711e068",
+          "tests/wave6-tech-native-science.mjs": "b24981d999c92a52d4c7ab14924a0232c3343f1743157f4fcfc6ce2832e7d868",
+          "tests/wave6-tech-native-cases.mjs": "1aa3675296be96d64f5f21e5419ba44ba742cb484ec076f144cf7cfdd4f707d7",
+          "tests/wave6-tech-browser.shared.mjs": "3532145eff8f13888192f2042fc008c5c3c4e4b780577faea9ca897b6b5075c8",
+          "tests/wave6-tech-native-probe.mjs": "70cb57871eebc566b8aef43003fbca7c878127ef8e855dd92fe693e6aad2b241",
+          "tests/wave6-ling-glyph.shared.mjs": "87e31d5f01c0e93492f901a8c411e88c7e1e9c551d9c2843c128c6538b9b9eb0"
+        },
+        "afterHashes": {
+          "content/tech/ch07.js": "197079132905cb71605c99229bff3974e42802ccc726df5b7d0bec068550e173",
+          "content/tech/ch07.shared.js": "5802ee0b01c7e16f3c8f7175e6ec46d720e6f81223bc6682471f18083c868a64",
+          "content/tech/ch07.viz.js": "72f44a0c8ffcf69abe3498a4585609397ac451f26361cee8af6d91c1df4f6e35",
+          "content/tech/ch07.viz.shared.js": "223eaa9c66c431afda6606b393376c56bcc5fa9ad581520af98cedbf1c28d763",
+          "content/phil/ch05.shared.js": "9dae491fabd3aee126113b57f393b61a51740710873a532871f0c8e74c7cc2bb",
+          "content/tech/syllabus.js": "8674c3455f881a7803dbf72190fe7ea9c58222d34ca8d7ca0bd79fc844c500ae",
+          "assets/js/viz/core.js": "a6fa1753d9d9e8b9a05a7161fffc58dfd53b27002d9d393a3266aeb96515fe73",
+          "assets/js/viz/math.js": "439c335e1cc47907bc72bb76559216aa093be4710e0589f41c70192729eb223e",
+          "assets/js/share-state.js": "13c6a9ac1237d566fc5d79c89e0f4d3029aa8c2817d2c08247a02b1b053a59b1",
+          "assets/js/app.js": "2f5762e6bf80723a5cb8691f8b19c552dd1d731ab998d5bfcdb27828e2e9a6ce",
+          "assets/css/style.css": "eef34e3d7aaf8b38233a78d9dc6545e5e0c9d00b09a3a6876d19f3e0e0af15b6",
+          "data/index.json": "a3de6a67b21c0d5b60bb63db460a438cb7a1a090c4e90fce9c4bb24d9764828a",
+          "data/col/tech.json": "bb6ed57a63ce54d15956b38fac36a3909fce8113ba927e3542af3829c93c1dfc",
+          "tests/fixtures/wave6-tech-reference.json": "41f17458f58ee928e4f5d6edae8507de840d67f8a17f9fb724394c710c3f6088",
+          "tests/wave6-tech-native.mjs": "4053502fa5767b82ee25a2ac9bf1b0f1c72ead77ef43a6b6a181b3ada711e068",
+          "tests/wave6-tech-native-science.mjs": "b24981d999c92a52d4c7ab14924a0232c3343f1743157f4fcfc6ce2832e7d868",
+          "tests/wave6-tech-native-cases.mjs": "1aa3675296be96d64f5f21e5419ba44ba742cb484ec076f144cf7cfdd4f707d7",
+          "tests/wave6-tech-browser.shared.mjs": "3532145eff8f13888192f2042fc008c5c3c4e4b780577faea9ca897b6b5075c8",
+          "tests/wave6-tech-native-probe.mjs": "70cb57871eebc566b8aef43003fbca7c878127ef8e855dd92fe693e6aad2b241",
+          "tests/wave6-ling-glyph.shared.mjs": "87e31d5f01c0e93492f901a8c411e88c7e1e9c551d9c2843c128c6538b9b9eb0"
+        },
+        "sourceDataHarnessUnchanged": true,
+        "totals": {
+          "layouts": 2,
+          "actions": 98,
+          "shares": 34,
+          "trustedShares": 34,
+          "invalid": 14,
+          "raw": 10,
+          "critical": 12,
+          "checks": 136,
+          "modelComparisons": 71128,
+          "geometryComparisons": 93432,
+          "paintedPixelAudits": 408,
+          "pixelSamples": 3650,
+          "domRangeRounding": 18
+        },
+        "rows": [
+          {
+            "label": "tech-7.6-dark-320",
+            "counts": {
+              "layouts": 1,
+              "actions": 49,
+              "shares": 17,
+              "trustedShares": 17,
+              "invalid": 7,
+              "raw": 5,
+              "critical": 6,
+              "checks": 68,
+              "modelComparisons": 35564,
+              "geometryComparisons": 46716,
+              "paintedPixelAudits": 204,
+              "pixelSamples": 1825,
+              "domRangeRounding": 9
+            }
+          },
+          {
+            "label": "tech-7.6-dark-1200",
+            "counts": {
+              "layouts": 1,
+              "actions": 49,
+              "shares": 17,
+              "trustedShares": 17,
+              "invalid": 7,
+              "raw": 5,
+              "critical": 6,
+              "checks": 68,
+              "modelComparisons": 35564,
+              "geometryComparisons": 46716,
+              "paintedPixelAudits": 204,
+              "pixelSamples": 1825,
+              "domRangeRounding": 9
+            }
+          }
+        ],
+        "failure": null
+      }
+    },
+    {
+      "file": "/workspace/scratch/wave6-tech-research/native-current-dark/receipt-a.json",
+      "sha256": "283f7ec9a21c72ced4dc3b3824b1117deeb5746d6fe4eeea45bb56f61c06c9c4",
+      "receipt": {
+        "sourceHashes": {
+          "content/tech/ch07.js": "197079132905cb71605c99229bff3974e42802ccc726df5b7d0bec068550e173",
+          "content/tech/ch07.shared.js": "5802ee0b01c7e16f3c8f7175e6ec46d720e6f81223bc6682471f18083c868a64",
+          "content/tech/ch07.viz.js": "72f44a0c8ffcf69abe3498a4585609397ac451f26361cee8af6d91c1df4f6e35",
+          "content/tech/ch07.viz.shared.js": "223eaa9c66c431afda6606b393376c56bcc5fa9ad581520af98cedbf1c28d763",
+          "content/phil/ch05.shared.js": "9dae491fabd3aee126113b57f393b61a51740710873a532871f0c8e74c7cc2bb",
+          "content/tech/syllabus.js": "8674c3455f881a7803dbf72190fe7ea9c58222d34ca8d7ca0bd79fc844c500ae",
+          "assets/js/viz/core.js": "a6fa1753d9d9e8b9a05a7161fffc58dfd53b27002d9d393a3266aeb96515fe73",
+          "assets/js/viz/math.js": "439c335e1cc47907bc72bb76559216aa093be4710e0589f41c70192729eb223e",
+          "assets/js/share-state.js": "13c6a9ac1237d566fc5d79c89e0f4d3029aa8c2817d2c08247a02b1b053a59b1",
+          "assets/js/app.js": "2f5762e6bf80723a5cb8691f8b19c552dd1d731ab998d5bfcdb27828e2e9a6ce",
+          "assets/css/style.css": "eef34e3d7aaf8b38233a78d9dc6545e5e0c9d00b09a3a6876d19f3e0e0af15b6",
+          "data/index.json": "a3de6a67b21c0d5b60bb63db460a438cb7a1a090c4e90fce9c4bb24d9764828a",
+          "data/col/tech.json": "bb6ed57a63ce54d15956b38fac36a3909fce8113ba927e3542af3829c93c1dfc",
+          "tests/fixtures/wave6-tech-reference.json": "41f17458f58ee928e4f5d6edae8507de840d67f8a17f9fb724394c710c3f6088",
+          "tests/wave6-tech-native.mjs": "4053502fa5767b82ee25a2ac9bf1b0f1c72ead77ef43a6b6a181b3ada711e068",
+          "tests/wave6-tech-native-science.mjs": "b24981d999c92a52d4c7ab14924a0232c3343f1743157f4fcfc6ce2832e7d868",
+          "tests/wave6-tech-native-cases.mjs": "1aa3675296be96d64f5f21e5419ba44ba742cb484ec076f144cf7cfdd4f707d7",
+          "tests/wave6-tech-browser.shared.mjs": "3532145eff8f13888192f2042fc008c5c3c4e4b780577faea9ca897b6b5075c8",
+          "tests/wave6-tech-native-probe.mjs": "70cb57871eebc566b8aef43003fbca7c878127ef8e855dd92fe693e6aad2b241",
+          "tests/wave6-ling-glyph.shared.mjs": "87e31d5f01c0e93492f901a8c411e88c7e1e9c551d9c2843c128c6538b9b9eb0"
+        },
+        "afterHashes": {
+          "content/tech/ch07.js": "197079132905cb71605c99229bff3974e42802ccc726df5b7d0bec068550e173",
+          "content/tech/ch07.shared.js": "5802ee0b01c7e16f3c8f7175e6ec46d720e6f81223bc6682471f18083c868a64",
+          "content/tech/ch07.viz.js": "72f44a0c8ffcf69abe3498a4585609397ac451f26361cee8af6d91c1df4f6e35",
+          "content/tech/ch07.viz.shared.js": "223eaa9c66c431afda6606b393376c56bcc5fa9ad581520af98cedbf1c28d763",
+          "content/phil/ch05.shared.js": "9dae491fabd3aee126113b57f393b61a51740710873a532871f0c8e74c7cc2bb",
+          "content/tech/syllabus.js": "8674c3455f881a7803dbf72190fe7ea9c58222d34ca8d7ca0bd79fc844c500ae",
+          "assets/js/viz/core.js": "a6fa1753d9d9e8b9a05a7161fffc58dfd53b27002d9d393a3266aeb96515fe73",
+          "assets/js/viz/math.js": "439c335e1cc47907bc72bb76559216aa093be4710e0589f41c70192729eb223e",
+          "assets/js/share-state.js": "13c6a9ac1237d566fc5d79c89e0f4d3029aa8c2817d2c08247a02b1b053a59b1",
+          "assets/js/app.js": "2f5762e6bf80723a5cb8691f8b19c552dd1d731ab998d5bfcdb27828e2e9a6ce",
+          "assets/css/style.css": "eef34e3d7aaf8b38233a78d9dc6545e5e0c9d00b09a3a6876d19f3e0e0af15b6",
+          "data/index.json": "a3de6a67b21c0d5b60bb63db460a438cb7a1a090c4e90fce9c4bb24d9764828a",
+          "data/col/tech.json": "bb6ed57a63ce54d15956b38fac36a3909fce8113ba927e3542af3829c93c1dfc",
+          "tests/fixtures/wave6-tech-reference.json": "41f17458f58ee928e4f5d6edae8507de840d67f8a17f9fb724394c710c3f6088",
+          "tests/wave6-tech-native.mjs": "4053502fa5767b82ee25a2ac9bf1b0f1c72ead77ef43a6b6a181b3ada711e068",
+          "tests/wave6-tech-native-science.mjs": "b24981d999c92a52d4c7ab14924a0232c3343f1743157f4fcfc6ce2832e7d868",
+          "tests/wave6-tech-native-cases.mjs": "1aa3675296be96d64f5f21e5419ba44ba742cb484ec076f144cf7cfdd4f707d7",
+          "tests/wave6-tech-browser.shared.mjs": "3532145eff8f13888192f2042fc008c5c3c4e4b780577faea9ca897b6b5075c8",
+          "tests/wave6-tech-native-probe.mjs": "70cb57871eebc566b8aef43003fbca7c878127ef8e855dd92fe693e6aad2b241",
+          "tests/wave6-ling-glyph.shared.mjs": "87e31d5f01c0e93492f901a8c411e88c7e1e9c551d9c2843c128c6538b9b9eb0"
+        },
+        "sourceDataHarnessUnchanged": true,
+        "totals": {
+          "layouts": 12,
+          "actions": 556,
+          "shares": 186,
+          "trustedShares": 186,
+          "invalid": 72,
+          "raw": 52,
+          "critical": 62,
+          "checks": 754,
+          "modelComparisons": 1490044,
+          "geometryComparisons": 274090,
+          "paintedPixelAudits": 2262,
+          "pixelSamples": 17393,
+          "domRangeRounding": 66
+        },
+        "rows": [
+          {
+            "label": "tech-7.1-dark-320",
+            "counts": {
+              "layouts": 1,
+              "actions": 60,
+              "shares": 20,
+              "trustedShares": 20,
+              "invalid": 7,
+              "raw": 5,
+              "critical": 6,
+              "checks": 79,
+              "modelComparisons": 58776,
+              "geometryComparisons": 22041,
+              "paintedPixelAudits": 237,
+              "pixelSamples": 2511,
+              "domRangeRounding": 6
+            }
+          },
+          {
+            "label": "tech-7.1-dark-1200",
+            "counts": {
+              "layouts": 1,
+              "actions": 60,
+              "shares": 20,
+              "trustedShares": 20,
+              "invalid": 7,
+              "raw": 5,
+              "critical": 6,
+              "checks": 79,
+              "modelComparisons": 58776,
+              "geometryComparisons": 22041,
+              "paintedPixelAudits": 237,
+              "pixelSamples": 2511,
+              "domRangeRounding": 6
+            }
+          },
+          {
+            "label": "tech-7.2-dark-320",
+            "counts": {
+              "layouts": 1,
+              "actions": 59,
+              "shares": 19,
+              "trustedShares": 19,
+              "invalid": 8,
+              "raw": 7,
+              "critical": 5,
+              "checks": 80,
+              "modelComparisons": 1680,
+              "geometryComparisons": 3796,
+              "paintedPixelAudits": 240,
+              "pixelSamples": 2333,
+              "domRangeRounding": 9
+            }
+          },
+          {
+            "label": "tech-7.2-dark-1200",
+            "counts": {
+              "layouts": 1,
+              "actions": 59,
+              "shares": 19,
+              "trustedShares": 19,
+              "invalid": 8,
+              "raw": 7,
+              "critical": 5,
+              "checks": 80,
+              "modelComparisons": 1680,
+              "geometryComparisons": 3796,
+              "paintedPixelAudits": 240,
+              "pixelSamples": 2402,
+              "domRangeRounding": 9
+            }
+          },
+          {
+            "label": "tech-7.3-dark-320",
+            "counts": {
+              "layouts": 1,
+              "actions": 52,
+              "shares": 17,
+              "trustedShares": 17,
+              "invalid": 7,
+              "raw": 5,
+              "critical": 5,
+              "checks": 70,
+              "modelComparisons": 1470,
+              "geometryComparisons": 682,
+              "paintedPixelAudits": 210,
+              "pixelSamples": 877,
+              "domRangeRounding": 3
+            }
+          },
+          {
+            "label": "tech-7.3-dark-1200",
+            "counts": {
+              "layouts": 1,
+              "actions": 52,
+              "shares": 17,
+              "trustedShares": 17,
+              "invalid": 7,
+              "raw": 5,
+              "critical": 5,
+              "checks": 70,
+              "modelComparisons": 1470,
+              "geometryComparisons": 682,
+              "paintedPixelAudits": 210,
+              "pixelSamples": 877,
+              "domRangeRounding": 3
+            }
+          },
+          {
+            "label": "tech-7.4-dark-320",
+            "counts": {
+              "layouts": 1,
+              "actions": 43,
+              "shares": 14,
+              "trustedShares": 14,
+              "invalid": 6,
+              "raw": 4,
+              "critical": 4,
+              "checks": 58,
+              "modelComparisons": 618280,
+              "geometryComparisons": 37983,
+              "paintedPixelAudits": 174,
+              "pixelSamples": 931,
+              "domRangeRounding": 9
+            }
+          },
+          {
+            "label": "tech-7.4-dark-1200",
+            "counts": {
+              "layouts": 1,
+              "actions": 43,
+              "shares": 14,
+              "trustedShares": 14,
+              "invalid": 6,
+              "raw": 4,
+              "critical": 4,
+              "checks": 58,
+              "modelComparisons": 618280,
+              "geometryComparisons": 37983,
+              "paintedPixelAudits": 174,
+              "pixelSamples": 938,
+              "domRangeRounding": 9
+            }
+          },
+          {
+            "label": "tech-7.5-dark-320",
+            "counts": {
+              "layouts": 1,
+              "actions": 45,
+              "shares": 15,
+              "trustedShares": 15,
+              "invalid": 6,
+              "raw": 4,
+              "critical": 5,
+              "checks": 61,
+              "modelComparisons": 64294,
+              "geometryComparisons": 15877,
+              "paintedPixelAudits": 183,
+              "pixelSamples": 1371,
+              "domRangeRounding": 3
+            }
+          },
+          {
+            "label": "tech-7.5-dark-1200",
+            "counts": {
+              "layouts": 1,
+              "actions": 45,
+              "shares": 15,
+              "trustedShares": 15,
+              "invalid": 6,
+              "raw": 4,
+              "critical": 5,
+              "checks": 61,
+              "modelComparisons": 64294,
+              "geometryComparisons": 15877,
+              "paintedPixelAudits": 183,
+              "pixelSamples": 1374,
+              "domRangeRounding": 3
+            }
+          },
+          {
+            "label": "tech-7.7-dark-320",
+            "counts": {
+              "layouts": 1,
+              "actions": 19,
+              "shares": 8,
+              "trustedShares": 8,
+              "invalid": 2,
+              "raw": 1,
+              "critical": 6,
+              "checks": 29,
+              "modelComparisons": 522,
+              "geometryComparisons": 56666,
+              "paintedPixelAudits": 87,
+              "pixelSamples": 634,
+              "domRangeRounding": 3
+            }
+          },
+          {
+            "label": "tech-7.7-dark-1200",
+            "counts": {
+              "layouts": 1,
+              "actions": 19,
+              "shares": 8,
+              "trustedShares": 8,
+              "invalid": 2,
+              "raw": 1,
+              "critical": 6,
+              "checks": 29,
+              "modelComparisons": 522,
+              "geometryComparisons": 56666,
+              "paintedPixelAudits": 87,
+              "pixelSamples": 634,
+              "domRangeRounding": 3
+            }
+          }
+        ],
+        "failure": null
+      }
+    },
+    {
+      "file": "/workspace/scratch/wave6-tech-research/native-current-dark/receipt-b.json",
+      "sha256": "45548a76bc25e42260fbd7c54a03c8d59f706da9d9d479470ead3113795fdff7",
+      "receipt": {
+        "sourceHashes": {
+          "content/tech/ch07.js": "197079132905cb71605c99229bff3974e42802ccc726df5b7d0bec068550e173",
+          "content/tech/ch07.shared.js": "5802ee0b01c7e16f3c8f7175e6ec46d720e6f81223bc6682471f18083c868a64",
+          "content/tech/ch07.viz.js": "72f44a0c8ffcf69abe3498a4585609397ac451f26361cee8af6d91c1df4f6e35",
+          "content/tech/ch07.viz.shared.js": "223eaa9c66c431afda6606b393376c56bcc5fa9ad581520af98cedbf1c28d763",
+          "content/phil/ch05.shared.js": "9dae491fabd3aee126113b57f393b61a51740710873a532871f0c8e74c7cc2bb",
+          "content/tech/syllabus.js": "8674c3455f881a7803dbf72190fe7ea9c58222d34ca8d7ca0bd79fc844c500ae",
+          "assets/js/viz/core.js": "a6fa1753d9d9e8b9a05a7161fffc58dfd53b27002d9d393a3266aeb96515fe73",
+          "assets/js/viz/math.js": "439c335e1cc47907bc72bb76559216aa093be4710e0589f41c70192729eb223e",
+          "assets/js/share-state.js": "13c6a9ac1237d566fc5d79c89e0f4d3029aa8c2817d2c08247a02b1b053a59b1",
+          "assets/js/app.js": "2f5762e6bf80723a5cb8691f8b19c552dd1d731ab998d5bfcdb27828e2e9a6ce",
+          "assets/css/style.css": "eef34e3d7aaf8b38233a78d9dc6545e5e0c9d00b09a3a6876d19f3e0e0af15b6",
+          "data/index.json": "a3de6a67b21c0d5b60bb63db460a438cb7a1a090c4e90fce9c4bb24d9764828a",
+          "data/col/tech.json": "bb6ed57a63ce54d15956b38fac36a3909fce8113ba927e3542af3829c93c1dfc",
+          "tests/fixtures/wave6-tech-reference.json": "41f17458f58ee928e4f5d6edae8507de840d67f8a17f9fb724394c710c3f6088",
+          "tests/wave6-tech-native.mjs": "4053502fa5767b82ee25a2ac9bf1b0f1c72ead77ef43a6b6a181b3ada711e068",
+          "tests/wave6-tech-native-science.mjs": "b24981d999c92a52d4c7ab14924a0232c3343f1743157f4fcfc6ce2832e7d868",
+          "tests/wave6-tech-native-cases.mjs": "1aa3675296be96d64f5f21e5419ba44ba742cb484ec076f144cf7cfdd4f707d7",
+          "tests/wave6-tech-browser.shared.mjs": "3532145eff8f13888192f2042fc008c5c3c4e4b780577faea9ca897b6b5075c8",
+          "tests/wave6-tech-native-probe.mjs": "70cb57871eebc566b8aef43003fbca7c878127ef8e855dd92fe693e6aad2b241",
+          "tests/wave6-ling-glyph.shared.mjs": "87e31d5f01c0e93492f901a8c411e88c7e1e9c551d9c2843c128c6538b9b9eb0"
+        },
+        "afterHashes": {
+          "content/tech/ch07.js": "197079132905cb71605c99229bff3974e42802ccc726df5b7d0bec068550e173",
+          "content/tech/ch07.shared.js": "5802ee0b01c7e16f3c8f7175e6ec46d720e6f81223bc6682471f18083c868a64",
+          "content/tech/ch07.viz.js": "72f44a0c8ffcf69abe3498a4585609397ac451f26361cee8af6d91c1df4f6e35",
+          "content/tech/ch07.viz.shared.js": "223eaa9c66c431afda6606b393376c56bcc5fa9ad581520af98cedbf1c28d763",
+          "content/phil/ch05.shared.js": "9dae491fabd3aee126113b57f393b61a51740710873a532871f0c8e74c7cc2bb",
+          "content/tech/syllabus.js": "8674c3455f881a7803dbf72190fe7ea9c58222d34ca8d7ca0bd79fc844c500ae",
+          "assets/js/viz/core.js": "a6fa1753d9d9e8b9a05a7161fffc58dfd53b27002d9d393a3266aeb96515fe73",
+          "assets/js/viz/math.js": "439c335e1cc47907bc72bb76559216aa093be4710e0589f41c70192729eb223e",
+          "assets/js/share-state.js": "13c6a9ac1237d566fc5d79c89e0f4d3029aa8c2817d2c08247a02b1b053a59b1",
+          "assets/js/app.js": "2f5762e6bf80723a5cb8691f8b19c552dd1d731ab998d5bfcdb27828e2e9a6ce",
+          "assets/css/style.css": "eef34e3d7aaf8b38233a78d9dc6545e5e0c9d00b09a3a6876d19f3e0e0af15b6",
+          "data/index.json": "a3de6a67b21c0d5b60bb63db460a438cb7a1a090c4e90fce9c4bb24d9764828a",
+          "data/col/tech.json": "bb6ed57a63ce54d15956b38fac36a3909fce8113ba927e3542af3829c93c1dfc",
+          "tests/fixtures/wave6-tech-reference.json": "41f17458f58ee928e4f5d6edae8507de840d67f8a17f9fb724394c710c3f6088",
+          "tests/wave6-tech-native.mjs": "4053502fa5767b82ee25a2ac9bf1b0f1c72ead77ef43a6b6a181b3ada711e068",
+          "tests/wave6-tech-native-science.mjs": "b24981d999c92a52d4c7ab14924a0232c3343f1743157f4fcfc6ce2832e7d868",
+          "tests/wave6-tech-native-cases.mjs": "1aa3675296be96d64f5f21e5419ba44ba742cb484ec076f144cf7cfdd4f707d7",
+          "tests/wave6-tech-browser.shared.mjs": "3532145eff8f13888192f2042fc008c5c3c4e4b780577faea9ca897b6b5075c8",
+          "tests/wave6-tech-native-probe.mjs": "70cb57871eebc566b8aef43003fbca7c878127ef8e855dd92fe693e6aad2b241",
+          "tests/wave6-ling-glyph.shared.mjs": "87e31d5f01c0e93492f901a8c411e88c7e1e9c551d9c2843c128c6538b9b9eb0"
+        },
+        "sourceDataHarnessUnchanged": true,
+        "totals": {
+          "layouts": 14,
+          "actions": 670,
+          "shares": 220,
+          "trustedShares": 220,
+          "invalid": 92,
+          "raw": 66,
+          "critical": 76,
+          "checks": 918,
+          "modelComparisons": 374694,
+          "geometryComparisons": 463250,
+          "paintedPixelAudits": 2754,
+          "pixelSamples": 27353,
+          "domRangeRounding": 72
+        },
+        "rows": [
+          {
+            "label": "tech-7.8-dark-320",
+            "counts": {
+              "layouts": 1,
+              "actions": 57,
+              "shares": 19,
+              "trustedShares": 19,
+              "invalid": 8,
+              "raw": 6,
+              "critical": 6,
+              "checks": 78,
+              "modelComparisons": 26988,
+              "geometryComparisons": 54072,
+              "paintedPixelAudits": 234,
+              "pixelSamples": 1873,
+              "domRangeRounding": 6
+            }
+          },
+          {
+            "label": "tech-7.8-dark-1200",
+            "counts": {
+              "layouts": 1,
+              "actions": 57,
+              "shares": 19,
+              "trustedShares": 19,
+              "invalid": 8,
+              "raw": 6,
+              "critical": 6,
+              "checks": 78,
+              "modelComparisons": 26988,
+              "geometryComparisons": 54072,
+              "paintedPixelAudits": 234,
+              "pixelSamples": 1869,
+              "domRangeRounding": 6
+            }
+          },
+          {
+            "label": "tech-7.9-dark-320",
+            "counts": {
+              "layouts": 1,
+              "actions": 41,
+              "shares": 13,
+              "trustedShares": 13,
+              "invalid": 6,
+              "raw": 5,
+              "critical": 3,
+              "checks": 56,
+              "modelComparisons": 50512,
+              "geometryComparisons": 54768,
+              "paintedPixelAudits": 168,
+              "pixelSamples": 1115,
+              "domRangeRounding": 3
+            }
+          },
+          {
+            "label": "tech-7.9-dark-1200",
+            "counts": {
+              "layouts": 1,
+              "actions": 41,
+              "shares": 13,
+              "trustedShares": 13,
+              "invalid": 6,
+              "raw": 5,
+              "critical": 3,
+              "checks": 56,
+              "modelComparisons": 50512,
+              "geometryComparisons": 54768,
+              "paintedPixelAudits": 168,
+              "pixelSamples": 1116,
+              "domRangeRounding": 3
+            }
+          },
+          {
+            "label": "tech-7.10-dark-320",
+            "counts": {
+              "layouts": 1,
+              "actions": 40,
+              "shares": 14,
+              "trustedShares": 14,
+              "invalid": 5,
+              "raw": 4,
+              "critical": 6,
+              "checks": 56,
+              "modelComparisons": 68544,
+              "geometryComparisons": 42294,
+              "paintedPixelAudits": 168,
+              "pixelSamples": 990,
+              "domRangeRounding": 0
+            }
+          },
+          {
+            "label": "tech-7.10-dark-1200",
+            "counts": {
+              "layouts": 1,
+              "actions": 40,
+              "shares": 14,
+              "trustedShares": 14,
+              "invalid": 5,
+              "raw": 4,
+              "critical": 6,
+              "checks": 56,
+              "modelComparisons": 68544,
+              "geometryComparisons": 42294,
+              "paintedPixelAudits": 168,
+              "pixelSamples": 990,
+              "domRangeRounding": 0
+            }
+          },
+          {
+            "label": "tech-7.11-dark-320",
+            "counts": {
+              "layouts": 1,
+              "actions": 45,
+              "shares": 15,
+              "trustedShares": 15,
+              "invalid": 6,
+              "raw": 5,
+              "critical": 5,
+              "checks": 62,
+              "modelComparisons": 20088,
+              "geometryComparisons": 16306,
+              "paintedPixelAudits": 186,
+              "pixelSamples": 806,
+              "domRangeRounding": 0
+            }
+          },
+          {
+            "label": "tech-7.11-dark-1200",
+            "counts": {
+              "layouts": 1,
+              "actions": 45,
+              "shares": 15,
+              "trustedShares": 15,
+              "invalid": 6,
+              "raw": 5,
+              "critical": 5,
+              "checks": 62,
+              "modelComparisons": 20088,
+              "geometryComparisons": 16306,
+              "paintedPixelAudits": 186,
+              "pixelSamples": 806,
+              "domRangeRounding": 0
+            }
+          },
+          {
+            "label": "tech-7.12-dark-320",
+            "counts": {
+              "layouts": 1,
+              "actions": 45,
+              "shares": 15,
+              "trustedShares": 15,
+              "invalid": 6,
+              "raw": 5,
+              "critical": 5,
+              "checks": 62,
+              "modelComparisons": 930,
+              "geometryComparisons": 1844,
+              "paintedPixelAudits": 186,
+              "pixelSamples": 1866,
+              "domRangeRounding": 6
+            }
+          },
+          {
+            "label": "tech-7.12-dark-1200",
+            "counts": {
+              "layouts": 1,
+              "actions": 45,
+              "shares": 15,
+              "trustedShares": 15,
+              "invalid": 6,
+              "raw": 5,
+              "critical": 5,
+              "checks": 62,
+              "modelComparisons": 930,
+              "geometryComparisons": 1844,
+              "paintedPixelAudits": 186,
+              "pixelSamples": 1866,
+              "domRangeRounding": 6
+            }
+          },
+          {
+            "label": "tech-7.13-dark-320",
+            "counts": {
+              "layouts": 1,
+              "actions": 53,
+              "shares": 16,
+              "trustedShares": 16,
+              "invalid": 8,
+              "raw": 4,
+              "critical": 5,
+              "checks": 71,
+              "modelComparisons": 1065,
+              "geometryComparisons": 60002,
+              "paintedPixelAudits": 213,
+              "pixelSamples": 2042,
+              "domRangeRounding": 9
+            }
+          },
+          {
+            "label": "tech-7.13-dark-1200",
+            "counts": {
+              "layouts": 1,
+              "actions": 53,
+              "shares": 16,
+              "trustedShares": 16,
+              "invalid": 8,
+              "raw": 4,
+              "critical": 5,
+              "checks": 71,
+              "modelComparisons": 1065,
+              "geometryComparisons": 60002,
+              "paintedPixelAudits": 213,
+              "pixelSamples": 2011,
+              "domRangeRounding": 9
+            }
+          },
+          {
+            "label": "tech-7.14-dark-320",
+            "counts": {
+              "layouts": 1,
+              "actions": 54,
+              "shares": 18,
+              "trustedShares": 18,
+              "invalid": 7,
+              "raw": 4,
+              "critical": 8,
+              "checks": 74,
+              "modelComparisons": 19172,
+              "geometryComparisons": 2339,
+              "paintedPixelAudits": 222,
+              "pixelSamples": 4988,
+              "domRangeRounding": 12
+            }
+          },
+          {
+            "label": "tech-7.14-dark-1200",
+            "counts": {
+              "layouts": 1,
+              "actions": 54,
+              "shares": 18,
+              "trustedShares": 18,
+              "invalid": 7,
+              "raw": 4,
+              "critical": 8,
+              "checks": 74,
+              "modelComparisons": 19268,
+              "geometryComparisons": 2339,
+              "paintedPixelAudits": 222,
+              "pixelSamples": 5015,
+              "domRangeRounding": 12
+            }
+          }
+        ],
+        "failure": null
+      }
+    }
+  ],
+  "chapterProjection": {
+    "tech-7.1": {
+      "st": "A steam receiver and an atmospheric piston use condensation in different ways. In Savery’s arrangement, condensing steam lowers receiver pressure so atmospheric pressure can lift water into it; fresh steam then pushes that water out. In Papin’s proposed piston arrangement, a raised piston is held while steam condenses, and the resulting pressure difference can drive its downward working stroke. Neither arrangement obtains an unlimited lift merely by making a better vacuum.\n\nFor water of density $\\rho$, ambient pressure $p_a$ and condensed-vessel pressure $p_c$, the limiting static suction head is\n$$h_s=\\frac{p_a-p_c}{\\rho g}.$$\nThe separate ideal discharge balance is $h_d=(p_s-p_a)/(\\rho g)$ for steam pressure $p_s$.",
+      "refs": [
+        "Thurston 1886, selected Savery/Papin passages and original figures 12/17; historical commentary",
+        "Written TECH6.11 hydrostatic pressure; own declared pressure/volume balance"
+      ],
+      "scope": "Authored quasi-static pressure balances, not a reproduction of a measured Savery pump or Papin machine. Pressures are absolute kPa; water density 1000 kg/m³ and gravity 9.81 m/s² are declared constants. Pipes, leaks, steam generation, heating time, friction and dynamic valve losses are omitted. The schematic has no spatial scale; the head plot uses metres. A negative head denotes an unavailable positive lift, not a negative-height pump.",
+      "credit": "Savery and Papin, late seventeenth-century devices",
+      "links": {
+        "source": "https://www.gutenberg.org/files/35916/35916-h/35916-h.htm"
+      }
+    },
+    "tech-7.2": {
+      "st": "The Newcomen engine admits low-pressure steam to a cylinder and then condenses it there. The atmosphere pushes the piston down; the rocking beam lifts the mine-pump rods on its other side. The Science Museum’s 1791 example represents this engine type, whose practical introduction is dated 1712 in its account. It is not a surviving 1712 original.\n\nLet $r=L_p/L_e$ be pump-arm length divided by engine-arm length. An ideal beam gives pump force $F_p=F_e/r$ and pump stroke $s_p=rs_e$. For pump area $a$ and lift $H$, the static water load is $\\rho gHa$.",
+      "refs": [
+        "Science Museum Group, Newcomen Atmospheric Engine, collection record; surviving example 1791",
+        "Written TECH2.1 lever and TECH6.11 pressure balance; own thermal budget"
+      ],
+      "scope": "Ideal lossless beam and single water-lift load; no acceleration, counterweight, friction or predicted cycle timing. The stroke control selects geometry, including an infeasible load case, rather than integrating motion. The pressure difference is against fixed 101.325 kPa ambient. The chosen heat ledger omits boiler losses and steam sensible heat; its work/heat fraction is an illustrative indicated fraction, not measured engine or overall fuel efficiency.",
+      "credit": "Newcomen atmospheric engine, practical installation 1712",
+      "links": {
+        "source": "https://collection.sciencemuseumgroup.org.uk/objects/co50900/newcomen-atmospheric-engine"
+      }
+    },
+    "tech-7.3": {
+      "st": "Coke, made from coal, could replace charcoal in iron smelting without requiring the same wood supply. English Heritage dates Abraham Darby I’s Coalbrookdale development to 1709. This changed a material and production system; it does not supply a universal historical fuel price, a measured forest area saved or a claim that every later iron component was interchangeable.\n\nOne balanced reduction step is\n$$\\mathrm{Fe_2 O_3+3 CO\\to 2 Fe+3 CO_2}.$$\nIts atom and mass ledger describes the reduction step, not the whole blast furnace’s heat and fuel balance.",
+      "refs": [
+        "English Heritage, History of Iron Bridge, selected Darby/coke and individually fitted casting passages",
+        "Written TECH3.3 iron reduction; own mass and hypothetical resource accounting"
+      ],
+      "scope": "All prices use arbitrary currency units per kg; all carbon budgets, fuel fractions, charcoal yields and wood yields are authored scenario inputs. The hectare result is a hypothetical resource requirement, not an observed forest saving or environmental-impact estimate. Real furnaces also need heat, permeability, suitable coke strength, fluxes and gas recycling. The reduction ledger does not model those processes or predict furnace scale.",
+      "credit": "Abraham Darby I, coke smelting at Coalbrookdale 1709",
+      "links": {
+        "source": "https://www.english-heritage.org.uk/visit/places/iron-bridge/history/"
+      }
+    },
+    "tech-7.4": {
+      "st": "A steam cylinder needs a sufficiently regular bore for its piston and seal. Supporting a boring bar reduces elastic movement under a cutting load and helps make this possible. The Science Museum’s c. 1775 bar record connects precision boring with Boulton and Watt’s engines, while qualifying the surviving object’s Bersham provenance as alleged.\n\nFor an ideal circular bar with $I=\\pi d^4/64$, an end-loaded cantilever has maximum deflection $PL^3/(3 EI)$. A simply supported bar carrying a central point load has maximum deflection $PL^3/(48 EI)$.",
+      "refs": [
+        "Science Museum Group, Cast iron boring bar and boring head, collection record; alleged Bersham provenance retained",
+        "Own Euler–Bernoulli beam comparison with explicitly different supports and load positions"
+      ],
+      "scope": "Uniform elastic Euler–Bernoulli bars, small deflections, static point loads, declared modulus in GPa and circular sections. Bearing compliance, distributed cutting forces, vibration, wear and thermal distortion are omitted. The sketches are explanatory alternatives, not an exact reconstruction of Wilkinson’s machine. Deflection is not automatically bore out-of-roundness or leakage, and no historical shilling-thickness measurement is inferred.",
+      "credit": "Wilkinson cylinder boring, mill attribution c. 1775",
+      "links": {
+        "source": "https://collection.sciencemuseumgroup.org.uk/objects/co46448"
+      }
+    },
+    "tech-7.5": {
+      "st": "Watt’s separate condenser gives steam a cold place to condense while the working cylinder can remain hot. Condensation still disposes of heat; the improvement avoids repeatedly cooling and reheating so much of the cylinder itself. The surviving 1788 Lap engine illustrates this arrangement.\n\nFor our declared stroke volume $V$, active metal mass $M$, heat capacity $c$ and temperature swing $\\Delta T$, compare\n$$\\begin{gathered}\nQ_{\\rm inside}=Q_s+Mc\\Delta T,\\\\\nQ_{\\rm separate}=Q_s+fMc\\Delta T.\n\\end{gathered}$$\nThe chosen fraction $f$ represents residual cyclic reheating, not a measured Watt-engine parameter.",
+      "refs": [
+        "Science Museum Group, Lap engine 1788, mechanism description",
+        "Written TECH7.2 chosen thermal budget, reused unchanged; no historical fuel calibration"
+      ],
+      "scope": "A chosen two-term heat ledger, not a full thermodynamic engine cycle or empirical fuel model. Steam density, latent heat and cylinder heat capacity are the declared teaching constants from 7.2. Boiler efficiency, heat leaks, expansion, air-pump work and changing material properties are omitted. All savings refer to these declared input-heat totals; no measured coal consumption or universally fixed improvement is claimed.",
+      "credit": "Watt separate condenser; surviving Lap engine 1788",
+      "links": {
+        "source": "https://collection.sciencemuseumgroup.org.uk/objects/co50948/rotative-steam-engine-by-boulton-and-watt-1788"
+      }
+    },
+    "tech-7.6": {
+      "st": "Sun-and-planet gearing turns the beam’s reciprocation into shaft rotation. For equal external gears, with carrier angle $\\phi$, absolute planet orientation $\\alpha$ and shaft angle $\\theta$, rolling without slip constrains\n$$\\theta+\\alpha=2\\phi.$$\nThe planet is attached to a moving rod: it can oscillate rather than remaining absolutely fixed. If its orientation returns after a full carrier circuit, the shaft completes two turns. The Lap engine’s governor is a separate speed-control mechanism; the gear ratio alone does not regulate a changing load.",
+      "refs": [
+        "Science Museum Group, Lap engine 1788, sun-and-planet, double action and governor account",
+        "Written TECH2.10 crank motion and CTRL1.2 centrifugal governor; own two-state feedback example"
+      ],
+      "scope": "Equal ideal gears, chosen periodic planet orientation and no tooth elasticity, backlash or solved connecting-rod dynamics. The stable two-state linear system is an authored feedback illustration, not a full historical engine, a centrifugal-governor calibration or a model proving hunting instability. Time and speed are dimensionless. The ball model has unit arm length and chosen normalized gravity 0.2; its instantaneous conical equilibrium is distinct from the lagged throttle state.",
+      "credit": "Watt rotative machinery; surviving governed example 1788",
+      "links": {
+        "source": "https://collection.sciencemuseumgroup.org.uk/objects/co50948/rotative-steam-engine-by-boulton-and-watt-1788"
+      }
+    },
+    "tech-7.7": {
+      "st": "A rigid piston rod must be guided when a beam both pushes and pulls. A Watt-type four-bar linkage combines two circular motions so that a point on the joining rod follows an approximately straight path. It is not an exact straight-line mechanism.\n\nIn the chosen example, fixed pivots are $O_1=(-2,1)$ and $O_2=(2,-1)$, the two arms and coupler all have length 2, and\n$$P=O_1+2(\\cos\\theta,\\sin\\theta).$$\nPoint $Q$ is the selected continuous intersection of the radius 2 circles about $P$ and $O_2$. The tracked point is $M=(P+Q)/2$.",
+      "refs": [
+        "Thurston 1886 selected Watt parallel-motion mechanism passage and original figure",
+        "Own exact four-bar circle construction; midpoint mechanism only, not the full patented pantograph"
+      ],
+      "scope": "A specific unit-length four-bar with input angle−0.55 to 0.55 radians and one fixed assembly branch. Lengths are generic model units, not dimensions measured from a surviving engine. The full patented pantograph, joint play and elastic loading are omitted. Only the centre input has exactly zero lateral deviation in this range. A positive error below binary 64 range is reported as unresolved, not as an exact straight segment.",
+      "credit": "Watt parallel-motion family, eighteenth century",
+      "links": {
+        "source": "https://www.gutenberg.org/files/35916/35916-h/35916-h.htm"
+      }
+    },
+    "tech-7.8": {
+      "st": "An indicator relates cylinder pressure to piston position; multiplying position change by piston area gives volume change. The signed enclosed area of a pressure-volume loop is indicated work per cycle,\n$$W=\\oint p\\,dV.$$\nOur prescribed outward branch admits steam at pressure $p_s$ until volume $V_c$, then follows $p=p_s(V_c/V)^n$ to $V_{\\max}$. The return branch has chosen back pressure $p_b$. Instantaneous pressure jumps at fixed volume contribute no work.",
+      "refs": [
+        "Thurston 1886 selected indicator passage: pressure spring/piston and position-driven board",
+        "Written MECH3.1 work; own prescribed pressure-volume cycle and independent work quadrature"
+      ],
+      "scope": "A declared quasi-static loop, not a measured indicator card, a complete steam-property cycle or solved valve timing. Pressures are kPa and volumes m³, so loop work is kJ. Positive clearance prevents a singular zero-volume origin. Some inputs prescribe an outward pressure below the return back pressure; those segments have negative net contribution and are not silently replaced by a realizable valve cycle. The trace control selects path position, not elapsed time.",
+      "credit": "Steam-engine indicator method, late eighteenth century",
+      "links": {
+        "source": "https://www.gutenberg.org/files/35916/35916-h/35916-h.htm"
+      }
+    },
+    "tech-7.9": {
+      "st": "Higher working pressure can supply a chosen indicated power with less swept volume. Trevithick and Vivian’s 1802 patent and the museum’s c. 1805–1806 engine witness one path to compact high-pressure machinery; Evans developed high-pressure non-condensing engines in the United States. Compactness also raises demands on the pressure-containing structure.\n\nFor chosen pressure difference $\\Delta p$, swept volume $V$ and working-cycle frequency $f$, our rectangular-cycle identity is $P=\\Delta pVf$. Thus $V=P/(\\Delta pf)$ at fixed indicated power.",
+      "refs": [
+        "Science Museum Group, Trevithick high-pressure engine c. 1805–1806, collection record",
+        "Thurston 1886, Evans discussion",
+        "Own pressure-displacement identity and elastic thick/thin cylinder comparison"
+      ],
+      "scope": "Illustrative constant pressure difference and cycle frequency; no measured engine efficiency, steam flow, condensation loss or locomotive performance. Stress calculations assume an ideal uniform elastic cylinder and omit temperature-dependent strength, joints, corrosion, flaws, fatigue and thermal stress. The chosen thin-wall diagnostic is t/r≤0.05; it is not a safety rating or bursting limit. The model does not specify a real boiler’s operating limits.",
+      "credit": "Trevithick and Vivian 1802 patent; Evans high-pressure practice",
+      "links": {
+        "source": "https://collection.sciencemuseumgroup.org.uk/objects/co51033"
+      }
+    },
+    "tech-7.10": {
+      "st": "Carnot’s 1824 analysis made the temperature difference between source and sink central to heat-engine theory. His original framework used caloric ideas. In the modern absolute-temperature formulation already developed in THERMO2.7, every heat engine working between reservoirs $T_h>T_c>0$ satisfies\n$$\\eta\\le 1-\\frac{T_c}{T_h}.$$\nEquality requires a reversible cycle. A larger pressure or a better machine alone does not bypass this reservoir-temperature bound.",
+      "refs": [
+        "Thurston 1886, Carnot discussion, p.437; later historical commentary",
+        "Written THERMO2.7 reversible heat-engine bound and modern absolute-temperature convention"
+      ],
+      "scope": "Modern two-reservoir heat-engine bound; all temperatures are kelvin. The selected fraction of the limit is an authored parameter, not measured Newcomen, Watt or turbine efficiency. No historical efficiency timeline is manufactured. The bound follows the modern thermodynamics prerequisite; historical context follows Thurston’s later commentary. Reversed reservoir inputs have no heat-engine result in this model.",
+      "credit": "Carnot 1824; modern absolute-temperature formulation",
+      "links": {
+        "source": "https://www.gutenberg.org/files/35916/35916-h/35916-h.htm"
+      }
+    },
+    "tech-7.11": {
+      "st": "Puddling refines pig iron in a reverberatory furnace, where hot gases heat the charge without placing it directly in the fuel. Working the charge and subsequent hammering and rolling produce usable wrought iron. NorthLan Museums describes Cort’s 1784 patent as building on earlier work and emphasizes the skilled labour involved. Later changes to furnace practice mattered too; the process was not a single instantly completed invention.\n\nRolling shapes hot metal. In our constant-width, constant-density example, thickness reduction from $h$ to $h'$ requires length increase from $L$ to $L'=Lh/h'$.",
+      "refs": [
+        "NorthLan Museums, Puddlers/Shinglers/Rollers, article",
+        "Science Museum Group, puddled anchor-chain links, collection record",
+        "Own declared two-species removal rates and incompressible constant-width rolling identity"
+      ],
+      "scope": "Authored two-species exponential rates in arbitrary time units and a generic constant-width rolling strip. Slag, other alloying elements, oxidation heat, phase changes, spread, elastic recovery and worker technique are omitted. The rate constants are not measured process kinetics. The schematic is explanatory and no productivity, labour-saving ratio or sole-inventor certificate is inferred from it.",
+      "credit": "Cort’s 1784 patent and later puddling practice",
+      "links": {
+        "source": "https://www.northlanmuseums.co.uk/story/puddlers-shinglers-rollers-the-story-of-malleable-iron/"
+      }
+    },
+    "tech-7.12": {
+      "st": "Blowing air through molten pig iron oxidizes constituents including carbon. The released heat can sustain the process without adding fuel during the blow. The Science Museum’s 1865 Barrow pilot converter is a surviving witness. Its account also identifies phosphorus-rich iron as a difficulty, so removing carbon alone must not be presented as removing every unwanted constituent.\n\nOur acid-converter teaching ledger starts with 1000 kg of metal and removes a selected fraction $f$ of its initial carbon mass $C_0$. Remaining carbon is $(1-f)C_0$ and remaining metal mass is $1000-fC_0$.",
+      "refs": [
+        "Science Museum Group, original pilot Bessemer converter 1865, collection record",
+        "Own chosen metal/carbon/phosphorus and heat ledger; no real-time kinetics or historical prices"
+      ],
+      "scope": "A deliberately simplified acid-process metal ledger; other oxidized elements, iron losses, oxygen mass in exhaust, slag, recarburizing and later basic-process chemistry are omitted. All heat-release and loss values are authored parameters in MJ, not tabulated reaction enthalpies or measured converter data. There is no real kinetic law, predicted temperature, product-grade certification or historical price series.",
+      "credit": "Bessemer process; surviving Barrow pilot converter 1865",
+      "links": {
+        "source": "https://collection.sciencemuseumgroup.org.uk/objects/co19568/original-pilot-bessemer-converter-1865"
+      }
+    },
+    "tech-7.13": {
+      "st": "A screw-cutting lathe gears the lead screw to the work spindle so the cutting tool advances a reproducible distance per work revolution. The Science Museum’s c. 1800 Maudslay lathe records a geared lead screw, sliding rest and depth adjustment. Its missing change wheels are not a surviving complete gear set.\n\nIf the lead screw advances $l_s$ per turn and the gear ratio magnitude is $z_d/z_f$, tool advance per spindle revolution is $l=l_sz_d/z_f$. For an $n$-start thread, axial pitch is $l/n$, while lead remains $l$.",
+      "refs": [
+        "Science Museum Group, original Maudslay lathe c. 1800, collection record",
+        "Written TECH2.4 screw lead; own change-gear, helix and prescribed lead-screw error relations"
+      ],
+      "scope": "One ideal external change-gear pair and a rigid synchronized carriage; positive lead magnitudes in mm. Gear backlash, tool deflection, bearing errors and cutting forces are omitted. The sinusoidal and linear errors are chosen teaching inputs, not measurements from Maudslay’s lathe. Multi-start geometry is displayed with phase offsets; no particular historical thread standard or unlimited real-pitch capability is inferred.",
+      "credit": "Maudslay screw-cutting lathe, c. 1800",
+      "links": {
+        "source": "https://collection.sciencemuseumgroup.org.uk/objects/co46284/henry-maudslays-original-screw-cutting-lathe-c-1800-lathes"
+      }
+    },
+    "tech-7.14": {
+      "st": "Interchangeability makes separately produced parts fit within a declared assembly requirement without individual filing. It depends on a manufacturing system: dimensions, gauges, tools, process control and inspection. The National Park Service’s Springfield account describes standardized gauges and power-driven machinery in that system; it does not establish one person as its sole inventor.\n\nOur generic shaft and hole have clearance $D=c+b+H-S$, where $c$ is nominal clearance, $b$ is a chosen bias, and independent errors $H$ and $S$ are uniform on their stated symmetric intervals. A pair fits when $d_{\\min}\\le D\\le d_{\\max}$.",
+      "refs": [
+        "National Park Service, Armory and City, complete exhibit body: machinery, standardized gauges and interchangeable manufacture",
+        "Own generic shaft/hole model, exact independent uniform-difference probabilities and seeded finite batches"
+      ],
+      "scope": "Generic abstract circular parts, not a weapon or historical assembly reconstruction. Error distributions are independent uniforms with hard bounds, not measured manufacturing data. All dimensions are illustrative mm; the fit window is explicitly shown. Point masses and exact binary 64 input values are retained before display rounding. The LCG batch is deterministic, at most 144 pairs, and does not quantify uncertainty about any real process.",
+      "credit": "Nineteenth-century systems of gauged manufacture",
+      "links": {
+        "source": "https://www.nps.gov/spar/learn/historyculture/armory-and-city.htm"
+      }
+    }
+  },
+  "nativeOnlyScope": "56complete layouts,14lessons×2themes×2widths. Actual keyboard/pointer/button actions; each trusted Create state link followed by about:blank and fresh document, exact complete parts/readout replay. Invalid complete fallback/raw off-grid/75critical recipes per layout matrix. Continuous native endpoint clamping is chapter-local; rounded out-of-domain wire remains rejected.",
+  "scientificScope": "Complete browser model call/schema comparison against installed model; charts/bars/ropes/beam/sector/pump/gears/governor arm lengths/linkage/PV stylus path and draw order/true wall ratio/energy/entropy/rolling/thread/fit region and batch geometry, plus actual RGBA/glyph checks. Independent numeric references are separately certified.",
+  "pixelScope": "Actual sampled RGBA, including explicitly labeled coverage thresholds for antialiased1.4pxstrokes; no claim of opaque subpixel strokes.",
+  "allOwnedSessionsClosed": true,
+  "priorPartialRunsExcludedFromCurrentTotals": true
+}

@@ -1,0 +1,26 @@
+{
+  "status": "PASS",
+  "sourceCommit": "707b5336257049f743eae4dd70881bff1ff0176b",
+  "olderTrackedFilesRawExact": 7277,
+  "mutableHandoff": "docs/wave-continuation.md",
+  "allSyllabiRawExact": true,
+  "frozenIdentityDependencyOptionalFlagsExact": true,
+  "preimageReceipt": "wave6-tech-preimages.json",
+  "capturedToFinalGeneratedIndex": {
+    "capturedSHA256": "a3de6a67b21c0d5b60bb63db460a438cb7a1a090c4e90fce9c4bb24d9764828a",
+    "currentSHA256": "902a2d57326ef656d9c305fc5dc9ed53306a54fa35fb412d38016ff5679d7f77",
+    "capturedGenerated": "2026-10-27T20:12:53.066Z",
+    "currentGenerated": "2026-10-27T21:37:48.639Z",
+    "restoredSHA256": "a3de6a67b21c0d5b60bb63db460a438cb7a1a090c4e90fce9c4bb24d9764828a",
+    "wholeCapturedIndexReconstructedExactly": true,
+    "normalizedSHA256": "80e3fc00641eca28fcd3f662d05cc615ec3bf177d0e52b956b413ce5d94e9092",
+    "scope": "Only generated timestamp changed in the final strict rebuild. Permanent gate binds complete14chapter detail projections and all source/model/harness pins, permitting unrelated future chapter growth."
+  },
+  "modelCertificatePinsUnchanged": {
+    "content/tech/ch07.shared.js": "5802ee0b01c7e16f3c8f7175e6ec46d720e6f81223bc6682471f18083c868a64",
+    "tests/wave6-tech.test.mjs": "1a0e1f8923955d0eae76a471fc41c14407033627fd91eeceda66bd4487fe30b8",
+    "tests/refs/wave6-tech-reference.py": "035ae283fd86614b51ef5623b3b40d99cfa8b53d40ee57b2c97918b6baf1cbbd",
+    "tests/refs/wave6-tech-reference.shared.py": "84c504f46a249bbb644eb715b3a80343c09613680ef21c9f43dea05d933693f0"
+  },
+  "scope": "All older tracked regular files except mutable handoff stay raw-byte-exact before reading integration. Native data guard was exact during every capture; final strict rebuild changes only generated index time, reconstructed byte-exact. Permanent chapter certificate binds complete14detail projections instead of preventing unrelated chapter growth."
+}

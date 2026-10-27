@@ -1,3 +1,4 @@
+import {resolveLaterPin as resolvePhilTechPin} from './wave6-phil-tech-pins.shared.mjs';
 // Exact, chained historical preimages for the explicitly bounded 27-entry integration.
 import fs from 'node:fs';
 import assert from 'node:assert/strict';
@@ -56,6 +57,7 @@ export function restoreCurrentPinAdapter(path,bytes){
  const restored=Buffer.from(text);assert.equal(sha(restored),before.sha256,'whole original source bytes: '+path);assert.equal(text,before.text);return restored;
 }
 export function resolveLaterAuthorPin(url,expected){
+ const newer=resolvePhilTechPin(url,expected);if(newer!==null)return newer;
  const bytes=fs.readFileSync(url);if(sha(bytes)===expected)return null;const path=relative(root,fileURLToPath(url));
  if(Object.hasOwn(integrationBefore.files,path)){
   validateAllCurrent();const current=integrationBefore.files[path];if(current.sha256===expected)return Buffer.from(current.text);

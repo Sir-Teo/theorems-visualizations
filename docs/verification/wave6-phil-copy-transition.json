@@ -1,0 +1,227 @@
+{
+  "status": "PASS \u2014 exact inverse reconstruction and current affected native/ordinary/personal gates closed",
+  "nativeCheckpointCommit": "46212109cb4e330e57b7b014dbec15b396d27e4d",
+  "affectedLessons": [
+    1,
+    8,
+    10,
+    11
+  ],
+  "unmodifiedLessons": [
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    9
+  ],
+  "changedSources": [
+    {
+      "path": "content/phil/ch06.viz.js",
+      "beforeSHA256": "433df97da1b9e89ddbbb6b737a73c8037a3dc7e599fd2307e645686ada0a9bfe",
+      "afterSHA256": "16e24c2efe477883a2f41b9fbe1f398889bf621fd5f677e2bc6faea4774b0cb1",
+      "replacements": [
+        {
+          "before": "in ${z.tosses} seeded simulated tosses.",
+          "after": "in ${z.tosses} seeded simulated ${z.tosses===1?'toss':'tosses'}.",
+          "occurrences": 1
+        },
+        {
+          "before": "After ${n.value} common observations, total-variation distance is ",
+          "after": "After ${n.value} common ${n.value===1?'observation':'observations'}, total-variation distance: ",
+          "occurrences": 1
+        },
+        {
+          "before": "The ${z.k} selected losing claims hold together",
+          "after": "The ${z.k} selected losing ${z.k===1?'claim holds':'claims hold'} together",
+          "occurrences": 1
+        },
+        {
+          "before": "winning-ticket worlds.",
+          "after": "winning-ticket ${z.survivingWorlds===1?'world':'worlds'}.",
+          "occurrences": 1
+        },
+        {
+          "before": "text(A,z.n+' claims'",
+          "after": "text(A,z.n+' '+(z.n===1?'claim':'claims')",
+          "occurrences": 1
+        },
+        {
+          "before": "Each of ${z.n} claims has marginal truth probability ${fmt(z.q)}.",
+          "after": "The book contains ${z.n} ${z.n===1?'claim':'claims'}, each with marginal truth probability ${fmt(z.q)}.",
+          "occurrences": 1
+        },
+        {
+          "before": "notice(s,'No observations yet. Prior: '+fmt(values[0]))",
+          "after": "notice(s,values[0]===null?'No observations yet. Relative frequency is undefined.':'No observations yet. Prior: '+fmt(values[0]))",
+          "occurrences": 1
+        }
+      ],
+      "wholeOriginalSourceReconstructsByteExact": true
+    },
+    {
+      "path": "tests/wave6-phil-native-science.mjs",
+      "beforeSHA256": "296628d14b1e540429dccde4fb4fd8fb0b740699cb784fecaee74cde932883a4",
+      "afterSHA256": "f755bfbc2a70fc20b59afc349ae974ea0ebef45c8c397608dbb4bdf7b1e398aa",
+      "replacements": [
+        {
+          "before": "ink(A,z.n+' claims');",
+          "after": "ink(A,z.n+' '+(z.n===1?'claim':'claims'));",
+          "occurrences": 1
+        }
+      ],
+      "wholeOriginalSourceReconstructsByteExact": true
+    }
+  ],
+  "allOtherNativeCheckpointPinsExact": {
+    "content/phil/ch06.js": "41749c400bd959bfa3b9ac0c96b49e50de90cd434256e3b3e51eda286cd29d10",
+    "content/phil/ch06.shared.js": "89e931bd3fc02efb2e405e48786dc124902b1e66247ad78c61cd500e2cdb4e54",
+    "content/phil/ch05.shared.js": "9dae491fabd3aee126113b57f393b61a51740710873a532871f0c8e74c7cc2bb",
+    "content/phil/syllabus.js": "f08ecdb130cc0dbdcb0c541bc690a2bc21c8bafd86215670500fb4355dbfd743",
+    "assets/js/viz/core.js": "a6fa1753d9d9e8b9a05a7161fffc58dfd53b27002d9d393a3266aeb96515fe73",
+    "assets/js/viz/math.js": "439c335e1cc47907bc72bb76559216aa093be4710e0589f41c70192729eb223e",
+    "assets/js/share-state.js": "13c6a9ac1237d566fc5d79c89e0f4d3029aa8c2817d2c08247a02b1b053a59b1",
+    "assets/js/app.js": "2f5762e6bf80723a5cb8691f8b19c552dd1d731ab998d5bfcdb27828e2e9a6ce",
+    "assets/css/style.css": "eef34e3d7aaf8b38233a78d9dc6545e5e0c9d00b09a3a6876d19f3e0e0af15b6",
+    "tests/fixtures/wave6-phil-reference.json": "a327f09d9f1296fb716350f1fae78290247a411b99ac0291a6e43ca7a1c80b19",
+    "tests/wave6-phil-native.mjs": "916e7e3a2e2a1136a224ca60d389dcfa6b7826fbee8abcaca84675b81af53903",
+    "tests/wave6-phil-native-cases.mjs": "9b77be188f0b2d49d654f81d7b33b907d9f7b0d2c88170795b102839a07669e4",
+    "tests/wave6-phil-browser.shared.mjs": "3ec0eadb7a7a477da8ac0bfeb4e42bb3b270bea4296d0eac1d38874790b014fd",
+    "tests/wave6-ling-glyph.shared.mjs": "87e31d5f01c0e93492f901a8c411e88c7e1e9c551d9c2843c128c6538b9b9eb0"
+  },
+  "scope": "Only singular/plural words, sentence punctuation and the corresponding title-text assertion change. Every probability calculation, control, state validator, branch, geometry coordinate and all other source bytes reconstruct exactly. No numeric oracle or source-access change. The rebuilt index changes its generated timestamp only; resetting that single value reconstructs its entire original native-checkpoint byte stream. All15other guarded files remain raw-byte-exact. Historical complete-index reconstruction remains a final-author receipt, rather than freezing future independent chapter additions. The permanent guard compares the eleven complete PHIL6 detail records and14unchanged nongenerated source/harness files.",
+  "generatedIndexTransition": {
+    "originalGenerated": "2026-10-27T17:25:32.297Z",
+    "currentGenerated": "2026-10-27T17:40:27.344Z",
+    "originalSHA256": "a55442d86e3fb20f1938241c1c2023c5a0e8d8effdf69a28367f256a85c7c419",
+    "currentSHA256": "27a8e6c28cff24a62bea4e3c3fbec080a0295162371272397349b0b88398329c",
+    "reconstruction": "Replace only current generated metadata value with certified original generated value; complete original index bytes match recorded native SHA256. No item, route, dependency, field, collection or other byte differs.",
+    "searchSeconds": 1.8795396390050882,
+    "finalGenerated": "2026-10-27T18:05:31.740Z",
+    "finalSHA256": "64d7e05caaf5a8cb3bdc98162331b2a8dc1c7a9e9d6c37086cdd56b1d79fa47b"
+  },
+  "emptyFrequencyNotice": {
+    "scope": "Only the n0 frequency trace starts withnull; its notice now names relative frequency. Evidence histories start with a numeric prior, and agent-distance histories start with a numeric total variation, preserving their exact former notice branch. No probability, path, state or control changes.",
+    "affectedLesson": 1,
+    "newFourLayoutSupplementRequired": false
+  },
+  "generatedPhilShard": {
+    "historicalFullSHA256": "b275b7ba4067ff88c551e3a0443f1e03f2c4e0a278819e8b5942ee179bc8b2a2",
+    "chapterProjection": {
+      "phil-6.1": {
+        "st": "Probability claims can concern different things: a relative frequency in a stated collection of trials, a chance attributed to a physical setup, or an agent's degree of belief. These interpretations are not definitions of one another. A finite relative frequency is a tally divided by a positive number of trials; it can differ from both a model's chance parameter and an agent's credence.",
+        "refs": [
+          "SEP, Interpretations of Probability, revised 16 November 2023, selected body passages in \u00a7\u00a73.3\u20133.5"
+        ],
+        "scope": "A simulated coin and a finite record illustrate distinctions among selected frequentist, propensity and subjective accounts. The chance parameter belongs to the authored model; it is not a measured property of a real coin. Limiting frequencies, logical probability and best-system theories require further treatment.",
+        "links": {
+          "source": "https://plato.stanford.edu/entries/probability-interpret/"
+        }
+      },
+      "phil-6.2": {
+        "st": "In a finite probability model, let $H$ be a hypothesis and $E$ an event with $P(E)>0$. Then\n$$P(H\\mid E)=\\frac{P(H\\cap E)}{P(E)}.$$\nFor the binary component model $p=P(H)$, $s=P(E\\mid H)$ and $f=P(E\\mid\\neg H)$, define $D=ps+(1-p)f$. When $D>0$,\n$$P(H\\mid E)=\\frac{ps}{D}.$$\nThe four joint masses, rather than a likelihood alone, determine the posterior.",
+        "refs": [
+          "SEP, Bayes\u2019 Theorem, revised 30 September 2003, \u00a71; finite binary derivation supplied"
+        ],
+        "scope": "The sliders define a two-hypothesis finite model. At a zero prior for a hypothesis, its offered evidence rate is a component-model parameter, not a conditional probability identified by that joint distribution. Zero evidence mass leaves this ratio undefined. The prerequisite STAT 10.1 gives the related density formula.",
+        "links": {
+          "source": "https://plato.stanford.edu/entries/bayes-theorem/"
+        }
+      },
+      "phil-6.3": {
+        "st": "The base-rate fallacy is a pattern of reasoning in which prior prevalence receives too little weight when interpreting evidence. A high true-positive rate alone does not imply a high posterior probability. Let $p$ be prevalence, $s$ sensitivity and $f$ the false-positive rate. With positive evidence mass\n$$D=ps+(1-p)f,$$\nthe positive predictive value is\n$$P(H\\mid E)=ps/D.$$",
+        "refs": [
+          "SEP, Bayes\u2019 Theorem, \u00a71 and selected \u00a73; fictional expected-count construction supplied"
+        ],
+        "scope": "Fictional arithmetic demonstrates the consequence of ignoring prevalence. No study of participant behaviour, real disease rate or medical recommendation is asserted. Sensitivity, specificity and overall accuracy are different quantities; the controls use sensitivity and false-positive rate explicitly.",
+        "links": {
+          "source": "https://plato.stanford.edu/entries/bayes-theorem/"
+        }
+      },
+      "phil-6.4": {
+        "st": "On a finite classical event algebra, a probability assignment gives every finite portfolio of fair tickets expected net payoff zero. Such a portfolio cannot lose strictly in every world. Conversely, a violation of the finite probability axioms admits a sure-loss portfolio under two-sided trading and additive utility. This mathematical construction is the starting point of a disputed normative argument for probabilism.",
+        "refs": [
+          "SEP, Dutch Book Arguments, revised 14 May 2022, \u00a71.1 and selected \u00a7\u00a71.2\u20131.3; finite proof supplied"
+        ],
+        "scope": "The displayed construction uses complementary events and money interpreted as linear utility. Both buying and selling at the quoted price are permitted. Refusal to bet, different buying and selling prices, risk-sensitive utility and transaction costs change the assumptions. The normative argument for probabilism is contested.",
+        "links": {
+          "source": "https://plato.stanford.edu/entries/dutch-book/"
+        }
+      },
+      "phil-6.5": {
+        "st": "Conditionalisation proposes that an agent who becomes certain of $E$, receives no additional relevant information and starts with $P(E)>0$ should adopt\n$$P_{\\rm new}(A)=P_{\\rm old}(A\\mid E).$$\nIn a finite world model this removes incompatible worlds and multiplies every surviving mass by the same factor $1/P_{\\rm old}(E)$.",
+        "refs": [
+          "SEP, Bayesian Epistemology, published 13 June 2022, \u00a7\u00a71.2 and 2",
+          "SEP, Dutch Book Arguments, \u00a74.1, including advance-plan limitations"
+        ],
+        "scope": "Certain learning of E alone is the default premise. Zero prior evidence mass is undefined; receiving stronger evidence or lacking a fixed future update defeats this specific strategy argument. Editing the starting weights creates another prior rather than conditioning the original one.",
+        "links": {
+          "source": "https://plato.stanford.edu/entries/epistemology-bayesian/"
+        }
+      },
+      "phil-6.6": {
+        "st": "Relative to a stated probability model, $E$ incrementally confirms $H$ when $P(H\\mid E)>P(H)$, disconfirms it when the inequality reverses, and is neutral when they are equal. This compares before and after; it does not mean that the posterior exceeds one half. For an interior prior $0<p<1$ and positive evidence mass, the direction agrees with the sign of $s-f$, where $s=P(E\\mid H)$ and $f=P(E\\mid\\neg H)$.",
+        "refs": [
+          "SEP, Bayes\u2019 Theorem, \u00a72 and selected \u00a73; binary change identity supplied"
+        ],
+        "scope": "This is incremental Bayesian confirmation in an authored binary model. At prior zero or one, the interior sign equivalence does not imply a strict change. Ratios with zero denominators remain undefined; likelihood ratios are not posterior probabilities. No measure is presented as the uniquely correct philosophical account.",
+        "links": {
+          "source": "https://plato.stanford.edu/entries/bayes-theorem/"
+        }
+      },
+      "phil-6.7": {
+        "st": "For hypotheses $H$ and $\\neg H$ with positive prior probabilities, posterior odds equal prior odds times the likelihood ratio of the complete record. At each evidence step,\n$$O_i=O_{i-1}L_i.$$\nEach $L_i$ conditions on earlier observations. Under conditional independence given each hypothesis it reduces to the single-observation likelihood ratio. When the log quantities are finite,\n$$\\log O_i=\\log O_{i-1}+\\log L_i.$$",
+        "refs": [
+          "SEP, Bayes\u2019 Theorem, \u00a72; conditional chain rule and copied-report construction supplied",
+          "Written prerequisite STAT 10.13, Bayes factor"
+        ],
+        "scope": "The observation mechanisms and their likelihoods are specified in the tool. Zero likelihood can eliminate a hypothesis; a record impossible under every supported hypothesis has no posterior. Infinite odds are labelled separately from finite plotted values. The prerequisite Bayes-factor lesson distinguishes marginal model likelihood from a parameter likelihood.",
+        "links": {
+          "source": "https://plato.stanford.edu/entries/bayes-theorem/"
+        }
+      },
+      "phil-6.8": {
+        "st": "Consider a finite list of distinct coin biases in $(0,1)$ that includes $\\theta_*$. Two agents use the Bernoulli likelihood of the same toss record, and both initially give $\\theta_*$ positive mass. If the observed fraction of heads tends to $\\theta_*$, each posterior tends to full mass on $\\theta_*$. Their total-variation distance therefore tends to zero. This is a finite, explicitly conditional version of washing out.",
+        "refs": [
+          "SEP, Bayesian Epistemology, \u00a7\u00a71.5 and 2 for prior/probability background; finite convergence theorem and proof supplied"
+        ],
+        "scope": "A finite supplied theorem illustrates washing out. Under iid data at an included true bias, the law of large numbers supplies the assumed frequency limit. A finite trace need not approach monotonically and is not a convergence certificate. This is not a claim of unrestricted merging for arbitrary priors, models or infinite spaces.",
+        "links": {
+          "source": "https://plato.stanford.edu/entries/epistemology-bayesian/"
+        }
+      },
+      "phil-6.9": {
+        "st": "If $P(E)=1$ in a coherent probability model, then\n$$P(H\\mid E)=P(H)$$\nfor every $H$. Conditioning on $E$ again cannot raise belief. The problem of old evidence asks how an observation already known can nevertheless support a newly assessed theory; the identity alone does not resolve that philosophical question.",
+        "refs": [
+          "SEP, Bayesian Epistemology, \u00a75.1, including logical-learning objections"
+        ],
+        "scope": "The Mercury example is a schematic historical motivation from commentary, not a calculation from orbital measurements. All displayed joint tables remain coherent: if E is certain and H has positive mass, $P(E\\mid H)$ must also be one. Moving to another prior is not an update of the original current distribution.",
+        "links": {
+          "source": "https://plato.stanford.edu/entries/epistemology-bayesian/"
+        }
+      },
+      "phil-6.10": {
+        "st": "In a fair finite lottery with $N$ tickets and exactly one winner, each ticket loses with probability $1-1/N$. Yet the assertion that all tickets lose is impossible. A rule accepting every sufficiently probable proposition, combined with unrestricted finite agglomeration and acceptance that one ticket wins, can therefore produce an inconsistent set of beliefs.",
+        "refs": [
+          "SEP, Epistemic Paradoxes, revised 3 March 2022, \u00a73; finite selected-ticket calculation supplied"
+        ],
+        "scope": "A fair lottery with at least one ticket. Threshold acceptance is examined rather than endorsed; agglomeration is an explicit further premise. The tool illustrates the tension but does not choose among philosophical responses about knowledge, rational belief or closure.",
+        "links": {
+          "source": "https://plato.stanford.edu/entries/epistemic-paradoxes/"
+        }
+      },
+      "phil-6.11": {
+        "st": "An author may reasonably accept each assertion while also acknowledging that the book contains an error. The preface paradox asks how these attitudes fit with closure of belief under conjunction. For $n$ claims each marginally true with probability $q$, let $A$ be the probability that all are true. The sharp bounds are\n$$A\\le q,$$\n$$A\\ge\\max\\{0,1-n(1-q)\\}.$$\nThe marginals alone do not determine the conjunction.",
+        "refs": [
+          "SEP, Epistemic Paradoxes, selected \u00a74; independent/shared/dispersed error constructions and sharp bounds supplied"
+        ],
+        "scope": "Authored exchangeable constructions make the dependence assumption explicit. They are not measured error rates for a real book. The philosophical preface paradox does not itself require independence or a probabilistic acceptance threshold; those are optional numerical illustrations.",
+        "links": {
+          "source": "https://plato.stanford.edu/entries/epistemic-paradoxes/"
+        }
+      }
+    },
+    "scope": "The complete shard bytes matched during the native run and final author verification. The permanent contract pins these eleven complete written detail records, allowing other chapters to expand the generated shard later."
+  }
+}

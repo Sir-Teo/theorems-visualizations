@@ -1,0 +1,143 @@
+{
+  "status": "Final TECH7author checkpoint; mutable handoff excluded",
+  "availability": 1005,
+  "historicalIndependent": 36,
+  "files": [
+    {
+      "path": "content/tech/ch07.js",
+      "bytes": 36408,
+      "sha256": "197079132905cb71605c99229bff3974e42802ccc726df5b7d0bec068550e173"
+    },
+    {
+      "path": "content/tech/ch07.shared.js",
+      "bytes": 13163,
+      "sha256": "5802ee0b01c7e16f3c8f7175e6ec46d720e6f81223bc6682471f18083c868a64"
+    },
+    {
+      "path": "content/tech/ch07.viz.js",
+      "bytes": 48671,
+      "sha256": "72f44a0c8ffcf69abe3498a4585609397ac451f26361cee8af6d91c1df4f6e35"
+    },
+    {
+      "path": "content/tech/ch07.viz.shared.js",
+      "bytes": 5514,
+      "sha256": "223eaa9c66c431afda6606b393376c56bcc5fa9ad581520af98cedbf1c28d763"
+    },
+    {
+      "path": "tests/wave6-tech.test.mjs",
+      "bytes": 8955,
+      "sha256": "1a0e1f8923955d0eae76a471fc41c14407033627fd91eeceda66bd4487fe30b8"
+    },
+    {
+      "path": "tests/wave6-tech-chapter.test.mjs",
+      "bytes": 4421,
+      "sha256": "2a5c758753563bbb04412f1d733b3d7dfdbb18cdbc75f9aaa4fc95ea68626b3a"
+    },
+    {
+      "path": "tests/wave6-tech-browser.mjs",
+      "bytes": 6309,
+      "sha256": "3cefb365d98110349b2e8037f29e6cca05c11c1ca52672ddf1ed4a19c1ac9900"
+    },
+    {
+      "path": "tests/wave6-tech-browser.shared.mjs",
+      "bytes": 6434,
+      "sha256": "3532145eff8f13888192f2042fc008c5c3c4e4b780577faea9ca897b6b5075c8"
+    },
+    {
+      "path": "tests/wave6-tech-glyph.mjs",
+      "bytes": 2650,
+      "sha256": "69f3906a026ae3b1fe427fe908b2417cf9af1098aaac38a8b7ce95e1b8ecfe07"
+    },
+    {
+      "path": "tests/wave6-tech-native.mjs",
+      "bytes": 12228,
+      "sha256": "4053502fa5767b82ee25a2ac9bf1b0f1c72ead77ef43a6b6a181b3ada711e068"
+    },
+    {
+      "path": "tests/wave6-tech-native-probe.mjs",
+      "bytes": 6704,
+      "sha256": "70cb57871eebc566b8aef43003fbca7c878127ef8e855dd92fe693e6aad2b241"
+    },
+    {
+      "path": "tests/wave6-tech-native-science.mjs",
+      "bytes": 20036,
+      "sha256": "b24981d999c92a52d4c7ab14924a0232c3343f1743157f4fcfc6ce2832e7d868"
+    },
+    {
+      "path": "tests/wave6-tech-native-cases.mjs",
+      "bytes": 7759,
+      "sha256": "1aa3675296be96d64f5f21e5419ba44ba742cb484ec076f144cf7cfdd4f707d7"
+    },
+    {
+      "path": "tests/fixtures/wave6-tech-frozen.json",
+      "bytes": 6840,
+      "sha256": "96ecc533cb2aaf4c17423d5016243c8d34eea97dc0668c35dfb0a12992a9f52e"
+    },
+    {
+      "path": "tests/fixtures/wave6-tech-reference.json",
+      "bytes": 4540737,
+      "sha256": "41f17458f58ee928e4f5d6edae8507de840d67f8a17f9fb724394c710c3f6088"
+    },
+    {
+      "path": "tests/refs/wave6-tech-reference.py",
+      "bytes": 5357,
+      "sha256": "035ae283fd86614b51ef5623b3b40d99cfa8b53d40ee57b2c97918b6baf1cbbd"
+    },
+    {
+      "path": "tests/refs/wave6-tech-reference.shared.py",
+      "bytes": 10502,
+      "sha256": "84c504f46a249bbb644eb715b3a80343c09613680ef21c9f43dea05d933693f0"
+    },
+    {
+      "path": "docs/verification/wave6-tech-draft-receipt.json",
+      "bytes": 6868,
+      "sha256": "c0d1ad2179d6157bc47b2acac0d137a90001d92323d51e142f89e58fea32f2a8"
+    },
+    {
+      "path": "docs/verification/wave6-tech-gates.json",
+      "bytes": 14373,
+      "sha256": "1765a3f5302b760075330e870242a04351321da7ec62917bd2f093864a6f7611"
+    },
+    {
+      "path": "docs/verification/wave6-tech-model-receipt.json",
+      "bytes": 2550,
+      "sha256": "c504f2f87f6219c91f6022d43f0ec6cb649d93e17ab5fce906720a6fc44de4e1"
+    },
+    {
+      "path": "docs/verification/wave6-tech-native-diagnostics.json",
+      "bytes": 63683,
+      "sha256": "9acebd1e60f7c12efc926fc46d7dc7ac1dd3ca11352b3a1c70f4b2a18f0c8b48"
+    },
+    {
+      "path": "docs/verification/wave6-tech-native-receipt.json",
+      "bytes": 108949,
+      "sha256": "410d081d8c07a52ee095593112659576166343abbe995a102bfe1b3d72d4a056"
+    },
+    {
+      "path": "docs/verification/wave6-tech-preimages.json",
+      "bytes": 824622,
+      "sha256": "4c396f59177e782d2a67672dda879cdc3fef80b6c74b8225bc754592cf2d07d7"
+    },
+    {
+      "path": "docs/verification/wave6-tech-preservation.json",
+      "bytes": 1913,
+      "sha256": "618f8f7e9861f64439e01e6f984f74cb093ebeb96445f533c69d4e0dbbdf8903"
+    },
+    {
+      "path": "docs/verification/wave6-tech-sources.json",
+      "bytes": 12434,
+      "sha256": "9b428a6f10a5902b2d13bf2ca744e90d1c2cd93fb1d998bfdb8a6970198567eb"
+    },
+    {
+      "path": "docs/verification/wave6-tech-visual-receipt.json",
+      "bytes": 531511,
+      "sha256": "eabc56ed3c858e0b89a5d153fb0188f75d30c3aeced7babbea7201336ca8464b"
+    },
+    {
+      "path": "docs/verification/wave6-tech.md",
+      "bytes": 5876,
+      "sha256": "5ecb7159dd28ce8b393f796f126e69558140e21c7f9073d0ba16ea26dceb5878"
+    }
+  ],
+  "scope": "Current chapter/model/reference/native harness and verification records. Source images and raw captures remain local research artifacts with explicit hashes; current source is fully committed. User-authorized reading integration and release follows, retaining exact historical preimages for any bounded guard adapters."
+}

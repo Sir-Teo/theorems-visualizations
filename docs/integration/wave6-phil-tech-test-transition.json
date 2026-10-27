@@ -1,0 +1,38 @@
+{
+  "status": "PASS",
+  "sourceCommit": "952469b156f0bb9a926ceb2f772aef2151191b56",
+  "bindingFixtureSHA256": "89bc28e82bb3aa8b0b124c09fa8eef9d2c3e1c9365bca847fff0df39f5832bad",
+  "dataFixtureSHA256": "2d59d27921438716696075f597d71fbae16f465c5b4f063e74f7777e25a888f2",
+  "files": [
+    {
+      "path": "tests/wave6-arch-ling-pins.shared.mjs",
+      "beforeSHA256": "3cae466dff92e56d64dabca4f388cfc146d2e08d3abfcad5bf8b34586409796f",
+      "afterSHA256": "42200d1eadc7134bac3cc327dbd7b0bb17b1495e029942a9bd850bd678f242f5",
+      "explicitReplacements": 2,
+      "wholeOriginalSourceReconstructedExactly": true
+    },
+    {
+      "path": "tests/wave6-arch-ling-integration.test.mjs",
+      "beforeSHA256": "9ff09e18893341b56758d4ff1fcedc7fea3f6c4a64ea059c5ad88dccb974a295",
+      "afterSHA256": "4cc15c12420ff2e95791defe6d625e86b4d4e71410a9815cf112651218ae2ca7",
+      "explicitReplacements": 3,
+      "wholeOriginalSourceReconstructedExactly": true
+    },
+    {
+      "path": "tests/wave6-phil-chapter.test.mjs",
+      "beforeSHA256": "2b6bba9687c4ed5a0f89ca7cf50e65b43684ef898743cb168c9027c423e38ab5",
+      "afterSHA256": "9cea94e75269b123ea974e7e1a276732b23de585b610a557170b38dea960aff0",
+      "explicitReplacements": 2,
+      "wholeOriginalSourceReconstructedExactly": true
+    },
+    {
+      "path": "tests/wave6-tech-chapter.test.mjs",
+      "beforeSHA256": "2a5c758753563bbb04412f1d733b3d7dfdbb18cdbc75f9aaa4fc95ea68626b3a",
+      "afterSHA256": "1c5a99ea0a6b1a617d6047cd598136b1f02ceb011a9863902ae28435a4ae1302",
+      "explicitReplacements": 2,
+      "wholeOriginalSourceReconstructedExactly": true
+    }
+  ],
+  "predecessorSources": "Three previous source adapters are not edited; their unchanged original reconstruction function runs only after the full newest8720transition validates and the exact expected predecessor source hash matches.",
+  "scope": "All original historical assertions/cases retained. Older8695integration uses a bounded historical view; separate current checks certify8720. Five changed generated files reconstruct to whole exact original bytes and every other generated file hash is unchanged; both90-file tree digests are computed."
+}
