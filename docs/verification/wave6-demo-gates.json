@@ -1,0 +1,96 @@
+{
+  "status": "PASS; author verification only",
+  "authorAvailability": 926,
+  "historicalIndependentAccepted": 36,
+  "additionalAuthorVerified": 890,
+  "independentAcceptanceAdded": 0,
+  "newFrozenLessons": 12,
+  "purposeBuiltPanels": 37,
+  "model": {
+    "cases": 525,
+    "families": 13,
+    "comparisons": 893656,
+    "precisionCorporaByteIdentical": true,
+    "canonicalGeneratorByteIdentical": true
+  },
+  "focused": {
+    "passed": 52,
+    "newChapterGroups": 29,
+    "affectedHistoricalGroups": 23,
+    "failed": 0,
+    "skipped": 0,
+    "cancelled": 0,
+    "durationMs": 4868.805345,
+    "log": {
+      "path": "/workspace/scratch/wave6-demo-research/final-focused.log",
+      "sha256": "43144b378f6c4c1a23d446e627e32d67000a3d8cb7d644da2252adedd744beaa"
+    }
+  },
+  "strict": {
+    "items": 8641,
+    "planned": 4933,
+    "chapters": 596,
+    "collections": 85,
+    "errors": 0,
+    "warnings": 0,
+    "log": {
+      "path": "/workspace/scratch/wave6-demo-research/draft-build-v5.log",
+      "sha256": "fda20d8d64fd880cebbb67f1c642c315d0867ef9a5792c4df3503f0e85ce48f4"
+    }
+  },
+  "static": {
+    "items": 8578,
+    "errors": 0,
+    "warnings": 0,
+    "log": {
+      "path": "/workspace/scratch/wave6-demo-research/final-static-v2.log",
+      "sha256": "716596aa57fe6ea80920e006fcc77b88d3a8fe51ca1fddb482afbd32eb39ea94"
+    }
+  },
+  "ordinaryProduction": {
+    "light": {
+      "items": 12,
+      "failed": 0,
+      "texBlankWarnings": 0,
+      "qualityWarnings": 0,
+      "log": {
+        "path": "/workspace/scratch/wave6-demo-research/final-production-light.log",
+        "sha256": "950a16e89dc6af009325b31e231b8d89103fced6b12b22fd6e67df9832d98b05"
+      }
+    },
+    "dark": {
+      "items": 12,
+      "failed": 0,
+      "texBlankWarnings": 0,
+      "qualityWarnings": 0,
+      "log": {
+        "path": "/workspace/scratch/wave6-demo-research/final-production-dark.log",
+        "sha256": "950a16e89dc6af009325b31e231b8d89103fced6b12b22fd6e67df9832d98b05"
+      }
+    }
+  },
+  "native": {
+    "layouts": 48,
+    "actions": 2024,
+    "shares": 952,
+    "invalid": 92,
+    "raw": 0,
+    "critical": 244,
+    "checks": 3348,
+    "modelComparisons": 7768642,
+    "domRangeRounding": 0
+  },
+  "sourceGrid": {
+    "layouts": 4,
+    "sourcePairs": 200,
+    "actions": 440,
+    "shares": 200,
+    "checks": 404,
+    "modelComparisons": 277328
+  },
+  "visualPersonalCoverageTargets": 726,
+  "priorRawPinsExact": 653,
+  "allOwnedBrowsersServersClosed": true,
+  "continuousGoalActive": true,
+  "latestGlobalCheckpoint": "a71d15c0SOC/POLSCI exact export5053full tests,272productionroutes/theme,8629reading entries/76aliases; predatesDEMO6. DEMOreading integration remains pending until the next meaningful chapter batch."
+}

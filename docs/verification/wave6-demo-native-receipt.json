@@ -1,0 +1,1018 @@
+{
+  "status": "PASS",
+  "scope": "Twelve frozen lessons,320/1200pixels,both themes; actual physical sliders/selectors/toggles,Play/Pause/Restart, actual Share/Create-link to fresh page, invalid/fractional restores, complete model-object and scientific-render audits. Source-grid supplements all50country/year combinations; it adds no independent numerical cases.",
+  "totals": {
+    "layouts": 48,
+    "actions": 2024,
+    "shares": 952,
+    "invalid": 92,
+    "raw": 0,
+    "critical": 244,
+    "checks": 3348,
+    "modelComparisons": 7768642,
+    "domRangeRounding": 0
+  },
+  "sourceGrid": {
+    "totals": {
+      "layouts": 4,
+      "sourcePairs": 200,
+      "actions": 440,
+      "shares": 200,
+      "checks": 404,
+      "modelComparisons": 277328
+    },
+    "receipt": {
+      "path": "/workspace/scratch/wave6-demo-research/source-grid-v1/summary.json",
+      "sha256": "bfb4aedeb59226a01291918e204fbc2c1d415769e51e223002be9b251cd0a249"
+    },
+    "log": {
+      "path": "/workspace/scratch/wave6-demo-research/source-grid-v1.log",
+      "sha256": "7d3a46a37ce8279c147d7d627bd7431a749b0a49f84b99b93ff9cdf71da270a9"
+    },
+    "rows": [
+      {
+        "theme": "light",
+        "width": 320,
+        "sourcePairs": 50,
+        "totals": {
+          "layouts": 1,
+          "sourcePairs": 50,
+          "actions": 110,
+          "shares": 50,
+          "checks": 100,
+          "modelComparisons": 68750
+        }
+      },
+      {
+        "theme": "light",
+        "width": 1200,
+        "sourcePairs": 50,
+        "totals": {
+          "layouts": 1,
+          "sourcePairs": 50,
+          "actions": 110,
+          "shares": 50,
+          "checks": 100,
+          "modelComparisons": 68550
+        }
+      },
+      {
+        "theme": "dark",
+        "width": 320,
+        "sourcePairs": 50,
+        "totals": {
+          "layouts": 1,
+          "sourcePairs": 50,
+          "actions": 110,
+          "shares": 50,
+          "checks": 100,
+          "modelComparisons": 68750
+        }
+      },
+      {
+        "theme": "dark",
+        "width": 1200,
+        "sourcePairs": 50,
+        "totals": {
+          "layouts": 1,
+          "sourcePairs": 50,
+          "actions": 110,
+          "shares": 50,
+          "checks": 100,
+          "modelComparisons": 68550
+        }
+      }
+    ]
+  },
+  "sourceHashes": {
+    "content/demo/ch06.data.shared.js": "ed635967c47ef675a7802cfd0e9eed6520eedcb650ce81551dc62d9bb08083fd",
+    "content/demo/ch06.exact.shared.js": "0abb847c8fe12480fa458d5e465ff716ea2ede8da0fd1486821b0b42d23b7ae2",
+    "content/demo/ch06.js": "a8bc3f838adb7605dabee846e36d3bee4ac7dbf0bc56f8b1b14b91f744f8e1f0",
+    "content/demo/ch06.shared.js": "3ff687f6852f8bb085093bf723481a4f1c4e0cff0cd224b54fa5477d77c9c002",
+    "content/demo/ch06.viz.js": "5c7977758631d07ce77d925977ae1a992a219c6b04fd7c0f4e525a01b9c5c916",
+    "content/demo/syllabus.js": "72e79b427e6d483ac43e93a9dfaf0b97ce5dfbfae04b41d90798e2c7665ce6cd",
+    "assets/js/viz/core.js": "a6fa1753d9d9e8b9a05a7161fffc58dfd53b27002d9d393a3266aeb96515fe73",
+    "assets/js/viz/math.js": "439c335e1cc47907bc72bb76559216aa093be4710e0589f41c70192729eb223e",
+    "assets/js/share-state.js": "13c6a9ac1237d566fc5d79c89e0f4d3029aa8c2817d2c08247a02b1b053a59b1",
+    "assets/js/app.js": "2f5762e6bf80723a5cb8691f8b19c552dd1d731ab998d5bfcdb27828e2e9a6ce",
+    "assets/css/style.css": "eef34e3d7aaf8b38233a78d9dc6545e5e0c9d00b09a3a6876d19f3e0e0af15b6",
+    "tests/fixtures/wave6-demo-reference.json": "2353eee1539a9942ef25546e53774be8c812d2403488f746ef18666bc3e12b6e",
+    "data/col/demo.json": "5194a3503203a0a16b78b59dc7f89cdd00cc53b81134503ce83e4dcfe8b1621c",
+    "data/index.json": "3ba4ccf35071726ede0372f315a8832ccf87c8e0ca7b807d61535d962a9e982a",
+    "tests/wave6-demo-native.mjs": "73adfa0816a64afebab0d1b9c45e26181fa5ef51edfd13f75ca05877f36e104f",
+    "tests/wave6-demo-native-science.mjs": "1934ff5b24a7189e13de00106f288d706f6b8deff57004452fb0400810174eca",
+    "tests/wave6-demo-native-cases.mjs": "f9531975059ebbdd21efe765cd2c7417d19c6eee4d186e8d5abdfe75fddd654e",
+    "tests/wave6-demo-browser.shared.mjs": "211d9d9128ebcaa09421d1ee31b532a8c1460b96c9b484691c6593774c3f2109",
+    "tests/wave6-demo-browser.mjs": "5f6663ade7a7a6db07a8f045b95a6febfaf7a0767f84f50fc5b48df33b2f2aba",
+    "content/demo/ch03.shared.js": "044c99eae10794cc08e913dd2e55020c703506fa5f93bf76b5aaf58e17ce7cc7",
+    "content/demo/ch04.shared.js": "b28ce1a6463b30586f924c04d1ccc1f4ed3ea593c0e0c33b011056542ecb5565",
+    "tests/wave6-demo-source-grid.mjs": "ca9709d6579b1601bddcd565e0bd7f2635decd245081d762262531200af8c95a"
+  },
+  "cohorts": [
+    {
+      "receipt": {
+        "path": "/workspace/scratch/wave6-demo-research/native-full-v2-a/summary.json",
+        "sha256": "6efffd5a3696235eb146835785399abfbb8b9bc931c1e60eaa9daebb5238d58c"
+      },
+      "totals": {
+        "layouts": 24,
+        "actions": 1148,
+        "shares": 548,
+        "invalid": 48,
+        "raw": 0,
+        "critical": 108,
+        "checks": 1872,
+        "modelComparisons": 4919446,
+        "domRangeRounding": 0
+      },
+      "rows": [
+        {
+          "id": 1,
+          "theme": "light",
+          "width": 320,
+          "criticalCases": 8,
+          "totals": {
+            "layouts": 1,
+            "actions": 68,
+            "shares": 33,
+            "invalid": 2,
+            "raw": 0,
+            "critical": 8,
+            "checks": 111,
+            "modelComparisons": 128319,
+            "domRangeRounding": 0
+          }
+        },
+        {
+          "id": 1,
+          "theme": "light",
+          "width": 1200,
+          "criticalCases": 8,
+          "totals": {
+            "layouts": 1,
+            "actions": 68,
+            "shares": 33,
+            "invalid": 2,
+            "raw": 0,
+            "critical": 8,
+            "checks": 111,
+            "modelComparisons": 128319,
+            "domRangeRounding": 0
+          }
+        },
+        {
+          "id": 1,
+          "theme": "dark",
+          "width": 320,
+          "criticalCases": 8,
+          "totals": {
+            "layouts": 1,
+            "actions": 68,
+            "shares": 33,
+            "invalid": 2,
+            "raw": 0,
+            "critical": 8,
+            "checks": 111,
+            "modelComparisons": 128319,
+            "domRangeRounding": 0
+          }
+        },
+        {
+          "id": 1,
+          "theme": "dark",
+          "width": 1200,
+          "criticalCases": 8,
+          "totals": {
+            "layouts": 1,
+            "actions": 68,
+            "shares": 33,
+            "invalid": 2,
+            "raw": 0,
+            "critical": 8,
+            "checks": 111,
+            "modelComparisons": 128319,
+            "domRangeRounding": 0
+          }
+        },
+        {
+          "id": 2,
+          "theme": "light",
+          "width": 320,
+          "criticalCases": 4,
+          "totals": {
+            "layouts": 1,
+            "actions": 44,
+            "shares": 21,
+            "invalid": 2,
+            "raw": 0,
+            "critical": 4,
+            "checks": 72,
+            "modelComparisons": 166367,
+            "domRangeRounding": 0
+          }
+        },
+        {
+          "id": 2,
+          "theme": "light",
+          "width": 1200,
+          "criticalCases": 4,
+          "totals": {
+            "layouts": 1,
+            "actions": 44,
+            "shares": 21,
+            "invalid": 2,
+            "raw": 0,
+            "critical": 4,
+            "checks": 72,
+            "modelComparisons": 166367,
+            "domRangeRounding": 0
+          }
+        },
+        {
+          "id": 2,
+          "theme": "dark",
+          "width": 320,
+          "criticalCases": 4,
+          "totals": {
+            "layouts": 1,
+            "actions": 44,
+            "shares": 21,
+            "invalid": 2,
+            "raw": 0,
+            "critical": 4,
+            "checks": 72,
+            "modelComparisons": 166367,
+            "domRangeRounding": 0
+          }
+        },
+        {
+          "id": 2,
+          "theme": "dark",
+          "width": 1200,
+          "criticalCases": 4,
+          "totals": {
+            "layouts": 1,
+            "actions": 44,
+            "shares": 21,
+            "invalid": 2,
+            "raw": 0,
+            "critical": 4,
+            "checks": 72,
+            "modelComparisons": 166367,
+            "domRangeRounding": 0
+          }
+        },
+        {
+          "id": 3,
+          "theme": "light",
+          "width": 320,
+          "criticalCases": 4,
+          "totals": {
+            "layouts": 1,
+            "actions": 40,
+            "shares": 20,
+            "invalid": 2,
+            "raw": 0,
+            "critical": 4,
+            "checks": 67,
+            "modelComparisons": 165598,
+            "domRangeRounding": 0
+          }
+        },
+        {
+          "id": 3,
+          "theme": "light",
+          "width": 1200,
+          "criticalCases": 4,
+          "totals": {
+            "layouts": 1,
+            "actions": 40,
+            "shares": 20,
+            "invalid": 2,
+            "raw": 0,
+            "critical": 4,
+            "checks": 67,
+            "modelComparisons": 165598,
+            "domRangeRounding": 0
+          }
+        },
+        {
+          "id": 3,
+          "theme": "dark",
+          "width": 320,
+          "criticalCases": 4,
+          "totals": {
+            "layouts": 1,
+            "actions": 40,
+            "shares": 20,
+            "invalid": 2,
+            "raw": 0,
+            "critical": 4,
+            "checks": 67,
+            "modelComparisons": 165598,
+            "domRangeRounding": 0
+          }
+        },
+        {
+          "id": 3,
+          "theme": "dark",
+          "width": 1200,
+          "criticalCases": 4,
+          "totals": {
+            "layouts": 1,
+            "actions": 40,
+            "shares": 20,
+            "invalid": 2,
+            "raw": 0,
+            "critical": 4,
+            "checks": 67,
+            "modelComparisons": 165598,
+            "domRangeRounding": 0
+          }
+        },
+        {
+          "id": 4,
+          "theme": "light",
+          "width": 320,
+          "criticalCases": 3,
+          "totals": {
+            "layouts": 1,
+            "actions": 43,
+            "shares": 20,
+            "invalid": 2,
+            "raw": 0,
+            "critical": 3,
+            "checks": 69,
+            "modelComparisons": 76392,
+            "domRangeRounding": 0
+          }
+        },
+        {
+          "id": 4,
+          "theme": "light",
+          "width": 1200,
+          "criticalCases": 3,
+          "totals": {
+            "layouts": 1,
+            "actions": 43,
+            "shares": 20,
+            "invalid": 2,
+            "raw": 0,
+            "critical": 3,
+            "checks": 69,
+            "modelComparisons": 76392,
+            "domRangeRounding": 0
+          }
+        },
+        {
+          "id": 4,
+          "theme": "dark",
+          "width": 320,
+          "criticalCases": 3,
+          "totals": {
+            "layouts": 1,
+            "actions": 43,
+            "shares": 20,
+            "invalid": 2,
+            "raw": 0,
+            "critical": 3,
+            "checks": 69,
+            "modelComparisons": 76392,
+            "domRangeRounding": 0
+          }
+        },
+        {
+          "id": 4,
+          "theme": "dark",
+          "width": 1200,
+          "criticalCases": 3,
+          "totals": {
+            "layouts": 1,
+            "actions": 43,
+            "shares": 20,
+            "invalid": 2,
+            "raw": 0,
+            "critical": 3,
+            "checks": 69,
+            "modelComparisons": 76392,
+            "domRangeRounding": 0
+          }
+        },
+        {
+          "id": 5,
+          "theme": "light",
+          "width": 320,
+          "criticalCases": 5,
+          "totals": {
+            "layouts": 1,
+            "actions": 53,
+            "shares": 24,
+            "invalid": 2,
+            "raw": 0,
+            "critical": 5,
+            "checks": 85,
+            "modelComparisons": 649599,
+            "domRangeRounding": 0
+          }
+        },
+        {
+          "id": 5,
+          "theme": "light",
+          "width": 1200,
+          "criticalCases": 5,
+          "totals": {
+            "layouts": 1,
+            "actions": 53,
+            "shares": 24,
+            "invalid": 2,
+            "raw": 0,
+            "critical": 5,
+            "checks": 85,
+            "modelComparisons": 649182,
+            "domRangeRounding": 0
+          }
+        },
+        {
+          "id": 5,
+          "theme": "dark",
+          "width": 320,
+          "criticalCases": 5,
+          "totals": {
+            "layouts": 1,
+            "actions": 53,
+            "shares": 24,
+            "invalid": 2,
+            "raw": 0,
+            "critical": 5,
+            "checks": 85,
+            "modelComparisons": 649599,
+            "domRangeRounding": 0
+          }
+        },
+        {
+          "id": 5,
+          "theme": "dark",
+          "width": 1200,
+          "criticalCases": 5,
+          "totals": {
+            "layouts": 1,
+            "actions": 53,
+            "shares": 24,
+            "invalid": 2,
+            "raw": 0,
+            "critical": 5,
+            "checks": 85,
+            "modelComparisons": 649182,
+            "domRangeRounding": 0
+          }
+        },
+        {
+          "id": 6,
+          "theme": "light",
+          "width": 320,
+          "criticalCases": 3,
+          "totals": {
+            "layouts": 1,
+            "actions": 39,
+            "shares": 19,
+            "invalid": 2,
+            "raw": 0,
+            "critical": 3,
+            "checks": 64,
+            "modelComparisons": 43859,
+            "domRangeRounding": 0
+          }
+        },
+        {
+          "id": 6,
+          "theme": "light",
+          "width": 1200,
+          "criticalCases": 3,
+          "totals": {
+            "layouts": 1,
+            "actions": 39,
+            "shares": 19,
+            "invalid": 2,
+            "raw": 0,
+            "critical": 3,
+            "checks": 64,
+            "modelComparisons": 43731,
+            "domRangeRounding": 0
+          }
+        },
+        {
+          "id": 6,
+          "theme": "dark",
+          "width": 320,
+          "criticalCases": 3,
+          "totals": {
+            "layouts": 1,
+            "actions": 39,
+            "shares": 19,
+            "invalid": 2,
+            "raw": 0,
+            "critical": 3,
+            "checks": 64,
+            "modelComparisons": 43859,
+            "domRangeRounding": 0
+          }
+        },
+        {
+          "id": 6,
+          "theme": "dark",
+          "width": 1200,
+          "criticalCases": 3,
+          "totals": {
+            "layouts": 1,
+            "actions": 39,
+            "shares": 19,
+            "invalid": 2,
+            "raw": 0,
+            "critical": 3,
+            "checks": 64,
+            "modelComparisons": 43731,
+            "domRangeRounding": 0
+          }
+        }
+      ]
+    },
+    {
+      "receipt": {
+        "path": "/workspace/scratch/wave6-demo-research/native-full-v2-b/summary.json",
+        "sha256": "740ded077ed41834cbf09a94a7e54be72810ea86b1ece4ca8bc9dd79b96ce331"
+      },
+      "totals": {
+        "layouts": 24,
+        "actions": 876,
+        "shares": 404,
+        "invalid": 44,
+        "raw": 0,
+        "critical": 136,
+        "checks": 1476,
+        "modelComparisons": 2849196,
+        "domRangeRounding": 0
+      },
+      "rows": [
+        {
+          "id": 7,
+          "theme": "light",
+          "width": 320,
+          "criticalCases": 8,
+          "totals": {
+            "layouts": 1,
+            "actions": 34,
+            "shares": 15,
+            "invalid": 2,
+            "raw": 0,
+            "critical": 8,
+            "checks": 59,
+            "modelComparisons": 145114,
+            "domRangeRounding": 0
+          }
+        },
+        {
+          "id": 7,
+          "theme": "light",
+          "width": 1200,
+          "criticalCases": 8,
+          "totals": {
+            "layouts": 1,
+            "actions": 34,
+            "shares": 15,
+            "invalid": 2,
+            "raw": 0,
+            "critical": 8,
+            "checks": 59,
+            "modelComparisons": 145434,
+            "domRangeRounding": 0
+          }
+        },
+        {
+          "id": 7,
+          "theme": "dark",
+          "width": 320,
+          "criticalCases": 8,
+          "totals": {
+            "layouts": 1,
+            "actions": 34,
+            "shares": 15,
+            "invalid": 2,
+            "raw": 0,
+            "critical": 8,
+            "checks": 59,
+            "modelComparisons": 145114,
+            "domRangeRounding": 0
+          }
+        },
+        {
+          "id": 7,
+          "theme": "dark",
+          "width": 1200,
+          "criticalCases": 8,
+          "totals": {
+            "layouts": 1,
+            "actions": 34,
+            "shares": 15,
+            "invalid": 2,
+            "raw": 0,
+            "critical": 8,
+            "checks": 59,
+            "modelComparisons": 145434,
+            "domRangeRounding": 0
+          }
+        },
+        {
+          "id": 8,
+          "theme": "light",
+          "width": 320,
+          "criticalCases": 4,
+          "totals": {
+            "layouts": 1,
+            "actions": 24,
+            "shares": 9,
+            "invalid": 2,
+            "raw": 0,
+            "critical": 4,
+            "checks": 40,
+            "modelComparisons": 137360,
+            "domRangeRounding": 0
+          }
+        },
+        {
+          "id": 8,
+          "theme": "light",
+          "width": 1200,
+          "criticalCases": 4,
+          "totals": {
+            "layouts": 1,
+            "actions": 24,
+            "shares": 9,
+            "invalid": 2,
+            "raw": 0,
+            "critical": 4,
+            "checks": 40,
+            "modelComparisons": 137360,
+            "domRangeRounding": 0
+          }
+        },
+        {
+          "id": 8,
+          "theme": "dark",
+          "width": 320,
+          "criticalCases": 4,
+          "totals": {
+            "layouts": 1,
+            "actions": 24,
+            "shares": 9,
+            "invalid": 2,
+            "raw": 0,
+            "critical": 4,
+            "checks": 40,
+            "modelComparisons": 137360,
+            "domRangeRounding": 0
+          }
+        },
+        {
+          "id": 8,
+          "theme": "dark",
+          "width": 1200,
+          "criticalCases": 4,
+          "totals": {
+            "layouts": 1,
+            "actions": 24,
+            "shares": 9,
+            "invalid": 2,
+            "raw": 0,
+            "critical": 4,
+            "checks": 40,
+            "modelComparisons": 137360,
+            "domRangeRounding": 0
+          }
+        },
+        {
+          "id": 9,
+          "theme": "light",
+          "width": 320,
+          "criticalCases": 9,
+          "totals": {
+            "layouts": 1,
+            "actions": 30,
+            "shares": 16,
+            "invalid": 2,
+            "raw": 0,
+            "critical": 9,
+            "checks": 57,
+            "modelComparisons": 103485,
+            "domRangeRounding": 0
+          }
+        },
+        {
+          "id": 9,
+          "theme": "light",
+          "width": 1200,
+          "criticalCases": 9,
+          "totals": {
+            "layouts": 1,
+            "actions": 30,
+            "shares": 16,
+            "invalid": 2,
+            "raw": 0,
+            "critical": 9,
+            "checks": 57,
+            "modelComparisons": 103485,
+            "domRangeRounding": 0
+          }
+        },
+        {
+          "id": 9,
+          "theme": "dark",
+          "width": 320,
+          "criticalCases": 9,
+          "totals": {
+            "layouts": 1,
+            "actions": 30,
+            "shares": 16,
+            "invalid": 2,
+            "raw": 0,
+            "critical": 9,
+            "checks": 57,
+            "modelComparisons": 103485,
+            "domRangeRounding": 0
+          }
+        },
+        {
+          "id": 9,
+          "theme": "dark",
+          "width": 1200,
+          "criticalCases": 9,
+          "totals": {
+            "layouts": 1,
+            "actions": 30,
+            "shares": 16,
+            "invalid": 2,
+            "raw": 0,
+            "critical": 9,
+            "checks": 57,
+            "modelComparisons": 103485,
+            "domRangeRounding": 0
+          }
+        },
+        {
+          "id": 10,
+          "theme": "light",
+          "width": 320,
+          "criticalCases": 5,
+          "totals": {
+            "layouts": 1,
+            "actions": 25,
+            "shares": 10,
+            "invalid": 2,
+            "raw": 0,
+            "critical": 5,
+            "checks": 43,
+            "modelComparisons": 95713,
+            "domRangeRounding": 0
+          }
+        },
+        {
+          "id": 10,
+          "theme": "light",
+          "width": 1200,
+          "criticalCases": 5,
+          "totals": {
+            "layouts": 1,
+            "actions": 25,
+            "shares": 10,
+            "invalid": 2,
+            "raw": 0,
+            "critical": 5,
+            "checks": 43,
+            "modelComparisons": 95713,
+            "domRangeRounding": 0
+          }
+        },
+        {
+          "id": 10,
+          "theme": "dark",
+          "width": 320,
+          "criticalCases": 5,
+          "totals": {
+            "layouts": 1,
+            "actions": 25,
+            "shares": 10,
+            "invalid": 2,
+            "raw": 0,
+            "critical": 5,
+            "checks": 43,
+            "modelComparisons": 95713,
+            "domRangeRounding": 0
+          }
+        },
+        {
+          "id": 10,
+          "theme": "dark",
+          "width": 1200,
+          "criticalCases": 5,
+          "totals": {
+            "layouts": 1,
+            "actions": 25,
+            "shares": 10,
+            "invalid": 2,
+            "raw": 0,
+            "critical": 5,
+            "checks": 43,
+            "modelComparisons": 95713,
+            "domRangeRounding": 0
+          }
+        },
+        {
+          "id": 11,
+          "theme": "light",
+          "width": 320,
+          "criticalCases": 5,
+          "totals": {
+            "layouts": 1,
+            "actions": 60,
+            "shares": 28,
+            "invalid": 2,
+            "raw": 0,
+            "critical": 5,
+            "checks": 96,
+            "modelComparisons": 105072,
+            "domRangeRounding": 0
+          }
+        },
+        {
+          "id": 11,
+          "theme": "light",
+          "width": 1200,
+          "criticalCases": 5,
+          "totals": {
+            "layouts": 1,
+            "actions": 60,
+            "shares": 28,
+            "invalid": 2,
+            "raw": 0,
+            "critical": 5,
+            "checks": 96,
+            "modelComparisons": 105072,
+            "domRangeRounding": 0
+          }
+        },
+        {
+          "id": 11,
+          "theme": "dark",
+          "width": 320,
+          "criticalCases": 5,
+          "totals": {
+            "layouts": 1,
+            "actions": 60,
+            "shares": 28,
+            "invalid": 2,
+            "raw": 0,
+            "critical": 5,
+            "checks": 96,
+            "modelComparisons": 105072,
+            "domRangeRounding": 0
+          }
+        },
+        {
+          "id": 11,
+          "theme": "dark",
+          "width": 1200,
+          "criticalCases": 5,
+          "totals": {
+            "layouts": 1,
+            "actions": 60,
+            "shares": 28,
+            "invalid": 2,
+            "raw": 0,
+            "critical": 5,
+            "checks": 96,
+            "modelComparisons": 105072,
+            "domRangeRounding": 0
+          }
+        },
+        {
+          "id": 12,
+          "theme": "light",
+          "width": 320,
+          "criticalCases": 3,
+          "totals": {
+            "layouts": 1,
+            "actions": 46,
+            "shares": 23,
+            "invalid": 1,
+            "raw": 0,
+            "critical": 3,
+            "checks": 74,
+            "modelComparisons": 125395,
+            "domRangeRounding": 0
+          }
+        },
+        {
+          "id": 12,
+          "theme": "light",
+          "width": 1200,
+          "criticalCases": 3,
+          "totals": {
+            "layouts": 1,
+            "actions": 46,
+            "shares": 23,
+            "invalid": 1,
+            "raw": 0,
+            "critical": 3,
+            "checks": 74,
+            "modelComparisons": 125395,
+            "domRangeRounding": 0
+          }
+        },
+        {
+          "id": 12,
+          "theme": "dark",
+          "width": 320,
+          "criticalCases": 3,
+          "totals": {
+            "layouts": 1,
+            "actions": 46,
+            "shares": 23,
+            "invalid": 1,
+            "raw": 0,
+            "critical": 3,
+            "checks": 74,
+            "modelComparisons": 125395,
+            "domRangeRounding": 0
+          }
+        },
+        {
+          "id": 12,
+          "theme": "dark",
+          "width": 1200,
+          "criticalCases": 3,
+          "totals": {
+            "layouts": 1,
+            "actions": 46,
+            "shares": 23,
+            "invalid": 1,
+            "raw": 0,
+            "critical": 3,
+            "checks": 74,
+            "modelComparisons": 125395,
+            "domRangeRounding": 0
+          }
+        }
+      ]
+    }
+  ],
+  "allOwnedBrowsersServersExplicitlyClosed": true,
+  "logs": [
+    {
+      "path": "/workspace/scratch/wave6-demo-research/native-full-v2-a.log",
+      "sha256": "dd4f5e0614b5c48f1db12c87942abfbedab6968707a442f450c078c41f439f80"
+    },
+    {
+      "path": "/workspace/scratch/wave6-demo-research/native-full-v2-b.log",
+      "sha256": "02d4f2c88d7b6f6e03beb3c6f0a8aa34b82bb02e3ce2412d07fcd9906409a0b4"
+    }
+  ],
+  "retainedEarlierRuns": [
+    {
+      "path": "/workspace/scratch/wave6-demo-research/native-pilot-v1.log",
+      "sha256": "a658cb06de68ca5783128a25cd36693f5449bb8fbc7a166599046b4030abc1d7"
+    },
+    {
+      "path": "/workspace/scratch/wave6-demo-research/native-pilot-v2.log",
+      "sha256": "e73cd8dba12849c6a4ea257a4b1238084ec0a549a17f4fc44d4f032db36d89cc"
+    },
+    {
+      "path": "/workspace/scratch/wave6-demo-research/native-pilot-v3.log",
+      "sha256": "80dea95906ecd9cbe8f9c1aa04a2bd9699681e4c53c55f83dcb0e3a0bbdb41c8"
+    },
+    {
+      "path": "/workspace/scratch/wave6-demo-research/native-pilot-v4.log",
+      "sha256": "7f0e5e54bfd95f0b48b1d6554af6074c29a86b8b400b4501dd17f14497f6469d"
+    },
+    {
+      "path": "/workspace/scratch/wave6-demo-research/native-pilot-v5.log",
+      "sha256": "04fb2d818b774c3cca82a124ed55005354b8f0de80caca7aa2f3a6e2ebff860f"
+    },
+    {
+      "path": "/workspace/scratch/wave6-demo-research/native-full-v1-a.log",
+      "sha256": "dd4f5e0614b5c48f1db12c87942abfbedab6968707a442f450c078c41f439f80"
+    },
+    {
+      "path": "/workspace/scratch/wave6-demo-research/native-full-v1-b.log",
+      "sha256": "02d4f2c88d7b6f6e03beb3c6f0a8aa34b82bb02e3ce2412d07fcd9906409a0b4"
+    }
+  ],
+  "observedHarnessCorrections": [
+    {
+      "finding": "Copied glyph probe used y-descent for lower glyph corners.",
+      "correction": "Use y+descent for actual lower bounds; explicit font load retained. Only this new chapter probe changed."
+    },
+    {
+      "finding": "A Stage.poly delegates to Stage.path, so the first path-count assertion double counted filled profiles.",
+      "correction": "Check open scientific paths and closed profiles separately, retaining full closed geometry checks."
+    }
+  ]
+}

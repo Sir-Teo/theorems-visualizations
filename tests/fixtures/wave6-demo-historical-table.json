@@ -1,0 +1,50 @@
+{
+  "status": "manually transcribed from actually personally viewed source page; reference crosschecks pending",
+  "sourceURL": "https://www.demogr.mpg.de/books/drm/011/978-3-642-35858-6_Book_Online.pdf",
+  "sourceSHA256": "b007651a86af3fe647f53d97428786daf2d294341ca2b7e2bada23470c1d475a",
+  "work": "Sharpe/Lotka1911 as reproduced in Smith/Keyfitz2013",
+  "pdfPage": 118,
+  "printedReprintPage": 100,
+  "table": "England and Wales1871\u20131880; female columns only",
+  "ageLabels": [
+    "0\u20135",
+    "5\u201310",
+    "10\u201315",
+    "15\u201320",
+    "20\u201325",
+    "25\u201335",
+    "35\u201345",
+    "45\u201355",
+    "55\u201365",
+    "65\u201375",
+    "75+"
+  ],
+  "calculated": [
+    136,
+    115,
+    104,
+    95,
+    87,
+    148,
+    116,
+    88,
+    62,
+    35,
+    15
+  ],
+  "observed": [
+    132,
+    117,
+    104,
+    95,
+    91,
+    149,
+    115,
+    87,
+    61,
+    35,
+    15
+  ],
+  "units": "Raw reported relative-frequency table entries; do not renormalize or treat as smooth densities. Values are rounded and their sum need not be1000.",
+  "scope": "No original historical life table, microdata or current UK observation is imported; only printed entries in the actually viewed female table. Unequal-width and open groups remain categorical."
+}

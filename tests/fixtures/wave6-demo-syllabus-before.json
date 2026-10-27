@@ -1,0 +1,1290 @@
+{
+  "collection": "demo",
+  "chapters": [
+    {
+      "n": 1,
+      "title": "Counting people: rates, growth and the Lexis diagram",
+      "summary": "Every population changes only through births, deaths and moves, and demographic rates divide those events by the person-years at risk. Growth compounds, so small rates produce large changes over a few generations. The Lexis diagram keeps track of age, period and cohort at once, and standardization and decomposition show how much of a difference between two populations is due to their age structure rather than their risks.",
+      "items": [
+        {
+          "num": "1.1",
+          "kind": "Theorem",
+          "name": "The demographic balancing equation",
+          "deps": [
+            "mathbio-1.1"
+          ],
+          "refs": [
+            "PHG ch. 1"
+          ],
+          "pic": "A country as a tank with taps for births and immigration and drains for deaths and emigration; set the flows and the population counter obeys P(t+1) = P(t) + B \u2212 D + I \u2212 E exactly."
+        },
+        {
+          "num": "1.2",
+          "kind": "Definition",
+          "name": "Person-years and occurrence\u2013exposure rates",
+          "deps": [
+            "pma-6.1"
+          ],
+          "refs": [
+            "PHG ch. 1"
+          ],
+          "pic": "Lifelines of individuals entering and leaving observation; the shaded total length is the person-years at risk, and deaths divided by that area give the rate."
+        },
+        {
+          "num": "1.3",
+          "kind": "Definition",
+          "name": "Crude birth, death and growth rates",
+          "deps": [
+            "demo-1.1",
+            "demo-1.2"
+          ],
+          "refs": [
+            "PHG ch. 1"
+          ],
+          "pic": "Pick countries and years; the crude birth and death rates are drawn as two curves whose gap is the natural growth rate, with migration added as a separate band."
+        },
+        {
+          "num": "1.4",
+          "kind": "Concept",
+          "name": "Growth rates, doubling times and the rule of 70",
+          "deps": [
+            "mathbio-1.3",
+            "demo-1.3",
+            "pma-8.6"
+          ],
+          "refs": [
+            "PHG ch. 1",
+            "K&C: Understanding Population Characteristics"
+          ],
+          "pic": "Set an annual growth rate and see the population\u2019s trajectory on linear and log axes; the doubling time read from the curve matches 70/r, and a 2% rate multiplies the population sevenfold in a century."
+        },
+        {
+          "num": "1.5",
+          "kind": "Concept",
+          "name": "The Lexis diagram",
+          "deps": [
+            "demo-1.2"
+          ],
+          "refs": [
+            "PHG ch. 1"
+          ],
+          "pic": "Lifelines run diagonally through a calendar-time \u00d7 age grid; highlight a cohort, a period or an age group and the corresponding parallelogram, column or row lights up with its deaths counted."
+        },
+        {
+          "num": "1.6",
+          "kind": "Concept",
+          "name": "The age\u2013period\u2013cohort identification problem",
+          "deps": [
+            "demo-1.5",
+            "ladr-3.11"
+          ],
+          "refs": [
+            "PHG ch. 1"
+          ],
+          "pic": "Generate a death-rate surface from age, period and cohort effects you choose; then add any linear trend to the three effects in the way age = period \u2212 cohort allows and watch the fitted surface stay identical."
+        },
+        {
+          "num": "1.7",
+          "kind": "Method",
+          "name": "Direct and indirect age standardization",
+          "deps": [
+            "demo-1.3"
+          ],
+          "refs": [
+            "PHG ch. 2"
+          ],
+          "pic": "Two populations with different age pyramids and death schedules; apply one standard population to both and see the crude ranking reverse when age composition is removed."
+        },
+        {
+          "num": "1.8",
+          "kind": "Paradox",
+          "name": "Simpson\u2019s paradox in crude death rates",
+          "deps": [
+            "demo-1.7",
+            "causal-4.4"
+          ],
+          "refs": [
+            "PHG ch. 2"
+          ],
+          "pic": "A young country with higher death rates at every age has a lower crude death rate than an old country; drag the age structures and find where the paradox appears and disappears."
+        },
+        {
+          "num": "1.9",
+          "kind": "Method",
+          "name": "Kitagawa decomposition of a rate difference",
+          "deps": [
+            "demo-1.7"
+          ],
+          "refs": [
+            "PHG ch. 2"
+          ],
+          "pic": "The difference between two crude rates is split into a rate effect and a composition effect, shown as stacked bars that always add up to the total difference."
+        },
+        {
+          "num": "1.10",
+          "kind": "Phenomenon",
+          "name": "Logistic forecasts of human population and their failure",
+          "deps": [
+            "mathbio-1.4",
+            "demo-1.4"
+          ],
+          "refs": [
+            "K&C: Projection and Forecasting"
+          ],
+          "pic": "Fit a logistic curve to U.S. censuses up to 1920 as Pearl and Reed did; the fitted ceiling of about 200 million is drawn against the actual census counts that sailed past it."
+        }
+      ]
+    },
+    {
+      "n": 2,
+      "title": "The life table",
+      "summary": "A life table follows a hypothetical cohort through a fixed schedule of death rates and summarizes it by survivorship, deaths, person-years and life expectancy. Life expectancy is simply the area under the survival curve, which is why infant deaths weigh so heavily on it. Multiple-decrement tables split deaths by cause and answer questions such as how much life expectancy would rise if a cause were eliminated.",
+      "items": [
+        {
+          "num": "2.1",
+          "kind": "Definition",
+          "name": "Age-specific death rate m\u2093 and probability q\u2093",
+          "deps": [
+            "demo-1.2",
+            "mathbio-4.1"
+          ],
+          "refs": [
+            "PHG ch. 2"
+          ],
+          "pic": "A one-year age group on the Lexis diagram: the rate divides deaths by person-years, the probability divides by people entering, and the two numbers diverge as mortality rises."
+        },
+        {
+          "num": "2.2",
+          "kind": "Method",
+          "name": "From rates to probabilities: the a\u2093 assumption",
+          "deps": [
+            "demo-2.1"
+          ],
+          "refs": [
+            "PHG ch. 3"
+          ],
+          "pic": "Choose when within the interval deaths occur (a\u2093); the conversion q\u2093 = nm\u2093/(1 + (n \u2212 a\u2093)m\u2093) is drawn, and infant ages show why a\u2093 \u2248 0.1 matters."
+        },
+        {
+          "num": "2.3",
+          "kind": "Definition",
+          "name": "Life-table columns: l\u2093, d\u2093, L\u2093, T\u2093, e\u2093",
+          "deps": [
+            "demo-2.2"
+          ],
+          "refs": [
+            "PHG ch. 3"
+          ],
+          "pic": "Edit a death schedule by dragging points; every life-table column is recomputed in a live table, with l\u2093 and d\u2093 plotted beside it."
+        },
+        {
+          "num": "2.4",
+          "kind": "Theorem",
+          "name": "Life expectancy is the area under the survival curve",
+          "deps": [
+            "demo-2.3",
+            "rca-8.16"
+          ],
+          "refs": [
+            "PHG ch. 3"
+          ],
+          "pic": "The survival curve l(x)/l(0) with its area shaded; the area equals the mean age at death computed from the d\u2093 histogram, and changing either picture changes both numbers identically."
+        },
+        {
+          "num": "2.5",
+          "kind": "Definition",
+          "name": "Force of mortality (hazard) \u03bc(x)",
+          "deps": [
+            "demo-2.1",
+            "pma-5.1"
+          ],
+          "refs": [
+            "PHG ch. 3"
+          ],
+          "pic": "Hazard drawn on a log scale beside the survival curve; drag the hazard and the survival curve bends, showing that survival falls fastest where the hazard is high."
+        },
+        {
+          "num": "2.6",
+          "kind": "Theorem",
+          "name": "Survival is the exponential of minus the cumulative hazard",
+          "deps": [
+            "demo-2.5",
+            "pma-6.21",
+            "pma-8.6"
+          ],
+          "refs": [
+            "PHG ch. 3"
+          ],
+          "pic": "Shade the cumulative hazard up to age x; the readout exp(\u2212area) matches l(x) from the life table, for any hazard curve you draw."
+        },
+        {
+          "num": "2.7",
+          "kind": "Concept",
+          "name": "Period versus cohort life expectancy",
+          "deps": [
+            "demo-2.3",
+            "demo-1.5"
+          ],
+          "refs": [
+            "PHG ch. 3"
+          ],
+          "pic": "On a Lexis surface of improving mortality, the period table reads across a year while the cohort table follows a diagonal; the cohort figure comes out several years higher."
+        },
+        {
+          "num": "2.8",
+          "kind": "Paradox",
+          "name": "Surviving raises your life expectancy",
+          "deps": [
+            "demo-2.3",
+            "prob-4.1.1a"
+          ],
+          "refs": [
+            "PHG ch. 3"
+          ],
+          "pic": "Plot x + e\u2093 against age: in a high-infant-mortality table life expectancy at age 5 exceeds that at birth, and the expected age at death keeps rising the longer you live."
+        },
+        {
+          "num": "2.9",
+          "kind": "Phenomenon",
+          "name": "Infant mortality dominates historical life expectancy",
+          "deps": [
+            "demo-2.4"
+          ],
+          "refs": [
+            "PHG ch. 3"
+          ],
+          "pic": "Compare a 1750 and a 2020 life table: removing infant and child deaths alone closes most of the gap in e\u2080, shown as a decomposition by age."
+        },
+        {
+          "num": "2.10",
+          "kind": "Method",
+          "name": "Multiple-decrement life tables",
+          "deps": [
+            "demo-2.3",
+            "pma-6.12"
+          ],
+          "refs": [
+            "PHG ch. 4"
+          ],
+          "pic": "Stacked survival curves split deaths by cause; the area of each band is the expected years lost to each cause from birth."
+        },
+        {
+          "num": "2.11",
+          "kind": "Theorem",
+          "name": "Cause elimination and competing risks",
+          "deps": [
+            "demo-2.10",
+            "demo-2.6",
+            "prob-2.1.1a"
+          ],
+          "refs": [
+            "PHG ch. 4"
+          ],
+          "pic": "Remove a cause (cancer, heart disease) under the independence assumption; the new survival curve and the gain in e\u2080 are computed \u2014 often smaller than people guess, because other causes take over."
+        },
+        {
+          "num": "2.12",
+          "kind": "Method",
+          "name": "Healthy life expectancy (Sullivan method)",
+          "deps": [
+            "demo-2.3"
+          ],
+          "refs": [
+            "PHG ch. 4"
+          ],
+          "pic": "Split each L\u2093 by the prevalence of disability; the survival area divides into healthy and unhealthy years, and changing prevalence by age shows which ages drive the difference."
+        },
+        {
+          "num": "2.13",
+          "kind": "Concept",
+          "name": "Lifespan inequality and Keyfitz\u2019s entropy",
+          "deps": [
+            "demo-2.4"
+          ],
+          "refs": [
+            "K&C: Understanding Population Characteristics"
+          ],
+          "pic": "Two populations with the same e\u2080 but different spreads of age at death; the standard deviation and Keyfitz\u2019s H are computed, and H also tells how much e\u2080 rises for a 1% cut in all death rates."
+        },
+        {
+          "num": "2.14",
+          "kind": "Paper",
+          "name": "Observations upon the Bills of Mortality",
+          "paper": {
+            "authors": "John Graunt",
+            "year": 1662,
+            "title": "Natural and Political Observations Mentioned in a Following Index, and Made upon the Bills of Mortality",
+            "venue": "London: Tho. Roycroft for John Martin, James Allestry and Tho. Dicas",
+            "url": "https://archive.org/details/2356014R.nlm.nih.gov"
+          },
+          "introduces": [
+            "demo-2.3",
+            "demo-4.11"
+          ],
+          "deps": [],
+          "refs": [],
+          "pic": "Graunt\u2019s London from the weekly bills: male christenings outnumber female by about 14 to 13, steadily year after year; and his table of survivors out of 100 born (64 at 6, 40 at 16, 25 at 26, 16 at 36, 10 at 46, 6 at 56, 3 at 66, 1 at 76, none at 86), drawn as the first survival curve and set against a modern London life table."
+        }
+      ]
+    },
+    {
+      "n": 3,
+      "title": "Patterns of mortality",
+      "summary": "Adult death rates rise roughly exponentially with age, the regularity Gompertz found in 1825, with a constant added for age-independent deaths. Heterogeneity in frailty bends the curve at old ages, and whether mortality truly plateaus is debated. Model life tables and the Lee\u2013Carter method summarize whole schedules with a few parameters, and the record life expectancy has risen with startling linearity for nearly two centuries.",
+      "items": [
+        {
+          "num": "3.1",
+          "kind": "Law",
+          "name": "Gompertz law of mortality",
+          "deps": [
+            "demo-2.5",
+            "mathbio-1.8"
+          ],
+          "refs": [
+            "PHG ch. 9"
+          ],
+          "pic": "Real adult death rates on a log scale fall near a straight line; fit the slope and read off the mortality-rate doubling time of about eight years."
+        },
+        {
+          "num": "3.2",
+          "kind": "Law",
+          "name": "Gompertz\u2013Makeham law",
+          "deps": [
+            "demo-3.1"
+          ],
+          "refs": [
+            "PHG ch. 9"
+          ],
+          "pic": "Add an age-independent Makeham term to the Gompertz line; it fits young-adult deaths and accidents, and its share of total mortality is shown by age."
+        },
+        {
+          "num": "3.3",
+          "kind": "Model",
+          "name": "Frailty: heterogeneity bends cohort hazards (Vaupel)",
+          "deps": [
+            "demo-3.1",
+            "prob-4.1.1a"
+          ],
+          "refs": [
+            "K&C: Understanding Population Characteristics"
+          ],
+          "pic": "A cohort mixes robust and frail individuals, each on a Gompertz curve; the frail die first, so the population hazard flattens at old ages even though no individual\u2019s does."
+        },
+        {
+          "num": "3.4",
+          "kind": "Phenomenon",
+          "name": "Late-life mortality plateau (debated)",
+          "deps": [
+            "demo-3.3"
+          ],
+          "refs": [
+            "PHG ch. 9"
+          ],
+          "pic": "Death rates above age 100 from validated data with their sparse-data error bars; toggle between a continuing Gompertz rise and a plateau and see which the intervals rule out."
+        },
+        {
+          "num": "3.5",
+          "kind": "Method",
+          "name": "Model life tables and the Brass logit system",
+          "deps": [
+            "demo-2.3"
+          ],
+          "refs": [
+            "PHG ch. 9"
+          ],
+          "pic": "Two Brass parameters (level and shape) transform a standard survival curve; fit them to a country with sparse data and compare to its full table."
+        },
+        {
+          "num": "3.6",
+          "kind": "Model",
+          "name": "Lee\u2013Carter mortality forecasting",
+          "deps": [
+            "demo-3.1",
+            "ladr-7.70"
+          ],
+          "refs": [
+            "K&C: Projection and Forecasting"
+          ],
+          "pic": "Decompose a log death-rate surface into an age pattern and a single time index by SVD; extrapolate the index as a random walk and draw the fan of forecast life expectancies."
+        },
+        {
+          "num": "3.7",
+          "kind": "Phenomenon",
+          "name": "Record life expectancy rises linearly (Oeppen\u2013Vaupel)",
+          "deps": [
+            "demo-2.7"
+          ],
+          "refs": [
+            "PHG ch. 3"
+          ],
+          "pic": "The highest national female e\u2080 each year since 1840 lies near a line of slope about three months per year; overlay past \u201cmaximum life expectancy\u201d forecasts that were broken soon after."
+        },
+        {
+          "num": "3.8",
+          "kind": "Phenomenon",
+          "name": "Rectangularization of the survival curve",
+          "deps": [
+            "demo-2.4"
+          ],
+          "refs": [
+            "PHG ch. 3"
+          ],
+          "pic": "Survival curves for successive decades become squarer as early deaths vanish; the age of steepest decline moves right and the lifespan variance shrinks."
+        },
+        {
+          "num": "3.9",
+          "kind": "Hypothesis",
+          "name": "Compression of morbidity (contested)",
+          "deps": [
+            "demo-2.12",
+            "demo-3.8"
+          ],
+          "refs": [
+            "PHG ch. 4"
+          ],
+          "pic": "Scenarios for healthy and unhealthy years as e\u2080 rises \u2014 compression, expansion or dynamic equilibrium \u2014 drawn as stacked survival areas next to observed trends."
+        },
+        {
+          "num": "3.10",
+          "kind": "Phenomenon",
+          "name": "The Preston curve",
+          "deps": [
+            "demo-2.4"
+          ],
+          "refs": [
+            "PHG ch. 3"
+          ],
+          "pic": "Life expectancy against GDP per capita for countries in 1930, 1960 and 2020: the concave curve shifts upward over time, so at any income people now live longer."
+        },
+        {
+          "num": "3.11",
+          "kind": "Concept",
+          "name": "Epidemiological transition (Omran)",
+          "deps": [
+            "demo-3.10",
+            "demo-2.10"
+          ],
+          "refs": [
+            "PHG ch. 4"
+          ],
+          "pic": "Stacked cause-of-death shares over two centuries move from infections toward chronic disease, with life expectancy plotted on top."
+        },
+        {
+          "num": "3.12",
+          "kind": "Phenomenon",
+          "name": "The sex gap in life expectancy",
+          "deps": [
+            "demo-2.3"
+          ],
+          "refs": [
+            "PHG ch. 3"
+          ],
+          "pic": "Male and female e\u2080 over time by country; decompose the gap by age and cause to see the twentieth-century widening and recent narrowing tied to smoking."
+        },
+        {
+          "num": "3.13",
+          "kind": "Paper",
+          "name": "The Function Expressive of the Law of Human Mortality",
+          "paper": {
+            "authors": "Benjamin Gompertz",
+            "year": 1825,
+            "title": "On the Nature of the Function Expressive of the Law of Human Mortality, and on a New Mode of Determining the Value of Life Contingencies",
+            "venue": "Philosophical Transactions of the Royal Society of London 115: 513\u2013583",
+            "doi": "10.1098/rstl.1825.0026"
+          },
+          "introduces": [
+            "demo-3.1"
+          ],
+          "deps": [
+            "demo-2.3",
+            "demo-2.5"
+          ],
+          "refs": [],
+          "pic": "Gompertz\u2019s observation that the force of mortality grows geometrically with adult age: fit \u03bc(x) = Bc\u02e3 to the Northampton and Carlisle tables he worked from, read off the doubling time of the death rate (about eight years), and see where the straight line of log mortality bends away at the youngest and oldest ages."
+        },
+        {
+          "num": "3.14",
+          "kind": "Paper",
+          "name": "Modeling and Forecasting U.S. Mortality",
+          "paper": {
+            "authors": "Ronald D. Lee and Lawrence R. Carter",
+            "year": 1992,
+            "title": "Modeling and Forecasting U.S. Mortality",
+            "venue": "Journal of the American Statistical Association 87 (419): 659\u2013671",
+            "doi": "10.1080/01621459.1992.10475265"
+          },
+          "introduces": [
+            "demo-3.6"
+          ],
+          "deps": [
+            "demo-2.1",
+            "demo-2.4",
+            "demo-3.13",
+            "prob-2.2.1"
+          ],
+          "refs": [],
+          "pic": "US death rates by age, 1900\u20131989, decomposed as ln m(x, t) = a\u2093 + b\u2093k\u209c by a singular value decomposition: the single mortality index k\u209c falls almost linearly, so it is forecast as a random walk with drift; draw the fan of projected life expectancy (the paper\u2019s central forecast reaches about 86 years by 2065) and compare it with the years observed since."
+        }
+      ]
+    },
+    {
+      "n": 4,
+      "title": "Fertility and reproduction",
+      "summary": "Fertility is measured by age-specific rates, summed into the total fertility rate; folding in survival gives the net reproduction rate, which is exactly one at replacement. Period measures can mislead when people postpone childbearing, and a few proximate determinants \u2014 marriage, contraception, breastfeeding, abortion \u2014 account for most variation between societies. Sampling quirks also matter: children see larger families than mothers have.",
+      "items": [
+        {
+          "num": "4.1",
+          "kind": "Definition",
+          "name": "Age-specific fertility rates",
+          "deps": [
+            "demo-1.2"
+          ],
+          "refs": [
+            "PHG ch. 5"
+          ],
+          "pic": "Fertility schedules by age for several countries; drag the peak earlier or later and the area under each curve (the TFR) is reported."
+        },
+        {
+          "num": "4.2",
+          "kind": "Definition",
+          "name": "Total fertility rate",
+          "deps": [
+            "demo-4.1",
+            "pma-6.1"
+          ],
+          "refs": [
+            "PHG ch. 5"
+          ],
+          "pic": "Sum the age-specific rates as bars stacked into one column; the column height is the number of children a woman would have at current rates."
+        },
+        {
+          "num": "4.3",
+          "kind": "Definition",
+          "name": "Gross and net reproduction rates",
+          "deps": [
+            "demo-4.2",
+            "demo-2.3"
+          ],
+          "see": [
+            "mathbio-4.5",
+            "demo-4.4"
+          ],
+          "refs": [
+            "UN Demographic Yearbook, natality Table 3 technical notes: definitions, computation and limitations",
+            "UN World Population Prospects 2024, fertility by age5, female abridged life tables and demographic indicators"
+          ],
+          "pic": "Count live daughters at birth, weighting the prospective mother\u2019s survival to childbearing. Exact band integrals of one reconstructed survival power determine the net bars; compare the official-L grouped reference and published UN NRR separately."
+        },
+        {
+          "num": "4.4",
+          "kind": "Concept",
+          "name": "Replacement-level fertility",
+          "deps": [
+            "demo-4.3"
+          ],
+          "refs": [
+            "PHG ch. 5"
+          ],
+          "pic": "Solve for the TFR that makes NRR = 1 as you change survival to childbearing ages; replacement is about 2.1 with low mortality and above 3 with high mortality."
+        },
+        {
+          "num": "4.5",
+          "kind": "Definition",
+          "name": "Mean age at childbearing and generation length",
+          "deps": [
+            "demo-4.1",
+            "mathbio-4.5"
+          ],
+          "refs": [
+            "PHG ch. 5"
+          ],
+          "pic": "The centre of mass of the fertility schedule and of the net-maternity function are marked; shifting births later lengthens the generation and slows growth for the same NRR."
+        },
+        {
+          "num": "4.6",
+          "kind": "Phenomenon",
+          "name": "The tempo effect (Bongaarts\u2013Feeney)",
+          "deps": [
+            "demo-4.2",
+            "demo-1.5"
+          ],
+          "refs": [
+            "PHG ch. 5"
+          ],
+          "pic": "Cohorts all have two children but postpone them by a month each year; the period TFR drops below two while postponement lasts, and the Bongaarts\u2013Feeney adjustment recovers the true level."
+        },
+        {
+          "num": "4.7",
+          "kind": "Model",
+          "name": "Proximate determinants of fertility (Bongaarts)",
+          "deps": [
+            "demo-4.2",
+            "pma-8.6"
+          ],
+          "refs": [
+            "PHG ch. 5"
+          ],
+          "pic": "Start from a biological maximum of about fifteen births and apply multiplicative indices for marriage, contraception, postpartum infecundability and abortion; each slider\u2019s effect on TFR is shown."
+        },
+        {
+          "num": "4.8",
+          "kind": "Model",
+          "name": "Natural versus controlled fertility (Coale\u2013Trussell)",
+          "deps": [
+            "demo-4.1",
+            "pma-8.6",
+            "ladr-6.61"
+          ],
+          "refs": [
+            "UN Manual X (1983), chapter I.E.1, pp.23\u201325, Table3 and equations E.3\u2013E.7"
+          ],
+          "pic": "Generate a hypothetical marital schedule with the official standard; fit its log ratio at ages20\u201344, and expose age-pattern departures and the excluded45\u201349 prediction."
+        },
+        {
+          "num": "4.9",
+          "kind": "Definition",
+          "name": "Princeton fertility indices (I_f, I_g, I_m)",
+          "deps": [
+            "demo-4.1"
+          ],
+          "refs": [
+            "Coale, Factors associated with the development of low fertility (1967), pp.205\u2013209, especially Tables1\u20132",
+            "UN World Population Prospects 2024, fertility by age5: ASFR and births"
+          ],
+          "pic": "Use matched15\u201349 WPP period rates/exposures and the adjusted Hutterite reference. Authored current-marriage shares and nonmarital allocation illustrate the complete four-index identity without a unit cap."
+        },
+        {
+          "num": "4.10",
+          "kind": "Paradox",
+          "name": "Children come from larger families than women have",
+          "deps": [
+            "demo-4.2",
+            "prob-1.6.9a"
+          ],
+          "refs": [
+            "PHG ch. 5"
+          ],
+          "pic": "A population of mothers with various family sizes; sample children instead of mothers and the average family size jumps to mean + variance/mean, Preston\u2019s inspection-paradox result."
+        },
+        {
+          "num": "4.11",
+          "kind": "Phenomenon",
+          "name": "Human sex ratios from birth to old age",
+          "deps": [
+            "demo-4.3",
+            "popgen-11.1"
+          ],
+          "refs": [
+            "K&C: Understanding Population Characteristics"
+          ],
+          "pic": "About 105 boys are born per 100 girls; apply male and female life tables and the sex ratio by age falls through parity near reproductive ages to a large female majority among the old, as Fisher\u2019s principle and excess male mortality suggest."
+        },
+        {
+          "num": "4.12",
+          "kind": "Phenomenon",
+          "name": "Sex ratio at birth and \u201cmissing women\u201d",
+          "deps": [
+            "demo-4.11"
+          ],
+          "refs": [
+            "PHG ch. 5"
+          ],
+          "pic": "Observed sex ratios at birth by birth order for several countries against the biological norm of about 105; the cumulative gap converts into an estimate of missing women."
+        }
+      ]
+    },
+    {
+      "n": 5,
+      "title": "Age structure and projection",
+      "summary": "Explicit age-census accounting, fixed-matrix spectral limits and replacement momentum, with authored cohort echoes and clearly scoped finite uncertainty ensembles.",
+      "items": [
+        {
+          "num": "5.1",
+          "kind": "Concept",
+          "name": "The population pyramid",
+          "deps": [
+            "demo-1.5"
+          ],
+          "refs": [
+            "UN WPP2024 Methodology introduction and I.A; actual age/sex census bookkeeping",
+            "Rodr\u00edguez, Population Projections (Princeton2017), pp1\u20132; chosen sex extension derived here"
+          ],
+          "pic": "Choose an authored initial structure or edit all18 female age-bin counts. Advance the census and highlight an original cohort: its gold bars move and thin, while its descendants enter other bars. The two sex totals and retained original-cohort count recompute live."
+        },
+        {
+          "num": "5.2",
+          "kind": "Definition",
+          "name": "Dependency ratios",
+          "deps": [
+            "demo-5.1"
+          ],
+          "refs": [
+            "UNFPA, Demographic dividend, definition/conditions (official page); default15\u201364 convention",
+            "Own finite count partition"
+          ],
+          "pic": "Edit the full age vector and change the five-year-aligned work brackets. Colored age bars identify each numerator and denominator; the three ratio bars update. Empty working-age counts produce an explicit undefined state."
+        },
+        {
+          "num": "5.3",
+          "kind": "Method",
+          "name": "Cohort-component projection",
+          "deps": [
+            "demo-2.3",
+            "demo-4.1",
+            "demo-1.1"
+          ],
+          "refs": [
+            "Rodr\u00edguez, Population Projections (Princeton2017), pp1\u20133, female grouped-census coefficients",
+            "UN WPP2024 Methodology I.A and appendix B; accounting versus assumed components"
+          ],
+          "pic": "Step the actual female census forward, vary fertility, mortality and end-census immigration, and select a source cohort. The age bars show its carryover alongside the entire next census; a signed ledger checks all population flows."
+        },
+        {
+          "num": "5.4",
+          "kind": "Model",
+          "name": "The Leslie projection matrix for a human population",
+          "deps": [
+            "demo-5.3",
+            "mathbio-4.2"
+          ],
+          "refs": [
+            "Rodr\u00edguez, Population Projections pp2\u20133, actual maternity row and Leslie organization",
+            "Written MATHBIO4.2; own source/destination multiplication"
+          ],
+          "pic": "Choose an output row and input census. The highlighted matrix row and contribution bars compute that exact next-bin count. Vary fertility and mortality to see the top row and survival subdiagonal change together."
+        },
+        {
+          "num": "5.5",
+          "kind": "Theorem",
+          "name": "Long-run growth is the dominant eigenvalue",
+          "deps": [
+            "demo-5.4",
+            "mathbio-4.3",
+            "ladr-8.46"
+          ],
+          "refs": [
+            "Yuan Yao, HKUST Lecture8, actual PDF p16 primitive Perron\u2013Frobenius; p18 periodic example",
+            "Written Jordan form; independent spectral projection derivation"
+          ],
+          "pic": "Compare actual finite total-growth ratios with the computed spectral root. Switch between a human census law, a primitive full diagnostic, a periodic law, a sterile chain and a reducible reproductive core; select the census whose age vector is shown."
+        },
+        {
+          "num": "5.6",
+          "kind": "Theorem",
+          "name": "Strong ergodicity: populations forget their past",
+          "deps": [
+            "demo-5.5",
+            "mathbio-4.4",
+            "stoch-1.2",
+            "pma-3.14"
+          ],
+          "refs": [
+            "Written MATHBIO4.4 fixed-law convergence; own two-group counterexample and explicit product proof",
+            "Yao Lecture8 PDF p18, fixed stochastic-matrix convergence only"
+          ],
+          "pic": "Compare two complete normalized age structures under a fixed law or a periodic diagnostic. The alternate exchange modes are explicitly two abstract groups: uniform mixing contracts, while vanishing positive mixing retains a visible distance and a proved lower bound."
+        },
+        {
+          "num": "5.7",
+          "kind": "Phenomenon",
+          "name": "Population momentum",
+          "deps": [
+            "demo-5.6",
+            "demo-4.4",
+            "mathbio-4.12"
+          ],
+          "refs": [
+            "Actual written MATHBIO4.12, finite spectral momentum identity",
+            "UN WPP2024 Methodology II.F, distinct constant-mortality/zero-migration momentum scenario; our schedules are authored"
+          ],
+          "pic": "Choose the pre-change NRR and an initially stable, young, old or post-reproductive structure. The actual replacement trajectory is shown beside the unchanged-fertility counterfactual and computed ultimate ratio on a stated ln(1+total/initial) axis; the selected census need not have reached its limit."
+        },
+        {
+          "num": "5.8",
+          "kind": "Theorem",
+          "name": "Keyfitz\u2019s momentum formula",
+          "deps": [
+            "demo-5.7",
+            "pma-6.21",
+            "pma-6.22",
+            "rca-8.8"
+          ],
+          "refs": [
+            "Germ\u00e1n Rodr\u00edguez, Population Momentum, Princeton2017, actual pp2\u20134; p4 derivation with stationary net-maternity A0",
+            "Keyfitz1971 original body unexamined; historical attribution retained as uncertain",
+            "Own conditional age-flow conservation proof; no commercial PHG/K&C body claim"
+          ],
+          "pic": "Change the initial NRR, mortality and uniform fertility interval in an authored continuous-age model. Compare the formula with a separately evaluated reproductive-value integral, and with the distinctly labeled Frauenthal approximation. The density panel shows the initial stable shape and its conditional stationary limit.",
+          "verify": true
+        },
+        {
+          "num": "5.9",
+          "kind": "Phenomenon",
+          "name": "Baby booms and their echoes",
+          "deps": [
+            "demo-5.3",
+            "demo-5.4"
+          ],
+          "refs": [
+            "Rodr\u00edguez, Population Projections pp2\u20133, actual repeated cohort multiplication; authored pulse/superposition derived here"
+          ],
+          "pic": "Vary the ten-year fertility pulse and the later-childbearing pattern. Watch the actual newborn-bin trajectory and the selected excess age vector; later humps come from those cohorts reaching the fertility row. Exactzero pulse makes both projections coincide."
+        },
+        {
+          "num": "5.10",
+          "kind": "Concept",
+          "name": "The demographic dividend",
+          "deps": [
+            "demo-5.2",
+            "demo-5.3"
+          ],
+          "refs": [
+            "UNFPA, Demographic dividend, actual definition and conditional-investment discussion; no source economic example reproduced",
+            "Own explicitly conditional output accounting identity"
+          ],
+          "pic": "Change the fertility transition and select a projected census. Compare its working-age share with unchanged fertility, then vary participation and chosen output per worker in the explicit accounting bars."
+        },
+        {
+          "num": "5.11",
+          "kind": "Method",
+          "name": "Probabilistic population projections",
+          "deps": [
+            "demo-5.3"
+          ],
+          "refs": [
+            "UN WPP2024 Methodology II.G printedp56, actual probabilistic-versus-deterministic workflow and uncertainty limits",
+            "Own fully specified finite ensemble and nearest-rank quantiles; no fitted UN data"
+          ],
+          "pic": "Change the deterministic seed, number of paths and shock scale, then select a census. Actual scenario paths and pointwise empirical bands update together; the selected quantiles, mean and finite sample enclosure count appear live.",
+          "see": [
+            "stat-10.1"
+          ]
+        }
+      ]
+    },
+    {
+      "n": 6,
+      "title": "Stable and stationary populations",
+      "summary": "If age-specific rates stay fixed, any closed population settles into a stable state with constant growth rate r and a fixed age distribution \u2014 Lotka\u2019s result, which lets demographers infer a population\u2019s structure from its rates alone. A stable population\u2019s age pyramid depends far more on fertility than on mortality. The stationary population (r = 0) links births, deaths and life expectancy by simple identities, and later work relaxed stability to variable rates.",
+      "items": [
+        {
+          "num": "6.1",
+          "kind": "Model",
+          "name": "The stable population model",
+          "deps": [
+            "demo-5.6"
+          ],
+          "refs": [
+            "PHG ch. 7"
+          ],
+          "pic": "Under constant rates the projected pyramid stops changing shape and just scales; a toggle overlays the analytic stable distribution on the projected one."
+        },
+        {
+          "num": "6.2",
+          "kind": "Theorem",
+          "name": "Lotka\u2019s intrinsic growth rate from a life table",
+          "deps": [
+            "demo-6.1",
+            "demo-4.3",
+            "mathbio-4.6"
+          ],
+          "refs": [
+            "PHG ch. 7"
+          ],
+          "pic": "Plot \u222b e^{\u2212ra} l(a) m(a) da against r for a real human schedule; the curve falls monotonically and crosses one at a unique r, read off live as you edit fertility."
+        },
+        {
+          "num": "6.3",
+          "kind": "Theorem",
+          "name": "r \u2248 ln(NRR) / T for human populations",
+          "deps": [
+            "demo-6.2",
+            "mathbio-4.8"
+          ],
+          "refs": [
+            "PHG ch. 7"
+          ],
+          "pic": "Scatter the exact r against ln NRR / T for every country\u2019s schedule; points hug the diagonal, and the error grows only for very high fertility."
+        },
+        {
+          "num": "6.4",
+          "kind": "Theorem",
+          "name": "The stable age distribution c(a) = b e^{\u2212ra} l(a)",
+          "deps": [
+            "demo-6.2"
+          ],
+          "refs": [
+            "PHG ch. 7"
+          ],
+          "pic": "Build the stable pyramid from a survival curve and r; raising r tilts the pyramid into a wide-based triangle, lowering it below zero inverts the top."
+        },
+        {
+          "num": "6.5",
+          "kind": "Theorem",
+          "name": "Fertility, not mortality, shapes the age pyramid (Coale)",
+          "deps": [
+            "demo-6.4"
+          ],
+          "refs": [
+            "PHG ch. 7"
+          ],
+          "pic": "Change fertility and mortality separately in a stable population: lowering mortality barely changes the mean age (it saves the young as much as the old), while lowering fertility ages the population sharply."
+        },
+        {
+          "num": "6.6",
+          "kind": "Theorem",
+          "name": "Stationary-population identities: b = d = 1/e\u2080",
+          "deps": [
+            "demo-6.4",
+            "demo-2.4"
+          ],
+          "refs": [
+            "PHG ch. 7"
+          ],
+          "pic": "Set r = 0 and see the pyramid become the survival curve on its side; the crude birth and death rates both equal 1/e\u2080, and the mean age of the living matches its formula."
+        },
+        {
+          "num": "6.7",
+          "kind": "Theorem",
+          "name": "Lotka\u2019s renewal equation and convergence to stability",
+          "deps": [
+            "demo-6.2",
+            "mathbio-4.13"
+          ],
+          "refs": [
+            "K&C: Understanding Population Characteristics"
+          ],
+          "pic": "Births computed from the renewal equation oscillate in damped waves of generation length before settling on e^{rt}; the complex roots that govern the waves are plotted in the plane."
+        },
+        {
+          "num": "6.8",
+          "kind": "Theorem",
+          "name": "Variable-r relations (Preston\u2013Coale)",
+          "deps": [
+            "demo-6.4"
+          ],
+          "refs": [
+            "PHG ch. 8"
+          ],
+          "pic": "For a non-stable population, compute age-specific growth rates from two censuses; the generalized formula c(a) = b exp(\u2212\u222b\u2080\u1d43 r(x)dx) l(a) reproduces the observed age distribution exactly."
+        },
+        {
+          "num": "6.9",
+          "kind": "Theorem",
+          "name": "Weak ergodicity under changing rates",
+          "deps": [
+            "demo-5.6"
+          ],
+          "refs": [
+            "K&C: Some Types of Instability"
+          ],
+          "pic": "Two different starting pyramids subjected to the same sequence of time-varying rates converge toward each other, though neither settles into a fixed shape."
+        },
+        {
+          "num": "6.10",
+          "kind": "Concept",
+          "name": "The two-sex problem",
+          "deps": [
+            "demo-6.1"
+          ],
+          "refs": [
+            "K&C: Understanding Population Characteristics"
+          ],
+          "pic": "Male- and female-based projections of the same population disagree on r; a marriage-squeeze slider shows how a harmonic-mean pairing function reconciles them."
+        },
+        {
+          "num": "6.11",
+          "kind": "Paper",
+          "name": "A Problem in Age-Distribution",
+          "paper": {
+            "authors": "F. R. Sharpe and Alfred J. Lotka",
+            "year": 1911,
+            "title": "A Problem in Age-Distribution",
+            "venue": "Philosophical Magazine, Series 6, 21 (124): 435\u2013438",
+            "doi": "10.1080/14786440408637050"
+          },
+          "introduces": [
+            "demo-6.1",
+            "demo-6.4"
+          ],
+          "deps": [
+            "demo-2.3",
+            "demo-4.1"
+          ],
+          "refs": [],
+          "pic": "Start a population from any age pyramid with fixed age-specific fertility and survival: births oscillate in dying waves while the age distribution converges to the stable shape c(a) = b e^(\u2212ra) l(a), with r the real root of their characteristic equation; edit the starting pyramid to see that the destination does not depend on it."
+        },
+        {
+          "num": "6.12",
+          "kind": "Paper",
+          "name": "How the Age Distribution of a Human Population Is Determined",
+          "paper": {
+            "authors": "Ansley J. Coale",
+            "year": 1957,
+            "title": "How the Age Distribution of a Human Population Is Determined",
+            "venue": "Cold Spring Harbor Symposia on Quantitative Biology 22: 83\u201389",
+            "doi": "10.1101/SQB.1957.022.01.010"
+          },
+          "introduces": [
+            "demo-6.5"
+          ],
+          "deps": [
+            "demo-6.11",
+            "demo-6.4"
+          ],
+          "refs": [],
+          "pic": "Two sliders, fertility and mortality, drive a stable population\u2019s pyramid: raising fertility turns it from a column into a broad triangle, while lowering mortality, which mostly saves infants and children, barely changes its shape and can even make the population younger; compare the stable pyramids with observed ones from the 1950s."
+        }
+      ]
+    },
+    {
+      "n": 7,
+      "title": "Population and development",
+      "summary": "Malthus argued that population growth would always be checked by misery as it outran food, which described the pre-industrial world reasonably well. The demographic transition \u2014 mortality falling first, fertility later \u2014 broke that trap, with an interlude of rapid growth that peaked in the 1960s. Why fertility fell (economics, mortality, ideas spreading) is still debated, and many countries now face very low fertility and ageing.",
+      "items": [
+        {
+          "num": "7.1",
+          "kind": "Model",
+          "name": "The Malthusian population trap",
+          "deps": [
+            "demo-1.4",
+            "micro-7.2"
+          ],
+          "refs": [
+            "PHG ch. 1"
+          ],
+          "pic": "Population and income per head with diminishing returns to land; a technology shock briefly raises income, then population grows until income returns to subsistence."
+        },
+        {
+          "num": "7.2",
+          "kind": "Concept",
+          "name": "Preventive and positive checks",
+          "deps": [
+            "demo-7.1"
+          ],
+          "refs": [
+            "PHG ch. 1"
+          ],
+          "pic": "English wages and vital rates, 1540\u20131800: marriage (the preventive check) and deaths (the positive check) respond to real wages with lags drawn on linked plots."
+        },
+        {
+          "num": "7.3",
+          "kind": "Hypothesis",
+          "name": "Boserup: population pressure drives innovation",
+          "deps": [
+            "demo-7.1"
+          ],
+          "refs": [
+            "PHG ch. 1"
+          ],
+          "pic": "Toggle the Malthusian and Boserupian feedback in one model: denser populations either starve or intensify agriculture, producing very different long-run paths."
+        },
+        {
+          "num": "7.4",
+          "kind": "Model",
+          "name": "The demographic transition",
+          "deps": [
+            "demo-3.11",
+            "demo-4.2",
+            "demo-1.3"
+          ],
+          "refs": [
+            "PHG ch. 5"
+          ],
+          "pic": "Birth and death rates for England, Sweden, India and Nigeria aligned by stage; the gap between the curves (natural increase) is shaded and its timing compared across countries."
+        },
+        {
+          "num": "7.5",
+          "kind": "Phenomenon",
+          "name": "European fertility decline: economics or diffusion?",
+          "deps": [
+            "demo-4.9",
+            "demo-7.4"
+          ],
+          "refs": [
+            "PHG ch. 5"
+          ],
+          "pic": "Map the date of a 10% fall in marital fertility across European provinces; colouring by language or by income shows declines clustering by culture more than by economic level."
+        },
+        {
+          "num": "7.6",
+          "kind": "Hypothesis",
+          "name": "The second demographic transition (contested)",
+          "deps": [
+            "demo-7.4"
+          ],
+          "refs": [
+            "PHG ch. 5"
+          ],
+          "pic": "Cohabitation, non-marital births and below-replacement fertility across countries since 1970, with the values-shift and economic explanations offered as alternative overlays."
+        },
+        {
+          "num": "7.7",
+          "kind": "Phenomenon",
+          "name": "Very low fertility and population decline",
+          "deps": [
+            "demo-4.2",
+            "demo-5.7"
+          ],
+          "refs": [
+            "PHG ch. 6"
+          ],
+          "pic": "Project South Korea at TFR 0.8: each generation is about 60% smaller than the last, and negative momentum keeps the population shrinking even if fertility recovers."
+        },
+        {
+          "num": "7.8",
+          "kind": "Phenomenon",
+          "name": "Population ageing",
+          "deps": [
+            "demo-5.2",
+            "demo-3.7"
+          ],
+          "refs": [
+            "PHG ch. 6"
+          ],
+          "pic": "Median age and old-age dependency projected to 2100 for world regions; separate the contributions of low fertility and longer lives with two sliders."
+        },
+        {
+          "num": "7.9",
+          "kind": "Hypothesis",
+          "name": "Easterlin\u2019s relative-cohort-size hypothesis",
+          "deps": [
+            "demo-5.9"
+          ],
+          "refs": [
+            "PHG ch. 6"
+          ],
+          "pic": "A feedback model in which small cohorts earn more and have more children: the simulated births oscillate with a two-generation cycle, compared with U.S. births after the baby boom."
+        },
+        {
+          "num": "7.10",
+          "kind": "Phenomenon",
+          "name": "World population growth peaked in the 1960s",
+          "deps": [
+            "demo-7.4",
+            "demo-1.4"
+          ],
+          "refs": [
+            "PHG ch. 1"
+          ],
+          "pic": "World population and its annual growth rate since 1700 on twin axes: the growth rate peaked near 2.1% around 1968 and has roughly halved, while absolute numbers keep rising."
+        },
+        {
+          "num": "7.11",
+          "kind": "Paper",
+          "name": "An Essay on the Principle of Population",
+          "paper": {
+            "authors": "Thomas Robert Malthus",
+            "year": 1798,
+            "title": "An Essay on the Principle of Population, as It Affects the Future Improvement of Society",
+            "venue": "London: J. Johnson (published anonymously)",
+            "url": "https://www.gutenberg.org/ebooks/4239"
+          },
+          "introduces": [
+            "demo-7.1",
+            "demo-7.2",
+            "macro-4.6"
+          ],
+          "deps": [
+            "mathbio-1.2"
+          ],
+          "refs": [],
+          "pic": "Malthus\u2019s two ratios: population doubling every 25 years (1, 2, 4, 8, 16, \u2026) against subsistence growing by equal additions (1, 2, 3, 4, 5, \u2026); watch the gap open, then switch on the preventive check (later marriage, fewer births) or the positive check (misery and higher deaths) and see population pinned to the food supply, with income per head held near subsistence."
+        }
+      ]
+    },
+    {
+      "n": 8,
+      "title": "Kinship, migration and multistate models",
+      "summary": "Rates determine not only population size but family structure: from fertility and mortality alone one can compute how many sisters, cousins or living grandparents a typical person has. Migration follows strong age patterns and distance decay. Multistate life tables generalize the single exit of death to movements among states \u2014 regions, marital status, health \u2014 modelled as a Markov chain on the life course.",
+      "items": [
+        {
+          "num": "8.1",
+          "kind": "Theorem",
+          "name": "Kinship from rates (Goodman\u2013Keyfitz\u2013Pullum)",
+          "deps": [
+            "demo-6.4"
+          ],
+          "refs": [
+            "K&C: The Demographic Theory of Kinship"
+          ],
+          "pic": "Choose a fertility and mortality regime; the expected numbers of living mothers, sisters, daughters and cousins at each age are computed and drawn as a family tree with fractional people."
+        },
+        {
+          "num": "8.2",
+          "kind": "Phenomenon",
+          "name": "Low-fertility kinship: fewer cousins, more grandparents",
+          "deps": [
+            "demo-8.1"
+          ],
+          "refs": [
+            "K&C: The Demographic Theory of Kinship"
+          ],
+          "pic": "Slide from a 1900 to a 2020 regime: the family tree thins sideways (siblings, cousins) and lengthens vertically (living grandparents), the \u201cbeanpole family\u201d."
+        },
+        {
+          "num": "8.3",
+          "kind": "Model",
+          "name": "Gravity model and Ravenstein\u2019s laws of migration",
+          "deps": [
+            "demo-1.3",
+            "geog-9.6"
+          ],
+          "refs": [
+            "PHG ch. 1"
+          ],
+          "pic": "Flows between cities scale with the product of populations over a power of distance; fit the exponent to internal migration data and map the predicted and observed flows."
+        },
+        {
+          "num": "8.4",
+          "kind": "Model",
+          "name": "Rogers\u2013Castro model migration schedule",
+          "deps": [
+            "demo-1.2"
+          ],
+          "refs": [
+            "K&C: The Multi-State Model"
+          ],
+          "pic": "Migration rates by age have a childhood component, a labour-force peak near age 23 and a retirement bump; drag each component\u2019s parameters to fit an observed schedule."
+        },
+        {
+          "num": "8.5",
+          "kind": "Method",
+          "name": "Increment\u2013decrement (multistate) life tables",
+          "deps": [
+            "demo-2.10"
+          ],
+          "refs": [
+            "K&C: The Multi-State Model"
+          ],
+          "pic": "A cohort flowing among married, single and dead states with transition rates you set; the expected years spent in each state appear as coloured areas under the survival curve."
+        },
+        {
+          "num": "8.6",
+          "kind": "Model",
+          "name": "Markov chains for individual life histories",
+          "deps": [
+            "demo-8.5"
+          ],
+          "refs": [
+            "K&C: Markov Chains for Individual Life Histories"
+          ],
+          "pic": "The same multistate table as a transition matrix; simulated individual paths and the fundamental matrix give the mean and variance of time spent in each state."
+        },
+        {
+          "num": "8.7",
+          "kind": "Concept",
+          "name": "Replacement migration",
+          "deps": [
+            "demo-5.3",
+            "demo-7.8"
+          ],
+          "refs": [
+            "PHG ch. 6"
+          ],
+          "pic": "How many immigrants per year would keep a country\u2019s population, workforce or support ratio constant? Three required-migration curves are computed, the last one implausibly large."
+        }
+      ]
+    }
+  ]
+}
