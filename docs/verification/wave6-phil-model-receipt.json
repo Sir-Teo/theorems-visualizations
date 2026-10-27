@@ -1,0 +1,116 @@
+{
+  "status": "MODEL-VERIFIED; chapter author gate open",
+  "checkedOn": "2026-10-27",
+  "baseCommit": "55241f1f29b7bbf9f0301cd4182a84728d36d376",
+  "scope": "Eleven finite probability model families only. No PHIL6 lesson body is present in the product yet; no native-control or personal visual pass and no additional availability claimed.",
+  "cases": 1458,
+  "families": {
+    "bayes": 490,
+    "conditional": 91,
+    "confirmation": 128,
+    "finiteAgents": 45,
+    "interpretations": 96,
+    "lottery": 98,
+    "oldEvidence": 26,
+    "population": 72,
+    "preface": 120,
+    "sequence": 192,
+    "staticBook": 100
+  },
+  "fixtureBytes": 3617469,
+  "fixtureSHA256": "a327f09d9f1296fb716350f1fae78290247a411b99ac0291a6e43ca7a1c80b19",
+  "completeReferenceOutputsByteIdenticalAtDigits": [
+    90,
+    180,
+    "fresh90"
+  ],
+  "installedGeneratorRepeats": true,
+  "all1446EarlierCompleteExpectedObjectsExact": true,
+  "comparison": {
+    "status": "PASS",
+    "cases": 1458,
+    "families": {
+      "bayes": 490,
+      "conditional": 91,
+      "confirmation": 128,
+      "finiteAgents": 45,
+      "interpretations": 96,
+      "lottery": 98,
+      "oldEvidence": 26,
+      "population": 72,
+      "preface": 120,
+      "sequence": 192,
+      "staticBook": 100
+    },
+    "nodesVisited": 103411,
+    "leafComparisons": 87483,
+    "numericalComparisons": 46954,
+    "exactComparisons": 40524,
+    "finiteRepresentationOverflowCases": 5,
+    "maxNormalizedError": 5.551115123125782e-06,
+    "worst": {
+      "path": "736:staticBook.sum",
+      "actual": 2,
+      "expected": "2.0000000000000002220446049250313080847263336181641",
+      "normalized": 5.551115123125782e-06
+    },
+    "durationMs": 432.894686,
+    "fixtureSHA256": "a327f09d9f1296fb716350f1fae78290247a411b99ac0291a6e43ca7a1c80b19",
+    "errors": [],
+    "totalErrors": 0
+  },
+  "focused": {
+    "passed": 37,
+    "failed": 0,
+    "skipped": 0,
+    "cancelled": 0,
+    "newModelGroups": 18,
+    "priorPHIL5Groups": 19
+  },
+  "strict": {
+    "written": 8695,
+    "planned": 4879,
+    "chapters": 600,
+    "collections": 85,
+    "errors": 0,
+    "warnings": 0
+  },
+  "preservation": {
+    "baseTrackedRegularFiles": 7252,
+    "rawByteExactFiles": 7251,
+    "mutable": [
+      "docs/wave-continuation.md"
+    ],
+    "allEarlierSyllabiAndFrozenPlansExact": true
+  },
+  "pins": {
+    "content/phil/ch06.shared.js": "89e931bd3fc02efb2e405e48786dc124902b1e66247ad78c61cd500e2cdb4e54",
+    "tests/wave6-phil.test.mjs": "8fbb74ac063a003588fdc3bf0dc05e81c1063750e0c191631c818ca656ce1c87",
+    "tests/fixtures/wave6-phil-reference.json": "a327f09d9f1296fb716350f1fae78290247a411b99ac0291a6e43ca7a1c80b19",
+    "tests/refs/wave6-phil-reference.py": "e8627d69f66c46fe16989c2e4773ad145ef772725b12dafea1789900fda6fa6a",
+    "tests/refs/wave6-phil-reference.shared.py": "67e5b750e81c3486924359bf987a7c55712c02d0c456a6fabe22f34086ada039",
+    "content/phil/ch05.shared.js": "9dae491fabd3aee126113b57f393b61a51740710873a532871f0c8e74c7cc2bb"
+  },
+  "representation": "Five mathematically finite probability ratios overflow binary64 and are checked separately for representation overflow; the UI prototype labels them finite overflow. Positive support, exact change/loss sign and infinite/undefined log-odds states remain distinct from rounded numeric zero.",
+  "performance": {
+    "initialDefaultPrefaceMs": 9978.103326,
+    "finalDefaultPrefaceMs": 0.8250160000000015,
+    "initialJSRunsStoppedAt25Seconds": 2,
+    "finite256InitialStoppedAt25Seconds": true,
+    "finalFinite256Ms": 109.073495,
+    "renderPlan": "Cache the complete finite history by model/priors; revealing an additional prefix only selects existing rows. Default preface uses a centred numerical binomial recurrence, independently checked against exact/high-precision closed forms."
+  },
+  "referenceExtremeMethod": "All normal finite probabilities and bounds use exact Fraction arithmetic; the 500-claim smallest-positive-input binomial vector uses a complete independent high-precision closed form to avoid half-million-bit intermediate fractions. Both precision runs and a fresh run are whole-byte-identical.",
+  "retainedFailures": [
+    "performance-initial.log: initial default preface about10s and25s timeout on extreme input",
+    "performance-pmf-optimized.log: finite256still exceeded25s",
+    "generate-installed-90.log andgenerate-installed-180.log: deliberately interrupted owned reference runs before replacing expensive huge-Fraction expansion with a separate high-precision closed form; neither partial run qualifies as a pass"
+  ],
+  "availability": {
+    "authorAvailable": 980,
+    "goal": 1057,
+    "historicalIndependent": 36,
+    "independentAcceptanceAdded": 0
+  },
+  "next": "Author eleven complete lesson bodies and refine33bespoke panels; strict/static/ordinary production,44native layouts with actual Share replay and complete current original-pixel personal gates remain open. Continue without stopping at this model checkpoint."
+}
