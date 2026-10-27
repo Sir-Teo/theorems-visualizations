@@ -1,0 +1,298 @@
+{
+  "status": "PASS — author verified only",
+  "lessons": 14,
+  "panels": 42,
+  "availability": {
+    "total": 1005,
+    "outOf": 1057,
+    "historicalIndependent": 36,
+    "additionalAuthorVerified": 969
+  },
+  "model": {
+    "cases": 684,
+    "families": 17,
+    "comparisons": 69893,
+    "fixtureSHA256": "41f17458f58ee928e4f5d6edae8507de840d67f8a17f9fb724394c710c3f6088",
+    "certificate": "wave6-tech-model-receipt.json"
+  },
+  "focusedGroups": 79,
+  "strict": {
+    "written": 8720,
+    "planned": 4854,
+    "chapters": 602,
+    "collections": 85,
+    "errors": 0,
+    "warnings": 0
+  },
+  "static": {
+    "visualizations": 8657,
+    "errors": 0,
+    "warnings": 0
+  },
+  "native": {
+    "layouts": 56,
+    "actions": 2648,
+    "shares": 880,
+    "trustedShares": 880,
+    "invalid": 356,
+    "raw": 256,
+    "critical": 300,
+    "checks": 3616,
+    "modelComparisons": 3871732,
+    "geometryComparisons": 1661544,
+    "paintedPixelAudits": 10848,
+    "pixelSamples": 97205,
+    "domRangeRounding": 312
+  },
+  "nativeReceipt": "wave6-tech-native-receipt.json",
+  "ordinary": {
+    "status": "PASS:56complete ordinary layouts; four explicitly closed owned jobs",
+    "layouts": 56,
+    "panels": 168,
+    "sourceHashes": {
+      "content/tech/ch07.js": "197079132905cb71605c99229bff3974e42802ccc726df5b7d0bec068550e173",
+      "content/tech/ch07.shared.js": "5802ee0b01c7e16f3c8f7175e6ec46d720e6f81223bc6682471f18083c868a64",
+      "content/tech/ch07.viz.js": "72f44a0c8ffcf69abe3498a4585609397ac451f26361cee8af6d91c1df4f6e35",
+      "content/tech/ch07.viz.shared.js": "223eaa9c66c431afda6606b393376c56bcc5fa9ad581520af98cedbf1c28d763",
+      "content/phil/ch05.shared.js": "9dae491fabd3aee126113b57f393b61a51740710873a532871f0c8e74c7cc2bb",
+      "content/tech/syllabus.js": "8674c3455f881a7803dbf72190fe7ea9c58222d34ca8d7ca0bd79fc844c500ae",
+      "assets/js/viz/core.js": "a6fa1753d9d9e8b9a05a7161fffc58dfd53b27002d9d393a3266aeb96515fe73",
+      "assets/js/viz/math.js": "439c335e1cc47907bc72bb76559216aa093be4710e0589f41c70192729eb223e",
+      "assets/js/app.js": "2f5762e6bf80723a5cb8691f8b19c552dd1d731ab998d5bfcdb27828e2e9a6ce",
+      "assets/js/share-state.js": "13c6a9ac1237d566fc5d79c89e0f4d3029aa8c2817d2c08247a02b1b053a59b1",
+      "assets/css/style.css": "eef34e3d7aaf8b38233a78d9dc6545e5e0c9d00b09a3a6876d19f3e0e0af15b6",
+      "data/index.json": "a3de6a67b21c0d5b60bb63db460a438cb7a1a090c4e90fce9c4bb24d9764828a",
+      "data/col/tech.json": "bb6ed57a63ce54d15956b38fac36a3909fce8113ba927e3542af3829c93c1dfc",
+      "tests/wave6-tech-browser.mjs": "3cefb365d98110349b2e8037f29e6cca05c11c1ca52672ddf1ed4a19c1ac9900"
+    },
+    "batches": [
+      {
+        "theme": "light",
+        "lane": "a",
+        "receipt": {
+          "sourceHashes": {
+            "content/tech/ch07.js": "197079132905cb71605c99229bff3974e42802ccc726df5b7d0bec068550e173",
+            "content/tech/ch07.shared.js": "5802ee0b01c7e16f3c8f7175e6ec46d720e6f81223bc6682471f18083c868a64",
+            "content/tech/ch07.viz.js": "72f44a0c8ffcf69abe3498a4585609397ac451f26361cee8af6d91c1df4f6e35",
+            "content/tech/ch07.viz.shared.js": "223eaa9c66c431afda6606b393376c56bcc5fa9ad581520af98cedbf1c28d763",
+            "content/phil/ch05.shared.js": "9dae491fabd3aee126113b57f393b61a51740710873a532871f0c8e74c7cc2bb",
+            "content/tech/syllabus.js": "8674c3455f881a7803dbf72190fe7ea9c58222d34ca8d7ca0bd79fc844c500ae",
+            "assets/js/viz/core.js": "a6fa1753d9d9e8b9a05a7161fffc58dfd53b27002d9d393a3266aeb96515fe73",
+            "assets/js/viz/math.js": "439c335e1cc47907bc72bb76559216aa093be4710e0589f41c70192729eb223e",
+            "assets/js/app.js": "2f5762e6bf80723a5cb8691f8b19c552dd1d731ab998d5bfcdb27828e2e9a6ce",
+            "assets/js/share-state.js": "13c6a9ac1237d566fc5d79c89e0f4d3029aa8c2817d2c08247a02b1b053a59b1",
+            "assets/css/style.css": "eef34e3d7aaf8b38233a78d9dc6545e5e0c9d00b09a3a6876d19f3e0e0af15b6",
+            "data/index.json": "a3de6a67b21c0d5b60bb63db460a438cb7a1a090c4e90fce9c4bb24d9764828a",
+            "data/col/tech.json": "bb6ed57a63ce54d15956b38fac36a3909fce8113ba927e3542af3829c93c1dfc",
+            "tests/wave6-tech-browser.mjs": "3cefb365d98110349b2e8037f29e6cca05c11c1ca52672ddf1ed4a19c1ac9900"
+          },
+          "layouts": 14,
+          "panels": 42,
+          "issues": [],
+          "mathErrors": [],
+          "pageErrors": []
+        }
+      },
+      {
+        "theme": "light",
+        "lane": "b",
+        "receipt": {
+          "sourceHashes": {
+            "content/tech/ch07.js": "197079132905cb71605c99229bff3974e42802ccc726df5b7d0bec068550e173",
+            "content/tech/ch07.shared.js": "5802ee0b01c7e16f3c8f7175e6ec46d720e6f81223bc6682471f18083c868a64",
+            "content/tech/ch07.viz.js": "72f44a0c8ffcf69abe3498a4585609397ac451f26361cee8af6d91c1df4f6e35",
+            "content/tech/ch07.viz.shared.js": "223eaa9c66c431afda6606b393376c56bcc5fa9ad581520af98cedbf1c28d763",
+            "content/phil/ch05.shared.js": "9dae491fabd3aee126113b57f393b61a51740710873a532871f0c8e74c7cc2bb",
+            "content/tech/syllabus.js": "8674c3455f881a7803dbf72190fe7ea9c58222d34ca8d7ca0bd79fc844c500ae",
+            "assets/js/viz/core.js": "a6fa1753d9d9e8b9a05a7161fffc58dfd53b27002d9d393a3266aeb96515fe73",
+            "assets/js/viz/math.js": "439c335e1cc47907bc72bb76559216aa093be4710e0589f41c70192729eb223e",
+            "assets/js/app.js": "2f5762e6bf80723a5cb8691f8b19c552dd1d731ab998d5bfcdb27828e2e9a6ce",
+            "assets/js/share-state.js": "13c6a9ac1237d566fc5d79c89e0f4d3029aa8c2817d2c08247a02b1b053a59b1",
+            "assets/css/style.css": "eef34e3d7aaf8b38233a78d9dc6545e5e0c9d00b09a3a6876d19f3e0e0af15b6",
+            "data/index.json": "a3de6a67b21c0d5b60bb63db460a438cb7a1a090c4e90fce9c4bb24d9764828a",
+            "data/col/tech.json": "bb6ed57a63ce54d15956b38fac36a3909fce8113ba927e3542af3829c93c1dfc",
+            "tests/wave6-tech-browser.mjs": "3cefb365d98110349b2e8037f29e6cca05c11c1ca52672ddf1ed4a19c1ac9900"
+          },
+          "layouts": 14,
+          "panels": 42,
+          "issues": [],
+          "mathErrors": [],
+          "pageErrors": []
+        }
+      },
+      {
+        "theme": "dark",
+        "lane": "a",
+        "receipt": {
+          "sourceHashes": {
+            "content/tech/ch07.js": "197079132905cb71605c99229bff3974e42802ccc726df5b7d0bec068550e173",
+            "content/tech/ch07.shared.js": "5802ee0b01c7e16f3c8f7175e6ec46d720e6f81223bc6682471f18083c868a64",
+            "content/tech/ch07.viz.js": "72f44a0c8ffcf69abe3498a4585609397ac451f26361cee8af6d91c1df4f6e35",
+            "content/tech/ch07.viz.shared.js": "223eaa9c66c431afda6606b393376c56bcc5fa9ad581520af98cedbf1c28d763",
+            "content/phil/ch05.shared.js": "9dae491fabd3aee126113b57f393b61a51740710873a532871f0c8e74c7cc2bb",
+            "content/tech/syllabus.js": "8674c3455f881a7803dbf72190fe7ea9c58222d34ca8d7ca0bd79fc844c500ae",
+            "assets/js/viz/core.js": "a6fa1753d9d9e8b9a05a7161fffc58dfd53b27002d9d393a3266aeb96515fe73",
+            "assets/js/viz/math.js": "439c335e1cc47907bc72bb76559216aa093be4710e0589f41c70192729eb223e",
+            "assets/js/app.js": "2f5762e6bf80723a5cb8691f8b19c552dd1d731ab998d5bfcdb27828e2e9a6ce",
+            "assets/js/share-state.js": "13c6a9ac1237d566fc5d79c89e0f4d3029aa8c2817d2c08247a02b1b053a59b1",
+            "assets/css/style.css": "eef34e3d7aaf8b38233a78d9dc6545e5e0c9d00b09a3a6876d19f3e0e0af15b6",
+            "data/index.json": "a3de6a67b21c0d5b60bb63db460a438cb7a1a090c4e90fce9c4bb24d9764828a",
+            "data/col/tech.json": "bb6ed57a63ce54d15956b38fac36a3909fce8113ba927e3542af3829c93c1dfc",
+            "tests/wave6-tech-browser.mjs": "3cefb365d98110349b2e8037f29e6cca05c11c1ca52672ddf1ed4a19c1ac9900"
+          },
+          "layouts": 14,
+          "panels": 42,
+          "issues": [],
+          "mathErrors": [],
+          "pageErrors": []
+        }
+      },
+      {
+        "theme": "dark",
+        "lane": "b",
+        "receipt": {
+          "sourceHashes": {
+            "content/tech/ch07.js": "197079132905cb71605c99229bff3974e42802ccc726df5b7d0bec068550e173",
+            "content/tech/ch07.shared.js": "5802ee0b01c7e16f3c8f7175e6ec46d720e6f81223bc6682471f18083c868a64",
+            "content/tech/ch07.viz.js": "72f44a0c8ffcf69abe3498a4585609397ac451f26361cee8af6d91c1df4f6e35",
+            "content/tech/ch07.viz.shared.js": "223eaa9c66c431afda6606b393376c56bcc5fa9ad581520af98cedbf1c28d763",
+            "content/phil/ch05.shared.js": "9dae491fabd3aee126113b57f393b61a51740710873a532871f0c8e74c7cc2bb",
+            "content/tech/syllabus.js": "8674c3455f881a7803dbf72190fe7ea9c58222d34ca8d7ca0bd79fc844c500ae",
+            "assets/js/viz/core.js": "a6fa1753d9d9e8b9a05a7161fffc58dfd53b27002d9d393a3266aeb96515fe73",
+            "assets/js/viz/math.js": "439c335e1cc47907bc72bb76559216aa093be4710e0589f41c70192729eb223e",
+            "assets/js/app.js": "2f5762e6bf80723a5cb8691f8b19c552dd1d731ab998d5bfcdb27828e2e9a6ce",
+            "assets/js/share-state.js": "13c6a9ac1237d566fc5d79c89e0f4d3029aa8c2817d2c08247a02b1b053a59b1",
+            "assets/css/style.css": "eef34e3d7aaf8b38233a78d9dc6545e5e0c9d00b09a3a6876d19f3e0e0af15b6",
+            "data/index.json": "a3de6a67b21c0d5b60bb63db460a438cb7a1a090c4e90fce9c4bb24d9764828a",
+            "data/col/tech.json": "bb6ed57a63ce54d15956b38fac36a3909fce8113ba927e3542af3829c93c1dfc",
+            "tests/wave6-tech-browser.mjs": "3cefb365d98110349b2e8037f29e6cca05c11c1ca52672ddf1ed4a19c1ac9900"
+          },
+          "layouts": 14,
+          "panels": 42,
+          "issues": [],
+          "mathErrors": [],
+          "pageErrors": []
+        }
+      }
+    ]
+  },
+  "ordinaryOwnedClosedJobs": [
+    {
+      "file": "/workspace/scratch/owned-jobs/tech7-ordinary-light-a.status.json",
+      "sha256": "fe8aef4aa78a46d7fb4fbf020a9f513a1e49d787d6bbf34cfe590c387e808a1e",
+      "record": {
+        "name": "tech7-ordinary-light-a",
+        "supervisorPID": 269370,
+        "processGroup": 269370,
+        "state": "closed",
+        "startedUTC": "2026-10-27T21:32:25Z",
+        "command": [
+          "/usr/bin/env",
+          "TECH7_OUT=/workspace/scratch/wave6-tech-research/ordinary-current-guarded-light",
+          "TECH7_IDS=1,2,3,4,5,6,7",
+          "TECH7_THEMES=light",
+          "/home/agent/.npm/_npx/d18f28baf1132559/node_modules/node/bin/node",
+          "tests/wave6-tech-browser.mjs"
+        ],
+        "childPID": 269372,
+        "exitCode": 0,
+        "elapsedSeconds": 12.263452750994475,
+        "endedUTC": "2026-10-27T21:32:37Z"
+      }
+    },
+    {
+      "file": "/workspace/scratch/owned-jobs/tech7-ordinary-light-b.status.json",
+      "sha256": "eaca727c6885d65b2631de874512a904519a846cbbdc7a56fa5ced3a2a8d8706",
+      "record": {
+        "name": "tech7-ordinary-light-b",
+        "supervisorPID": 269663,
+        "processGroup": 269663,
+        "state": "closed",
+        "startedUTC": "2026-10-27T21:33:45Z",
+        "command": [
+          "/usr/bin/env",
+          "TECH7_OUT=/workspace/scratch/wave6-tech-research/ordinary-current-guarded-light",
+          "TECH7_IDS=8,9,10,11,12,13,14",
+          "TECH7_THEMES=light",
+          "/home/agent/.npm/_npx/d18f28baf1132559/node_modules/node/bin/node",
+          "tests/wave6-tech-browser.mjs"
+        ],
+        "childPID": 269664,
+        "exitCode": 0,
+        "elapsedSeconds": 11.894465885998216,
+        "endedUTC": "2026-10-27T21:33:57Z"
+      }
+    },
+    {
+      "file": "/workspace/scratch/owned-jobs/tech7-ordinary-dark-a.status.json",
+      "sha256": "deecc9c28e17fb8545362b77d4046d875cfb4a08159515ba0fda70c493f55e5b",
+      "record": {
+        "name": "tech7-ordinary-dark-a",
+        "supervisorPID": 269371,
+        "processGroup": 269371,
+        "state": "closed",
+        "startedUTC": "2026-10-27T21:32:25Z",
+        "command": [
+          "/usr/bin/env",
+          "TECH7_OUT=/workspace/scratch/wave6-tech-research/ordinary-current-guarded-dark",
+          "TECH7_IDS=1,2,3,4,5,6,7",
+          "TECH7_THEMES=dark",
+          "/home/agent/.npm/_npx/d18f28baf1132559/node_modules/node/bin/node",
+          "tests/wave6-tech-browser.mjs"
+        ],
+        "childPID": 269378,
+        "exitCode": 0,
+        "elapsedSeconds": 12.324121059005847,
+        "endedUTC": "2026-10-27T21:32:37Z"
+      }
+    },
+    {
+      "file": "/workspace/scratch/owned-jobs/tech7-ordinary-dark-b.status.json",
+      "sha256": "52bea54a43ef2c098ce21ade6eb1670c4ee34ef5043101ea7dac1e18950058a7",
+      "record": {
+        "name": "tech7-ordinary-dark-b",
+        "supervisorPID": 269665,
+        "processGroup": 269665,
+        "state": "closed",
+        "startedUTC": "2026-10-27T21:33:45Z",
+        "command": [
+          "/usr/bin/env",
+          "TECH7_OUT=/workspace/scratch/wave6-tech-research/ordinary-current-guarded-dark",
+          "TECH7_IDS=8,9,10,11,12,13,14",
+          "TECH7_THEMES=dark",
+          "/home/agent/.npm/_npx/d18f28baf1132559/node_modules/node/bin/node",
+          "tests/wave6-tech-browser.mjs"
+        ],
+        "childPID": 269672,
+        "exitCode": 0,
+        "elapsedSeconds": 12.020737526996527,
+        "endedUTC": "2026-10-27T21:33:57Z"
+      }
+    }
+  ],
+  "visual": {
+    "currentPNGTargets": 422,
+    "uniqueTeachingTargets": 366,
+    "actualOriginalDetailSheetViews": 99,
+    "additionalFullOriginalSourceViews": 9,
+    "certificate": "wave6-tech-visual-receipt.json"
+  },
+  "olderRawFilesExact": 7277,
+  "retainedFailures": "wave6-tech-native-diagnostics.json",
+  "finalLogs": [
+    {
+      "file": "/workspace/scratch/wave6-tech-research/focused-final.tap",
+      "sha256": "fdfb92e0fc8b3cf56baf3d4b3ce1e5c638720ce2e10222ef6639eea8db43d9c7"
+    },
+    {
+      "file": "/workspace/scratch/wave6-tech-research/build-final.log",
+      "sha256": "15e9364b0429a59d6c9a3d401778314282c212d3e56d7d9220ec770bcbb34acf"
+    },
+    {
+      "file": "/workspace/scratch/wave6-tech-research/static-final.log",
+      "sha256": "e2f39cbe8e58dc8c8f2518825e1141f028325062df9db1272c90fe85d371dc9a"
+    }
+  ],
+  "allOwnedBrowsersServersAndExecutionSessionsClosed": true,
+  "fullSuiteScope": "Latest5202test export427a7608585adaf1f70803da4cc34b342d1a2660 predates PHIL6/TECH7. Current user-authorized PHIL11+TECH14reading integration/full immutable-export suite/push/PR/main merge follows this author checkpoint; no current full-suite result claimed yet."
+}
