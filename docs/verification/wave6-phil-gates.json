@@ -1,0 +1,265 @@
+{
+  "status": "PASS \u2014 author verified only",
+  "lessons": 11,
+  "panels": 33,
+  "model": {
+    "cases": 1458,
+    "families": 11,
+    "comparisons": 87483,
+    "fixtureSHA256": "a327f09d9f1296fb716350f1fae78290247a411b99ac0291a6e43ca7a1c80b19",
+    "certificate": "wave6-phil-model-receipt.json"
+  },
+  "focusedGroups": 42,
+  "strict": {
+    "written": 8706,
+    "planned": 4868,
+    "chapters": 601,
+    "collections": 85,
+    "errors": 0,
+    "warnings": 0
+  },
+  "static": {
+    "visualizations": 8643,
+    "errors": 0,
+    "warnings": 0
+  },
+  "ordinaryProduction": [
+    {
+      "file": "/workspace/scratch/wave6-phil-research/default-final-v2-light/receipt.json",
+      "sha256": "3b4fb30c75cd7b393e1164568dd091f3b6924d2150e6898c21e55890208480a2",
+      "sourceHashes": {
+        "content/phil/ch06.js": "41749c400bd959bfa3b9ac0c96b49e50de90cd434256e3b3e51eda286cd29d10",
+        "content/phil/ch06.shared.js": "89e931bd3fc02efb2e405e48786dc124902b1e66247ad78c61cd500e2cdb4e54",
+        "content/phil/ch06.viz.js": "16e24c2efe477883a2f41b9fbe1f398889bf621fd5f677e2bc6faea4774b0cb1",
+        "content/phil/ch05.shared.js": "9dae491fabd3aee126113b57f393b61a51740710873a532871f0c8e74c7cc2bb",
+        "content/phil/syllabus.js": "f08ecdb130cc0dbdcb0c541bc690a2bc21c8bafd86215670500fb4355dbfd743",
+        "assets/js/viz/core.js": "a6fa1753d9d9e8b9a05a7161fffc58dfd53b27002d9d393a3266aeb96515fe73",
+        "assets/js/viz/math.js": "439c335e1cc47907bc72bb76559216aa093be4710e0589f41c70192729eb223e",
+        "assets/js/app.js": "2f5762e6bf80723a5cb8691f8b19c552dd1d731ab998d5bfcdb27828e2e9a6ce",
+        "assets/js/share-state.js": "13c6a9ac1237d566fc5d79c89e0f4d3029aa8c2817d2c08247a02b1b053a59b1",
+        "assets/css/style.css": "eef34e3d7aaf8b38233a78d9dc6545e5e0c9d00b09a3a6876d19f3e0e0af15b6",
+        "data/index.json": "27a8e6c28cff24a62bea4e3c3fbec080a0295162371272397349b0b88398329c",
+        "data/col/phil.json": "b275b7ba4067ff88c551e3a0443f1e03f2c4e0a278819e8b5942ee179bc8b2a2",
+        "tests/wave6-phil-browser.mjs": "e8be459d0493c03ca54bc36767d9d31a40a517366b5b244b1e4766044413f8ae"
+      },
+      "layouts": 22,
+      "panels": 66,
+      "issues": [],
+      "mathErrors": [],
+      "pageErrors": []
+    },
+    {
+      "file": "/workspace/scratch/wave6-phil-research/default-final-v2-dark/receipt.json",
+      "sha256": "3b4fb30c75cd7b393e1164568dd091f3b6924d2150e6898c21e55890208480a2",
+      "sourceHashes": {
+        "content/phil/ch06.js": "41749c400bd959bfa3b9ac0c96b49e50de90cd434256e3b3e51eda286cd29d10",
+        "content/phil/ch06.shared.js": "89e931bd3fc02efb2e405e48786dc124902b1e66247ad78c61cd500e2cdb4e54",
+        "content/phil/ch06.viz.js": "16e24c2efe477883a2f41b9fbe1f398889bf621fd5f677e2bc6faea4774b0cb1",
+        "content/phil/ch05.shared.js": "9dae491fabd3aee126113b57f393b61a51740710873a532871f0c8e74c7cc2bb",
+        "content/phil/syllabus.js": "f08ecdb130cc0dbdcb0c541bc690a2bc21c8bafd86215670500fb4355dbfd743",
+        "assets/js/viz/core.js": "a6fa1753d9d9e8b9a05a7161fffc58dfd53b27002d9d393a3266aeb96515fe73",
+        "assets/js/viz/math.js": "439c335e1cc47907bc72bb76559216aa093be4710e0589f41c70192729eb223e",
+        "assets/js/app.js": "2f5762e6bf80723a5cb8691f8b19c552dd1d731ab998d5bfcdb27828e2e9a6ce",
+        "assets/js/share-state.js": "13c6a9ac1237d566fc5d79c89e0f4d3029aa8c2817d2c08247a02b1b053a59b1",
+        "assets/css/style.css": "eef34e3d7aaf8b38233a78d9dc6545e5e0c9d00b09a3a6876d19f3e0e0af15b6",
+        "data/index.json": "27a8e6c28cff24a62bea4e3c3fbec080a0295162371272397349b0b88398329c",
+        "data/col/phil.json": "b275b7ba4067ff88c551e3a0443f1e03f2c4e0a278819e8b5942ee179bc8b2a2",
+        "tests/wave6-phil-browser.mjs": "e8be459d0493c03ca54bc36767d9d31a40a517366b5b244b1e4766044413f8ae"
+      },
+      "layouts": 22,
+      "panels": 66,
+      "issues": [],
+      "mathErrors": [],
+      "pageErrors": []
+    }
+  ],
+  "ordinaryModes": {
+    "lessonsPerTheme": 11,
+    "themes": [
+      "light",
+      "dark"
+    ],
+    "errors": 0,
+    "warnings": 0
+  },
+  "nativeEffective": {
+    "layouts": 44,
+    "actions": 1860,
+    "shares": 660,
+    "trustedShares": 660,
+    "invalid": 216,
+    "raw": 116,
+    "critical": 300,
+    "checks": 2536,
+    "modelComparisons": 1458604,
+    "geometryComparisons": 211000,
+    "paintedPixelAudits": 7608,
+    "pixelSamples": 9538,
+    "domRangeRounding": 120
+  },
+  "nativePassingExecutions": 64,
+  "visualSelectedRegions": 340,
+  "actualOriginalDetailViews": 74,
+  "olderRawFilesExact": 7251,
+  "availability": {
+    "total": 991,
+    "historicalIndependent": 36,
+    "additionalAuthorVerified": 955,
+    "newPhilAuthorVerified": 11
+  },
+  "retainedNativeFailuresAndDeliberateStops": [
+    {
+      "file": "/workspace/scratch/wave6-phil-research/native-final-v1-dark/receipt.json",
+      "sha256": "9241cd0df91462ddebccaadce58b6ab5b382c25031de5a597eaba6c1ee9c07f4",
+      "failure": {
+        "label": "2/dark/1200",
+        "message": "Explicit stop-file request; owned browser/server close in finally.",
+        "stack": "Error: Explicit stop-file request; owned browser/server close in finally.\n    at check (file:///workspace/theorems-visualizations/tests/wave6-phil-native.mjs:20:99)\n    at open (file:///workspace/theorems-visualizations/tests/wave6-phil-native.mjs:28:426)\n    at async file:///workspace/theorems-visualizations/tests/wave6-phil-native.mjs:39:125"
+      },
+      "sourceDataHarnessUnchanged": true
+    },
+    {
+      "file": "/workspace/scratch/wave6-phil-research/native-final-v1-light/receipt.json",
+      "sha256": "99cec08a2e4731572065e430aaeee2fe5c16724825d9c4641c33fceebb6d1b85",
+      "failure": {
+        "label": "2/light/1200",
+        "message": "Explicit stop-file request; owned browser/server close in finally.",
+        "stack": "Error: Explicit stop-file request; owned browser/server close in finally.\n    at check (file:///workspace/theorems-visualizations/tests/wave6-phil-native.mjs:20:99)\n    at open (file:///workspace/theorems-visualizations/tests/wave6-phil-native.mjs:28:426)\n    at async share (file:///workspace/theorems-visualizations/tests/wave6-phil-native.mjs:29:667)\n    at async file:///workspace/theorems-visualizations/tests/wave6-phil-native.mjs:39:320"
+      },
+      "sourceDataHarnessUnchanged": true
+    },
+    {
+      "file": "/workspace/scratch/wave6-phil-research/native-final-v2-dark/receipt.json",
+      "sha256": "403033b44bd4ff7fcba8d856adcdab9d07a06bf5c6ed80f8501206f5b0a20c30",
+      "failure": {
+        "label": "5/dark/320",
+        "message": "Explicit stop-file request; owned browser/server close in finally.",
+        "stack": "Error: Explicit stop-file request; owned browser/server close in finally.\n    at check (file:///workspace/theorems-visualizations/tests/wave6-phil-native.mjs:20:99)\n    at open (file:///workspace/theorems-visualizations/tests/wave6-phil-native.mjs:28:426)\n    at async file:///workspace/theorems-visualizations/tests/wave6-phil-native.mjs:39:125"
+      },
+      "sourceDataHarnessUnchanged": true
+    },
+    {
+      "file": "/workspace/scratch/wave6-phil-research/native-final-v2-light/receipt.json",
+      "sha256": "8b8205f210dc0e6e3c3692cf596050a82d7a1b92f0749998cfd85e8d9eb753b8",
+      "failure": {
+        "label": "5/light/320",
+        "message": "Explicit stop-file request; owned browser/server close in finally.",
+        "stack": "Error: Explicit stop-file request; owned browser/server close in finally.\n    at check (file:///workspace/theorems-visualizations/tests/wave6-phil-native.mjs:20:99)\n    at open (file:///workspace/theorems-visualizations/tests/wave6-phil-native.mjs:28:426)\n    at async share (file:///workspace/theorems-visualizations/tests/wave6-phil-native.mjs:29:667)\n    at async file:///workspace/theorems-visualizations/tests/wave6-phil-native.mjs:39:320"
+      },
+      "sourceDataHarnessUnchanged": true
+    },
+    {
+      "file": "/workspace/scratch/wave6-phil-research/native-interaction-pilot-v1-dark/receipt.json",
+      "sha256": "adb289e945e50db3fdc8a284f88980bc7acd6cabe6f994d157f60efbbd08254c",
+      "failure": {
+        "label": "2/dark/320",
+        "message": "2/dark/320 ink/geometry [{\"type\":\"glyph overlap\",\"stage\":0,\"texts\":[\"width = 0.37123\",\"width = 0.62877\"],\"intersection\":[5.199999999999989,8]}]\n+ actual - expected\n\n+ [\n+   {\n+     intersection: [\n+       5.199999999999989,\n+       8\n+     ],\n+     stage: 0,\n+     texts: [\n+       'width = 0.37123',\n+       'width = 0.62877'\n+     ],\n+     type: 'glyph overlap'\n+   }\n+ ]\n- []\n",
+        "stack": "AssertionError [ERR_ASSERTION]: 2/dark/320 ink/geometry [{\"type\":\"glyph overlap\",\"stage\":0,\"texts\":[\"width = 0.37123\",\"width = 0.62877\"],\"intersection\":[5.199999999999989,8]}]\n+ actual - expected\n\n+ [\n+   {\n+     intersection: [\n+       5.199999999999989,\n+       8\n+     ],\n+     stage: 0,\n+     texts: [\n+       'width = 0.37123',\n+       'width = 0.62877'\n+     ],\n+     type: 'glyph overlap'\n+   }\n+ ]\n- []\n\n    at check (file:///workspace/theorems-visualizations/tests/wave6-phil-native.mjs:21:174)\n    at async open (file:///workspace/theorems-visualizations/tests/wave6-phil-native.mjs:27:420)\n    at async file:///workspace/theorems-visualizations/tests/wave6-phil-native.mjs:39:458"
+      },
+      "sourceDataHarnessUnchanged": true
+    },
+    {
+      "file": "/workspace/scratch/wave6-phil-research/native-interaction-pilot-v1-light/receipt.json",
+      "sha256": "365cde757797fa04abf2e036af31fac7c51ed2841b712860e4deb548042b6519",
+      "failure": {
+        "label": "2/light/320",
+        "message": "2/light/320 ink/geometry [{\"type\":\"glyph overlap\",\"stage\":0,\"texts\":[\"width = 0.37123\",\"width = 0.62877\"],\"intersection\":[5.199999999999989,8]}]\n+ actual - expected\n\n+ [\n+   {\n+     intersection: [\n+       5.199999999999989,\n+       8\n+     ],\n+     stage: 0,\n+     texts: [\n+       'width = 0.37123',\n+       'width = 0.62877'\n+     ],\n+     type: 'glyph overlap'\n+   }\n+ ]\n- []\n",
+        "stack": "AssertionError [ERR_ASSERTION]: 2/light/320 ink/geometry [{\"type\":\"glyph overlap\",\"stage\":0,\"texts\":[\"width = 0.37123\",\"width = 0.62877\"],\"intersection\":[5.199999999999989,8]}]\n+ actual - expected\n\n+ [\n+   {\n+     intersection: [\n+       5.199999999999989,\n+       8\n+     ],\n+     stage: 0,\n+     texts: [\n+       'width = 0.37123',\n+       'width = 0.62877'\n+     ],\n+     type: 'glyph overlap'\n+   }\n+ ]\n- []\n\n    at check (file:///workspace/theorems-visualizations/tests/wave6-phil-native.mjs:21:174)\n    at async open (file:///workspace/theorems-visualizations/tests/wave6-phil-native.mjs:27:420)\n    at async file:///workspace/theorems-visualizations/tests/wave6-phil-native.mjs:39:458"
+      },
+      "sourceDataHarnessUnchanged": true
+    },
+    {
+      "file": "/workspace/scratch/wave6-phil-research/native-interaction-pilot-v2-dark/receipt.json",
+      "sha256": "1eda5d37f74d32d4b1aa1acc6a3f326e5fa17c9c2e6eee15bb26354864c9c597",
+      "failure": {
+        "label": "phil-6.3-dark-1200 prevalence Home",
+        "message": "The expression evaluated to a falsy value:\n\n  assert.ok(g)\n",
+        "stack": "AssertionError [ERR_ASSERTION]: The expression evaluated to a falsy value:\n\n  assert.ok(g)\n\n    at philScience (file:///workspace/theorems-visualizations/tests/wave6-phil-native-science.mjs:43:118)\n    at check (file:///workspace/theorems-visualizations/tests/wave6-phil-native.mjs:21:270)\n    at async visible (file:///workspace/theorems-visualizations/tests/wave6-phil-native.mjs:32:398)\n    at async controls (file:///workspace/theorems-visualizations/tests/wave6-phil-native.mjs:33:2)\n    at async file:///workspace/theorems-visualizations/tests/wave6-phil-native.mjs:38:243"
+      },
+      "sourceDataHarnessUnchanged": true
+    },
+    {
+      "file": "/workspace/scratch/wave6-phil-research/native-interaction-pilot-v2-light/receipt.json",
+      "sha256": "3a9864b7803ca5c69d480a4f4ef5a932ffa11840104941c3187120826f7f8003",
+      "failure": {
+        "label": "phil-6.3-light-320 prevalence Home",
+        "message": "The expression evaluated to a falsy value:\n\n  assert.ok(g)\n",
+        "stack": "AssertionError [ERR_ASSERTION]: The expression evaluated to a falsy value:\n\n  assert.ok(g)\n\n    at philScience (file:///workspace/theorems-visualizations/tests/wave6-phil-native-science.mjs:43:118)\n    at check (file:///workspace/theorems-visualizations/tests/wave6-phil-native.mjs:21:270)\n    at async visible (file:///workspace/theorems-visualizations/tests/wave6-phil-native.mjs:32:398)\n    at async controls (file:///workspace/theorems-visualizations/tests/wave6-phil-native.mjs:33:2)\n    at async file:///workspace/theorems-visualizations/tests/wave6-phil-native.mjs:38:243"
+      },
+      "sourceDataHarnessUnchanged": true
+    },
+    {
+      "file": "/workspace/scratch/wave6-phil-research/native-interaction-pilot-v3-light/receipt.json",
+      "sha256": "5badf066aa9c6e66d5f9023b1ec6ae2c0776df964b2e63138f04c4534ababb5e",
+      "failure": {
+        "label": "11/light/320",
+        "message": "11/light/320 ink/geometry [{\"type\":\"canvas ink\",\"stage\":2,\"g\":{\"text\":\"range.\",\"l\":51.480000000000004,\"r\":81.48,\"t\":239.95,\"b\":247.95,\"dataClip\":false,\"g\":{\"l\":0,\"r\":0,\"t\":0,\"b\":0}},\"W\":286,\"H\":245}]\n+ actual - expected\n\n+ [\n+   {\n+     H: 245,\n+     W: 286,\n+     g: {\n+       b: 247.95,\n+       dataClip: false,\n+       g: {\n+         b: 0,\n+         l: 0,\n+         r: 0,\n+         t: 0\n+       },\n+       l: 51.480000000000004,\n+       r: 81.48,\n+       t: 239.95,\n+       text: 'range.'\n+     },\n+     stage: 2,\n+     type: 'canvas ink'\n+   }\n+ ]\n- []\n",
+        "stack": "AssertionError [ERR_ASSERTION]: 11/light/320 ink/geometry [{\"type\":\"canvas ink\",\"stage\":2,\"g\":{\"text\":\"range.\",\"l\":51.480000000000004,\"r\":81.48,\"t\":239.95,\"b\":247.95,\"dataClip\":false,\"g\":{\"l\":0,\"r\":0,\"t\":0,\"b\":0}},\"W\":286,\"H\":245}]\n+ actual - expected\n\n+ [\n+   {\n+     H: 245,\n+     W: 286,\n+     g: {\n+       b: 247.95,\n+       dataClip: false,\n+       g: {\n+         b: 0,\n+         l: 0,\n+         r: 0,\n+         t: 0\n+       },\n+       l: 51.480000000000004,\n+       r: 81.48,\n+       t: 239.95,\n+       text: 'range.'\n+     },\n+     stage: 2,\n+     type: 'canvas ink'\n+   }\n+ ]\n- []\n\n    at check (file:///workspace/theorems-visualizations/tests/wave6-phil-native.mjs:21:174)\n    at async open (file:///workspace/theorems-visualizations/tests/wave6-phil-native.mjs:28:420)\n    at async file:///workspace/theorems-visualizations/tests/wave6-phil-native.mjs:39:125"
+      },
+      "sourceDataHarnessUnchanged": true
+    },
+    {
+      "file": "/workspace/scratch/wave6-phil-research/native-pilot-v1-dark/receipt.json",
+      "sha256": "d623c36e0cda15be83f83b44c5b0c30ed20698f3d7ee73c0bee52d50f67950f8",
+      "failure": {
+        "label": "2/dark/320",
+        "message": "joint mosaic area",
+        "stack": "AssertionError [ERR_ASSERTION]: joint mosaic area\n    at philScience (file:///workspace/theorems-visualizations/tests/wave6-phil-native-science.mjs:42:166)\n    at check (file:///workspace/theorems-visualizations/tests/wave6-phil-native.mjs:21:186)\n    at async open (file:///workspace/theorems-visualizations/tests/wave6-phil-native.mjs:27:420)\n    at async file:///workspace/theorems-visualizations/tests/wave6-phil-native.mjs:37:82"
+      },
+      "sourceDataHarnessUnchanged": true
+    },
+    {
+      "file": "/workspace/scratch/wave6-phil-research/native-pilot-v1-light/receipt.json",
+      "sha256": "76314cea958cb5f4e1ea0d4759f706a1509465e854030e25ced1cb2dc3713590",
+      "failure": {
+        "label": "2/light/320",
+        "message": "joint mosaic area",
+        "stack": "AssertionError [ERR_ASSERTION]: joint mosaic area\n    at philScience (file:///workspace/theorems-visualizations/tests/wave6-phil-native-science.mjs:42:166)\n    at check (file:///workspace/theorems-visualizations/tests/wave6-phil-native.mjs:21:186)\n    at async open (file:///workspace/theorems-visualizations/tests/wave6-phil-native.mjs:27:420)\n    at async file:///workspace/theorems-visualizations/tests/wave6-phil-native.mjs:37:82"
+      },
+      "sourceDataHarnessUnchanged": true
+    },
+    {
+      "file": "/workspace/scratch/wave6-phil-research/native-pilot-v2-dark/receipt.json",
+      "sha256": "b43dd7a16ed6ae6a55ba59915dc50c1778d331a3774699e756e380f6ffac419d",
+      "failure": {
+        "label": "3/dark/320",
+        "message": "stage 0 faint interior actual RGB {\"label\":\"stage 0 faint interior\",\"rgba\":[127,125,118,255],\"expected\":[95,92,86]}",
+        "stack": "AssertionError [ERR_ASSERTION]: stage 0 faint interior actual RGB {\"label\":\"stage 0 faint interior\",\"rgba\":[127,125,118,255],\"expected\":[95,92,86]}\n    at check (file:///workspace/theorems-visualizations/tests/wave6-phil-native.mjs:24:95)\n    at async open (file:///workspace/theorems-visualizations/tests/wave6-phil-native.mjs:27:420)\n    at async file:///workspace/theorems-visualizations/tests/wave6-phil-native.mjs:37:82"
+      },
+      "sourceDataHarnessUnchanged": true
+    },
+    {
+      "file": "/workspace/scratch/wave6-phil-research/native-pilot-v2-light/receipt.json",
+      "sha256": "08416c6864f08ed7a4d84264e64d3c18c9734e8fdc4cb604bbbf1792dbece5ba",
+      "failure": {
+        "label": "3/light/320",
+        "message": "stage 0 faint interior actual RGB {\"label\":\"stage 0 faint interior\",\"rgba\":[134,130,118,255],\"expected\":[168,162,148]}",
+        "stack": "AssertionError [ERR_ASSERTION]: stage 0 faint interior actual RGB {\"label\":\"stage 0 faint interior\",\"rgba\":[134,130,118,255],\"expected\":[168,162,148]}\n    at check (file:///workspace/theorems-visualizations/tests/wave6-phil-native.mjs:24:95)\n    at async open (file:///workspace/theorems-visualizations/tests/wave6-phil-native.mjs:27:420)\n    at async file:///workspace/theorems-visualizations/tests/wave6-phil-native.mjs:37:82"
+      },
+      "sourceDataHarnessUnchanged": true
+    },
+    {
+      "file": "/workspace/scratch/wave6-phil-research/native-pilot-v3-light/receipt.json",
+      "sha256": "d31ae4f17aa59836f31fdba98145acfbb5d284c8eb3b7ad87194f9ced411be17",
+      "failure": {
+        "label": "3/light/320",
+        "message": "stage 0 faint interior actual RGB {\"label\":\"stage 0 faint interior\",\"point\":[26.5,49.5],\"box\":{\"l\":25.740000000000002,\"r\":28.0852,\"t\":48.70599999999999,\"b\":50.396499999999975,\"style\":{\"fill\":\"faint\",\"fillAlpha\":1,\"stroke\":false}},\"rgba\":[134,130,118,255],\"expected\":[168,162,148]}",
+        "stack": "AssertionError [ERR_ASSERTION]: stage 0 faint interior actual RGB {\"label\":\"stage 0 faint interior\",\"point\":[26.5,49.5],\"box\":{\"l\":25.740000000000002,\"r\":28.0852,\"t\":48.70599999999999,\"b\":50.396499999999975,\"style\":{\"fill\":\"faint\",\"fillAlpha\":1,\"stroke\":false}},\"rgba\":[134,130,118,255],\"expected\":[168,162,148]}\n    at check (file:///workspace/theorems-visualizations/tests/wave6-phil-native.mjs:24:95)\n    at async open (file:///workspace/theorems-visualizations/tests/wave6-phil-native.mjs:27:420)\n    at async file:///workspace/theorems-visualizations/tests/wave6-phil-native.mjs:37:82"
+      },
+      "sourceDataHarnessUnchanged": true
+    }
+  ],
+  "retainedDiagnostics": [
+    "Initial model performance/reference timeouts and deliberate SIGINTs remain in model receipt.",
+    "Pilot audit corrected outline-area counting, stroke-adjacent sampling and omitted zero-mass quilt groups; actual mobile label overlap and preface note clipping were repaired.",
+    "First42-group display-copy contract rejected the changed generated timestamp. Complete original index bytes were reconstructed by changing that metadata value alone; no item, route or dependency byte was excluded. The permanent chapter contract pins the eleven complete PHIL6 detail records, allowing unrelated future chapter additions."
+  ],
+  "allOwnedBrowsersServersAndExecutionSessionsClosed": true,
+  "fullSuiteScope": "Latest5202-test immutable export427a7608 predates PHIL6. No new full-suite or independent acceptance, release, deployment or subsequent push/main merge is claimed. Continue TECH7fourteen and BIGHIST6eleven locally.",
+  "focusedFinalReceipt": {
+    "file": "/workspace/scratch/wave6-phil-research/focused-promotion-final.log",
+    "sha256": "fc00dfc5e4ec75bc13ebef4ba79429c2de6a07ed2a3f156ce4f6802ce630410e",
+    "groups": 42,
+    "failures": 0
+  }
+}

@@ -1,0 +1,133 @@
+{
+  "status": "Final PHIL6author artifact manifest; handoff intentionally mutable and excluded",
+  "availability": 991,
+  "historicalIndependent": 36,
+  "files": [
+    {
+      "path": "content/phil/ch06.js",
+      "bytes": 20909,
+      "sha256": "41749c400bd959bfa3b9ac0c96b49e50de90cd434256e3b3e51eda286cd29d10"
+    },
+    {
+      "path": "content/phil/ch06.shared.js",
+      "bytes": 10437,
+      "sha256": "89e931bd3fc02efb2e405e48786dc124902b1e66247ad78c61cd500e2cdb4e54"
+    },
+    {
+      "path": "content/phil/ch06.viz.js",
+      "bytes": 36939,
+      "sha256": "16e24c2efe477883a2f41b9fbe1f398889bf621fd5f677e2bc6faea4774b0cb1"
+    },
+    {
+      "path": "tests/wave6-phil.test.mjs",
+      "bytes": 4590,
+      "sha256": "8fbb74ac063a003588fdc3bf0dc05e81c1063750e0c191631c818ca656ce1c87"
+    },
+    {
+      "path": "tests/wave6-phil-chapter.test.mjs",
+      "bytes": 5297,
+      "sha256": "2b6bba9687c4ed5a0f89ca7cf50e65b43684ef898743cb168c9027c423e38ab5"
+    },
+    {
+      "path": "tests/wave6-phil-browser.mjs",
+      "bytes": 6275,
+      "sha256": "e8be459d0493c03ca54bc36767d9d31a40a517366b5b244b1e4766044413f8ae"
+    },
+    {
+      "path": "tests/wave6-phil-browser.shared.mjs",
+      "bytes": 14267,
+      "sha256": "3ec0eadb7a7a477da8ac0bfeb4e42bb3b270bea4296d0eac1d38874790b014fd"
+    },
+    {
+      "path": "tests/wave6-phil-native.mjs",
+      "bytes": 11761,
+      "sha256": "916e7e3a2e2a1136a224ca60d389dcfa6b7826fbee8abcaca84675b81af53903"
+    },
+    {
+      "path": "tests/wave6-phil-native-cases.mjs",
+      "bytes": 5579,
+      "sha256": "9b77be188f0b2d49d654f81d7b33b907d9f7b0d2c88170795b102839a07669e4"
+    },
+    {
+      "path": "tests/wave6-phil-native-science.mjs",
+      "bytes": 13481,
+      "sha256": "f755bfbc2a70fc20b59afc349ae974ea0ebef45c8c397608dbb4bdf7b1e398aa"
+    },
+    {
+      "path": "tests/fixtures/wave6-phil-reference.json",
+      "bytes": 3617469,
+      "sha256": "a327f09d9f1296fb716350f1fae78290247a411b99ac0291a6e43ca7a1c80b19"
+    },
+    {
+      "path": "tests/fixtures/wave6-phil-frozen.json",
+      "bytes": 5824,
+      "sha256": "0ba4a8d39e242779b836b14453121ab235bf3d1567ad502954dc158cc97e9153"
+    },
+    {
+      "path": "tests/refs/wave6-phil-reference.py",
+      "bytes": 3360,
+      "sha256": "e8627d69f66c46fe16989c2e4773ad145ef772725b12dafea1789900fda6fa6a"
+    },
+    {
+      "path": "tests/refs/wave6-phil-reference.shared.py",
+      "bytes": 10972,
+      "sha256": "67e5b750e81c3486924359bf987a7c55712c02d0c456a6fabe22f34086ada039"
+    },
+    {
+      "path": "docs/verification/wave6-phil-copy-transition.json",
+      "bytes": 17767,
+      "sha256": "7348cddacad74938f99f7fb65303caa222d31e958bb7b8089ca25fc69931ba58"
+    },
+    {
+      "path": "docs/verification/wave6-phil-draft-receipt.json",
+      "bytes": 15523,
+      "sha256": "af34e2bd57629d9ba2053a06f01214fe10370f75e0c5b2a41565b7d43ec841b8"
+    },
+    {
+      "path": "docs/verification/wave6-phil-gates.json",
+      "bytes": 20571,
+      "sha256": "c07f8b3da7aa28022d20de3aea6b90bf77265b0f492fbb4641c29a2545c8ce37"
+    },
+    {
+      "path": "docs/verification/wave6-phil-model-receipt.json",
+      "bytes": 4976,
+      "sha256": "d8df2527aab7035600379d19d3b650b2685e71030b7143c733326c20e9de9a75"
+    },
+    {
+      "path": "docs/verification/wave6-phil-native-checkpoint.json",
+      "bytes": 22232,
+      "sha256": "38b145939b88a92779010d62ecf516520858c324dc740c64d3488bb214961c34"
+    },
+    {
+      "path": "docs/verification/wave6-phil-native-receipt.json",
+      "bytes": 41429,
+      "sha256": "51f6668f597e27babbbf087e3b36994f2e02e6bdc5029f5bccbabb4999c141e5"
+    },
+    {
+      "path": "docs/verification/wave6-phil-preimages.json",
+      "bytes": 821935,
+      "sha256": "85053d0f86aa9de3b1e2e6585b96a097a71f7ed51656604c05d3d0fb52025bf2"
+    },
+    {
+      "path": "docs/verification/wave6-phil-preservation.json",
+      "bytes": 1139,
+      "sha256": "0d335dac3d5570349faede7d39a7d9f6e6ec5335e95708d4745f69bacf82348a"
+    },
+    {
+      "path": "docs/verification/wave6-phil-sources.json",
+      "bytes": 7844,
+      "sha256": "13cf44128a8f7e403fb06e7a7c9413b6e57258894db0599438ec14f0a7500958"
+    },
+    {
+      "path": "docs/verification/wave6-phil-visual-receipt.json",
+      "bytes": 380037,
+      "sha256": "1db0125b49832f7991d41007fa9d59ac8921cbe37f1361963aa91a82311244fa"
+    },
+    {
+      "path": "docs/verification/wave6-phil.md",
+      "bytes": 6774,
+      "sha256": "8b302a9ada3a5a6f793d5c6ef6186fbfde9b058191487a5082816388bb6c9889"
+    }
+  ],
+  "scope": "Owned chapter, providers, independent reference, fixture, contracts, browser/native harnesses and all phase/final receipts. Historical checkpoint/draft status remains immutable and is superseded by final gates. Referenced scratch source pixels/contacts remain in this workspace; their original source, crop and view hashes are in the visual receipt. No independent/release/deployment promotion."
+}

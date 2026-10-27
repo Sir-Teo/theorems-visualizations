@@ -38,3 +38,11 @@ test('PHIL6 teaching keeps conditional-price, finite-convergence and dependence 
  assert.match(text(10),/one winner|one winning/);assert.match(text(10),/conjoin|agglomeration/);
  assert.match(text(11),/independent/i);assert.match(text(11),/uniform/);assert.match(text(11),/lower bound/);
 });
+test('PHIL6 final display-copy transition reconstructs the complete44-layout native sources exactly',()=>{
+ const transition=json('docs/verification/wave6-phil-copy-transition.json'),checkpoint=json('docs/verification/wave6-phil-native-checkpoint.json');
+ assert.deepEqual(transition.affectedLessons,[1,8,10,11]);assert.deepEqual(transition.changedSources.map(x=>x.path),['content/phil/ch06.viz.js','tests/wave6-phil-native-science.mjs']);
+ for(const row of transition.changedSources){let source=read(row.path).toString();assert.equal(sha(source),row.afterSHA256);for(const r of row.replacements.toReversed()){assert.equal(r.occurrences,1);assert.equal(source.split(r.after).length,2);source=source.replace(r.after,r.before);}assert.equal(sha(source),row.beforeSHA256);assert.equal(row.beforeSHA256,checkpoint.sourceHashes[row.path]);}
+ for(const[path,hash]of Object.entries(transition.allOtherNativeCheckpointPinsExact)){assert.equal(hash,checkpoint.sourceHashes[path]);assert.equal(sha(read(path)),hash,path);}
+ const g=transition.generatedIndexTransition;assert.equal(g.originalSHA256,checkpoint.sourceHashes['data/index.json']);assert.equal(transition.generatedPhilShard.historicalFullSHA256,checkpoint.sourceHashes['data/col/phil.json']);
+ const details=json('data/col/phil.json'),projection=Object.fromEntries(Object.entries(details).filter(([id])=>id.startsWith('phil-6.')));assert.deepEqual(projection,transition.generatedPhilShard.chapterProjection,'all eleven complete PHIL6 detail records retain the native certificate; other chapters may grow');
+});

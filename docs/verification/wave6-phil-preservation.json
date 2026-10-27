@@ -1,0 +1,19 @@
+{
+  "status": "PASS",
+  "baseCommit": "55241f1f29b7bbf9f0301cd4182a84728d36d376",
+  "olderRawFilesExact": 7251,
+  "mutableHandoff": "docs/wave-continuation.md",
+  "preimages": "wave6-phil-preimages.json",
+  "allSyllabiAndFrozenPlansRawByteExact": true,
+  "frozenLessons": 11,
+  "frozenNamesKindsDependenciesAndOptionalPropertyAbsenceExact": true,
+  "allSixIndependentModelCertificatePinsUnchanged": {
+    "content/phil/ch06.shared.js": "89e931bd3fc02efb2e405e48786dc124902b1e66247ad78c61cd500e2cdb4e54",
+    "tests/wave6-phil.test.mjs": "8fbb74ac063a003588fdc3bf0dc05e81c1063750e0c191631c818ca656ce1c87",
+    "tests/fixtures/wave6-phil-reference.json": "a327f09d9f1296fb716350f1fae78290247a411b99ac0291a6e43ca7a1c80b19",
+    "tests/refs/wave6-phil-reference.py": "e8627d69f66c46fe16989c2e4773ad145ef772725b12dafea1789900fda6fa6a",
+    "tests/refs/wave6-phil-reference.shared.py": "67e5b750e81c3486924359bf987a7c55712c02d0c456a6fabe22f34086ada039",
+    "content/phil/ch05.shared.js": "9dae491fabd3aee126113b57f393b61a51740710873a532871f0c8e74c7cc2bb"
+  },
+  "displayCopyWholeNativeSourceReconstruction": "wave6-phil-copy-transition.json"
+}
