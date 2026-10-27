@@ -1,0 +1,52 @@
+{
+  "checkedOn": "2026-10-27",
+  "sourceCommit": "952469b156f0bb9a926ceb2f772aef2151191b56",
+  "scope": "Only snapshot metadata changes. Four ordered route arrays and every other field remain exact.",
+  "files": [
+    {
+      "path": "docs/journeys/targets.json",
+      "beforeFileSha256": "bab9940838fe9a244ff4c0085527d3ab4f67cf71b99034739aefe6c893b434e0",
+      "afterFileSha256": "628002a75becbbb210958e060a3bf6fb2fb9d724c84b068cc76ac384b51b8694",
+      "unchangedArrays": {
+        "targets": {
+          "sha256": "b138474532bfee317a9f785fa19a0ce3520bccfcaacc1f00feaaee7fede5db3f",
+          "length": 11
+        }
+      }
+    },
+    {
+      "path": "docs/journeys/plans.json",
+      "beforeFileSha256": "19383dd907fde2424267684c34b78ed0932dd7e29071e719381b697769ff03e4",
+      "afterFileSha256": "14a2a3813fc8bfdce83a86e9dd0817b1dbfb59d1473b08d1e7fb639b65b3a933",
+      "unchangedArrays": {
+        "routes": {
+          "sha256": "286ab69eca3c4f9fe8e1cb97a5557463cb8d9e3c0d23eccce5f1d77c9c984338",
+          "length": 3
+        }
+      }
+    },
+    {
+      "path": "curriculum/introductory.json",
+      "beforeFileSha256": "a24134588465ee00d7cfcb1c5ad7550fb0215a01aa7e45de24dae1b65a7d3cc6",
+      "afterFileSha256": "cafcf9ea3d44b687a415f2536279ccbdc36fdbda789ac6cfc16f52dfa91c047b",
+      "unchangedArrays": {
+        "routes": {
+          "sha256": "f64018d1437e51db1b0da06696a2c08ee3f8be1335e98d992a751a44e46e63e3",
+          "length": 30
+        }
+      }
+    },
+    {
+      "path": "program/deeper-routes.json",
+      "beforeFileSha256": "1ad191eb9a9334af2f16cea8e696185ca4c903d4777cd746473706fbc5a3a885",
+      "afterFileSha256": "cfcf8f70f4fc137d593ab537c2df948a1fca595692ef9f4a53d584446e03d7fb",
+      "unchangedArrays": {
+        "routes": {
+          "sha256": "ee871582e7293379c7008d15b665c189046be4cd2947dcaa144a945eadaab431",
+          "length": 30
+        }
+      }
+    }
+  ],
+  "result": "PASS"
+}

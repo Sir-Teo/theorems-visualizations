@@ -1,0 +1,292 @@
+{
+  "status": "Local candidate checks pass; immutable-export full suite and production smoke pending",
+  "checkedOn": "2026-10-27",
+  "chapterSourceCommit": "952469b156f0bb9a926ceb2f772aef2151191b56",
+  "reading": {
+    "retainedIdeas": 8695,
+    "addedIdeas": 25,
+    "entries": 8720,
+    "aliases": 76,
+    "snapshotDigest": "9baee7f62b3f22e67cd10194803127576c3d6bb0a9bb495e60681686b88fa027",
+    "dataDigest": "7b664022ccd1fc5fec93c9214d0d28c219ef953c75fdb57d39786c91235de3c7"
+  },
+  "availability": {
+    "total": 1005,
+    "historicalIndependent": 36,
+    "additionalAuthorVerified": 969
+  },
+  "preservation": {
+    "trackedRegularPreimages": 7306,
+    "protectedRawPins": 7296,
+    "wholeOriginalGuardSources": 4,
+    "unchangedOrderedRouteArrays": 4,
+    "wholeGeneratedFiles": 90,
+    "changedGeneratedFilesReconstructedExactly": 5
+  },
+  "checks": {
+    "focused": {
+      "tests": 235,
+      "pass": 235,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "todo": 0
+    },
+    "strict": {
+      "written": 8720,
+      "planned": 4854,
+      "chapters": 602,
+      "collections": 85,
+      "errors": 0,
+      "warnings": 0
+    },
+    "static": {
+      "visualizations": 8657,
+      "errors": 0,
+      "warnings": 0
+    },
+    "coverage": {
+      "result": "PASS",
+      "domains": 30,
+      "primaryCollections": 85,
+      "crossListings": 8,
+      "classificationEntries": 217,
+      "dispositions": {
+        "mapped": 205,
+        "review": 11,
+        "excluded": 1
+      },
+      "reviewedRoutingRows": 79,
+      "sourceReceipts": 45,
+      "pilotBriefs": 8,
+      "scope": "Planning structure only; no production or specialist acceptance asserted."
+    },
+    "readOnlyContinuation": {
+      "mode": "read-only",
+      "records": 24,
+      "modelChecks": "passed",
+      "testFiles": [
+        "tests/exploration-methods.test.mjs",
+        "tests/exploration-studio.test.mjs",
+        "tests/exploration-professions.test.mjs",
+        "tests/exploration-followups.test.mjs",
+        "tests/exploration-sequences.test.mjs"
+      ],
+      "scope": "Does not grant acceptance, independent review or publication."
+    },
+    "studyRoutes": {
+      "routes": 3,
+      "steps": 14,
+      "lessonStops": 11,
+      "uniqueAcceptedTargets": 11,
+      "externalReadingStops": 3,
+      "gapStops": 0,
+      "transitions": 11,
+      "sources": 5,
+      "stoppedCandidates": 2,
+      "newLessons": 0,
+      "acceptedJourneys": 3,
+      "publishedJourneys": 0
+    },
+    "readingCandidate": {
+      "schemaVersion": 1,
+      "acceptedCommit": "952469b156f0bb9a926ceb2f772aef2151191b56",
+      "snapshotDigest": "9baee7f62b3f22e67cd10194803127576c3d6bb0a9bb495e60681686b88fa027",
+      "dataDigest": "7b664022ccd1fc5fec93c9214d0d28c219ef953c75fdb57d39786c91235de3c7",
+      "canonicalBase": null,
+      "items": 8720,
+      "collections": 85,
+      "aliases": 76,
+      "canonicalPages": 8806,
+      "outputFiles": 8882,
+      "mathErrors": 0,
+      "normalizedDegreeExpressions": 0,
+      "renderedDigest": "587807922d2dd7341e0ee24c8364014e2d31cb9b580102eeacf4615c5d500447",
+      "sourceFiles": {
+        "static-pages/accepted.json": "8ea071985efe9b03d701b4dabeffe17bf358908fdbb3add0b00146fecc6143fd",
+        "scripts/static-ideas.mjs": "34cad46b4a5da97bb5e4b3bb22bce0511828fa9a7b4a76bb405b3e0d02ddfaf5",
+        "scripts/build-static-ideas.mjs": "2c90ef53a66157eb716e13381271a960682ea34eae30879e613cd9ab9afeabac",
+        "assets/js/reading.js": "2995fe5687b2b019b7ad15110f24c44e25b6cb7ba3639c05364bdf3bb3e98f26",
+        "assets/css/reading.css": "b76a0ed7a7467f68c3ef1045deb79f9306d01327de36ba457e0d73e65ee5877c",
+        "assets/js/viz/core.js": "a6fa1753d9d9e8b9a05a7161fffc58dfd53b27002d9d393a3266aeb96515fe73",
+        "assets/vendor/katex-0.16.11/katex.min.js": "e6bfe5deebd4c7ccd272055bab63bd3ab2c73b907b6e6a22d352740a81381fd4"
+      },
+      "scope": "Local candidate only; no deployment or new acceptance. Local new-format previews and planning/review documents excluded.",
+      "output": "/workspace/scratch/wave6-phil-tech-integration/static-candidate"
+    }
+  },
+  "jobs": {
+    "philtech-focused-v2": {
+      "status": {
+        "name": "philtech-focused-v2",
+        "supervisorPID": 270692,
+        "processGroup": 270692,
+        "state": "closed",
+        "startedUTC": "2026-10-27T21:57:44Z",
+        "command": [
+          "/home/agent/.npm/_npx/d18f28baf1132559/node_modules/node/bin/node",
+          "--test",
+          "--test-concurrency=1",
+          "tests/wave6-phil-tech-integration.test.mjs",
+          "tests/wave6-arch-ling-integration.test.mjs",
+          "tests/wave6-reading-integration.test.mjs",
+          "tests/wave6-phil-chapter.test.mjs",
+          "tests/wave6-tech-chapter.test.mjs",
+          "tests/wave6-arch.test.mjs",
+          "tests/wave6-ling.test.mjs",
+          "tests/wave6-demo.test.mjs",
+          "tests/wave6-music.test.mjs",
+          "tests/wave6-art.test.mjs",
+          "tests/wave6-tech.test.mjs",
+          "tests/wave6-phil.test.mjs",
+          "tests/wave5-tech.test.mjs"
+        ],
+        "childPID": 270693,
+        "exitCode": 0,
+        "elapsedSeconds": 34.36744823899062,
+        "endedUTC": "2026-10-27T21:58:19Z"
+      },
+      "log": {
+        "path": "/workspace/scratch/owned-jobs/philtech-focused-v2.log",
+        "sha256": "6f51288a72f091fd33ed45a9086be30df5d2c4eecce8d52d578e4754e0307fda"
+      }
+    },
+    "philtech-static": {
+      "status": {
+        "name": "philtech-static",
+        "supervisorPID": 270448,
+        "processGroup": 270448,
+        "state": "closed",
+        "startedUTC": "2026-10-27T21:55:11Z",
+        "command": [
+          "/home/agent/.npm/_npx/d18f28baf1132559/node_modules/node/bin/node",
+          "scripts/check.mjs",
+          "--static"
+        ],
+        "childPID": 270453,
+        "exitCode": 0,
+        "elapsedSeconds": 2.9915631350013427,
+        "endedUTC": "2026-10-27T21:55:14Z"
+      },
+      "log": {
+        "path": "/workspace/scratch/owned-jobs/philtech-static.log",
+        "sha256": "e2f39cbe8e58dc8c8f2518825e1141f028325062df9db1272c90fe85d371dc9a"
+      }
+    },
+    "philtech-coverage": {
+      "status": {
+        "name": "philtech-coverage",
+        "supervisorPID": 270450,
+        "processGroup": 270450,
+        "state": "closed",
+        "startedUTC": "2026-10-27T21:55:11Z",
+        "command": [
+          "/home/agent/.npm/_npx/d18f28baf1132559/node_modules/node/bin/node",
+          "scripts/validate-coverage.mjs"
+        ],
+        "childPID": 270465,
+        "exitCode": 0,
+        "elapsedSeconds": 0.13119393400847912,
+        "endedUTC": "2026-10-27T21:55:11Z"
+      },
+      "log": {
+        "path": "/workspace/scratch/owned-jobs/philtech-coverage.log",
+        "sha256": "65134ca2bcf2f6f352c7ab87781ed45ee451e736df09efb7f37cd819f7786e0a"
+      }
+    },
+    "philtech-continuation": {
+      "status": {
+        "name": "philtech-continuation",
+        "supervisorPID": 270466,
+        "processGroup": 270466,
+        "state": "closed",
+        "startedUTC": "2026-10-27T21:55:11Z",
+        "command": [
+          "/home/agent/.npm/_npx/d18f28baf1132559/node_modules/node/bin/node",
+          "scripts/check-local-continuation.mjs"
+        ],
+        "childPID": 270476,
+        "exitCode": 0,
+        "elapsedSeconds": 0.8008605829963926,
+        "endedUTC": "2026-10-27T21:55:12Z"
+      },
+      "log": {
+        "path": "/workspace/scratch/owned-jobs/philtech-continuation.log",
+        "sha256": "b4a95b8406bd356992f0f774c2f9c5083b1c8c343685f94dd2ce397d9873c231"
+      }
+    },
+    "philtech-journeys": {
+      "status": {
+        "name": "philtech-journeys",
+        "supervisorPID": 270490,
+        "processGroup": 270490,
+        "state": "closed",
+        "startedUTC": "2026-10-27T21:55:11Z",
+        "command": [
+          "/home/agent/.npm/_npx/d18f28baf1132559/node_modules/node/bin/node",
+          "scripts/check-journey-plans.mjs"
+        ],
+        "childPID": 270503,
+        "exitCode": 0,
+        "elapsedSeconds": 3.3743668609968154,
+        "endedUTC": "2026-10-27T21:55:14Z"
+      },
+      "log": {
+        "path": "/workspace/scratch/owned-jobs/philtech-journeys.log",
+        "sha256": "f5c2466b60cc2da5f6a5cb77e0e45c174020d5e076954b97015e86decd4fe6ad"
+      }
+    },
+    "philtech-reading-candidate": {
+      "status": {
+        "name": "philtech-reading-candidate",
+        "supervisorPID": 270497,
+        "processGroup": 270497,
+        "state": "closed",
+        "startedUTC": "2026-10-27T21:55:11Z",
+        "command": [
+          "/home/agent/.npm/_npx/d18f28baf1132559/node_modules/node/bin/node",
+          "scripts/build-static-ideas.mjs",
+          "--out",
+          "/workspace/scratch/wave6-phil-tech-integration/static-candidate"
+        ],
+        "childPID": 270510,
+        "exitCode": 0,
+        "elapsedSeconds": 19.64464501501061,
+        "endedUTC": "2026-10-27T21:55:31Z"
+      },
+      "log": {
+        "path": "/workspace/scratch/owned-jobs/philtech-reading-candidate.log",
+        "sha256": "4414d99d9fa46c174f1ced6f8638e988481e5402e135c7a5e722a3ac4b002b1d"
+      }
+    }
+  },
+  "retainedDiagnostics": [
+    {
+      "status": "Observed focused regression, repaired without altering historical sources or assertions",
+      "run": "/workspace/scratch/owned-jobs/philtech-focused.log",
+      "tests": 235,
+      "pass": 233,
+      "fail": 2,
+      "affectedTests": [
+        "ARCH6priorrawpins",
+        "LING6priorrawpins"
+      ],
+      "cause": "Three already-proved predecessor source adapters reached the earlier moving8695metadata validator. Newest resolver recognized metadata and four new guard sources but did not yet intercept those three predecessor source requests.",
+      "repair": "Validate the complete current8720transition first; require exact known predecessor source SHA; invoke unchanged original restoreCurrentPinAdapter to reconstruct its entire source. No additional old source files edited, no assertions/counts removed.",
+      "addedRegression": "Explicitly check all three complete predecessor source preimages through the new chain."
+    },
+    {
+      "status": "Scratch generator assertion correctly rejected empty reverse replacement after deleting an import line; no assertions or tests removed",
+      "partialWrite": "Only exact first helper import/hook had been written; restored complete original bytes exactly before retry",
+      "repair": "Use two explicit historical import aliases, with nonempty exact reversible replacements; validate all four complete sources in memory before writing any"
+    }
+  ],
+  "pending": [
+    "exact detached export/archive proof",
+    "full Node22suite ALONE/concurrency1",
+    "production smoke both themes",
+    "final source/export proof",
+    "user-authorized push/create and attach PR/checkCI/expected-head main merge"
+  ],
+  "historicalFullSuite": "5202pass at export427a7608585adaf1f70803da4cc34b342d1a2660 predates PHIL6/TECH7; no new full-suite claim yet."
+}

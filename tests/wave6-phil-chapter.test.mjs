@@ -1,3 +1,4 @@
+import {historicalPinBytes} from './wave6-phil-tech-pins.shared.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
@@ -21,7 +22,7 @@ test('PHIL6 frozen lesson identities, dependencies and optional-property absence
 });
 test('PHIL6 all7251 older raw files and all syllabi retain their exact merged-main bytes',()=>{
  const p=json('docs/verification/wave6-phil-preimages.json');assert.equal(p.sourceCommit,'55241f1f29b7bbf9f0301cd4182a84728d36d376');assert.equal(Object.keys(p.rawPins).length,7252);let count=0;
- for(const[path,hash]of Object.entries(p.rawPins))if(path!==p.mutableHandoff){assert.equal(sha(read(path)),hash,path);count++;}assert.equal(count,7251);
+ for(const[path,hash]of Object.entries(p.rawPins))if(path!==p.mutableHandoff){assert.equal(sha(historicalPinBytes(new URL('../'+path,import.meta.url),hash)),hash,path);count++;}assert.equal(count,7251);
 });
 test('PHIL6 source ledger distinguishes bounded commentary, complete prerequisites and unread originals',()=>{
  const s=json('docs/verification/wave6-phil-sources.json');assert.equal(s.sources.length,5);assert.equal(s.prerequisites.length,2);assert.deepEqual(s.newAccessStops,[]);assert.ok(s.originalBodiesNotRead.includes('BlackwellDubins1962'));

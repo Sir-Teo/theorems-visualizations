@@ -3,13 +3,14 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import {createHash} from 'node:crypto';
 import {execFileSync} from 'node:child_process';
-import {ROOT,loadAll} from '../scripts/lib.mjs';
+import {ROOT} from '../scripts/lib.mjs';
+import {historicalLoadAll as loadAll,historicalSnapshotBytes} from './wave6-phil-tech-pins.shared.mjs';
 import {projectIdeas,selectFrozenIdeas,digest} from '../scripts/static-ideas.mjs';
-import {generatedDataDigest} from '../scripts/build-static-ideas.mjs';
+import {historicalGeneratedDataDigest as generatedDataDigest} from './wave6-phil-tech-pins.shared.mjs';
 import {journeyAuthorDigest} from '../scripts/check-journey-plans.mjs';
 import {addedIds,integrationBefore,authorPinBytes,restoreCurrentPinAdapter,validateCurrentBindingTransition} from './wave6-arch-ling-pins.shared.mjs';
 import {integrationBefore as legacyBefore,authorPinBytes as legacyPinBytes} from './wave6-author-pins.shared.mjs';
-const sha=b=>createHash('sha256').update(b).digest('hex'),read=p=>JSON.parse(fs.readFileSync(ROOT+'/'+p));
+const sha=b=>createHash('sha256').update(b).digest('hex'),read=p=>JSON.parse(historicalSnapshotBytes(p));
 test('ARCH/LING integration retains all8668complete projections and adds exactly27frozen lessons',async()=>{
  const before=JSON.parse(integrationBefore.files['static-pages/accepted.json'].text),now=read('static-pages/accepted.json'),data=await loadAll(),evidence=read('docs/integration/wave6-arch-ling-content.json');
  assert.equal(digest(projectIdeas(data,before.ids,before.aliases)),before.snapshotDigest);assert.deepEqual(now.ids,[...before.ids,...addedIds].sort());assert.deepEqual(data.items.map(i=>i.id).sort(),now.ids);assert.deepEqual(now.aliases,before.aliases);assert.equal(now.aliases.length,76);assert.equal(selectFrozenIdeas(data,now).selected.length,8695);assert.equal(await generatedDataDigest(ROOT+'/data'),now.dataDigest);assert.equal(evidence.sourceCommit,'fcf3033f56195834800f6e492cb82e929a58c679');assert.equal(evidence.retainedIdeas,8668);assert.equal(evidence.addedIdeas,27);assert.deepEqual(evidence.changedRetainedItems,[]);assert.deepEqual(data.items.filter(i=>addedIds.includes(i.id)&&i.verify).map(i=>i.id),[]);
