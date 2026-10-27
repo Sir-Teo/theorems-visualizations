@@ -1,3 +1,4 @@
+import {authorPinBytes} from './wave6-author-pins.shared.mjs';
 import test,{after}from'node:test';import fs from'node:fs';import assert from'node:assert/strict';import{createHash}from'node:crypto';
 import*as H from'../content/demo/ch06.shared.js';import chapter from'../content/demo/ch06.js';import syllabus from'../content/demo/syllabus.js';
 const fixture=JSON.parse(fs.readFileSync(new URL('./fixtures/wave6-demo-reference.json',import.meta.url))),statistics={cases:0,comparisons:0,numericalValues:0,exactValues:0,maxNormalizedError:0,worst:null};
@@ -83,6 +84,6 @@ test('DEMO6 cached numerical objects cannot be changed by a caller',()=>{
 });
 test('DEMO6 preserves all653 prior raw files and the original historical test behind its narrow adapter',()=>{
  const before=JSON.parse(fs.readFileSync(new URL('../docs/verification/wave6-demo-preimages.json',import.meta.url)));assert.equal(Object.keys(before.rawPins).length,654);let count=0;
- for(const[path,hash]of Object.entries(before.rawPins))if(path!=='content/demo/syllabus.js'){assert.equal(createHash('sha256').update(fs.readFileSync(new URL('../'+path,import.meta.url))).digest('hex'),hash,path);count++;}assert.equal(count,653);
+ for(const[path,hash]of Object.entries(before.rawPins))if(path!=='content/demo/syllabus.js'){assert.equal(createHash('sha256').update(authorPinBytes(new URL('../'+path,import.meta.url),hash)).digest('hex'),hash,path);count++;}assert.equal(count,653);
  const file=fs.readFileSync(new URL('../tests/wave5-demo.test.mjs',import.meta.url),'utf8'),adapter="const without5=x=>{const copy=structuredClone(x);const baseline6=BASELINE.chapters.find(c=>c.n===6);for(const item of copy.chapters.find(c=>c.n===6).items){const old=baseline6.items.find(i=>i.num===item.num);item.refs=structuredClone(old.refs);item.pic=old.pic;}return{...copy,chapters:copy.chapters.filter(c=>c.n!==5)};};",original="const without5=x=>({...x,chapters:x.chapters.filter(c=>c.n!==5)});";assert.equal(file.split(adapter).length,2,'one exact historical adapter');assert.equal(createHash('sha256').update(file.replace(adapter,original)).digest('hex'),before.historicalGuardPreimage.sha256,'entire original test is byte exact after removing only the refs/pic adapter');
 });

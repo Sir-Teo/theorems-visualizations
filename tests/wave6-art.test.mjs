@@ -1,3 +1,4 @@
+import {authorPinBytes} from './wave6-author-pins.shared.mjs';
 import test,{after}from'node:test';
 import assert from'node:assert/strict';
 import fs from'node:fs';
@@ -31,7 +32,7 @@ test('ART6 preserves every frozen field, property absence and the whole old syll
  for(const item of now.items){const prior=old.items.find(i=>i.num===item.num),body=chapter.items.find(i=>i.num===item.num);for(const key of new Set([...Object.keys(prior).filter(k=>!['refs','pic'].includes(k)),'verify','paper','introduces','see'])){assert.equal(Object.hasOwn(body,key),Object.hasOwn(prior,key),item.num+' '+key+' presence');assert.deepEqual(body[key],prior[key],item.num+' '+key);}assert.deepEqual(item.refs,body.refs);assert.equal(item.pic,body.caption);for(const key of['statement','idea','scope','caption'])assert.ok(body[key].length>60,key);assert.equal(typeof body.viz,'function');item.refs=structuredClone(prior.refs);item.pic=prior.pic;}
  assert.deepEqual(current,before);assert.equal(chapter.items[13].paper.year,1839);assert.deepEqual(chapter.items[13].introduces,['art-6.3']);
 });
-test('ART6 retains all836previous protected raw files and the complete prior ART test',()=>{const p=JSON.parse(fs.readFileSync(new URL('../docs/verification/wave6-art-preimages.json',import.meta.url)));assert.equal(Object.keys(p.rawPins).length,837);let count=0;for(const[path,hash]of Object.entries(p.rawPins))if(path!=='content/art/syllabus.js'){assert.equal(sha(fs.readFileSync(new URL('../'+path,import.meta.url))),hash,path);count++;}assert.equal(count,836);assert.equal(sha(fs.readFileSync(new URL('./wave5-art.test.mjs',import.meta.url))),p.rawPins['tests/wave5-art.test.mjs']);});
+test('ART6 retains all836previous protected raw files and the complete prior ART test',()=>{const p=JSON.parse(fs.readFileSync(new URL('../docs/verification/wave6-art-preimages.json',import.meta.url)));assert.equal(Object.keys(p.rawPins).length,837);let count=0;for(const[path,hash]of Object.entries(p.rawPins))if(path!=='content/art/syllabus.js'){assert.equal(sha(authorPinBytes(new URL('../'+path,import.meta.url),hash)),hash,path);count++;}assert.equal(count,836);assert.equal(sha(fs.readFileSync(new URL('./wave5-art.test.mjs',import.meta.url))),p.rawPins['tests/wave5-art.test.mjs']);});
 test('ART6 finite filters conserve their declared constant and zero-gain limits',()=>{
  for(const w of[0,.75,1,1.5]){const z=H.centreSurround({stimulus:'uniform',strength:w});assert.ok(Math.abs(H.sum(z.center)-1)<1e-14);assert.ok(Math.abs(H.sum(z.surround)-1)<1e-14);assert.ok(Math.abs(z.dc-(1-w))<1e-14);for(const value of z.response)assert.ok(Math.abs(value-.45*(1-w))<1e-14);}
  for(const profile of['ramp','steps']){const z=H.mach({strength:0,profile});assert.deepEqual(z.enhanced,z.input);}
