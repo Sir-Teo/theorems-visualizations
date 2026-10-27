@@ -1,0 +1,15 @@
+{
+  "baseCommit": "a649e2c605065b1723193197237423541bf5fb9c",
+  "sha256": {
+    "content/mathbio/ch06.js": "6614d1db2e37e329fd5426d58bebb7459d321a49fec170eef7b2d32c0b2a2bb8",
+    "content/mathbio/ch06.shared.js": "3433f7fa8bd7f37adcc16190c3258114ec4663fe8b07516c03b3487b76536a04",
+    "content/mathbio/ch06.viz.js": "175e7b784a9f6dd87e13c8ad5b15d4f4bc671bf246a6d243d6634fc83b71a66a",
+    "content/mathbio/syllabus.js": "82d2ae5f7c5ddf48d915d610e95ebe07f756d564cee176876ade945a61c59c03",
+    "tests/wave6-mathbio.test.mjs": "9794635666dc40f581f8d8fa02718b8057b7c84ecd33567c7f57c5dfbcb96aa5",
+    "tests/wave6-mathbio-browser.mjs": "56bd9afbdf5c775ef91f21b6880afd44232637fd14d5e1b2db35245b2a96d19c",
+    "tests/wave6-mathbio-reference.py": "771ca55f4ce37193ced1c69330b53a845f262057e744105b75dd0df1cab187f9",
+    "tests/fixtures/wave6-mathbio-reference.json": "ee6e4eab84b75b19462857d6cb4081de22a45e3c818df3422dc52fc36e84fa1d",
+    "docs/verification/wave6-mathbio-sources.json": "f631bb28a18ff219c293dfe2137d12eae2794563b26fb0c33bb2bb308c6db370",
+    "docs/verification/wave6-mathbio-gates.json": "331d4c062ccdc6459883095b25dae5a9c9bf6d1896c9d586d2cb69e036e81ef2"
+  }
+}

@@ -22,8 +22,8 @@ before(async()=>{
 after(async()=>{await browser?.close();if(server)await new Promise(r=>server.close(r));if(owned)await rm(owned,{recursive:true,force:true});});
 async function pageRun(fn,options={}){const context=await browser.newContext({viewport:{width:1280,height:900},reducedMotion:'reduce',...options});const page=await context.newPage(),errors=[];page.on('pageerror',e=>errors.push(e.message));try{await fn(page);assert.deepEqual(errors,[]);}finally{await context.close();}}
 test('complete generated inventory has real pages, unique canonical URLs, resolved local links and no draft export',async()=>{
- assert.equal(report.items,8321);assert.equal(report.aliases,76);assert.equal(report.collections,85);assert.equal(report.mathErrors,0);
- const xml=await readFile(join(output,'sitemap.xml'),'utf8'),urls=[...xml.matchAll(/<loc>([^<]+)<\/loc>/g)].map(m=>m[1]);assert.equal(urls.length,8407);assert.equal(new Set(urls).size,urls.length);
+ assert.equal(report.items,manifest.ids.length);assert.equal(report.aliases,76);assert.equal(report.collections,85);assert.equal(report.mathErrors,0);
+ const xml=await readFile(join(output,'sitemap.xml'),'utf8'),urls=[...xml.matchAll(/<loc>([^<]+)<\/loc>/g)].map(m=>m[1]);assert.equal(urls.length,manifest.ids.length+report.collections+1);assert.equal(new Set(urls).size,urls.length);
  const paths=urls.map(u=>new URL(u).pathname.slice(new URL(report.canonicalBase).pathname.length)+'index.html');
  const all=[...paths,...manifest.aliases.map(a=>'ideas/'+a.id+'/index.html')];let localLinks=0;
  const targets=new Set();

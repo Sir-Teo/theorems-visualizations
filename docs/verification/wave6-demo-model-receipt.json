@@ -1,0 +1,148 @@
+{
+  "status": "PASS; all525complete independent numerical cases and source-data checks",
+  "cases": 525,
+  "families": {
+    "stable": 82,
+    "stationary": 66,
+    "lotka": 60,
+    "approximation": 30,
+    "projection": 40,
+    "tilt": 41,
+    "coale": 50,
+    "renewal": 27,
+    "variable": 24,
+    "changing": 24,
+    "twoSex": 24,
+    "historical": 27,
+    "periodSwap": 30
+  },
+  "comparisons": 893656,
+  "statistics": {
+    "cases": 525,
+    "comparisons": 893656,
+    "numericalValues": 823191,
+    "exactValues": 70465,
+    "maxNormalizedError": 0.060717932505094684,
+    "worst": {
+      "path": "variable {\"growth\":-10,\"amplitude\":100,\"period\":60,\"time\":17,\"census\":1}.profile.7.accumulatedFinite",
+      "actual": 0.004885074206177745,
+      "expected": 0.004885074206175937,
+      "absoluteError": 1.807581861967833e-15,
+      "budget": 2.977014841235188e-14
+    }
+  },
+  "fixture": {
+    "path": "tests/fixtures/wave6-demo-reference.json",
+    "bytes": 13364822,
+    "sha256": "2353eee1539a9942ef25546e53774be8c812d2403488f746ef18666bc3e12b6e"
+  },
+  "independence": "Python reads retained literal source facts and uses mpmath integration and root solving, a root-of-unity Erlang solution, and Fraction matrix operations. Production JavaScript uses analytic segment moments/bisection, a positive Poisson-residue recurrence, and BigInt rational operations. Neither reference generator imports the production JavaScript helpers.",
+  "precision": {
+    "fullCorpora": [
+      {
+        "digits": 90,
+        "GaussNodes": 64,
+        "path": "/workspace/scratch/wave6-demo-research/prototype/reference-90-v2.json",
+        "sha256": "2353eee1539a9942ef25546e53774be8c812d2403488f746ef18666bc3e12b6e"
+      },
+      {
+        "digits": 180,
+        "GaussNodes": 128,
+        "path": "/workspace/scratch/wave6-demo-research/prototype/reference-180-v2.json",
+        "sha256": "2353eee1539a9942ef25546e53774be8c812d2403488f746ef18666bc3e12b6e"
+      }
+    ],
+    "completeOutputsByteIdentical": true,
+    "installedCanonicalGenerator": {
+      "digits": 90,
+      "GaussNodes": 64,
+      "seconds": 144.15108013153076,
+      "path": "/workspace/scratch/wave6-demo-research/canonical-regeneration-90.json",
+      "sha256": "2353eee1539a9942ef25546e53774be8c812d2403488f746ef18666bc3e12b6e",
+      "byteIdenticalToFixture": true,
+      "log": {
+        "path": "/workspace/scratch/wave6-demo-research/canonical-regeneration-90.log",
+        "sha256": "8e8b3064e0e787fb6b000c6e59238eee5f8a70fcc76176391dc8a297ef4bc2d5"
+      }
+    }
+  },
+  "comparisonContract": "Every object key, array extent, null, boolean, source metadata field, rational fraction, and integer control is checked. Positive stocks, forcing, densities, and other non-cancelling quantities use a 2e-12 relative budget with only a four-subnormal floor. Cancelling rates/differences use 2e-14 + 2e-12 times the reference magnitude. All changing-law exact fields and historical table entries compare strictly.",
+  "focused": {
+    "passed": 52,
+    "newChapterGroups": 29,
+    "affectedHistoricalGroups": 23,
+    "failed": 0,
+    "skipped": 0,
+    "cancelled": 0,
+    "durationMs": 4868.805345,
+    "log": {
+      "path": "/workspace/scratch/wave6-demo-research/final-focused.log",
+      "sha256": "43144b378f6c4c1a23d446e627e32d67000a3d8cb7d644da2252adedd744beaa"
+    }
+  },
+  "definitions": {
+    "status": "Implemented model definitions, separately checked by the complete fixed 525-case reference corpus.",
+    "continuousIntegrals": {
+      "piece": "On each constant-hazard segment [A,A+w], survival S exp(-mu u); integrate exp(-rA)S exp(-(mu+r)u) exactly. Stable exprel/Taylor evaluation for moments0,1,2 avoids cancellation near mu+r=0.",
+      "tail": "Above100 use sourceL100/l100 as the selected exponential mean; tail hazard is its reciprocal. Infinite stable tail requires mu_tail+r>0. Tail0=S100 exp(-100r)/(mu_tail+r), tail1=tail0*(100+1/(mu_tail+r)), tail2=tail0*(10000+200/(mu_tail+r)+2/(mu_tail+r)^2).",
+      "stationary": "b=d=1/integral l; mean living age=integral a*l/integral l=E[T^2]/(2E[T]), while mean age at stationary death=e0. Compute positive death integrals separately from b-r.",
+      "approximation": "For T=mean net maternity age, r>=log(R0)/T by the elementary exponential tangent inequality. Strict if R0!=1 and kernel has positive age variance. The second-order correction is sigma^2*r1^2/(2T); no universal accuracy guarantee."
+    },
+    "finiteLaw": {
+      "state": "Annual birth-pulse cohort vector ages0,...,99 plus a100+geometric tail bucket. Survival s_i=l(i+1)/l(i), last-tail survival exp(-mu_tail).",
+      "fertility": "K_j=integral_[j-1,j] l(a)m(a)da, j1..55. Top-rowF_i=K_(i+1)/l(i), i0..54. Then B(t)=sum_j K_j B(t-j). This is a declared pulse-census discretization, not the continuous transport semigroup.",
+      "intrinsic": "1=sum K_j lambda^(-j), r_discrete=log(lambda). Analytic stable vector n_i=l(i)lambda^(-i), i0..99, with100+tail l100 lambda^(-100)/(1-exp(-mu_tail)/lambda). Normalize the full101-component vector; compare finite projections only to this same-law target.",
+      "numerical": "Normalize for age shares; preserve total-scale logs separately if needed. Initial nonzero sterile older vectors can die out before reproducing and have no target amplitude. Validate zero input/zero fertility/zero future reproductive value explicitly."
+    },
+    "renewal": {
+      "kernel": "K(a)=R*a^(k-1)*exp(-a/theta)/(theta^k Gamma(k)); k integer3..8, mean generationT=k*theta.",
+      "forcing": "G(t)=B0exp(-t/theta). Positive Neumann convolution series gives B(t)=B0exp(-t/theta)*sum_n R^n(t/theta)^(kn)/(kn)!.",
+      "scaled": "c=R^(1/k), z=c*t/theta, dominant r=(c-1)/theta. CorrectedB/B0=exp(-z)*sum_n z^(kn)/(kn)! ->1/k. The roots are(c*omega_j-1)/theta; all other roots have smaller real part.",
+      "reference": "Use high-precision positive series; production can use log-sum-exp positive terms or root filtering with an explicit numerical budget. Do not infer positivity from a cancellation-damaged sum. This is an authored renewal-kernel example, not a fitted human maternity schedule."
+    },
+    "variableGrowth": {
+      "example": "Own birth history B(t)=exp(r0*t+A*sin(2pi*t/P)), fixed survival l(a)=exp(-mu*a), mu=1/40 and mu+r0>0. n(a,t)=B(t-a)l(a).",
+      "instantaneous": "r(a,t)=r0+A*omega*cos(omega*(t-a)); integral0..a r=r0*a+A*(sin(omega*t)-sin(omega*(t-a))).",
+      "finiteCensus": "g_Delta(a,t)=r0+A*(sin(omega*(t+Delta-a))-sin(omega*(t-a)))/Delta. It is a time average, generally not r(a,t).",
+      "normalization": "Periodic part integrates over one full period and repeats geometrically with factor exp(-(mu+r0)P). Independent high-precision quadrature versus production Gaussian quadrature; include exact remaining tail beyond the displayed age range. An amplitude0 branch reduces to the exact exponential case."
+    },
+    "weakErgodicity": {
+      "ownProof": "For unnormalized x,y>0 define l=min_j x_j/y_j and u=max. Every row of a blockP with m<=P_ij<=M contains at least epsilon=m/M of the common y_j/sum(y) averaging law. Therefore the new ratio range is at most(1-epsilon)(u-l), and its endpoints remain within[l,u]. After one positive block even arbitrary nonzero nonnegative starts are positive. A positive lower ratio persists; total variation tends to0.",
+      "drawing": "Plot actualTV separately from ratio-spread contraction. The TV bound can be very loose; never silently substitute a tighter empirical bound. Plot normalized ratio range against its proved geometric upper bound on a common0..1scale.",
+      "toy": "Four10-year age classes0–9,10–19,20–29,30–39 with exit40; two chosen Leslie laws, reproductive columns2/3 and positive subdiagonals, share a primitive lower-bound pattern. No calibrated human mortality/longevity claim. Pick an actual finite block and prove its minimum positive entry with exactFraction."
+    },
+    "twoSex": {
+      "law": "Same explicit4-age toy with separate sex survival/fertility rows. F,G are unconstrained total-birth capacities. Chosen utilization eta<=1/2 and closure B=2etaFG/(F+G),0if either capacity0. This remains at most min(F,G), is homogeneous, and agrees with the alternative etaF/etaG closures at F=G.",
+      "units": "The half-harmonic closure is a chosen birth-production law, not a literal number of exclusive couples. State this directly. Allocate qBfemale and(1-q)Bmale; all controls integer percentages.",
+      "comparison": "Female-only and male-only linear intrinsic rates belong to their separate closures. The two-sex curve shows finite-step growth, not a certified universal nonlinear intrinsic root. Initial absent-sex and eventual-zero totals have explicit undefined-ratio states."
+    }
+  },
+  "prototypeFindings": {
+    "status": "prototype repairs before independent validation; not final gates",
+    "findings": [
+      {
+        "observed": "Initial13-model smoke found changing() calling a nonexistent Q.pow export.",
+        "repair": "Added a local exact nonnegative integer power; no utility or prior product changed."
+      },
+      {
+        "observed": "Inspection found the stationary/tilt output still carrying the unrescaled source-law NRR.",
+        "repair": "Keep originalNRR separately and return the actual constructed-law NRR."
+      },
+      {
+        "observed": "Inspection identified cancellation in renewed=corrected-forcing at early times.",
+        "repair": "Accumulate the nonzero Poisson residue terms positively; no subtractive tiny birth contribution."
+      },
+      {
+        "observed": "Absolute-error quadrature would cross nonsmooth sign changes.",
+        "repair": "Split at the analytically located trigonometric crossings before Gaussian integration."
+      },
+      {
+        "observed": "Complete90-digit/64-node and180-digit/128-node outputs differed only at60Lotka-curve abscissae whose exact rational value is zero. Higher precision left smaller signed cancellation residues; all other893596primitive fields were identical and both sets passed the production comparison.",
+        "repair": "Construct known endpoint/grid coordinates with Fraction before conversion to mpmath. No near-zero tolerance, scientific-value clipping or production mathematics change. Retain both first-run references and the complete60-field difference journal. Repeat both complete corpora after repair.",
+        "performance": "Use independent fixed Gaussian integration for smooth instantaneous-growth antiderivatives, with doubled-node convergence verification, rather than repeated adaptive quadrature. Cache the fixed unit roots. These affect reference evaluation only."
+      }
+    ]
+  },
+  "referenceRepair": "The first 90/180-digit comparison differed only at 60 Lotka abscissae whose exact rational value was zero. The independent reference now constructs those known grid coordinates as Fractions. Both full precision corpora were regenerated and became byte identical; no scientific result was clipped or tolerance widened.",
+  "testHarnessRepair": "A first strict-field comparator mistook nested maternal-band contribution.trial for the top-level integer trial control. The integer-field rule is now depth-aware. The complete corrected suite and final52focused/affected groups passed; failed logs are retained."
+}

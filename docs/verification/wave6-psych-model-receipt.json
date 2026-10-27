@@ -1,0 +1,36 @@
+{
+  "status": "PASS; author scientific verification, not independent acceptance",
+  "cases": 571,
+  "families": 19,
+  "comparisons": 345123,
+  "statistics": {
+    "cases": 571,
+    "comparisons": 345123,
+    "angleValues": 930,
+    "approximateCoordinates": 20225,
+    "worstAngleUlps": 3,
+    "worstApproximateAbsolute": 1.7763568394002505e-15,
+    "worstLogAbsolute": 3.448352714485736e-13
+  },
+  "method": "Independent Python Fraction, mpmath800/1600-digit transcendental evaluation and separately formulated polygon integration, projection, stereo-angle subtraction, variance minimization and source-cell ownership. No production imports.",
+  "precision": {
+    "canonicalDigits": 800,
+    "higherDigits": 1600,
+    "completeCanonicalRepeatAndHigherBytesIdentical": true,
+    "fixtureSHA256": "5bc3d2c67c63e334c215106b2ec85ac104ad47d00fd4d337c0a7ad607521d047",
+    "all571CompleteObjectsEqualStandalone272FoundationAnd299StimulusRows": true,
+    "original275CompleteStimulusObjectsPreserved": true
+  },
+  "physicalGate": "Original binary64 exact fractions, correctly rounded physical values, signs, signed zero and range flags are strict. Only angles(4ULPs), declared numerical stimulus coordinates(2e-14relative-to-max1), Gabor amplitudes(4e-13absolute) and logarithms(8e-12absolute) use stated approximation budgets.",
+  "focused": {
+    "passed": 55,
+    "failed": 0,
+    "skipped": 0,
+    "cancelled": 0,
+    "durationMs": 1589.32173,
+    "log": {
+      "path": "/workspace/scratch/wave6-psych-research/final-focused.log",
+      "sha256": "90173017822ce9fd2c0a937951266cd58f534010e2ed03727aa392e1d54793f2"
+    }
+  }
+}

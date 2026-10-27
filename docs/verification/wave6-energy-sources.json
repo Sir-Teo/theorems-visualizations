@@ -1,0 +1,254 @@
+{
+  "status": "All12 frozen ENERGY6 lessons author-verified locally with1222 independent references,36 focused/affected groups,48 native layouts and complete original-pixel author review. Actual source scopes, unread bodies and every binding stop below remain unchanged. No independent acceptance claim.",
+  "frozenPacket": "/tmp/wave6-energy-research/frozen-chapter.json",
+  "prerequisiteBodies": "/tmp/wave6-energy-research/prerequisite-bodies.json",
+  "prerequisiteReceipt": "/tmp/wave6-energy-research/written-prerequisites-read.json",
+  "unwrittenProofInputs": [
+    "pchem-8.5",
+    "pchem-8.6",
+    "pchem-8.10",
+    "pchem-8.14"
+  ],
+  "ownDerivationsRequired": "Gibbs work/Nernst, complete energy balances, empirical model hypotheses and scope; no unwritten body claimed read.",
+  "acquisitions": [
+    {
+      "id": "mit-nernst-resource",
+      "requestedURL": "https://ocw.mit.edu/courses/10-626-electrochemical-energy-systems-spring-2014/resources/mit10_626s14_s11lec08/",
+      "attempts": 1,
+      "status": 200,
+      "finalURL": "https://ocw.mit.edu/courses/10-626-electrochemical-energy-systems-spring-2014/resources/mit10_626s14_s11lec08/",
+      "contentType": "text/html",
+      "bytes": 67628,
+      "sha256": "1357c68ecca04cc0e82b305c0346bd7454c0290272ded7acd9c4823d7d0b4adc",
+      "file": "/tmp/wave6-energy-research/sources/mit-nernst-resource.html",
+      "normallyLinkedPDF": "https://ocw.mit.edu/courses/10-626-electrochemical-energy-systems-spring-2014/548952ce8b570fbbde640f2e561c4f96_MIT10_626S14_S11lec08.pdf"
+    },
+    {
+      "id": "mit-storage-resource",
+      "requestedURL": "https://ocw.mit.edu/courses/10-626-electrochemical-energy-systems-spring-2014/resources/mit10_626s14_lec3/",
+      "attempts": 1,
+      "status": 200,
+      "finalURL": "https://ocw.mit.edu/courses/10-626-electrochemical-energy-systems-spring-2014/resources/mit10_626s14_lec3/",
+      "contentType": "text/html",
+      "bytes": 67696,
+      "sha256": "cdefe4a0fca12f481829b2dd00d748ac44f1d31ccf6fba8d3f465375bcfa97d4",
+      "file": "/tmp/wave6-energy-research/sources/mit-storage-resource.html",
+      "normallyLinkedPDF": "https://ocw.mit.edu/courses/10-626-electrochemical-energy-systems-spring-2014/a92649689a63cbda3675655ea1ea088f_MIT10_626S14_Lec3.pdf"
+    },
+    {
+      "id": "mit-conversion-resource",
+      "requestedURL": "https://ocw.mit.edu/courses/10-626-electrochemical-energy-systems-spring-2014/resources/mit10_626s14_lec2/",
+      "attempts": 1,
+      "status": 200,
+      "finalURL": "https://ocw.mit.edu/courses/10-626-electrochemical-energy-systems-spring-2014/resources/mit10_626s14_lec2/",
+      "contentType": "text/html",
+      "bytes": 68075,
+      "sha256": "6c84f608d46c96d00d3e62c850ea78bd2637a9a2bdaa14f6385ce93c8a3c7ee3",
+      "file": "/tmp/wave6-energy-research/sources/mit-conversion-resource.html",
+      "normallyLinkedPDF": "https://ocw.mit.edu/courses/10-626-electrochemical-energy-systems-spring-2014/ca1416c480deca1321a5edd1aa971557_MIT10_626S14_Lec2.pdf"
+    },
+    {
+      "id": "sandia-index",
+      "requestedURL": "https://www.sandia.gov/ess/publications/eshb",
+      "attempts": 1,
+      "status": 200,
+      "finalURL": "https://www.sandia.gov/ess/publications/eshb",
+      "contentType": "text/html; charset=UTF-8",
+      "bytes": 154390,
+      "sha256": "e67415ef2738f60cb4f9378e709b2dd9c7d1a40f243fc90a8e797966be0ad0d0",
+      "file": "/tmp/wave6-energy-research/sources/sandia-index.html"
+    },
+    {
+      "id": "mit-nernst",
+      "requestedURL": "https://ocw.mit.edu/courses/10-626-electrochemical-energy-systems-spring-2014/548952ce8b570fbbde640f2e561c4f96_MIT10_626S14_S11lec08.pdf",
+      "attempts": 1,
+      "status": 200,
+      "finalURL": "https://ocw.mit.edu/courses/10-626-electrochemical-energy-systems-spring-2014/548952ce8b570fbbde640f2e561c4f96_MIT10_626S14_S11lec08.pdf",
+      "contentType": "application/pdf",
+      "bytes": 432101,
+      "sha256": "36113979f239d2d817f9d25bf12dab09d9cd2a97e170ddf6dfa00be151dfb376",
+      "file": "/tmp/wave6-energy-research/sources/mit-nernst.pdf"
+    },
+    {
+      "id": "mit-storage",
+      "requestedURL": "https://ocw.mit.edu/courses/10-626-electrochemical-energy-systems-spring-2014/a92649689a63cbda3675655ea1ea088f_MIT10_626S14_Lec3.pdf",
+      "attempts": 1,
+      "status": 200,
+      "finalURL": "https://ocw.mit.edu/courses/10-626-electrochemical-energy-systems-spring-2014/a92649689a63cbda3675655ea1ea088f_MIT10_626S14_Lec3.pdf",
+      "contentType": "application/pdf",
+      "bytes": 1011232,
+      "sha256": "e6324fee8ed36f35c9beec8412bec95ed2d0adc2ca2a64e4d4b4e6fa9f1d53bc",
+      "file": "/tmp/wave6-energy-research/sources/mit-storage.pdf"
+    },
+    {
+      "id": "mit-conversion",
+      "requestedURL": "https://ocw.mit.edu/courses/10-626-electrochemical-energy-systems-spring-2014/ca1416c480deca1321a5edd1aa971557_MIT10_626S14_Lec2.pdf",
+      "attempts": 1,
+      "status": 200,
+      "finalURL": "https://ocw.mit.edu/courses/10-626-electrochemical-energy-systems-spring-2014/ca1416c480deca1321a5edd1aa971557_MIT10_626S14_Lec2.pdf",
+      "contentType": "application/pdf",
+      "bytes": 808057,
+      "sha256": "2c6a0cc385b93419ab19542a87912128f494b995e1b8cb8114defc53a0204e75",
+      "file": "/tmp/wave6-energy-research/sources/mit-conversion.pdf"
+    },
+    {
+      "id": "sandia-flywheels",
+      "requestedURL": "https://www.sandia.gov/app/uploads/sites/163/2022/03/ESHB_Ch07_Flywheels_Bender.pdf",
+      "attempts": 1,
+      "status": 200,
+      "finalURL": "https://www.sandia.gov/app/uploads/sites/163/2022/03/ESHB_Ch07_Flywheels_Bender.pdf",
+      "contentType": "application/pdf",
+      "bytes": 644217,
+      "sha256": "43a77ea41dce1b12bb8fdc54515a93afe0008227199222c1bf68ea062ce6456f",
+      "file": "/tmp/wave6-energy-research/sources/sandia-flywheels.pdf"
+    },
+    {
+      "id": "victron-peukert",
+      "requestedURL": "https://www.victronenergy.com/media/pg/BMV-700H/en/battery-capacity-and-peukert-exponent.html",
+      "attempts": 1,
+      "status": 200,
+      "finalURL": "https://www.victronenergy.com/media/pg/BMV-700H/en/battery-capacity-and-peukert-exponent.html",
+      "bytes": 49401,
+      "sha256": "16a90e562d01cbe456e8d62d4a43cc01a4987a33a7df973a76d5a0f27554a95d",
+      "file": "/tmp/wave6-energy-research/sources/victron-peukert.html"
+    },
+    {
+      "id": "doe-electrolysis",
+      "requestedURL": "https://www.energy.gov/cmei/fuels/hydrogen-production-electrolysis",
+      "attempts": 1,
+      "status": 200,
+      "finalURL": "https://www.energy.gov/cmei/fuels/hydrogen-production-electrolysis",
+      "bytes": 124586,
+      "sha256": "2d1e1827fb4ef02a837e292e90ffbfc6134dae1a990eb4d4312ee4290ca64e5f",
+      "file": "/tmp/wave6-energy-research/sources/doe-electrolysis.html"
+    },
+    {
+      "id": "doe-pumped-hydro",
+      "requestedURL": "https://www.energy.gov/cmei/water/how-pumped-storage-hydropower-works",
+      "attempts": 1,
+      "status": 200,
+      "finalURL": "https://www.energy.gov/cmei/water/how-pumped-storage-hydropower-works",
+      "bytes": 133875,
+      "sha256": "619043e7a8a1a62f5470dc88047fe1441bc90940d68108006ba246cc58215752",
+      "file": "/tmp/wave6-energy-research/sources/doe-pumped-hydro.html"
+    }
+  ],
+  "textActuallyRead": {
+    "mit-nernst": "Extracted lines1\u2013350, PDF1\u20137 selected equilibrium/activity/cell-potential text.",
+    "mit-conversion": "Extracted lines180\u2013278, PDF8\u201310 equivalent circuit and maximum-power/model-scope text.",
+    "mit-storage": "All222 extracted lines, including capacitor equation and removed-figure notice; no original reference-paper body.",
+    "sandia-flywheels": "Extracted lines166\u2013236, PDF5\u20136 rotor-design section; limited indexed introduction also inspected. No market/current deployment claims imported.",
+    "victron": "Actual body144\u2013182: capacity, rates, Peukert law/example and its limits.",
+    "doe-electrolysis": "Actual public explainer body, reaction/energy-flow context; no contemporary cost/temperature prediction imported.",
+    "doe-pumped-hydro": "Actual public explainer13\u201319 on reversible water transfer. No current fleet percentages imported."
+  },
+  "personallyViewedSourcePages": [
+    {
+      "source": "mit-nernst",
+      "PDFPage": 1,
+      "path": "/tmp/wave6-energy-research/sources/mit-nernst-p1.png",
+      "sha256": "35c7a83444e631e114d18e2bb28b12417673a4417fcaac8ce61458d9f5904610"
+    },
+    {
+      "source": "mit-nernst",
+      "PDFPage": 2,
+      "path": "/tmp/wave6-energy-research/sources/mit-nernst-p2.png",
+      "sha256": "80117a22aad24827ed5d095515dbd80c347b0ac59bcf72c8b12da5cd803f565b"
+    },
+    {
+      "source": "mit-nernst",
+      "PDFPage": 5,
+      "path": "/tmp/wave6-energy-research/sources/mit-nernst-p5.png",
+      "sha256": "7e5ecec5a48305d86716b2070bc1ca6e945a3e3c1cbeb7ba0193d09667f46021"
+    },
+    {
+      "source": "mit-conversion",
+      "PDFPage": 8,
+      "path": "/tmp/wave6-energy-research/sources/mit-conversion-p8.png",
+      "sha256": "d3be9f1ed6fccc089bffaee8213529fd9d3df4908313af337aa648fecee643a3"
+    },
+    {
+      "source": "mit-conversion",
+      "PDFPage": 9,
+      "path": "/tmp/wave6-energy-research/sources/mit-conversion-p9.png",
+      "sha256": "b80c0580305f86c914605ae10f51d0211d0ad35e534c914b88b65e222de3fb63"
+    },
+    {
+      "source": "mit-storage",
+      "PDFPage": 2,
+      "path": "/tmp/wave6-energy-research/sources/mit-storage-p2.png",
+      "sha256": "a4a9f5e5f7231af96227148d9ff772ae247552937cb041bb424c16b386915894"
+    },
+    {
+      "source": "sandia-flywheels",
+      "PDFPage": 5,
+      "path": "/tmp/wave6-energy-research/sources/sandia-flywheels-p5.png",
+      "sha256": "40ce5ea0a6740f1ede460f187347d43790e16385f571a0f3df02b673a807e0d8"
+    },
+    {
+      "source": "sandia-flywheels",
+      "PDFPage": 6,
+      "path": "/tmp/wave6-energy-research/sources/sandia-flywheels-p6.png",
+      "sha256": "6ee569bad6d7fb637d834e154b69f2d71dc50db93347998d1d0549cd2f7579bd"
+    }
+  ],
+  "sourceCautions": [
+    {
+      "source": "MIT10.626 Nernst PDF5 Eq23",
+      "observed": "The numerator omits n on the per-electron standard chemical potential, relative to the explicit n-electron balance in Eqs18\u201320.",
+      "handling": "Own whole-cell \u0394rG=\u2212nFE and dimensionless activity quotient derivation; no mixed standard-state convention imported."
+    },
+    {
+      "source": "MIT10.626 Storage PDF2 Eq3; personally viewed",
+      "observed": "Q/V_C is printed in a voltage balance, with capacitance units. It should be Q/C.",
+      "handling": "Use the already-written CIRC5.3 storage laws and derive constant-current discharge locally."
+    },
+    {
+      "source": "Victron manual body lines144\u2013182",
+      "observed": "The worked example calls100Ah total current100A and describes constant5A as5A per hour.",
+      "handling": "Ah is charge, A is current, C-rate is h^-1; normalized Peukert law retains consistent units. Manufacturer example is illustrative, not measured calibration."
+    },
+    {
+      "source": "MIT10.626 Storage PDF7",
+      "observed": "A Goodenough\u2013Park2013 Li-ion schematic is explicitly removed for copyright.",
+      "handling": "No recovery of that figure, original body, mirror or cache. Own diagrams only; neither the original paper nor its figure is claimed read."
+    },
+    {
+      "source": "MIT10.626 Nernst index vs actual PDF",
+      "observed": "Index says2011 lecture8, actual PDF header is rewritten2014 and dated27February2014.",
+      "handling": "Cite the actual PDF/date/scope; do not infer an unread2011 text."
+    }
+  ],
+  "newStops": [
+    {
+      "body": "DOE ESHB chapter9 Pumped Hydroelectric Storage",
+      "failedAction": "Web click23 on normally acquired Sandia handbook index",
+      "error": "Internal Error; no body content returned",
+      "bodyRead": false,
+      "possibleIndexLinks": [],
+      "stop": "No retry, mirror, cache or alternate recovery of this chapter body.",
+      "normallyLinkedURL": "https://www.sandia.gov/app/uploads/sites/163/2024/08/ESHB_Ch9_PHS_Bera.pdf"
+    },
+    {
+      "body": "DOE ESHB chapter11 Hydrogen Energy Storage",
+      "failedAction": "Web click24 on normally acquired Sandia handbook index",
+      "error": "Internal Error; no body content returned",
+      "bodyRead": false,
+      "possibleIndexLinks": [
+        "https://www.sandia.gov/app/uploads/sites/163/2022/03/ESHB_Ch11_Hydrogen_Headley.pdf"
+      ],
+      "stop": "No retry, mirror, cache or alternate recovery of this chapter body.",
+      "normallyLinkedURL": "https://www.sandia.gov/app/uploads/sites/163/2022/03/ESHB_Ch11_Hydrogen_Headley.pdf"
+    }
+  ],
+  "inheritedStops": [
+    "Tester publisher403 and MacKay/withouthotair fetch403 recorded in content/energy/syllabus.js lines6\u201311; no recovery attempted. Empty MacKay search results are not a body read.",
+    "Every prior ENERGY5, CIRC6, CTRL6 and earlier original-body/figure access stop remains binding; no retries or alternate recovery."
+  ],
+  "commercialBodies": "Tester/MacKay/Newman/Bard/Huggins/OHayre and original Peukert body not requested/read.",
+  "implementationDesign": "Twelve pure models, complete statement/idea/scope/caption fields and responsive views;18 focused groups and18 affected Wave5 groups pass. See in-progress browser gates.",
+  "authorAvailabilityUnchanged": 782,
+  "independentAcceptanceUnchanged": 36,
+  "productionMainVizSyllabusInstalled": true,
+  "modelReceipt": "docs/verification/wave6-energy-model-receipt.json"
+}

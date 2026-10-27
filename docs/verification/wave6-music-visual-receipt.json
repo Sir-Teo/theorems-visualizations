@@ -1,0 +1,123 @@
+{
+  "status": "PASS; current-source author visual gate complete",
+  "capturedCurrentDefaultLayouts": 52,
+  "currentDefaultPNGs": 312,
+  "effectiveCurrentNativePNGs": 554,
+  "personalCompleteCoverageTargets": 528,
+  "completeDefaultWidgets": 52,
+  "completePhoneTeachingFields": 130,
+  "completeNativeWidgets": 346,
+  "nativeCategories": {
+    "native-default": 52,
+    "native-critical": 208,
+    "native-mode": 66,
+    "native-custom": 20
+  },
+  "actualOriginalResolutionViews": 151,
+  "actualViewBreakdown": {
+    "earlierDefaultAndPilotViews": 50,
+    "additionalDirectViews": 5,
+    "subsequentLosslessSheets": 96
+  },
+  "method": "Full-width/full-height exact RGB coverage from actually personally viewed original-resolution sheets or exact previously inspected pixels. No resizing, sampling or perceptual similarity. All current selected defaults and native modes/critical/custom states qualify; scientific/native consistency is separately gated.",
+  "scopeLimits": "Personal inspection covers all52complete default widgets, all130complete phone teaching fields, all52native defaults and every selected phone critical/mode/custom widget. Desktop critical/mode states receive retained captures and complete automatic science/ink audits; no claim to personal inspection of every desktop critical image.",
+  "currentCoverage": [
+    {
+      "path": "/workspace/scratch/wave6-music-research/native-phase-default-inspection-coverage.json",
+      "bytes": 247498,
+      "sha256": "2f330db4752e88517ac352e11107a5c1eae2c5c9f1c64d373bf55e5e86ad5538"
+    },
+    {
+      "path": "/workspace/scratch/wave6-music-research/native-early-inspection-coverage.json",
+      "bytes": 352658,
+      "sha256": "3c9e2ffe91ff9ed05d7f1fd034c661da9cb0f8e90806e4c1e4254a6112fae68b"
+    },
+    {
+      "path": "/workspace/scratch/wave6-music-research/native-middle-a-inspection-coverage.json",
+      "bytes": 581448,
+      "sha256": "334d858ee3847d256903539f9f9bbf628136f1b3a0cb5fd8f2d0514dab7efb95"
+    },
+    {
+      "path": "/workspace/scratch/wave6-music-research/native-middle-b-inspection-coverage.json",
+      "bytes": 529050,
+      "sha256": "4006fd47494ce0619aafa1b685cea19752e310dfcc1b2e208b9f87acb8955cdc"
+    },
+    {
+      "path": "/workspace/scratch/wave6-music-research/native-late-a-inspection-coverage.json",
+      "bytes": 664872,
+      "sha256": "20af79a9e6b6a134c7ba1c31a87f1bbd2893b5b19e23e779341c01ac38c1b05d"
+    },
+    {
+      "path": "/workspace/scratch/wave6-music-research/native-late-b-inspection-coverage.json",
+      "bytes": 1166761,
+      "sha256": "edd9f3f71ff0a39c384ade5000e11858ed8d0e92c41c4dc90cb0b997966b7c4c"
+    },
+    {
+      "path": "/workspace/scratch/wave6-music-research/native-copy-native-inspection-coverage.json",
+      "bytes": 277988,
+      "sha256": "120b12dc143939f0ee635cb53bfd872e01aad409c6d0b2a452962c2eae3a35ad"
+    },
+    {
+      "path": "/workspace/scratch/wave6-music-research/native-phase-native-inspection-coverage.json",
+      "bytes": 261329,
+      "sha256": "728016bd5c279ac166fedde8d18dfee7e59d6aa62558c5b68e4cf77744ded0ce"
+    }
+  ],
+  "actualSheetJournals": [
+    {
+      "path": "/workspace/scratch/wave6-music-research/review-native-final-default/viewed-sheets.json",
+      "bytes": 5103,
+      "sha256": "407e33fdb9656d64144d8ce4e6677190dd21361379d2662b69678398a73744bf"
+    },
+    {
+      "path": "/workspace/scratch/wave6-music-research/review-native-early/viewed-sheets.json",
+      "bytes": 2511,
+      "sha256": "ad9963bd5ba4b0e9261ba6fcb41cb02b952833d57c62f9e75551eb5b4d8087c9"
+    },
+    {
+      "path": "/workspace/scratch/wave6-music-research/review-native-middle-a/viewed-sheets.json",
+      "bytes": 3143,
+      "sha256": "83339530c3a8e4332f5c19d16393cc65b421783a776104e3c0b9666b6f580d3b"
+    },
+    {
+      "path": "/workspace/scratch/wave6-music-research/review-native-middle-b/viewed-sheets.json",
+      "bytes": 3138,
+      "sha256": "d470b450e7c0c9f00be4bed7bc42617314afd33b3c9eee5b7b9ae9b437b3843d"
+    },
+    {
+      "path": "/workspace/scratch/wave6-music-research/review-native-late-a/viewed-sheets.json",
+      "bytes": 3533,
+      "sha256": "0b913b55f2a555bbbc98385415127a5c84f2a7f441a4e7c82aae1374c7cef280"
+    },
+    {
+      "path": "/workspace/scratch/wave6-music-research/review-native-late-b/viewed-sheets.json",
+      "bytes": 5583,
+      "sha256": "39f16d0158e0c9b8c1ecdb7594e4f3f0d95beb83a43c647c718cb02829997dd9"
+    },
+    {
+      "path": "/workspace/scratch/wave6-music-research/review-native-copy-native/viewed-sheets.json",
+      "bytes": 1600,
+      "sha256": "5f4f8c0e2afe1cf6974216ec39a92002d910801da386d80c55ee852127323913"
+    },
+    {
+      "path": "/workspace/scratch/wave6-music-research/review-native-phase-default/viewed-sheets.json",
+      "bytes": 1015,
+      "sha256": "3337c1e634e6ba1edec291b999f7acb24ac713d1dd0ea34e8977943b57c05453"
+    },
+    {
+      "path": "/workspace/scratch/wave6-music-research/review-native-phase-native/viewed-sheets.json",
+      "bytes": 1407,
+      "sha256": "e879008aaa2351346f263653027ce9fed00831078bd21801847a4e095f3e1fd4"
+    }
+  ],
+  "sourcePageViewsSeparate": 5,
+  "repairs": [
+    "Decimal endpoint labels face inward; two-slot grouping frames reserve stroke margin.",
+    "Near-flat domains do not magnify roundoff; actual data remain intact. Tick labels retain step precision.",
+    "Authored contrast exposes the two rhythm scores separating.",
+    "Hypermetric completed-playback cursor remains in view.",
+    "Spectrum uses actual retained-line counts and singular pulse labels.",
+    "Exact elapsed milliseconds and additional drift digits distinguish adjacent phase-alignment cases.",
+    "Generated event clips receive a terminal fade, independently verified through every Float32 sample."
+  ]
+}

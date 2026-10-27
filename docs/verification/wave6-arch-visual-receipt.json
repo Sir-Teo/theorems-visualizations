@@ -1,0 +1,42 @@
+{
+  "status": "PASS; author visual review, no independent/learner observation claim",
+  "completeSelectedTargets": 254,
+  "targets": {
+    "default": 44,
+    "rich": 110,
+    "critical": 92,
+    "camera": 8
+  },
+  "currentQualifyingOriginalDetailSheets": 91,
+  "coverage": "wave6-arch-visual-coverage.json",
+  "priorRecordedReview": [
+    {
+      "path": "/workspace/scratch/wave6-arch-research/visual-v4-review.json",
+      "bytes": 25242,
+      "sha256": "42da383ffb23e39abe24208540b98b4fffbd1c31f4b077b07f794181e97011b2"
+    },
+    {
+      "path": "/workspace/scratch/wave6-arch-research/visual-v5-review-progress.json",
+      "bytes": 34221,
+      "sha256": "6d462d6670adaaca7c6c88db12d4e9f8e2908d7c7059f22fe9205668b1d70b03"
+    },
+    {
+      "path": "/workspace/scratch/wave6-arch-research/visual-final-review-progress.json",
+      "bytes": 1819,
+      "sha256": "56386704985eba24d02adad09f563f81dd8ceb036e5440e791f79c1a504c1077"
+    }
+  ],
+  "sourcePageViews": 14,
+  "method": "Whole widgets or complete selected teaching fields packed without resampling; source PNG SHA256 and exact destination RGB verified. Maximum sheet dimension2048. Statements include nested scope; the separately captured scope is overlapping by design.",
+  "scopeLimits": "Personal review covers all44default widgets,110complete phone fields, all92critical phone widgets and8secondary-camera phone widgets. Desktop critical states and every other individual native-control screenshot receive automatic audits; personal inspection of every such screenshot is not claimed. Three oversized rich sheets were actually viewed but excluded from original-pixel qualification and replaced by unscaled safe sheets. Superseded empty-energy illustration is retained in original critical capture folders.",
+  "repairs": [
+    "Capture settling and scientific ticks/gutters",
+    "Transparent roof bars, meaningful legends and metric cards",
+    "Dimensionally correct cap section and explicit upward normal",
+    "Correct signed pressure balance",
+    "Stable small-parameter Scherk/prism calculations",
+    "Certified steep correlation sampling and selected-marker margin",
+    "Visible current energy samples from iteration zero"
+  ],
+  "ownedBrowsersAndServersExplicitlyClosed": true
+}

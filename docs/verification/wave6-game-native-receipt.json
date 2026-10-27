@@ -1,0 +1,954 @@
+{
+  "status": "PASS",
+  "scope": "All12lessons × light/dark ×320/1200. Actual mouse, keyboard Home/End, every selector option, actual CreateStateLink and fresh replay, invalid recovery, raw binary64 restore, and exact critical cross-regimes.",
+  "totals": {
+    "layouts": 48,
+    "actions": 1364,
+    "shares": 584,
+    "invalid": 48,
+    "raw": 48,
+    "critical": 208,
+    "checks": 2300,
+    "modelComparisons": 2890286
+  },
+  "sourceHashes": {
+    "../content/game/ch06.chains.shared.js": "9051cfdd9e259d390c6e4206b684574022990bbab6a7eae8d6d71a33b46073fd",
+    "../content/game/ch06.congestion.shared.js": "face199800420efe63dfc8af62758db8e37ab1abd491c868554cbd9b7973dfd8",
+    "../content/game/ch06.dynamics.shared.js": "a7796de6a9c2787b48c6ee6f40c0cbdff0466f3406389cfd846acc90969850f3",
+    "../content/game/ch06.enclosure.shared.js": "16acb8b7deb05480f0e047f9a8607e24739eee5ec0519c41fe3b7615715df6b9",
+    "../content/game/ch06.exact.shared.js": "f90c1849903788f0d3c2cd8fca77d5d0e2a3148f8368fbe2e68659377a2f62dd",
+    "../content/game/ch06.js": "1b643688835bd534811b2a1b9289daee7d2c14aab139dabe8be1d9556b04d170",
+    "../content/game/ch06.potential.shared.js": "114cd9107181cdf99ea2d310829e4cfbc7fee44c65bb3b9de833d0b36ac2c5b5",
+    "../content/game/ch06.routing.shared.js": "27cbe9f9c973a338c028d1b3fcf4c0a89af0fab60ee19d097d7fdc14b6fb150c",
+    "../content/game/ch06.selection.shared.js": "8a6c9aee856881cf5b94296146fea63733948b55a1cd69226a73c637bb85fdd7",
+    "../content/game/ch06.shared.js": "f4b1c4e484439faad92cd22f00aea179dd493a71ff6e3eefaef7f42b6ef43328",
+    "../content/game/ch06.viz.js": "b46c455f1a39405e288dfd4f64c85f95ccb1ea4203981e9818ee598692c767c2",
+    "../content/game/syllabus.js": "0cd00de4d0e29a1d30dd65d691bf786c0b798a33b16fd0f480b87076f3bb69c2",
+    "../assets/js/viz/core.js": "a6fa1753d9d9e8b9a05a7161fffc58dfd53b27002d9d393a3266aeb96515fe73",
+    "../assets/js/viz/math.js": "439c335e1cc47907bc72bb76559216aa093be4710e0589f41c70192729eb223e",
+    "../assets/js/share-state.js": "13c6a9ac1237d566fc5d79c89e0f4d3029aa8c2817d2c08247a02b1b053a59b1",
+    "../data/col/game.json": "2ff81de6cc0562d45a16629d327254614a8b298236888036ad9f740eae751815",
+    "../data/index.json": "c24aa064613e4e6d02c76bf426158e40a0e2e9a6f8c6a6389e156d1380379261",
+    "./wave6-game-native.mjs": "c22ff75ea6e0f3c3dbcf98c44d558e7020c17585b153aa727d5293a77997afbc",
+    "./wave6-game-native-science.mjs": "aa80dbca69fe07c79c9f3230eaae407c76ca4c74307e411b4b63ff5c7ec315c6",
+    "./wave6-game-native-cases.mjs": "26d212e3ee9ec6da6c960704adb57727b4b377263868b3bce94f41e1ae9596fa",
+    "./wave6-game-browser.shared.mjs": "969fcec394a3b3e35bf355f0fe70e74335356649bfd61442662b7f660740bd2e"
+  },
+  "cohorts": [
+    {
+      "status": "PASS",
+      "totals": {
+        "layouts": 4,
+        "actions": 108,
+        "shares": 52,
+        "invalid": 4,
+        "raw": 4,
+        "critical": 20,
+        "checks": 192,
+        "modelComparisons": 40276
+      },
+      "rows": [
+        {
+          "id": 1,
+          "theme": "light",
+          "width": 320,
+          "criticalCases": 5,
+          "totals": {
+            "layouts": 1,
+            "actions": 27,
+            "shares": 13,
+            "invalid": 1,
+            "raw": 1,
+            "critical": 5,
+            "checks": 48,
+            "modelComparisons": 10042
+          }
+        },
+        {
+          "id": 1,
+          "theme": "light",
+          "width": 1200,
+          "criticalCases": 5,
+          "totals": {
+            "layouts": 1,
+            "actions": 27,
+            "shares": 13,
+            "invalid": 1,
+            "raw": 1,
+            "critical": 5,
+            "checks": 48,
+            "modelComparisons": 10096
+          }
+        },
+        {
+          "id": 1,
+          "theme": "dark",
+          "width": 320,
+          "criticalCases": 5,
+          "totals": {
+            "layouts": 1,
+            "actions": 27,
+            "shares": 13,
+            "invalid": 1,
+            "raw": 1,
+            "critical": 5,
+            "checks": 48,
+            "modelComparisons": 10042
+          }
+        },
+        {
+          "id": 1,
+          "theme": "dark",
+          "width": 1200,
+          "criticalCases": 5,
+          "totals": {
+            "layouts": 1,
+            "actions": 27,
+            "shares": 13,
+            "invalid": 1,
+            "raw": 1,
+            "critical": 5,
+            "checks": 48,
+            "modelComparisons": 10096
+          }
+        }
+      ],
+      "errors": [],
+      "sourceHashes": {
+        "../content/game/ch06.chains.shared.js": "9051cfdd9e259d390c6e4206b684574022990bbab6a7eae8d6d71a33b46073fd",
+        "../content/game/ch06.congestion.shared.js": "face199800420efe63dfc8af62758db8e37ab1abd491c868554cbd9b7973dfd8",
+        "../content/game/ch06.dynamics.shared.js": "a7796de6a9c2787b48c6ee6f40c0cbdff0466f3406389cfd846acc90969850f3",
+        "../content/game/ch06.enclosure.shared.js": "16acb8b7deb05480f0e047f9a8607e24739eee5ec0519c41fe3b7615715df6b9",
+        "../content/game/ch06.exact.shared.js": "f90c1849903788f0d3c2cd8fca77d5d0e2a3148f8368fbe2e68659377a2f62dd",
+        "../content/game/ch06.js": "1b643688835bd534811b2a1b9289daee7d2c14aab139dabe8be1d9556b04d170",
+        "../content/game/ch06.potential.shared.js": "114cd9107181cdf99ea2d310829e4cfbc7fee44c65bb3b9de833d0b36ac2c5b5",
+        "../content/game/ch06.routing.shared.js": "27cbe9f9c973a338c028d1b3fcf4c0a89af0fab60ee19d097d7fdc14b6fb150c",
+        "../content/game/ch06.selection.shared.js": "8a6c9aee856881cf5b94296146fea63733948b55a1cd69226a73c637bb85fdd7",
+        "../content/game/ch06.shared.js": "f4b1c4e484439faad92cd22f00aea179dd493a71ff6e3eefaef7f42b6ef43328",
+        "../content/game/ch06.viz.js": "b46c455f1a39405e288dfd4f64c85f95ccb1ea4203981e9818ee598692c767c2",
+        "../content/game/syllabus.js": "0cd00de4d0e29a1d30dd65d691bf786c0b798a33b16fd0f480b87076f3bb69c2",
+        "../assets/js/viz/core.js": "a6fa1753d9d9e8b9a05a7161fffc58dfd53b27002d9d393a3266aeb96515fe73",
+        "../assets/js/viz/math.js": "439c335e1cc47907bc72bb76559216aa093be4710e0589f41c70192729eb223e",
+        "../assets/js/share-state.js": "13c6a9ac1237d566fc5d79c89e0f4d3029aa8c2817d2c08247a02b1b053a59b1",
+        "../data/col/game.json": "2ff81de6cc0562d45a16629d327254614a8b298236888036ad9f740eae751815",
+        "../data/index.json": "c24aa064613e4e6d02c76bf426158e40a0e2e9a6f8c6a6389e156d1380379261",
+        "./wave6-game-native.mjs": "c22ff75ea6e0f3c3dbcf98c44d558e7020c17585b153aa727d5293a77997afbc",
+        "./wave6-game-native-science.mjs": "aa80dbca69fe07c79c9f3230eaae407c76ca4c74307e411b4b63ff5c7ec315c6",
+        "./wave6-game-native-cases.mjs": "26d212e3ee9ec6da6c960704adb57727b4b377263868b3bce94f41e1ae9596fa",
+        "./wave6-game-browser.shared.mjs": "969fcec394a3b3e35bf355f0fe70e74335356649bfd61442662b7f660740bd2e"
+      }
+    },
+    {
+      "status": "PASS",
+      "totals": {
+        "layouts": 20,
+        "actions": 520,
+        "shares": 228,
+        "invalid": 20,
+        "raw": 20,
+        "critical": 88,
+        "checks": 896,
+        "modelComparisons": 1364312
+      },
+      "rows": [
+        {
+          "id": 2,
+          "theme": "light",
+          "width": 320,
+          "criticalCases": 4,
+          "totals": {
+            "layouts": 1,
+            "actions": 21,
+            "shares": 9,
+            "invalid": 1,
+            "raw": 1,
+            "critical": 4,
+            "checks": 37,
+            "modelComparisons": 33838
+          }
+        },
+        {
+          "id": 2,
+          "theme": "light",
+          "width": 1200,
+          "criticalCases": 4,
+          "totals": {
+            "layouts": 1,
+            "actions": 21,
+            "shares": 9,
+            "invalid": 1,
+            "raw": 1,
+            "critical": 4,
+            "checks": 37,
+            "modelComparisons": 33838
+          }
+        },
+        {
+          "id": 2,
+          "theme": "dark",
+          "width": 320,
+          "criticalCases": 4,
+          "totals": {
+            "layouts": 1,
+            "actions": 21,
+            "shares": 9,
+            "invalid": 1,
+            "raw": 1,
+            "critical": 4,
+            "checks": 37,
+            "modelComparisons": 33838
+          }
+        },
+        {
+          "id": 2,
+          "theme": "dark",
+          "width": 1200,
+          "criticalCases": 4,
+          "totals": {
+            "layouts": 1,
+            "actions": 21,
+            "shares": 9,
+            "invalid": 1,
+            "raw": 1,
+            "critical": 4,
+            "checks": 37,
+            "modelComparisons": 33838
+          }
+        },
+        {
+          "id": 3,
+          "theme": "light",
+          "width": 320,
+          "criticalCases": 4,
+          "totals": {
+            "layouts": 1,
+            "actions": 18,
+            "shares": 10,
+            "invalid": 1,
+            "raw": 1,
+            "critical": 4,
+            "checks": 35,
+            "modelComparisons": 6598
+          }
+        },
+        {
+          "id": 3,
+          "theme": "light",
+          "width": 1200,
+          "criticalCases": 4,
+          "totals": {
+            "layouts": 1,
+            "actions": 18,
+            "shares": 10,
+            "invalid": 1,
+            "raw": 1,
+            "critical": 4,
+            "checks": 35,
+            "modelComparisons": 6598
+          }
+        },
+        {
+          "id": 3,
+          "theme": "dark",
+          "width": 320,
+          "criticalCases": 4,
+          "totals": {
+            "layouts": 1,
+            "actions": 18,
+            "shares": 10,
+            "invalid": 1,
+            "raw": 1,
+            "critical": 4,
+            "checks": 35,
+            "modelComparisons": 6598
+          }
+        },
+        {
+          "id": 3,
+          "theme": "dark",
+          "width": 1200,
+          "criticalCases": 4,
+          "totals": {
+            "layouts": 1,
+            "actions": 18,
+            "shares": 10,
+            "invalid": 1,
+            "raw": 1,
+            "critical": 4,
+            "checks": 35,
+            "modelComparisons": 6598
+          }
+        },
+        {
+          "id": 4,
+          "theme": "light",
+          "width": 320,
+          "criticalCases": 4,
+          "totals": {
+            "layouts": 1,
+            "actions": 32,
+            "shares": 13,
+            "invalid": 1,
+            "raw": 1,
+            "critical": 4,
+            "checks": 52,
+            "modelComparisons": 108523
+          }
+        },
+        {
+          "id": 4,
+          "theme": "light",
+          "width": 1200,
+          "criticalCases": 4,
+          "totals": {
+            "layouts": 1,
+            "actions": 32,
+            "shares": 13,
+            "invalid": 1,
+            "raw": 1,
+            "critical": 4,
+            "checks": 52,
+            "modelComparisons": 108523
+          }
+        },
+        {
+          "id": 4,
+          "theme": "dark",
+          "width": 320,
+          "criticalCases": 4,
+          "totals": {
+            "layouts": 1,
+            "actions": 32,
+            "shares": 13,
+            "invalid": 1,
+            "raw": 1,
+            "critical": 4,
+            "checks": 52,
+            "modelComparisons": 108523
+          }
+        },
+        {
+          "id": 4,
+          "theme": "dark",
+          "width": 1200,
+          "criticalCases": 4,
+          "totals": {
+            "layouts": 1,
+            "actions": 32,
+            "shares": 13,
+            "invalid": 1,
+            "raw": 1,
+            "critical": 4,
+            "checks": 52,
+            "modelComparisons": 108523
+          }
+        },
+        {
+          "id": 5,
+          "theme": "light",
+          "width": 320,
+          "criticalCases": 5,
+          "totals": {
+            "layouts": 1,
+            "actions": 33,
+            "shares": 14,
+            "invalid": 1,
+            "raw": 1,
+            "critical": 5,
+            "checks": 55,
+            "modelComparisons": 94226
+          }
+        },
+        {
+          "id": 5,
+          "theme": "light",
+          "width": 1200,
+          "criticalCases": 5,
+          "totals": {
+            "layouts": 1,
+            "actions": 33,
+            "shares": 14,
+            "invalid": 1,
+            "raw": 1,
+            "critical": 5,
+            "checks": 55,
+            "modelComparisons": 94226
+          }
+        },
+        {
+          "id": 5,
+          "theme": "dark",
+          "width": 320,
+          "criticalCases": 5,
+          "totals": {
+            "layouts": 1,
+            "actions": 33,
+            "shares": 14,
+            "invalid": 1,
+            "raw": 1,
+            "critical": 5,
+            "checks": 55,
+            "modelComparisons": 94226
+          }
+        },
+        {
+          "id": 5,
+          "theme": "dark",
+          "width": 1200,
+          "criticalCases": 5,
+          "totals": {
+            "layouts": 1,
+            "actions": 33,
+            "shares": 14,
+            "invalid": 1,
+            "raw": 1,
+            "critical": 5,
+            "checks": 55,
+            "modelComparisons": 94226
+          }
+        },
+        {
+          "id": 6,
+          "theme": "light",
+          "width": 320,
+          "criticalCases": 5,
+          "totals": {
+            "layouts": 1,
+            "actions": 26,
+            "shares": 11,
+            "invalid": 1,
+            "raw": 1,
+            "critical": 5,
+            "checks": 45,
+            "modelComparisons": 97893
+          }
+        },
+        {
+          "id": 6,
+          "theme": "light",
+          "width": 1200,
+          "criticalCases": 5,
+          "totals": {
+            "layouts": 1,
+            "actions": 26,
+            "shares": 11,
+            "invalid": 1,
+            "raw": 1,
+            "critical": 5,
+            "checks": 45,
+            "modelComparisons": 97893
+          }
+        },
+        {
+          "id": 6,
+          "theme": "dark",
+          "width": 320,
+          "criticalCases": 5,
+          "totals": {
+            "layouts": 1,
+            "actions": 26,
+            "shares": 11,
+            "invalid": 1,
+            "raw": 1,
+            "critical": 5,
+            "checks": 45,
+            "modelComparisons": 97893
+          }
+        },
+        {
+          "id": 6,
+          "theme": "dark",
+          "width": 1200,
+          "criticalCases": 5,
+          "totals": {
+            "layouts": 1,
+            "actions": 26,
+            "shares": 11,
+            "invalid": 1,
+            "raw": 1,
+            "critical": 5,
+            "checks": 45,
+            "modelComparisons": 97893
+          }
+        }
+      ],
+      "errors": [],
+      "sourceHashes": {
+        "../content/game/ch06.chains.shared.js": "9051cfdd9e259d390c6e4206b684574022990bbab6a7eae8d6d71a33b46073fd",
+        "../content/game/ch06.congestion.shared.js": "face199800420efe63dfc8af62758db8e37ab1abd491c868554cbd9b7973dfd8",
+        "../content/game/ch06.dynamics.shared.js": "a7796de6a9c2787b48c6ee6f40c0cbdff0466f3406389cfd846acc90969850f3",
+        "../content/game/ch06.enclosure.shared.js": "16acb8b7deb05480f0e047f9a8607e24739eee5ec0519c41fe3b7615715df6b9",
+        "../content/game/ch06.exact.shared.js": "f90c1849903788f0d3c2cd8fca77d5d0e2a3148f8368fbe2e68659377a2f62dd",
+        "../content/game/ch06.js": "1b643688835bd534811b2a1b9289daee7d2c14aab139dabe8be1d9556b04d170",
+        "../content/game/ch06.potential.shared.js": "114cd9107181cdf99ea2d310829e4cfbc7fee44c65bb3b9de833d0b36ac2c5b5",
+        "../content/game/ch06.routing.shared.js": "27cbe9f9c973a338c028d1b3fcf4c0a89af0fab60ee19d097d7fdc14b6fb150c",
+        "../content/game/ch06.selection.shared.js": "8a6c9aee856881cf5b94296146fea63733948b55a1cd69226a73c637bb85fdd7",
+        "../content/game/ch06.shared.js": "f4b1c4e484439faad92cd22f00aea179dd493a71ff6e3eefaef7f42b6ef43328",
+        "../content/game/ch06.viz.js": "b46c455f1a39405e288dfd4f64c85f95ccb1ea4203981e9818ee598692c767c2",
+        "../content/game/syllabus.js": "0cd00de4d0e29a1d30dd65d691bf786c0b798a33b16fd0f480b87076f3bb69c2",
+        "../assets/js/viz/core.js": "a6fa1753d9d9e8b9a05a7161fffc58dfd53b27002d9d393a3266aeb96515fe73",
+        "../assets/js/viz/math.js": "439c335e1cc47907bc72bb76559216aa093be4710e0589f41c70192729eb223e",
+        "../assets/js/share-state.js": "13c6a9ac1237d566fc5d79c89e0f4d3029aa8c2817d2c08247a02b1b053a59b1",
+        "../data/col/game.json": "2ff81de6cc0562d45a16629d327254614a8b298236888036ad9f740eae751815",
+        "../data/index.json": "c24aa064613e4e6d02c76bf426158e40a0e2e9a6f8c6a6389e156d1380379261",
+        "./wave6-game-native.mjs": "c22ff75ea6e0f3c3dbcf98c44d558e7020c17585b153aa727d5293a77997afbc",
+        "./wave6-game-native-science.mjs": "aa80dbca69fe07c79c9f3230eaae407c76ca4c74307e411b4b63ff5c7ec315c6",
+        "./wave6-game-native-cases.mjs": "26d212e3ee9ec6da6c960704adb57727b4b377263868b3bce94f41e1ae9596fa",
+        "./wave6-game-browser.shared.mjs": "969fcec394a3b3e35bf355f0fe70e74335356649bfd61442662b7f660740bd2e"
+      }
+    },
+    {
+      "status": "PASS",
+      "totals": {
+        "layouts": 24,
+        "actions": 736,
+        "shares": 304,
+        "invalid": 24,
+        "raw": 24,
+        "critical": 100,
+        "checks": 1212,
+        "modelComparisons": 1485698
+      },
+      "rows": [
+        {
+          "id": 7,
+          "theme": "light",
+          "width": 320,
+          "criticalCases": 4,
+          "totals": {
+            "layouts": 1,
+            "actions": 26,
+            "shares": 12,
+            "invalid": 1,
+            "raw": 1,
+            "critical": 4,
+            "checks": 45,
+            "modelComparisons": 19655
+          }
+        },
+        {
+          "id": 7,
+          "theme": "light",
+          "width": 1200,
+          "criticalCases": 4,
+          "totals": {
+            "layouts": 1,
+            "actions": 26,
+            "shares": 12,
+            "invalid": 1,
+            "raw": 1,
+            "critical": 4,
+            "checks": 45,
+            "modelComparisons": 20877
+          }
+        },
+        {
+          "id": 7,
+          "theme": "dark",
+          "width": 320,
+          "criticalCases": 4,
+          "totals": {
+            "layouts": 1,
+            "actions": 26,
+            "shares": 12,
+            "invalid": 1,
+            "raw": 1,
+            "critical": 4,
+            "checks": 45,
+            "modelComparisons": 19655
+          }
+        },
+        {
+          "id": 7,
+          "theme": "dark",
+          "width": 1200,
+          "criticalCases": 4,
+          "totals": {
+            "layouts": 1,
+            "actions": 26,
+            "shares": 12,
+            "invalid": 1,
+            "raw": 1,
+            "critical": 4,
+            "checks": 45,
+            "modelComparisons": 20877
+          }
+        },
+        {
+          "id": 8,
+          "theme": "light",
+          "width": 320,
+          "criticalCases": 4,
+          "totals": {
+            "layouts": 1,
+            "actions": 25,
+            "shares": 10,
+            "invalid": 1,
+            "raw": 1,
+            "critical": 4,
+            "checks": 42,
+            "modelComparisons": 29726
+          }
+        },
+        {
+          "id": 8,
+          "theme": "light",
+          "width": 1200,
+          "criticalCases": 4,
+          "totals": {
+            "layouts": 1,
+            "actions": 25,
+            "shares": 10,
+            "invalid": 1,
+            "raw": 1,
+            "critical": 4,
+            "checks": 42,
+            "modelComparisons": 29726
+          }
+        },
+        {
+          "id": 8,
+          "theme": "dark",
+          "width": 320,
+          "criticalCases": 4,
+          "totals": {
+            "layouts": 1,
+            "actions": 25,
+            "shares": 10,
+            "invalid": 1,
+            "raw": 1,
+            "critical": 4,
+            "checks": 42,
+            "modelComparisons": 29726
+          }
+        },
+        {
+          "id": 8,
+          "theme": "dark",
+          "width": 1200,
+          "criticalCases": 4,
+          "totals": {
+            "layouts": 1,
+            "actions": 25,
+            "shares": 10,
+            "invalid": 1,
+            "raw": 1,
+            "critical": 4,
+            "checks": 42,
+            "modelComparisons": 29726
+          }
+        },
+        {
+          "id": 9,
+          "theme": "light",
+          "width": 320,
+          "criticalCases": 5,
+          "totals": {
+            "layouts": 1,
+            "actions": 50,
+            "shares": 20,
+            "invalid": 1,
+            "raw": 1,
+            "critical": 5,
+            "checks": 78,
+            "modelComparisons": 99534
+          }
+        },
+        {
+          "id": 9,
+          "theme": "light",
+          "width": 1200,
+          "criticalCases": 5,
+          "totals": {
+            "layouts": 1,
+            "actions": 50,
+            "shares": 20,
+            "invalid": 1,
+            "raw": 1,
+            "critical": 5,
+            "checks": 78,
+            "modelComparisons": 99537
+          }
+        },
+        {
+          "id": 9,
+          "theme": "dark",
+          "width": 320,
+          "criticalCases": 5,
+          "totals": {
+            "layouts": 1,
+            "actions": 50,
+            "shares": 20,
+            "invalid": 1,
+            "raw": 1,
+            "critical": 5,
+            "checks": 78,
+            "modelComparisons": 99534
+          }
+        },
+        {
+          "id": 9,
+          "theme": "dark",
+          "width": 1200,
+          "criticalCases": 5,
+          "totals": {
+            "layouts": 1,
+            "actions": 50,
+            "shares": 20,
+            "invalid": 1,
+            "raw": 1,
+            "critical": 5,
+            "checks": 78,
+            "modelComparisons": 99537
+          }
+        },
+        {
+          "id": 10,
+          "theme": "light",
+          "width": 320,
+          "criticalCases": 4,
+          "totals": {
+            "layouts": 1,
+            "actions": 38,
+            "shares": 14,
+            "invalid": 1,
+            "raw": 1,
+            "critical": 4,
+            "checks": 59,
+            "modelComparisons": 197111
+          }
+        },
+        {
+          "id": 10,
+          "theme": "light",
+          "width": 1200,
+          "criticalCases": 4,
+          "totals": {
+            "layouts": 1,
+            "actions": 38,
+            "shares": 14,
+            "invalid": 1,
+            "raw": 1,
+            "critical": 4,
+            "checks": 59,
+            "modelComparisons": 197111
+          }
+        },
+        {
+          "id": 10,
+          "theme": "dark",
+          "width": 320,
+          "criticalCases": 4,
+          "totals": {
+            "layouts": 1,
+            "actions": 38,
+            "shares": 14,
+            "invalid": 1,
+            "raw": 1,
+            "critical": 4,
+            "checks": 59,
+            "modelComparisons": 197111
+          }
+        },
+        {
+          "id": 10,
+          "theme": "dark",
+          "width": 1200,
+          "criticalCases": 4,
+          "totals": {
+            "layouts": 1,
+            "actions": 38,
+            "shares": 14,
+            "invalid": 1,
+            "raw": 1,
+            "critical": 4,
+            "checks": 59,
+            "modelComparisons": 197111
+          }
+        },
+        {
+          "id": 11,
+          "theme": "light",
+          "width": 320,
+          "criticalCases": 4,
+          "totals": {
+            "layouts": 1,
+            "actions": 17,
+            "shares": 8,
+            "invalid": 1,
+            "raw": 1,
+            "critical": 4,
+            "checks": 32,
+            "modelComparisons": 11754
+          }
+        },
+        {
+          "id": 11,
+          "theme": "light",
+          "width": 1200,
+          "criticalCases": 4,
+          "totals": {
+            "layouts": 1,
+            "actions": 17,
+            "shares": 8,
+            "invalid": 1,
+            "raw": 1,
+            "critical": 4,
+            "checks": 32,
+            "modelComparisons": 11754
+          }
+        },
+        {
+          "id": 11,
+          "theme": "dark",
+          "width": 320,
+          "criticalCases": 4,
+          "totals": {
+            "layouts": 1,
+            "actions": 17,
+            "shares": 8,
+            "invalid": 1,
+            "raw": 1,
+            "critical": 4,
+            "checks": 32,
+            "modelComparisons": 11754
+          }
+        },
+        {
+          "id": 11,
+          "theme": "dark",
+          "width": 1200,
+          "criticalCases": 4,
+          "totals": {
+            "layouts": 1,
+            "actions": 17,
+            "shares": 8,
+            "invalid": 1,
+            "raw": 1,
+            "critical": 4,
+            "checks": 32,
+            "modelComparisons": 11754
+          }
+        },
+        {
+          "id": 12,
+          "theme": "light",
+          "width": 320,
+          "criticalCases": 4,
+          "totals": {
+            "layouts": 1,
+            "actions": 28,
+            "shares": 12,
+            "invalid": 1,
+            "raw": 1,
+            "critical": 4,
+            "checks": 47,
+            "modelComparisons": 13032
+          }
+        },
+        {
+          "id": 12,
+          "theme": "light",
+          "width": 1200,
+          "criticalCases": 4,
+          "totals": {
+            "layouts": 1,
+            "actions": 28,
+            "shares": 12,
+            "invalid": 1,
+            "raw": 1,
+            "critical": 4,
+            "checks": 47,
+            "modelComparisons": 13032
+          }
+        },
+        {
+          "id": 12,
+          "theme": "dark",
+          "width": 320,
+          "criticalCases": 4,
+          "totals": {
+            "layouts": 1,
+            "actions": 28,
+            "shares": 12,
+            "invalid": 1,
+            "raw": 1,
+            "critical": 4,
+            "checks": 47,
+            "modelComparisons": 13032
+          }
+        },
+        {
+          "id": 12,
+          "theme": "dark",
+          "width": 1200,
+          "criticalCases": 4,
+          "totals": {
+            "layouts": 1,
+            "actions": 28,
+            "shares": 12,
+            "invalid": 1,
+            "raw": 1,
+            "critical": 4,
+            "checks": 47,
+            "modelComparisons": 13032
+          }
+        }
+      ],
+      "errors": [],
+      "sourceHashes": {
+        "../content/game/ch06.chains.shared.js": "9051cfdd9e259d390c6e4206b684574022990bbab6a7eae8d6d71a33b46073fd",
+        "../content/game/ch06.congestion.shared.js": "face199800420efe63dfc8af62758db8e37ab1abd491c868554cbd9b7973dfd8",
+        "../content/game/ch06.dynamics.shared.js": "a7796de6a9c2787b48c6ee6f40c0cbdff0466f3406389cfd846acc90969850f3",
+        "../content/game/ch06.enclosure.shared.js": "16acb8b7deb05480f0e047f9a8607e24739eee5ec0519c41fe3b7615715df6b9",
+        "../content/game/ch06.exact.shared.js": "f90c1849903788f0d3c2cd8fca77d5d0e2a3148f8368fbe2e68659377a2f62dd",
+        "../content/game/ch06.js": "1b643688835bd534811b2a1b9289daee7d2c14aab139dabe8be1d9556b04d170",
+        "../content/game/ch06.potential.shared.js": "114cd9107181cdf99ea2d310829e4cfbc7fee44c65bb3b9de833d0b36ac2c5b5",
+        "../content/game/ch06.routing.shared.js": "27cbe9f9c973a338c028d1b3fcf4c0a89af0fab60ee19d097d7fdc14b6fb150c",
+        "../content/game/ch06.selection.shared.js": "8a6c9aee856881cf5b94296146fea63733948b55a1cd69226a73c637bb85fdd7",
+        "../content/game/ch06.shared.js": "f4b1c4e484439faad92cd22f00aea179dd493a71ff6e3eefaef7f42b6ef43328",
+        "../content/game/ch06.viz.js": "b46c455f1a39405e288dfd4f64c85f95ccb1ea4203981e9818ee598692c767c2",
+        "../content/game/syllabus.js": "0cd00de4d0e29a1d30dd65d691bf786c0b798a33b16fd0f480b87076f3bb69c2",
+        "../assets/js/viz/core.js": "a6fa1753d9d9e8b9a05a7161fffc58dfd53b27002d9d393a3266aeb96515fe73",
+        "../assets/js/viz/math.js": "439c335e1cc47907bc72bb76559216aa093be4710e0589f41c70192729eb223e",
+        "../assets/js/share-state.js": "13c6a9ac1237d566fc5d79c89e0f4d3029aa8c2817d2c08247a02b1b053a59b1",
+        "../data/col/game.json": "2ff81de6cc0562d45a16629d327254614a8b298236888036ad9f740eae751815",
+        "../data/index.json": "c24aa064613e4e6d02c76bf426158e40a0e2e9a6f8c6a6389e156d1380379261",
+        "./wave6-game-native.mjs": "c22ff75ea6e0f3c3dbcf98c44d558e7020c17585b153aa727d5293a77997afbc",
+        "./wave6-game-native-science.mjs": "aa80dbca69fe07c79c9f3230eaae407c76ca4c74307e411b4b63ff5c7ec315c6",
+        "./wave6-game-native-cases.mjs": "26d212e3ee9ec6da6c960704adb57727b4b377263868b3bce94f41e1ae9596fa",
+        "./wave6-game-browser.shared.mjs": "969fcec394a3b3e35bf355f0fe70e74335356649bfd61442662b7f660740bd2e"
+      }
+    }
+  ],
+  "method": "Registered control state independently maps to pure models. Complete paths, curves, anchors, bars, ledgers, facts, resource loads and field arrows are compared. Original-factor rounding/sign/range and raw mappings remain strict; numerical path diagnostics alone use the declared2e-12render tolerance.",
+  "defaultAndRich": {
+    "status": "PASS",
+    "layouts": 48,
+    "issues": 0,
+    "sourceHashes": {
+      "../content/game/ch06.chains.shared.js": "9051cfdd9e259d390c6e4206b684574022990bbab6a7eae8d6d71a33b46073fd",
+      "../content/game/ch06.congestion.shared.js": "face199800420efe63dfc8af62758db8e37ab1abd491c868554cbd9b7973dfd8",
+      "../content/game/ch06.dynamics.shared.js": "a7796de6a9c2787b48c6ee6f40c0cbdff0466f3406389cfd846acc90969850f3",
+      "../content/game/ch06.enclosure.shared.js": "16acb8b7deb05480f0e047f9a8607e24739eee5ec0519c41fe3b7615715df6b9",
+      "../content/game/ch06.exact.shared.js": "f90c1849903788f0d3c2cd8fca77d5d0e2a3148f8368fbe2e68659377a2f62dd",
+      "../content/game/ch06.js": "1b643688835bd534811b2a1b9289daee7d2c14aab139dabe8be1d9556b04d170",
+      "../content/game/ch06.potential.shared.js": "114cd9107181cdf99ea2d310829e4cfbc7fee44c65bb3b9de833d0b36ac2c5b5",
+      "../content/game/ch06.routing.shared.js": "27cbe9f9c973a338c028d1b3fcf4c0a89af0fab60ee19d097d7fdc14b6fb150c",
+      "../content/game/ch06.selection.shared.js": "8a6c9aee856881cf5b94296146fea63733948b55a1cd69226a73c637bb85fdd7",
+      "../content/game/ch06.shared.js": "f4b1c4e484439faad92cd22f00aea179dd493a71ff6e3eefaef7f42b6ef43328",
+      "../content/game/ch06.viz.js": "b46c455f1a39405e288dfd4f64c85f95ccb1ea4203981e9818ee598692c767c2",
+      "../content/game/syllabus.js": "0cd00de4d0e29a1d30dd65d691bf786c0b798a33b16fd0f480b87076f3bb69c2",
+      "../assets/js/viz/core.js": "a6fa1753d9d9e8b9a05a7161fffc58dfd53b27002d9d393a3266aeb96515fe73",
+      "../assets/js/viz/math.js": "439c335e1cc47907bc72bb76559216aa093be4710e0589f41c70192729eb223e",
+      "../data/col/game.json": "2ff81de6cc0562d45a16629d327254614a8b298236888036ad9f740eae751815",
+      "../data/index.json": "c24aa064613e4e6d02c76bf426158e40a0e2e9a6f8c6a6389e156d1380379261",
+      "./wave6-game-browser.mjs": "ac109e22277723f29eec8d26f034fc413d7a6907df61c1246f048a4f60f0289b"
+    },
+    "summary": {
+      "path": "/workspace/scratch/wave6-game-research/preview-final-v2/summary.json",
+      "sha256": "a5b54e55f7d3e20f260b7097e6ccbdb432171abd4dff2c47990af83278222fc1"
+    }
+  },
+  "ownedBrowsersAndServersExplicitlyPolledClosed": true
+}

@@ -1,0 +1,238 @@
+{
+  "layouts": 32,
+  "actions": 548,
+  "replays": 188,
+  "checks": 896,
+  "invalidReplays": 32,
+  "rawReplays": 24,
+  "replacements": [
+    "8.7 default generation3",
+    "8.3/8.6 stable nearby-site geometry and exact minimum ties"
+  ],
+  "cases": [
+    {
+      "label": "8.1-light-1200",
+      "actions": 15,
+      "replays": 6,
+      "checks": 26,
+      "captureDirectory": "/tmp/wave6-geog-verified"
+    },
+    {
+      "label": "8.1-light-320",
+      "actions": 15,
+      "replays": 6,
+      "checks": 26,
+      "captureDirectory": "/tmp/wave6-geog-verified"
+    },
+    {
+      "label": "8.1-dark-1200",
+      "actions": 15,
+      "replays": 6,
+      "checks": 26,
+      "captureDirectory": "/tmp/wave6-geog-verified"
+    },
+    {
+      "label": "8.1-dark-320",
+      "actions": 15,
+      "replays": 6,
+      "checks": 26,
+      "captureDirectory": "/tmp/wave6-geog-verified"
+    },
+    {
+      "label": "8.2-light-1200",
+      "actions": 16,
+      "replays": 7,
+      "checks": 27,
+      "captureDirectory": "/tmp/wave6-geog-verified"
+    },
+    {
+      "label": "8.2-light-320",
+      "actions": 16,
+      "replays": 7,
+      "checks": 27,
+      "captureDirectory": "/tmp/wave6-geog-verified"
+    },
+    {
+      "label": "8.2-dark-1200",
+      "actions": 16,
+      "replays": 7,
+      "checks": 27,
+      "captureDirectory": "/tmp/wave6-geog-verified"
+    },
+    {
+      "label": "8.2-dark-320",
+      "actions": 16,
+      "replays": 7,
+      "checks": 27,
+      "captureDirectory": "/tmp/wave6-geog-verified"
+    },
+    {
+      "label": "8.3-light-1200",
+      "actions": 18,
+      "replays": 6,
+      "checks": 31,
+      "captureDirectory": "/tmp/wave6-geog-final-nearby"
+    },
+    {
+      "label": "8.3-light-320",
+      "actions": 18,
+      "replays": 6,
+      "checks": 31,
+      "captureDirectory": "/tmp/wave6-geog-final-nearby"
+    },
+    {
+      "label": "8.3-dark-1200",
+      "actions": 18,
+      "replays": 6,
+      "checks": 31,
+      "captureDirectory": "/tmp/wave6-geog-final-nearby"
+    },
+    {
+      "label": "8.3-dark-320",
+      "actions": 18,
+      "replays": 6,
+      "checks": 31,
+      "captureDirectory": "/tmp/wave6-geog-final-nearby"
+    },
+    {
+      "label": "8.4-light-1200",
+      "actions": 25,
+      "replays": 8,
+      "checks": 38,
+      "captureDirectory": "/tmp/wave6-geog-verified"
+    },
+    {
+      "label": "8.4-light-320",
+      "actions": 25,
+      "replays": 8,
+      "checks": 38,
+      "captureDirectory": "/tmp/wave6-geog-verified"
+    },
+    {
+      "label": "8.4-dark-1200",
+      "actions": 25,
+      "replays": 8,
+      "checks": 38,
+      "captureDirectory": "/tmp/wave6-geog-verified"
+    },
+    {
+      "label": "8.4-dark-320",
+      "actions": 25,
+      "replays": 8,
+      "checks": 38,
+      "captureDirectory": "/tmp/wave6-geog-verified"
+    },
+    {
+      "label": "8.5-light-1200",
+      "actions": 17,
+      "replays": 6,
+      "checks": 28,
+      "captureDirectory": "/tmp/wave6-geog-verified"
+    },
+    {
+      "label": "8.5-light-320",
+      "actions": 17,
+      "replays": 6,
+      "checks": 28,
+      "captureDirectory": "/tmp/wave6-geog-verified"
+    },
+    {
+      "label": "8.5-dark-1200",
+      "actions": 17,
+      "replays": 6,
+      "checks": 28,
+      "captureDirectory": "/tmp/wave6-geog-verified"
+    },
+    {
+      "label": "8.5-dark-320",
+      "actions": 17,
+      "replays": 6,
+      "checks": 28,
+      "captureDirectory": "/tmp/wave6-geog-verified"
+    },
+    {
+      "label": "8.6-light-1200",
+      "actions": 8,
+      "replays": 3,
+      "checks": 15,
+      "captureDirectory": "/tmp/wave6-geog-final-nearby"
+    },
+    {
+      "label": "8.6-light-320",
+      "actions": 8,
+      "replays": 3,
+      "checks": 15,
+      "captureDirectory": "/tmp/wave6-geog-final-nearby"
+    },
+    {
+      "label": "8.6-dark-1200",
+      "actions": 8,
+      "replays": 3,
+      "checks": 15,
+      "captureDirectory": "/tmp/wave6-geog-final-nearby"
+    },
+    {
+      "label": "8.6-dark-320",
+      "actions": 8,
+      "replays": 3,
+      "checks": 15,
+      "captureDirectory": "/tmp/wave6-geog-final-nearby"
+    },
+    {
+      "label": "8.7-light-1200",
+      "actions": 21,
+      "replays": 6,
+      "checks": 32,
+      "captureDirectory": "/tmp/wave6-geog-final-adoption"
+    },
+    {
+      "label": "8.7-light-320",
+      "actions": 21,
+      "replays": 6,
+      "checks": 32,
+      "captureDirectory": "/tmp/wave6-geog-final-adoption"
+    },
+    {
+      "label": "8.7-dark-1200",
+      "actions": 21,
+      "replays": 6,
+      "checks": 32,
+      "captureDirectory": "/tmp/wave6-geog-final-adoption"
+    },
+    {
+      "label": "8.7-dark-320",
+      "actions": 21,
+      "replays": 6,
+      "checks": 32,
+      "captureDirectory": "/tmp/wave6-geog-final-adoption"
+    },
+    {
+      "label": "8.8-light-1200",
+      "actions": 17,
+      "replays": 5,
+      "checks": 27,
+      "captureDirectory": "/tmp/wave6-geog-verified"
+    },
+    {
+      "label": "8.8-light-320",
+      "actions": 17,
+      "replays": 5,
+      "checks": 27,
+      "captureDirectory": "/tmp/wave6-geog-verified"
+    },
+    {
+      "label": "8.8-dark-1200",
+      "actions": 17,
+      "replays": 5,
+      "checks": 27,
+      "captureDirectory": "/tmp/wave6-geog-verified"
+    },
+    {
+      "label": "8.8-dark-320",
+      "actions": 17,
+      "replays": 5,
+      "checks": 27,
+      "captureDirectory": "/tmp/wave6-geog-verified"
+    }
+  ]
+}

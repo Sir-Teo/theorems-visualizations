@@ -1,0 +1,142 @@
+{
+  "status": "author-verified; independent acceptance remains36",
+  "availability": {
+    "before": 858,
+    "after": 870,
+    "goal": 1057,
+    "historicalIndependentlyAccepted": 36,
+    "additionalAuthorVerified": 834
+  },
+  "lessonCount": 12,
+  "purposeBuiltPanels": 38,
+  "independentCases": 2269,
+  "families": 12,
+  "totalReferenceComparisons": 961904,
+  "focused": {
+    "passed": 42,
+    "failed": 0,
+    "skipped": 0,
+    "cancelled": 0,
+    "durationMs": 6800.913318
+  },
+  "strictBuild": {
+    "written": 8585,
+    "planned": 4989,
+    "chapters": 591,
+    "collections": 85,
+    "errors": 0,
+    "warnings": 0
+  },
+  "globalStatic": {
+    "items": 8522,
+    "errors": 0,
+    "warnings": 0
+  },
+  "productionModes": {
+    "light": {
+      "run": 12,
+      "failed": 0,
+      "texBlankWarnings": 0,
+      "qualityWarnings": 0
+    },
+    "dark": {
+      "run": 12,
+      "failed": 0,
+      "texBlankWarnings": 0,
+      "qualityWarnings": 0
+    }
+  },
+  "native": {
+    "layouts": 48,
+    "actions": 1364,
+    "shares": 584,
+    "invalid": 48,
+    "raw": 48,
+    "critical": 208,
+    "checks": 2300,
+    "modelComparisons": 2890286
+  },
+  "visual": {
+    "targets": 308,
+    "counts": {
+      "defaults": 48,
+      "rich": 96,
+      "critical": 104,
+      "modes": 60
+    },
+    "reviewedSheets": 88,
+    "usedSheets": 80,
+    "missing": 0
+  },
+  "preservation": {
+    "rawPinsExact": 371,
+    "syllabusOnly12RefsPic": true,
+    "frozenIdentityDepsFlagsExact": true
+  },
+  "latestFullGlobalExport": {
+    "commit": "82260ace7c1bd64308d1bf18089499785ee217a6",
+    "tests": 4921,
+    "productionRoutesPerTheme": 272,
+    "scope": "Preceding MICRO12/MACRO6 integration only; does not cover FIN/GAME. The21lesson reading/global integration follows this chapter checkpoint."
+  },
+  "readingIntegration": "FIN9+GAME12not yet added to8564entry/76alias roster.",
+  "genuineFailures": [
+    "Chain reference near-unit log suffered cancellation at100vs200digits; stable log1p(complement/part) repaired it and complete expected bytes now match.",
+    "Draft harness naive substring replacement altered find/finally; caught before browser launch and repaired; subsequent native adaptation is token-scoped.",
+    "Initial frozen-name check caught a missing space in6.12; exact frozen title restored before build.",
+    "First phone capture43ink issues: canvas top-label font metrics and four overlong equations; top labels moved through existing KaTeX API and equations split without font shrinking.",
+    "Subsequent review caught coincident markers hiding one another; nested radii now retain both states.",
+    "Native pilot found initial-time marker too close to data boundary; proportional horizontal margin repaired.",
+    "Tiny nonatomic-flow labels initially used rounded floats; they now retain original rational sums and range-aware labels.",
+    "Personal original-pixel review found adjacent subnormal potential labels overlapping despite passing bounding-box checks. Final grid uses two-line mantissa/exponent labels and wider cells, preserving font sizes.",
+    "Cross-engine RK4 conservation residual differed by one floating ulp (zero versus2e-16). Render consistency now applies its existing numerical2e-12bound to numerical path diagnostics, including zero; original-factor quantity rounding/sign/range and raw input mapping remain strict.",
+    "Neutral-centre colour reused a strategy colour; final diagrams use an ink marker, with an explicit legend. Coincident atomic cost/potential curves now retain solid/dashed distinction.",
+    "Personal review found zero-time share/entropy traces invisible; explicit initial markers and proportional margins repaired them.",
+    "Nondefault A-share labels touched mixture-card borders; concise A= labels repaired them.",
+    "Ordinary decimal potential-grid labels overlapped after the subnormal repair; compact approximate3-significant-digit or2-line scientific labels repaired them without shrinking fonts or altering exact classifications.",
+    "Adaptive tiny-advantage axis initially inherited repeated0.000000ticks and a clipped long label; explicit scientific ticks,72pxleft gutter and concise incumbent-advantage label repaired them. Native tick sign/rounding/distinctness checks and personal critical review pass.",
+    "A science-harness facts-colour expectation was accidentally changed along with the centre marker; the facts expectation was corrected while the nonESScentre remains ink. Failed and superseded captures are not final gates."
+  ],
+  "logs": {
+    "final-models-focused.log": {
+      "path": "/workspace/scratch/wave6-game-research/final-models-focused.log",
+      "sha256": "1b4a9eba6ac022a71c6f27fc4215b3d97920c4d0aec1cfc2f7632daa7b35cd7e"
+    },
+    "draft-build-v11.log": {
+      "path": "/workspace/scratch/wave6-game-research/draft-build-v11.log",
+      "sha256": "c09cd70f743ae124c2e4f3c9360ccc1ed02a64c29cf3894b42639a31b9bb6aa0"
+    },
+    "final-static.log": {
+      "path": "/workspace/scratch/wave6-game-research/final-static.log",
+      "sha256": "7e8012d6e6aef5b11ec3e77601b72283e68356a43097d56e7ae36d1117ebab97"
+    },
+    "final-production-light.log": {
+      "path": "/workspace/scratch/wave6-game-research/final-production-light.log",
+      "sha256": "92b06deb33337a149fbec53b393d1665c127f062cbe68bf78d5ed78d9de37d0c"
+    },
+    "final-production-dark.log": {
+      "path": "/workspace/scratch/wave6-game-research/final-production-dark.log",
+      "sha256": "92b06deb33337a149fbec53b393d1665c127f062cbe68bf78d5ed78d9de37d0c"
+    },
+    "native-final-v3-pilot.log": {
+      "path": "/workspace/scratch/wave6-game-research/native-final-v3-pilot.log",
+      "sha256": "0b6c64399eb8da27d7d40e170871e5d4a53956a03c03fed7f142ef3fc9d3968c"
+    },
+    "native-final-v3-a.log": {
+      "path": "/workspace/scratch/wave6-game-research/native-final-v3-a.log",
+      "sha256": "b3857ce12e75ee6bb46f08b384612f70b14b3b27962612fbe2b27472bdeb8b4f"
+    },
+    "native-final-v3-b.log": {
+      "path": "/workspace/scratch/wave6-game-research/native-final-v3-b.log",
+      "sha256": "f5ef4bcdd81b33ceddd31ca87d4fddc599a94c9a52a17eb32942ba41c08470f8"
+    },
+    "preview-final-v2.log": {
+      "path": "/workspace/scratch/wave6-game-research/preview-final-v2.log",
+      "sha256": "71a1f02d547bf8ac488d745a7a04be89cc3939b360a0912da0cea1b9a88357fc"
+    }
+  },
+  "ownedBrowsersServersClosed": true,
+  "sourceStopsPreserved": true,
+  "publicationDeploymentIndependentAcceptanceClaimed": false,
+  "next": "IntegrateFIN9+GAME12reading/global records, then BEHAV7eight frozen lessons. Continuous user goal active; do not stop at chapter, commit, integration or wave."
+}

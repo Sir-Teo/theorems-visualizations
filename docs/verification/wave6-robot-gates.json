@@ -1,0 +1,114 @@
+{
+  "status": "author-verified; independent acceptance remains36",
+  "availability": {
+    "before": 806,
+    "after": 815,
+    "goal": 1057,
+    "historicalIndependentlyAccepted": 36,
+    "additionalAuthorVerified": 779
+  },
+  "lessonCount": 9,
+  "purposeBuiltPanels": 25,
+  "model": {
+    "referenceCases": 1132,
+    "families": 9,
+    "focusedGroups": 22,
+    "affectedWave5Groups": 11,
+    "totalGroups": 33,
+    "comparisonChecks": 260068,
+    "precisionDigits": [
+      90,
+      2600
+    ],
+    "canonicalRegeneration": "byte-identical",
+    "fixtureSHA256": "bf2d5731b8bde06924d01034df626a6c28a41693a2abf540b4e1ee1419e234fc",
+    "higherPrecision": {
+      "cases": 85,
+      "digits": 5200,
+      "completeExpectedObjects": "all exact",
+      "receipt": "/tmp/wave6-robot-momentum-repair/higher-precision-85.json"
+    }
+  },
+  "latestFocused": "/tmp/wave6-robot-final-focused.log:22/22; unchanged affected11 retain their validated current pure-source baseline",
+  "catalogue": {
+    "written": 8530,
+    "planned": 5044,
+    "chapters": 587,
+    "collections": 85,
+    "errors": 0,
+    "warnings": 0,
+    "log": "/tmp/wave6-robot-final-polish/build-final.log"
+  },
+  "static": {
+    "items": 8467,
+    "errors": 0,
+    "warnings": 0,
+    "log": "/tmp/wave6-robot-sign-final-static.log"
+  },
+  "modeChecks": {
+    "light": 9,
+    "dark": 9,
+    "failures": 0,
+    "texBlankWarnings": 0,
+    "qualityWarnings": 0,
+    "logs": [
+      "/tmp/wave6-robot-sign-final-light.log",
+      "/tmp/wave6-robot-sign-final-dark.log"
+    ]
+  },
+  "native": {
+    "layouts": 36,
+    "actions": 1692,
+    "shares": 732,
+    "invalid": 36,
+    "raw": 36,
+    "critical": 320,
+    "checks": 2844,
+    "modelComparisons": 1752694
+  },
+  "personalVisualReview": {
+    "defaults": 36,
+    "critical": 160,
+    "modes": 48,
+    "rich": 72
+  },
+  "preservation": {
+    "priorManifestFiles": 163,
+    "allExact": true,
+    "sourceCommit": "fd7bb0e055ea87074a4c4c6f9e912c51ce7dae46",
+    "onlyContentChanges": [
+      "content/robot/ch06.exact.shared.js",
+      "content/robot/ch06.js",
+      "content/robot/ch06.shared.js",
+      "content/robot/ch06.viz.js",
+      "content/robot/syllabus.js"
+    ],
+    "outsideChapterSyllabus": "deep exact except chapter6; focused metadata proof and final source-polish proof retained",
+    "frozenPlans": "unchanged",
+    "sharedMathRendererMapPerformance": "unchanged"
+  },
+  "readingIntegration": {
+    "status": "pending next chapter batch",
+    "currentIntegratedIdeas": 8521,
+    "aliases": 76,
+    "lastCompleteGlobalSuite": "ENERGY6/SOLID6 exact export4e884665:4836/4836 full tests and272 routes per theme. Not rerun or reattributed to current9 lessons."
+  },
+  "allOwnedBrowsersServers": "closed; both native lanes, both mode checks and static process exit0",
+  "limitations": [
+    "Original physics is chosen teaching models, not measured robot calibration",
+    "Trigonometry/square-root geometry/RK4 remain approximate; exact algebra retains original binary64 factors",
+    "No universal FPS, screen-reader, independent expert or release/deploy claim"
+  ],
+  "failureEvidence": [
+    "/tmp/wave6-robot-model-tests-initial.log",
+    "/tmp/wave6-robot-model-tests-final.log",
+    "/tmp/wave6-robot-prescribed-increment-defect.log",
+    "/tmp/wave6-robot-native-pilot2/failure.txt",
+    "/tmp/wave6-robot-native-pilot3/failure.txt",
+    "/tmp/wave6-robot-native-pilot4/failure.txt",
+    "/tmp/wave6-robot-native-a/failure-state.json",
+    "/tmp/wave6-robot-label-sign-defect/failure.txt",
+    "/tmp/wave6-robot-final-polish/default-comparison.json",
+    "/tmp/wave6-robot-rich-type-final/summary.json"
+  ]
+}

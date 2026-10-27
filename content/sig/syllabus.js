@@ -403,39 +403,178 @@ export default {
       ]
     },
     {
-      n: 6,
-      title: 'Frequency response and filtering',
-      summary: String.raw`The frequency response tells how much each frequency is amplified and delayed, which is what filtering means. Ideal brick-wall filters turn out to be non-causal, and the Paley–Wiener criterion says exactly how sharp a causal filter can be. Bode plots, first- and second-order building blocks, minimum-phase systems and the deep link between gain and phase complete the picture.`,
-      items: [
-        { num: '6.1', kind: 'Definition', name: 'Frequency response of an LTI system', deps: ['sig-3.10', 'sig-5.6'], refs: ['Oppenheim–Willsky §6.2'],
-          pic: 'Drive a black-box filter with sinusoids of a chosen frequency and read off gain and phase from the input and output traces; the points fall on the computed |H(jω)| and ∠H(jω) curves.' },
-        { num: '6.2', kind: 'Definition', name: 'Ideal low-pass, high-pass and band-pass filters', deps: ['sig-6.1'], refs: ['Oppenheim–Willsky §3.9'],
-          pic: 'Pass music through brick-wall filters with draggable cutoffs: the spectrum is chopped, and the audio button plays the result.' },
-        { num: '6.3', kind: 'Proposition', name: 'The ideal low-pass filter is non-causal', deps: ['sig-6.2', 'sig-5.11'], refs: ['Oppenheim–Willsky §6.3'],
-          pic: 'The impulse response of an ideal low-pass is a sinc extending to minus infinity; truncating and delaying it to make it causal leaves ripples in the frequency response.' },
-        { num: '6.4', kind: 'Theorem', name: 'Paley–Wiener criterion for causal filters', deps: ['sig-6.3', 'rca-19.2'], refs: ['Lathi ch. 7'],
-          pic: 'Design a magnitude response by dragging points: the integral of |log|H||/(1 + ω²) is computed, and any response that is exactly zero over a band is rejected as unrealisable.' },
-        { num: '6.5', kind: 'Definition', name: 'Linear phase and distortionless transmission', deps: ['sig-6.1', 'sig-5.17'], refs: ['Oppenheim–Willsky §6.2', 'Lathi ch. 7'],
-          pic: 'Send a pulse through filters with flat magnitude but different phase curves: linear phase just delays it, while curved phase distorts its shape.' },
-        { num: '6.6', kind: 'Phenomenon', name: 'Group delay and the dispersion of a pulse', deps: ['sig-6.5'], refs: ['Oppenheim–Willsky §6.2'],
-          pic: 'A chirped wave packet passes through a dispersive filter: frequencies arrive at different times according to the group-delay curve, and the packet spreads.' },
-        { num: '6.7', kind: 'Method', name: 'Bode plots', deps: ['sig-6.1', 'circ-7.6'], refs: ['Oppenheim–Willsky §6.2', 'Lathi ch. 4'],
-          pic: 'Drop poles and zeros on a real axis: the log-magnitude asymptotes bend by ±20 dB/decade at each, and the exact curve hugs them, with phase steps of ±90° smeared over two decades.' },
-        { num: '6.8', kind: 'Model', name: 'First-order systems: time constant and bandwidth', deps: ['sig-6.7', 'sig-2.9'], refs: ['Oppenheim–Willsky §6.5'],
-          pic: 'Halve the time constant of a first-order system: the step response rises twice as fast and the bandwidth on the Bode plot doubles.' },
-        { num: '6.9', kind: 'Model', name: 'Second-order systems: resonance and damping', deps: ['sig-6.7', 'circ-6.2'], refs: ['Oppenheim–Willsky §6.5'],
-          pic: 'Lower the damping ratio of a second-order system: the step response rings and the frequency response sprouts a resonant peak, linked as one parameter changes.' },
-        { num: '6.10', kind: 'Concept', name: 'Minimum-phase systems and all-pass factors', deps: ['sig-6.7'], refs: ['Oppenheim–Willsky §6.2'],
-          pic: 'Reflect a zero from the left to the right half-plane: the magnitude response is unchanged, but the phase lag grows and the step response dips the wrong way first.' },
-        { num: '6.11', kind: 'Theorem', name: 'Bode’s gain–phase relation and the Hilbert transform', deps: ['sig-6.10', 'rca-17.23'], refs: ['Lathi ch. 4'],
-          pic: 'Sketch the log-magnitude of a minimum-phase system; its phase is computed from the magnitude alone and matches the true phase, while a non-minimum-phase example deviates.' },
-        { num: '6.12', kind: 'Concept', name: 'Rise time versus bandwidth', deps: ['sig-6.8', 'sig-5.15'], refs: ['Lathi ch. 7'],
-          pic: 'Shrink a filter’s bandwidth and measure the 10–90% rise time of its step response: their product stays near a constant across filter families.' },
-        { num: '6.13', kind: 'Phenomenon', name: 'Ringing of sharp filters', deps: ['sig-6.3', 'sig-4.4'], refs: ['Oppenheim–Willsky §6.4'],
-          pic: 'Make a filter’s cutoff sharper and watch its step response develop Gibbs-like ringing that refuses to go away, while a gentle filter has none.' },
-      ],
+      "n": 6,
+      "title": "Frequency response and filtering",
+      "summary": "Frequency response separates spectral gain from phase. Exact kernels and paired time/frequency views expose the costs of sharp cutoffs, the conditions behind causal realization and gain–phase recovery, and the family-specific links between transients and bandwidth.",
+      "items": [
+        {
+          "num": "6.1",
+          "kind": "Definition",
+          "name": "Frequency response of an LTI system",
+          "deps": [
+            "sig-3.10",
+            "sig-5.6"
+          ],
+          "refs": [
+            "Complete chapter-local derivation under the stated engineering Fourier convention"
+          ],
+          "pic": "Sweep the driving frequency. The two traces, complex response vector and highlighted point on the gain curve all use the same exact first-order response."
+        },
+        {
+          "num": "6.2",
+          "kind": "Definition",
+          "name": "Ideal low-pass, high-pass and band-pass filters",
+          "deps": [
+            "sig-6.1"
+          ],
+          "refs": [
+            "Complete chapter-local derivation under the stated engineering Fourier convention"
+          ],
+          "pic": "Choose a band and move its cutoff. Each of five known harmonics is visibly kept or removed, and the output is their actual retained sum. Compare the changed waveform with its original."
+        },
+        {
+          "num": "6.3",
+          "kind": "Proposition",
+          "name": "The ideal low-pass filter is non-causal",
+          "deps": [
+            "sig-6.2",
+            "sig-5.11"
+          ],
+          "refs": [
+            "Complete chapter-local derivation under the stated engineering Fourier convention"
+          ],
+          "pic": "Compare the delayed infinite sinc with its causal finite window. The negative-time witness remains nonzero as delay grows. The second panel shows the exact finite-window gain and its cutoff ripples."
+        },
+        {
+          "num": "6.4",
+          "kind": "Theorem",
+          "name": "Paley–Wiener criterion for causal filters",
+          "deps": [
+            "sig-6.3",
+            "rca-19.2"
+          ],
+          "refs": [
+            "Complete chapter-local derivation under the stated engineering Fourier convention"
+          ],
+          "pic": "Compare a power-law tail, a Gaussian tail and an exact stop band. The upper panel shows log magnitude; the lower accumulates the actual weighted negative logarithm. A finite window cannot certify the infinite-range criterion."
+        },
+        {
+          "num": "6.5",
+          "kind": "Definition",
+          "name": "Linear phase and distortionless transmission",
+          "deps": [
+            "sig-6.1",
+            "sig-5.17"
+          ],
+          "refs": [
+            "Oppenheim–Verghese2010, selected printed49–53: real-signal phase symmetry, delay and narrowband phase expansion; own finite-harmonic construction"
+          ],
+          "pic": "Turn on phase curvature while keeping every harmonic amplitude fixed. Compare the actual output with the scaled, delayed input and inspect the unwrapped phase that caused the difference."
+        },
+        {
+          "num": "6.6",
+          "kind": "Phenomenon",
+          "name": "Group delay and the dispersion of a pulse",
+          "deps": [
+            "sig-6.5"
+          ],
+          "refs": [
+            "Oppenheim–Verghese2010, selected printed50–53: local phase expansion and group versus phase delay; own complete complex Gaussian inversion"
+          ],
+          "pic": "Change dispersion and packet width. The group-delay slope and spectral envelope explain the output envelope's broadening; the time traces show the corresponding chirp. Reverse dispersion to reverse the chirp without changing its envelope width."
+        },
+        {
+          "num": "6.7",
+          "kind": "Method",
+          "name": "Bode plots",
+          "deps": [
+            "sig-6.1",
+            "circ-7.6"
+          ],
+          "refs": [
+            "Complete chapter-local derivation under the stated engineering Fourier convention"
+          ],
+          "pic": "Move a real pole and optionally a real zero. Compare exact gain and phase with their straight-line approximations; watch cancellation when both corners coincide."
+        },
+        {
+          "num": "6.8",
+          "kind": "Model",
+          "name": "First-order systems: time constant and bandwidth",
+          "deps": [
+            "sig-6.7",
+            "sig-2.9"
+          ],
+          "refs": [
+            "Complete chapter-local derivation under the stated engineering Fourier convention"
+          ],
+          "pic": "Change the time constant and read the actual 10%, 63.2% and 90% step crossings alongside the half-power point. Both panels include a fixed τ=1 s dashed reference, so the faster rise and wider pass band are visible together on physical axes."
+        },
+        {
+          "num": "6.9",
+          "kind": "Model",
+          "name": "Second-order systems: resonance and damping",
+          "deps": [
+            "sig-6.7",
+            "circ-6.2"
+          ],
+          "refs": [
+            "Complete chapter-local derivation under the stated engineering Fourier convention"
+          ],
+          "pic": "Vary damping through the resonance threshold and through critical damping. The transient and gain curve share the same parameters, so the interval with an oscillatory step but no resonant gain peak is explicit."
+        },
+        {
+          "num": "6.10",
+          "kind": "Concept",
+          "name": "Minimum-phase systems and all-pass factors",
+          "deps": [
+            "sig-6.7"
+          ],
+          "refs": [
+            "Oppenheim–Verghese2010, selected printed58–64: all-pass factors, CT inverse properness, factorization and gain ambiguity"
+          ],
+          "pic": "Reflect the zero across the imaginary axis. Their gain magnitudes stay equal, while phase and initial step motion separate. The zero positions and both exact step traces make the factorization visible."
+        },
+        {
+          "num": "6.11",
+          "kind": "Theorem",
+          "name": "Bode’s gain–phase relation and the Hilbert transform",
+          "deps": [
+            "sig-6.10",
+            "rca-17.23"
+          ],
+          "refs": [
+            "Complete chapter-local derivation under the stated engineering Fourier convention"
+          ],
+          "pic": "Reconstruct phase from the gain curve, then add a reflected zero or pure delay. The reconstruction keeps following the minimum-phase reference, while the actual phase gains an amount that magnitude cannot reveal."
+        },
+        {
+          "num": "6.12",
+          "kind": "Concept",
+          "name": "Rise time versus bandwidth",
+          "deps": [
+            "sig-6.8",
+            "sig-5.15"
+          ],
+          "refs": [
+            "Complete chapter-local derivation under the stated engineering Fourier convention"
+          ],
+          "pic": "Match the bandwidth and compare one pole, two poles or one pole plus an all-pass factor. Measure the actual 10% and 90% crossings; the all-pass example keeps the original gain while stretching the measured rise."
+        },
+        {
+          "num": "6.13",
+          "kind": "Phenomenon",
+          "name": "Ringing of sharp filters",
+          "deps": [
+            "sig-6.3",
+            "sig-4.4"
+          ],
+          "refs": [
+            "Complete chapter-local derivation under the stated engineering Fourier convention"
+          ],
+          "pic": "Widen the transition band and compare its exact impulse and step with the sharp reference. The time axis rescales with cutoff, showing the fixed fractional overshoot on a changing physical time scale. The triangular endpoint removes step overshoot by making the whole impulse nonnegative."
+        }
+      ]
     },
-    // ───────────────────────────────────────────────────────────── 7
     {
       n: 7,
       title: 'Sampling',

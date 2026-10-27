@@ -1,0 +1,29 @@
+{
+  "baseCommit": "ca18db0c928c83e6b2983a4daff7c4fa8c68dd72",
+  "status": "author-verified; independent acceptance remains36; no release/deploy promotion",
+  "fileCount": 22,
+  "sha256": {
+    "content/aero/ch06.exact.shared.js": "d7b620543a053c1282e31826ab8adbc082d27ac258fe0cb5b7f1f85b00c46858",
+    "content/aero/ch06.js": "c07cb0d0d3aa7a6e0912dd716cfaad3e357479042e5b6b30e244647d9fa05f19",
+    "content/aero/ch06.shared.js": "bf8eccaf356565aa48b49da8aafc5706baadc98a98503a773c4ed5f70d445d7c",
+    "content/aero/ch06.viz.js": "25191d5f484eaeb7c85c7eb42d26f46a09733f26c97bf7b8c943b38775bdaa18",
+    "content/aero/syllabus.js": "0984844c34fa476d1c5d65358c176be3055a8f8164d15561ddd466ed0f33d127",
+    "docs/verification/wave6-aero-design.json": "b39c24a784c3d52c4f5bde479dfbcf66cb9221cdd225872a5445945c90edb3f4",
+    "docs/verification/wave6-aero-gates.json": "1db1586647ca1eab6ef9811084af5fb3cacfb5647047144ba2ac151f4f2e7468",
+    "docs/verification/wave6-aero-model-receipt.json": "bd169690d41f7395bcf5063601d45cee7f3eac53ae5d7eeaeef97a3610bead38",
+    "docs/verification/wave6-aero-native-receipt.json": "bde04a55ed0b9e07d5b52ab510296abfa69a2986d0b14591341c19e4d5d0acff",
+    "docs/verification/wave6-aero-sources.json": "4a4b76e1e1548f5ff7b6e13266d07228eb2b4509ff2c4a4cf31ed1bd609d4f49",
+    "docs/verification/wave6-aero-visual-receipt.json": "24aa008105552633429a955696d87a74196a87d1a12031853cbefa5356149063",
+    "docs/verification/wave6-aero.md": "5edd04580c6382346ecd8525c3c99a842f8b31d35b42f845a0557f3e9fd44839",
+    "tests/fixtures/wave6-aero-reference.json": "b42fefd896c08ee3d821c3272dde6e40d7f6a049965a16bd2540ec4763b0ea77",
+    "tests/fixtures/wave6-aero-syllabus-before.json": "c2a607b09c3b59d605b3dc06e89ad859d8dfcff0b9f9b514f6d5d39ecc5ae914",
+    "tests/wave5-aero.test.mjs": "21ae163b26b57774a3fccedfcb6c098ff664fd1632488153d8dd13e7ae818bb1",
+    "tests/wave6-aero-browser.mjs": "fc5305676a67701c96ff74353ce88e278490d39da968c6be6d63296e20939230",
+    "tests/wave6-aero-browser.shared.mjs": "029a9884d70d87933ecbf5bb7a0a5fbfa7e2d4e5514f93400ade6aaa3ea7bf16",
+    "tests/wave6-aero-native-cases.mjs": "abce9833f2f78b5e0d25400ed0a8dde21c417741c9ca846145a09511d604a551",
+    "tests/wave6-aero-native-science.mjs": "65e7c957b14b7c1d4a6e674c51fea4eed35a8db657110f60a738c1d2eee52e13",
+    "tests/wave6-aero-native.mjs": "dfdee11aaa0ea33bc0b0540ed094c828e64fa5e1d2e900c259d739577f33aa27",
+    "tests/wave6-aero-reference.py": "274e55a75a43b69215538e4ad53c48ff8661a00cfa9571f550edd0c756306450",
+    "tests/wave6-aero.test.mjs": "dc36729626ea709e80a18fcbc3e98fa25af068af02257d0982e78861fc5b6187"
+  }
+}

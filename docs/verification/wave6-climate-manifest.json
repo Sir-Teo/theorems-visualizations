@@ -1,0 +1,13 @@
+{
+  "baseCommit": "a5c0d50be3dcd37fbb7dcac48ca1676db5f64417",
+  "sha256": {
+    "content/climate/ch06.js": "c279a3c379867cca8344faf420ca9213b84a932118012181d139066852d3f9dd",
+    "content/climate/ch06.shared.js": "715e1d2362f089a76ea9d3702a6707b431ab0993f26e0c411ed9cdca7ca8ff6d",
+    "content/climate/ch06.viz.js": "af8fcfedf32a3f8965a1ba20c6d11eb21033f5ed39ce5f215bd51a679594075a",
+    "content/climate/syllabus.js": "8ba84ce8c4532d0e15aa2caf9a4e32d13d45fb58a3c9c473c48abd91310925ea",
+    "tests/wave6-climate.test.mjs": "8f688c3d336bc67c68757a54e321e646ecd031723a0bdc86b0fec283f8cd9887",
+    "tests/wave6-climate-browser.mjs": "48d508c20168567573d5daa09e01f8813bce2957ce10b8927df88dc8492cb9db",
+    "tests/wave6-climate-reference.py": "cf9f5a53a14f0742cea2a3d94688638e5c2b6b41959008fdf317a0a0ab4e4a65",
+    "tests/fixtures/wave6-climate-reference.json": "bc4e51fb0ce47bfc870db9e677c91597f32bf7a91566e91d878c59f5ad32b2d9"
+  }
+}

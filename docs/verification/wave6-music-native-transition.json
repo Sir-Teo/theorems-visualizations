@@ -1,0 +1,61 @@
+{
+  "status": "PASS",
+  "changedGuardInputs": [
+    "../content/music/ch10.viz.js",
+    "../data/index.json",
+    "./wave6-music-native-science.mjs"
+  ],
+  "onlyProductChanges": "Isolated lesson4 labels/retained-line-count wording and lesson11 elapsed-millisecond/precision readout.",
+  "allHelpersAndOtherElevenLessonFunctionsByteExact": true,
+  "maskedSourceSHA256": "919b4b5814eaf00bcb005a8a398276dd5f08d4a63f9d36e232c8c840c11b15d0",
+  "originalScienceSHA256": "b1d1bcc5c5808b73e67e34df00189e55aee87be04e8b52d38a8b631ee4ebf186",
+  "scienceChangesOnlyAddAssertionsInsideAffectedLessonBranches": true,
+  "allOtherGuardInputsByteExact": true,
+  "indexException": {
+    "status": "PASS",
+    "originalIndexSHA256": "d5a930e2b6be579ff00aba0ac2590d801f2828a142952ee35d43c4d0f116eb17",
+    "reconstructedOriginalSnapshot": "/workspace/scratch/wave6-music-research/index-before-readout-build.json",
+    "currentIndexSHA256": "0c07a1844b3cec42d7208cfe13d8af80665cbc85f1052d46ae3102829670d931",
+    "onlySemanticDifference": "generated build timestamp",
+    "oldTimestamp": "2026-10-27T07:19:45.417Z",
+    "newTimestamp": "2026-10-27T07:51:11.123Z",
+    "allOtherFieldsExact": true,
+    "method": "Recovered the original timestamp near its retained build-log mtime and required the entire reconstructed byte string to match the original guarded SHA256. Complete JSON comparison then differs only at generated. No guessed content accepted.",
+    "seconds": 15.77660594599729
+  },
+  "readoutProofs": [
+    {
+      "status": "PASS",
+      "scope": "Only lesson4 timeline labels and strongest-line-count readout changed. Every shared helper and all other twelve lesson functions are byte-identical. Model/audio/metadata assets unchanged. Current lesson4 full native replay and default recapture required.",
+      "before": {
+        "path": "/workspace/scratch/wave6-music-research/ch10.viz-before-count-copy.js",
+        "sha256": "89c8f90c80a1511babab29eef3b0f70e44e46c8fac09c841277c70dbd793e2f2"
+      },
+      "after": {
+        "path": "content/music/ch10.viz.js",
+        "sha256": "122fdcd029573358449cb931af73a863e04d8ab997cd373f025ab64bc8f4a7dc"
+      },
+      "prefixSHA256": "3421ac9c9952f9ff1326dfd3ab37b14ce565b82b633963a48c86a3026c7f1e0e",
+      "suffixSHA256": "955a96099c4c507da1ed58ee76c17c926ea7bcf8a8a27662c5ecaa2e932ce0bd",
+      "prefixAndSuffixByteIdentical": true
+    },
+    {
+      "status": "PASS",
+      "finding": "Personally viewed full native11 phone before/after alignment images: rounded drift3steps concealed the adjacent-millisecond distinction.",
+      "repair": "Display exact integer seconds.milliseconds and9significant drift digits. Scientific coordinates and models unchanged.",
+      "before": {
+        "path": "/workspace/scratch/wave6-music-research/ch10.viz-before-phase-readout.js",
+        "sha256": "122fdcd029573358449cb931af73a863e04d8ab997cd373f025ab64bc8f4a7dc"
+      },
+      "after": {
+        "path": "content/music/ch10.viz.js",
+        "sha256": "ce169873003a002d72baa211f9f212299d4fe7cc0c4cf104a594e59e45e708b9"
+      },
+      "prefixSHA256": "2285b08246c9ab00bc978f8b1dab9047e2fb4e7df25ffe422943f48d9d0a42d9",
+      "suffixSHA256": "c82da489b2c69f218ce6ad163e5f13f353330b2dd1e8a79d9d8066e90674e657",
+      "allOtherLessonAndHelperBytesUnchanged": true,
+      "requires": "Full lesson11 current native replay and default recapture/changed-row review."
+    }
+  ],
+  "currentReplay": "All four lesson4 and all four lesson11 native layouts replayed after their respective edits. Subsequent lesson11 change leaves lesson4 bytes exact. Final52default layouts and both13-route production themes run on the final file."
+}

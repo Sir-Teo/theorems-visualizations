@@ -1,0 +1,113 @@
+{
+  "date": "2026-10-24",
+  "localReceipts": [
+    {
+      "id": "ipcc7",
+      "url": "https://www.ipcc.ch/report/ar6/wg1/chapter/chapter-7/",
+      "error": "HTTP Error 403: Forbidden",
+      "stop": true
+    },
+    {
+      "id": "ipcc9",
+      "url": "https://www.ipcc.ch/report/ar6/wg1/chapter/chapter-9/",
+      "error": "HTTP Error 403: Forbidden",
+      "stop": true
+    },
+    {
+      "id": "ipcc2",
+      "url": "https://www.ipcc.ch/report/ar6/wg1/chapter/chapter-2/",
+      "error": "HTTP Error 403: Forbidden",
+      "stop": true
+    },
+    {
+      "id": "rose-time",
+      "url": "https://brian-rose.github.io/ClimateLaboratoryBook/courseware/two-layer-ebm.html",
+      "error": "HTTP Error 404: Not Found",
+      "stop": true
+    },
+    {
+      "id": "noaa-enso",
+      "url": "https://www.pmel.noaa.gov/elnino/what-is-el-nino",
+      "final": "https://www.pmel.noaa.gov/elnino/what-is-el-nino/",
+      "status": 200,
+      "bytes": 49692,
+      "sha256": "4eaf48de10b0093ba5c64afc4dcd432ffa64fee6e2dc8beb5944b650ae931213"
+    },
+    {
+      "id": "rose-index",
+      "url": "https://brian-rose.github.io/ClimateLaboratoryBook/",
+      "final": "https://brian-rose.github.io/ClimateLaboratoryBook/",
+      "status": 200,
+      "bytes": 105606,
+      "sha256": "cd654a040b99b46ff8d0a05e39e965083f713511be83802263d6c24e19cfb7e4"
+    },
+    {
+      "id": "zecmip",
+      "url": "https://gmd.copernicus.org/articles/13/2985/2020/",
+      "error": "HTTP Error 404: Not Found",
+      "stop": true
+    },
+    {
+      "id": "nasa-budget",
+      "url": "https://earthobservatory.nasa.gov/features/EnergyBalance",
+      "final": "https://science.nasa.gov/earth/earth-observatory/climate-and-earths-energy-budget/",
+      "status": 200,
+      "bytes": 373125,
+      "sha256": "436f796e765e411680785c2f39dce77333f83527a22de2c66b23778c67422891"
+    },
+    {
+      "id": "noaa-level",
+      "url": "https://www.climate.gov/news-features/understanding-climate/climate-change-global-sea-level",
+      "error": "HTTP Error 403: Forbidden",
+      "stop": true
+    },
+    {
+      "id": "nsidc",
+      "url": "https://nsidc.org/learn/parts-cryosphere/sea-ice/science-sea-ice",
+      "final": "https://nsidc.org/learn/parts-cryosphere/sea-ice/science-sea-ice",
+      "status": 200,
+      "bytes": 193067,
+      "sha256": "e27ef78642ab2450a4d601873052f51655423d337c9f9d1ec004642b1c5400cd"
+    },
+    {
+      "id": "bjerknes",
+      "url": "https://journals.ametsoc.org/view/journals/mwre/97/3/1520-0493_1969_097_0163_atftep_2_3_co_2.xml",
+      "error": "HTTP Error 403: Forbidden",
+      "stop": true
+    },
+    {
+      "id": "rose-transient",
+      "url": "https://brian-rose.github.io/ClimateLaboratoryBook/courseware/transient-toy",
+      "status": 200,
+      "bytes": 328544,
+      "sha256": "0a523ef63fec834b2a1a7774bb0383a9884276fd39e0440e2d96642bfd72b72d"
+    }
+  ],
+  "readingScope": "# CLIMATE6 actual reading, 2026-10-24\n\nRead all seven saved written prerequisite statement/proof bodies in prerequisites.json: CLIMATE3.4/3.6/4.4/4.7/5.9 and GEO1.9/4.6. SIG6.8, GEO6.2 and GEO8.8 are not assumed written; local integrating-factor and feedback arguments are supplied.\n\nRose: actual transient-toy teaching chapter, opening heat-capacity and diffusive-ocean sections, plus final transient/equilibrium summary and fast/slow discussion. This is a diffusive radiative-convective column, not a published coefficient calibration for our two-box model. The toy two-box equations and their eigenvalue proof come from the written prerequisite and an explicit local derivation. The old hypothetical two-layer-ebm.html route was 404. The actual lectures catalogue linked the distinct transient-toy chapter. Prior lecture18 stop remains binding.\n\nNASA 2009 energy-budget article: radiative equilibrium, forcing, and ocean/surface heat redistribution passages. No claim to a current measured heat-imbalance value. NASA 2020 Ice Height article: paragraphs on ice altimetry and about 360 Gt freshwater per mm global sea level. No downloaded sea-level data series or scenarios.\n\nNOAA PMEL What is El Nino: normal/El Nino trade winds, thermocline and upwelling passages. McPhaden/Zebiak/Glantz2006 original NOAA-hosted research HTML: ENSO Physics opening paragraphs on the Bjerknes feedback and 2-7-year irregular recurrence; do not attribute our local scalar equations to this paper or Bjerknes1969. Vialard et al2025: actual NOAA abstract only, two-variable SST/heat-content model and omitted nonlinear/stochastic extensions. Not the full review body.\n\nJones et al2019 ZECMIP: abstract and Introduction, including carbon/heat uptake cancellation and variable-sign/state-dependent ZEC. Actual complete 2-page corrigendum read: Python integer-division correction to bell-shaped B1-B3 emissions, approximately <0.1% cumulative difference. None of these tabulated experiments is reproduced by our prescribed reservoir. The attempted wrong GMD13/2985/2020 route returned404; no MacDougall2020 body was retrieved from a corrected/alternate source.\n\nMax Planck Society2016 institutional research account of Notz/Stroeve: actual main article from heading through conclusion, approximately3m2 of September area per emitted tonne CO2. Not the original Science or supplement body. NSIDC Science of sea ice: actual albedo, seasonal melt, and satellite-measurement sections. No current-year ice series claimed; area and extent remain distinct.\n\nNew binding stops: IPCC AR6 chapters2/7/9 direct403; NOAA Climate.gov global-sea-level article403; Bjerknes1969 publisher body403. Older IPCC4 direct403 and lecture18 stops remain. No alternate-host, cached or PDF recovery of these bodies. Bjerknes original metadata is frozen and verify:true is explicit. Search results containing stopped IPCC snippets were not opened or treated as body reads.\n",
+  "additionalSources": [
+    {
+      "url": "https://gmd.copernicus.org/articles/12/4375/2019/gmd-12-4375-2019.html",
+      "read": "Abstract and Introduction only"
+    },
+    {
+      "url": "https://gmd.copernicus.org/articles/12/4375/2019/gmd-12-4375-2019-corrigendum.pdf",
+      "read": "Both pages; integer division and B1-B3 cumulative-emissions correction; not reproduced"
+    },
+    {
+      "url": "https://www.pmel.noaa.gov/pubs/outstand/mcph2969/mcph2969.shtml",
+      "read": "ENSO Physics opening paragraphs"
+    },
+    {
+      "url": "https://pmel.noaa.gov/public/pmel/publications-search/search_abstract.php?fmContributionNum=5662",
+      "read": "Complete abstract only, not review body"
+    },
+    {
+      "url": "https://www.mpg.de/10817029/my-contribution-to-arctic-sea-ice-melt",
+      "read": "Main institutional article through conclusion, not Science original or supplement"
+    },
+    {
+      "url": "https://science.nasa.gov/earth/earth-observatory/taking-a-measure-of-sea-level-rise-ice-height-147438/",
+      "read": "Ice mass, altimetry, approximate 360 Gt/mm paragraphs"
+    }
+  ]
+}

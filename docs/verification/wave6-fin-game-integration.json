@@ -1,0 +1,219 @@
+{
+  "status": "PASS",
+  "checkedOn": "2026-10-26",
+  "scope": "Local source-backed author integration, no new independent acceptance, release, publication or deployment.",
+  "exactExportCommit": "019944fb3335f86d3501348cbf819fcecb1e7d22",
+  "exactExportPath": "/workspace/scratch/wave6-fin-game-export-019944fb",
+  "archive": {
+    "path": "/workspace/scratch/wave6-fin-game-integration/exact-export-019944fb.tar",
+    "sha256": "600b2a0b6e6f8349f3bb902283315e5568dc56e663209aae61f4f288b6ae1991",
+    "trackedRegularFilesExactlyEqual": 6978
+  },
+  "chapterSourceCommit": "b9759f451a82f7b4b7be5d1fc3b3a911d8dce34f",
+  "reading": {
+    "retainedIdeas": 8564,
+    "addedIdeas": 21,
+    "total": 8585,
+    "aliases": 76,
+    "snapshotDigest": "5b03e0163c816aeed36a13623b9f01a70ae53092badd86856e483fd6eb8884bf",
+    "dataDigest": "7418a573a75ab0fcac911850c7ca153c1dec642f5f4b913099a8d883a1166dee"
+  },
+  "availability": {
+    "authorAvailable": 870,
+    "goal": 1057,
+    "historicalIndependent": 36,
+    "additionalAuthorVerified": 834
+  },
+  "checks": {
+    "focusedIntegration": {
+      "passed": 46,
+      "failed": 0,
+      "skipped": 0,
+      "cancelled": 0,
+      "durationMs": 17915.659129
+    },
+    "strict": {
+      "written": 8585,
+      "planned": 4989,
+      "chapters": 591,
+      "collections": 85,
+      "errors": 0,
+      "warnings": 0
+    },
+    "static": {
+      "visualizations": 8522,
+      "errors": 0,
+      "warnings": 0
+    },
+    "fullNode22": {
+      "version": "22.23.3",
+      "fileConcurrency": 1,
+      "passed": 4965,
+      "failed": 0,
+      "skipped": 0,
+      "cancelled": 0,
+      "durationMs": 851849.490361
+    },
+    "productionSmoke": {
+      "light": 272,
+      "dark": 272,
+      "routesWithErrors": 0
+    },
+    "coverageStructure": "PASS;30domains/85primarycollections",
+    "readOnlyContinuation": {
+      "records": 24,
+      "modelChecks": "passed"
+    }
+  },
+  "proofs": [
+    {
+      "status": "PASS",
+      "root": "/workspace/theorems-visualizations",
+      "commit": "019944fb3335f86d3501348cbf819fcecb1e7d22",
+      "readingIdeas": 8585,
+      "retainedEarlierProjections": 8564,
+      "aliases": 76,
+      "pinnedFiles": 410,
+      "unchangedBindingArrays": 4,
+      "snapshotDigest": "5b03e0163c816aeed36a13623b9f01a70ae53092badd86856e483fd6eb8884bf",
+      "dataDigest": "7418a573a75ab0fcac911850c7ca153c1dec642f5f4b913099a8d883a1166dee",
+      "sourceAssetsFrozenPlansExact": true,
+      "cleanTrackedTree": true
+    },
+    {
+      "status": "PASS",
+      "root": "/workspace/scratch/wave6-fin-game-export-019944fb",
+      "commit": "019944fb3335f86d3501348cbf819fcecb1e7d22",
+      "readingIdeas": 8585,
+      "retainedEarlierProjections": 8564,
+      "aliases": 76,
+      "pinnedFiles": 410,
+      "unchangedBindingArrays": 4,
+      "snapshotDigest": "5b03e0163c816aeed36a13623b9f01a70ae53092badd86856e483fd6eb8884bf",
+      "dataDigest": "7418a573a75ab0fcac911850c7ca153c1dec642f5f4b913099a8d883a1166dee",
+      "sourceAssetsFrozenPlansExact": true,
+      "cleanTrackedTree": true
+    }
+  ],
+  "presentationFollowup": {
+    "scope": "These later SVG/label/wrapping changes are covered by exact source-diff checks and eight current browser/personal visual layouts. The full4965suite and272/theme smoke bind the preceding019944fbexport, not these later presentation bytes. No event handlers, route targets or chapter content changed.",
+    "files": {
+      "assets/js/app.js": {
+        "beforeSHA256": "ce932745549c4dc505a86163071094c7417c61cde6bd3abbfa509eebfc92d237",
+        "afterSHA256": "2f5762e6bf80723a5cb8691f8b19c552dd1d731ab998d5bfcdb27828e2e9a6ce",
+        "replacements": [
+          {
+            "before": "<span aria-hidden=\"true\">\u2197</span>",
+            "after": "<svg width=\"14\" height=\"14\" viewBox=\"0 0 16 16\" aria-hidden=\"true\"><path d=\"M3 13 13 3M3 3h10v10\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/></svg>"
+          },
+          {
+            "before": "['macro', 6, 'The open economy in the long run']",
+            "after": "['macro', 6, 'Open-economy macroeconomics']"
+          }
+        ]
+      },
+      "assets/css/style.css": {
+        "beforeSHA256": "4a012b180e1b2a872cdb3ed010f7562cd2a5779ba7153384a0422b2f07783dd8",
+        "afterSHA256": "eef34e3d7aaf8b38233a78d9dc6545e5e0c9d00b09a3a6876d19f3e0e0af15b6",
+        "replacements": [
+          {
+            "before": ".hero-intro { min-width: 0; }\n",
+            "after": ".hero-intro { min-width: 0; }\n.hero-intro .refs-inline a { display: inline-block; max-width: 100%; }\n"
+          }
+        ]
+      }
+    },
+    "currentVisualReceipt": "docs/verification/wave6-fin-game-home-visual.json",
+    "layouts": 8,
+    "consoleErrors": 0,
+    "overflow": 0,
+    "ownedBrowserAndServerExplicitlyClosed": true
+  },
+  "retainedFailures": [
+    {
+      "scope": "Setup invocation accidentally omitted --static, launching an extra browser. It was deliberately stopped and the correct static-only check passed.",
+      "log": {
+        "path": "/workspace/scratch/wave6-fin-game-integration/export-static-inadvertent-browser-stopped.log",
+        "sha256": "5855296d4f7c7a2d5a97eefb05fac78183d33112be1c1e9cc55b059ffd5c6f69"
+      }
+    },
+    {
+      "scope": "First full suite:4959passed/6hookfailures/0skips/cancellations. The domain-navigation before hook found both shared browser lanes occupied during the extra check. No test assertion or source threshold was weakened. After all competing jobs closed, the entire unchanged export was rerun alone and all4965passed.",
+      "durationMs": 980005.350514,
+      "log": {
+        "path": "/workspace/scratch/wave6-fin-game-integration/export-full-suite.log",
+        "sha256": "cf112a78e9dca61490e61b177b6371434a72687d3b84015b4599bec27c6aa16a"
+      }
+    },
+    {
+      "scope": "Personal home review found a missing arrow glyph and a broken long-link wrap; the isolated followup above repairs both."
+    }
+  ],
+  "allOwnedBrowsersAndServersClosed": true,
+  "sourceStops": "Every inherited original-body/figure stop remains binding. New BEHAVresearch in scratch retains its own stops; no stopped body recovered.",
+  "logs": {
+    "reconciliation.log": {
+      "path": "/workspace/scratch/wave6-fin-game-integration/reconciliation.log",
+      "sha256": "4fbf0080b57cbc4ad9827887d54f1a618cd16114803926084e7832c7bbc6fa8b"
+    },
+    "scoped.log": {
+      "path": "/workspace/scratch/wave6-fin-game-integration/scoped.log",
+      "sha256": "1ee33f4357777f920c0db451bb773d3d7d1a8012be6f73264661c6f2b1c731ae"
+    },
+    "coverage.log": {
+      "path": "/workspace/scratch/wave6-fin-game-integration/coverage.log",
+      "sha256": "65134ca2bcf2f6f352c7ab87781ed45ee451e736df09efb7f37cd819f7786e0a"
+    },
+    "local.log": {
+      "path": "/workspace/scratch/wave6-fin-game-integration/local.log",
+      "sha256": "b4a95b8406bd356992f0f774c2f9c5083b1c8c343685f94dd2ce397d9873c231"
+    },
+    "export-build.log": {
+      "path": "/workspace/scratch/wave6-fin-game-integration/export-build.log",
+      "sha256": "4debbd54c70ed1e805bea0d661c82a1b39aa6393626fa49534e00b328bdac4e6"
+    },
+    "export-static.log": {
+      "path": "/workspace/scratch/wave6-fin-game-integration/export-static.log",
+      "sha256": "7e8012d6e6aef5b11ec3e77601b72283e68356a43097d56e7ae36d1117ebab97"
+    },
+    "export-full-suite-clean.log": {
+      "path": "/workspace/scratch/wave6-fin-game-integration/export-full-suite-clean.log",
+      "sha256": "c4e86a804ca06f13cc1863a04061280ab2faf1afed4ed85b87dfc5784a476a4b"
+    },
+    "export-smoke-light.log": {
+      "path": "/workspace/scratch/wave6-fin-game-integration/export-smoke-light.log",
+      "sha256": "cc036ad2be5c310e4e9e65a8c6914b837f91e9627872eb733b75f1f6f724f0c0"
+    },
+    "export-smoke-dark.log": {
+      "path": "/workspace/scratch/wave6-fin-game-integration/export-smoke-dark.log",
+      "sha256": "cc036ad2be5c310e4e9e65a8c6914b837f91e9627872eb733b75f1f6f724f0c0"
+    },
+    "home-fields-final.log": {
+      "path": "/workspace/scratch/wave6-fin-game-integration/home-fields-final.log",
+      "sha256": "2c319d27f44087619c5c2ac93800e2ec5369d0b321d39ad06c075a73788e36c2"
+    }
+  },
+  "next": "BEHAV7eight frozen lessons. Source/prerequisite/design preparation,638independent cases across11scratch families and8scratch teaching drafts exist; only visual lessons1\u20134are drafted. Complete product implementation/native/personal visual gates before any BEHAVavailability promotion. Do not stop.",
+  "postRecordRootProof": {
+    "proof": {
+      "status": "PASS",
+      "root": "/workspace/theorems-visualizations",
+      "commit": "2cc915e4e5e08d043d8b67b9ac4f8875753071e5",
+      "readingIdeas": 8585,
+      "retainedEarlierProjections": 8564,
+      "aliases": 76,
+      "pinnedFiles": 410,
+      "unchangedBindingArrays": 4,
+      "snapshotDigest": "5b03e0163c816aeed36a13623b9f01a70ae53092badd86856e483fd6eb8884bf",
+      "dataDigest": "7418a573a75ab0fcac911850c7ca153c1dec642f5f4b913099a8d883a1166dee",
+      "sourceAssetsFrozenPlansExactExceptBoundPresentation": true,
+      "presentationFiles": [
+        "assets/js/app.js",
+        "assets/css/style.css"
+      ],
+      "cleanTrackedTree": true
+    },
+    "path": "/workspace/scratch/wave6-fin-game-integration/root-presentation-proof.json",
+    "sha256": "e88740c368f586bd41948bc18adf5c8d483d3bdc53f2c57a8ef7b2fc1fc69b94"
+  }
+}

@@ -1,0 +1,212 @@
+{
+  "chapter": "ROBOT6 Dynamics",
+  "status": "source and prerequisite research; no lesson availability promotion",
+  "source": {
+    "authors": "Kevin M. Lynch and Frank C. Park",
+    "title": "Modern Robotics: Mechanics, Planning, and Control",
+    "edition": "December 2019 preprint of the updated first edition (2017)",
+    "url": "https://hades.mech.northwestern.edu/images/2/25/MR-v2.pdf",
+    "acquisition": "one direct official-author-host PDF request, HTTP200; actual PDF body read",
+    "sha256": "47f446567bb4ba500fced69890c4c039f8180c2a3dfd0ffdd679d9ac0a421368",
+    "actualTextPDFPages": [
+      [
+        289,
+        313
+      ],
+      [
+        318,
+        325
+      ],
+      [
+        331,
+        335
+      ]
+    ],
+    "actualTextPrintedPages": [
+      [
+        269,
+        293
+      ],
+      [
+        298,
+        305
+      ],
+      [
+        311,
+        315
+      ]
+    ],
+    "textPageCount": 38,
+    "actualRenderedPDFPagesPersonallyViewed": [
+      291,
+      295,
+      298,
+      300,
+      304,
+      312,
+      322,
+      334
+    ],
+    "renderDPI": 110,
+    "claimsSupported": [
+      "Lagrange equations, point-mass two-link example and separation M qddot + c + g",
+      "Christoffel definition of C and complete skew-symmetry proof, Proposition8.1",
+      "mass SPD, kinetic energy and distinct mass/acceleration ellipsoid interpretations",
+      "COM-frame Newton-Euler, spatial inertia, ad/dual ad and wrench/twist equations",
+      "outward twist/acceleration and inward wrench recursion, gravity initialization and Ftip sign",
+      "invertible-J task-space equations and configuration dependence",
+      "workless Pfaffian constraints, multiplier elimination, full-rank assumption and unilateral-force caution",
+      "ideal gear power, squared reflected inertia, rotor/stator placement and geared Newton-Euler extension"
+    ],
+    "scope": "Only listed actual pages/figures read; no claim of reading all textbook chapters, watching videos, or reading cited commercial Siciliano body.",
+    "renderSHA256": {
+      "291": "f738697ca03f1a75654d2f126207440838c9f084bed09090d789013c188aeba5",
+      "295": "5e86a5107cc17f99af277eb4be259d3ec5dc31ce33dcfeb3bf835ad61a5069b5",
+      "298": "dfea45db137c854bcd8686ed88deb354d517c6910089fd8d8f48c7cec7e8c5ab",
+      "300": "a948a5051abd56e4e182a243544b93dc0317f8098ff9d654d2ecc6b7d0959504",
+      "304": "1fef159216cb2f06ce0420b088dcae9d10ed888868ff10ede935f046a16ca41e",
+      "312": "e0ca79ec0c6d5b5993f42c86ac95aca4dfdb4eb790347471283dba73795a7bea",
+      "322": "25746bda69945f8bc825f14b6a096d3e88fe84c5c6c02646a0b67fe9a11c319a",
+      "334": "8165998c803e81d024c075cea9ffdd667ad46b608fa5e3f2ef147657e13d63fe"
+    }
+  },
+  "writtenPrerequisites": {
+    "count": 8,
+    "status": "all actual full written bodies personally read",
+    "fields": [
+      "statement",
+      "idea",
+      "caption",
+      "scope",
+      "deps",
+      "refs",
+      "paper",
+      "verify"
+    ],
+    "rows": [
+      {
+        "id": "mech-10.11",
+        "file": "content/mech/ch10-b.js",
+        "sourceSHA256": "4d7e6f7541345f8241cbfeb0197a40dd00869c56e5d45ce65db7574d20628427"
+      },
+      {
+        "id": "robot-2.10",
+        "file": "content/robot/ch02-b.js",
+        "sourceSHA256": "b9a20527210c29c117fb1c9d2cd7ccdd940421254b596b86231e28a2a1cf4834"
+      },
+      {
+        "id": "mech-6.6",
+        "file": "content/mech/ch06.js",
+        "sourceSHA256": "43a18f1ac49c8b8c7d610312276eaabc25ffba19c65b9d8941027acb2e28c0fc"
+      },
+      {
+        "id": "robot-4.1",
+        "file": "content/robot/ch04.js",
+        "sourceSHA256": "8e99e3e6364a042cca1cdfaaec9d2ab1b26629016c29ea4a20a12f65b8a0d6b6"
+      },
+      {
+        "id": "ladr-7.62",
+        "file": "content/ladr/ch07-c.js",
+        "sourceSHA256": "dce3f281c591e00d3f49477f86fe07a0c2324a826bfa5485d84c1ce5c82c6ba1"
+      },
+      {
+        "id": "robot-2.9",
+        "file": "content/robot/ch02-b.js",
+        "sourceSHA256": "b9a20527210c29c117fb1c9d2cd7ccdd940421254b596b86231e28a2a1cf4834"
+      },
+      {
+        "id": "mech-9.8",
+        "file": "content/mech/ch09-b.js",
+        "sourceSHA256": "e914b5c0e22ce03e0bc2c743759c8fe90ce767d7c6a2beae08fc69d149cdab62"
+      },
+      {
+        "id": "mech-6.13",
+        "file": "content/mech/ch06-b.js",
+        "sourceSHA256": "e7b703f009d85b14c9701c8ecb0b6e7a207cb918ef0ff9803f03ef09d2c1fb81"
+      }
+    ]
+  },
+  "modelDistinctions": [
+    "The chapter's consistent own two-link example uses uniform slender rods, not the textbook's point masses at link ends; derive COM and rotational energies independently.",
+    "The kinetic-energy ellipse has semi-axis lengths sqrt(2E/lambda_i), unlike the source unit-acceleration-to-torque ellipse with semi-axis lengths lambda_i.",
+    "Use the actual Cartesian tool-point Jacobian for planar translation; the lower block of a space twist Jacobian is not generally that velocity.",
+    "The chosen Christoffel C is essential to the skew claim; C qdot does not uniquely specify C.",
+    "Own contact lambda is force of wall on robot, opposite to textbook lambda/Ftip applied by robot against constraint; preserve and explain sign conversion.",
+    "Near a task singularity the finite map J M^-1 J^T remains valid but its inverse Lambda is undefined at exact rank loss.",
+    "Motor2 mounted on link1 has absolute rotor velocity qdot1+s*N2*qdot2; diagonal reflected inertia is only the explicit remote ground-mounted idealization.",
+    "Prescribed inverse-dynamics motion is labeled as such; elbow-release animation is a separately solved force-driven initial-value problem; contact view is explicitly instantaneous unless a trajectory is actually integrated.",
+    "Gearing demonstration adds axial rotor inertia only to the original uniform rods. Localized motor/stator mass, translation and transverse rotor inertia are neglected; the source full spatial-inertia treatment accounts for them.",
+    "The free-body initial orientation aligns nonzero spatial angular momentum with world+z; changing body spin also changes that chosen orientation. Wrench-mode world/COM and body linear velocities are displayed separately."
+  ],
+  "unreadSources": [
+    "Siciliano et al. commercial textbook body",
+    "unrequested Cambridge publisher body",
+    "official chapter8 video bodies/transcripts beyond search snippets"
+  ],
+  "restrictions": "No new body access stop for this one official MR-v2.pdf request. All inherited original-body and figure access stops remain binding; no mirrors, alternate format/host or cache recovery.",
+  "modelValidation": {
+    "status": "pure models and metadata pass; complete nine lesson/view drafts; native/personal gates open",
+    "referenceCases": 1132,
+    "families": 9,
+    "mpmath": "1.3.0",
+    "precisionDigits": [
+      90,
+      2600
+    ],
+    "higherPrecisionCases": 85,
+    "higherPrecisionDigits": 5200,
+    "higherPrecisionResult": "all64 complete expected objects exact",
+    "comparisonChecks": 260068,
+    "focusedGroups": 22,
+    "affectedWave5Groups": 11,
+    "canonicalRegeneration": "byte-identical",
+    "fixtureSHA256": "bf2d5731b8bde06924d01034df626a6c28a41693a2abf540b4e1ee1419e234fc",
+    "referenceRepairs": [
+      {
+        "initialLog": "/tmp/wave6-robot-model-tests-initial.log",
+        "issue": "finite-work-precision residue in analytically zero quadrature/differentiation/saddle quantities",
+        "repair": "remove only1000*working-epsilon reference residue; product never floors values"
+      },
+      {
+        "intermediateLog": "/tmp/wave6-robot-model-tests-final.log",
+        "issue": "1800-digit cleanup also erased two genuine tiny shoulder-centripetal terms near1e-1943",
+        "repair": "increase extreme reference precision to2600 digits; all64 extreme expected objects independently reevaluated at5200 and exact"
+      }
+    ],
+    "tolerances": "scientific values3e-11 relative, released-elbow integration2e-9; signed log/range flags separately checked; scoped finite geometry absolute errors explicit; no model comparison relaxed after a failure",
+    "worstObservedRelative": "1.129e-13 outside released-elbow family;8.019e-11 for released-elbow angle change; excludes subnormal final rounding and declared zero-component geometry tolerances",
+    "tinyAngleFollowup": [
+      "Retain prescribed base angles and their small increments separately in trigonometric addition, preserving signed potential/energy changes.",
+      "Expose potential, kinetic and total energy change from cycle start;10 additional independent cases plus a focused original-factor regression.",
+      "Pre-cancel integer factors in the chapter-local rational helper; no shared math/renderer edits.",
+      "Released-elbow angle/rate increments remain retained; sampled trig geometry stays approximate rather than constructing needlessly expensive exact composite rotations."
+    ],
+    "currentModelReceipt": "wave6-robot-momentum-repair.json",
+    "higherPrecisionReceipt": "/tmp/wave6-robot-momentum-repair/higher-precision-85.json",
+    "momentumRepair": "Scale vector components before norm and atan2; retain original magnitude factors, and use exact absolute axial momentum for the coaxial wrench model."
+  },
+  "draftVisualFindings": {
+    "preview": "36 default320/1200 both-theme text/glyph checks passed at the earlierC source; final complete gates remain open",
+    "repairs": [
+      "Narrow operational-mass equation split; axis labels rendered as full TeX overlays.",
+      "3D vector labels separated from world axes, ellipsoid shading refined and an explicit torque arc/visible foreground tau label added.",
+      "Gravity and velocity-product quantities use different colors.",
+      "Gear-ratio endpoint markers and phase/time endpoints get plotting margins.",
+      "Actual free-elbow history stays in a fixed world view instead of being clipped by the current-arm view.",
+      "Recursive sweep readouts reveal results in computational order.",
+      "The common-ratio coupling curve includes zero-coupling roots and the actual selected ratio.",
+      "Use actual theme teal for the proximal rod, blue for the distal rod, and matching legend styles; the collection accent had made both rods blue.",
+      "Place motor symbols in a reserved schematic area and labels outside the rods/joint glyphs."
+    ],
+    "failureEvidence": [
+      "/tmp/wave6-robot-preview/summary.json",
+      "/tmp/wave6-robot-preview-b/summary.json",
+      "/tmp/wave6-robot-native-pilot1/1-light-320-critical-4.png",
+      "/tmp/wave6-robot-native-pilot2/failure.txt",
+      "/tmp/wave6-robot-native-pilot3/failure.txt"
+    ],
+    "harnessCorrection": "/tmp/wave6-robot-native-pilot4/failure.txt tested zero normal acceleration too broadly; detached contact correctly opens a gap. The check now applies zero only to active wall/guide and separately requires nonnegative gap acceleration after detachment. Product solver unchanged.",
+    "criticalInventory": 80,
+    "status": "Pre-palette36-layout matrix complete; final visual revision matrix/personal review open"
+  }
+}

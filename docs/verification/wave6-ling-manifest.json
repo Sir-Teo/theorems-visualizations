@@ -1,0 +1,191 @@
+{
+  "status": "author-verified",
+  "scope": "Exact current author files; manifest excludes itself and mutable continuation handoff. Historical independent acceptance stays36.",
+  "files": [
+    {
+      "path": "content/ling/ch06.data.js",
+      "bytes": 312122,
+      "sha256": "cff758ab46785e207a013961a7d7a591394051dc00f80751d393f22dee310c3f"
+    },
+    {
+      "path": "content/ling/ch06.js",
+      "bytes": 33368,
+      "sha256": "13f25122f19037b1f21a7de06208af07ff8b1ec1838037c605fb6e6015dcbd15"
+    },
+    {
+      "path": "content/ling/ch06.shared.js",
+      "bytes": 19093,
+      "sha256": "50e26183cd91390be6965975dbda52f661a69cbdde540eebae17683b41b27913"
+    },
+    {
+      "path": "content/ling/ch06.viz.js",
+      "bytes": 56971,
+      "sha256": "068ed122a15948ab44e0c44aaea71ed5d725f813c772db59093fcc10472f5a12"
+    },
+    {
+      "path": "content/ling/syllabus.js",
+      "bytes": 65978,
+      "sha256": "4668ea53a40161d97100421ab3f828ee88019e4018b8b29e9da0088eecd2a5d1"
+    },
+    {
+      "path": "docs/verification/wave6-arch-glyph-supplement.json",
+      "bytes": 36885,
+      "sha256": "5d70bf91ba814d05540b9ce475859df07039ba7d6eb117827ab4b2337de9e0ad"
+    },
+    {
+      "path": "docs/verification/wave6-ling-artifacts.json",
+      "bytes": 897003,
+      "sha256": "85e88e3ae4b9c9fdc7c749bd2f1bfac32daaef9f37ed28a1f684905477f9fc79"
+    },
+    {
+      "path": "docs/verification/wave6-ling-gates.json",
+      "bytes": 1438,
+      "sha256": "53af19489dca644e7897c0dc3e5900a7c7001d871dc052e58374195b8e1b078d"
+    },
+    {
+      "path": "docs/verification/wave6-ling-native.json",
+      "bytes": 47242,
+      "sha256": "a8a8cf1adf17ca5597cce8fa41ce1e0d441b6376c3692aa71cb6c39cde7c5ef2"
+    },
+    {
+      "path": "docs/verification/wave6-ling-numerical.json",
+      "bytes": 1438,
+      "sha256": "f0c7c10fe1483a81508e92757979f9aba413b79efb0a3ab2eedeb3beae114adf"
+    },
+    {
+      "path": "docs/verification/wave6-ling-preimages.json",
+      "bytes": 104840,
+      "sha256": "979a877fdf7d16b0cce452860ebe1011e46502be3922af2f763fe3047c75d6a4"
+    },
+    {
+      "path": "docs/verification/wave6-ling-prerequisites.json",
+      "bytes": 27202,
+      "sha256": "fcbdc4406bb9ea044b7d5715690fc9e1fbd6efb3433a499bef473d8461f99bcc"
+    },
+    {
+      "path": "docs/verification/wave6-ling-preservation.json",
+      "bytes": 104956,
+      "sha256": "54f5e88378779951f788a39f229a44247b1711eae345371a172cb6489cac4c54"
+    },
+    {
+      "path": "docs/verification/wave6-ling-source-image-views.json",
+      "bytes": 1096,
+      "sha256": "502d95fc02f0fd1ab38ec3269a93eee4467ae478d31c341862a23ed015a26d22"
+    },
+    {
+      "path": "docs/verification/wave6-ling-source-stops.json",
+      "bytes": 556,
+      "sha256": "7ea511f43ac9cd16d7669cb14dd2aab6ddc7c04034a5f34c8d7495a853bf792e"
+    },
+    {
+      "path": "docs/verification/wave6-ling-sources.json",
+      "bytes": 2050,
+      "sha256": "c499a45c48ee9156bd37a1b99690074874cd04711080d9dac4724f0ae5a6ce15"
+    },
+    {
+      "path": "docs/verification/wave6-ling-transitions.json",
+      "bytes": 24766,
+      "sha256": "667c46a18960ee22f17978228f3454db5fe4716e4b7ff89e72d0887f0f1b415d"
+    },
+    {
+      "path": "docs/verification/wave6-ling-visual.json",
+      "bytes": 200677,
+      "sha256": "a3841939e80135c4918e9347f853f21f40ec24e33c1c6382bb1e4f1b4f289222"
+    },
+    {
+      "path": "docs/verification/wave6-ling-wcs-quality.json",
+      "bytes": 805,
+      "sha256": "344d04879d3f53a4d0b301a107082359bc003c17f257a1f942ccbee64276c662"
+    },
+    {
+      "path": "docs/verification/wave6-ling.md",
+      "bytes": 7608,
+      "sha256": "2b70a713261e662c0e910473da54720ea6ecb84487300d8ac63eaeec0b9af667"
+    },
+    {
+      "path": "tests/fixtures/wave6-ling-reference.json",
+      "bytes": 8911457,
+      "sha256": "08bc29d566e31bf932f30d97800c6f5031b7938251bedcd61c91c3cbf7403955"
+    },
+    {
+      "path": "tests/fixtures/wave6-ling-syllabus-before.json",
+      "bytes": 74582,
+      "sha256": "8e5e62350425a63b45db0f2dede261abcdc3474960462c9242db8a489c157b71"
+    },
+    {
+      "path": "tests/fixtures/wave6-ling-wcs/dict.txt",
+      "bytes": 39132,
+      "sha256": "1b2d034166e2ea38faa00eab85f773ac3119b2231d9db56fdacc4da156f03203"
+    },
+    {
+      "path": "tests/fixtures/wave6-ling-wcs/foci-exp.txt",
+      "bytes": 1550056,
+      "sha256": "10f1d38ebf8f1c07a97075e5114fb8cabdec5d185ed675bd574fa2fa0da5bc01"
+    },
+    {
+      "path": "tests/fixtures/wave6-ling-wcs/lab.txt",
+      "bytes": 12528,
+      "sha256": "82864ac378e051b6daa85e396f8e6f6d187c56d815938914b580e046dd95e3dc"
+    },
+    {
+      "path": "tests/fixtures/wave6-ling-wcs/lang.txt",
+      "bytes": 6709,
+      "sha256": "231ac57528606ba0d5694438d566c442beb4c3c94804025c93ff37d683e7c06a"
+    },
+    {
+      "path": "tests/wave5-ling.test.mjs",
+      "bytes": 11871,
+      "sha256": "91291b23145b3cdd9e6d6a16e95dcf3d77120e8dee2b8749ebffd3dc29867adc"
+    },
+    {
+      "path": "tests/wave6-arch-glyph-supplement.mjs",
+      "bytes": 3987,
+      "sha256": "ebeaf3956b198b5bc0796b4ae561b30cb78f5af92e845f13c0d72f926cc4c4d4"
+    },
+    {
+      "path": "tests/wave6-ling-browser.mjs",
+      "bytes": 4195,
+      "sha256": "01f3fdf33cdfe45a886d309b655d025142d6f5288e830e9400ffce7a96c6d690"
+    },
+    {
+      "path": "tests/wave6-ling-browser.shared.mjs",
+      "bytes": 11159,
+      "sha256": "5a49a6d5e5c391d023e2483b4c20accae1d84691a9dc7e6a578f8eae5de51228"
+    },
+    {
+      "path": "tests/wave6-ling-glyph.shared.mjs",
+      "bytes": 1391,
+      "sha256": "87e31d5f01c0e93492f901a8c411e88c7e1e9c551d9c2843c128c6538b9b9eb0"
+    },
+    {
+      "path": "tests/wave6-ling-native-cases.mjs",
+      "bytes": 4872,
+      "sha256": "e093082f4d6bc548eee872ea4eca20cd6d93105605b1b729dccb5cb8d1d4fe53"
+    },
+    {
+      "path": "tests/wave6-ling-native-science.mjs",
+      "bytes": 10772,
+      "sha256": "e8ec12e887b44a67c81e1972b9f97086e7adf5e9b20163fb33a7d4aff96d074d"
+    },
+    {
+      "path": "tests/wave6-ling-native.mjs",
+      "bytes": 14559,
+      "sha256": "d78b544085406933f336dcd43c1e3675c8e547e5eadd5e36627051c789a5fb77"
+    },
+    {
+      "path": "tests/wave6-ling-preservation.shared.mjs",
+      "bytes": 806,
+      "sha256": "53bb1e092e70625c1063bfe89af0c9bd2e7ac91056b2dbaf94e8f3cb502a87b4"
+    },
+    {
+      "path": "tests/wave6-ling-reference.py",
+      "bytes": 16809,
+      "sha256": "4674453c1bc9293c514244ab3cda9176d4e9d9cddc5e943b956140edbecc9426"
+    },
+    {
+      "path": "tests/wave6-ling.test.mjs",
+      "bytes": 10643,
+      "sha256": "6665bfb361b206e06bd65f86279ea4baa212c006d4cf01ed927010360425d665"
+    }
+  ]
+}

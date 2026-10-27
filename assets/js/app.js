@@ -162,9 +162,9 @@ async function pageHome() {
   const pillars = H.home.pillars.map(id => homeById.get(id));
   const liveFields = G.fields.filter((F) => fieldCols(F).some((C) => C.count));
   const newChapters = [
-    ['pde', 6, 'Waves in space'],
-    ['ml', 6, 'The VC-Dimension'],
-    ['vcalc', 6, 'Surfaces and surface integrals'],
+    ['game', 6, 'Evolution, learning and congestion'],
+    ['fin', 7, 'Options: payoffs and parity'],
+    ['macro', 6, 'Open-economy macroeconomics'],
   ].filter(([col, chapter]) => H.collections.some(C => C.id === col && C.chapters.some(Ch => Ch.n === chapter && Ch.count)));
   const el = h(`<div>
     <section class="wrap hero">
@@ -174,7 +174,7 @@ async function pageHome() {
           <p class="lede">Interactive explanations of ideas across mathematics, science, society, the arts and the humanities.</p>
           ${newChapters.length ? `<p class="meta refs-inline">New: ${newChapters.map(([col, chapter, title]) => `<a href="#/c/${col}/${chapter}">${escapeHTML(title)}</a>`).join(' · ')}</p>` : ''}
           <div class="hero-actions">
-            <a class="btn primary" href="#/map">Explore the map <span aria-hidden="true">↗</span></a>
+            <a class="btn primary" href="#/map">Explore the map <svg width="14" height="14" viewBox="0 0 16 16" aria-hidden="true"><path d="M3 13 13 3M3 3h10v10" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
             <a class="hero-browse" href="#fields">Browse the fields <span aria-hidden="true">↓</span></a>
           </div>
         </div>

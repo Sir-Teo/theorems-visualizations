@@ -316,41 +316,224 @@ export default {
       title: 'Organization, depth and size',
       summary: String.raw`Before we recognise objects we must group features and separate figure from ground; the Gestalt laws describe the grouping cues the visual system uses, and bistable figures show those choices flipping. Depth comes from binocular disparity and from pictorial cues, and the depth we infer feeds back into the size we perceive, which is the root of several famous illusions. Modern accounts treat this as probabilistic inference that weights each cue by its reliability.`,
       items: [
-        { num: '6.1', kind: 'Principle', name: 'Figure–ground segregation', deps: [], refs: ['Goldstein ch. 5'],
-          pic: 'Rubin’s vase with adjustable border shape, contrast and symmetry: report which region looks like the figure and see how convexity and smallness tip the balance.' },
-        { num: '6.2', kind: 'Principle', name: 'Gestalt grouping by proximity', deps: ['psych-6.1'], refs: ['Goldstein ch. 5'],
-          pic: 'A dot lattice whose row and column spacings you drag; the perceived grouping flips from rows to columns as the spacing ratio crosses about one.' },
-        { num: '6.3', kind: 'Principle', name: 'Grouping by similarity', deps: ['psych-6.1'], refs: ['Goldstein ch. 5'],
-          pic: 'Pit colour similarity against proximity in the same lattice; sliders for colour difference and spacing locate the point where the two cues balance.' },
-        { num: '6.4', kind: 'Principle', name: 'Good continuation and contour integration', deps: ['psych-6.1'], refs: ['Goldstein ch. 5'],
-          pic: 'A path of aligned Gabor patches hidden among random ones pops out; jitter the orientations and watch the path dissolve at a measurable angle.' },
-        { num: '6.5', kind: 'Principle', name: 'Closure and illusory contours', deps: ['psych-6.1'], refs: ['Goldstein ch. 5'],
-          pic: 'Pac-man inducers create a Kanizsa triangle; rotate the inducers out of alignment and the bright illusory edges vanish.' },
-        { num: '6.6', kind: 'Principle', name: 'Common fate', deps: ['psych-6.1'], refs: ['Goldstein ch. 5'],
-          pic: 'A field of random dots in which a subset moves coherently; the moving subset groups into a shape, and a coherence slider finds your threshold for seeing it.' },
-        { num: '6.7', kind: 'Phenomenon', name: 'Bistable perception: the Necker cube', deps: ['psych-6.1'], refs: ['Goldstein ch. 5'],
-          pic: 'Press a key whenever the cube flips; your dominance durations form a skewed histogram, and adding shading cues biases one interpretation.' },
-        { num: '6.8', kind: 'Concept', name: 'Binocular disparity and stereopsis', deps: [], refs: ['Goldstein ch. 10'],
-          pic: 'A top-down view of two eyes fixating a point; drag objects nearer or farther and their images shift on the two retinas by the computed disparity, with the horopter drawn.' },
-        { num: '6.9', kind: 'Phenomenon', name: 'Random-dot stereograms (Julesz)', deps: ['psych-6.8'], refs: ['Goldstein ch. 10'],
-          pic: 'Generate a random-dot stereogram from a depth map you draw; with free fusion or red–cyan glasses a hidden shape floats out, though neither image contains it.' },
-        { num: '6.10', kind: 'Concept', name: 'Monocular depth cues', deps: [], refs: ['Goldstein ch. 10'],
-          pic: 'Toggle occlusion, relative size, texture gradient, height in the field and motion parallax one at a time in a 3D scene and rate how deep it looks.' },
-        { num: '6.11', kind: 'Phenomenon', name: 'Size constancy and Emmert’s law', deps: ['psych-6.10'], refs: ['Goldstein ch. 10'],
-          pic: 'Project an afterimage onto surfaces at different distances: its perceived size scales with distance while its retinal size is fixed, as the computed size–distance relation shows.' },
-        { num: '6.12', kind: 'Phenomenon', name: 'Müller-Lyer illusion', deps: ['psych-6.11'], refs: ['Goldstein ch. 10'],
-          pic: 'Adjust a shaft until it matches a fins-in shaft; your error is measured as fin angle and length vary, and the depth (“carpentered world”) explanation is shown alongside its contested cross-cultural evidence.' },
-        { num: '6.13', kind: 'Phenomenon', name: 'Ponzo illusion', deps: ['psych-6.11'], refs: ['Goldstein ch. 10'],
-          pic: 'Two equal bars between converging rails; remove the rails or the texture and the illusion shrinks, measured with a matching slider.' },
-        { num: '6.14', kind: 'Phenomenon', name: 'Ebbinghaus (Titchener) circles', deps: ['psych-6.1'], refs: ['Goldstein ch. 10'],
-          pic: 'A central disc ringed by large or small discs; drag the inducers’ size and distance and match the centre to record how size contrast distorts it.' },
-        { num: '6.15', kind: 'Phenomenon', name: 'The Ames room', deps: ['psych-6.11'], refs: ['Goldstein ch. 10'],
-          pic: 'A top view and the peephole view of a trapezoidal room: people walking along the back wall seem to grow and shrink, and the top view shows the real distances.' },
-        { num: '6.16', kind: 'Phenomenon', name: 'The moon illusion', deps: ['psych-6.11'], refs: ['Goldstein ch. 10'],
-          pic: 'The moon’s angular size is constant (measured by a ruler overlay) while its perceived size changes from horizon to zenith; compare the apparent-distance and angular-size-contrast explanations.' },
-        { num: '6.17', kind: 'Model', name: 'Bayesian cue combination (Ernst–Banks)', deps: ['psych-6.10', 'stat-10.6'], refs: ['Goldstein ch. 10'],
-          pic: 'Visual and haptic estimates of a bar’s height with adjustable noise: the combined estimate lands at the reliability-weighted average and its variance is smaller than either cue’s.' },
-      ],
+        {
+          "num": "6.1",
+          "kind": "Principle",
+          "name": "Figure–ground segregation",
+          "deps": [],
+          "refs": [
+            "Wagemans (2018), Perceptual organization, selected figure–ground discussion and PDF pp. 3–5",
+            "OpenStax Psychology 2e §5.6, figure–ground teaching exposition; original stimulus and polygon-area derivation"
+          ],
+          "pic": "Change the central width and the border's asymmetry, or reverse the neutral tones. Optionally reveal the shared boundaries and record your current interpretation. The area comparison describes the drawn regions; your chosen report remains separate."
+        },
+        {
+          "num": "6.2",
+          "kind": "Principle",
+          "name": "Gestalt grouping by proximity",
+          "deps": [
+            "psych-6.1"
+          ],
+          "refs": [
+            "Wagemans (2018), PDF pp. 3–4, proximity and interactions among grouping cues",
+            "OpenStax Psychology 2e §5.6; original fixed-scale lattice"
+          ],
+          "pic": "Adjust horizontal and vertical spacing independently. Watch the same 36 dots move, then compare the two center-to-center gaps. Equal spacing is a geometric tie, not a command to see a particular grouping."
+        },
+        {
+          "num": "6.3",
+          "kind": "Principle",
+          "name": "Grouping by similarity",
+          "deps": [
+            "psych-6.1"
+          ],
+          "refs": [
+            "Wagemans (2018), PDF pp. 3–4, similarity and competing grouping arrangements",
+            "OpenStax Psychology 2e §5.6; original independent feature/spacing construction"
+          ],
+          "pic": "Choose an appearance pattern and vary its separation while changing the two spatial gaps. Try rows in appearance with closer vertical neighbors, then set appearance separation to zero. Compare the independent stimulus differences without a fabricated cue-balance score."
+        },
+        {
+          "num": "6.4",
+          "kind": "Principle",
+          "name": "Good continuation and contour integration",
+          "deps": [
+            "psych-6.1"
+          ],
+          "refs": [
+            "Wagemans (2018), selected continuation/contour-integration discussion and PDF pp. 4–5",
+            "Original Gaussian-windowed cosine field and tangent-offset calculation"
+          ],
+          "pic": "Vary angular jitter, clutter and the reproducible seed. Look for the authored contour before revealing its path, then inspect the actual orientation offsets. The reveal adds a diagnostic guide that is absent from the initial stimulus."
+        },
+        {
+          "num": "6.5",
+          "kind": "Principle",
+          "name": "Closure and illusory contours",
+          "deps": [
+            "psych-6.1"
+          ],
+          "refs": [
+            "Illusions Index, Kanizsa Triangle, main teaching discussion and modal/amodal distinction",
+            "Wagemans (2018), selected closure discussion and PDF p. 5; original inducer geometry"
+          ],
+          "pic": "Rotate the inducer openings and change their radii. Compare the center and background code probes, then optionally add the explicit diagnostic outline. Equal code values verify what was drawn, not whether every observer experiences the same apparent brightness or contour."
+        },
+        {
+          "num": "6.6",
+          "kind": "Principle",
+          "name": "Common fate",
+          "deps": [
+            "psych-6.1"
+          ],
+          "refs": [
+            "Wagemans (2018), PDF pp. 3–4, common-fate grouping",
+            "Original seeded membership and wrapped-motion construction"
+          ],
+          "pic": "Play or pause the real motion, vary the coherent membership and inspect a selected phase. Reveal members or velocity strokes to verify which dots share motion. Changing the seed changes a reproducible realization, not an observer's detection ability."
+        },
+        {
+          "num": "6.7",
+          "kind": "Phenomenon",
+          "name": "Bistable perception: the Necker cube",
+          "deps": [
+            "psych-6.1"
+          ],
+          "refs": [
+            "Illusions Index, Necker Cube, main discussion, ambiguity and possible flat interpretation",
+            "Original common-projection/front-face diagrams"
+          ],
+          "pic": "Compare the unmarked wireframe with the two explicitly cued interpretations. Select a cue or record your current report, including a flat view. The vertices stay fixed; colored cues are additions to the image and are not spontaneous perceptual switches."
+        },
+        {
+          "num": "6.8",
+          "kind": "Concept",
+          "name": "Binocular disparity and stereopsis",
+          "deps": [],
+          "refs": [
+            "Heeger, NYU Depth and size lecture, binocular disparity and horopter teaching discussion",
+            "Original centered-ray and exact cross/dot derivation"
+          ],
+          "pic": "Move the point sideways and in depth, change fixation and eye separation, and compare the rays, registered retinal angles and disparity curve. Put the point at fixation, then move sideways at the same depth: the fixation plane does not stay at zero disparity."
+        },
+        {
+          "num": "6.9",
+          "kind": "Phenomenon",
+          "name": "Random-dot stereograms (Julesz)",
+          "deps": [
+            "psych-6.8"
+          ],
+          "refs": [
+            "Heeger, NYU Depth and size lecture, random-dot stereograms and correspondence",
+            "Original source-ownership construction; Julesz original book body not checked"
+          ],
+          "pic": "Choose the hidden shape, integer disparity and seed. Compare parallel or cross-fusion image ordering, single-eye images, red/cyan channels and the mask reveal. Inspect a selected row's actual source correspondences; zero disparity gives identical eye images."
+        },
+        {
+          "num": "6.10",
+          "kind": "Concept",
+          "name": "Monocular depth cues",
+          "deps": [],
+          "refs": [
+            "Heeger, NYU Depth and size lecture, pictorial cues, relative size and motion parallax",
+            "Original ray-plane projection and camera-translation calculation"
+          ],
+          "pic": "Vary the two object depths and the camera position. Toggle the actual context drawing and compare equal-world-height with equal-image-height objects. Follow the world top view and the two computed parallax shifts to separate image size from physical size."
+        },
+        {
+          "num": "6.11",
+          "kind": "Phenomenon",
+          "name": "Size constancy and Emmert’s law",
+          "deps": [
+            "psych-6.10"
+          ],
+          "refs": [
+            "Nakamizo & Imamura (2004), Verification of Emmert’s Law in Actual and Virtual Environments, complete main text pp. 325–329",
+            "Heeger, NYU Depth and size lecture; original centered-ray angle convention"
+          ],
+          "pic": "Compare a fixed real object with a fixed image diameter. Change physical distance and the explicitly assumed scaling distance, then inspect the constant-size and linear-size constructions. This diagram induces no actual afterimage and uses no flash."
+        },
+        {
+          "num": "6.12",
+          "kind": "Phenomenon",
+          "name": "Müller-Lyer illusion",
+          "deps": [
+            "psych-6.11"
+          ],
+          "refs": [
+            "Bach, Müller-Lyer Illusion, main teaching discussion and proposed perspective interpretation",
+            "Amir & Firestone (2025), preprint title/abstract/initial introduction only, challenge to a strong cultural account; broader body unread",
+            "Original shaft matching and fin geometry"
+          ],
+          "pic": "Adjust the lower shaft before revealing its physical length and signed match error. Change fin length or angle, and remove the fins to compare contexts. The reveal reports your actual setting; it supplies no expected percentage error."
+        },
+        {
+          "num": "6.13",
+          "kind": "Phenomenon",
+          "name": "Ponzo illusion",
+          "deps": [
+            "psych-6.11"
+          ],
+          "refs": [
+            "Donaldson & Macpherson (2017), Illusions Index: Ponzo Illusion, main teaching discussion and alternative explanations",
+            "Original conditional parallel-rail pinhole derivation"
+          ],
+          "pic": "Match the upper bar to the lower, vary rail convergence, and switch among no context, rails, or rails with texture. Reveal the physical error separately from the size ratio implied by the explicit parallel-world-rail interpretation."
+        },
+        {
+          "num": "6.14",
+          "kind": "Phenomenon",
+          "name": "Ebbinghaus (Titchener) circles",
+          "deps": [
+            "psych-6.1"
+          ],
+          "refs": [
+            "Thomson & Macpherson (2017), Illusions Index: Ebbinghaus Illusion, basic size-context demonstration",
+            "Original fixed-center-distance circle geometry and physical area ratio"
+          ],
+          "pic": "Adjust the comparison center, reverse the small and large surrounds, or remove context. Reveal diameter guides and the physical ratio after considering the appearance. The phone layout stacks the two arrangements while preserving the same circle scale."
+        },
+        {
+          "num": "6.15",
+          "kind": "Phenomenon",
+          "name": "The Ames room",
+          "deps": [
+            "psych-6.11"
+          ],
+          "refs": [
+            "Ittelson, The Ames Demonstrations in Perception, chapter 13 pp. 183–184 and original figures p. 185 inspected; original projective construction",
+            "Gehringer & Engel (1986), Effect of ecological viewing conditions on the Ames’ distorted room illusion, abstract acquired in search only; full body unchecked"
+          ],
+          "pic": "Change the two room depths and move the camera sideways or upward. Compare the peephole projection with the world top view. Both figures keep the same world height; their image-height ratio follows the actual depths."
+        },
+        {
+          "num": "6.16",
+          "kind": "Phenomenon",
+          "name": "The moon illusion",
+          "deps": [
+            "psych-6.11"
+          ],
+          "refs": [
+            "NASA Science, The Moon Illusion: Why Does the Moon Look So Big Sometimes?, main teaching article, updated 2025",
+            "Original equal-radius schematic and identical comparison guides"
+          ],
+          "pic": "Move the schematic Moon from the horizon toward the zenith, switch the context, and reveal equal-diameter rulers. Changing model angular diameter changes both discs together. The duplicate crater patterns are authored decoration; the diagram does not predict how large either disc will appear to you."
+        },
+        {
+          "num": "6.17",
+          "kind": "Model",
+          "name": "Bayesian cue combination (Ernst–Banks)",
+          "deps": [
+            "psych-6.10",
+            "stat-10.6"
+          ],
+          "refs": [
+            "Ernst & Banks (2002), Humans integrate visual and haptic information in a statistically optimal fashion, complete main argument/results/methods via Gale HTML; figure captions read, figure pixels unavailable",
+            "STAT 10.6, normal–normal precision update; original correlated quadratic-variance extension"
+          ],
+          "pic": "Change cue estimates, uncertainties and correlation. Compare the independence rule, the correlated minimum-variance rule and a chosen weight. Inspect authored Gaussian curves, the exact weights and the actual variance curve; challenge independence rather than assuming that combining always helps."
+        }
+      ]
     },
     // ───────────────────────────────────────────────────────────── 7
     {

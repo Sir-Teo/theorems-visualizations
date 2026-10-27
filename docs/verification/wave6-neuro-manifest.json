@@ -1,0 +1,15 @@
+{
+  "baseCommit": "180e6e90c2f0ec6fea8a5160523a089d3cb00a6f",
+  "sha256": {
+    "content/neuro/ch06.js": "1f96eecc46ef37846df5a5786ef71c2c386bdb85a250e64e52507ad3e76a0c65",
+    "content/neuro/ch06.shared.js": "aa91be98810afc0b6279146fa7577bd7b27179a4faae2b82e1b15e3fcf4d85f4",
+    "content/neuro/ch06.viz.js": "42057014e64fe95b2740605b5720f90d70d04d0b1aede15756563dc40aa0cd92",
+    "content/neuro/syllabus.js": "3a9ce34c6b09309521a4e52d52e4ae067d051f6781ff8e91bf13e20a8512a1e5",
+    "tests/wave6-neuro.test.mjs": "ed5fe1b8f2c90e5d4624bbf8882c5ebfb5a71e1e68d8b8e2bf1b5b59b77ae146",
+    "tests/wave6-neuro-browser.mjs": "2a3aadcefdae3827b248effe27d9859e675badee3f65e2baa298129616a1e21e",
+    "tests/wave6-neuro-reference.py": "7e586cd251b9d8a5d1555e48d92c1868824c85e226ff7bb7bbeba362c656ad55",
+    "tests/fixtures/wave6-neuro-reference.json": "cfd96986ff7d7eb8dc9a0c47e763c6d9a85fa39dfc78ddfe97ddbe590d883efb",
+    "docs/verification/wave6-neuro-sources.json": "d0b4776848db0cad84428205c94f26959e81522bf598cd5f60e34db438a54e09",
+    "docs/verification/wave6-neuro-gates.json": "9c7302031bf11ee9fc054fab129be88df09ce60c21a46267684bddfcab4af6e6"
+  }
+}

@@ -1,0 +1,5167 @@
+{
+  "status": "PASS;91personally inspected original-detail sheets qualify254complete selected targets",
+  "targets": {
+    "default": 44,
+    "rich": 110,
+    "critical": 92,
+    "camera": 8
+  },
+  "sheets": [
+    {
+      "file": "/workspace/scratch/wave6-arch-research/default-polished-v5/review/widgets-320-01.png",
+      "sha256": "34ed3a71bd7c3dd233dbe89351bdf41c304cb53c930062e790cc49b0f7fff48d",
+      "size": [
+        592,
+        1447
+      ],
+      "crops": [
+        {
+          "source": "/workspace/scratch/wave6-arch-research/default-polished-v5/arch-6.1-light-320.png",
+          "sourceSHA256": "e2882248a766b4590c81c2dea4f942b381773ef09047788f9b5f339805f953bc",
+          "sourceBox": [
+            0,
+            0,
+            288,
+            1415
+          ],
+          "destinationBox": [
+            0,
+            32,
+            288,
+            1447
+          ]
+        },
+        {
+          "source": "/workspace/scratch/wave6-arch-research/default-polished-v5/arch-6.1-dark-320.png",
+          "sourceSHA256": "e9b12249443bf931b5fc0bac0dd9ec32a267cc9ddd0aced7348c7e8a2e55b543",
+          "sourceBox": [
+            0,
+            0,
+            288,
+            1415
+          ],
+          "destinationBox": [
+            304,
+            32,
+            592,
+            1447
+          ]
+        }
+      ],
+      "kind": "default",
+      "personallyViewedOriginalDetail": true
+    },
+    {
+      "file": "/workspace/scratch/wave6-arch-research/default-polished-v5/review/widgets-1200-01.png",
+      "sha256": "34c37003c28bef275413602d438343196ede4f7fdf917b1a9fb114acdc1901e4",
+      "size": [
+        1144,
+        1194
+      ],
+      "crops": [
+        {
+          "source": "/workspace/scratch/wave6-arch-research/default-polished-v5/arch-6.1-light-1200.png",
+          "sourceSHA256": "a981dc71657a9c0f2d592c507007e2e4b864ae62f4834a736d59a4e14efbe0b6",
+          "sourceBox": [
+            0,
+            0,
+            1144,
+            557
+          ],
+          "destinationBox": [
+            0,
+            32,
+            1144,
+            589
+          ]
+        },
+        {
+          "source": "/workspace/scratch/wave6-arch-research/default-polished-v5/arch-6.1-dark-1200.png",
+          "sourceSHA256": "d2a8a2065ab37a86476812438ff9cd87ee11663ceaefb540726c44391cc9bc18",
+          "sourceBox": [
+            0,
+            0,
+            1144,
+            557
+          ],
+          "destinationBox": [
+            0,
+            637,
+            1144,
+            1194
+          ]
+        }
+      ],
+      "kind": "default",
+      "personallyViewedOriginalDetail": true
+    },
+    {
+      "file": "/workspace/scratch/wave6-arch-research/default-polished-v5/review/widgets-320-02.png",
+      "sha256": "36276b95d3814a0786bee13907a2b752ba79a09c1c27188fdc090c7a20737805",
+      "size": [
+        592,
+        1413
+      ],
+      "crops": [
+        {
+          "source": "/workspace/scratch/wave6-arch-research/default-polished-v5/arch-6.2-light-320.png",
+          "sourceSHA256": "6b3058593bbe785f3c7c9d5f161c3bf3abd89be2ddebd9bac1d93ffbb1dd9d2e",
+          "sourceBox": [
+            0,
+            0,
+            288,
+            1381
+          ],
+          "destinationBox": [
+            0,
+            32,
+            288,
+            1413
+          ]
+        },
+        {
+          "source": "/workspace/scratch/wave6-arch-research/default-polished-v5/arch-6.2-dark-320.png",
+          "sourceSHA256": "69d61c84cc0197caa9db77e04b46b6736fa3e70294681671b969ce6df8c9dbee",
+          "sourceBox": [
+            0,
+            0,
+            288,
+            1381
+          ],
+          "destinationBox": [
+            304,
+            32,
+            592,
+            1413
+          ]
+        }
+      ],
+      "kind": "default",
+      "personallyViewedOriginalDetail": true
+    },
+    {
+      "file": "/workspace/scratch/wave6-arch-research/default-polished-v5/review/widgets-1200-02.png",
+      "sha256": "296630e2fbe0044e4503f4384782de8de3e63dc70e0780175e5c80db415f48da",
+      "size": [
+        1144,
+        1164
+      ],
+      "crops": [
+        {
+          "source": "/workspace/scratch/wave6-arch-research/default-polished-v5/arch-6.2-light-1200.png",
+          "sourceSHA256": "bad0e92bf9468f4f8e1a221525caa77d8407f9149b85de3ddcd3acacb8e02395",
+          "sourceBox": [
+            0,
+            0,
+            1144,
+            542
+          ],
+          "destinationBox": [
+            0,
+            32,
+            1144,
+            574
+          ]
+        },
+        {
+          "source": "/workspace/scratch/wave6-arch-research/default-polished-v5/arch-6.2-dark-1200.png",
+          "sourceSHA256": "a1877d6c1beac85358148e062d22928e49649630966f6bb10a1ef0d0b4e7edfa",
+          "sourceBox": [
+            0,
+            0,
+            1144,
+            542
+          ],
+          "destinationBox": [
+            0,
+            622,
+            1144,
+            1164
+          ]
+        }
+      ],
+      "kind": "default",
+      "personallyViewedOriginalDetail": true
+    },
+    {
+      "file": "/workspace/scratch/wave6-arch-research/default-polished-v5/review/widgets-320-04.png",
+      "sha256": "7f6396f35ce488e2941a271c6b8224ca63df42fd2bcdac8f4b5cebe503f48459",
+      "size": [
+        592,
+        1485
+      ],
+      "crops": [
+        {
+          "source": "/workspace/scratch/wave6-arch-research/default-polished-v5/arch-6.4-light-320.png",
+          "sourceSHA256": "a9ae1f4eb1c8d65774a66808e74a04c8ba85b87ffd9a5c39f0c1f0db8c8d86a5",
+          "sourceBox": [
+            0,
+            0,
+            288,
+            1453
+          ],
+          "destinationBox": [
+            0,
+            32,
+            288,
+            1485
+          ]
+        },
+        {
+          "source": "/workspace/scratch/wave6-arch-research/default-polished-v5/arch-6.4-dark-320.png",
+          "sourceSHA256": "6726924995edbb6340fe484c211ded9b8fed90187930abe0e14df5d99fce6d9c",
+          "sourceBox": [
+            0,
+            0,
+            288,
+            1453
+          ],
+          "destinationBox": [
+            304,
+            32,
+            592,
+            1485
+          ]
+        }
+      ],
+      "kind": "default",
+      "personallyViewedOriginalDetail": true
+    },
+    {
+      "file": "/workspace/scratch/wave6-arch-research/default-polished-v5/review/widgets-1200-04.png",
+      "sha256": "ab2f25ab5cc8283bd6c3a6ddb43eeb36ca978b300a1a15834b1c55ff805d4dd9",
+      "size": [
+        1144,
+        1208
+      ],
+      "crops": [
+        {
+          "source": "/workspace/scratch/wave6-arch-research/default-polished-v5/arch-6.4-light-1200.png",
+          "sourceSHA256": "77fcdf83f970db07e88a6a22f71b400181f2a6253c2e29de3ad70d02739dea5f",
+          "sourceBox": [
+            0,
+            0,
+            1144,
+            564
+          ],
+          "destinationBox": [
+            0,
+            32,
+            1144,
+            596
+          ]
+        },
+        {
+          "source": "/workspace/scratch/wave6-arch-research/default-polished-v5/arch-6.4-dark-1200.png",
+          "sourceSHA256": "643e8d02a2f50f449c6d21c4ed6e55b2e04d7492d1bbf8c77b2618e963074d47",
+          "sourceBox": [
+            0,
+            0,
+            1144,
+            564
+          ],
+          "destinationBox": [
+            0,
+            644,
+            1144,
+            1208
+          ]
+        }
+      ],
+      "kind": "default",
+      "personallyViewedOriginalDetail": true
+    },
+    {
+      "file": "/workspace/scratch/wave6-arch-research/default-polished-v5/review/widgets-320-05.png",
+      "sha256": "945935832440c16ad0f9c99e73eaa1ed0a734f2bb614c6841a9a2e44fa1a2c82",
+      "size": [
+        592,
+        1569
+      ],
+      "crops": [
+        {
+          "source": "/workspace/scratch/wave6-arch-research/default-polished-v5/arch-6.5-light-320.png",
+          "sourceSHA256": "532c2634e92e93cfec3875f7ccc4dae807705620990c044a41ce8460749d2df7",
+          "sourceBox": [
+            0,
+            0,
+            288,
+            1537
+          ],
+          "destinationBox": [
+            0,
+            32,
+            288,
+            1569
+          ]
+        },
+        {
+          "source": "/workspace/scratch/wave6-arch-research/default-polished-v5/arch-6.5-dark-320.png",
+          "sourceSHA256": "e31e8145aed33ab2eb5b0618d8338e0c794be5dbd240c28b2d9cb6b8d18d76a9",
+          "sourceBox": [
+            0,
+            0,
+            288,
+            1537
+          ],
+          "destinationBox": [
+            304,
+            32,
+            592,
+            1569
+          ]
+        }
+      ],
+      "kind": "default",
+      "personallyViewedOriginalDetail": true
+    },
+    {
+      "file": "/workspace/scratch/wave6-arch-research/default-polished-v5/review/widgets-1200-05.png",
+      "sha256": "056283224bb725332326589e3a6785f087a30a7898918f6605b499f12af53a29",
+      "size": [
+        1144,
+        1208
+      ],
+      "crops": [
+        {
+          "source": "/workspace/scratch/wave6-arch-research/default-polished-v5/arch-6.5-light-1200.png",
+          "sourceSHA256": "f120d0e5de00caa1948fd320af922051c25615ab6de6c3536dee5019d8b127a7",
+          "sourceBox": [
+            0,
+            0,
+            1144,
+            564
+          ],
+          "destinationBox": [
+            0,
+            32,
+            1144,
+            596
+          ]
+        },
+        {
+          "source": "/workspace/scratch/wave6-arch-research/default-polished-v5/arch-6.5-dark-1200.png",
+          "sourceSHA256": "dd5e9262dcd03e933a8c74a02a6b5c83211d57107e5d8d0cb19ed10f8849da11",
+          "sourceBox": [
+            0,
+            0,
+            1144,
+            564
+          ],
+          "destinationBox": [
+            0,
+            644,
+            1144,
+            1208
+          ]
+        }
+      ],
+      "kind": "default",
+      "personallyViewedOriginalDetail": true
+    },
+    {
+      "file": "/workspace/scratch/wave6-arch-research/default-polished-v5/review/widgets-1200-06.png",
+      "sha256": "de09bd952dfe03e29d523d9b007e297b8bc65e6152db37bb1d59782bae953135",
+      "size": [
+        1144,
+        1290
+      ],
+      "crops": [
+        {
+          "source": "/workspace/scratch/wave6-arch-research/default-polished-v5/arch-6.6-light-1200.png",
+          "sourceSHA256": "5c1656219aa5f5b2f0cbb204b0547c0f804bf2156fd96803aabd4e61ed4b308b",
+          "sourceBox": [
+            0,
+            0,
+            1144,
+            605
+          ],
+          "destinationBox": [
+            0,
+            32,
+            1144,
+            637
+          ]
+        },
+        {
+          "source": "/workspace/scratch/wave6-arch-research/default-polished-v5/arch-6.6-dark-1200.png",
+          "sourceSHA256": "b0afa1ce2120b16c50de2e40ee2d310b0421d82a1f0b8d83d58bf8379236d11c",
+          "sourceBox": [
+            0,
+            0,
+            1144,
+            605
+          ],
+          "destinationBox": [
+            0,
+            685,
+            1144,
+            1290
+          ]
+        }
+      ],
+      "kind": "default",
+      "personallyViewedOriginalDetail": true
+    },
+    {
+      "file": "/workspace/scratch/wave6-arch-research/default-polished-v5/review/widgets-320-08.png",
+      "sha256": "1b72231c3f1f555ab5de97486a43dbb218f9edfe33a6ef448c0546d796b8752e",
+      "size": [
+        592,
+        1495
+      ],
+      "crops": [
+        {
+          "source": "/workspace/scratch/wave6-arch-research/default-polished-v5/arch-6.8-light-320.png",
+          "sourceSHA256": "e3f50f37a343b6330c6950ce72cdbc14cb8ffce70b168fd0700f770082c668c0",
+          "sourceBox": [
+            0,
+            0,
+            288,
+            1463
+          ],
+          "destinationBox": [
+            0,
+            32,
+            288,
+            1495
+          ]
+        },
+        {
+          "source": "/workspace/scratch/wave6-arch-research/default-polished-v5/arch-6.8-dark-320.png",
+          "sourceSHA256": "432fee3af4aa93eea9ea82785679300eb32b5225bfa798c6a6150a66f4869c7d",
+          "sourceBox": [
+            0,
+            0,
+            288,
+            1463
+          ],
+          "destinationBox": [
+            304,
+            32,
+            592,
+            1495
+          ]
+        }
+      ],
+      "kind": "default",
+      "personallyViewedOriginalDetail": true
+    },
+    {
+      "file": "/workspace/scratch/wave6-arch-research/default-polished-v5/review/widgets-1200-08.png",
+      "sha256": "b3daade662fb08af0f9626ecc872d15fb281211458a6707258563dbbd417ae95",
+      "size": [
+        1144,
+        1218
+      ],
+      "crops": [
+        {
+          "source": "/workspace/scratch/wave6-arch-research/default-polished-v5/arch-6.8-light-1200.png",
+          "sourceSHA256": "7f530591e358086289554f03cca27ad1edeeb1404274c104037ed81c78a6b475",
+          "sourceBox": [
+            0,
+            0,
+            1144,
+            569
+          ],
+          "destinationBox": [
+            0,
+            32,
+            1144,
+            601
+          ]
+        },
+        {
+          "source": "/workspace/scratch/wave6-arch-research/default-polished-v5/arch-6.8-dark-1200.png",
+          "sourceSHA256": "8b15461f44624db6467235e944d8094a1fe3ba257053c2b065b510f88f596c3a",
+          "sourceBox": [
+            0,
+            0,
+            1144,
+            569
+          ],
+          "destinationBox": [
+            0,
+            649,
+            1144,
+            1218
+          ]
+        }
+      ],
+      "kind": "default",
+      "personallyViewedOriginalDetail": true
+    },
+    {
+      "file": "/workspace/scratch/wave6-arch-research/default-polished-v5/review/widgets-320-09.png",
+      "sha256": "da2d94f6a6e17e26e6a848970c1ff47b1a5add5e818ab03dfe2f5cc5ed31ede5",
+      "size": [
+        592,
+        1487
+      ],
+      "crops": [
+        {
+          "source": "/workspace/scratch/wave6-arch-research/default-polished-v5/arch-6.9-light-320.png",
+          "sourceSHA256": "811ae673f4b2d987dedff40e169cd4eeed52a74c20b8ff0cb37091a8753ec472",
+          "sourceBox": [
+            0,
+            0,
+            288,
+            1455
+          ],
+          "destinationBox": [
+            0,
+            32,
+            288,
+            1487
+          ]
+        },
+        {
+          "source": "/workspace/scratch/wave6-arch-research/default-polished-v5/arch-6.9-dark-320.png",
+          "sourceSHA256": "4087856e3b7b37d9e70a15ccd09208e21054c6774e7a030d50237d3b0112ec03",
+          "sourceBox": [
+            0,
+            0,
+            288,
+            1455
+          ],
+          "destinationBox": [
+            304,
+            32,
+            592,
+            1487
+          ]
+        }
+      ],
+      "kind": "default",
+      "personallyViewedOriginalDetail": true
+    },
+    {
+      "file": "/workspace/scratch/wave6-arch-research/default-polished-v5/review/widgets-1200-10.png",
+      "sha256": "8dd5f3ebc489890edd30ac3b974a5cd7c69788d569b8b43e65d9f452b307ebbe",
+      "size": [
+        1144,
+        1324
+      ],
+      "crops": [
+        {
+          "source": "/workspace/scratch/wave6-arch-research/default-polished-v5/arch-6.10-light-1200.png",
+          "sourceSHA256": "8cc8b1836dc042cac3c4d5a54927b105ff048463a8873a5aae49a70fcb0f15bd",
+          "sourceBox": [
+            0,
+            0,
+            1144,
+            622
+          ],
+          "destinationBox": [
+            0,
+            32,
+            1144,
+            654
+          ]
+        },
+        {
+          "source": "/workspace/scratch/wave6-arch-research/default-polished-v5/arch-6.10-dark-1200.png",
+          "sourceSHA256": "d9b3eab75486ec7af77451d52048a560b181d24d8d9f94208f8f5596c993176d",
+          "sourceBox": [
+            0,
+            0,
+            1144,
+            622
+          ],
+          "destinationBox": [
+            0,
+            702,
+            1144,
+            1324
+          ]
+        }
+      ],
+      "kind": "default",
+      "personallyViewedOriginalDetail": true
+    },
+    {
+      "file": "/workspace/scratch/wave6-arch-research/default-typeset-v6/review/widgets-320-06.png",
+      "sha256": "dca26d4a504902651f23edb0157123b77bb5938264b08f04b76d787206a28b06",
+      "size": [
+        592,
+        1572
+      ],
+      "crops": [
+        {
+          "source": "/workspace/scratch/wave6-arch-research/default-typeset-v6/arch-6.6-light-320.png",
+          "sourceSHA256": "c4a3c429dcd6bbc513c3abf626c9ff84cfee7c50a655670b7c60d048fad850f6",
+          "sourceBox": [
+            0,
+            0,
+            288,
+            1540
+          ],
+          "destinationBox": [
+            0,
+            32,
+            288,
+            1572
+          ]
+        },
+        {
+          "source": "/workspace/scratch/wave6-arch-research/default-typeset-v6/arch-6.6-dark-320.png",
+          "sourceSHA256": "27e3dfedd3c405cff5e1f7cf0c38fddd6185c2807f107df93a402862d64b8a4c",
+          "sourceBox": [
+            0,
+            0,
+            288,
+            1540
+          ],
+          "destinationBox": [
+            304,
+            32,
+            592,
+            1572
+          ]
+        }
+      ],
+      "kind": "default",
+      "personallyViewedOriginalDetail": true
+    },
+    {
+      "file": "/workspace/scratch/wave6-arch-research/default-typeset-v6/review/widgets-1200-09.png",
+      "sha256": "b6d904773a171a601277667ef4fd47bb09d7c05ac0644c732ca0fd292a8ba8dc",
+      "size": [
+        1144,
+        1208
+      ],
+      "crops": [
+        {
+          "source": "/workspace/scratch/wave6-arch-research/default-typeset-v6/arch-6.9-light-1200.png",
+          "sourceSHA256": "1d60fa4ed88b85f74f3c3bf66b204a5da44da8b3b9700ca491abc449b935be7e",
+          "sourceBox": [
+            0,
+            0,
+            1144,
+            564
+          ],
+          "destinationBox": [
+            0,
+            32,
+            1144,
+            596
+          ]
+        },
+        {
+          "source": "/workspace/scratch/wave6-arch-research/default-typeset-v6/arch-6.9-dark-1200.png",
+          "sourceSHA256": "618cc40ce7437175892a6bfd688b1e8ae87ac6168698fe4df62e814d8f7ac8b8",
+          "sourceBox": [
+            0,
+            0,
+            1144,
+            564
+          ],
+          "destinationBox": [
+            0,
+            644,
+            1144,
+            1208
+          ]
+        }
+      ],
+      "kind": "default",
+      "personallyViewedOriginalDetail": true
+    },
+    {
+      "file": "/workspace/scratch/wave6-arch-research/default-typeset-v6/review/widgets-320-10.png",
+      "sha256": "d2970f7543db7f4aa2f07895b70469231885d757588681919ec56c2b35418ab4",
+      "size": [
+        592,
+        1558
+      ],
+      "crops": [
+        {
+          "source": "/workspace/scratch/wave6-arch-research/default-typeset-v6/arch-6.10-light-320.png",
+          "sourceSHA256": "ef2f9024ffea8ebe02a6c5e3f3bf5b2f9b4a9849cdaedf33c1099abde84b2761",
+          "sourceBox": [
+            0,
+            0,
+            288,
+            1526
+          ],
+          "destinationBox": [
+            0,
+            32,
+            288,
+            1558
+          ]
+        },
+        {
+          "source": "/workspace/scratch/wave6-arch-research/default-typeset-v6/arch-6.10-dark-320.png",
+          "sourceSHA256": "f41e6df225b50589dd936fc74b9346184627d86ccc64f75059c7fe2df4da6de6",
+          "sourceBox": [
+            0,
+            0,
+            288,
+            1526
+          ],
+          "destinationBox": [
+            304,
+            32,
+            592,
+            1558
+          ]
+        }
+      ],
+      "kind": "default",
+      "personallyViewedOriginalDetail": true
+    },
+    {
+      "file": "/workspace/scratch/wave6-arch-research/default-pressure-v8/review/widgets-320-03.png",
+      "sha256": "4446b0ba3bb7574a33959e8d59f38965471093ae1e0ee638df4ba5c9422c252c",
+      "size": [
+        592,
+        1569
+      ],
+      "crops": [
+        {
+          "source": "/workspace/scratch/wave6-arch-research/default-pressure-v8/arch-6.3-light-320.png",
+          "sourceSHA256": "2942d816c239a8bc941f81b5a0b9b00c36db202c22fa477414d987c727c8ca06",
+          "sourceBox": [
+            0,
+            0,
+            288,
+            1537
+          ],
+          "destinationBox": [
+            0,
+            32,
+            288,
+            1569
+          ]
+        },
+        {
+          "source": "/workspace/scratch/wave6-arch-research/default-pressure-v8/arch-6.3-dark-320.png",
+          "sourceSHA256": "6261d522b78ce6779ba2e67b6550aa8ab814f99eb52f2c79be6d431818de3cd6",
+          "sourceBox": [
+            0,
+            0,
+            288,
+            1537
+          ],
+          "destinationBox": [
+            304,
+            32,
+            592,
+            1569
+          ]
+        }
+      ],
+      "kind": "default",
+      "personallyViewedOriginalDetail": true
+    },
+    {
+      "file": "/workspace/scratch/wave6-arch-research/default-pressure-v8/review/widgets-1200-03.png",
+      "sha256": "1f3ce63efce2c88e33f7fb9054fbafa50587617b9e4bf047e85374427a330f3d",
+      "size": [
+        1144,
+        1290
+      ],
+      "crops": [
+        {
+          "source": "/workspace/scratch/wave6-arch-research/default-pressure-v8/arch-6.3-light-1200.png",
+          "sourceSHA256": "544eb6cfce26c0b68b6d074d648b75c851806b6400915ba79bc4d87e51048a1f",
+          "sourceBox": [
+            0,
+            0,
+            1144,
+            605
+          ],
+          "destinationBox": [
+            0,
+            32,
+            1144,
+            637
+          ]
+        },
+        {
+          "source": "/workspace/scratch/wave6-arch-research/default-pressure-v8/arch-6.3-dark-1200.png",
+          "sourceSHA256": "d4830f80b02c8b2c146322bbd1438e83dd6e2c5ca9ec146b4218f78edca0dd90",
+          "sourceBox": [
+            0,
+            0,
+            1144,
+            605
+          ],
+          "destinationBox": [
+            0,
+            685,
+            1144,
+            1290
+          ]
+        }
+      ],
+      "kind": "default",
+      "personallyViewedOriginalDetail": true
+    },
+    {
+      "file": "/workspace/scratch/wave6-arch-research/default-relaxation-v12/review/widgets-320-07.png",
+      "sha256": "378c3fb02f5857b4fec4dfcac27eadea07864ef9af5f24894f8465077bae8fcb",
+      "size": [
+        592,
+        1532
+      ],
+      "crops": [
+        {
+          "source": "/workspace/scratch/wave6-arch-research/default-relaxation-v12/arch-6.7-light-320.png",
+          "sourceSHA256": "8794bb67c6a36eb5c15f7497abac20e61df37083c84d53734659a59d33e3cc4b",
+          "sourceBox": [
+            0,
+            0,
+            288,
+            1500
+          ],
+          "destinationBox": [
+            0,
+            32,
+            288,
+            1532
+          ]
+        },
+        {
+          "source": "/workspace/scratch/wave6-arch-research/default-relaxation-v12/arch-6.7-dark-320.png",
+          "sourceSHA256": "e444862477bcf01809a0ff44a59ad69e2e57212f9ca560cd52ac2d71ff7939ba",
+          "sourceBox": [
+            0,
+            0,
+            288,
+            1500
+          ],
+          "destinationBox": [
+            304,
+            32,
+            592,
+            1532
+          ]
+        }
+      ],
+      "kind": "default",
+      "personallyViewedOriginalDetail": true
+    },
+    {
+      "file": "/workspace/scratch/wave6-arch-research/default-relaxation-v12/review/widgets-1200-07.png",
+      "sha256": "156a54d1dd01da6341891ff3e6d93348a002ec859bc85d006819bb0bc0b3e7df",
+      "size": [
+        1144,
+        1324
+      ],
+      "crops": [
+        {
+          "source": "/workspace/scratch/wave6-arch-research/default-relaxation-v12/arch-6.7-light-1200.png",
+          "sourceSHA256": "b23e0a8ddb76267496b5af1aee96cd164e77450bc4a9f113ce8ad67a1e85bbd6",
+          "sourceBox": [
+            0,
+            0,
+            1144,
+            622
+          ],
+          "destinationBox": [
+            0,
+            32,
+            1144,
+            654
+          ]
+        },
+        {
+          "source": "/workspace/scratch/wave6-arch-research/default-relaxation-v12/arch-6.7-dark-1200.png",
+          "sourceSHA256": "b763c10037bd0a73c711d8fecf3eb4c77ecd15ea2d5efea6f89dab51a0cbb52a",
+          "sourceBox": [
+            0,
+            0,
+            1144,
+            622
+          ],
+          "destinationBox": [
+            0,
+            702,
+            1144,
+            1324
+          ]
+        }
+      ],
+      "kind": "default",
+      "personallyViewedOriginalDetail": true
+    },
+    {
+      "file": "/workspace/scratch/wave6-arch-research/default-sampling-v10/review/widgets-320-11.png",
+      "sha256": "d4daa75db58143190b7c30ef7066c023ba4c31ad409bfd4b30ce67b856e66eec",
+      "size": [
+        592,
+        1503
+      ],
+      "crops": [
+        {
+          "source": "/workspace/scratch/wave6-arch-research/default-sampling-v10/arch-6.11-light-320.png",
+          "sourceSHA256": "ee19f5a3683ef39eee731e0fedfd0d9a9d147d84422e6eecebf164a6665c9b91",
+          "sourceBox": [
+            0,
+            0,
+            288,
+            1471
+          ],
+          "destinationBox": [
+            0,
+            32,
+            288,
+            1503
+          ]
+        },
+        {
+          "source": "/workspace/scratch/wave6-arch-research/default-sampling-v10/arch-6.11-dark-320.png",
+          "sourceSHA256": "94b8793ad2f05888edb881960c5ed356680d21fa99575804e5c00ee0aaeaf910",
+          "sourceBox": [
+            0,
+            0,
+            288,
+            1471
+          ],
+          "destinationBox": [
+            304,
+            32,
+            592,
+            1503
+          ]
+        }
+      ],
+      "kind": "default",
+      "personallyViewedOriginalDetail": true
+    },
+    {
+      "file": "/workspace/scratch/wave6-arch-research/default-sampling-v10/review/widgets-1200-11.png",
+      "sha256": "dcb941150dc5cad6414e22ff046f493c80771280b8fdc28d42adb1ef5a687a08",
+      "size": [
+        1144,
+        1208
+      ],
+      "crops": [
+        {
+          "source": "/workspace/scratch/wave6-arch-research/default-sampling-v10/arch-6.11-light-1200.png",
+          "sourceSHA256": "9b9fefdd733f4a0f7ec42c4a6576bd40bc1d4449d34c38b11bc3f38c340fd432",
+          "sourceBox": [
+            0,
+            0,
+            1144,
+            564
+          ],
+          "destinationBox": [
+            0,
+            32,
+            1144,
+            596
+          ]
+        },
+        {
+          "source": "/workspace/scratch/wave6-arch-research/default-sampling-v10/arch-6.11-dark-1200.png",
+          "sourceSHA256": "b3f50dd472c2666bd1333af8f507f8fd6c3556784bee1fd2dbe9722f04643c78",
+          "sourceBox": [
+            0,
+            0,
+            1144,
+            564
+          ],
+          "destinationBox": [
+            0,
+            644,
+            1144,
+            1208
+          ]
+        }
+      ],
+      "kind": "default",
+      "personallyViewedOriginalDetail": true
+    },
+    {
+      "file": "/workspace/scratch/wave6-arch-research/default-typeset-v6/review/phone-fields-01.png",
+      "sha256": "c1bb6b7cf4ff23b2fd8b71a594a20f81768b07015f5242206c8c7d25a738ec81",
+      "size": [
+        600,
+        1957
+      ],
+      "crops": [
+        {
+          "source": "/workspace/scratch/wave6-arch-research/default-typeset-v6/arch-6.1-light-320-statement.png",
+          "sourceSHA256": "c65ebaf350463f00fe20046546210e5eba2f6391ea0e75bd308bee9419b8af1d",
+          "sourceBox": [
+            0,
+            0,
+            292,
+            812
+          ],
+          "destinationBox": [
+            0,
+            32,
+            292,
+            844
+          ]
+        },
+        {
+          "source": "/workspace/scratch/wave6-arch-research/default-typeset-v6/arch-6.1-dark-320-statement.png",
+          "sourceSHA256": "fd687e208c1ba9c818005a85faeb016b29d1ad11422e4160bc206e0aba882d47",
+          "sourceBox": [
+            0,
+            0,
+            292,
+            812
+          ],
+          "destinationBox": [
+            308,
+            32,
+            600,
+            844
+          ]
+        },
+        {
+          "source": "/workspace/scratch/wave6-arch-research/default-typeset-v6/arch-6.1-light-320-idea.png",
+          "sourceSHA256": "cfff6da8339bc204248f2cfd22865ff38048c9b70be1bc1e6b94c01fdfdc8bd2",
+          "sourceBox": [
+            0,
+            0,
+            292,
+            522
+          ],
+          "destinationBox": [
+            0,
+            892,
+            292,
+            1414
+          ]
+        },
+        {
+          "source": "/workspace/scratch/wave6-arch-research/default-typeset-v6/arch-6.1-dark-320-idea.png",
+          "sourceSHA256": "ea3d94d2275b2d6db8fe16862ae51174ead79f06859d8292df2e9ccd181e9077",
+          "sourceBox": [
+            0,
+            0,
+            292,
+            522
+          ],
+          "destinationBox": [
+            308,
+            892,
+            600,
+            1414
+          ]
+        },
+        {
+          "source": "/workspace/scratch/wave6-arch-research/default-typeset-v6/arch-6.1-light-320-caption.png",
+          "sourceSHA256": "0c58f9f2061aeb61d222e2217479fcf6d0f65ee49125a467f8295e0c82b2872d",
+          "sourceBox": [
+            0,
+            0,
+            292,
+            123
+          ],
+          "destinationBox": [
+            0,
+            1462,
+            292,
+            1585
+          ]
+        },
+        {
+          "source": "/workspace/scratch/wave6-arch-research/default-typeset-v6/arch-6.1-dark-320-caption.png",
+          "sourceSHA256": "1f824ea45e9a26477a8d25ea70a4ef93b14844d0c37526ec7510016674f95057",
+          "sourceBox": [
+            0,
+            0,
+            292,
+            123
+          ],
+          "destinationBox": [
+            308,
+            1462,
+            600,
+            1585
+          ]
+        },
+        {
+          "source": "/workspace/scratch/wave6-arch-research/default-typeset-v6/arch-6.1-light-320-refs.png",
+          "sourceSHA256": "dc6c7b05de27495210b355a09834964d6991fcd7e7d05b17d2b886cd82699946",
+          "sourceBox": [
+            0,
+            0,
+            292,
+            66
+          ],
+          "destinationBox": [
+            0,
+            1633,
+            292,
+            1699
+          ]
+        },
+        {
+          "source": "/workspace/scratch/wave6-arch-research/default-typeset-v6/arch-6.1-dark-320-refs.png",
+          "sourceSHA256": "16a01b1c7c07bed542a48ddb9c8d212bdd8c5c071af97829f1741dd276e22a7c",
+          "sourceBox": [
+            0,
+            0,
+            292,
+            66
+          ],
+          "destinationBox": [
+            308,
+            1633,
+            600,
+            1699
+          ]
+        },
+        {
+          "source": "/workspace/scratch/wave6-arch-research/default-typeset-v6/arch-6.1-light-320-scope.png",
+          "sourceSHA256": "a8bb4998ff3a72742671cb8d3166df8195bf58a6d2c904c2f177fbaf5391b357",
+          "sourceBox": [
+            0,
+            0,
+            257,
+            210
+          ],
+          "destinationBox": [
+            0,
+            1747,
+            257,
+            1957
+          ]
+        },
+        {
+          "source": "/workspace/scratch/wave6-arch-research/default-typeset-v6/arch-6.1-dark-320-scope.png",
+          "sourceSHA256": "d504f196670630223ba094d3e0b93d2f4e4bf5b37b7487017e7faed5ed0a704d",
+          "sourceBox": [
+            0,
+            0,
+            257,
+            210
+          ],
+          "destinationBox": [
+            308,
+            1747,
+            565,
+            1957
+          ]
+        }
+      ],
+      "kind": "rich",
+      "personallyViewedOriginalDetail": true
+    },
+    {
+      "file": "/workspace/scratch/wave6-arch-research/default-typeset-v6/review/phone-fields-02.png",
+      "sha256": "c7a3fd411cf11a9bfa0126e1e4e5170341092b45cdc4f79a8f4669524322bf48",
+      "size": [
+        600,
+        1675
+      ],
+      "crops": [
+        {
+          "source": "/workspace/scratch/wave6-arch-research/default-typeset-v6/arch-6.2-light-320-statement.png",
+          "sourceSHA256": "84475c834fe06fc339f7b418f26514c22c6fac2d30dd4a4718011e9096c5cb2a",
+          "sourceBox": [
+            0,
+            0,
+            292,
+            601
+          ],
+          "destinationBox": [
+            0,
+            32,
+            292,
+            633
+          ]
+        },
+        {
+          "source": "/workspace/scratch/wave6-arch-research/default-typeset-v6/arch-6.2-dark-320-statement.png",
+          "sourceSHA256": "2ac229b98c48d8f50ad9860636e8623100281871f59d50329fc9ecda53546e49",
+          "sourceBox": [
+            0,
+            0,
+            292,
+            601
+          ],
+          "destinationBox": [
+            308,
+            32,
+            600,
+            633
+          ]
+        },
+        {
+          "source": "/workspace/scratch/wave6-arch-research/default-typeset-v6/arch-6.2-light-320-idea.png",
+          "sourceSHA256": "eea58582000846895a9a4a8df21d2388241cf4c4c7ea33564e43ebf0c8d0ec41",
+          "sourceBox": [
+            0,
+            0,
+            292,
+            516
+          ],
+          "destinationBox": [
+            0,
+            681,
+            292,
+            1197
+          ]
+        },
+        {
+          "source": "/workspace/scratch/wave6-arch-research/default-typeset-v6/arch-6.2-dark-320-idea.png",
+          "sourceSHA256": "06dea567690c7a15001498265b3615febee99c1bf57dc39dd82a4f325e542003",
+          "sourceBox": [
+            0,
+            0,
+            292,
+            516
+          ],
+          "destinationBox": [
+            308,
+            681,
+            600,
+            1197
+          ]
+        },
+        {
+          "source": "/workspace/scratch/wave6-arch-research/default-typeset-v6/arch-6.2-light-320-caption.png",
+          "sourceSHA256": "3e2db2303dafd37db29132316e48e395856f254cfe9c97b9cd4dea1c457c2d34",
+          "sourceBox": [
+            0,
+            0,
+            292,
+            123
+          ],
+          "destinationBox": [
+            0,
+            1245,
+            292,
+            1368
+          ]
+        },
+        {
+          "source": "/workspace/scratch/wave6-arch-research/default-typeset-v6/arch-6.2-dark-320-caption.png",
+          "sourceSHA256": "eb52aaafcb46bbdf6f1b2de4cbabbff1e25ebe991de173a8fe4743e44d65abd1",
+          "sourceBox": [
+            0,
+            0,
+            292,
+            123
+          ],
+          "destinationBox": [
+            308,
+            1245,
+            600,
+            1368
+          ]
+        },
+        {
+          "source": "/workspace/scratch/wave6-arch-research/default-typeset-v6/arch-6.2-light-320-refs.png",
+          "sourceSHA256": "3d54b0d2aed9ccf7ef2ce7699f3ce17fe2fb45bfeafb511c7b4ab8965032e8f0",
+          "sourceBox": [
+            0,
+            0,
+            292,
+            45
+          ],
+          "destinationBox": [
+            0,
+            1416,
+            292,
+            1461
+          ]
+        },
+        {
+          "source": "/workspace/scratch/wave6-arch-research/default-typeset-v6/arch-6.2-dark-320-refs.png",
+          "sourceSHA256": "1f11b91f5c65ef060674c86a05492bee7cd6430e6850303ba9af3decdd145c22",
+          "sourceBox": [
+            0,
+            0,
+            292,
+            45
+          ],
+          "destinationBox": [
+            308,
+            1416,
+            600,
+            1461
+          ]
+        },
+        {
+          "source": "/workspace/scratch/wave6-arch-research/default-typeset-v6/arch-6.2-light-320-scope.png",
+          "sourceSHA256": "bfed1a3619daaa576339b8451bbef6fc9a9396660501fbf7cf81df293cbc1cb4",
+          "sourceBox": [
+            0,
+            0,
+            257,
+            166
+          ],
+          "destinationBox": [
+            0,
+            1509,
+            257,
+            1675
+          ]
+        },
+        {
+          "source": "/workspace/scratch/wave6-arch-research/default-typeset-v6/arch-6.2-dark-320-scope.png",
+          "sourceSHA256": "eadfc90f90200b610cbf27c5415c9c799028de2c480347bf51868bd950337b84",
+          "sourceBox": [
+            0,
+            0,
+            257,
+            166
+          ],
+          "destinationBox": [
+            308,
+            1509,
+            565,
+            1675
+          ]
+        }
+      ],
+      "kind": "rich",
+      "personallyViewedOriginalDetail": true
+    },
+    {
+      "file": "/workspace/scratch/wave6-arch-research/default-typeset-v6/review/phone-fields-04.png",
+      "sha256": "5f9756013a4cf7c1229010869d1d24c384ccf0427b75ad122d63a9ba5dca8aca",
+      "size": [
+        600,
+        2004
+      ],
+      "crops": [
+        {
+          "source": "/workspace/scratch/wave6-arch-research/default-typeset-v6/arch-6.4-light-320-statement.png",
+          "sourceSHA256": "7d8d23d59fd89757f6dc3d40d1dc54e364208826eeb97c73d8c338661a9cd40d",
+          "sourceBox": [
+            0,
+            0,
+            292,
+            694
+          ],
+          "destinationBox": [
+            0,
+            32,
+            292,
+            726
+          ]
+        },
+        {
+          "source": "/workspace/scratch/wave6-arch-research/default-typeset-v6/arch-6.4-dark-320-statement.png",
+          "sourceSHA256": "add3c793acfd64da58380025e5e1bd7f5d63ca2bcbcdafa656fe9c59ebb09a37",
+          "sourceBox": [
+            0,
+            0,
+            292,
+            694
+          ],
+          "destinationBox": [
+            308,
+            32,
+            600,
+            726
+          ]
+        },
+        {
+          "source": "/workspace/scratch/wave6-arch-research/default-typeset-v6/arch-6.4-light-320-idea.png",
+          "sourceSHA256": "0cae14280dc3f42a1c78261c9f882ff33c5d4aff77d444cccc72abd5685502c2",
+          "sourceBox": [
+            0,
+            0,
+            292,
+            666
+          ],
+          "destinationBox": [
+            0,
+            774,
+            292,
+            1440
+          ]
+        },
+        {
+          "source": "/workspace/scratch/wave6-arch-research/default-typeset-v6/arch-6.4-dark-320-idea.png",
+          "sourceSHA256": "0fc78ffa2362414e89434522133929f259b3211651167a61bb80402332fbc52d",
+          "sourceBox": [
+            0,
+            0,
+            292,
+            666
+          ],
+          "destinationBox": [
+            308,
+            774,
+            600,
+            1440
+          ]
+        },
+        {
+          "source": "/workspace/scratch/wave6-arch-research/default-typeset-v6/arch-6.4-light-320-caption.png",
+          "sourceSHA256": "4732b4c75d9f6488327b43013d33280da9052ff31f97d7468b46924adc7df806",
+          "sourceBox": [
+            0,
+            0,
+            292,
+            123
+          ],
+          "destinationBox": [
+            0,
+            1488,
+            292,
+            1611
+          ]
+        },
+        {
+          "source": "/workspace/scratch/wave6-arch-research/default-typeset-v6/arch-6.4-dark-320-caption.png",
+          "sourceSHA256": "faec179970237b7fa661b788cfb0f1bd5296c726ea3357e7fc64943f2f1a720b",
+          "sourceBox": [
+            0,
+            0,
+            292,
+            123
+          ],
+          "destinationBox": [
+            308,
+            1488,
+            600,
+            1611
+          ]
+        },
+        {
+          "source": "/workspace/scratch/wave6-arch-research/default-typeset-v6/arch-6.4-light-320-refs.png",
+          "sourceSHA256": "f5d55f3c2fa87c4691bce7a0e0c2913b82783140b6200d34d3085beb330a9b1b",
+          "sourceBox": [
+            0,
+            0,
+            292,
+            87
+          ],
+          "destinationBox": [
+            0,
+            1659,
+            292,
+            1746
+          ]
+        },
+        {
+          "source": "/workspace/scratch/wave6-arch-research/default-typeset-v6/arch-6.4-dark-320-refs.png",
+          "sourceSHA256": "4f1057b22115a82d155de6183a68a7becba6ff93a5cd090c63efeced8d024c4b",
+          "sourceBox": [
+            0,
+            0,
+            292,
+            87
+          ],
+          "destinationBox": [
+            308,
+            1659,
+            600,
+            1746
+          ]
+        },
+        {
+          "source": "/workspace/scratch/wave6-arch-research/default-typeset-v6/arch-6.4-light-320-scope.png",
+          "sourceSHA256": "f64aa4302ddc77a0bc9bb6867f4d6a16e0085989dc428833fa8bcaa15fefdd90",
+          "sourceBox": [
+            0,
+            0,
+            257,
+            210
+          ],
+          "destinationBox": [
+            0,
+            1794,
+            257,
+            2004
+          ]
+        },
+        {
+          "source": "/workspace/scratch/wave6-arch-research/default-typeset-v6/arch-6.4-dark-320-scope.png",
+          "sourceSHA256": "5070bd2a4efd889671dc7dced8efbdc85717a32dc4d5b67b467c4093cf1e80f8",
+          "sourceBox": [
+            0,
+            0,
+            257,
+            210
+          ],
+          "destinationBox": [
+            308,
+            1794,
+            565,
+            2004
+          ]
+        }
+      ],
+      "kind": "rich",
+      "personallyViewedOriginalDetail": true
+    },
+    {
+      "file": "/workspace/scratch/wave6-arch-research/default-typeset-v6/review/phone-fields-05-main.png",
+      "sha256": "a52be53cf7896995770222998f5606f725cac5744f9682d29a1ec4e796c02b45",
+      "size": [
+        600,
+        1553
+      ],
+      "crops": [
+        {
+          "source": "/workspace/scratch/wave6-arch-research/default-typeset-v6/arch-6.5-light-320-statement.png",
+          "sourceSHA256": "2ea787c498f8e452682385dd9127a4a827950d7c30c877602cb56efd3670ac46",
+          "sourceBox": [
+            0,
+            0,
+            292,
+            668
+          ],
+          "destinationBox": [
+            0,
+            32,
+            292,
+            700
+          ]
+        },
+        {
+          "source": "/workspace/scratch/wave6-arch-research/default-typeset-v6/arch-6.5-dark-320-statement.png",
+          "sourceSHA256": "9884a26f748024100ae60cd5e154abcba94a14dfcfac405332b18c9ab61c994b",
+          "sourceBox": [
+            0,
+            0,
+            292,
+            668
+          ],
+          "destinationBox": [
+            308,
+            32,
+            600,
+            700
+          ]
+        },
+        {
+          "source": "/workspace/scratch/wave6-arch-research/default-typeset-v6/arch-6.5-light-320-idea.png",
+          "sourceSHA256": "201303738d6373fe91179c4a46a1f93ed649768e20ef58887d6f0bfd7190d6b9",
+          "sourceBox": [
+            0,
+            0,
+            292,
+            805
+          ],
+          "destinationBox": [
+            0,
+            748,
+            292,
+            1553
+          ]
+        },
+        {
+          "source": "/workspace/scratch/wave6-arch-research/default-typeset-v6/arch-6.5-dark-320-idea.png",
+          "sourceSHA256": "d68c526941e1565a043c1981405737494dfadb85cd3b500229b12f8362023a1a",
+          "sourceBox": [
+            0,
+            0,
+            292,
+            805
+          ],
+          "destinationBox": [
+            308,
+            748,
+            600,
+            1553
+          ]
+        }
+      ],
+      "kind": "rich",
+      "personallyViewedOriginalDetail": true
+    },
+    {
+      "file": "/workspace/scratch/wave6-arch-research/default-typeset-v6/review/phone-fields-05-tail.png",
+      "sha256": "661829177c7952ff5cd369f1758800edde21c201885a47f5390de08628f54938",
+      "size": [
+        600,
+        548
+      ],
+      "crops": [
+        {
+          "source": "/workspace/scratch/wave6-arch-research/default-typeset-v6/arch-6.5-light-320-caption.png",
+          "sourceSHA256": "8541783c1791aeaa7b99eacaa384653a1d9e22e919ea3012952d2a29d44c08e8",
+          "sourceBox": [
+            0,
+            0,
+            292,
+            102
+          ],
+          "destinationBox": [
+            0,
+            32,
+            292,
+            134
+          ]
+        },
+        {
+          "source": "/workspace/scratch/wave6-arch-research/default-typeset-v6/arch-6.5-dark-320-caption.png",
+          "sourceSHA256": "bbfee5f15cc334818fa5ed01f01316dc1aec7b018d35b8c769d781f3cdd750d5",
+          "sourceBox": [
+            0,
+            0,
+            292,
+            102
+          ],
+          "destinationBox": [
+            308,
+            32,
+            600,
+            134
+          ]
+        },
+        {
+          "source": "/workspace/scratch/wave6-arch-research/default-typeset-v6/arch-6.5-light-320-refs.png",
+          "sourceSHA256": "da9cac399708e908452b50c5b1608a7f195117bea61bef0ee17cc24de73ae6b4",
+          "sourceBox": [
+            0,
+            0,
+            292,
+            87
+          ],
+          "destinationBox": [
+            0,
+            182,
+            292,
+            269
+          ]
+        },
+        {
+          "source": "/workspace/scratch/wave6-arch-research/default-typeset-v6/arch-6.5-dark-320-refs.png",
+          "sourceSHA256": "d86c1ad022625112c28640aad2909a373355ff5f2c2960b7b2a4e2383c2353a0",
+          "sourceBox": [
+            0,
+            0,
+            292,
+            87
+          ],
+          "destinationBox": [
+            308,
+            182,
+            600,
+            269
+          ]
+        },
+        {
+          "source": "/workspace/scratch/wave6-arch-research/default-typeset-v6/arch-6.5-light-320-scope.png",
+          "sourceSHA256": "93f66bbd3d4d6eadbdc272387cdd70e85553da47b1bc24cabfa3d6f3842ca9c1",
+          "sourceBox": [
+            0,
+            0,
+            257,
+            231
+          ],
+          "destinationBox": [
+            0,
+            317,
+            257,
+            548
+          ]
+        },
+        {
+          "source": "/workspace/scratch/wave6-arch-research/default-typeset-v6/arch-6.5-dark-320-scope.png",
+          "sourceSHA256": "b2f242ef9a1fc4839c1ee0fd36f65b1ac7647fa6afd2172e4eb277a39fc68622",
+          "sourceBox": [
+            0,
+            0,
+            257,
+            231
+          ],
+          "destinationBox": [
+            308,
+            317,
+            565,
+            548
+          ]
+        }
+      ],
+      "kind": "rich",
+      "personallyViewedOriginalDetail": true
+    },
+    {
+      "file": "/workspace/scratch/wave6-arch-research/default-typeset-v6/review/phone-fields-06-main.png",
+      "sha256": "1a055e19bd0e2b6211c410fbf63a36166520fa76219b9de9c74f7b25c4607669",
+      "size": [
+        600,
+        1513
+      ],
+      "crops": [
+        {
+          "source": "/workspace/scratch/wave6-arch-research/default-typeset-v6/arch-6.6-light-320-statement.png",
+          "sourceSHA256": "0455ceb4c5b6fbdd2bfc7f1f3dcdcf7f41d10d2ba3df29e81319c7af39eb6d52",
+          "sourceBox": [
+            0,
+            0,
+            292,
+            772
+          ],
+          "destinationBox": [
+            0,
+            32,
+            292,
+            804
+          ]
+        },
+        {
+          "source": "/workspace/scratch/wave6-arch-research/default-typeset-v6/arch-6.6-dark-320-statement.png",
+          "sourceSHA256": "da1f7beb3be81da16e2df8873eafb0432d762591e178372a58228a6b62643c15",
+          "sourceBox": [
+            0,
+            0,
+            292,
+            772
+          ],
+          "destinationBox": [
+            308,
+            32,
+            600,
+            804
+          ]
+        },
+        {
+          "source": "/workspace/scratch/wave6-arch-research/default-typeset-v6/arch-6.6-light-320-idea.png",
+          "sourceSHA256": "6b2f33c2b2ca9e7c53426d99c9fc9d1992dd59ce6a3164e64fbe406515e20813",
+          "sourceBox": [
+            0,
+            0,
+            292,
+            661
+          ],
+          "destinationBox": [
+            0,
+            852,
+            292,
+            1513
+          ]
+        },
+        {
+          "source": "/workspace/scratch/wave6-arch-research/default-typeset-v6/arch-6.6-dark-320-idea.png",
+          "sourceSHA256": "e12e30bbcf14f4a2324a9d78179535abfa05ece55246a39856f764958eaad306",
+          "sourceBox": [
+            0,
+            0,
+            292,
+            661
+          ],
+          "destinationBox": [
+            308,
+            852,
+            600,
+            1513
+          ]
+        }
+      ],
+      "kind": "rich",
+      "personallyViewedOriginalDetail": true
+    },
+    {
+      "file": "/workspace/scratch/wave6-arch-research/default-typeset-v6/review/phone-fields-06-tail.png",
+      "sha256": "478d4d12e0519ea68adda17154ef959822d15d4c4c8a121f93b06f7afe669fba",
+      "size": [
+        600,
+        592
+      ],
+      "crops": [
+        {
+          "source": "/workspace/scratch/wave6-arch-research/default-typeset-v6/arch-6.6-light-320-caption.png",
+          "sourceSHA256": "ebfdb8c1d791401018ebcea1edf228b672ced3521975bae75fb290dce7f7b4bd",
+          "sourceBox": [
+            0,
+            0,
+            292,
+            102
+          ],
+          "destinationBox": [
+            0,
+            32,
+            292,
+            134
+          ]
+        },
+        {
+          "source": "/workspace/scratch/wave6-arch-research/default-typeset-v6/arch-6.6-dark-320-caption.png",
+          "sourceSHA256": "4aac0dea7b77fbb6358a0f865228a77c00237fe430ae5fb9db9cb19c688ac7ce",
+          "sourceBox": [
+            0,
+            0,
+            292,
+            102
+          ],
+          "destinationBox": [
+            308,
+            32,
+            600,
+            134
+          ]
+        },
+        {
+          "source": "/workspace/scratch/wave6-arch-research/default-typeset-v6/arch-6.6-light-320-refs.png",
+          "sourceSHA256": "d41e5ec9842c066cb039f1c08a5a611cd0bccdc22648da0e5fe82417088ab2cd",
+          "sourceBox": [
+            0,
+            0,
+            292,
+            87
+          ],
+          "destinationBox": [
+            0,
+            182,
+            292,
+            269
+          ]
+        },
+        {
+          "source": "/workspace/scratch/wave6-arch-research/default-typeset-v6/arch-6.6-dark-320-refs.png",
+          "sourceSHA256": "02e45ec5115b79f13345f0d66613c30b7fccfeba68739d8e5e303c283ef563a6",
+          "sourceBox": [
+            0,
+            0,
+            292,
+            87
+          ],
+          "destinationBox": [
+            308,
+            182,
+            600,
+            269
+          ]
+        },
+        {
+          "source": "/workspace/scratch/wave6-arch-research/default-typeset-v6/arch-6.6-light-320-scope.png",
+          "sourceSHA256": "4b67d1252b4df5b755af1f4ebe1900e6803f248378f9dad491b7c9d22a3cb97d",
+          "sourceBox": [
+            0,
+            0,
+            257,
+            275
+          ],
+          "destinationBox": [
+            0,
+            317,
+            257,
+            592
+          ]
+        },
+        {
+          "source": "/workspace/scratch/wave6-arch-research/default-typeset-v6/arch-6.6-dark-320-scope.png",
+          "sourceSHA256": "2b90ab0dfa43cea1a7180d21acedf9c2577d49c74b7a15ac4293d2d72766a8d0",
+          "sourceBox": [
+            0,
+            0,
+            257,
+            275
+          ],
+          "destinationBox": [
+            308,
+            317,
+            565,
+            592
+          ]
+        }
+      ],
+      "kind": "rich",
+      "personallyViewedOriginalDetail": true
+    },
+    {
+      "file": "/workspace/scratch/wave6-arch-research/default-typeset-v6/review/phone-fields-07-main.png",
+      "sha256": "ecab3170974b74d0bf91a15340196141eb3b166b243e90c5bfbc18cc94a8ea6b",
+      "size": [
+        600,
+        1518
+      ],
+      "crops": [
+        {
+          "source": "/workspace/scratch/wave6-arch-research/default-typeset-v6/arch-6.7-light-320-statement.png",
+          "sourceSHA256": "4996a38287c49d3220bbfb550cc895fb09e50ee332e7ec9a570fea4c166ef785",
+          "sourceBox": [
+            0,
+            0,
+            292,
+            715
+          ],
+          "destinationBox": [
+            0,
+            32,
+            292,
+            747
+          ]
+        },
+        {
+          "source": "/workspace/scratch/wave6-arch-research/default-typeset-v6/arch-6.7-dark-320-statement.png",
+          "sourceSHA256": "8d31e7f9313229fc4aa26da67fc500eb96e6d6e791bf4b75ada9a9776ff5f77a",
+          "sourceBox": [
+            0,
+            0,
+            292,
+            715
+          ],
+          "destinationBox": [
+            308,
+            32,
+            600,
+            747
+          ]
+        },
+        {
+          "source": "/workspace/scratch/wave6-arch-research/default-typeset-v6/arch-6.7-light-320-idea.png",
+          "sourceSHA256": "631b9613bf0e390425790905c8dafafa7327935ee1113c5f2dbe8a161124dace",
+          "sourceBox": [
+            0,
+            0,
+            292,
+            723
+          ],
+          "destinationBox": [
+            0,
+            795,
+            292,
+            1518
+          ]
+        },
+        {
+          "source": "/workspace/scratch/wave6-arch-research/default-typeset-v6/arch-6.7-dark-320-idea.png",
+          "sourceSHA256": "76659474a5a6882d7ae6345c1f15ea1c76f3f65592b686e48a809e8c59407d36",
+          "sourceBox": [
+            0,
+            0,
+            292,
+            723
+          ],
+          "destinationBox": [
+            308,
+            795,
+            600,
+            1518
+          ]
+        }
+      ],
+      "kind": "rich",
+      "personallyViewedOriginalDetail": true
+    },
+    {
+      "file": "/workspace/scratch/wave6-arch-research/default-typeset-v6/review/phone-fields-07-tail.png",
+      "sha256": "149f69c006f8bcbe80bdc816eef6edd661d07d99a8b6182d6339892e0c5c844c",
+      "size": [
+        600,
+        569
+      ],
+      "crops": [
+        {
+          "source": "/workspace/scratch/wave6-arch-research/default-typeset-v6/arch-6.7-light-320-caption.png",
+          "sourceSHA256": "725544cb0f30d6e4046ee89b91dfc0dfd5fed9f72fd1aca2fa002456af388034",
+          "sourceBox": [
+            0,
+            0,
+            292,
+            123
+          ],
+          "destinationBox": [
+            0,
+            32,
+            292,
+            155
+          ]
+        },
+        {
+          "source": "/workspace/scratch/wave6-arch-research/default-typeset-v6/arch-6.7-dark-320-caption.png",
+          "sourceSHA256": "8e8cffdd85b80e34be68f8b21588ae35855d06e2df007feae07769e29b163072",
+          "sourceBox": [
+            0,
+            0,
+            292,
+            123
+          ],
+          "destinationBox": [
+            308,
+            32,
+            600,
+            155
+          ]
+        },
+        {
+          "source": "/workspace/scratch/wave6-arch-research/default-typeset-v6/arch-6.7-light-320-refs.png",
+          "sourceSHA256": "1881f067894e9680f4ae8bfff19d6025e7a78fd90483f0f8078bcaa438b559d4",
+          "sourceBox": [
+            0,
+            0,
+            292,
+            87
+          ],
+          "destinationBox": [
+            0,
+            203,
+            292,
+            290
+          ]
+        },
+        {
+          "source": "/workspace/scratch/wave6-arch-research/default-typeset-v6/arch-6.7-dark-320-refs.png",
+          "sourceSHA256": "6b3d377364be3cb9c4f2a39b1c92b0c4327fce389e69b8c0a457d3a59c359a5b",
+          "sourceBox": [
+            0,
+            0,
+            292,
+            87
+          ],
+          "destinationBox": [
+            308,
+            203,
+            600,
+            290
+          ]
+        },
+        {
+          "source": "/workspace/scratch/wave6-arch-research/default-typeset-v6/arch-6.7-light-320-scope.png",
+          "sourceSHA256": "993cddf6e9b591857903c44dd475bf1dcf17b6dbb1e620c47aa1c8ea11207033",
+          "sourceBox": [
+            0,
+            0,
+            257,
+            231
+          ],
+          "destinationBox": [
+            0,
+            338,
+            257,
+            569
+          ]
+        },
+        {
+          "source": "/workspace/scratch/wave6-arch-research/default-typeset-v6/arch-6.7-dark-320-scope.png",
+          "sourceSHA256": "3776faffb38526e9c5a6761abae8d5495aad552c6b71ea4770783d3c3c74722f",
+          "sourceBox": [
+            0,
+            0,
+            257,
+            231
+          ],
+          "destinationBox": [
+            308,
+            338,
+            565,
+            569
+          ]
+        }
+      ],
+      "kind": "rich",
+      "personallyViewedOriginalDetail": true
+    },
+    {
+      "file": "/workspace/scratch/wave6-arch-research/default-typeset-v6/review/phone-fields-08-main.png",
+      "sha256": "1621449e8451f8cb7f563696c0dc00a5de0ce8061a1627262bb85fccffa673dc",
+      "size": [
+        600,
+        1313
+      ],
+      "crops": [
+        {
+          "source": "/workspace/scratch/wave6-arch-research/default-typeset-v6/arch-6.8-light-320-statement.png",
+          "sourceSHA256": "7d9612edecd348a517eb660f15657cd59613b5fc8ed510f3c281ddc8d6a93a60",
+          "sourceBox": [
+            0,
+            0,
+            292,
+            625
+          ],
+          "destinationBox": [
+            0,
+            32,
+            292,
+            657
+          ]
+        },
+        {
+          "source": "/workspace/scratch/wave6-arch-research/default-typeset-v6/arch-6.8-dark-320-statement.png",
+          "sourceSHA256": "3166d00297a2955ea37fcdeef94bb0a36811635c3b68b7c5583ca40ddc7443b1",
+          "sourceBox": [
+            0,
+            0,
+            292,
+            625
+          ],
+          "destinationBox": [
+            308,
+            32,
+            600,
+            657
+          ]
+        },
+        {
+          "source": "/workspace/scratch/wave6-arch-research/default-typeset-v6/arch-6.8-light-320-idea.png",
+          "sourceSHA256": "6546e9bafaa7c6da46efeaa9d153fa028b1fe428b752b5d97cdc2a271818fef7",
+          "sourceBox": [
+            0,
+            0,
+            292,
+            608
+          ],
+          "destinationBox": [
+            0,
+            705,
+            292,
+            1313
+          ]
+        },
+        {
+          "source": "/workspace/scratch/wave6-arch-research/default-typeset-v6/arch-6.8-dark-320-idea.png",
+          "sourceSHA256": "398e3ad1b83d625c9070b99a001516de4b6cf83bb3e25c906f5d1f027ed9e28e",
+          "sourceBox": [
+            0,
+            0,
+            292,
+            608
+          ],
+          "destinationBox": [
+            308,
+            705,
+            600,
+            1313
+          ]
+        }
+      ],
+      "kind": "rich",
+      "personallyViewedOriginalDetail": true
+    },
+    {
+      "file": "/workspace/scratch/wave6-arch-research/default-typeset-v6/review/phone-fields-08-tail.png",
+      "sha256": "d0fee7f0bbd0c415a7c55dad7ca84eaaaf33cd6c0be48e1af4e11be18df93712",
+      "size": [
+        600,
+        526
+      ],
+      "crops": [
+        {
+          "source": "/workspace/scratch/wave6-arch-research/default-typeset-v6/arch-6.8-light-320-caption.png",
+          "sourceSHA256": "3a76a29bdcc19871fc045122e6135d344d946c5300fe09a2010562f63a63c90b",
+          "sourceBox": [
+            0,
+            0,
+            292,
+            123
+          ],
+          "destinationBox": [
+            0,
+            32,
+            292,
+            155
+          ]
+        },
+        {
+          "source": "/workspace/scratch/wave6-arch-research/default-typeset-v6/arch-6.8-dark-320-caption.png",
+          "sourceSHA256": "d517ad752c0e7647e96e10f0aacb05f5cf8bf6f1722f3d1e6409ccf05518a6c9",
+          "sourceBox": [
+            0,
+            0,
+            292,
+            123
+          ],
+          "destinationBox": [
+            308,
+            32,
+            600,
+            155
+          ]
+        },
+        {
+          "source": "/workspace/scratch/wave6-arch-research/default-typeset-v6/arch-6.8-light-320-refs.png",
+          "sourceSHA256": "e97ffa52b59c6c6c8a577ad15e0b58a6810fff1e3aceb8db935e244281c859c2",
+          "sourceBox": [
+            0,
+            0,
+            292,
+            87
+          ],
+          "destinationBox": [
+            0,
+            203,
+            292,
+            290
+          ]
+        },
+        {
+          "source": "/workspace/scratch/wave6-arch-research/default-typeset-v6/arch-6.8-dark-320-refs.png",
+          "sourceSHA256": "98ff8aaafceecee9639e65b4845a4b93c97f708f1b3b392b8e6f23a2cee01e2c",
+          "sourceBox": [
+            0,
+            0,
+            292,
+            87
+          ],
+          "destinationBox": [
+            308,
+            203,
+            600,
+            290
+          ]
+        },
+        {
+          "source": "/workspace/scratch/wave6-arch-research/default-typeset-v6/arch-6.8-light-320-scope.png",
+          "sourceSHA256": "7b58d380ab04ac77b498c0a9b9b5504a9d54e6810049a2ab71cb797f77ab1850",
+          "sourceBox": [
+            0,
+            0,
+            257,
+            188
+          ],
+          "destinationBox": [
+            0,
+            338,
+            257,
+            526
+          ]
+        },
+        {
+          "source": "/workspace/scratch/wave6-arch-research/default-typeset-v6/arch-6.8-dark-320-scope.png",
+          "sourceSHA256": "374b646b53ff909061b5384720b5c92963298c052e2ad775e1fd4abf7ac33e3b",
+          "sourceBox": [
+            0,
+            0,
+            257,
+            188
+          ],
+          "destinationBox": [
+            308,
+            338,
+            565,
+            526
+          ]
+        }
+      ],
+      "kind": "rich",
+      "personallyViewedOriginalDetail": true
+    },
+    {
+      "file": "/workspace/scratch/wave6-arch-research/default-typeset-v6/review/phone-fields-09-main.png",
+      "sha256": "d1368ca30cf83a6a319512ac194a524d0b0a718fb967fe97a40275608be786d2",
+      "size": [
+        600,
+        1470
+      ],
+      "crops": [
+        {
+          "source": "/workspace/scratch/wave6-arch-research/default-typeset-v6/arch-6.9-light-320-statement.png",
+          "sourceSHA256": "5c6eab8ddbea409d9c325a3ff5855f2c69bb8105e26035739862e5ce5a2bf81c",
+          "sourceBox": [
+            0,
+            0,
+            292,
+            690
+          ],
+          "destinationBox": [
+            0,
+            32,
+            292,
+            722
+          ]
+        },
+        {
+          "source": "/workspace/scratch/wave6-arch-research/default-typeset-v6/arch-6.9-dark-320-statement.png",
+          "sourceSHA256": "7edaa6ce03ab892d361704d39ed6581bb15f6b0c79e94df2b48775e9d53e2208",
+          "sourceBox": [
+            0,
+            0,
+            292,
+            690
+          ],
+          "destinationBox": [
+            308,
+            32,
+            600,
+            722
+          ]
+        },
+        {
+          "source": "/workspace/scratch/wave6-arch-research/default-typeset-v6/arch-6.9-light-320-idea.png",
+          "sourceSHA256": "11447b3aed17176d7b9e68a559e2ed3a4fa75fe95900653eec901b32790ded8b",
+          "sourceBox": [
+            0,
+            0,
+            292,
+            700
+          ],
+          "destinationBox": [
+            0,
+            770,
+            292,
+            1470
+          ]
+        },
+        {
+          "source": "/workspace/scratch/wave6-arch-research/default-typeset-v6/arch-6.9-dark-320-idea.png",
+          "sourceSHA256": "69cf97daa01e48d98068f1d835d01272f4cb2003e5b8f8924d73d76ae08071a1",
+          "sourceBox": [
+            0,
+            0,
+            292,
+            700
+          ],
+          "destinationBox": [
+            308,
+            770,
+            600,
+            1470
+          ]
+        }
+      ],
+      "kind": "rich",
+      "personallyViewedOriginalDetail": true
+    },
+    {
+      "file": "/workspace/scratch/wave6-arch-research/default-typeset-v6/review/phone-fields-09-tail.png",
+      "sha256": "73333a7e4800d3e0f6224daccbd68b63762be38568ab61356bea78cfcbc32506",
+      "size": [
+        600,
+        570
+      ],
+      "crops": [
+        {
+          "source": "/workspace/scratch/wave6-arch-research/default-typeset-v6/arch-6.9-light-320-caption.png",
+          "sourceSHA256": "fd77039a47756cc7b19c040e739f08b16db3dad18656af4b36644aa818cd1dec",
+          "sourceBox": [
+            0,
+            0,
+            292,
+            123
+          ],
+          "destinationBox": [
+            0,
+            32,
+            292,
+            155
+          ]
+        },
+        {
+          "source": "/workspace/scratch/wave6-arch-research/default-typeset-v6/arch-6.9-dark-320-caption.png",
+          "sourceSHA256": "06e14a18bdc8f85998b1665748764259034970c54f5f4c3770f4c04f28445ffc",
+          "sourceBox": [
+            0,
+            0,
+            292,
+            123
+          ],
+          "destinationBox": [
+            308,
+            32,
+            600,
+            155
+          ]
+        },
+        {
+          "source": "/workspace/scratch/wave6-arch-research/default-typeset-v6/arch-6.9-light-320-refs.png",
+          "sourceSHA256": "dcb3645d2c060750f43ad9ba6f46294a63564c3b907e0acb0ab21a88bef16a90",
+          "sourceBox": [
+            0,
+            0,
+            292,
+            66
+          ],
+          "destinationBox": [
+            0,
+            203,
+            292,
+            269
+          ]
+        },
+        {
+          "source": "/workspace/scratch/wave6-arch-research/default-typeset-v6/arch-6.9-dark-320-refs.png",
+          "sourceSHA256": "e6f556c5b1dbdb8aa196b8c4785d50fe9fd79166066c6016a73c867c2eb6d26c",
+          "sourceBox": [
+            0,
+            0,
+            292,
+            66
+          ],
+          "destinationBox": [
+            308,
+            203,
+            600,
+            269
+          ]
+        },
+        {
+          "source": "/workspace/scratch/wave6-arch-research/default-typeset-v6/arch-6.9-light-320-scope.png",
+          "sourceSHA256": "ecfcf95f5d935921122f6428fbb280a59eb5d511c76419ec2bb349985e4ebb9a",
+          "sourceBox": [
+            0,
+            0,
+            257,
+            253
+          ],
+          "destinationBox": [
+            0,
+            317,
+            257,
+            570
+          ]
+        },
+        {
+          "source": "/workspace/scratch/wave6-arch-research/default-typeset-v6/arch-6.9-dark-320-scope.png",
+          "sourceSHA256": "acc09057094ab869275692cb018acbd08f616c5448299971fa38b5b3bda2b08b",
+          "sourceBox": [
+            0,
+            0,
+            257,
+            253
+          ],
+          "destinationBox": [
+            308,
+            317,
+            565,
+            570
+          ]
+        }
+      ],
+      "kind": "rich",
+      "personallyViewedOriginalDetail": true
+    },
+    {
+      "file": "/workspace/scratch/wave6-arch-research/default-typeset-v6/review/phone-fields-10-main.png",
+      "sha256": "8e077713792e7252e55a9c8ae7233082b42d5e4f6348845c208c4c1726746df0",
+      "size": [
+        600,
+        1360
+      ],
+      "crops": [
+        {
+          "source": "/workspace/scratch/wave6-arch-research/default-typeset-v6/arch-6.10-light-320-statement.png",
+          "sourceSHA256": "87cffd1111de4d21ec14e7cb618ab4fc0ae75700aa89ad467b06b216b0ad7482",
+          "sourceBox": [
+            0,
+            0,
+            292,
+            701
+          ],
+          "destinationBox": [
+            0,
+            32,
+            292,
+            733
+          ]
+        },
+        {
+          "source": "/workspace/scratch/wave6-arch-research/default-typeset-v6/arch-6.10-dark-320-statement.png",
+          "sourceSHA256": "f9e83edeeaffac2c971d93a17b6b5c2073702d5fd0159df1d9f7cf0063928dc4",
+          "sourceBox": [
+            0,
+            0,
+            292,
+            701
+          ],
+          "destinationBox": [
+            308,
+            32,
+            600,
+            733
+          ]
+        },
+        {
+          "source": "/workspace/scratch/wave6-arch-research/default-typeset-v6/arch-6.10-light-320-idea.png",
+          "sourceSHA256": "e0f9ed07e3056deb708b70adf75edfb2e8d9bc3422db83f6fdb3cd8681f62b4a",
+          "sourceBox": [
+            0,
+            0,
+            292,
+            579
+          ],
+          "destinationBox": [
+            0,
+            781,
+            292,
+            1360
+          ]
+        },
+        {
+          "source": "/workspace/scratch/wave6-arch-research/default-typeset-v6/arch-6.10-dark-320-idea.png",
+          "sourceSHA256": "ea90b588abb7c2aca85c9e5ed2a41a733b0f45ae7a6f425484d7a0dd9832ccf9",
+          "sourceBox": [
+            0,
+            0,
+            292,
+            579
+          ],
+          "destinationBox": [
+            308,
+            781,
+            600,
+            1360
+          ]
+        }
+      ],
+      "kind": "rich",
+      "personallyViewedOriginalDetail": true
+    },
+    {
+      "file": "/workspace/scratch/wave6-arch-research/default-typeset-v6/review/phone-fields-10-tail.png",
+      "sha256": "5b856138feaee6b7d7d6f86c115623f15aa00241d0e02aaecb57b2ddf83310aa",
+      "size": [
+        600,
+        505
+      ],
+      "crops": [
+        {
+          "source": "/workspace/scratch/wave6-arch-research/default-typeset-v6/arch-6.10-light-320-caption.png",
+          "sourceSHA256": "9b7ec726cace91d3d5fa528ee1d94385a737c59da7405af0dde4bc14fdd4e435",
+          "sourceBox": [
+            0,
+            0,
+            292,
+            123
+          ],
+          "destinationBox": [
+            0,
+            32,
+            292,
+            155
+          ]
+        },
+        {
+          "source": "/workspace/scratch/wave6-arch-research/default-typeset-v6/arch-6.10-dark-320-caption.png",
+          "sourceSHA256": "f508f4ee64754c1075daa74c32200409ffe52649d311813bfa79f75c131e9dd7",
+          "sourceBox": [
+            0,
+            0,
+            292,
+            123
+          ],
+          "destinationBox": [
+            308,
+            32,
+            600,
+            155
+          ]
+        },
+        {
+          "source": "/workspace/scratch/wave6-arch-research/default-typeset-v6/arch-6.10-light-320-refs.png",
+          "sourceSHA256": "6c0ae7a5c6a7d11948d2d248fb7166d421d595e9a5a1f643f0b999a299489bc1",
+          "sourceBox": [
+            0,
+            0,
+            292,
+            66
+          ],
+          "destinationBox": [
+            0,
+            203,
+            292,
+            269
+          ]
+        },
+        {
+          "source": "/workspace/scratch/wave6-arch-research/default-typeset-v6/arch-6.10-dark-320-refs.png",
+          "sourceSHA256": "fee906f483e65c629cd4b6fda9dac74fa5865f8acefad56ffa723d951a1576fe",
+          "sourceBox": [
+            0,
+            0,
+            292,
+            66
+          ],
+          "destinationBox": [
+            308,
+            203,
+            600,
+            269
+          ]
+        },
+        {
+          "source": "/workspace/scratch/wave6-arch-research/default-typeset-v6/arch-6.10-light-320-scope.png",
+          "sourceSHA256": "0992b55b54cf5f9ef5d93149faea707be3e2c5ecfe3cf43829cc5b9d6b3cc3c3",
+          "sourceBox": [
+            0,
+            0,
+            257,
+            188
+          ],
+          "destinationBox": [
+            0,
+            317,
+            257,
+            505
+          ]
+        },
+        {
+          "source": "/workspace/scratch/wave6-arch-research/default-typeset-v6/arch-6.10-dark-320-scope.png",
+          "sourceSHA256": "c3d7e22dc34a6e12d8a2dbcd60ec2b974ac685f29de2bd5d90f67184bbbba13a",
+          "sourceBox": [
+            0,
+            0,
+            257,
+            188
+          ],
+          "destinationBox": [
+            308,
+            317,
+            565,
+            505
+          ]
+        }
+      ],
+      "kind": "rich",
+      "personallyViewedOriginalDetail": true
+    },
+    {
+      "file": "/workspace/scratch/wave6-arch-research/default-typeset-v6/review/phone-fields-11-main.png",
+      "sha256": "d3e58d3c368b2706a0052b6be4d1006b19fe594d1b4e49200981cc88398f3bf1",
+      "size": [
+        600,
+        1594
+      ],
+      "crops": [
+        {
+          "source": "/workspace/scratch/wave6-arch-research/default-typeset-v6/arch-6.11-light-320-statement.png",
+          "sourceSHA256": "c9f2907b6661944ef43ebd286f60671bce41f08f9b52e4cb52a57009a1e658de",
+          "sourceBox": [
+            0,
+            0,
+            292,
+            753
+          ],
+          "destinationBox": [
+            0,
+            32,
+            292,
+            785
+          ]
+        },
+        {
+          "source": "/workspace/scratch/wave6-arch-research/default-typeset-v6/arch-6.11-dark-320-statement.png",
+          "sourceSHA256": "336050fad75e68ed1d906fab994d9be961b8a950ceec8a173d29fdc125d5e23c",
+          "sourceBox": [
+            0,
+            0,
+            292,
+            753
+          ],
+          "destinationBox": [
+            308,
+            32,
+            600,
+            785
+          ]
+        },
+        {
+          "source": "/workspace/scratch/wave6-arch-research/default-typeset-v6/arch-6.11-light-320-idea.png",
+          "sourceSHA256": "00d3eb4d85c1b25fd9cf84d12a37a4fe774d4a784c7414232e4bb9b7d0230ba5",
+          "sourceBox": [
+            0,
+            0,
+            292,
+            761
+          ],
+          "destinationBox": [
+            0,
+            833,
+            292,
+            1594
+          ]
+        },
+        {
+          "source": "/workspace/scratch/wave6-arch-research/default-typeset-v6/arch-6.11-dark-320-idea.png",
+          "sourceSHA256": "100f83358e40816f5fc95685c9bec5009c4760b63ecf14cba8eac0b9db3625ad",
+          "sourceBox": [
+            0,
+            0,
+            292,
+            761
+          ],
+          "destinationBox": [
+            308,
+            833,
+            600,
+            1594
+          ]
+        }
+      ],
+      "kind": "rich",
+      "personallyViewedOriginalDetail": true
+    },
+    {
+      "file": "/workspace/scratch/wave6-arch-research/default-typeset-v6/review/phone-fields-11-tail.png",
+      "sha256": "ff7498ea7fa352952d9a098a548c83e38c71890ea20f0633d2467ef984b65a13",
+      "size": [
+        600,
+        591
+      ],
+      "crops": [
+        {
+          "source": "/workspace/scratch/wave6-arch-research/default-typeset-v6/arch-6.11-light-320-caption.png",
+          "sourceSHA256": "d2eb0f033fda2b10431bedfd19f0935b7402f77e1058df3d882922677094156f",
+          "sourceBox": [
+            0,
+            0,
+            292,
+            145
+          ],
+          "destinationBox": [
+            0,
+            32,
+            292,
+            177
+          ]
+        },
+        {
+          "source": "/workspace/scratch/wave6-arch-research/default-typeset-v6/arch-6.11-dark-320-caption.png",
+          "sourceSHA256": "da8d24cca95f19d152105053e8a97c2ab712131ebe72fed1d71b1bb142f3f3c5",
+          "sourceBox": [
+            0,
+            0,
+            292,
+            145
+          ],
+          "destinationBox": [
+            308,
+            32,
+            600,
+            177
+          ]
+        },
+        {
+          "source": "/workspace/scratch/wave6-arch-research/default-typeset-v6/arch-6.11-light-320-refs.png",
+          "sourceSHA256": "c3b415bca969f36030efe447e0888630b5e07ab6339fc007e647224fb5b7b12e",
+          "sourceBox": [
+            0,
+            0,
+            292,
+            87
+          ],
+          "destinationBox": [
+            0,
+            225,
+            292,
+            312
+          ]
+        },
+        {
+          "source": "/workspace/scratch/wave6-arch-research/default-typeset-v6/arch-6.11-dark-320-refs.png",
+          "sourceSHA256": "d46f7167d84546836e83c58c57c5cd31eafaef43626b777b1517aa01c6719cbf",
+          "sourceBox": [
+            0,
+            0,
+            292,
+            87
+          ],
+          "destinationBox": [
+            308,
+            225,
+            600,
+            312
+          ]
+        },
+        {
+          "source": "/workspace/scratch/wave6-arch-research/default-typeset-v6/arch-6.11-light-320-scope.png",
+          "sourceSHA256": "a5826184824ffd56fa91ca82b092f453932ae40c429a19a5232585b6270881ed",
+          "sourceBox": [
+            0,
+            0,
+            257,
+            231
+          ],
+          "destinationBox": [
+            0,
+            360,
+            257,
+            591
+          ]
+        },
+        {
+          "source": "/workspace/scratch/wave6-arch-research/default-typeset-v6/arch-6.11-dark-320-scope.png",
+          "sourceSHA256": "490b30b4592f76bd5db5fedf68d510ee2818ca75b47d5ba3c5964ce4e8e44468",
+          "sourceBox": [
+            0,
+            0,
+            257,
+            231
+          ],
+          "destinationBox": [
+            308,
+            360,
+            565,
+            591
+          ]
+        }
+      ],
+      "kind": "rich",
+      "personallyViewedOriginalDetail": true
+    },
+    {
+      "file": "/workspace/scratch/wave6-arch-research/default-pressure-v8/review/phone-fields-03-main.png",
+      "sha256": "c4dedc5344620c5b68dfc402f6741670e0f4d2095ae0a0e95cec90ca6258ff05",
+      "size": [
+        600,
+        1485
+      ],
+      "crops": [
+        {
+          "source": "/workspace/scratch/wave6-arch-research/default-pressure-v8/arch-6.3-light-320-statement.png",
+          "sourceSHA256": "1c54a5002b64f3b9758839d605d0c7fbefbed470c4317924ebe7721fb061c962",
+          "sourceBox": [
+            0,
+            0,
+            292,
+            797
+          ],
+          "destinationBox": [
+            0,
+            32,
+            292,
+            829
+          ]
+        },
+        {
+          "source": "/workspace/scratch/wave6-arch-research/default-pressure-v8/arch-6.3-dark-320-statement.png",
+          "sourceSHA256": "f4a8b027a36bb898d754d52b245fa18fe9fa909793df277600736c67c7a6f364",
+          "sourceBox": [
+            0,
+            0,
+            292,
+            797
+          ],
+          "destinationBox": [
+            308,
+            32,
+            600,
+            829
+          ]
+        },
+        {
+          "source": "/workspace/scratch/wave6-arch-research/default-pressure-v8/arch-6.3-light-320-idea.png",
+          "sourceSHA256": "bb6526ca7e2c205da7dd9fa2d7ad230916c57ea47d57e045b69177e9ca3cc021",
+          "sourceBox": [
+            0,
+            0,
+            292,
+            608
+          ],
+          "destinationBox": [
+            0,
+            877,
+            292,
+            1485
+          ]
+        },
+        {
+          "source": "/workspace/scratch/wave6-arch-research/default-pressure-v8/arch-6.3-dark-320-idea.png",
+          "sourceSHA256": "10083e3598fc2cea33a4b1524348add825db0008b74e410f00bf836d5c960c92",
+          "sourceBox": [
+            0,
+            0,
+            292,
+            608
+          ],
+          "destinationBox": [
+            308,
+            877,
+            600,
+            1485
+          ]
+        }
+      ],
+      "kind": "rich",
+      "personallyViewedOriginalDetail": true
+    },
+    {
+      "file": "/workspace/scratch/wave6-arch-research/default-pressure-v8/review/phone-fields-03-tail.png",
+      "sha256": "2172a9c046bd4ef2029a3ae43ee358e3d25b26dfb387f550c162931ed21379d2",
+      "size": [
+        600,
+        505
+      ],
+      "crops": [
+        {
+          "source": "/workspace/scratch/wave6-arch-research/default-pressure-v8/arch-6.3-light-320-caption.png",
+          "sourceSHA256": "bdef5e1c91ce958249099e4fdca0a2abfeb0ca199e24018271360427a13fbf0b",
+          "sourceBox": [
+            0,
+            0,
+            292,
+            123
+          ],
+          "destinationBox": [
+            0,
+            32,
+            292,
+            155
+          ]
+        },
+        {
+          "source": "/workspace/scratch/wave6-arch-research/default-pressure-v8/arch-6.3-dark-320-caption.png",
+          "sourceSHA256": "ab03147b3fdae742e14286a4a3b7a07b8297e8a22f2f7ae851e9c9c0cc3ec860",
+          "sourceBox": [
+            0,
+            0,
+            292,
+            123
+          ],
+          "destinationBox": [
+            308,
+            32,
+            600,
+            155
+          ]
+        },
+        {
+          "source": "/workspace/scratch/wave6-arch-research/default-pressure-v8/arch-6.3-light-320-refs.png",
+          "sourceSHA256": "e0e7f11c8ce6557c51faac82561539c7e32c39ac8408fdb55f875857138e57b9",
+          "sourceBox": [
+            0,
+            0,
+            292,
+            66
+          ],
+          "destinationBox": [
+            0,
+            203,
+            292,
+            269
+          ]
+        },
+        {
+          "source": "/workspace/scratch/wave6-arch-research/default-pressure-v8/arch-6.3-dark-320-refs.png",
+          "sourceSHA256": "8bd2eda7e5cb50c156cd9a168f3b918ccc2e3330ad1ff8c2b87f171aa67cce55",
+          "sourceBox": [
+            0,
+            0,
+            292,
+            66
+          ],
+          "destinationBox": [
+            308,
+            203,
+            600,
+            269
+          ]
+        },
+        {
+          "source": "/workspace/scratch/wave6-arch-research/default-pressure-v8/arch-6.3-light-320-scope.png",
+          "sourceSHA256": "887e7a9acf38eb2f18c91cdbf7ae800a232fcdb9213f1d2e00b044e118e1f4a1",
+          "sourceBox": [
+            0,
+            0,
+            257,
+            188
+          ],
+          "destinationBox": [
+            0,
+            317,
+            257,
+            505
+          ]
+        },
+        {
+          "source": "/workspace/scratch/wave6-arch-research/default-pressure-v8/arch-6.3-dark-320-scope.png",
+          "sourceSHA256": "ca5b09c3845f5db8842304440ca2b8bdd95060bd0787fe1e6f07885c9619a8b2",
+          "sourceBox": [
+            0,
+            0,
+            257,
+            188
+          ],
+          "destinationBox": [
+            308,
+            317,
+            565,
+            505
+          ]
+        }
+      ],
+      "kind": "rich",
+      "personallyViewedOriginalDetail": true
+    },
+    {
+      "file": "/workspace/scratch/wave6-arch-research/critical-review-final/critical-01-00.png",
+      "sha256": "3ab1c4cc1f13f85e9535b7961ba496c2c8e9f1ec643161e07e9e55604756947f",
+      "size": [
+        592,
+        1447
+      ],
+      "crops": [
+        {
+          "source": "/workspace/scratch/wave6-arch-research/critical-final-light/arch-6.1-light-320-critical-0.png",
+          "sourceSHA256": "81f61843f9617e427c3e47521a0c763f632faaa0a69db389fc83c7c2c371b182",
+          "sourceBox": [
+            0,
+            0,
+            288,
+            1415
+          ],
+          "destinationBox": [
+            0,
+            32,
+            288,
+            1447
+          ]
+        },
+        {
+          "source": "/workspace/scratch/wave6-arch-research/critical-final-dark/arch-6.1-dark-320-critical-0.png",
+          "sourceSHA256": "a368af0bc640390f41977bb20d2f2455706c68ca674b5c503ce3cfb169a60779",
+          "sourceBox": [
+            0,
+            0,
+            288,
+            1415
+          ],
+          "destinationBox": [
+            304,
+            32,
+            592,
+            1447
+          ]
+        }
+      ],
+      "kind": "critical",
+      "personallyViewedOriginalDetail": true
+    },
+    {
+      "file": "/workspace/scratch/wave6-arch-research/critical-review-final/critical-01-01.png",
+      "sha256": "350dea6898b2ca538c9d4f3aef3be5340f2fa82d8cc357b88468c7bc86b717e6",
+      "size": [
+        592,
+        1447
+      ],
+      "crops": [
+        {
+          "source": "/workspace/scratch/wave6-arch-research/critical-final-light/arch-6.1-light-320-critical-1.png",
+          "sourceSHA256": "2edd989eb37ba2b390ec7798fa91688ac4ac0034259da1e6c8305f4e967d3e96",
+          "sourceBox": [
+            0,
+            0,
+            288,
+            1415
+          ],
+          "destinationBox": [
+            0,
+            32,
+            288,
+            1447
+          ]
+        },
+        {
+          "source": "/workspace/scratch/wave6-arch-research/critical-final-dark/arch-6.1-dark-320-critical-1.png",
+          "sourceSHA256": "1d855568d5d06e3809b2d4e106b5820e9e110ff4eb4c84ab6fdca7c2ef863c4a",
+          "sourceBox": [
+            0,
+            0,
+            288,
+            1415
+          ],
+          "destinationBox": [
+            304,
+            32,
+            592,
+            1447
+          ]
+        }
+      ],
+      "kind": "critical",
+      "personallyViewedOriginalDetail": true
+    },
+    {
+      "file": "/workspace/scratch/wave6-arch-research/critical-review-final/critical-01-02.png",
+      "sha256": "e2a03f58e7dd545f367ba0394e61edfa039d03bb15d9693a9452db60fe81cf4f",
+      "size": [
+        592,
+        1514
+      ],
+      "crops": [
+        {
+          "source": "/workspace/scratch/wave6-arch-research/critical-final-light/arch-6.1-light-320-critical-2.png",
+          "sourceSHA256": "809fef22a828015222806dacdea68bc48e6efd5243caff9b2784c247da4964a1",
+          "sourceBox": [
+            0,
+            0,
+            288,
+            1482
+          ],
+          "destinationBox": [
+            0,
+            32,
+            288,
+            1514
+          ]
+        },
+        {
+          "source": "/workspace/scratch/wave6-arch-research/critical-final-dark/arch-6.1-dark-320-critical-2.png",
+          "sourceSHA256": "fe871a4dc7704222785eb3e1bb3bb58aa9f174391ae6df71ece4824c40753758",
+          "sourceBox": [
+            0,
+            0,
+            288,
+            1482
+          ],
+          "destinationBox": [
+            304,
+            32,
+            592,
+            1514
+          ]
+        }
+      ],
+      "kind": "critical",
+      "personallyViewedOriginalDetail": true
+    },
+    {
+      "file": "/workspace/scratch/wave6-arch-research/critical-review-final/critical-01-03.png",
+      "sha256": "92dd84443a2e9580410795e3faad90b310e48a8cb87ff60c1e960047149aadd2",
+      "size": [
+        592,
+        1447
+      ],
+      "crops": [
+        {
+          "source": "/workspace/scratch/wave6-arch-research/critical-final-light/arch-6.1-light-320-critical-3.png",
+          "sourceSHA256": "dd92a8c7515049a207708489b0dad49f2663ff2b2bb0783028d979b433d30d7b",
+          "sourceBox": [
+            0,
+            0,
+            288,
+            1415
+          ],
+          "destinationBox": [
+            0,
+            32,
+            288,
+            1447
+          ]
+        },
+        {
+          "source": "/workspace/scratch/wave6-arch-research/critical-final-dark/arch-6.1-dark-320-critical-3.png",
+          "sourceSHA256": "8dde4c078468dbf21923b3eefeab2894cb45e25c3da18e2dc7a22aaa4e6e1ba5",
+          "sourceBox": [
+            0,
+            0,
+            288,
+            1415
+          ],
+          "destinationBox": [
+            304,
+            32,
+            592,
+            1447
+          ]
+        }
+      ],
+      "kind": "critical",
+      "personallyViewedOriginalDetail": true
+    },
+    {
+      "file": "/workspace/scratch/wave6-arch-research/critical-review-final/critical-02-00.png",
+      "sha256": "5e0bd269bfc49ccbc298e869d507a5096a71a84eabdcd4da46f62356992d121e",
+      "size": [
+        592,
+        1390
+      ],
+      "crops": [
+        {
+          "source": "/workspace/scratch/wave6-arch-research/critical-final-light/arch-6.2-light-320-critical-0.png",
+          "sourceSHA256": "17edd6be20925d7dee3297a33be6997a57827b6a83468c492477c2b093057add",
+          "sourceBox": [
+            0,
+            0,
+            288,
+            1358
+          ],
+          "destinationBox": [
+            0,
+            32,
+            288,
+            1390
+          ]
+        },
+        {
+          "source": "/workspace/scratch/wave6-arch-research/critical-final-dark/arch-6.2-dark-320-critical-0.png",
+          "sourceSHA256": "9207aab022734f4da2a5a0368696d0c6fda53148cc13b4c2fa19ae6659ce2831",
+          "sourceBox": [
+            0,
+            0,
+            288,
+            1358
+          ],
+          "destinationBox": [
+            304,
+            32,
+            592,
+            1390
+          ]
+        }
+      ],
+      "kind": "critical",
+      "personallyViewedOriginalDetail": true
+    },
+    {
+      "file": "/workspace/scratch/wave6-arch-research/critical-review-final/critical-02-01.png",
+      "sha256": "33c978ba9d0af1e6469f20215b8a30a74a0d8d22dfe55bc1074e07ef6a21ced2",
+      "size": [
+        592,
+        1413
+      ],
+      "crops": [
+        {
+          "source": "/workspace/scratch/wave6-arch-research/critical-final-light/arch-6.2-light-320-critical-1.png",
+          "sourceSHA256": "4f01ed1cdc212d6cceb07025c4eaff5c380315e0b0a5c0315d9a1db85d5b89dd",
+          "sourceBox": [
+            0,
+            0,
+            288,
+            1381
+          ],
+          "destinationBox": [
+            0,
+            32,
+            288,
+            1413
+          ]
+        },
+        {
+          "source": "/workspace/scratch/wave6-arch-research/critical-final-dark/arch-6.2-dark-320-critical-1.png",
+          "sourceSHA256": "40c8bfb6b1858f4e90b99dd85358455d1541feec9ae82bc103c4415fa33e6ff9",
+          "sourceBox": [
+            0,
+            0,
+            288,
+            1381
+          ],
+          "destinationBox": [
+            304,
+            32,
+            592,
+            1413
+          ]
+        }
+      ],
+      "kind": "critical",
+      "personallyViewedOriginalDetail": true
+    },
+    {
+      "file": "/workspace/scratch/wave6-arch-research/critical-review-final/critical-02-02.png",
+      "sha256": "d1cf37ae0a1cdf047c21432eb7399bd1f11d259a317d4ffe0bc9a8de71d8ab50",
+      "size": [
+        592,
+        1457
+      ],
+      "crops": [
+        {
+          "source": "/workspace/scratch/wave6-arch-research/critical-final-light/arch-6.2-light-320-critical-2.png",
+          "sourceSHA256": "76c94b0b39d9adc719257729b9bed6080566b4f97adbd8d35bb3e4409985fe5d",
+          "sourceBox": [
+            0,
+            0,
+            288,
+            1425
+          ],
+          "destinationBox": [
+            0,
+            32,
+            288,
+            1457
+          ]
+        },
+        {
+          "source": "/workspace/scratch/wave6-arch-research/critical-final-dark/arch-6.2-dark-320-critical-2.png",
+          "sourceSHA256": "eb2b22995faca22ef317b9dca21e5fded88b6ee5d9de851a0133d602bc2249e1",
+          "sourceBox": [
+            0,
+            0,
+            288,
+            1425
+          ],
+          "destinationBox": [
+            304,
+            32,
+            592,
+            1457
+          ]
+        }
+      ],
+      "kind": "critical",
+      "personallyViewedOriginalDetail": true
+    },
+    {
+      "file": "/workspace/scratch/wave6-arch-research/critical-review-final/critical-03-00.png",
+      "sha256": "6b9766783f06da3c62de928f748ccdb0d972f1f18a874412bc8842e9fa87840b",
+      "size": [
+        592,
+        1546
+      ],
+      "crops": [
+        {
+          "source": "/workspace/scratch/wave6-arch-research/native-pressure-v8/arch-6.3-light-320-critical-0.png",
+          "sourceSHA256": "a5bbf6d5668ed7f7c63573d7a5d9f7b811dc453f3a107f3daa7f9d397a9e2710",
+          "sourceBox": [
+            0,
+            0,
+            288,
+            1514
+          ],
+          "destinationBox": [
+            0,
+            32,
+            288,
+            1546
+          ]
+        },
+        {
+          "source": "/workspace/scratch/wave6-arch-research/native-pressure-v8/arch-6.3-dark-320-critical-0.png",
+          "sourceSHA256": "97cb858eca558979b3bb1fcbce299dd59afb11807e9f5e7f45759c4e99fe9f06",
+          "sourceBox": [
+            0,
+            0,
+            288,
+            1514
+          ],
+          "destinationBox": [
+            304,
+            32,
+            592,
+            1546
+          ]
+        }
+      ],
+      "kind": "critical",
+      "personallyViewedOriginalDetail": true
+    },
+    {
+      "file": "/workspace/scratch/wave6-arch-research/critical-review-final/critical-03-01.png",
+      "sha256": "9e27c3e491447a84f6267c294c2e0c96e08ae88b9dbcb42fe247e23a4ae9c1aa",
+      "size": [
+        592,
+        1546
+      ],
+      "crops": [
+        {
+          "source": "/workspace/scratch/wave6-arch-research/native-pressure-v8/arch-6.3-light-320-critical-1.png",
+          "sourceSHA256": "a07a3f81297d08b26f7d663a9695de992201318821d2f9e7bf2b517b1fed7c23",
+          "sourceBox": [
+            0,
+            0,
+            288,
+            1514
+          ],
+          "destinationBox": [
+            0,
+            32,
+            288,
+            1546
+          ]
+        },
+        {
+          "source": "/workspace/scratch/wave6-arch-research/native-pressure-v8/arch-6.3-dark-320-critical-1.png",
+          "sourceSHA256": "1102188f54ec5351469cf18a72d8b4a3d2343f0a23084e2a085d7b2874b16b3a",
+          "sourceBox": [
+            0,
+            0,
+            288,
+            1514
+          ],
+          "destinationBox": [
+            304,
+            32,
+            592,
+            1546
+          ]
+        }
+      ],
+      "kind": "critical",
+      "personallyViewedOriginalDetail": true
+    },
+    {
+      "file": "/workspace/scratch/wave6-arch-research/critical-review-final/critical-03-02.png",
+      "sha256": "9f0758043aa8eda4abfcee275b08407a9a9112374f46725cd76dbfd2fa7c5e66",
+      "size": [
+        592,
+        1546
+      ],
+      "crops": [
+        {
+          "source": "/workspace/scratch/wave6-arch-research/native-pressure-v8/arch-6.3-light-320-critical-2.png",
+          "sourceSHA256": "4430c9095be8499fb6daebcbf164bc0b8501d60a637313bbfa156922d39b040a",
+          "sourceBox": [
+            0,
+            0,
+            288,
+            1514
+          ],
+          "destinationBox": [
+            0,
+            32,
+            288,
+            1546
+          ]
+        },
+        {
+          "source": "/workspace/scratch/wave6-arch-research/native-pressure-v8/arch-6.3-dark-320-critical-2.png",
+          "sourceSHA256": "647ba78ebb386d8e07cc6437dbc752bf3f545565c2985eb7221ad2aba66cf74c",
+          "sourceBox": [
+            0,
+            0,
+            288,
+            1514
+          ],
+          "destinationBox": [
+            304,
+            32,
+            592,
+            1546
+          ]
+        }
+      ],
+      "kind": "critical",
+      "personallyViewedOriginalDetail": true
+    },
+    {
+      "file": "/workspace/scratch/wave6-arch-research/critical-review-final/critical-04-00.png",
+      "sha256": "d654948e0533f5e971c4810ae6292790ead6417fc10ed49a21b39b15b81de9af",
+      "size": [
+        592,
+        1485
+      ],
+      "crops": [
+        {
+          "source": "/workspace/scratch/wave6-arch-research/critical-final-light/arch-6.4-light-320-critical-0.png",
+          "sourceSHA256": "6a6c52e1cbb6a1301bd6956eecdf151d6a7148876b8a3b19be85c7bbbeee5231",
+          "sourceBox": [
+            0,
+            0,
+            288,
+            1453
+          ],
+          "destinationBox": [
+            0,
+            32,
+            288,
+            1485
+          ]
+        },
+        {
+          "source": "/workspace/scratch/wave6-arch-research/critical-final-dark/arch-6.4-dark-320-critical-0.png",
+          "sourceSHA256": "725a3bcc44efda4dfa5805e716b6f74f89761b04c07f273d36942eac9fc19755",
+          "sourceBox": [
+            0,
+            0,
+            288,
+            1453
+          ],
+          "destinationBox": [
+            304,
+            32,
+            592,
+            1485
+          ]
+        }
+      ],
+      "kind": "critical",
+      "personallyViewedOriginalDetail": true
+    },
+    {
+      "file": "/workspace/scratch/wave6-arch-research/critical-review-final/critical-04-01.png",
+      "sha256": "3ca08563c2e3d1484de16d089c423f600ec7557419d7a70e1c8cdaa3fbc24792",
+      "size": [
+        592,
+        1485
+      ],
+      "crops": [
+        {
+          "source": "/workspace/scratch/wave6-arch-research/critical-final-light/arch-6.4-light-320-critical-1.png",
+          "sourceSHA256": "cbf3274645969095e95186f8fa66c829446ad5117aa9814b3d85040fb9697248",
+          "sourceBox": [
+            0,
+            0,
+            288,
+            1453
+          ],
+          "destinationBox": [
+            0,
+            32,
+            288,
+            1485
+          ]
+        },
+        {
+          "source": "/workspace/scratch/wave6-arch-research/critical-final-dark/arch-6.4-dark-320-critical-1.png",
+          "sourceSHA256": "fee9719e00a672a55d6cb981a61c0db816d660c2564ded4379432f0f1829dfd9",
+          "sourceBox": [
+            0,
+            0,
+            288,
+            1453
+          ],
+          "destinationBox": [
+            304,
+            32,
+            592,
+            1485
+          ]
+        }
+      ],
+      "kind": "critical",
+      "personallyViewedOriginalDetail": true
+    },
+    {
+      "file": "/workspace/scratch/wave6-arch-research/critical-review-final/critical-04-02.png",
+      "sha256": "1160bf747e5d6658bbcba2158ad9a47e0709bfab7ea7aeef20cd2b58734b2909",
+      "size": [
+        592,
+        1485
+      ],
+      "crops": [
+        {
+          "source": "/workspace/scratch/wave6-arch-research/critical-final-light/arch-6.4-light-320-critical-2.png",
+          "sourceSHA256": "5ec2e5cd637464f7110bbff92a67dcb9b7a5bf1c0c58c0cc99a9d9be87557962",
+          "sourceBox": [
+            0,
+            0,
+            288,
+            1453
+          ],
+          "destinationBox": [
+            0,
+            32,
+            288,
+            1485
+          ]
+        },
+        {
+          "source": "/workspace/scratch/wave6-arch-research/critical-final-dark/arch-6.4-dark-320-critical-2.png",
+          "sourceSHA256": "0f58dcaee820b74a9945fe1b30bbb56802cef461bbbece4e28e00a5dbe83d444",
+          "sourceBox": [
+            0,
+            0,
+            288,
+            1453
+          ],
+          "destinationBox": [
+            304,
+            32,
+            592,
+            1485
+          ]
+        }
+      ],
+      "kind": "critical",
+      "personallyViewedOriginalDetail": true
+    },
+    {
+      "file": "/workspace/scratch/wave6-arch-research/critical-review-final/critical-04-03.png",
+      "sha256": "305d93652ae5334228625ad3227abcbcce41a781a805eb5b6ec968c9af8a401f",
+      "size": [
+        592,
+        1485
+      ],
+      "crops": [
+        {
+          "source": "/workspace/scratch/wave6-arch-research/critical-final-light/arch-6.4-light-320-critical-3.png",
+          "sourceSHA256": "0fa41c9ea0ac44bc0844f26c6af61cf0d49780fb3cc93d7f36bddf05d4676e36",
+          "sourceBox": [
+            0,
+            0,
+            288,
+            1453
+          ],
+          "destinationBox": [
+            0,
+            32,
+            288,
+            1485
+          ]
+        },
+        {
+          "source": "/workspace/scratch/wave6-arch-research/critical-final-dark/arch-6.4-dark-320-critical-3.png",
+          "sourceSHA256": "745a5a91e3f6b374f94a34c2fe45b9696de48997712d09c74283b2ee39d4ce88",
+          "sourceBox": [
+            0,
+            0,
+            288,
+            1453
+          ],
+          "destinationBox": [
+            304,
+            32,
+            592,
+            1485
+          ]
+        }
+      ],
+      "kind": "critical",
+      "personallyViewedOriginalDetail": true
+    },
+    {
+      "file": "/workspace/scratch/wave6-arch-research/critical-review-final/critical-04-04.png",
+      "sha256": "c38bb533de08b3539a005bd713df0dde98b206d83c239e819d2f801f225e2d4b",
+      "size": [
+        592,
+        1529
+      ],
+      "crops": [
+        {
+          "source": "/workspace/scratch/wave6-arch-research/critical-final-light/arch-6.4-light-320-critical-4.png",
+          "sourceSHA256": "e9049802b79d8342b68249135b9345d218e63294770f1795bda6bad785a2c0b7",
+          "sourceBox": [
+            0,
+            0,
+            288,
+            1497
+          ],
+          "destinationBox": [
+            0,
+            32,
+            288,
+            1529
+          ]
+        },
+        {
+          "source": "/workspace/scratch/wave6-arch-research/critical-final-dark/arch-6.4-dark-320-critical-4.png",
+          "sourceSHA256": "9a9bef3cca0fe16abeb14d6fcb9a576584af268af8e751ef86e7a2fb0fbd6e82",
+          "sourceBox": [
+            0,
+            0,
+            288,
+            1497
+          ],
+          "destinationBox": [
+            304,
+            32,
+            592,
+            1529
+          ]
+        }
+      ],
+      "kind": "critical",
+      "personallyViewedOriginalDetail": true
+    },
+    {
+      "file": "/workspace/scratch/wave6-arch-research/critical-review-final/critical-05-00.png",
+      "sha256": "68ab47174f6b67a88a22351a3bcaf7647c15b6ad92b1b697a93af0cdc09b2bf5",
+      "size": [
+        592,
+        1569
+      ],
+      "crops": [
+        {
+          "source": "/workspace/scratch/wave6-arch-research/critical-final-light/arch-6.5-light-320-critical-0.png",
+          "sourceSHA256": "f996c1ab40e55de3d8c2bfd1169f52f4cd88851077657bc56c38da2e6a90af99",
+          "sourceBox": [
+            0,
+            0,
+            288,
+            1537
+          ],
+          "destinationBox": [
+            0,
+            32,
+            288,
+            1569
+          ]
+        },
+        {
+          "source": "/workspace/scratch/wave6-arch-research/critical-final-dark/arch-6.5-dark-320-critical-0.png",
+          "sourceSHA256": "1f65c16089c219390f57e059da0ee2fd5b79b9c6ac9e5991e55d368cd4e32701",
+          "sourceBox": [
+            0,
+            0,
+            288,
+            1537
+          ],
+          "destinationBox": [
+            304,
+            32,
+            592,
+            1569
+          ]
+        }
+      ],
+      "kind": "critical",
+      "personallyViewedOriginalDetail": true
+    },
+    {
+      "file": "/workspace/scratch/wave6-arch-research/critical-review-final/critical-05-01.png",
+      "sha256": "089e4fe6111312dc1311bcc6331a70b665b1cea42e673742d4ce8f28a9f46c9e",
+      "size": [
+        592,
+        1569
+      ],
+      "crops": [
+        {
+          "source": "/workspace/scratch/wave6-arch-research/critical-final-light/arch-6.5-light-320-critical-1.png",
+          "sourceSHA256": "d1660b8022ad62158fe11a5dccefcfa4c6ceff9eccab25fd21520997adee4355",
+          "sourceBox": [
+            0,
+            0,
+            288,
+            1537
+          ],
+          "destinationBox": [
+            0,
+            32,
+            288,
+            1569
+          ]
+        },
+        {
+          "source": "/workspace/scratch/wave6-arch-research/critical-final-dark/arch-6.5-dark-320-critical-1.png",
+          "sourceSHA256": "0e1d6b5b30dc9db9be941da7c2c6c91fe89581c8a75447a74019fff9ea2d5c44",
+          "sourceBox": [
+            0,
+            0,
+            288,
+            1537
+          ],
+          "destinationBox": [
+            304,
+            32,
+            592,
+            1569
+          ]
+        }
+      ],
+      "kind": "critical",
+      "personallyViewedOriginalDetail": true
+    },
+    {
+      "file": "/workspace/scratch/wave6-arch-research/critical-review-final/critical-05-02.png",
+      "sha256": "c8846b2ad7a469149eed5a410ddc6780e412e777533f201fc3b3c4caac7c62a3",
+      "size": [
+        592,
+        1569
+      ],
+      "crops": [
+        {
+          "source": "/workspace/scratch/wave6-arch-research/critical-final-light/arch-6.5-light-320-critical-2.png",
+          "sourceSHA256": "4a684e493503ba3dc6824f30b78023ae43950446fe700bb32b97a1f969cfe330",
+          "sourceBox": [
+            0,
+            0,
+            288,
+            1537
+          ],
+          "destinationBox": [
+            0,
+            32,
+            288,
+            1569
+          ]
+        },
+        {
+          "source": "/workspace/scratch/wave6-arch-research/critical-final-dark/arch-6.5-dark-320-critical-2.png",
+          "sourceSHA256": "8cce532cfd7a7f98d47ca2aaa6da363dd40ce9a269487fad35f3ed6f55d3f230",
+          "sourceBox": [
+            0,
+            0,
+            288,
+            1537
+          ],
+          "destinationBox": [
+            304,
+            32,
+            592,
+            1569
+          ]
+        }
+      ],
+      "kind": "critical",
+      "personallyViewedOriginalDetail": true
+    },
+    {
+      "file": "/workspace/scratch/wave6-arch-research/critical-review-final/critical-05-03.png",
+      "sha256": "53235d0e93b564cd5bfb8f1b05a7a26cacb109430834c4b694c42d9e6164cb00",
+      "size": [
+        592,
+        1614
+      ],
+      "crops": [
+        {
+          "source": "/workspace/scratch/wave6-arch-research/critical-final-light/arch-6.5-light-320-critical-3.png",
+          "sourceSHA256": "b07bf8fbb5e4d1303165f79e61b19062ab698bc249709bdbd8bbc32f4aa3a151",
+          "sourceBox": [
+            0,
+            0,
+            288,
+            1582
+          ],
+          "destinationBox": [
+            0,
+            32,
+            288,
+            1614
+          ]
+        },
+        {
+          "source": "/workspace/scratch/wave6-arch-research/critical-final-dark/arch-6.5-dark-320-critical-3.png",
+          "sourceSHA256": "9df667a77b937fe0c54f3cc040b79ac65f8c8319c15edf272a10311efb1fda8c",
+          "sourceBox": [
+            0,
+            0,
+            288,
+            1582
+          ],
+          "destinationBox": [
+            304,
+            32,
+            592,
+            1614
+          ]
+        }
+      ],
+      "kind": "critical",
+      "personallyViewedOriginalDetail": true
+    },
+    {
+      "file": "/workspace/scratch/wave6-arch-research/critical-review-final/critical-06-00.png",
+      "sha256": "121134769e7380039a29d8230c11c0f453758dc0a026f82e30051149ded57fb1",
+      "size": [
+        592,
+        1572
+      ],
+      "crops": [
+        {
+          "source": "/workspace/scratch/wave6-arch-research/critical-final-light/arch-6.6-light-320-critical-0.png",
+          "sourceSHA256": "dd8e4724a181b432b2df21f68588a10b56f81ec467788675ec30c9783421183d",
+          "sourceBox": [
+            0,
+            0,
+            288,
+            1540
+          ],
+          "destinationBox": [
+            0,
+            32,
+            288,
+            1572
+          ]
+        },
+        {
+          "source": "/workspace/scratch/wave6-arch-research/critical-final-dark/arch-6.6-dark-320-critical-0.png",
+          "sourceSHA256": "38accb03f78c6aaea62e2510615e0e5c52b60290d7d36a370cd2505ee8b37fc1",
+          "sourceBox": [
+            0,
+            0,
+            288,
+            1540
+          ],
+          "destinationBox": [
+            304,
+            32,
+            592,
+            1572
+          ]
+        }
+      ],
+      "kind": "critical",
+      "personallyViewedOriginalDetail": true
+    },
+    {
+      "file": "/workspace/scratch/wave6-arch-research/critical-review-final/critical-06-01.png",
+      "sha256": "580f2ab40d595d61c18c489722fc4d8d8fbb1597a7680b70d973a9d47dcf7ad6",
+      "size": [
+        592,
+        1572
+      ],
+      "crops": [
+        {
+          "source": "/workspace/scratch/wave6-arch-research/critical-final-light/arch-6.6-light-320-critical-1.png",
+          "sourceSHA256": "e99f7aa98aa71b22f9ff42d6748d1231202e846e814b7115f66342a3e68e7f61",
+          "sourceBox": [
+            0,
+            0,
+            288,
+            1540
+          ],
+          "destinationBox": [
+            0,
+            32,
+            288,
+            1572
+          ]
+        },
+        {
+          "source": "/workspace/scratch/wave6-arch-research/critical-final-dark/arch-6.6-dark-320-critical-1.png",
+          "sourceSHA256": "f7ebf015199e661df6f8c79af3c76ba8f9941a480b573d04c96d884fc21268a8",
+          "sourceBox": [
+            0,
+            0,
+            288,
+            1540
+          ],
+          "destinationBox": [
+            304,
+            32,
+            592,
+            1572
+          ]
+        }
+      ],
+      "kind": "critical",
+      "personallyViewedOriginalDetail": true
+    },
+    {
+      "file": "/workspace/scratch/wave6-arch-research/critical-review-final/critical-07-00.png",
+      "sha256": "c0e6489f5ffe42ff66f23fe319f374ca246e643ebd1268895d851294b3df4148",
+      "size": [
+        592,
+        1532
+      ],
+      "crops": [
+        {
+          "source": "/workspace/scratch/wave6-arch-research/native-relaxation-v12/arch-6.7-light-320-critical-0.png",
+          "sourceSHA256": "b81d636294474726a24bd4022059f3783e509cabcd44ee0f896e9527bdf0b8b9",
+          "sourceBox": [
+            0,
+            0,
+            288,
+            1500
+          ],
+          "destinationBox": [
+            0,
+            32,
+            288,
+            1532
+          ]
+        },
+        {
+          "source": "/workspace/scratch/wave6-arch-research/native-relaxation-v12/arch-6.7-dark-320-critical-0.png",
+          "sourceSHA256": "19573d6b1c994b1f21291e6167a9a4017e6940ba7be650018a633eb1b5eccddc",
+          "sourceBox": [
+            0,
+            0,
+            288,
+            1500
+          ],
+          "destinationBox": [
+            304,
+            32,
+            592,
+            1532
+          ]
+        }
+      ],
+      "kind": "critical",
+      "personallyViewedOriginalDetail": true
+    },
+    {
+      "file": "/workspace/scratch/wave6-arch-research/critical-review-final/critical-07-01.png",
+      "sha256": "b87aca4247a763c51add4ee420c0b23059aad41ab879342aec8a4c57e7322c36",
+      "size": [
+        592,
+        1532
+      ],
+      "crops": [
+        {
+          "source": "/workspace/scratch/wave6-arch-research/native-relaxation-v12/arch-6.7-light-320-critical-1.png",
+          "sourceSHA256": "ff681f60af8f0080e71db02496e94aed06caa558b97924e85a437517e0145417",
+          "sourceBox": [
+            0,
+            0,
+            288,
+            1500
+          ],
+          "destinationBox": [
+            0,
+            32,
+            288,
+            1532
+          ]
+        },
+        {
+          "source": "/workspace/scratch/wave6-arch-research/native-relaxation-v12/arch-6.7-dark-320-critical-1.png",
+          "sourceSHA256": "8420c3fb4c632e3a609c1dd33f95adf011de1300cc44c9e54b0d867b0d661214",
+          "sourceBox": [
+            0,
+            0,
+            288,
+            1500
+          ],
+          "destinationBox": [
+            304,
+            32,
+            592,
+            1532
+          ]
+        }
+      ],
+      "kind": "critical",
+      "personallyViewedOriginalDetail": true
+    },
+    {
+      "file": "/workspace/scratch/wave6-arch-research/critical-review-final/critical-07-02.png",
+      "sha256": "118d7073498c9c535b084bb8124c861a27e9de225bd958e70e1324ee98b13f85",
+      "size": [
+        592,
+        1554
+      ],
+      "crops": [
+        {
+          "source": "/workspace/scratch/wave6-arch-research/native-relaxation-v12/arch-6.7-light-320-critical-2.png",
+          "sourceSHA256": "81d6477617c2d743457b30d0f3f7214412e06e15c7ed658582002fcc03904041",
+          "sourceBox": [
+            0,
+            0,
+            288,
+            1522
+          ],
+          "destinationBox": [
+            0,
+            32,
+            288,
+            1554
+          ]
+        },
+        {
+          "source": "/workspace/scratch/wave6-arch-research/native-relaxation-v12/arch-6.7-dark-320-critical-2.png",
+          "sourceSHA256": "a55ce430a4c700c7496649e3f1a51d5cd1df54f18d8d84845086c76c4a6eefc5",
+          "sourceBox": [
+            0,
+            0,
+            288,
+            1522
+          ],
+          "destinationBox": [
+            304,
+            32,
+            592,
+            1554
+          ]
+        }
+      ],
+      "kind": "critical",
+      "personallyViewedOriginalDetail": true
+    },
+    {
+      "file": "/workspace/scratch/wave6-arch-research/critical-review-final/critical-08-00.png",
+      "sha256": "334b3e77658836e3fd6b7dda5c4e6545256fe0767781589506bdb0bc0d7fbce8",
+      "size": [
+        592,
+        1473
+      ],
+      "crops": [
+        {
+          "source": "/workspace/scratch/wave6-arch-research/critical-final-light/arch-6.8-light-320-critical-0.png",
+          "sourceSHA256": "e3e7a29598a8562c581d54132a77bbb715ff95b38ad0e00fb2247e7475e55a56",
+          "sourceBox": [
+            0,
+            0,
+            288,
+            1441
+          ],
+          "destinationBox": [
+            0,
+            32,
+            288,
+            1473
+          ]
+        },
+        {
+          "source": "/workspace/scratch/wave6-arch-research/critical-final-dark/arch-6.8-dark-320-critical-0.png",
+          "sourceSHA256": "cc7633a89ad7fee9d36accab60fd21d9557bb0bbcff4ffa6159c618540d46f55",
+          "sourceBox": [
+            0,
+            0,
+            288,
+            1441
+          ],
+          "destinationBox": [
+            304,
+            32,
+            592,
+            1473
+          ]
+        }
+      ],
+      "kind": "critical",
+      "personallyViewedOriginalDetail": true
+    },
+    {
+      "file": "/workspace/scratch/wave6-arch-research/critical-review-final/critical-08-01.png",
+      "sha256": "ae30fab3b3f8c6c19290e8413230f8449826fe03a2bf7b25f0bfb6fe1c1b8aca",
+      "size": [
+        592,
+        1495
+      ],
+      "crops": [
+        {
+          "source": "/workspace/scratch/wave6-arch-research/critical-final-light/arch-6.8-light-320-critical-1.png",
+          "sourceSHA256": "83d652632ccee89ac265c8b03fb2c54849d1a3c5bd7a2d7744c939f9d9d966f4",
+          "sourceBox": [
+            0,
+            0,
+            288,
+            1463
+          ],
+          "destinationBox": [
+            0,
+            32,
+            288,
+            1495
+          ]
+        },
+        {
+          "source": "/workspace/scratch/wave6-arch-research/critical-final-dark/arch-6.8-dark-320-critical-1.png",
+          "sourceSHA256": "2552cff0410b4c6f77e79d79ac7167da3a4b94be20f7c1c5beae5daa5fbd963b",
+          "sourceBox": [
+            0,
+            0,
+            288,
+            1463
+          ],
+          "destinationBox": [
+            304,
+            32,
+            592,
+            1495
+          ]
+        }
+      ],
+      "kind": "critical",
+      "personallyViewedOriginalDetail": true
+    },
+    {
+      "file": "/workspace/scratch/wave6-arch-research/critical-review-final/critical-08-02.png",
+      "sha256": "942bc08edee2d9de36414b0e29f520446d36c6da33c15c0d8d8fd10cae4ca6d9",
+      "size": [
+        592,
+        1473
+      ],
+      "crops": [
+        {
+          "source": "/workspace/scratch/wave6-arch-research/critical-final-light/arch-6.8-light-320-critical-2.png",
+          "sourceSHA256": "ae93d94be3b0464791403e5095396a808777a4fd0ad961e0970cf2529e5c7e23",
+          "sourceBox": [
+            0,
+            0,
+            288,
+            1441
+          ],
+          "destinationBox": [
+            0,
+            32,
+            288,
+            1473
+          ]
+        },
+        {
+          "source": "/workspace/scratch/wave6-arch-research/critical-final-dark/arch-6.8-dark-320-critical-2.png",
+          "sourceSHA256": "c8da75978159c81a777d97028bb11b8db4eaf9eee61fb84784d8213799513265",
+          "sourceBox": [
+            0,
+            0,
+            288,
+            1441
+          ],
+          "destinationBox": [
+            304,
+            32,
+            592,
+            1473
+          ]
+        }
+      ],
+      "kind": "critical",
+      "personallyViewedOriginalDetail": true
+    },
+    {
+      "file": "/workspace/scratch/wave6-arch-research/critical-review-final/critical-09-00.png",
+      "sha256": "036d4c19740bd00fb31031cfc4b3c540348ed2789056a43395761ac2d4768d75",
+      "size": [
+        592,
+        1487
+      ],
+      "crops": [
+        {
+          "source": "/workspace/scratch/wave6-arch-research/critical-final-light/arch-6.9-light-320-critical-0.png",
+          "sourceSHA256": "2c214fac063062eb3501c9c7168fb3a4c933aaaf9d0883ddcd4296da5744fa2b",
+          "sourceBox": [
+            0,
+            0,
+            288,
+            1455
+          ],
+          "destinationBox": [
+            0,
+            32,
+            288,
+            1487
+          ]
+        },
+        {
+          "source": "/workspace/scratch/wave6-arch-research/critical-final-dark/arch-6.9-dark-320-critical-0.png",
+          "sourceSHA256": "be9c8aba2a89a31cb18765f4ea47388a6048fd54e0953a4ffcb6284aaf0c8207",
+          "sourceBox": [
+            0,
+            0,
+            288,
+            1455
+          ],
+          "destinationBox": [
+            304,
+            32,
+            592,
+            1487
+          ]
+        }
+      ],
+      "kind": "critical",
+      "personallyViewedOriginalDetail": true
+    },
+    {
+      "file": "/workspace/scratch/wave6-arch-research/critical-review-final/critical-09-01.png",
+      "sha256": "5efe70a95c27247bb5a98299a89992d9b69aa011048bcf4d0e2a6fa335a58171",
+      "size": [
+        592,
+        1487
+      ],
+      "crops": [
+        {
+          "source": "/workspace/scratch/wave6-arch-research/critical-final-light/arch-6.9-light-320-critical-1.png",
+          "sourceSHA256": "8fead350c68f3e84f60a1d1595c8cbace1891186fb97d8336399833a62e004bb",
+          "sourceBox": [
+            0,
+            0,
+            288,
+            1455
+          ],
+          "destinationBox": [
+            0,
+            32,
+            288,
+            1487
+          ]
+        },
+        {
+          "source": "/workspace/scratch/wave6-arch-research/critical-final-dark/arch-6.9-dark-320-critical-1.png",
+          "sourceSHA256": "46bbed6dd57bf1d889264bc18bf478ae51dc25c53f50305083b383b1792773c0",
+          "sourceBox": [
+            0,
+            0,
+            288,
+            1455
+          ],
+          "destinationBox": [
+            304,
+            32,
+            592,
+            1487
+          ]
+        }
+      ],
+      "kind": "critical",
+      "personallyViewedOriginalDetail": true
+    },
+    {
+      "file": "/workspace/scratch/wave6-arch-research/critical-review-final/critical-09-02.png",
+      "sha256": "146d6cd95e4e95c2a24b39be46adc502a0c7a2f65c49fd9e8f1c8052019e3413",
+      "size": [
+        592,
+        1487
+      ],
+      "crops": [
+        {
+          "source": "/workspace/scratch/wave6-arch-research/critical-final-light/arch-6.9-light-320-critical-2.png",
+          "sourceSHA256": "9acf1195cca1a780d8d29422700b0a9b32b56a2fa1614db06a12fd98a4e5e06b",
+          "sourceBox": [
+            0,
+            0,
+            288,
+            1455
+          ],
+          "destinationBox": [
+            0,
+            32,
+            288,
+            1487
+          ]
+        },
+        {
+          "source": "/workspace/scratch/wave6-arch-research/critical-final-dark/arch-6.9-dark-320-critical-2.png",
+          "sourceSHA256": "a264bb8db1da90a33563d6360928e61ed05255632249ed6fa992b012615ac013",
+          "sourceBox": [
+            0,
+            0,
+            288,
+            1455
+          ],
+          "destinationBox": [
+            304,
+            32,
+            592,
+            1487
+          ]
+        }
+      ],
+      "kind": "critical",
+      "personallyViewedOriginalDetail": true
+    },
+    {
+      "file": "/workspace/scratch/wave6-arch-research/critical-review-final/critical-09-03.png",
+      "sha256": "177f674a0f57fbd6b53be60e5af518d79ea0ad3366d08c9721ae7c9dc7eaa66b",
+      "size": [
+        592,
+        1487
+      ],
+      "crops": [
+        {
+          "source": "/workspace/scratch/wave6-arch-research/critical-final-light/arch-6.9-light-320-critical-3.png",
+          "sourceSHA256": "1195e6f129a9c543eeed98137ecd4387473d5448c49e02ad6fb2c45acf2387de",
+          "sourceBox": [
+            0,
+            0,
+            288,
+            1455
+          ],
+          "destinationBox": [
+            0,
+            32,
+            288,
+            1487
+          ]
+        },
+        {
+          "source": "/workspace/scratch/wave6-arch-research/critical-final-dark/arch-6.9-dark-320-critical-3.png",
+          "sourceSHA256": "7f98288ee975572ee7b6ec189c51aeca9ccccdf4ca8efa3bcd1e89ffdfb8a1e8",
+          "sourceBox": [
+            0,
+            0,
+            288,
+            1455
+          ],
+          "destinationBox": [
+            304,
+            32,
+            592,
+            1487
+          ]
+        }
+      ],
+      "kind": "critical",
+      "personallyViewedOriginalDetail": true
+    },
+    {
+      "file": "/workspace/scratch/wave6-arch-research/critical-review-final/critical-09-04.png",
+      "sha256": "44ea02f6f8690166c1f5fccea4d04945558d6861dca523c7dbb2c0a8222d8055",
+      "size": [
+        592,
+        1554
+      ],
+      "crops": [
+        {
+          "source": "/workspace/scratch/wave6-arch-research/critical-final-light/arch-6.9-light-320-critical-4.png",
+          "sourceSHA256": "669223fe620e97aced5a0520362cf77898bb557946bbed90a5bc06934a6627ad",
+          "sourceBox": [
+            0,
+            0,
+            288,
+            1522
+          ],
+          "destinationBox": [
+            0,
+            32,
+            288,
+            1554
+          ]
+        },
+        {
+          "source": "/workspace/scratch/wave6-arch-research/critical-final-dark/arch-6.9-dark-320-critical-4.png",
+          "sourceSHA256": "a2ed116e3046ad699e5498a49457b9ac3df1432bf6bf4bae7e340081d4b8a2c0",
+          "sourceBox": [
+            0,
+            0,
+            288,
+            1522
+          ],
+          "destinationBox": [
+            304,
+            32,
+            592,
+            1554
+          ]
+        }
+      ],
+      "kind": "critical",
+      "personallyViewedOriginalDetail": true
+    },
+    {
+      "file": "/workspace/scratch/wave6-arch-research/critical-review-final/critical-10-00.png",
+      "sha256": "15b0170b3f775c17f82d530f72603fbf016c532e2c101028b5f2591e582a6588",
+      "size": [
+        592,
+        1512
+      ],
+      "crops": [
+        {
+          "source": "/workspace/scratch/wave6-arch-research/critical-final-light/arch-6.10-light-320-critical-0.png",
+          "sourceSHA256": "5d21ef3ae53c13a9017abc1584e5291d6e1716f5c809cf010adf6f7e8e9009f8",
+          "sourceBox": [
+            0,
+            0,
+            288,
+            1480
+          ],
+          "destinationBox": [
+            0,
+            32,
+            288,
+            1512
+          ]
+        },
+        {
+          "source": "/workspace/scratch/wave6-arch-research/critical-final-dark/arch-6.10-dark-320-critical-0.png",
+          "sourceSHA256": "c3083782012b03d33a46630ce3061f8473fb8b4debea177d3fc4a0f820ea64b4",
+          "sourceBox": [
+            0,
+            0,
+            288,
+            1480
+          ],
+          "destinationBox": [
+            304,
+            32,
+            592,
+            1512
+          ]
+        }
+      ],
+      "kind": "critical",
+      "personallyViewedOriginalDetail": true
+    },
+    {
+      "file": "/workspace/scratch/wave6-arch-research/critical-review-final/critical-10-01.png",
+      "sha256": "ae64b5adb265d0946900947c6c105e11c2df08eee0bb9e643c8895912a8a400c",
+      "size": [
+        592,
+        1558
+      ],
+      "crops": [
+        {
+          "source": "/workspace/scratch/wave6-arch-research/critical-final-light/arch-6.10-light-320-critical-1.png",
+          "sourceSHA256": "27849832223cdffa16047c0a8c57d04eeb83d5e9ee2814b9be8edebda5bb5f40",
+          "sourceBox": [
+            0,
+            0,
+            288,
+            1526
+          ],
+          "destinationBox": [
+            0,
+            32,
+            288,
+            1558
+          ]
+        },
+        {
+          "source": "/workspace/scratch/wave6-arch-research/critical-final-dark/arch-6.10-dark-320-critical-1.png",
+          "sourceSHA256": "3b2c89dc252b25497519b2ee6a0e9790f0602dbf8ed7bbabc717ac04c02cdbf6",
+          "sourceBox": [
+            0,
+            0,
+            288,
+            1526
+          ],
+          "destinationBox": [
+            304,
+            32,
+            592,
+            1558
+          ]
+        }
+      ],
+      "kind": "critical",
+      "personallyViewedOriginalDetail": true
+    },
+    {
+      "file": "/workspace/scratch/wave6-arch-research/critical-review-final/critical-10-02.png",
+      "sha256": "5d2e1ba9b626925cd66bac873506423f62fbc7854acf1d9420bad3f718b038ec",
+      "size": [
+        592,
+        1535
+      ],
+      "crops": [
+        {
+          "source": "/workspace/scratch/wave6-arch-research/critical-final-light/arch-6.10-light-320-critical-2.png",
+          "sourceSHA256": "232cb1d44a0e2961ece3072b42aa887b7aa55c0dc4b011e1b73efefe3b3b6319",
+          "sourceBox": [
+            0,
+            0,
+            288,
+            1503
+          ],
+          "destinationBox": [
+            0,
+            32,
+            288,
+            1535
+          ]
+        },
+        {
+          "source": "/workspace/scratch/wave6-arch-research/critical-final-dark/arch-6.10-dark-320-critical-2.png",
+          "sourceSHA256": "b1b08573cd6e3c162fc0542e41592dfb59dba114d97542aa8b77fb7e3381ff18",
+          "sourceBox": [
+            0,
+            0,
+            288,
+            1503
+          ],
+          "destinationBox": [
+            304,
+            32,
+            592,
+            1535
+          ]
+        }
+      ],
+      "kind": "critical",
+      "personallyViewedOriginalDetail": true
+    },
+    {
+      "file": "/workspace/scratch/wave6-arch-research/critical-review-final/critical-10-03.png",
+      "sha256": "7da42b9313f32f803c6c820ba06ddf898acb028a4b9aee68eaeb6ed21487e5f3",
+      "size": [
+        592,
+        1535
+      ],
+      "crops": [
+        {
+          "source": "/workspace/scratch/wave6-arch-research/critical-final-light/arch-6.10-light-320-critical-3.png",
+          "sourceSHA256": "b3de12680b01ff28bc3e14ad8ee906dc3ead393b35025405fe0dbaafa6a6c8e4",
+          "sourceBox": [
+            0,
+            0,
+            288,
+            1503
+          ],
+          "destinationBox": [
+            0,
+            32,
+            288,
+            1535
+          ]
+        },
+        {
+          "source": "/workspace/scratch/wave6-arch-research/critical-final-dark/arch-6.10-dark-320-critical-3.png",
+          "sourceSHA256": "143fa114a403f1838f1995f0a6cd8642c704f6bfef45735df0bfad6e2bb3a899",
+          "sourceBox": [
+            0,
+            0,
+            288,
+            1503
+          ],
+          "destinationBox": [
+            304,
+            32,
+            592,
+            1535
+          ]
+        }
+      ],
+      "kind": "critical",
+      "personallyViewedOriginalDetail": true
+    },
+    {
+      "file": "/workspace/scratch/wave6-arch-research/critical-review-final/critical-10-04.png",
+      "sha256": "57d540c9b00b7fb5c10a558fedda066470e10d33c343eca2debff55ae0dbb5c6",
+      "size": [
+        592,
+        1535
+      ],
+      "crops": [
+        {
+          "source": "/workspace/scratch/wave6-arch-research/critical-final-light/arch-6.10-light-320-critical-4.png",
+          "sourceSHA256": "a15bdae68ccd6ad27e2897f730bc1d5630d0c03ab74a119ec8caff0ea17d6c1c",
+          "sourceBox": [
+            0,
+            0,
+            288,
+            1503
+          ],
+          "destinationBox": [
+            0,
+            32,
+            288,
+            1535
+          ]
+        },
+        {
+          "source": "/workspace/scratch/wave6-arch-research/critical-final-dark/arch-6.10-dark-320-critical-4.png",
+          "sourceSHA256": "f92568e0ba6b5a0cf4b97dd5f6f918dddfa9b9dcb3225685c3d7292041555dd0",
+          "sourceBox": [
+            0,
+            0,
+            288,
+            1503
+          ],
+          "destinationBox": [
+            304,
+            32,
+            592,
+            1535
+          ]
+        }
+      ],
+      "kind": "critical",
+      "personallyViewedOriginalDetail": true
+    },
+    {
+      "file": "/workspace/scratch/wave6-arch-research/critical-review-final/critical-10-05.png",
+      "sha256": "0cd36407d583d9dc216b220681babef6a2b714b32e5a83ab7f18099790f25f7b",
+      "size": [
+        592,
+        1490
+      ],
+      "crops": [
+        {
+          "source": "/workspace/scratch/wave6-arch-research/critical-final-light/arch-6.10-light-320-critical-5.png",
+          "sourceSHA256": "eaa5eaa5e0025f55d4aefc21de9b77f9f3b78fba763f35a77be4c0ec1d19d002",
+          "sourceBox": [
+            0,
+            0,
+            288,
+            1458
+          ],
+          "destinationBox": [
+            0,
+            32,
+            288,
+            1490
+          ]
+        },
+        {
+          "source": "/workspace/scratch/wave6-arch-research/critical-final-dark/arch-6.10-dark-320-critical-5.png",
+          "sourceSHA256": "4c6d0adfa37325f956574537a05b57e6e9c35d83f43c37c91f8bf788f1f57333",
+          "sourceBox": [
+            0,
+            0,
+            288,
+            1458
+          ],
+          "destinationBox": [
+            304,
+            32,
+            592,
+            1490
+          ]
+        }
+      ],
+      "kind": "critical",
+      "personallyViewedOriginalDetail": true
+    },
+    {
+      "file": "/workspace/scratch/wave6-arch-research/critical-review-final/critical-10-06.png",
+      "sha256": "ba4072de8a6b06aed0787d759def6a42be9151a8bf2bddd8eb88c796f0bb2fde",
+      "size": [
+        592,
+        1558
+      ],
+      "crops": [
+        {
+          "source": "/workspace/scratch/wave6-arch-research/critical-final-light/arch-6.10-light-320-critical-6.png",
+          "sourceSHA256": "04610ff8312de91c0c62f42a3332ab92e3bf413d424046d71d10f23cf6f9d28d",
+          "sourceBox": [
+            0,
+            0,
+            288,
+            1526
+          ],
+          "destinationBox": [
+            0,
+            32,
+            288,
+            1558
+          ]
+        },
+        {
+          "source": "/workspace/scratch/wave6-arch-research/critical-final-dark/arch-6.10-dark-320-critical-6.png",
+          "sourceSHA256": "b89cbaf9632e74297973e07734510817a8830526087c4a756bda6c27a0a87a38",
+          "sourceBox": [
+            0,
+            0,
+            288,
+            1526
+          ],
+          "destinationBox": [
+            304,
+            32,
+            592,
+            1558
+          ]
+        }
+      ],
+      "kind": "critical",
+      "personallyViewedOriginalDetail": true
+    },
+    {
+      "file": "/workspace/scratch/wave6-arch-research/critical-review-final/critical-10-07.png",
+      "sha256": "b272914eada8f5342915d5827e28e719f78155a4c48252fbe0d397626b72f98f",
+      "size": [
+        592,
+        1535
+      ],
+      "crops": [
+        {
+          "source": "/workspace/scratch/wave6-arch-research/critical-final-light/arch-6.10-light-320-critical-7.png",
+          "sourceSHA256": "96cd86e9122fbe4c31d416c2f2ade03b6b3fe75811b6cbb4337c04359d278911",
+          "sourceBox": [
+            0,
+            0,
+            288,
+            1503
+          ],
+          "destinationBox": [
+            0,
+            32,
+            288,
+            1535
+          ]
+        },
+        {
+          "source": "/workspace/scratch/wave6-arch-research/critical-final-dark/arch-6.10-dark-320-critical-7.png",
+          "sourceSHA256": "c87c254785ca91dae3bfc127ae20dee1af9db21b5391903bf7141e7ed7434eb5",
+          "sourceBox": [
+            0,
+            0,
+            288,
+            1503
+          ],
+          "destinationBox": [
+            304,
+            32,
+            592,
+            1535
+          ]
+        }
+      ],
+      "kind": "critical",
+      "personallyViewedOriginalDetail": true
+    },
+    {
+      "file": "/workspace/scratch/wave6-arch-research/critical-review-final/critical-10-08.png",
+      "sha256": "67fedf11c9522d9b1edb1aaaf1956a3fc0ec5582421d5ce6ec7e4126cccb5ca0",
+      "size": [
+        592,
+        1535
+      ],
+      "crops": [
+        {
+          "source": "/workspace/scratch/wave6-arch-research/critical-final-light/arch-6.10-light-320-critical-8.png",
+          "sourceSHA256": "6034929b208117bb229b7c3b359a4c9a23a4a0053f4c8087effa1b4b84bbdf15",
+          "sourceBox": [
+            0,
+            0,
+            288,
+            1503
+          ],
+          "destinationBox": [
+            0,
+            32,
+            288,
+            1535
+          ]
+        },
+        {
+          "source": "/workspace/scratch/wave6-arch-research/critical-final-dark/arch-6.10-dark-320-critical-8.png",
+          "sourceSHA256": "ca37a5ee8beb6c1b4560a87155172a180c91900a2e2d3eddec3b90242218d838",
+          "sourceBox": [
+            0,
+            0,
+            288,
+            1503
+          ],
+          "destinationBox": [
+            304,
+            32,
+            592,
+            1535
+          ]
+        }
+      ],
+      "kind": "critical",
+      "personallyViewedOriginalDetail": true
+    },
+    {
+      "file": "/workspace/scratch/wave6-arch-research/critical-review-final/critical-10-09.png",
+      "sha256": "3ce898c61cf1a7cab84790c84fb0e8b69c9747d141cf011e2e350b4279445f2d",
+      "size": [
+        592,
+        1535
+      ],
+      "crops": [
+        {
+          "source": "/workspace/scratch/wave6-arch-research/critical-final-light/arch-6.10-light-320-critical-9.png",
+          "sourceSHA256": "c97243e82363106bdf733052089791ba6ffb3d7976126f681aee1bb215ba3fe5",
+          "sourceBox": [
+            0,
+            0,
+            288,
+            1503
+          ],
+          "destinationBox": [
+            0,
+            32,
+            288,
+            1535
+          ]
+        },
+        {
+          "source": "/workspace/scratch/wave6-arch-research/critical-final-dark/arch-6.10-dark-320-critical-9.png",
+          "sourceSHA256": "f012bf0f865441c793d878696ab02b7e26cf23fcba927304be95f1b414973847",
+          "sourceBox": [
+            0,
+            0,
+            288,
+            1503
+          ],
+          "destinationBox": [
+            304,
+            32,
+            592,
+            1535
+          ]
+        }
+      ],
+      "kind": "critical",
+      "personallyViewedOriginalDetail": true
+    },
+    {
+      "file": "/workspace/scratch/wave6-arch-research/critical-review-final/critical-11-00.png",
+      "sha256": "816c44189388927c847b33140406ec138556fcd57fd3ba61a64413b19937ce07",
+      "size": [
+        592,
+        1503
+      ],
+      "crops": [
+        {
+          "source": "/workspace/scratch/wave6-arch-research/native-sampling-v10/arch-6.11-light-320-critical-0.png",
+          "sourceSHA256": "74303105756d79b18bdf84536073d42d4ad17b992328ccac7c8615a8a1898a73",
+          "sourceBox": [
+            0,
+            0,
+            288,
+            1471
+          ],
+          "destinationBox": [
+            0,
+            32,
+            288,
+            1503
+          ]
+        },
+        {
+          "source": "/workspace/scratch/wave6-arch-research/native-sampling-v10/arch-6.11-dark-320-critical-0.png",
+          "sourceSHA256": "409f9799f254e3c2cf146e6074ac68890cba422db971ef33693d963a5963eead",
+          "sourceBox": [
+            0,
+            0,
+            288,
+            1471
+          ],
+          "destinationBox": [
+            304,
+            32,
+            592,
+            1503
+          ]
+        }
+      ],
+      "kind": "critical",
+      "personallyViewedOriginalDetail": true
+    },
+    {
+      "file": "/workspace/scratch/wave6-arch-research/critical-review-final/critical-11-01.png",
+      "sha256": "861087536ef307d5e27a3644dfb96c9795636af61ce78e53e14a527a2dc3bb22",
+      "size": [
+        592,
+        1503
+      ],
+      "crops": [
+        {
+          "source": "/workspace/scratch/wave6-arch-research/native-sampling-v10/arch-6.11-light-320-critical-1.png",
+          "sourceSHA256": "47b11d7c655fd259e184135e56ec74a5f16ce7cbc8ed9bbbda907cb0983f34ff",
+          "sourceBox": [
+            0,
+            0,
+            288,
+            1471
+          ],
+          "destinationBox": [
+            0,
+            32,
+            288,
+            1503
+          ]
+        },
+        {
+          "source": "/workspace/scratch/wave6-arch-research/native-sampling-v10/arch-6.11-dark-320-critical-1.png",
+          "sourceSHA256": "3d3e38dd8479b7bcd01b6a031672b4837255bc158697c398161c5b11e41f5299",
+          "sourceBox": [
+            0,
+            0,
+            288,
+            1471
+          ],
+          "destinationBox": [
+            304,
+            32,
+            592,
+            1503
+          ]
+        }
+      ],
+      "kind": "critical",
+      "personallyViewedOriginalDetail": true
+    },
+    {
+      "file": "/workspace/scratch/wave6-arch-research/critical-review-final/critical-11-02.png",
+      "sha256": "2c57b5af02841998a7d1f38127a32ab38ab0b24e1729c9f3eb985a83c3a00132",
+      "size": [
+        592,
+        1503
+      ],
+      "crops": [
+        {
+          "source": "/workspace/scratch/wave6-arch-research/native-sampling-v10/arch-6.11-light-320-critical-2.png",
+          "sourceSHA256": "3e9ac91e65d259ccfd93b3b811ec9d0aad64256eb5c40cc143b6a01089062432",
+          "sourceBox": [
+            0,
+            0,
+            288,
+            1471
+          ],
+          "destinationBox": [
+            0,
+            32,
+            288,
+            1503
+          ]
+        },
+        {
+          "source": "/workspace/scratch/wave6-arch-research/native-sampling-v10/arch-6.11-dark-320-critical-2.png",
+          "sourceSHA256": "2373a9b245e1ec799760e005c3109c8a8d45b8e2178a0383d07723333d774e32",
+          "sourceBox": [
+            0,
+            0,
+            288,
+            1471
+          ],
+          "destinationBox": [
+            304,
+            32,
+            592,
+            1503
+          ]
+        }
+      ],
+      "kind": "critical",
+      "personallyViewedOriginalDetail": true
+    },
+    {
+      "file": "/workspace/scratch/wave6-arch-research/critical-review-final/critical-11-03.png",
+      "sha256": "428137158113b8ceac969943ca4aef9129e7932917065e6bfe3ad891cbea84d9",
+      "size": [
+        592,
+        1481
+      ],
+      "crops": [
+        {
+          "source": "/workspace/scratch/wave6-arch-research/native-sampling-v10/arch-6.11-light-320-critical-3.png",
+          "sourceSHA256": "a8aea555382f0049ead4f06a51f8a0d893fcaa25bfce9337fca2eae9caad249e",
+          "sourceBox": [
+            0,
+            0,
+            288,
+            1449
+          ],
+          "destinationBox": [
+            0,
+            32,
+            288,
+            1481
+          ]
+        },
+        {
+          "source": "/workspace/scratch/wave6-arch-research/native-sampling-v10/arch-6.11-dark-320-critical-3.png",
+          "sourceSHA256": "10b49874bac84a9aa14f75f2a781db7b66ae17780e3e1c6d416671479746832a",
+          "sourceBox": [
+            0,
+            0,
+            288,
+            1449
+          ],
+          "destinationBox": [
+            304,
+            32,
+            592,
+            1481
+          ]
+        }
+      ],
+      "kind": "critical",
+      "personallyViewedOriginalDetail": true
+    },
+    {
+      "file": "/workspace/scratch/wave6-arch-research/secondary-cameras/review/camera-5-0.png",
+      "sha256": "5e32c0d90b7d79dc2471f6790ef8b7a8b23d1688a0d00226f62337d7695538f5",
+      "size": [
+        592,
+        1569
+      ],
+      "crops": [
+        {
+          "source": "/workspace/scratch/wave6-arch-research/secondary-cameras/arch-6.5-light-320-camera-0.png",
+          "sourceSHA256": "058cddf8e2738a3de551a7161d5ea46f84f60fd9f1de7c3f3f617e1bd87e3ec5",
+          "sourceBox": [
+            0,
+            0,
+            288,
+            1537
+          ],
+          "destinationBox": [
+            0,
+            32,
+            288,
+            1569
+          ]
+        },
+        {
+          "source": "/workspace/scratch/wave6-arch-research/secondary-cameras/arch-6.5-dark-320-camera-0.png",
+          "sourceSHA256": "31fb5de2f4732e92aedc6af4f51adc0211643006f322d10e3e7940b2e7198278",
+          "sourceBox": [
+            0,
+            0,
+            288,
+            1537
+          ],
+          "destinationBox": [
+            304,
+            32,
+            592,
+            1569
+          ]
+        }
+      ],
+      "kind": "camera",
+      "personallyViewedOriginalDetail": true
+    },
+    {
+      "file": "/workspace/scratch/wave6-arch-research/secondary-cameras/review/camera-5-1.png",
+      "sha256": "b0e8a7fb95b6c05ea24ac20d54596b24df83191ff56dc1e6a1d46b4924591abd",
+      "size": [
+        592,
+        1569
+      ],
+      "crops": [
+        {
+          "source": "/workspace/scratch/wave6-arch-research/secondary-cameras/arch-6.5-light-320-camera-1.png",
+          "sourceSHA256": "66c0b73dc676b9cbf39848713cbd46e04989a6bd1bb6054fdf6dfda685369259",
+          "sourceBox": [
+            0,
+            0,
+            288,
+            1537
+          ],
+          "destinationBox": [
+            0,
+            32,
+            288,
+            1569
+          ]
+        },
+        {
+          "source": "/workspace/scratch/wave6-arch-research/secondary-cameras/arch-6.5-dark-320-camera-1.png",
+          "sourceSHA256": "4f4b2ac7c0515c6379cf078e86c45fc84eca915ca91c4190e6627fb80a5f63d5",
+          "sourceBox": [
+            0,
+            0,
+            288,
+            1537
+          ],
+          "destinationBox": [
+            304,
+            32,
+            592,
+            1569
+          ]
+        }
+      ],
+      "kind": "camera",
+      "personallyViewedOriginalDetail": true
+    },
+    {
+      "file": "/workspace/scratch/wave6-arch-research/secondary-cameras/review/camera-6-0.png",
+      "sha256": "a14ddfaa38d546036d33b86aface3a54f8756bd0b7df4af5e3b23a762c387f24",
+      "size": [
+        592,
+        1572
+      ],
+      "crops": [
+        {
+          "source": "/workspace/scratch/wave6-arch-research/secondary-cameras/arch-6.6-light-320-camera-0.png",
+          "sourceSHA256": "2d8b27b8c420f711b62633716d6baa338b9de1bebcfa43980c6c710625fdf226",
+          "sourceBox": [
+            0,
+            0,
+            288,
+            1540
+          ],
+          "destinationBox": [
+            0,
+            32,
+            288,
+            1572
+          ]
+        },
+        {
+          "source": "/workspace/scratch/wave6-arch-research/secondary-cameras/arch-6.6-dark-320-camera-0.png",
+          "sourceSHA256": "e07ec940da4c9e688ec0ffe46a834e79c28696a7368389ac4552de7caa4e6439",
+          "sourceBox": [
+            0,
+            0,
+            288,
+            1540
+          ],
+          "destinationBox": [
+            304,
+            32,
+            592,
+            1572
+          ]
+        }
+      ],
+      "kind": "camera",
+      "personallyViewedOriginalDetail": true
+    },
+    {
+      "file": "/workspace/scratch/wave6-arch-research/secondary-cameras/review/camera-6-1.png",
+      "sha256": "b410cc162b3651b6917c052026fb6bb2823b752f5cb74343d3f1686bb1275969",
+      "size": [
+        592,
+        1572
+      ],
+      "crops": [
+        {
+          "source": "/workspace/scratch/wave6-arch-research/secondary-cameras/arch-6.6-light-320-camera-1.png",
+          "sourceSHA256": "5280aa001a2baa0e7f6184ababeb7bd62cab2b3ea4c51983c4d5560724223391",
+          "sourceBox": [
+            0,
+            0,
+            288,
+            1540
+          ],
+          "destinationBox": [
+            0,
+            32,
+            288,
+            1572
+          ]
+        },
+        {
+          "source": "/workspace/scratch/wave6-arch-research/secondary-cameras/arch-6.6-dark-320-camera-1.png",
+          "sourceSHA256": "82606d2b0780e6fdae1fa62dbbc6304ed94a7a22076e4b345cbf61f0ec489012",
+          "sourceBox": [
+            0,
+            0,
+            288,
+            1540
+          ],
+          "destinationBox": [
+            304,
+            32,
+            592,
+            1572
+          ]
+        }
+      ],
+      "kind": "camera",
+      "personallyViewedOriginalDetail": true
+    }
+  ]
+}

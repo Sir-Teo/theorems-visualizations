@@ -1,0 +1,139 @@
+{
+  "checkedOn": "2026-10-26",
+  "scope": "Snapshot metadata only; individual target digests, tasks, sources and ordered prerequisites remain exact.",
+  "files": [
+    {
+      "path": "docs/journeys/targets.json",
+      "before": {
+        "schemaVersion": 1,
+        "acceptedCommit": "b9759f451a82f7b4b7be5d1fc3b3a911d8dce34f",
+        "snapshotDigest": "5b03e0163c816aeed36a13623b9f01a70ae53092badd86856e483fd6eb8884bf"
+      },
+      "after": {
+        "schemaVersion": 1,
+        "acceptedCommit": "74be2b102669b00b9a7035e461b6422d8c9bd3e7",
+        "snapshotDigest": "934df09c8977e4dbf3390e93b4e3a13b06a96e512c31bf77e2873aa06ac36f36"
+      },
+      "unchangedArrays": {
+        "targets": {
+          "sha256": "b138474532bfee317a9f785fa19a0ce3520bccfcaacc1f00feaaee7fede5db3f",
+          "length": 11
+        }
+      },
+      "beforeFileSha256": "ebd622ac9281c56eef9abb34f66828fd77d250d463c91b280a057a49a06c090c",
+      "afterFileSha256": "a4c572b921eab57b1669d793661260f6fc3b333b7adbcdf17a7316ca5ffa4559"
+    },
+    {
+      "path": "docs/journeys/plans.json",
+      "before": {
+        "schemaVersion": 1,
+        "version": "0.2.0",
+        "author": "atlas-editor",
+        "preparedOn": "2026-10-23",
+        "scope": "Three locally author-checked routes with exact retained lesson targets and clearly labeled external readings. No public distribution, professional approval or observed learning is claimed.",
+        "relationTypes": {
+          "evidence": "A specified source or observation directly supports a bounded claim; requires an explicit claim and locator.",
+          "analogy": "Transfer a representation or question while stating what does not transfer.",
+          "prerequisite": "A directed required learning dependency, supported by actual target declarations; never inferred from sequence order.",
+          "question-shift": "Sequence changes method or object; no evidential or dependency implication."
+        },
+        "authorVerification": {
+          "kind": "author-check",
+          "scope": "local-preview",
+          "author": "atlas-editor",
+          "checkedOn": "2026-10-26",
+          "contentDigest": "8d96a247d5af19004e50b863ffd0b78dfb056ff636462ac4bdeef143600acacc",
+          "artifactDigest": "ff19c4a9828fd3b260c199c4963c1f85265be51d9cf59bd0c7e9e94aadd9f56e",
+          "evidencePath": "docs/verification/wave6-fin-game-integration.md"
+        }
+      },
+      "after": {
+        "schemaVersion": 1,
+        "version": "0.2.0",
+        "author": "atlas-editor",
+        "preparedOn": "2026-10-23",
+        "scope": "Three locally author-checked routes with exact retained lesson targets and clearly labeled external readings. No public distribution, professional approval or observed learning is claimed.",
+        "relationTypes": {
+          "evidence": "A specified source or observation directly supports a bounded claim; requires an explicit claim and locator.",
+          "analogy": "Transfer a representation or question while stating what does not transfer.",
+          "prerequisite": "A directed required learning dependency, supported by actual target declarations; never inferred from sequence order.",
+          "question-shift": "Sequence changes method or object; no evidential or dependency implication."
+        },
+        "authorVerification": {
+          "kind": "author-check",
+          "scope": "local-preview",
+          "author": "atlas-editor",
+          "checkedOn": "2026-10-26",
+          "contentDigest": "b312ac5698e496bf66fec5f77711846a119d48a8b2001ac93ccf3801b7afcc57",
+          "artifactDigest": "ff19c4a9828fd3b260c199c4963c1f85265be51d9cf59bd0c7e9e94aadd9f56e",
+          "evidencePath": "docs/verification/wave6-behav-psych-integration.md"
+        }
+      },
+      "unchangedArrays": {
+        "routes": {
+          "sha256": "286ab69eca3c4f9fe8e1cb97a5557463cb8d9e3c0d23eccce5f1d77c9c984338",
+          "length": 3
+        }
+      },
+      "beforeFileSha256": "d04715af160e0cd558a0fac23cccab579db0c033ad7e8be13fbc701bfea60d11",
+      "afterFileSha256": "583090fd3ca96bb72b1c9d7815d8043181b47bda369cf44c8accf1ee1bdc42bf"
+    },
+    {
+      "path": "curriculum/introductory.json",
+      "before": {
+        "schemaVersion": 1,
+        "version": "0.1.0",
+        "author": "atlas-editor",
+        "checkedOn": "2026-10-23",
+        "scope": "Thirty scoped introductory routes, three exact accepted targets each. Routes add tasks and entry support, not 90 new lessons or complete subject coverage.",
+        "publication": "local-preview",
+        "acceptance": "author-checked-local",
+        "legacySnapshot": "5b03e0163c816aeed36a13623b9f01a70ae53092badd86856e483fd6eb8884bf"
+      },
+      "after": {
+        "schemaVersion": 1,
+        "version": "0.1.0",
+        "author": "atlas-editor",
+        "checkedOn": "2026-10-23",
+        "scope": "Thirty scoped introductory routes, three exact accepted targets each. Routes add tasks and entry support, not 90 new lessons or complete subject coverage.",
+        "publication": "local-preview",
+        "acceptance": "author-checked-local",
+        "legacySnapshot": "934df09c8977e4dbf3390e93b4e3a13b06a96e512c31bf77e2873aa06ac36f36"
+      },
+      "unchangedArrays": {
+        "routes": {
+          "sha256": "f64018d1437e51db1b0da06696a2c08ee3f8be1335e98d992a751a44e46e63e3",
+          "length": 30
+        }
+      },
+      "beforeFileSha256": "6f8ca743d84fdddc0887779aca416969ce27c252d1fe1160d28ebb693da28fa9",
+      "afterFileSha256": "fd342f1297fcb3135f54c66bb49b5a434d265fc6e11d43a47cda80b26077958c"
+    },
+    {
+      "path": "program/deeper-routes.json",
+      "before": {
+        "schemaVersion": 1,
+        "version": "1.0.0",
+        "legacySnapshot": "5b03e0163c816aeed36a13623b9f01a70ae53092badd86856e483fd6eb8884bf",
+        "introductorySha256": "6f8ca743d84fdddc0887779aca416969ce27c252d1fe1160d28ebb693da28fa9",
+        "scope": "Thirty curated extensions with exact accepted targets and computed prerequisite paths. Method-focused links for underrepresented fields are explicitly bounded; no complete field syllabus is claimed."
+      },
+      "after": {
+        "schemaVersion": 1,
+        "version": "1.0.0",
+        "legacySnapshot": "934df09c8977e4dbf3390e93b4e3a13b06a96e512c31bf77e2873aa06ac36f36",
+        "introductorySha256": "fd342f1297fcb3135f54c66bb49b5a434d265fc6e11d43a47cda80b26077958c",
+        "scope": "Thirty curated extensions with exact accepted targets and computed prerequisite paths. Method-focused links for underrepresented fields are explicitly bounded; no complete field syllabus is claimed."
+      },
+      "unchangedArrays": {
+        "routes": {
+          "sha256": "ee871582e7293379c7008d15b665c189046be4cd2947dcaa144a945eadaab431",
+          "length": 30
+        }
+      },
+      "beforeFileSha256": "449eb2df145f25fc4d712da64f42f17a3defb88099b74639bd25cdc27846c27f",
+      "afterFileSha256": "442a4d39fcedbeb604d5a2f76b46d90679c1dbdec154123653cd842d0c6396a0"
+    }
+  ],
+  "result": "PASS"
+}

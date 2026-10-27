@@ -1,0 +1,112 @@
+{
+  "completed": "2026-10-25",
+  "status": "author-verified local chapter; no independent acceptance/release claim",
+  "node": "22.23.3",
+  "frozenItems": 16,
+  "focused": {
+    "groups": 21,
+    "passed": 21,
+    "failed": 0,
+    "skipped": 0,
+    "log": "/tmp/wave6-pharm-focused-final.log"
+  },
+  "independentReferences": {
+    "parameterCases": 1608,
+    "families": 13,
+    "additionalAdaptiveTimeProbes": 143,
+    "additionalMixtureHalfScales": 33,
+    "fixture": "tests/fixtures/wave6-pharm-reference.json",
+    "sha256": "3a65b7ae2ce838756528bb2d8555d2c806507b4b4d27856463343b9bd1081cab",
+    "repeatByteIdentical": true,
+    "allOriginalPrototypeExpectedValuesExact": true,
+    "generator": "tests/wave6-pharm-reference.py",
+    "workingDigits": 1000,
+    "rootAccuracy": "Finite bisections retain declared bracket bounds; working precision is not a claim of1000 correct root digits.",
+    "prototypeScalarStatusComparisons": 32553,
+    "notes": "Additional observables and native consistency counts are kept separate from the original prototype comparison count."
+  },
+  "strictBuild": {
+    "written": 8441,
+    "planned": 5133,
+    "chapters": 579,
+    "collections": 85,
+    "errors": 0,
+    "warnings": 0,
+    "log": "/tmp/wave6-pharm-build-final.log"
+  },
+  "static": {
+    "items": 16,
+    "errors": 0,
+    "warnings": 0,
+    "log": "/tmp/wave6-pharm-static-final.log"
+  },
+  "allModes": {
+    "light": {
+      "items": 16,
+      "failed": 0,
+      "TeXBlankWarnings": 0,
+      "qualityWarnings": 0,
+      "log": "/tmp/wave6-pharm-modes-light-final.log"
+    },
+    "dark": {
+      "items": 16,
+      "failed": 0,
+      "TeXBlankWarnings": 0,
+      "qualityWarnings": 0,
+      "log": "/tmp/wave6-pharm-modes-dark-final.log"
+    }
+  },
+  "native": {
+    "totals": {
+      "layouts": 64,
+      "actions": 1736,
+      "replays": 728,
+      "checks": 3286,
+      "invalidReplays": 64,
+      "rawReplays": 64,
+      "criticalReplays": 300,
+      "modelChecks": 4588002
+    },
+    "lanes": {
+      "F1to8": "/tmp/wave6-pharm-native-final-f",
+      "G9to16": "/tmp/wave6-pharm-native-final-g"
+    },
+    "sourceFreeze": "/tmp/wave6-pharm-final-source-freeze.sha256",
+    "allFrozenSourceHashesExact": true,
+    "assertions": [
+      "Actual native Home/End/mouse controls and all selectors, with hidden-control checks",
+      "Actual Create state link and exact complete state.parts/readout replay",
+      "Exact full intended critical state before Share; malformed state rejection and unsnapped fractional replay",
+      "Complete text, inner KaTeX, responsive heading, finite geometry and full marker-radius bounds",
+      "Statuses outside data; model/readout/path/bar consistency separate from independent references"
+    ],
+    "samplingNote": "Adjacent adaptive points are collapsed only within16 floating-point ulps in both coordinates for cross-engine comparison; genuine pulse jumps remain distinct. All other plotted paths retain exact sample counts.",
+    "supersededMatrix": "/tmp/wave6-pharm-pre-heading-matrix.json",
+    "failedAndSupersededRowsExcluded": true,
+    "allBrowsersAndServersClosed": true
+  },
+  "personalVisualReview": {
+    "defaultLayouts": 64,
+    "unchangedDefaultPngsByteIdenticalToPersonallyViewed": 60,
+    "fourUpdatedLesson14DefaultsPersonallyViewed": true,
+    "defaultReceipt": "/tmp/wave6-pharm-default-comparison.json",
+    "completeNarrowStatementScopeIdeaPairsPerTheme": 16,
+    "narrowCriticalPlotRegions": 150,
+    "agonistModePlotRegions": 10,
+    "criticalSheets": "/tmp/wave6-pharm-pixel-review-final/critical-01..16.png",
+    "importantFullCritical": "/tmp/wave6-pharm-native-final-g/6.14-light-320-critical-5.png",
+    "notes": "Critical sheets show plot regions, not a claim that every entire long critical readout was visually read. Complete readouts are model-checked and bounded; all complete narrow explanatory pairs were personally read."
+  },
+  "preservation": {
+    "priorChapterManifestFiles": 70,
+    "frozenPlanAndCoreFiles": 3,
+    "allExact": true
+  },
+  "authorAvailability": {
+    "historicalAccepted": 36,
+    "additionalAuthorVerified": 690,
+    "available": 726,
+    "frozenTotal": 1057
+  },
+  "failuresRetained": "/tmp/wave6-pharm-review-defects"
+}

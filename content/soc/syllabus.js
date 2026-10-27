@@ -463,24 +463,121 @@ export default {
       title: 'Conformity, opinion dynamics and synchrony',
       summary: String.raw`People conform to visible majorities, and simple models of opinion change reproduce consensus, persistent disagreement or polarization depending on whom people are willing to listen to. Whether online networks create echo chambers is an empirical question with mixed answers. Collective rhythm — clapping audiences, flashing fireflies — is another kind of coordination, explained by coupled oscillators.`,
       items: [
-        { num: '6.1', kind: 'Phenomenon', name: 'Asch’s conformity experiment', deps: [], refs: ['E&K §16.1'],
-          pic: 'Judge line lengths after hearing several confederates give the same wrong answer; your conformity is compared with the original rates and with the effect of a single dissenter.' },
-        { num: '6.2', kind: 'Model', name: 'The voter model', deps: ['soc-2.1', 'stoch-12.1'], refs: [],
-          pic: 'Each step a random person copies a random neighbour’s opinion; on a lattice domains coarsen slowly, and the probability that an opinion wins equals its initial share.' },
-        { num: '6.3', kind: 'Model', name: 'Bounded-confidence opinion dynamics', deps: ['soc-3.4'], refs: [],
-          pic: 'People average only with those within a confidence bound ε; opinions over time split into one, two or several clusters as you vary ε (Hegselmann–Krause).' },
-        { num: '6.4', kind: 'Model', name: 'Axelrod’s culture model', deps: ['soc-6.3'], refs: [],
-          pic: 'Neighbours who share some cultural traits interact and become more alike; the grid freezes into regions, and the number of surviving cultures depends on traits and features.' },
-        { num: '6.5', kind: 'Phenomenon', name: 'Echo chambers and polarization (mixed evidence)', deps: ['soc-6.3', 'soc-2.10'], refs: ['E&K §4.2'],
-          pic: 'A bounded-confidence model with an unfollow rule produces separated clusters; beside it, survey and platform studies that find much more cross-cutting exposure than the model implies.' },
-        { num: '6.6', kind: 'Phenomenon', name: 'Pluralistic ignorance', deps: ['soc-1.8'], refs: ['E&K §19.6'],
-          pic: 'Everyone privately dislikes a norm but believes others support it; a threshold model with public versus private opinions shows the norm persisting until a few defections tip it.' },
-        { num: '6.7', kind: 'Phenomenon', name: 'Synchronized clapping and fireflies', deps: ['ode-8.17'], refs: ['E&K §21.5'],
-          pic: 'A population of clappers as coupled oscillators: raise the coupling past the critical value and the order parameter jumps, as in audiences that fall into unison.' },
-        { num: '6.8', kind: 'Paper', name: 'Studies of Independence and Conformity',
-          paper: { authors: 'Solomon E. Asch', year: 1956, title: 'Studies of Independence and Conformity: I. A Minority of One against a Unanimous Majority', venue: 'Psychological Monographs: General and Applied 70 (9): 1–70', doi: '10.1037/h0093718' },
-          introduces: ['soc-6.1'], deps: [], refs: [],
-          pic: 'Asch’s line-judgment task: match a standard line to one of three comparison lines after a group of confederates has answered unanimously and wrongly on 12 of 18 trials; his 123 subjects went along on 36.8% of those trials, against errors under 1% when judging alone, and about a quarter never yielded; take the test against a simulated majority, then give yourself one dissenting partner and watch yielding collapse.' },
+        {
+          "num": "6.1",
+          "kind": "Phenomenon",
+          "name": "Asch’s conformity experiment",
+          "deps": [],
+          "refs": [
+            "Asch, Opinions and Social Pressure, Scientific American 193(5), 1955, 31–35; complete author-article transcription read",
+            "Own exact line geometry and explicitly scripted six-speaker illustration"
+          ],
+          "pic": "Choose a line on an original comparison board after viewing a scripted majority, a majority with one truthful dissenter, or no group. Reveal measurements to inspect the physical match. Your answer remains a local illustration; the separate source summary keeps the historical critical-trial response rate and sample distinct."
+        },
+        {
+          "num": "6.2",
+          "kind": "Model",
+          "name": "The voter model",
+          "deps": [
+            "soc-2.1",
+            "stoch-12.1"
+          ],
+          "refs": [
+            "Sood & Redner, Voter Model on Heterogeneous Graphs, Physical Review Letters 94, 178701, 2005; selected rule and bipartite exit-probability discussion read",
+            "Own finite-graph martingale and absorption argument; exact transition enumeration"
+          ],
+          "pic": "Run a 16-node cycle, toroidal lattice or star and inspect the actual copying direction. Compare ordinary and degree-weighted shares along one reproducible path. The companion one-step ledger enumerates the current transition law; its weighted expected drift is exactly zero even when the realized weighted share moves. Start with only the star hub to see why degree matters."
+        },
+        {
+          "num": "6.3",
+          "kind": "Model",
+          "name": "Bounded-confidence opinion dynamics",
+          "deps": [
+            "soc-3.4"
+          ],
+          "refs": [
+            "Hegselmann & Krause, Opinion Dynamics and Bounded Confidence: Models, Analysis and Simulation, JASSS 5(3):2, 2002; selected original text and PDF pages 5/10 personally read",
+            "Own exact finite synchronous updates, hull check and adjacent-gap argument"
+          ],
+          "pic": "Follow each original agent through synchronous averaging. Select an agent to see its current confidence window, actual neighbors and next average. Change the radius through equality and near-boundary cases, compare the population mean, and inspect adjacent gaps. The finite trajectory can show agreement, continuing motion or an exactly fixed separated state."
+        },
+        {
+          "num": "6.4",
+          "kind": "Model",
+          "name": "Axelrod’s culture model",
+          "deps": [
+            "soc-6.3"
+          ],
+          "refs": [
+            "Axelrod, The Dissemination of Culture, Journal of Conflict Resolution 41(2), 1997, 203–226; selected methods and original PDF pages 7/9 personally read",
+            "Own trait-strip grid, finite event stream and complete active-edge/region diagnostics"
+          ],
+          "pic": "Read each site as a strip of categorical features. Inspect the last active-neighbor pair and the copied feature, then compare active edges, distinct culture vectors and spatial regions through all attempted events. The count axis fits the displayed history. Vary features and traits to explore the mechanism, including the exactly frozen one-feature and one-trait limits."
+        },
+        {
+          "num": "6.5",
+          "kind": "Phenomenon",
+          "name": "Echo chambers and polarization (mixed evidence)",
+          "deps": [
+            "soc-6.3",
+            "soc-2.10"
+          ],
+          "refs": [
+            "Cinelli et al., The echo chamber effect on social media, PNAS 118(9):e2023301118, 2021; complete main text and original Figure 4 personally read",
+            "Terren & Borge, Echo Chambers on Social Media: A Systematic Review of the Literature, Review of Communication Research 9, 2021; landing abstract only",
+            "Own directed bounded-confidence plus post-update unfollow comparison"
+          ],
+          "pic": "Compare learning on fixed edges with the selected unfollow rule from identical initial conditions. Node positions keep the same identities; color shows current opinion, while edge removal records selection. Use the source discussion to distinguish proxy interaction networks, simulated diffusion and survey reports: they measure different things and support different causal conclusions."
+        },
+        {
+          "num": "6.6",
+          "kind": "Phenomenon",
+          "name": "Pluralistic ignorance",
+          "deps": [
+            "soc-1.8"
+          ],
+          "refs": [
+            "Prentice & Miller, Pluralistic Ignorance and Alcohol Use on Campus, JPSP 64(2), 1993, 243–256; complete PubMed abstract only",
+            "Easley & Kleinberg §19.6, selected knowledge/threshold discussion actually read",
+            "Own finite irreversible public-count disclosure model; distinct from the source common-knowledge model"
+          ],
+          "pic": "Switch between the private and public views of the same 12 people, then compare both without changing their identities. Vary the initial disclosed count and fixed thresholds. Follow actual disclosure rounds and inspect who is eligible next; private opposition remains 12 throughout, even when public dissent stalls."
+        },
+        {
+          "num": "6.7",
+          "kind": "Phenomenon",
+          "name": "Synchronized clapping and fireflies",
+          "deps": [
+            "ode-8.17"
+          ],
+          "refs": [
+            "Néda et al., Physics of the rhythmic applause, Physical Review E 61, 2000, 6987–6992; complete main text and original PDF page 4/Figures 2–4 personally read",
+            "Own finite Kuramoto equations, free-motion/mean-phase checks and independently checked numerical trajectories"
+          ],
+          "pic": "Play the original 16-oscillator field, or pause at a selected time. Compare the phase lights with vectors on the unit circle and the actual coherence trace. Change coupling and natural-frequency spread, including uncoupled and identical-frequency limits. The numerical mean-phase diagnostic checks the pairwise cancellation law; the curves are simulations, not audience recordings."
+        },
+        {
+          "num": "6.8",
+          "kind": "Paper",
+          "name": "Studies of Independence and Conformity",
+          "paper": {
+            "authors": "Solomon E. Asch",
+            "year": 1956,
+            "title": "Studies of Independence and Conformity: I. A Minority of One against a Unanimous Majority",
+            "venue": "Psychological Monographs: General and Applied 70 (9): 1–70",
+            "doi": "10.1037/h0093718"
+          },
+          "introduces": [
+            "soc-6.1"
+          ],
+          "deps": [],
+          "refs": [
+            "Historical work: Asch 1956, DOI 10.1037/h0093718; original monograph body/figures unread",
+            "Distinct actual reading: Asch 1955, Opinions and Social Pressure; complete author-article transcription",
+            "Own protocol-count and denominator diagrams; no invented chronology or response counts"
+          ],
+          "pic": "Inspect the 18-total/12-critical protocol counts without inventing a historical trial sequence. Switch among the separately reported conditions, retaining percentages, bounds and qualitative relative statements in their correct forms. A denominator diagram distinguishes repeated critical responses from people who never yielded. The source summary uses the read 1955 article; the 1956 monograph body is not claimed verified."
+        }
       ],
     },
     // ───────────────────────────────────────────────────────────── 7

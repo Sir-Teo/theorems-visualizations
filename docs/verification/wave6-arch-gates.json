@@ -1,0 +1,136 @@
+{
+  "status": "PASS; local author verification only",
+  "newFrozenLessons": 11,
+  "purposeBuiltPanels": 33,
+  "authorAvailability": 964,
+  "historicalIndependentAccepted": 36,
+  "additionalAuthorVerified": 928,
+  "independentAcceptanceAdded": 0,
+  "model": {
+    "cases": 413,
+    "families": 11,
+    "comparisons": 577264,
+    "numericalValues": 576223,
+    "exactValues": 1041,
+    "completePrecisionAndFreshBytesExact": true
+  },
+  "focused": {
+    "groups": 52,
+    "newChapterGroups": 29,
+    "affectedHistoricalGroups": 23,
+    "failed": 0,
+    "skipped": 0,
+    "cancelled": 0,
+    "log": {
+      "path": "/workspace/scratch/wave6-arch-research/focused-final.log",
+      "bytes": 11938,
+      "sha256": "ace8626c8241f6188b89a33d98298e42248be642e4d39c36948adb58b0f3072e"
+    }
+  },
+  "strict": {
+    "items": 8679,
+    "planned": 4895,
+    "chapters": 599,
+    "collections": 85,
+    "errors": 0,
+    "warnings": 0,
+    "log": {
+      "path": "/workspace/scratch/wave6-arch-research/build-pressure.log",
+      "bytes": 217,
+      "sha256": "c8400c598e0d4dcad1b08e05ee6ebe44f02a2e640544aa374f4ae27ac0eb4398"
+    }
+  },
+  "static": {
+    "items": 8616,
+    "errors": 0,
+    "warnings": 0,
+    "log": {
+      "path": "/workspace/scratch/wave6-arch-research/global-static-final.log",
+      "bytes": 54,
+      "sha256": "6f1fd28ef7a49ac316b62d85e26d15d54c22b53adb3175662f121af592457181"
+    }
+  },
+  "ordinaryProduction": {
+    "light": {
+      "effectiveRoutes": 11,
+      "fullRun": {
+        "path": "/workspace/scratch/wave6-arch-research/production-final-light.log",
+        "bytes": 693,
+        "sha256": "6aa0175167ebdbfce5fd648125d7166f69eeb5ae27a94873e2f808fa77b897e2"
+      },
+      "lesson3Replacement": {
+        "path": "/workspace/scratch/wave6-arch-research/production-normal-light.log",
+        "bytes": 218,
+        "sha256": "0a360623c169b5916a4c9fb6d50a523fbb78fe0af2e946511d497469a5432d24"
+      },
+      "lessons7and11Replacement": {
+        "path": "/workspace/scratch/wave6-arch-research/production-markers-final-light.log",
+        "bytes": 256,
+        "sha256": "b56a3c44bb5e9101763e8f55a252f8cd5b8f4c7de8381278ad788251604038e3"
+      },
+      "failed": 0,
+      "texBlankWarnings": 0,
+      "qualityWarnings": 0
+    },
+    "dark": {
+      "effectiveRoutes": 11,
+      "fullRun": {
+        "path": "/workspace/scratch/wave6-arch-research/production-final-dark.log",
+        "bytes": 693,
+        "sha256": "6aa0175167ebdbfce5fd648125d7166f69eeb5ae27a94873e2f808fa77b897e2"
+      },
+      "lesson3Replacement": {
+        "path": "/workspace/scratch/wave6-arch-research/production-normal-dark.log",
+        "bytes": 218,
+        "sha256": "0a360623c169b5916a4c9fb6d50a523fbb78fe0af2e946511d497469a5432d24"
+      },
+      "lessons7and11Replacement": {
+        "path": "/workspace/scratch/wave6-arch-research/production-markers-final-dark.log",
+        "bytes": 256,
+        "sha256": "b56a3c44bb5e9101763e8f55a252f8cd5b8f4c7de8381278ad788251604038e3"
+      },
+      "failed": 0,
+      "texBlankWarnings": 0,
+      "qualityWarnings": 0
+    }
+  },
+  "native": {
+    "layouts": 44,
+    "actions": 1724,
+    "shares": 572,
+    "trustedShares": 572,
+    "invalid": 212,
+    "raw": 156,
+    "critical": 184,
+    "checks": 2360,
+    "modelComparisons": 3354704,
+    "geometryComparisons": 1815776,
+    "projectionComparisons": 1303288,
+    "paintedPixelAudits": 7080,
+    "domRangeRounding": 274,
+    "cameraActions": 40
+  },
+  "visual": {
+    "completeSelectedTargets": 254,
+    "currentOriginalDetailSheets": 91
+  },
+  "preservation": {
+    "rawPriorFilesByteExact": 892,
+    "wholeHistoricalGuardByteExact": true,
+    "frozenMetadataAndPropertyAbsenceExact": true
+  },
+  "fullGlobalSuite": "Latest completed exact exportfcae13ea6a5bab4778e0d532b0d1495c1d53346a:5138tests ALONE,272productionroutes/theme,8668reading entries/76aliases; predates ARCH. Next full suite ALONE after meaningful chapter batch.",
+  "ownedBrowsersAndServersExplicitlyClosed": true,
+  "postReceiptPreservationCheck": {
+    "passed": 52,
+    "failed": 0,
+    "skipped": 0,
+    "cancelled": 0,
+    "durationMs": 1272.618727,
+    "log": {
+      "path": "/workspace/scratch/wave6-arch-research/focused-author-doccheck.log",
+      "bytes": 11941,
+      "sha256": "a17cc303d21084b7923b0dce38fcd1a4957c83b2ae6c98d689b601c700a38f92"
+    }
+  }
+}

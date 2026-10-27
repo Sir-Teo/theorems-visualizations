@@ -131,30 +131,128 @@ export default {
     },
     // ───────────────────────────────────────────────────────────── 6
     {
-      n: 6,
-      title: 'Dynamics',
-      summary: String.raw`Moving a robot quickly takes torques that depend on inertia, gravity and the coupling between joints. The equations of motion can be derived from the Lagrangian or computed recursively link by link with Newton–Euler, and both give the standard form with a configuration-dependent mass matrix. Its structural properties — positive definiteness, passivity — are what make robot control provably stable.`,
-      items: [
-        { num: '6.1', kind: 'Theorem', name: 'Newton–Euler equations of a single rigid body', deps: ['mech-10.11', 'robot-2.10'], refs: ['Lynch–Park §8.2'],
-          pic: 'Apply a wrench to a free rigid body: its twist evolves under the spatial inertia matrix, and with no wrench the angular momentum stays fixed while the body tumbles.' },
-        { num: '6.2', kind: 'Theorem', name: 'Equations of motion of an open chain', deps: ['mech-6.6', 'robot-4.1'], refs: ['Lynch–Park §8.1', 'Siciliano ch. 7'],
-          pic: 'A two-link arm swings under gravity while the terms M(q)q̈, the velocity-product terms and g(q) are plotted separately and summed to the applied torques.' },
-        { num: '6.3', kind: 'Definition', name: 'The mass matrix', deps: ['robot-6.2', 'ladr-7.62'], refs: ['Lynch–Park §8.1'],
-          pic: 'The kinetic energy of the arm is drawn as an ellipse in joint-velocity space that changes shape with configuration; its matrix stays symmetric positive definite everywhere.' },
-        { num: '6.4', kind: 'Proposition', name: 'Skew-symmetry of Ṁ − 2C (passivity)', deps: ['robot-6.2'], refs: ['Lynch–Park §8.1', 'Siciliano ch. 7'],
-          pic: 'Along any simulated motion, the quantity q̇ᵀ(Ṁ − 2C)q̇ is plotted and stays at zero to numerical precision, while the energy changes only through applied torques.' },
-        { num: '6.5', kind: 'Algorithm', name: 'Recursive Newton–Euler inverse dynamics', deps: ['robot-6.1', 'robot-2.9'], refs: ['Lynch–Park §8.3'],
-          pic: 'Velocities and accelerations propagate outward link by link, then forces and torques propagate back inward — animated as two sweeps — and the joint torques match the Lagrangian result.' },
-        { num: '6.6', kind: 'Definition', name: 'Task-space (operational-space) dynamics', deps: ['robot-6.2', 'robot-4.1'], refs: ['Lynch–Park §8.6'],
-          pic: 'Push the end-effector in different directions: the effective inertia felt at the tool is an ellipse that changes with the arm’s posture.' },
-        { num: '6.7', kind: 'Concept', name: 'Gearing and reflected inertia', deps: ['robot-6.3'], refs: ['Lynch–Park §8.9'],
-          pic: 'Raise the gear ratio of a joint: the motor’s rotor inertia appears multiplied by the ratio squared, swamping the link inertia and decoupling the joints.' },
-        { num: '6.8', kind: 'Phenomenon', name: 'Coriolis and centripetal coupling between joints', deps: ['robot-6.2', 'mech-9.8'], refs: ['Lynch–Park §8.1'],
-          pic: 'Spin the shoulder of a two-link arm quickly with the elbow motor off: the forearm swings outward and lags because of velocity-product torques, plotted live.' },
-        { num: '6.9', kind: 'Method', name: 'Constrained dynamics', deps: ['robot-6.2', 'mech-6.13'], refs: ['Lynch–Park §8.7'],
-          pic: 'Make the end-effector slide along a wall: the constraint force needed is solved at each step and drawn as an arrow normal to the wall, and removing the wall frees the motion.' },
-      ],
+      "n": 6,
+      "title": "Dynamics",
+      "summary": "Moving a robot quickly takes torques that depend on inertia, gravity and the coupling between joints. The equations of motion can be derived from the Lagrangian or computed recursively link by link with Newton–Euler, and both give the standard form with a configuration-dependent mass matrix. Its structural properties — positive definiteness, passivity — are what make robot control provably stable.",
+      "items": [
+        {
+          "num": "6.1",
+          "kind": "Theorem",
+          "name": "Newton–Euler equations of a single rigid body",
+          "deps": [
+            "mech-10.11",
+            "robot-2.10"
+          ],
+          "refs": [
+            "Lynch–Park, Modern Robotics (Dec.2019 preprint), §8.2, pp.281–289"
+          ],
+          "pic": "Rotate the view and scrub time. In free motion, the ellipsoid changes orientation around a fixed spatial angular momentum; angular velocity need not point along it. Switch to the specified coaxial wrench to see rotational and translational work enter the body. The body view follows the COM, while its displacement is reported separately."
+        },
+        {
+          "num": "6.2",
+          "kind": "Theorem",
+          "name": "Equations of motion of an open chain",
+          "deps": [
+            "mech-6.6",
+            "robot-4.1"
+          ],
+          "refs": [
+            "Lynch–Park, Modern Robotics (Dec.2019 preprint), §8.1, pp.269–278"
+          ],
+          "pic": "Follow a prescribed two-link motion and read the two torque ledgers. For each joint, the inertial, velocity-product and gravity terms add to the required actuator torque. COM markers and equal horizontal/vertical geometry scales make the mass distribution explicit. Changing gravity changes the required torque while the prescribed path stays the same."
+        },
+        {
+          "num": "6.3",
+          "kind": "Definition",
+          "name": "The mass matrix",
+          "deps": [
+            "robot-6.2",
+            "ladr-7.62"
+          ],
+          "refs": [
+            "Lynch–Park, Modern Robotics (Dec.2019 preprint), §8.1.3, pp.277–280"
+          ],
+          "pic": "Change the elbow angle and watch the fixed-energy contour change shape in joint-velocity space. The selected direction picks a velocity on the contour; its kinetic energy is evaluated from the actual matrix. A straight tool posture can lose Cartesian mobility while its joint-space mass matrix stays positive definite."
+        },
+        {
+          "num": "6.4",
+          "kind": "Proposition",
+          "name": "Skew-symmetry of Ṁ − 2C (passivity)",
+          "deps": [
+            "robot-6.2"
+          ],
+          "refs": [
+            "Lynch–Park, Modern Robotics (Dec.2019 preprint), §8.1.2, pp.275–277"
+          ],
+          "pic": "Scrub the same prescribed arm cycle and compare mechanical-energy rate with actuator power. The velocity-product power and half the mass-rate quadratic form cancel. A separate ledger shows their signed sizes, so the zero identity is not produced by hiding small numbers on a chart."
+        },
+        {
+          "num": "6.5",
+          "kind": "Algorithm",
+          "name": "Recursive Newton–Euler inverse dynamics",
+          "deps": [
+            "robot-6.1",
+            "robot-2.9"
+          ],
+          "refs": [
+            "Lynch–Park, Modern Robotics (Dec.2019 preprint), §8.3, pp.289–293"
+          ],
+          "pic": "Advance the computational step: velocity and acceleration information travels from base to tool, then force and moment information returns toward the base. The physical arm state stays fixed during a sweep. Each final torque is compared with the independently derived Lagrange torque for the same state."
+        },
+        {
+          "num": "6.6",
+          "kind": "Definition",
+          "name": "Task-space (operational-space) dynamics",
+          "deps": [
+            "robot-6.2",
+            "robot-4.1"
+          ],
+          "refs": [
+            "Lynch–Park, Modern Robotics (Dec.2019 preprint), §8.6, pp.298–299"
+          ],
+          "pic": "Push in a selected direction and compare the force with the tool's response acceleration. A separate plot shows the force-response ellipse on explicit acceleration axes. Near a straight arm the response becomes thin; at exact rank loss the task-space inverse is undefined. The view preserves that distinction instead of imposing a numerical rank cutoff."
+        },
+        {
+          "num": "6.7",
+          "kind": "Concept",
+          "name": "Gearing and reflected inertia",
+          "deps": [
+            "robot-6.3"
+          ],
+          "refs": [
+            "Lynch–Park, Modern Robotics (Dec.2019 preprint), §8.9, pp.311–315"
+          ],
+          "pic": "Raise the ideal gear ratios and compare the reflected rotor inertia with the rod inertia. Switch the rotor mounting and gear sense to expose the extra coupling caused by a moving motor housing. Speed and torque obey the same signed power relation; the transmission drawing is schematic rather than a tooth-count model."
+        },
+        {
+          "num": "6.8",
+          "kind": "Phenomenon",
+          "name": "Coriolis and centripetal coupling between joints",
+          "deps": [
+            "robot-6.2",
+            "mech-9.8"
+          ],
+          "refs": [
+            "Lynch–Park, Modern Robotics (Dec.2019 preprint), §8.1, pp.271–275"
+          ],
+          "pic": "The shoulder speed is controlled while the elbow motor is off and gravity is absent. Scrub actual time to see the released forearm move, then compare its relative angle with the separate velocity-product torque terms. Reversing shoulder speed preserves the elbow's relative equation, while the shoulder's torque and power still reflect the full coupled motion."
+        },
+        {
+          "num": "6.9",
+          "kind": "Method",
+          "name": "Constrained dynamics",
+          "deps": [
+            "robot-6.2",
+            "mech-6.13"
+          ],
+          "refs": [
+            "Lynch–Park, Modern Robotics (Dec.2019 preprint), §8.7, pp.299–305"
+          ],
+          "pic": "Compare the same arm state with a pushing wall, a bilateral guide or no contact. The wall line passes through the actual tool point, and its reaction is normal to that line. Separate equal-scale acceleration views show what contact removes. A pulling required force detaches the unilateral wall; a degenerate normal has an explicit undefined-force state."
+        }
+      ]
     },
+
     // ───────────────────────────────────────────────────────────── 7
     {
       n: 7,

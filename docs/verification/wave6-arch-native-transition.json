@@ -1,0 +1,1737 @@
+{
+  "status": "PASS; bounded transitions; current replacements for lessons3,7,11; all other complete lesson functions and models preserved",
+  "typesetting": {
+    "status": "PASS for recorded phase; later targeted pressure/sampling/marker phases explicitly composed below",
+    "beforeSHA256": "c11748001e926ba9d67c4735ede40a5fec068768c10f3fb24b327d9895974a72",
+    "afterSHA256": "dbf0cfa72682119649584a86e55ff73501274200dfac0807526f60684f35fd93",
+    "wholeOldSourceReconstructsByteExact": true,
+    "fields": [
+      {
+        "num": "6.1",
+        "field": "statement",
+        "before": "Curvature can give a thin structure an axial load path, provided its supports carry the associated thrust. This differs from resisting the same load through bending. A controlled two-bar analogue makes the geometric effect explicit: with half-span and Young's modulus both one, rise h and fixed total material volume 2t,\n $$K_{\\rm axial}=\\frac{2th^2}{(1+h^2)^2}.$$\n A separate simply supported rectangular beam of span 2, width 1 and thickness t has central-load stiffness Kbeam=t³/2. Their ratio compares these two declared systems; it is not a universal shell-to-plate ratio.",
+        "after": "Curvature can give a thin structure an axial load path, provided its supports carry the associated thrust. This differs from resisting the same load through bending. A controlled two-bar analogue makes the geometric effect explicit: with half-span and Young's modulus both one, rise h and fixed total material volume 2t,\n $$K_{\\rm axial}=\\frac{2th^2}{(1+h^2)^2}.$$\n A separate simply supported rectangular beam of span 2, width 1 and thickness t has central-load stiffness $K_{\\rm beam}=t^3/2$. Their ratio compares these two declared systems; it is not a universal shell-to-plate ratio."
+      },
+      {
+        "num": "6.1",
+        "field": "idea",
+        "before": "Each inclined bar has length L=√(1+h²) and area A=t/L, preserving volume. A small vertical displacement w of the central joint changes either bar length by w h/L to first order. The two axial strain energies therefore sum to (EA/L)(w h/L)². Matching this with Kw²/2 gives the stated stiffness. The beam stiffness follows 48EI/(2a)³ with a=1 and I=t³/12. At h=0 the two horizontal bars have zero first-order vertical stiffness: the singular case cannot be replaced by a finite axial displacement. The dome prerequisite derives a genuine membrane-force field; this smaller analogue isolates one geometric mechanism without claiming that every shell shares it.",
+        "after": "Each inclined bar has length $L=\\sqrt{1+h^2}$ and area $A=t/L$, preserving volume. A small vertical displacement w of the central joint changes either bar length by $wh/L$ to first order. The two axial strain energies therefore sum to $(EA/L)(wh/L)^2$. Matching this with $Kw^2/2$ gives the stated stiffness. The beam stiffness follows $48EI/(2a)^3$ with $a=1$ and $I=t^3/12$. At $h=0$ the two horizontal bars have zero first-order vertical stiffness: the singular case cannot be replaced by a finite axial displacement. The dome prerequisite derives a genuine membrane-force field; this smaller analogue isolates one geometric mechanism without claiming that every shell shares it."
+      },
+      {
+        "num": "6.2",
+        "field": "statement",
+        "before": "The graph z=cxy is a hyperbolic paraboloid when c≠0. Holding x or y fixed gives a straight line, so the same saddle has two families of straight generators. Its Gaussian curvature is\n $$K=\\frac{-c^2}{[1+c^2(x^2+y^2)]^2}<0.$$\n Its mean curvature is generally nonzero. Straight generators and negative Gaussian curvature do not make it a minimal surface or certify a structural load capacity.",
+        "after": "The graph $z=cxy$ is a hyperbolic paraboloid when $c\\ne0$. Holding x or y fixed gives a straight line, so the same saddle has two families of straight generators. Its Gaussian curvature is\n $$K=\\frac{-c^2}{[1+c^2(x^2+y^2)]^2}<0.$$\n Its mean curvature is generally nonzero. Straight generators and negative Gaussian curvature do not make it a minimal surface or certify a structural load capacity."
+      },
+      {
+        "num": "6.2",
+        "field": "idea",
+        "before": "At fixed x=s the coordinates (s,t,cst) are affine in t; the other generator is (t,s,cst). Diagonal cuts y=±x give z=±cx². For a graph, use fx=cy, fy=cx, fxx=fyy=0 and fxy=c in the first and second fundamental forms. Their determinant ratio gives K. The mean-curvature numerator is −2c³xy, so H=−c³xy/[1+c²(x²+y²)]^(3/2); it vanishes on the coordinate axes but generally not elsewhere. The normal and principal curvatures in the readout are evaluated at the selected actual surface point. At c=0 both curvatures vanish and the generators lie in a plane.",
+        "after": "At fixed $x=s$ the coordinates $(s,t,cst)$ are affine in t; the other generator is $(t,s,cst)$. Diagonal cuts $y=\\pm x$ give $z=\\pm cx^2$. For a graph, use $f_x=cy$, $f_y=cx$, $f_{xx}=f_{yy}=0$ and $f_{xy}=c$ in the first and second fundamental forms. Their determinant ratio gives K. The mean-curvature numerator is $-2c^3xy$, so $$H=-\\frac{c^3xy}{[1+c^2(x^2+y^2)]^{3/2}}.$$ It vanishes on the coordinate axes but generally not elsewhere. The normal and principal curvatures in the readout are evaluated at the selected actual surface point. At $c=0$ both curvatures vanish and the generators lie in a plane."
+      },
+      {
+        "num": "6.3",
+        "field": "statement",
+        "before": "At a point where membrane resultants N₁,N₂ act along the principal directions, normal equilibrium requires\n $$p=N_1\\kappa_1+N_2\\kappa_2.$$\n Positive tension and zero pressure require opposite signs for two nonzero principal curvatures. A flat pretensioned patch also satisfies local normal balance. Nonzero pressure permits same-sign curvature, as in an inflated membrane. Normal equilibrium alone does not prove stability against wind or arbitrary disturbance.",
+        "after": "At a point where membrane resultants $N_1,N_2$ act along the principal directions, normal equilibrium requires\n $$p=N_1\\kappa_1+N_2\\kappa_2.$$\n Positive tension and zero pressure require opposite signs for two nonzero principal curvatures. A flat pretensioned patch also satisfies local normal balance. Nonzero pressure permits same-sign curvature, as in an inflated membrane. Normal equilibrium alone does not prove stability against wind or arbitrary disturbance."
+      },
+      {
+        "num": "6.3",
+        "field": "idea",
+        "before": "Take a small principal-coordinate patch. Turning of each tension resultant through angle κi dsi leaves a normal component Ni κi per unit area. Adding the two contributions and equating them to signed pressure gives the formula, with positive pressure defined along the chosen upward normal. In the quadratic graph z=(κ₁x²+κ₂y²)/2, the gradient vanishes at the origin, so its coordinate axes there are principal directions with precisely the specified curvatures. Away from that point the same coefficients are not the local principal curvatures. The widget displays the two terms and their unbalanced sum without silently changing a tension to enforce equilibrium.",
+        "after": "Take a small principal-coordinate patch. Turning of each tension resultant through angle $\\kappa_i\\,ds_i$ leaves a normal component $N_i\\kappa_i$ per unit area. Adding the two contributions and equating them to signed pressure gives the formula, with positive pressure defined along the chosen upward normal. In the quadratic graph $z=(\\kappa_1x^2+\\kappa_2y^2)/2$, the gradient vanishes at the origin, so its coordinate axes there are principal directions with precisely the specified curvatures. Away from that point the same coefficients are not the local principal curvatures. The widget displays the two terms and their unbalanced sum without silently changing a tension to enforce equilibrium."
+      },
+      {
+        "num": "6.4",
+        "field": "statement",
+        "before": "For a soap film with constant surface tension and zero pressure difference, stationarity of area gives zero mean curvature. An explicit example is Scherk's graph\n $$z=\\frac{\\log\\cos(ay)-\\log\\cos(ax)}{a},$$\n with the continuous flat limit at a=0. On this fixed square boundary, the graph minimizes area among competing graphs. This statement does not identify every stationary minimal surface as stable, or reconstruct any particular roof.",
+        "after": "For a soap film with constant surface tension and zero pressure difference, stationarity of area gives zero mean curvature. An explicit example is Scherk's graph\n $$z=\\frac{\\log\\cos(ay)-\\log\\cos(ax)}{a},$$\n with the continuous flat limit at $a=0$. On this fixed square boundary, the graph minimizes area among competing graphs. This statement does not identify every stationary minimal surface as stable, or reconstruct any particular roof."
+      },
+      {
+        "num": "6.4",
+        "field": "idea",
+        "before": "The graph area is the integral of √(1+fx²+fy²). A variation vanishing at the boundary gives the Euler equation div(∇f/√(1+|∇f|²))=2H=0. Here fx=tan(ax), fy=−tan(ay), fxx=a sec²(ax), fyy=−a sec²(ay), fxy=0; substituting makes the mean-curvature numerator cancel. The area integrand is strictly convex in the gradient. Its supporting-plane inequality, integrated against a boundary-zero variation, therefore proves the fixed-boundary graph minimum. The trial δ(1−x²)(1−y²) keeps every boundary point fixed. Areas shown are finite Simpson estimates, distinct from that analytic proof. The catenoid prerequisite explains why other boundaries and topologies can have competing branches and instabilities.",
+        "after": "The graph area is the integral of $\\sqrt{1+f_x^2+f_y^2}$. A variation vanishing at the boundary gives the Euler equation $$\\operatorname{div}\\frac{\\nabla f}{\\sqrt{1+|\\nabla f|^2}}=2H=0.$$ Here $f_x=\\tan(ax)$, $f_y=-\\tan(ay)$, $f_{xx}=a\\sec^2(ax)$, $f_{yy}=-a\\sec^2(ay)$, $f_{xy}=0$; substituting makes the mean-curvature numerator cancel. The area integrand is strictly convex in the gradient. Its supporting-plane inequality, integrated against a boundary-zero variation, therefore proves the fixed-boundary graph minimum. The trial $\\delta(1-x^2)(1-y^2)$ keeps every boundary point fixed. Areas shown are finite Simpson estimates, distinct from that analytic proof. The catenoid prerequisite explains why other boundaries and topologies can have competing branches and instabilities."
+      },
+      {
+        "num": "6.5",
+        "field": "statement",
+        "before": "A hanging pin-jointed net in tension under specified vertical nodal weights can be inverted into a compression equilibrium for the same weights. Reflect the heights z→−z and reverse each signed force density q→−q. This preserves vertical nodal equilibrium when the original horizontal components balance. A changed load generally destroys that match. Equilibrium inversion is not a proof against buckling or material failure.",
+        "after": "A hanging pin-jointed net in tension under specified vertical nodal weights can be inverted into a compression equilibrium for the same weights. Reflect the heights $z\\mapsto-z$ and reverse each signed force density $q\\mapsto-q$. This preserves vertical nodal equilibrium when the original horizontal components balance. A changed load generally destroys that match. Equilibrium inversion is not a proof against buckling or material failure."
+      },
+      {
+        "num": "6.5",
+        "field": "idea",
+        "before": "For each free node, the hanging model solves Σqij(xj−xi)+pi=0. Reflection reverses the vertical coordinate differences; negating q restores their vertical force contributions while reversing the horizontal contributions. Because the original horizontal loads are zero, the reversed horizontal internal sums still vanish. Thus the reflected form carries the same vertical weights through negative axial member forces. The displayed weights vary with x by a declared linear gradient. An actual/design weight control changes only the loads on the fixed inverted geometry, exposing the force residual rather than finding another compatible form. Isler's physical experiments included hanging textiles and inflated membranes, followed by iterative tests and checks; the official archival interview provides that history without supplying this net's numerical geometry.",
+        "after": "For each free node, the hanging model solves $$\\sum_jq_{ij}(\\mathbf x_j-\\mathbf x_i)+\\mathbf p_i=0.$$ Reflection reverses the vertical coordinate differences; negating $q$ restores their vertical force contributions while reversing the horizontal contributions. Because the original horizontal loads are zero, the reversed horizontal internal sums still vanish. Thus the reflected form carries the same vertical weights through negative axial member forces. The displayed weights vary with x by a declared linear gradient. An actual/design weight control changes only the loads on the fixed inverted geometry, exposing the force residual rather than finding another compatible form. Isler's physical experiments included hanging textiles and inflated membranes, followed by iterative tests and checks; the official archival interview provides that history without supplying this net's numerical geometry."
+      },
+      {
+        "num": "6.6",
+        "field": "statement",
+        "before": "Prescribing positive force densities qij=Tij/ℓij makes the equilibrium coordinates of an anchored cable net the solution of linear systems. For each coordinate,\n $$L_{ff}x_f=p_f-L_{fb}x_b.$$\n Every connected free component must reach a fixed boundary. Under that anchoring and qij>0, the reduced weighted Laplacian is positive definite, so the solution is unique. This does not extend automatically to arbitrary signed densities.",
+        "after": "Prescribing positive force densities $q_{ij}=T_{ij}/\\ell_{ij}$ makes the equilibrium coordinates of an anchored cable net the solution of linear systems. For each coordinate,\n $$L_{ff}x_f=p_f-L_{fb}x_b.$$\n Every connected free component must reach a fixed boundary. Under that anchoring and $q_{ij}>0$, the reduced weighted Laplacian is positive definite, so the solution is unique. This does not extend automatically to arbitrary signed densities."
+      },
+      {
+        "num": "6.6",
+        "field": "idea",
+        "before": "An edge contributes q(xj−xi) to node i and its negative to node j. Collecting the unknown free coordinates produces the diagonal sum of incident q values and off-diagonal entries −q. For a free perturbation u extended by zero on fixed nodes, uᵀLffu=Σqij(ui−uj)². Equality forces u constant on each connected component and zero where it reaches a fixed node; anchoring therefore makes the quadratic form positive. The actual 25-node example solves all three coordinates, computes Tij=qijℓij, and checks all nine free-joint residuals. Its fixed boundary z=h(x²−y²) makes directional density changes visible. The selected joint's four internal forces and external load form a closed polygon in three-dimensional force space.",
+        "after": "An edge contributes $q(\\mathbf x_j-\\mathbf x_i)$ to node i and its negative to node j. Collecting the unknown free coordinates produces the diagonal sum of incident q values and off-diagonal entries −q. For a free perturbation u extended by zero on fixed nodes, $$u^{\\mathsf T}L_{ff}u=\\sum_{ij}q_{ij}(u_i-u_j)^2.$$ Equality forces u constant on each connected component and zero where it reaches a fixed node; anchoring therefore makes the quadratic form positive. The actual 25-node example solves all three coordinates, computes $T_{ij}=q_{ij}\\ell_{ij}$, and checks all nine free-joint residuals. Its fixed boundary $z=h(x^2-y^2)$ makes directional density changes visible. The selected joint's four internal forces and external load form a closed polygon in three-dimensional force space."
+      },
+      {
+        "num": "6.7",
+        "field": "statement",
+        "before": "Dynamic relaxation uses fictitious inertia and damping to approach a static force balance. For the anchored positive-density net, a staggered velocity update is\n $$v_{n+1/2}=A R_n+Bv_{n-1/2},$$\n $$x_{n+1}=x_n+\\Delta\\tau\\,v_{n+1/2},$$\n where A=Δτ/(1+cΔτ/2), B=(1−cΔτ/2)/(1+cΔτ/2), unit fictitious mass and residual R=b−Lx. Zero damping can oscillate; an energy trace must be computed rather than forced to decrease.",
+        "after": "Dynamic relaxation uses fictitious inertia and damping to approach a static force balance. For the anchored positive-density net, a staggered velocity update is\n $$v_{n+1/2}=A R_n+Bv_{n-1/2},$$\n $$x_{n+1}=x_n+\\Delta\\tau\\,v_{n+1/2},$$\n where $A=\\Delta\\tau/(1+c\\Delta\\tau/2)$, $B=(1-c\\Delta\\tau/2)/(1+c\\Delta\\tau/2)$, unit fictitious mass and residual $R=b-Lx$. Zero damping can oscillate; an energy trace must be computed rather than forced to decrease."
+      },
+      {
+        "num": "6.7",
+        "field": "idea",
+        "before": "Centre the acceleration and viscous damping around integer iteration n in x″+cx′=b−Lx, then isolate the next half-step velocity. The initial half-step −ΔτR₀/2 gives zero initial central velocity. For the 3×3 free grid the largest eigenvalue is (2+√2)(qx+qy): separation of the two one-dimensional Dirichlet spectra gives this exact bound. The undamped central-difference critical step is 2/√λmax; every offered step stays below it across the control domain. Positive damping dissipates the continuous fictitious-system energy, while the finite-step displayed central kinetic energy need not decrease monotonically. Comparing each iterate with the independent direct static solution reveals actual convergence error. Barnes's 1977 thesis supplies the staggered update; this is a linear viscously damped example, not a nonlinear kinetic-damping implementation.",
+        "after": "Centre the acceleration and viscous damping around integer iteration n in $x''+cx'=b-Lx$, then isolate the next half-step velocity. The initial half-step $-\\Delta\\tau R_0/2$ gives zero initial central velocity. For the 3×3 free grid the largest eigenvalue is $(2+\\sqrt2)(q_x+q_y)$: separation of the two one-dimensional Dirichlet spectra gives this exact bound. The undamped central-difference critical step is $2/\\sqrt{\\lambda_{\\max}}$; every offered step stays below it across the control domain. Positive damping dissipates the continuous fictitious-system energy, while the finite-step displayed central kinetic energy need not decrease monotonically. Comparing each iterate with the independent direct static solution reveals actual convergence error. Barnes's 1977 thesis supplies the staggered update; this is a linear viscously damped example, not a nonlinear kinetic-damping implementation."
+      },
+      {
+        "num": "6.8",
+        "field": "idea",
+        "before": "Take the cell vertices (0,0),(1,0),(1+sin θ,cos θ),(sin θ,cos θ). Every side has unit length, but the diagonal has length √(2+2sin θ). For a unit-stiffness diagonal with rest length √2, energy is (ℓ−√2)²/2; removing the brace makes this cell's shear energy zero in the pin-jointed model. Separately, the roof sketch samples z=h(1−x²)(1−y²) on a fixed planar grid. Its edges generally lengthen: the widget computes those actual extensions rather than calling this map inextensible. Naicu, Harris and Williams describe forming, connection behaviour and shear bracing, and explicitly note dummy simulation parameters and absent quantitative monitoring for their case study. That paper supplies construction context, not numerical validation of this roof.",
+        "after": "Take the cell vertices $(0,0)$, $(1,0)$, $(1+\\sin\\theta,\\cos\\theta)$, $(\\sin\\theta,\\cos\\theta)$. Every side has unit length, but the diagonal has length $\\sqrt{2+2\\sin\\theta}$. For a unit-stiffness diagonal with rest length $\\sqrt2$, energy is $(\\ell-\\sqrt2)^2/2$; removing the brace makes this cell's shear energy zero in the pin-jointed model. Separately, the roof sketch samples $z=h(1-x^2)(1-y^2)$ on a fixed planar grid. Its edges generally lengthen: the widget computes those actual extensions rather than calling this map inextensible. Naicu, Harris and Williams describe forming, connection behaviour and shear bracing, and explicitly note dummy simulation parameters and absent quantitative monitoring for their case study. That paper supplies construction context, not numerical validation of this roof."
+      },
+      {
+        "num": "6.9",
+        "field": "statement",
+        "before": "An ideal three-strut prism can balance compression in separated struts against a connected cable network. For the stated equilateral geometry with baseline relative twist 150°, signed force densities qcross=q, qring=q/√3 and qstrut=−q balance every joint. Prestress also supplies positive quadratic stiffness in one specified symmetric twist mode. Neither a member count nor this single mode proves full three-dimensional stability.",
+        "after": "An ideal three-strut prism can balance compression in separated struts against a connected cable network. For the stated equilateral geometry with baseline relative twist 150°, signed force densities $q_{\\rm cross}=q$, $q_{\\rm ring}=q/\\sqrt3$ and $q_{\\rm strut}=-q$ balance every joint. Prestress also supplies positive quadratic stiffness in one specified symmetric twist mode. Neither a member count nor this single mode proves full three-dimensional stability."
+      },
+      {
+        "num": "6.9",
+        "field": "idea",
+        "before": "Let bottom joints Ai lie on a radius-R equilateral triangle and top joints Bi on its rotated copy at height h. Connect the two triangle rings, cross cables AiB(i−1), and struts AiBi. Summing density times each actual edge vector gives zero at the 150° form. Now constrain radius and strut length Ls while twisting: h(θ)²=Ls²−2R²(1−cos θ), and cross-cable length satisfies ℓc(θ)²=Ls²+2R²[cos θ−cos(θ−120°)]. Its first derivative vanishes at 150° and its second is √3 R²/ℓc. Three elastic cross cables with baseline tension qℓc therefore give U″=3√3 qR² with respect to twist in radians. At q=0 that quadratic term vanishes; higher-order energy remains, and no spontaneous collapse follows. A held nonzero twist generally needs external forces, which appear as nodal residuals.",
+        "after": "Let bottom joints $A_i$ lie on a radius-R equilateral triangle and top joints $B_i$ on its rotated copy at height h. Connect the two triangle rings, cross cables $A_iB_{i-1}$, and struts $A_iB_i$. Summing density times each actual edge vector gives zero at the 150° form. Now constrain radius and strut length $L_s$ while twisting: $h(\\theta)^2=L_s^2-2R^2(1-\\cos\\theta)$, and cross-cable length satisfies $$\\begin{aligned}\\ell_c(\\theta)^2&=L_s^2+2R^2\\big[\\cos\\theta\\\\&\\quad-\\cos(\\theta-120^\\circ)\\big].\\end{aligned}$$ Its first derivative vanishes at 150° and its second is $\\sqrt3\\,R^2/\\ell_c$. Three elastic cross cables with baseline tension $q\\ell_c$ therefore give $U''=3\\sqrt3\\,qR^2$ with respect to twist in radians. At $q=0$ that quadratic term vanishes; higher-order energy remains, and no spontaneous collapse follows. A held nonzero twist generally needs external forces, which appear as nodal residuals."
+      },
+      {
+        "num": "6.10",
+        "field": "statement",
+        "before": "With isotropic membrane resultant N and spherical curvature radius R, the signed Laplace–Young balance is p=2N/R. For a spherical cap with fixed circular rim radius a and height h,\n $$p=\\frac{4Nh}{a^2+h^2}.$$\n Under prescribed constant N, pressure peaks at the hemisphere h=a. Below the peak there are shallow and tall branches; above it this cap family has no equilibrium. A pressure change alone does not represent a local snow load.",
+        "after": "With isotropic membrane resultant N and spherical curvature radius R, the signed Laplace–Young balance is $p=2N/R$. For a spherical cap with fixed circular rim radius a and height h,\n $$p=\\frac{4Nh}{a^2+h^2}.$$\n Under prescribed constant N, pressure peaks at the hemisphere $h=a$. Below the peak there are shallow and tall branches; above it this cap family has no equilibrium. A pressure change alone does not represent a local snow load."
+      },
+      {
+        "num": "6.10",
+        "field": "idea",
+        "before": "The cap geometry gives R=(a²+h²)/(2h), with area π(a²+h²) and enclosed volume πh(3a²+h²)/6. Insert the radius in p=2N/R. Alternatively, stationarity of U=NA−pV yields the same equation. At equilibrium U″=2πN(a²−h²)/(a²+h²): shallow caps are local minima and tall caps local maxima within this constrained family, meeting at a fold. Define α=pa/(2N). The shallow root h/a=α/(1+√(1−α²)) avoids cancellation at small positive α; the tall root is (1+√(1−α²))/α. At α=0 the shallow cap is flat and has undefined infinite sphere radius; there is no finite tall cap. The pressure-branch chart uses the cap opening angle to show both branches without truncating the tall-height limit.",
+        "after": "The cap geometry gives $R=(a^2+h^2)/(2h)$, with area $\\pi(a^2+h^2)$ and enclosed volume $\\pi h(3a^2+h^2)/6$. Insert the radius in $p=2N/R$. Alternatively, stationarity of $U=NA-pV$ yields the same equation. At equilibrium $U''=2\\pi N(a^2-h^2)/(a^2+h^2)$: shallow caps are local minima and tall caps local maxima within this constrained family, meeting at a fold. Define $\\alpha=pa/(2N)$. The shallow root $h/a=\\alpha/(1+\\sqrt{1-\\alpha^2})$ avoids cancellation at small positive α; the tall root is $(1+\\sqrt{1-\\alpha^2})/\\alpha$. At $\\alpha=0$ the shallow cap is flat and has undefined infinite sphere radius; there is no finite tall cap. The pressure-branch chart uses the cap opening angle to show both branches without truncating the tall-height limit."
+      },
+      {
+        "num": "6.11",
+        "field": "statement",
+        "before": "Thinness alone does not determine safe shell capacity. For a perfect complete elastic sphere under uniform external pressure, the classical result is\n $$\\frac{p_{\\rm classical}}E=\\frac{2(t/R)^2}{\\sqrt{3(1-\\nu^2)}}.$$\n A historical clamped spherical-cap correlation in NASA SP-8032 (1969) modifies that result using geometry. Its stated domain must be retained: the factor 0.14+3.2/λ² is supplied only for λ>2. It is not a universal knockdown factor for buildings, eggshells or all boundary conditions.",
+        "after": "Thinness alone does not determine safe shell capacity. For a perfect complete elastic sphere under uniform external pressure, the classical result is\n $$\\frac{p_{\\rm classical}}E=\\frac{2(t/R)^2}{\\sqrt{3(1-\\nu^2)}}.$$\n A historical clamped spherical-cap correlation in NASA SP-8032 (1969) modifies that result using geometry. Its stated domain must be retained: the factor $0.14+3.2/\\lambda^2$ is supplied only for $\\lambda>2$. It is not a universal knockdown factor for buildings, eggshells or all boundary conditions."
+      },
+      {
+        "num": "6.11",
+        "field": "idea",
+        "before": "For cap half-opening angle φ, span/thickness is 2(R/t)sin φ, whereas the source's slenderness is λ=[12(1−ν²)]^(1/4)√(R/t)·2sin(φ/2). These use different trigonometric factors. The perfect-sphere pressure scales as t² at fixed R,E,ν. The source compares clamped-cap tests with a lower-bound correlation pcr/pclassical=0.14+3.2/λ² for λ>2; geometry, imperfections and edge conditions limit its interpretation. The widget leaves that factor and correlated pressure undefined outside the domain, including a small numerical ambiguity band around the boundary. The planned solid-mechanics buckling lesson has not yet been written and supplies no inherited proof here. The displayed classical formula and historical correlation come from the actual selected source pages; the graph and chosen cap dimensions are newly authored.",
+        "after": "For cap half-opening angle φ, span/thickness is $2(R/t)\\sin\\phi$, whereas the source's slenderness is $$\\begin{aligned}\\lambda&=[12(1-\\nu^2)]^{1/4}\\\\&\\quad\\times\\sqrt{R/t}\\,2\\sin(\\phi/2).\\end{aligned}$$ These use different trigonometric factors. The perfect-sphere pressure scales as t² at fixed R,E,ν. The source compares clamped-cap tests with a lower-bound correlation $p_{\\rm cr}/p_{\\rm classical}=0.14+3.2/\\lambda^2$ for $\\lambda>2$; geometry, imperfections and edge conditions limit its interpretation. The widget leaves that factor and correlated pressure undefined outside the domain, including a small numerical ambiguity band around the boundary. The planned solid-mechanics buckling lesson has not yet been written and supplies no inherited proof here. The displayed classical formula and historical correlation come from the actual selected source pages; the graph and chosen cap dimensions are newly authored."
+      }
+    ],
+    "immutableFiles": {
+      "content/arch/ch06.shared.js": "8ee2e01c1abd98e10fb03ddec74d4a9c23a0229978a194b268ebc2c1fa23a26e",
+      "content/arch/ch06.viz.js": "4eda1ac65d3e9dd291501fe2e12772f5447a18c8d0f702fb6cd89356e38cec7c",
+      "content/arch/syllabus.js": "76c2bf253d1bfdcd9175bbf411d102f783954b13aefe6f0d153d4d7c7b29bb6c",
+      "tests/wave6-arch-native.mjs": "57fec17af17be2a3a7b75759dfd8a5ade81b143db563c3eb6b6e0c5218ec8784",
+      "tests/wave6-arch-native-science.mjs": "deddf12394056e45c04d3ef975f42d44cccc5d1ac8fdaa58ffc1e7920ee90cee",
+      "tests/wave6-arch-native-cases.mjs": "76f5c14c13ea9b83cf86b13003d5e838b581c93422664dba92756e202de10ae3",
+      "tests/wave6-arch-browser.shared.mjs": "80c417716f0ca1262c1b76832a39c14a9c0fe48f843a5c14f5e5d180b02569d0",
+      "tests/fixtures/wave6-arch-reference.json": "2c1238fac24951f0bd97c39a145246c7b5154c99883b70d2b9f38923a20acb87"
+    },
+    "allOtherItemFieldsAndVizFunctionsExact": true,
+    "actualChangedFields": [
+      {
+        "num": "6.1",
+        "field": "statement"
+      },
+      {
+        "num": "6.1",
+        "field": "idea"
+      },
+      {
+        "num": "6.2",
+        "field": "statement"
+      },
+      {
+        "num": "6.2",
+        "field": "idea"
+      },
+      {
+        "num": "6.3",
+        "field": "statement"
+      },
+      {
+        "num": "6.3",
+        "field": "idea"
+      },
+      {
+        "num": "6.4",
+        "field": "statement"
+      },
+      {
+        "num": "6.4",
+        "field": "idea"
+      },
+      {
+        "num": "6.5",
+        "field": "statement"
+      },
+      {
+        "num": "6.5",
+        "field": "idea"
+      },
+      {
+        "num": "6.6",
+        "field": "statement"
+      },
+      {
+        "num": "6.6",
+        "field": "idea"
+      },
+      {
+        "num": "6.7",
+        "field": "statement"
+      },
+      {
+        "num": "6.7",
+        "field": "idea"
+      },
+      {
+        "num": "6.8",
+        "field": "idea"
+      },
+      {
+        "num": "6.9",
+        "field": "statement"
+      },
+      {
+        "num": "6.9",
+        "field": "idea"
+      },
+      {
+        "num": "6.10",
+        "field": "statement"
+      },
+      {
+        "num": "6.10",
+        "field": "idea"
+      },
+      {
+        "num": "6.11",
+        "field": "statement"
+      },
+      {
+        "num": "6.11",
+        "field": "idea"
+      }
+    ],
+    "allEightUIModelSyllabusHarnessReferenceFilesRawExact": true,
+    "preTypesetWholeBuiltArchShardReconstructsByteExact": true,
+    "beforeBuiltArchSHA256": "63b44b1d145a8873189593ed201ff74f1e6f00a260bc0db83b2e5a2aa0b51fc2",
+    "afterBuiltArchSHA256": "55efb977dacc2e4da2112419ded2c1612a6d241a9daf064c64ca9d0876a205a7",
+    "generatedIndexTransition": {
+      "oldDate": "2026-10-27T10:37:43.115Z",
+      "attempts": 1026,
+      "wholeIndexExceptGeneratedExact": true,
+      "sha256": "d77194b97315cc0dedc9f30b620fbdd3333ef6a1424b78d7232eddac91aa8e42"
+    }
+  },
+  "pressureSign": {
+    "changedItemFields": [
+      "idea",
+      "statement",
+      "viz"
+    ],
+    "changedModelFunctions": [
+      "tensionPatch"
+    ],
+    "allOtherTenCompleteItemsAndModelFunctionsExact": true,
+    "sourcePins": {
+      "content/arch/ch06.js": "dbf0cfa72682119649584a86e55ff73501274200dfac0807526f60684f35fd93",
+      "content/arch/ch06.shared.js": "8ee2e01c1abd98e10fb03ddec74d4a9c23a0229978a194b268ebc2c1fa23a26e",
+      "content/arch/ch06.viz.js": "4eda1ac65d3e9dd291501fe2e12772f5447a18c8d0f702fb6cd89356e38cec7c",
+      "tests/wave6-arch-reference.py": "ef6a26e6cefa41d91ccc99464b73ff8a62e04e5aa244bb2506f31aba9ce6adb7",
+      "tests/fixtures/wave6-arch-reference.json": "2c1238fac24951f0bd97c39a145246c7b5154c99883b70d2b9f38923a20acb87",
+      "tests/wave6-arch.test.mjs": "8545152100a770101dc8d975709730c6fea8cc027df801bfbda50b955de9d4c1",
+      "tests/wave6-arch-native-cases.mjs": "76f5c14c13ea9b83cf86b13003d5e838b581c93422664dba92756e202de10ae3",
+      "data/col/arch.json": "55efb977dacc2e4da2112419ded2c1612a6d241a9daf064c64ca9d0876a205a7",
+      "data/index.json": "1c7783b95139ef86c4c3de7ded5a383fe12d5f0d11bb61bf71d9d113c0249120"
+    },
+    "status": "PASS for recorded pressure repair; final reference and current replacement captures linked below",
+    "wholeSourceReconstructions": {
+      "content/arch/ch06.shared.js": {
+        "beforeSHA256": "8ee2e01c1abd98e10fb03ddec74d4a9c23a0229978a194b268ebc2c1fa23a26e",
+        "afterSHA256": "38f1bf65a2df22e6c847c4febdafe7d343db9111634992a50578edc3ec28bc4e",
+        "oldWholeBytesReconstructExactly": true,
+        "soleChangedFunction": "tensionPatch"
+      },
+      "content/arch/ch06.viz.js": {
+        "beforeSHA256": "4eda1ac65d3e9dd291501fe2e12772f5447a18c8d0f702fb6cd89356e38cec7c",
+        "afterSHA256": "87d6876997403e830f2491f9f41445dfe4f364b081771c4371a68b5ac7928753",
+        "oldWholeBytesReconstructExactly": true,
+        "soleChangedFunction": "tensionWidget"
+      },
+      "content/arch/ch06.js": {
+        "beforeSHA256": "dbf0cfa72682119649584a86e55ff73501274200dfac0807526f60684f35fd93",
+        "afterSHA256": "e6373a6cff36c2cc682dfe14d5a79f002c67452a02822473d1de100ed2c9c660",
+        "oldWholeBytesReconstructExactly": true
+      },
+      "tests/wave6-arch-reference.py": {
+        "beforeSHA256": "ef6a26e6cefa41d91ccc99464b73ff8a62e04e5aa244bb2506f31aba9ce6adb7",
+        "afterSHA256": "31f25446e297da8e660712eea34a0187ec6978ab998d776492bede9e697072e1",
+        "oldWholeBytesReconstructExactly": true
+      },
+      "tests/wave6-arch-native-cases.mjs": {
+        "beforeSHA256": "76f5c14c13ea9b83cf86b13003d5e838b581c93422664dba92756e202de10ae3",
+        "afterSHA256": "7bf0830856a7614ceb4af8cf935cd3ef3264f21249312cddadce2822dbf55bca",
+        "oldWholeBytesReconstructExactly": true
+      },
+      "tests/wave6-arch.test.mjs": {
+        "beforeSHA256": "8545152100a770101dc8d975709730c6fea8cc027df801bfbda50b955de9d4c1",
+        "afterSHA256": "dbfe7469c66b04516cb35f91e418b60e0ec4e4713555d0f886e55e351c6454a7",
+        "oldWholeBytesReconstructExactly": true
+      },
+      "data/col/arch.json": {
+        "beforeSHA256": "55efb977dacc2e4da2112419ded2c1612a6d241a9daf064c64ca9d0876a205a7",
+        "afterSHA256": "26e0b3b0efdde89f209f0432a712c7f466bc270af214bf4c59cc1bb5af438348",
+        "oldWholeBytesReconstructExactly": true
+      },
+      "data/index.json": {
+        "beforeSHA256": "1c7783b95139ef86c4c3de7ded5a383fe12d5f0d11bb61bf71d9d113c0249120",
+        "afterSHA256": "0312d331e1ac25841e23fefc5c2fcd82c6ea27a57e8e7b0bbcb2945efaedbd39",
+        "oldWholeBytesReconstructExactly": true
+      }
+    },
+    "lesson3FieldTransitions": [
+      {
+        "field": "statement",
+        "before": "At a point where membrane resultants $N_1,N_2$ act along the principal directions, normal equilibrium requires\n $$p=N_1\\kappa_1+N_2\\kappa_2.$$\n Positive tension and zero pressure require opposite signs for two nonzero principal curvatures. A flat pretensioned patch also satisfies local normal balance. Nonzero pressure permits same-sign curvature, as in an inflated membrane. Normal equilibrium alone does not prove stability against wind or arbitrary disturbance.",
+        "after": "At a point where membrane resultants $N_1,N_2$ act along the principal directions, take pressure p positive along the chosen upward normal. With signed graph curvatures, normal equilibrium requires\n $$p+N_1\\kappa_1+N_2\\kappa_2=0.$$\n Positive tension and zero pressure require opposite signs for two nonzero principal curvatures. A flat pretensioned patch also satisfies local normal balance. Nonzero pressure permits same-sign curvature, as in an inflated membrane. Normal equilibrium alone does not prove stability against wind or arbitrary disturbance."
+      },
+      {
+        "field": "idea",
+        "before": "Take a small principal-coordinate patch. Turning of each tension resultant through angle $\\kappa_i\\,ds_i$ leaves a normal component $N_i\\kappa_i$ per unit area. Adding the two contributions and equating them to signed pressure gives the formula, with positive pressure defined along the chosen upward normal. In the quadratic graph $z=(\\kappa_1x^2+\\kappa_2y^2)/2$, the gradient vanishes at the origin, so its coordinate axes there are principal directions with precisely the specified curvatures. Away from that point the same coefficients are not the local principal curvatures. The widget displays the two terms and their unbalanced sum without silently changing a tension to enforce equilibrium.",
+        "after": "Take a small principal-coordinate patch. Turning of each tension resultant through angle $\\kappa_i\\,ds_i$ leaves an internal normal component $N_i\\kappa_i$ per unit area along the chosen upward normal. The external pressure p acts along that same normal, so equilibrium requires their sum to vanish. In the quadratic graph $z=(\\kappa_1x^2+\\kappa_2y^2)/2$, the gradient vanishes at the origin, so its coordinate axes there are principal directions with precisely the specified curvatures. Away from that point the same coefficients are not the local principal curvatures. An upward convex spherical patch has both signed curvatures $-1/R$, giving $p=2N/R$ for equal resultants. The widget shows internal force, balancing pressure and actual imbalance without changing a tension to enforce equilibrium."
+      }
+    ],
+    "referenceTransition": {
+      "status": "PASS for pressure phase; final complete reference additionally changes only lesson11 sampling",
+      "beforeSHA256": "2c1238fac24951f0bd97c39a145246c7b5154c99883b70d2b9f38923a20acb87",
+      "afterSHA256": "35987e5965f4796a290a1230a92b53f25cc83df87225df0b15c463f62c7c2192",
+      "bytes": 8599128,
+      "unchangedCompleteCasesInTenFamilies": 373,
+      "onlyExpectedFieldsChanged": [
+        "requiredPressure",
+        "residual"
+      ],
+      "differences": [
+        {
+          "index": 64,
+          "field": "requiredPressure",
+          "before": -5.55111512312578e-17,
+          "after": 5.55111512312578e-17
+        },
+        {
+          "index": 65,
+          "field": "requiredPressure",
+          "before": -1.6,
+          "after": 1.6
+        },
+        {
+          "index": 66,
+          "field": "requiredPressure",
+          "before": 0.4,
+          "after": -0.4
+        },
+        {
+          "index": 67,
+          "field": "requiredPressure",
+          "before": -0.9,
+          "after": 0.9
+        },
+        {
+          "index": 68,
+          "field": "requiredPressure",
+          "before": 2.1,
+          "after": -2.1
+        },
+        {
+          "index": 69,
+          "field": "requiredPressure",
+          "before": -0.54,
+          "after": 0.54
+        },
+        {
+          "index": 70,
+          "field": "requiredPressure",
+          "before": 1.2,
+          "after": -1.2
+        },
+        {
+          "index": 71,
+          "field": "requiredPressure",
+          "before": 0.56,
+          "after": -0.56
+        },
+        {
+          "index": 72,
+          "field": "requiredPressure",
+          "before": -0.6,
+          "after": 0.6
+        },
+        {
+          "index": 73,
+          "field": "requiredPressure",
+          "before": -5.55111512312578e-17,
+          "after": 5.55111512312578e-17
+        },
+        {
+          "index": 73,
+          "field": "residual",
+          "before": 3.0,
+          "after": -3.0
+        },
+        {
+          "index": 74,
+          "field": "requiredPressure",
+          "before": -5.55111512312578e-17,
+          "after": 5.55111512312578e-17
+        },
+        {
+          "index": 74,
+          "field": "residual",
+          "before": -3.0,
+          "after": 3.0
+        },
+        {
+          "index": 75,
+          "field": "requiredPressure",
+          "before": -0.2,
+          "after": 0.2
+        },
+        {
+          "index": 75,
+          "field": "residual",
+          "before": 2.8,
+          "after": -3.2
+        },
+        {
+          "index": 76,
+          "field": "requiredPressure",
+          "before": 6.0,
+          "after": -6.0
+        },
+        {
+          "index": 76,
+          "field": "residual",
+          "before": 3.0,
+          "after": 9.0
+        },
+        {
+          "index": 77,
+          "field": "requiredPressure",
+          "before": -1.10798833055796,
+          "after": 1.10798833055796
+        },
+        {
+          "index": 77,
+          "field": "residual",
+          "before": -1.70799555173696,
+          "after": -0.507981109378964
+        },
+        {
+          "index": 78,
+          "field": "requiredPressure",
+          "before": 1.52503021829121,
+          "after": -1.52503021829121
+        },
+        {
+          "index": 78,
+          "field": "residual",
+          "before": -1.42934002117173,
+          "after": 4.47940045775415
+        },
+        {
+          "index": 79,
+          "field": "requiredPressure",
+          "before": -1.45727906726342,
+          "after": 1.45727906726342
+        },
+        {
+          "index": 79,
+          "field": "residual",
+          "before": -3.10733246055128,
+          "after": 0.19277432602444
+        },
+        {
+          "index": 80,
+          "field": "requiredPressure",
+          "before": 1.16412630850817,
+          "after": -1.16412630850817
+        },
+        {
+          "index": 80,
+          "field": "residual",
+          "before": -0.0717448836883715,
+          "after": 2.39999750070471
+        },
+        {
+          "index": 81,
+          "field": "requiredPressure",
+          "before": 1.19152959034212,
+          "after": -1.19152959034212
+        },
+        {
+          "index": 81,
+          "field": "residual",
+          "before": 1.96282594552325,
+          "after": 0.420233235160994
+        },
+        {
+          "index": 82,
+          "field": "requiredPressure",
+          "before": -0.212561394033695,
+          "after": 0.212561394033695
+        },
+        {
+          "index": 82,
+          "field": "residual",
+          "before": -0.423461180409188,
+          "after": -0.0016616076582019
+        },
+        {
+          "index": 83,
+          "field": "requiredPressure",
+          "before": 0.688346387973767,
+          "after": -0.688346387973767
+        },
+        {
+          "index": 83,
+          "field": "residual",
+          "before": 1.42211545131857,
+          "after": -0.045422675371039
+        },
+        {
+          "index": 84,
+          "field": "requiredPressure",
+          "before": -1.37147989067613,
+          "after": 1.37147989067613
+        },
+        {
+          "index": 84,
+          "field": "residual",
+          "before": 0.297384530958145,
+          "after": -3.0403443123104
+        },
+        {
+          "index": 85,
+          "field": "requiredPressure",
+          "before": -0.371016895153031,
+          "after": 0.371016895153031
+        },
+        {
+          "index": 85,
+          "field": "residual",
+          "before": -3.33358680726066,
+          "after": 2.5915530169546
+        },
+        {
+          "index": 86,
+          "field": "requiredPressure",
+          "before": -1.17016182807167,
+          "after": 1.17016182807167
+        },
+        {
+          "index": 86,
+          "field": "residual",
+          "before": -2.04401729862779,
+          "after": -0.296306357515539
+        },
+        {
+          "index": 87,
+          "field": "requiredPressure",
+          "before": 0.450633649548001,
+          "after": -0.450633649548001
+        },
+        {
+          "index": 87,
+          "field": "residual",
+          "before": 1.73481862646518,
+          "after": -0.833551327369179
+        },
+        {
+          "index": 88,
+          "field": "requiredPressure",
+          "before": 0.690952257245693,
+          "after": -0.690952257245693
+        },
+        {
+          "index": 88,
+          "field": "residual",
+          "before": 2.84022429730239,
+          "after": -1.45831978281101
+        },
+        {
+          "index": 89,
+          "field": "requiredPressure",
+          "before": 0.446805835153493,
+          "after": -0.446805835153493
+        },
+        {
+          "index": 89,
+          "field": "residual",
+          "before": 3.18539240177676,
+          "after": -2.29178073146978
+        },
+        {
+          "index": 90,
+          "field": "requiredPressure",
+          "before": -1.0475033663933,
+          "after": 1.0475033663933
+        },
+        {
+          "index": 90,
+          "field": "residual",
+          "before": 0.808723799653395,
+          "after": -2.90373053243999
+        },
+        {
+          "index": 91,
+          "field": "requiredPressure",
+          "before": 1.23254411583718,
+          "after": -1.23254411583718
+        },
+        {
+          "index": 91,
+          "field": "residual",
+          "before": 0.77610787122041,
+          "after": 1.68898036045396
+        },
+        {
+          "index": 92,
+          "field": "requiredPressure",
+          "before": 1.16231741622466,
+          "after": -1.16231741622466
+        },
+        {
+          "index": 92,
+          "field": "residual",
+          "before": 2.87711594620725,
+          "after": -0.55248111375793
+        },
+        {
+          "index": 93,
+          "field": "requiredPressure",
+          "before": 0.852647875271213,
+          "after": -0.852647875271213
+        },
+        {
+          "index": 93,
+          "field": "residual",
+          "before": 2.84690049807907,
+          "after": -1.14160474753665
+        },
+        {
+          "index": 94,
+          "field": "requiredPressure",
+          "before": -1.57715202339973,
+          "after": 1.57715202339973
+        },
+        {
+          "index": 94,
+          "field": "residual",
+          "before": 0.0248729411824631,
+          "after": -3.17917698798192
+        },
+        {
+          "index": 95,
+          "field": "requiredPressure",
+          "before": 1.55073469595842,
+          "after": -1.55073469595842
+        },
+        {
+          "index": 95,
+          "field": "residual",
+          "before": 1.24681638722127,
+          "after": 1.85465300469558
+        },
+        {
+          "index": 96,
+          "field": "requiredPressure",
+          "before": -2.46953696752341,
+          "after": 2.46953696752341
+        },
+        {
+          "index": 96,
+          "field": "residual",
+          "before": -0.793909677916369,
+          "after": -4.14516425713045
+        },
+        {
+          "index": 97,
+          "field": "requiredPressure",
+          "before": 0.54307422516754,
+          "after": -0.54307422516754
+        },
+        {
+          "index": 97,
+          "field": "residual",
+          "before": -1.37966165171237,
+          "after": 2.46581010204745
+        },
+        {
+          "index": 98,
+          "field": "requiredPressure",
+          "before": -0.773595443773386,
+          "after": 0.773595443773386
+        },
+        {
+          "index": 98,
+          "field": "residual",
+          "before": -0.582466846871568,
+          "after": -0.964724040675204
+        },
+        {
+          "index": 362,
+          "field": "requiredPressure",
+          "before": 0.2,
+          "after": -0.2
+        },
+        {
+          "index": 363,
+          "field": "requiredPressure",
+          "before": 1.0,
+          "after": -1.0
+        },
+        {
+          "index": 363,
+          "field": "residual",
+          "before": 0.0,
+          "after": 2.0
+        },
+        {
+          "index": 364,
+          "field": "requiredPressure",
+          "before": 0.7,
+          "after": -0.7
+        },
+        {
+          "index": 364,
+          "field": "residual",
+          "before": 0.0,
+          "after": 1.4
+        },
+        {
+          "index": 365,
+          "field": "requiredPressure",
+          "before": -0.7,
+          "after": 0.7
+        },
+        {
+          "index": 365,
+          "field": "residual",
+          "before": 0.0,
+          "after": -1.4
+        }
+      ],
+      "wholeOriginalFixtureReconstructsByteExact": true
+    },
+    "normalArrowTransition": {
+      "beforeSHA256": "e34ad9f1cefa21c266734d74a25feed4c7a674a2f27ac6fe46a1f21e12d1e525",
+      "afterSHA256": "87d6876997403e830f2491f9f41445dfe4f364b081771c4371a68b5ac7928753",
+      "oldSpan": "A.dot(P([0,0,0]),{color:'gold',r:5});plot(B,z.sections",
+      "newSpan": "A.dot(P([0,0,0]),{color:'gold',r:5});A.arrow(P([0,0,0]),P([0,0,.32]),{color:'ink',width:1.5,head:6});A.text('n (up)',P([0,0,.38]),{color:'ink',size:11,dx:5});plot(B,z.sections",
+      "wholeOldUIReconstructsByteExact": true,
+      "scope": "One fixed upward-normal arrow/label at lesson3origin; no model/control/state/readout/otherlesson changes"
+    }
+  },
+  "pressureReference": {
+    "status": "Independent90/180 complete bytes exact; fresh repeat and repaired gates pending",
+    "beforeSHA256": "2c1238fac24951f0bd97c39a145246c7b5154c99883b70d2b9f38923a20acb87",
+    "afterSHA256": "35987e5965f4796a290a1230a92b53f25cc83df87225df0b15c463f62c7c2192",
+    "bytes": 8599128,
+    "unchangedCompleteCasesInTenFamilies": 373,
+    "onlyExpectedFieldsChanged": [
+      "requiredPressure",
+      "residual"
+    ],
+    "differences": [
+      {
+        "index": 64,
+        "field": "requiredPressure",
+        "before": -5.55111512312578e-17,
+        "after": 5.55111512312578e-17
+      },
+      {
+        "index": 65,
+        "field": "requiredPressure",
+        "before": -1.6,
+        "after": 1.6
+      },
+      {
+        "index": 66,
+        "field": "requiredPressure",
+        "before": 0.4,
+        "after": -0.4
+      },
+      {
+        "index": 67,
+        "field": "requiredPressure",
+        "before": -0.9,
+        "after": 0.9
+      },
+      {
+        "index": 68,
+        "field": "requiredPressure",
+        "before": 2.1,
+        "after": -2.1
+      },
+      {
+        "index": 69,
+        "field": "requiredPressure",
+        "before": -0.54,
+        "after": 0.54
+      },
+      {
+        "index": 70,
+        "field": "requiredPressure",
+        "before": 1.2,
+        "after": -1.2
+      },
+      {
+        "index": 71,
+        "field": "requiredPressure",
+        "before": 0.56,
+        "after": -0.56
+      },
+      {
+        "index": 72,
+        "field": "requiredPressure",
+        "before": -0.6,
+        "after": 0.6
+      },
+      {
+        "index": 73,
+        "field": "requiredPressure",
+        "before": -5.55111512312578e-17,
+        "after": 5.55111512312578e-17
+      },
+      {
+        "index": 73,
+        "field": "residual",
+        "before": 3.0,
+        "after": -3.0
+      },
+      {
+        "index": 74,
+        "field": "requiredPressure",
+        "before": -5.55111512312578e-17,
+        "after": 5.55111512312578e-17
+      },
+      {
+        "index": 74,
+        "field": "residual",
+        "before": -3.0,
+        "after": 3.0
+      },
+      {
+        "index": 75,
+        "field": "requiredPressure",
+        "before": -0.2,
+        "after": 0.2
+      },
+      {
+        "index": 75,
+        "field": "residual",
+        "before": 2.8,
+        "after": -3.2
+      },
+      {
+        "index": 76,
+        "field": "requiredPressure",
+        "before": 6.0,
+        "after": -6.0
+      },
+      {
+        "index": 76,
+        "field": "residual",
+        "before": 3.0,
+        "after": 9.0
+      },
+      {
+        "index": 77,
+        "field": "requiredPressure",
+        "before": -1.10798833055796,
+        "after": 1.10798833055796
+      },
+      {
+        "index": 77,
+        "field": "residual",
+        "before": -1.70799555173696,
+        "after": -0.507981109378964
+      },
+      {
+        "index": 78,
+        "field": "requiredPressure",
+        "before": 1.52503021829121,
+        "after": -1.52503021829121
+      },
+      {
+        "index": 78,
+        "field": "residual",
+        "before": -1.42934002117173,
+        "after": 4.47940045775415
+      },
+      {
+        "index": 79,
+        "field": "requiredPressure",
+        "before": -1.45727906726342,
+        "after": 1.45727906726342
+      },
+      {
+        "index": 79,
+        "field": "residual",
+        "before": -3.10733246055128,
+        "after": 0.19277432602444
+      },
+      {
+        "index": 80,
+        "field": "requiredPressure",
+        "before": 1.16412630850817,
+        "after": -1.16412630850817
+      },
+      {
+        "index": 80,
+        "field": "residual",
+        "before": -0.0717448836883715,
+        "after": 2.39999750070471
+      },
+      {
+        "index": 81,
+        "field": "requiredPressure",
+        "before": 1.19152959034212,
+        "after": -1.19152959034212
+      },
+      {
+        "index": 81,
+        "field": "residual",
+        "before": 1.96282594552325,
+        "after": 0.420233235160994
+      },
+      {
+        "index": 82,
+        "field": "requiredPressure",
+        "before": -0.212561394033695,
+        "after": 0.212561394033695
+      },
+      {
+        "index": 82,
+        "field": "residual",
+        "before": -0.423461180409188,
+        "after": -0.0016616076582019
+      },
+      {
+        "index": 83,
+        "field": "requiredPressure",
+        "before": 0.688346387973767,
+        "after": -0.688346387973767
+      },
+      {
+        "index": 83,
+        "field": "residual",
+        "before": 1.42211545131857,
+        "after": -0.045422675371039
+      },
+      {
+        "index": 84,
+        "field": "requiredPressure",
+        "before": -1.37147989067613,
+        "after": 1.37147989067613
+      },
+      {
+        "index": 84,
+        "field": "residual",
+        "before": 0.297384530958145,
+        "after": -3.0403443123104
+      },
+      {
+        "index": 85,
+        "field": "requiredPressure",
+        "before": -0.371016895153031,
+        "after": 0.371016895153031
+      },
+      {
+        "index": 85,
+        "field": "residual",
+        "before": -3.33358680726066,
+        "after": 2.5915530169546
+      },
+      {
+        "index": 86,
+        "field": "requiredPressure",
+        "before": -1.17016182807167,
+        "after": 1.17016182807167
+      },
+      {
+        "index": 86,
+        "field": "residual",
+        "before": -2.04401729862779,
+        "after": -0.296306357515539
+      },
+      {
+        "index": 87,
+        "field": "requiredPressure",
+        "before": 0.450633649548001,
+        "after": -0.450633649548001
+      },
+      {
+        "index": 87,
+        "field": "residual",
+        "before": 1.73481862646518,
+        "after": -0.833551327369179
+      },
+      {
+        "index": 88,
+        "field": "requiredPressure",
+        "before": 0.690952257245693,
+        "after": -0.690952257245693
+      },
+      {
+        "index": 88,
+        "field": "residual",
+        "before": 2.84022429730239,
+        "after": -1.45831978281101
+      },
+      {
+        "index": 89,
+        "field": "requiredPressure",
+        "before": 0.446805835153493,
+        "after": -0.446805835153493
+      },
+      {
+        "index": 89,
+        "field": "residual",
+        "before": 3.18539240177676,
+        "after": -2.29178073146978
+      },
+      {
+        "index": 90,
+        "field": "requiredPressure",
+        "before": -1.0475033663933,
+        "after": 1.0475033663933
+      },
+      {
+        "index": 90,
+        "field": "residual",
+        "before": 0.808723799653395,
+        "after": -2.90373053243999
+      },
+      {
+        "index": 91,
+        "field": "requiredPressure",
+        "before": 1.23254411583718,
+        "after": -1.23254411583718
+      },
+      {
+        "index": 91,
+        "field": "residual",
+        "before": 0.77610787122041,
+        "after": 1.68898036045396
+      },
+      {
+        "index": 92,
+        "field": "requiredPressure",
+        "before": 1.16231741622466,
+        "after": -1.16231741622466
+      },
+      {
+        "index": 92,
+        "field": "residual",
+        "before": 2.87711594620725,
+        "after": -0.55248111375793
+      },
+      {
+        "index": 93,
+        "field": "requiredPressure",
+        "before": 0.852647875271213,
+        "after": -0.852647875271213
+      },
+      {
+        "index": 93,
+        "field": "residual",
+        "before": 2.84690049807907,
+        "after": -1.14160474753665
+      },
+      {
+        "index": 94,
+        "field": "requiredPressure",
+        "before": -1.57715202339973,
+        "after": 1.57715202339973
+      },
+      {
+        "index": 94,
+        "field": "residual",
+        "before": 0.0248729411824631,
+        "after": -3.17917698798192
+      },
+      {
+        "index": 95,
+        "field": "requiredPressure",
+        "before": 1.55073469595842,
+        "after": -1.55073469595842
+      },
+      {
+        "index": 95,
+        "field": "residual",
+        "before": 1.24681638722127,
+        "after": 1.85465300469558
+      },
+      {
+        "index": 96,
+        "field": "requiredPressure",
+        "before": -2.46953696752341,
+        "after": 2.46953696752341
+      },
+      {
+        "index": 96,
+        "field": "residual",
+        "before": -0.793909677916369,
+        "after": -4.14516425713045
+      },
+      {
+        "index": 97,
+        "field": "requiredPressure",
+        "before": 0.54307422516754,
+        "after": -0.54307422516754
+      },
+      {
+        "index": 97,
+        "field": "residual",
+        "before": -1.37966165171237,
+        "after": 2.46581010204745
+      },
+      {
+        "index": 98,
+        "field": "requiredPressure",
+        "before": -0.773595443773386,
+        "after": 0.773595443773386
+      },
+      {
+        "index": 98,
+        "field": "residual",
+        "before": -0.582466846871568,
+        "after": -0.964724040675204
+      },
+      {
+        "index": 362,
+        "field": "requiredPressure",
+        "before": 0.2,
+        "after": -0.2
+      },
+      {
+        "index": 363,
+        "field": "requiredPressure",
+        "before": 1.0,
+        "after": -1.0
+      },
+      {
+        "index": 363,
+        "field": "residual",
+        "before": 0.0,
+        "after": 2.0
+      },
+      {
+        "index": 364,
+        "field": "requiredPressure",
+        "before": 0.7,
+        "after": -0.7
+      },
+      {
+        "index": 364,
+        "field": "residual",
+        "before": 0.0,
+        "after": 1.4
+      },
+      {
+        "index": 365,
+        "field": "requiredPressure",
+        "before": -0.7,
+        "after": 0.7
+      },
+      {
+        "index": 365,
+        "field": "residual",
+        "before": 0.0,
+        "after": -1.4
+      }
+    ],
+    "wholeOriginalFixtureReconstructsByteExact": true
+  },
+  "samplingReference": {
+    "beforeSHA256": "35987e5965f4796a290a1230a92b53f25cc83df87225df0b15c463f62c7c2192",
+    "afterSHA256": "90e1f11c96e4dff3fa0e2ba3ac9618af7afdded5f8f775e7ef8fc9bd92466811",
+    "bytes": 8620344,
+    "unchangedCompleteCases": 379,
+    "soleChangedExpectedField": "shellThinness.correlationCurve",
+    "changedCaseIndices": [
+      324,
+      325,
+      326,
+      327,
+      328,
+      329,
+      330,
+      331,
+      332,
+      333,
+      334,
+      335,
+      336,
+      337,
+      338,
+      339,
+      340,
+      341,
+      342,
+      343,
+      344,
+      345,
+      346,
+      347,
+      348,
+      349,
+      350,
+      351,
+      352,
+      353,
+      354,
+      410,
+      411,
+      412
+    ],
+    "wholeOriginalFixtureReconstructsByteExact": true,
+    "precision90and180WholeBytesExact": true
+  },
+  "samplingInterpolation": {
+    "method": "Linear interpolation error ≤ max|f_second| * interval_width²/8; f_second=19.2/lambda⁴",
+    "sourceRule": ".14+3.2/lambda²; lambda>2",
+    "metric": "Vertical difference at fixed lambda, not shortest point-to-polyline distance",
+    "observedFixedLambdaCSSPixelsBefore": 15.784331668801286,
+    "observedLambda": 2.5,
+    "maximumCertifiedValueError": 0.0015069442774731975,
+    "maximumCSSPixelsAt365HighPanel": 0.43654777522677163,
+    "intervals": [
+      {
+        "a": 2.000001,
+        "b": 2.1002323088598573,
+        "verticalErrorBound": 0.0015069442774731975
+      },
+      {
+        "a": 2.1002323088598573,
+        "b": 2.205486772846017,
+        "verticalErrorBound": 0.0013665418895264878
+      },
+      {
+        "a": 2.205486772846017,
+        "b": 2.316016130539068,
+        "verticalErrorBound": 0.0012392208283652662
+      },
+      {
+        "a": 2.316016130539068,
+        "b": 2.4320847365570013,
+        "verticalErrorBound": 0.0011237623033907875
+      },
+      {
+        "a": 2.4320847365570013,
+        "b": 2.553970193815868,
+        "verticalErrorBound": 0.0010190610790395398
+      },
+      {
+        "a": 2.553970193815868,
+        "b": 2.6819640174765698,
+        "verticalErrorBound": 0.0009241148948311709
+      },
+      {
+        "a": 2.6819640174765698,
+        "b": 2.8163723321657717,
+        "verticalErrorBound": 0.0008380148711534771
+      },
+      {
+        "a": 2.8163723321657717,
+        "b": 2.9575166041384673,
+        "verticalErrorBound": 0.0007599368089426413
+      },
+      {
+        "a": 2.9575166041384673,
+        "b": 3.1057344101333433,
+        "verticalErrorBound": 0.0006891332999747738
+      },
+      {
+        "a": 3.1057344101333433,
+        "b": 3.2613802447598075,
+        "verticalErrorBound": 0.0006249265722434221
+      },
+      {
+        "a": 3.2613802447598075,
+        "b": 3.4248263683477242,
+        "verticalErrorBound": 0.0005667020019351837
+      },
+      {
+        "a": 3.4248263683477242,
+        "b": 3.5964636972876822,
+        "verticalErrorBound": 0.0005139022298963056
+      },
+      {
+        "a": 3.5964636972876822,
+        "b": 3.7767027389912142,
+        "verticalErrorBound": 0.00046602182626945824
+      },
+      {
+        "a": 3.7767027389912142,
+        "b": 3.965974573707146,
+        "verticalErrorBound": 0.0004226024522278199
+      },
+      {
+        "a": 3.965974573707146,
+        "b": 4.164731885542281,
+        "verticalErrorBound": 0.0003832284724915467
+      },
+      {
+        "a": 4.164731885542281,
+        "b": 4.373450045152343,
+        "verticalErrorBound": 0.00034752297662729033
+      },
+      {
+        "a": 4.373450045152343,
+        "b": 4.592628246692653,
+        "verticalErrorBound": 0.0003151441710442241
+      },
+      {
+        "a": 4.592628246692653,
+        "b": 4.822790701747803,
+        "verticalErrorBound": 0.00028578210714874257
+      },
+      {
+        "a": 4.822790701747803,
+        "b": 5.064487893095875,
+        "verticalErrorBound": 0.0002591557143378562
+      },
+      {
+        "a": 5.064487893095875,
+        "b": 5.318297891305825,
+        "verticalErrorBound": 0.0002350101094292989
+      },
+      {
+        "a": 5.318297891305825,
+        "b": 5.584827737317002,
+        "verticalErrorBound": 0.00021311415677283013
+      },
+      {
+        "a": 5.584827737317002,
+        "b": 5.864714894307484,
+        "verticalErrorBound": 0.00019325825568648018
+      },
+      {
+        "a": 5.864714894307484,
+        "b": 6.158628772323714,
+        "verticalErrorBound": 0.00017525233403800348
+      },
+      {
+        "a": 6.158628772323714,
+        "b": 6.467272329317926,
+        "verticalErrorBound": 0.0001589240287648804
+      },
+      {
+        "a": 6.467272329317926,
+        "b": 6.791383752422552,
+        "verticalErrorBound": 0.00014411703591567303
+      },
+      {
+        "a": 6.791383752422552,
+        "b": 7.131738223482758,
+        "verticalErrorBound": 0.00013068961441851492
+      },
+      {
+        "a": 7.131738223482758,
+        "b": 7.489149773069759,
+        "verticalErrorBound": 0.00011851322925385475
+      },
+      {
+        "a": 7.489149773069759,
+        "b": 7.864473227409174,
+        "verticalErrorBound": 0.00010747132104314251
+      },
+      {
+        "a": 7.864473227409174,
+        "b": 8.258606252880925,
+        "verticalErrorBound": 9.745819027526421e-05
+      },
+      {
+        "a": 8.258606252880925,
+        "b": 8.67249150298053,
+        "verticalErrorBound": 8.837798548988528e-05
+      },
+      {
+        "a": 8.67249150298053,
+        "b": 9.10711887287671,
+        "verticalErrorBound": 8.01437857320112e-05
+      },
+      {
+        "a": 9.10711887287671,
+        "b": 9.563527866957584,
+        "verticalErrorBound": 7.267676849449839e-05
+      },
+      {
+        "a": 9.563527866957584,
+        "b": 10.042810085027913,
+        "verticalErrorBound": 6.590545518357219e-05
+      },
+      {
+        "a": 10.042810085027913,
+        "b": 10.546111833103701,
+        "verticalErrorBound": 5.976502688452229e-05
+      },
+      {
+        "a": 10.546111833103701,
+        "b": 11.074636865048392,
+        "verticalErrorBound": 5.419670387767782e-05
+      },
+      {
+        "a": 11.074636865048392,
+        "b": 11.629649261607902,
+        "verticalErrorBound": 4.914718296504847e-05
+      },
+      {
+        "a": 11.629649261607902,
+        "b": 12.212476453730329,
+        "verticalErrorBound": 4.45681272213853e-05
+      },
+      {
+        "a": 12.212476453730329,
+        "b": 12.824512397401147,
+        "verticalErrorBound": 4.041570328525359e-05
+      },
+      {
+        "a": 12.824512397401147,
+        "b": 13.467220907587386,
+        "verticalErrorBound": 3.665016176084515e-05
+      },
+      {
+        "a": 13.467220907587386,
+        "b": 14.142139159264412,
+        "verticalErrorBound": 3.323545671383063e-05
+      },
+      {
+        "a": 14.142139159264412,
+        "b": 14.850881363898967,
+        "verticalErrorBound": 3.0138900618906883e-05
+      },
+      {
+        "a": 14.850881363898967,
+        "b": 15.595142630181362,
+        "verticalErrorBound": 2.733085145594873e-05
+      },
+      {
+        "a": 15.595142630181362,
+        "b": 16.376703018240786,
+        "verticalErrorBound": 2.478442895951353e-05
+      },
+      {
+        "a": 16.376703018240786,
+        "b": 17.197431797040124,
+        "verticalErrorBound": 2.247525730543897e-05
+      },
+      {
+        "a": 17.197431797040124,
+        "b": 18.059291915132796,
+        "verticalErrorBound": 2.038123177140148e-05
+      },
+      {
+        "a": 18.059291915132796,
+        "b": 18.964344695474406,
+        "verticalErrorBound": 1.848230713777244e-05
+      },
+      {
+        "a": 18.964344695474406,
+        "b": 19.914754765517817,
+        "verticalErrorBound": 1.676030580321817e-05
+      },
+      {
+        "a": 19.914754765517817,
+        "b": 20.912795234383047,
+        "verticalErrorBound": 1.5198743778220995e-05
+      },
+      {
+        "a": 20.912795234383047,
+        "b": 21.960853129484303,
+        "verticalErrorBound": 1.3782672890828665e-05
+      },
+      {
+        "a": 21.960853129484303,
+        "b": 23.061435105616965,
+        "verticalErrorBound": 1.2498537694134024e-05
+      },
+      {
+        "a": 23.061435105616965,
+        "b": 24.217173440159126,
+        "verticalErrorBound": 1.1334045705723755e-05
+      },
+      {
+        "a": 24.217173440159126,
+        "b": 25.430832328726346,
+        "verticalErrorBound": 1.0278049736948423e-05
+      },
+      {
+        "a": 25.430832328726346,
+        "b": 26.705314496337166,
+        "verticalErrorBound": 9.320441185607392e-06
+      },
+      {
+        "a": 26.705314496337166,
+        "b": 28.04366813990133,
+        "verticalErrorBound": 8.452053270580755e-06
+      },
+      {
+        "a": 28.04366813990133,
+        "b": 29.44909421863519,
+        "verticalErrorBound": 7.66457328211567e-06
+      },
+      {
+        "a": 29.44909421863519,
+        "b": 30.92495410984079,
+        "verticalErrorBound": 6.9504630077757364e-06
+      },
+      {
+        "a": 30.92495410984079,
+        "b": 32.47477764835921,
+        "verticalErrorBound": 6.3028865723262096e-06
+      },
+      {
+        "a": 32.47477764835921,
+        "b": 34.10227156892617,
+        "verticalErrorBound": 5.715645000795821e-06
+      },
+      {
+        "a": 34.10227156892617,
+        "b": 35.811328371621656,
+        "verticalErrorBound": 5.1831168783142145e-06
+      },
+      {
+        "a": 35.811328371621656,
+        "b": 37.60603563161692,
+        "verticalErrorBound": 4.700204538687145e-06
+      },
+      {
+        "a": 37.60603563161692,
+        "b": 39.490685775485545,
+        "verticalErrorBound": 4.262285266598206e-06
+      },
+      {
+        "a": 39.490685775485545,
+        "b": 41.46978634746039,
+        "verticalErrorBound": 3.865167046312114e-06
+      },
+      {
+        "a": 41.46978634746039,
+        "b": 43.54807079019047,
+        "verticalErrorBound": 3.505048433283446e-06
+      },
+      {
+        "a": 43.54807079019047,
+        "b": 45.730509765782244,
+        "verticalErrorBound": 3.1784821645379056e-06
+      },
+      {
+        "a": 45.730509765782244,
+        "b": 48.022323044202025,
+        "verticalErrorBound": 2.8823421594838016e-06
+      },
+      {
+        "a": 48.022323044202025,
+        "b": 50.42899198747318,
+        "verticalErrorBound": 2.6137935952664385e-06
+      },
+      {
+        "a": 50.42899198747318,
+        "b": 52.9562726595267,
+        "verticalErrorBound": 2.3702657702093888e-06
+      },
+      {
+        "a": 52.9562726595267,
+        "b": 55.61020959306015,
+        "verticalErrorBound": 2.1494274955760557e-06
+      },
+      {
+        "a": 55.61020959306015,
+        "b": 58.397150246331535,
+        "verticalErrorBound": 1.949164780087199e-06
+      },
+      {
+        "a": 58.397150246331535,
+        "b": 61.32376018446434,
+        "verticalErrorBound": 1.767560593577558e-06
+      },
+      {
+        "a": 61.32376018446434,
+        "b": 64.39703902157332,
+        "verticalErrorBound": 1.6028765160780417e-06
+      },
+      {
+        "a": 64.39703902157332,
+        "b": 67.62433716184006,
+        "verticalErrorBound": 1.4535360966576584e-06
+      },
+      {
+        "a": 67.62433716184006,
+        "b": 71.01337337957774,
+        "verticalErrorBound": 1.3181097627260254e-06
+      },
+      {
+        "a": 71.01337337957774,
+        "b": 74.5722532803322,
+        "verticalErrorBound": 1.1953011353407082e-06
+      },
+      {
+        "a": 74.5722532803322,
+        "b": 78.30948868717272,
+        "verticalErrorBound": 1.083934619520579e-06
+      },
+      {
+        "a": 78.30948868717272,
+        "b": 82.23401799853886,
+        "verticalErrorBound": 9.829441507728396e-07
+      },
+      {
+        "a": 82.23401799853886,
+        "b": 86.35522756633334,
+        "verticalErrorBound": 8.913629901089406e-07
+      },
+      {
+        "a": 86.35522756633334,
+        "b": 90.68297414539231,
+        "verticalErrorBound": 8.083144698621207e-07
+      },
+      {
+        "a": 90.68297414539231,
+        "b": 95.22760846802373,
+        "verticalErrorBound": 7.330036017184989e-07
+      },
+      {
+        "a": 95.22760846802373,
+        "b": 100,
+        "verticalErrorBound": 6.647094666311985e-07
+      }
+    ],
+    "allElevenWholeItemsIncludingVizFunctionsExact": true,
+    "onlyChangedModelFunction": "shellThinness",
+    "allOtherTenModelFunctionsExact": true,
+    "unchangedUIFileSHA256": "87d6876997403e830f2491f9f41445dfe4f364b081771c4371a68b5ac7928753"
+  },
+  "markerMargin": {
+    "beforeSHA256": "87d6876997403e830f2491f9f41445dfe4f364b081771c4371a68b5ac7928753",
+    "afterSHA256": "0c6352d6b920a6b8f6f845fefe0752cb2a5915e9e1effd70837298a1634b2c9f",
+    "oldSpan": "plot(C,[{p:z.correlationCurve}],{x:[0,105]",
+    "newSpan": "plot(C,[{p:z.correlationCurve}],{x:[-5,105]",
+    "wholeOldUIReconstructsByteExact": true,
+    "scope": "One left view-margin constant in lesson11; all model/control/state/readout/otherlesson code unchanged",
+    "failureLog": "/workspace/scratch/wave6-arch-research/native-sampling-v9.log"
+  },
+  "relaxationMarkers": {
+    "scope": "Two selected energy markers and additive data-visibility assertion only; no physical/control/state/readout changes",
+    "files": {
+      "content/arch/ch06.viz.js": {
+        "beforeSHA256": "0c6352d6b920a6b8f6f845fefe0752cb2a5915e9e1effd70837298a1634b2c9f",
+        "afterSHA256": "3e2c965f2d470ccdd71041f42a706d22e54372a74d3c0155b5d587341466b59b"
+      },
+      "tests/wave6-arch-native-science.mjs": {
+        "beforeSHA256": "deddf12394056e45c04d3ef975f42d44cccc5d1ac8fdaa58ffc1e7920ee90cee",
+        "afterSHA256": "93e9d395669683ef25f1a90d8f8d50d55044b6263102350c9f3893341562f448"
+      }
+    },
+    "failureSourceImage": [
+      {
+        "path": "/workspace/scratch/wave6-arch-research/critical-final-light/arch-6.7-light-320-critical-1.png",
+        "bytes": 104711,
+        "sha256": "dd5220ee46ad1327b62c09ab37f449d3022d0a730231826d94ec84c596d033c8"
+      },
+      {
+        "path": "/workspace/scratch/wave6-arch-research/critical-final-dark/arch-6.7-dark-320-critical-1.png",
+        "bytes": 106930,
+        "sha256": "4ed4e51718a3db4a3bfa26b4510c7f7f5677f5445477cabbf6b45dbf0ea313a2"
+      }
+    ],
+    "wholeOldFilesReconstructByteExact": true,
+    "wholeUIReconstructsAfterRestoringOnlyLesson7Function": true,
+    "retainedSyntaxFailureLogs": [
+      "/workspace/scratch/wave6-arch-research/default-relaxation-v11.log",
+      "/workspace/scratch/wave6-arch-research/native-relaxation-v11.log"
+    ],
+    "wholeOldScienceHelperByteExactAfterRemovingOnlyAdditiveAssertion": true
+  },
+  "samplingSourceReconstructions": {
+    "content/arch/ch06.shared.js": {
+      "beforeSHA256": "38f1bf65a2df22e6c847c4febdafe7d343db9111634992a50578edc3ec28bc4e",
+      "afterSHA256": "5f49fc9b53ee97ae82b4522fb930145b0da1547ba279b1093f416b9e2ebebe31",
+      "wholeOldFileByteExact": true,
+      "soleChangedFunction": "shellThinness",
+      "soleChangedReturnField": "correlationCurve"
+    },
+    "tests/wave6-arch-reference.py": {
+      "beforeSHA256": "31f25446e297da8e660712eea34a0187ec6978ab998d776492bede9e697072e1",
+      "afterSHA256": "bc1713079dde4eae6566c1a9e79566f32ec160525ab0c5d3fecb0998b28237a4",
+      "wholeOldFileByteExact": true,
+      "soleChange": "Same81-point correlation trace, now logarithmically spaced"
+    },
+    "tests/wave6-arch.test.mjs": {
+      "beforeSHA256": "dbfe7469c66b04516cb35f91e418b60e0ec4e4713555d0f886e55e351c6454a7",
+      "afterSHA256": "bd1eb8c60e5bfcf204e0eaf52671d12a48c6ac318decda2b34667412d8c50325",
+      "wholeOldFileByteExact": true,
+      "changes": [
+        "Certified fixture hash",
+        "One additive interpolation-bound regression"
+      ],
+      "additiveTest": "test('ARCH6 steep correlation trace has a subpixel vertical interpolation bound across its whole domain',()=>{\n const curve=H.shellThinness().correlationCurve;let worst=0;\n assert.ok(curve[0][0]>2);assert.ok(.94-curve[0][1]<1e-6,'unresolved boundary sliver stays far below a pixel');assert.equal(curve.at(-1)[0],100);\n for(let i=1;i<curve.length;i++){\n  const[a,b]=[curve[i-1][0],curve[i][0]],bound=(19.2/a**4)*(b-a)**2/8;\n  // For f(lambda)=.14+3.2/lambda², f''=19.2/lambda⁴ decreases on this\n  // positive interval. Standard linear-interpolation error is ≤M h²/8.\n  worst=Math.max(worst,bound);assert.ok(bound<.0016);\n  for(let j=1;j<10;j++){const t=j/10,x=a+t*(b-a),line=curve[i-1][1]+t*(curve[i][1]-curve[i-1][1]);assert.ok(Math.abs(line-(.14+3.2/x**2))<=bound+2e-15);}\n }\n assert.ok(worst*281/.97<.5,'<0.5CSSpixel at largest declared plot height');\n const a=curve.findIndex(p=>p[0]>=2.5),left=curve[a-1],right=curve[a],t=(2.5-left[0])/(right[0]-left[0]),line=left[1]+t*(right[1]-left[1]);assert.ok(Math.abs(line-.652)<.0016);\n});\n"
+    },
+    "tests/wave6-arch-native-cases.mjs": {
+      "beforeSHA256": "7bf0830856a7614ceb4af8cf935cd3ef3264f21249312cddadce2822dbf55bca",
+      "afterSHA256": "3aeeb8493eeaf2f688088fcd6cea0b05e839194de73b3f18d432e794b4a70a83",
+      "wholeOldFileByteExact": true,
+      "soleChange": "One additional lesson11 critical state at lambda2.5"
+    },
+    "content/arch/ch06.viz.js": {
+      "beforeSHA256": "87d6876997403e830f2491f9f41445dfe4f364b081771c4371a68b5ac7928753",
+      "afterSHA256": "3e2c965f2d470ccdd71041f42a706d22e54372a74d3c0155b5d587341466b59b",
+      "wholeOldFileByteExact": true,
+      "changes": [
+        "Lesson11 left-axis margin",
+        "Lesson7 actual energy sample markers"
+      ],
+      "allOtherNineWholeFunctionsAndAllHelpersExact": true
+    }
+  },
+  "allEightUnchangedCompleteItemsAndAllTheirModelsExactFromFullNativeCapture": true,
+  "allElevenNonVizItemFieldsExactFromPostPressureCapture": true,
+  "currentGuardHashes": {
+    "content/arch/ch06.js": "e6373a6cff36c2cc682dfe14d5a79f002c67452a02822473d1de100ed2c9c660",
+    "content/arch/ch06.shared.js": "5f49fc9b53ee97ae82b4522fb930145b0da1547ba279b1093f416b9e2ebebe31",
+    "content/arch/ch06.viz.js": "3e2c965f2d470ccdd71041f42a706d22e54372a74d3c0155b5d587341466b59b",
+    "content/arch/syllabus.js": "76c2bf253d1bfdcd9175bbf411d102f783954b13aefe6f0d153d4d7c7b29bb6c",
+    "assets/js/viz/core.js": "a6fa1753d9d9e8b9a05a7161fffc58dfd53b27002d9d393a3266aeb96515fe73",
+    "assets/js/viz/math.js": "439c335e1cc47907bc72bb76559216aa093be4710e0589f41c70192729eb223e",
+    "assets/js/share-state.js": "13c6a9ac1237d566fc5d79c89e0f4d3029aa8c2817d2c08247a02b1b053a59b1",
+    "assets/js/app.js": "2f5762e6bf80723a5cb8691f8b19c552dd1d731ab998d5bfcdb27828e2e9a6ce",
+    "assets/css/style.css": "eef34e3d7aaf8b38233a78d9dc6545e5e0c9d00b09a3a6876d19f3e0e0af15b6",
+    "data/index.json": "0312d331e1ac25841e23fefc5c2fcd82c6ea27a57e8e7b0bbcb2945efaedbd39",
+    "data/col/arch.json": "26e0b3b0efdde89f209f0432a712c7f466bc270af214bf4c59cc1bb5af438348",
+    "tests/fixtures/wave6-arch-reference.json": "90e1f11c96e4dff3fa0e2ba3ac9618af7afdded5f8f775e7ef8fc9bd92466811",
+    "tests/wave6-arch-native.mjs": "57fec17af17be2a3a7b75759dfd8a5ade81b143db563c3eb6b6e0c5218ec8784",
+    "tests/wave6-arch-native-science.mjs": "93e9d395669683ef25f1a90d8f8d50d55044b6263102350c9f3893341562f448",
+    "tests/wave6-arch-native-cases.mjs": "3aeeb8493eeaf2f688088fcd6cea0b05e839194de73b3f18d432e794b4a70a83",
+    "tests/wave6-arch-browser.shared.mjs": "80c417716f0ca1262c1b76832a39c14a9c0fe48f843a5c14f5e5d180b02569d0"
+  }
+}

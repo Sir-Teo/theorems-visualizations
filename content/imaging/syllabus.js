@@ -332,50 +332,265 @@ export default {
       ]
     },
     {
-      n: 6,
-      title: 'Magnetic resonance imaging',
-      summary: String.raw`Nuclear spins in a magnetic field precess at the Larmor frequency and can be tipped by radio-frequency pulses; their relaxation back to equilibrium, described by the Bloch equations, gives tissue contrast through T1 and T2. Magnetic field gradients make frequency depend on position, so the signal is the Fourier transform of the image sampled along trajectories in k-space. Sampling rules, symmetry, coil arrays and sparsity determine how fast images can be made; BOLD and diffusion contrast extend MRI to function and microstructure.`,
-      items: [
-        { num: '6.1', alias: 'em-7.20', name: 'Larmor precession of a magnetic moment' },
-        { num: '6.2', kind: 'Concept', name: 'Net magnetization and Boltzmann polarization', deps: ['imaging-6.1', 'thermo-6.1'], refs: ['Prince–Links ch. 12'],
-          pic: 'Spins align slightly more often with the field than against it; the net magnetization is computed from the Boltzmann factor and is only a few parts per million at 1.5 T.' },
-        { num: '6.3', kind: 'Model', name: 'Bloch equations', deps: ['imaging-6.1', 'qm-13.2'], refs: ['Prince–Links ch. 12'],
-          pic: 'Integrate the magnetization vector in 3D through an RF pulse and relaxation; in the rotating frame a 90° pulse tips it into the transverse plane where it decays and regrows.' },
-        { num: '6.4', kind: 'Concept', name: 'T1 and T2 relaxation', deps: ['imaging-6.3'], refs: ['Prince–Links ch. 12'],
-          pic: 'Longitudinal magnetization recovers with T1 and transverse magnetization decays with T2; curves for fat, white matter and fluid are plotted with their characteristic times.' },
-        { num: '6.5', kind: 'Phenomenon', name: 'Free induction decay and T2*', deps: ['imaging-6.4'], refs: ['Prince–Links ch. 12'],
-          pic: 'Spins in an inhomogeneous field dephase faster than T2; the received signal decays with T2*, shown as a fan of spinning arrows spreading apart.' },
-        { num: '6.6', kind: 'Phenomenon', name: 'Spin echo', deps: ['imaging-6.5'], refs: ['Prince–Links ch. 12'], see: ['qinfo-7.7'],
-          pic: 'A 180° pulse at time TE/2 reverses the dephasing; the spins refocus into an echo at TE whose amplitude decays only with true T2, the runners-on-a-track picture animated.' },
-        { num: '6.7', kind: 'Concept', name: 'Image contrast from TR and TE', deps: ['imaging-6.4'], refs: ['Prince–Links ch. 13'],
-          pic: 'Choose repetition and echo times on a grid; the computed signal of different tissues produces T1-weighted, T2-weighted or proton-density images of a brain phantom.' },
-        { num: '6.8', kind: 'Concept', name: 'Slice selection with gradients and shaped RF pulses', deps: ['imaging-6.1', 'imaging-1.3'], refs: ['Prince–Links ch. 13'],
-          pic: 'A gradient makes resonance frequency vary with position; a sinc-shaped RF pulse with limited bandwidth excites only a slab, whose thickness changes with gradient strength.' },
-        { num: '6.9', kind: 'Concept', name: 'k-space: frequency and phase encoding', deps: ['imaging-6.8', 'rca-9.11'], refs: ['Prince–Links ch. 13'],
-          pic: 'Trace the k-space trajectory as gradients are applied; each sampled point is a Fourier coefficient, and filling k-space line by line then inverse transforming yields the image.' },
-        { num: '6.10', kind: 'Concept', name: 'Field of view and wrap-around aliasing', deps: ['imaging-6.9', 'imaging-1.5'], refs: ['Prince–Links ch. 13'],
-          pic: 'Increase the spacing between k-space samples; the field of view shrinks below the object and parts of it wrap onto the opposite side of the image.' },
-        { num: '6.11', kind: 'Method', name: 'Partial Fourier from Hermitian symmetry', deps: ['imaging-6.9', 'rca-9.2'], refs: ['Prince–Links ch. 13'],
-          pic: 'Acquire just over half of k-space and fill the rest by conjugate symmetry; the image is nearly unchanged for real objects and degrades when phase errors are introduced.' },
-        { num: '6.12', kind: 'Method', name: 'Parallel imaging (SENSE)', deps: ['imaging-6.10'], refs: ['Prince–Links ch. 13'],
-          pic: 'Undersample k-space so the image aliases, then use the different sensitivity maps of several receiver coils to unfold each pair of overlapping pixels.' },
-        { num: '6.13', kind: 'Method', name: 'Compressed-sensing MRI', deps: ['imaging-6.10', 'sig-7.16'], refs: ['Prince–Links ch. 13'],
-          pic: 'Sample k-space randomly at a fraction of the Nyquist rate; zero-filled reconstruction shows noise-like aliasing that sparsity-promoting iterative reconstruction removes.' },
-        { num: '6.14', kind: 'Phenomenon', name: 'BOLD contrast in functional MRI', deps: ['imaging-6.5', 'physio-6.2'], refs: ['Prince–Links ch. 13'],
-          pic: 'Neural activity raises blood flow beyond oxygen demand; deoxyhemoglobin falls, T2* lengthens and the signal rises a few percent with the delayed haemodynamic response.' },
-        { num: '6.15', kind: 'Method', name: 'Diffusion MRI (Stejskal–Tanner)', deps: ['imaging-6.6', 'mathbio-8.3'], refs: ['Prince–Links ch. 13'],
-          pic: 'A pair of gradient pulses dephases spins that move between them; signal falls as e^{−bD}, and measuring along many directions reveals fibre orientation in white matter.' },
-        { num: '6.16', kind: 'Paper', name: 'Image Formation by Induced Local Interactions',
-          paper: { authors: 'P. C. Lauterbur', year: 1973, title: 'Image Formation by Induced Local Interactions: Examples Employing Nuclear Magnetic Resonance',
-                   venue: 'Nature 242 (5394): 190–191', doi: '10.1038/242190a0' },
-          introduces: ['imaging-6.9'], deps: ['imaging-6.1', 'imaging-3.6'], refs: [],
-          pic: 'Lauterbur’s first zeugmatogram: two capillaries of water in a magnetic-field gradient give an NMR signal whose spectrum is their projection; rotate the gradient through four angles, back-project the four profiles and the two tubes appear — add angles and objects and see more projections sharpen the image.' },
-        { num: '6.17', kind: 'Paper', name: 'Brain MRI with Contrast Dependent on Blood Oxygenation',
-          paper: { authors: 'S. Ogawa, T. M. Lee, A. R. Kay and D. W. Tank', year: 1990, title: 'Brain magnetic resonance imaging with contrast dependent on blood oxygenation',
-                   venue: 'Proceedings of the National Academy of Sciences 87 (24): 9868–9872', doi: '10.1073/pnas.87.24.9868' },
-          introduces: ['imaging-6.14'], deps: ['imaging-6.5', 'physio-6.2'], refs: [],
-          pic: 'Ogawa’s rat-brain images at high field: in gradient-echo images the veins turn dark when the blood is deoxygenated and fade when it is oxygenated, because paramagnetic deoxyhaemoglobin shortens T₂*; set blood oxygenation and echo time and watch vessel contrast appear — the effect that became functional MRI.' },
-      ],
+      "n": 6,
+      "title": "Magnetic resonance imaging",
+      "summary": "From a small thermal spin imbalance to controlled rotation, relaxation, encoding and reconstruction. Explicit finite models connect each picture to its equations; declared counterexamples expose the assumptions behind shortcuts. The final historical items retain source verification flags and use own synthetic illustrations.",
+      "items": [
+        {
+          "num": "6.1",
+          "alias": "em-7.20",
+          "name": "Larmor precession of a magnetic moment"
+        },
+        {
+          "num": "6.2",
+          "kind": "Concept",
+          "name": "Net magnetization and Boltzmann polarization",
+          "deps": [
+            "em-7.20",
+            "thermo-6.1"
+          ],
+          "refs": [
+            "Authored finite model and explicit derivation; see chapter verification receipt",
+            "Stanford RAD229 2020 Lecture01A selected nuclei/gyromagnetic-unit text"
+          ],
+          "pic": "Change field and temperature. Compare the true population fractions with their net difference on the separate ppm scale."
+        },
+        {
+          "num": "6.3",
+          "kind": "Model",
+          "name": "Bloch equations",
+          "deps": [
+            "em-7.20",
+            "qm-13.2"
+          ],
+          "refs": [
+            "Stanford RAD229 2020 Lecture01C, actual hard-RF text and selected rendered slides4/10/11",
+            "Stanford RAD229 2020 Lecture01D, actual relaxation text",
+            "Authored finite model and explicit derivation; see chapter verification receipt"
+          ],
+          "pic": "Change RF area, phase, detuning and relaxation. Inspect the rotating-frame vector, resolved pulse components and free-evolution envelopes; drag the 3D view."
+        },
+        {
+          "num": "6.4",
+          "kind": "Concept",
+          "name": "T1 and T2 relaxation",
+          "deps": [
+            "imaging-6.3"
+          ],
+          "refs": [
+            "Stanford RAD229 2020 Lecture01D, actual relaxation text",
+            "Authored finite model and explicit derivation; see chapter verification receipt"
+          ],
+          "pic": "Move the observation time and compare three explicitly illustrative classes. Increase the extra transverse rate to shorten T2 while leaving longitudinal recovery fixed."
+        },
+        {
+          "num": "6.5",
+          "kind": "Phenomenon",
+          "name": "Free induction decay and T2*",
+          "deps": [
+            "imaging-6.4"
+          ],
+          "refs": [
+            "Stanford RAD229 2020 Lecture01D, actual relaxation text",
+            "Stanford RAD229 2020 Lecture08A, selected text through slide15",
+            "Authored finite model and explicit derivation; see chapter verification receipt"
+          ],
+          "pic": "Spread the spinning arrows with static offsets and compare their finite mean with the continuous envelope. Switch Lorentzian/Gaussian to break the exponential T2* assumption."
+        },
+        {
+          "num": "6.6",
+          "kind": "Phenomenon",
+          "name": "Spin echo",
+          "deps": [
+            "imaging-6.5"
+          ],
+          "see": [
+            "qinfo-7.7"
+          ],
+          "refs": [
+            "Stanford RAD229 2020 Lecture08A, selected text through slide15",
+            "Stanford RAD229 2020 Lecture01C, actual hard-RF text and selected rendered slides4/10/11",
+            "Authored finite model and explicit derivation; see chapter verification receipt"
+          ],
+          "pic": "Set TE and the pulse axis. Watch the arrows dephase and rephase, and compare the echo with the remaining T2 envelope."
+        },
+        {
+          "num": "6.7",
+          "kind": "Concept",
+          "name": "Image contrast from TR and TE",
+          "deps": [
+            "imaging-6.4"
+          ],
+          "refs": [
+            "Stanford RAD229 2020 Lecture08A, selected text through slide15",
+            "Stanford RAD229 2020 Lecture01D, actual relaxation text",
+            "Authored finite model and explicit derivation; see chapter verification receipt"
+          ],
+          "pic": "Change TR and TE. Compare exact and approximate phantom brightness on the same fixed scale, plus the actual class signal curves."
+        },
+        {
+          "num": "6.8",
+          "kind": "Concept",
+          "name": "Slice selection with gradients and shaped RF pulses",
+          "deps": [
+            "em-7.20",
+            "imaging-1.3"
+          ],
+          "refs": [
+            "Stanford RAD229 2020 Lecture02B, selected spatial encoding/small-tip/rephasing text",
+            "Authored finite model and explicit derivation; see chapter verification receipt"
+          ],
+          "pic": "Shape the RF pulse and reverse or weaken the gradient. Toggle the rephasing lobe to isolate phase changes from the slice magnitude."
+        },
+        {
+          "num": "6.9",
+          "kind": "Concept",
+          "name": "k-space: frequency and phase encoding",
+          "deps": [
+            "imaging-6.8",
+            "rca-9.11"
+          ],
+          "refs": [
+            "Stanford RAD229 2020 Lecture02C, selected signal-equation/k-space text",
+            "Authored finite model and explicit derivation; see chapter verification receipt"
+          ],
+          "pic": "Acquire rows in two orders. Compare the own object, actual acquired k-space and inverse reconstruction; change pixel spacing to see its physical FOV."
+        },
+        {
+          "num": "6.10",
+          "kind": "Concept",
+          "name": "Field of view and wrap-around aliasing",
+          "deps": [
+            "imaging-6.9",
+            "imaging-1.5"
+          ],
+          "refs": [
+            "Stanford RAD229 2020 Lecture02C, selected signal-equation/k-space text",
+            "Authored finite model and explicit derivation; see chapter verification receipt"
+          ],
+          "pic": "Increase the undersampling factor. Compare the true object with the actual folded sum and one column’s contributing bands."
+        },
+        {
+          "num": "6.11",
+          "kind": "Method",
+          "name": "Partial Fourier from Hermitian symmetry",
+          "deps": [
+            "imaging-6.9",
+            "rca-9.2"
+          ],
+          "refs": [
+            "Authored finite model and explicit derivation; see chapter verification receipt",
+            "Stanford RAD229 2020 Lecture02C, selected signal-equation/k-space text"
+          ],
+          "pic": "Add spatial phase or acquire more negative rows. Compare zero-fill with conjugate completion on the same brightness scale."
+        },
+        {
+          "num": "6.12",
+          "kind": "Method",
+          "name": "Parallel imaging (SENSE)",
+          "deps": [
+            "imaging-6.10"
+          ],
+          "refs": [
+            "Stanford RAD229 2020 Lecture07C, selected coil/noise text and rendered slide16",
+            "Authored finite model and explicit derivation; see chapter verification receipt"
+          ],
+          "pic": "Change coil separation and noise. Inspect signed maps and the actual reconstructed object; approach the rank-loss boundary."
+        },
+        {
+          "num": "6.13",
+          "kind": "Method",
+          "name": "Compressed-sensing MRI",
+          "deps": [
+            "imaging-6.10",
+            "sig-7.16"
+          ],
+          "refs": [
+            "Lustig et al.2007 Sparse MRI, selected prerequisites/objective/AppendixA text; own distinct ISTA exercise",
+            "Authored finite model and explicit derivation; see chapter verification receipt"
+          ],
+          "pic": "Compare equal-count masks, the sparse and textured objects, noise and iteration count. Watch the actual objective and compare complex error, not just a plausible image."
+        },
+        {
+          "num": "6.14",
+          "kind": "Phenomenon",
+          "name": "BOLD contrast in functional MRI",
+          "deps": [
+            "imaging-6.5",
+            "physio-6.2"
+          ],
+          "refs": [
+            "DartBrains MR Physics selected oxygenation text; Andy’s BrainBook selected HRF overview",
+            "Authored finite model and explicit derivation; see chapter verification receipt"
+          ],
+          "pic": "Vary flow, oxygen use and TE. Compare their timing with the blood-budget signal and select a time for the own activation-mixture map."
+        },
+        {
+          "num": "6.15",
+          "kind": "Method",
+          "name": "Diffusion MRI (Stejskal–Tanner)",
+          "deps": [
+            "imaging-6.6",
+            "mathbio-8.3"
+          ],
+          "refs": [
+            "Stanford RAD229 2020 Lecture15B, selected opening diffusion text and rendered slide7",
+            "Authored finite model and explicit derivation; see chapter verification receipt"
+          ],
+          "pic": "Change lobe strength, timing and direction. Compare the analytic tensor attenuation with the actual finite complex phase ensemble."
+        },
+        {
+          "num": "6.16",
+          "kind": "Paper",
+          "name": "Image Formation by Induced Local Interactions",
+          "deps": [
+            "em-7.20",
+            "imaging-3.6"
+          ],
+          "refs": [
+            "Authored finite model and explicit derivation; see chapter verification receipt",
+            "Frozen syllabus bibliography; original body unavailable at source stop"
+          ],
+          "paper": {
+            "authors": "P. C. Lauterbur",
+            "year": 1973,
+            "title": "Image Formation by Induced Local Interactions: Examples Employing Nuclear Magnetic Resonance",
+            "venue": "Nature 242 (5394): 190–191",
+            "doi": "10.1038/242190a0"
+          },
+          "introduces": [
+            "imaging-6.9"
+          ],
+          "verify": true,
+          "pic": "Rotate the chosen gradient and add projections. Compare the own object, actual detector profile and fixed-scale unfiltered adjoint."
+        },
+        {
+          "num": "6.17",
+          "kind": "Paper",
+          "name": "Brain MRI with Contrast Dependent on Blood Oxygenation",
+          "deps": [
+            "imaging-6.5",
+            "physio-6.2"
+          ],
+          "refs": [
+            "DartBrains MR Physics selected oxygenation text; Andy’s BrainBook selected HRF overview",
+            "Authored finite model and explicit derivation; see chapter verification receipt",
+            "Frozen syllabus bibliography; original body unavailable at source stop"
+          ],
+          "paper": {
+            "authors": "S. Ogawa, T. M. Lee, A. R. Kay and D. W. Tank",
+            "year": 1990,
+            "title": "Brain magnetic resonance imaging with contrast dependent on blood oxygenation",
+            "venue": "Proceedings of the National Academy of Sciences 87 (24): 9868–9872",
+            "doi": "10.1073/pnas.87.24.9868"
+          },
+          "introduces": [
+            "imaging-6.14"
+          ],
+          "verify": true,
+          "pic": "Change oxygenation and TE. Compare the fixed-scale own vessel image with its computed signal curve, then remove only static dephasing using ideal refocusing."
+        }
+      ]
     },
   ],
 };

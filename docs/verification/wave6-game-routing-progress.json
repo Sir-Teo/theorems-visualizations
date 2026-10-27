@@ -1,0 +1,47 @@
+{
+  "status": "5pure families verified; full12lesson/native/personal visual gates remain open; no GAME availability promotion",
+  "authorAvailabilityUnchanged": 858,
+  "independentAcceptanceUnchanged": 36,
+  "families": [
+    "selection2",
+    "invasion",
+    "hawkDove",
+    "braess",
+    "pigou"
+  ],
+  "statistics": {
+    "cases": 1583,
+    "comparisons": 157717,
+    "worstLogAbsolute": 4.549693954913892e-13
+  },
+  "original1101CompleteExpectedObjectsPreserved": true,
+  "originalCheckpointCommit": "d3587d0f",
+  "precision": {
+    "canonicalRepeat100ByteIdentical": true,
+    "higher200CompleteObjectsAndBytesIdentical": true,
+    "fixtureSHA256": "3e893909e544e79a1cae4e083a8d2c23a99b4ffedf25793aa4a6c6bd4a1cc483"
+  },
+  "focused": {
+    "newGroups": 9,
+    "priorGameGroups": 16,
+    "passed": 25,
+    "failed": 0,
+    "skipped": 0,
+    "cancelled": 0,
+    "durationMs": 537.959875,
+    "log": "/workspace/scratch/wave6-game-research/selection-routing-focused.log",
+    "logSHA256": "be5a0e07d1469196fa69b5fff55fccbc0f69bbbb55f976b88db50546104845ff"
+  },
+  "preservedRawPins": 372,
+  "allExact": true,
+  "routingMethod": "Independent Fraction evaluation of original resource loads/costs, exhaustive feasible equilibrium branch candidates and endpoint/stationary-point global cost comparison. Analytic cost coefficients recovered exactly; no production import. All physical rounding/sign/range/metadata strict; log bound8e\u221212 unchanged.",
+  "sourceHashes": {
+    "content/game/ch06.exact.shared.js": "f90c1849903788f0d3c2cd8fca77d5d0e2a3148f8368fbe2e68659377a2f62dd",
+    "content/game/ch06.selection.shared.js": "8a6c9aee856881cf5b94296146fea63733948b55a1cd69226a73c637bb85fdd7",
+    "content/game/ch06.routing.shared.js": "27cbe9f9c973a338c028d1b3fcf4c0a89af0fab60ee19d097d7fdc14b6fb150c",
+    "tests/wave6-game-reference.py": "997e5a5dd325889f753fbf27606e28ea369da5b69a94191937f299aa2788772b",
+    "tests/fixtures/wave6-game-reference.json": "3e893909e544e79a1cae4e083a8d2c23a99b4ffedf25793aa4a6c6bd4a1cc483",
+    "tests/wave6-game.test.mjs": "b5057bf503ff38cacaf236292b72f04669b674bf2862ef043701bfa8809fada2"
+  },
+  "next": "Implement finite potential/atomic congestion certificates, finite-chain enclosures and numerical dynamics, then all12complete lessons with bespoke visuals and full original-pixel/native/Share gates. Continue without stopping."
+}

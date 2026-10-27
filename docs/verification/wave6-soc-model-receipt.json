@@ -1,0 +1,44 @@
+{
+  "status": "PASS; author scientific verification, not independent acceptance",
+  "cases": 756,
+  "families": {
+    "confidence": 112,
+    "culture": 96,
+    "disclosure": 128,
+    "echo": 72,
+    "lineBoard": 108,
+    "synchrony": 96,
+    "voter": 144
+  },
+  "comparisons": 536058,
+  "statistics": {
+    "cases": 756,
+    "comparisons": 536058,
+    "worstNumericalAbsolute": 1.3596594961029496e-09
+  },
+  "method": "Independent Python Fraction finite updates, union-find culture regions and pairwise-sine SciPy DOP853 integration; no production imports. Production uses exact finite arithmetic and mean-field O(N) RK4.",
+  "precision": {
+    "canonicalFixtureBytes": 7088423,
+    "fixtureSHA256": "4c88dbfb1e2e8bd48c7ad12608386fc2936591a06f229b2a7732092cdc295526",
+    "completeGeneratorRepeatBytesIdentical": true,
+    "repeatLog": {
+      "path": "/workspace/scratch/wave6-soc-research/reference-repeat.log",
+      "sha256": "cf5ee9ab78a3a9b1e27bce3fd9f4986fcf562f3b6d92e0f73f2b238888d32fa9"
+    },
+    "independentDOP853HalvedMaximumStepDifference": 1.0089706847793423e-12,
+    "numericalAbsoluteBudget": 2e-08,
+    "worstNumericalAbsolute": 1.3596594961029496e-09
+  },
+  "physicalGate": "Exact fractions, correctly rounded exact-quantity values, signs, thresholds, decisions, graph/culture states and event counts are strict. Only numerical oscillator quantities use the declared2e-8 absolute budget. Browser consistency adds no independent mathematical cases.",
+  "focused": {
+    "passed": 45,
+    "failed": 0,
+    "skipped": 0,
+    "cancelled": 0,
+    "durationMs": 1553.031434,
+    "log": {
+      "path": "/workspace/scratch/wave6-soc-research/focused-v4.log",
+      "sha256": "84626058493f750a6464343f150b51fa0b9b3072a035fb2e2a4a6709ed5cdb7c"
+    }
+  }
+}

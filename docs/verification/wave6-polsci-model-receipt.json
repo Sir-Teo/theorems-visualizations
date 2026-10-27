@@ -1,0 +1,52 @@
+{
+  "status": "PASS; author scientific verification, not independent acceptance",
+  "cases": 528,
+  "families": {
+    "council": 96,
+    "eec": 36,
+    "electoral": 37,
+    "entrant": 65,
+    "legislature": 34,
+    "ordering": 65,
+    "penrose": 61,
+    "portfolios": 68,
+    "trade": 33,
+    "vetoCouncil": 33
+  },
+  "comparisons": 291873,
+  "statistics": {
+    "cases": 528,
+    "comparisons": 291873,
+    "asymptoticValues": 305,
+    "worstAsymptoticUlps": 1
+  },
+  "method": "Independent Python Fraction subset/permutation enumeration, rank-conditioned chamber-boundary sums, separate leave-one-out polynomial convolutions and mpmath asymptotic display; no production JavaScript imports. Production uses exact combinatorial counts and rational arithmetic. Shared independently parsed source facts are inputs, not a numerical oracle.",
+  "precision": {
+    "fixtureBytes": 5350869,
+    "fixtureSHA256": "e0dc2730e5683199f9ded12ec725f09d54f1f3ebde603f548a01089a75a9f393",
+    "complete120And240DigitBytesIdentical": true,
+    "installedCanonicalGeneratorBytesIdentical": true,
+    "installedRepeat": {
+      "path": "/workspace/scratch/wave6-polsci-research/installed-reference.log",
+      "sha256": "4322a26444129d0f6b859551e0c66ff3574bb5112720ceb4c9051e06898eaa1e"
+    },
+    "higherPrecisionLog": {
+      "path": "/workspace/scratch/wave6-polsci-research/prototype/reference-240-v3.log",
+      "sha256": "bcdd7857ad028dabfa69729feab001462d24878b19014de271c1175b34182b24"
+    },
+    "literalSmallChamberHistogramCrosschecks": 126,
+    "onlyAsymptoticDisplayBudgetUlps": 4,
+    "worstAsymptoticDisplayUlps": 1
+  },
+  "strictFields": "All complete fields, correctly rounded exact quantities, fractions, counts, signs, decisions, selected coalitions, allocations and metadata are strict. Only asymptoticWithin display numbers use4ULP. No scientific decision uses them.",
+  "boundaryContract": "An omitted vice-president role has null per-member indices; an included but powerless tie breaker has exact zero. Dense vectors must own every numeric index.",
+  "focused": {
+    "passed": 86,
+    "failed": 0,
+    "durationMs": 1951.226724,
+    "log": {
+      "path": "/workspace/scratch/wave6-polsci-research/final-focused.log",
+      "sha256": "0e57029689f2fdb245b25b76afe7848a56d3c61015348e5ea3fc1b57f1024eff"
+    }
+  }
+}

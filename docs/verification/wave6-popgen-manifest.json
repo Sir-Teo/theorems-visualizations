@@ -1,0 +1,15 @@
+{
+  "baseCommit": "147d3c29ca4364f92d2c8cb293d039eac315bf48",
+  "sha256": {
+    "content/popgen/ch06.js": "5b8cc232746563d4142e6b10511eb3c0c81f345627ef8fbde3f6f69103c9e584",
+    "content/popgen/ch06.shared.js": "117c3d3c6836676cee372a4b38aafe2620cfcadf2261557e3f4cba3ceda8c02e",
+    "content/popgen/ch06.viz.js": "8a3157efbafb425beade4ef3f3eec81fa3da1547074855a78271aa74ddfd7dac",
+    "content/popgen/syllabus.js": "9f40a252e9d5b878135e5848f3afa341cd6f92b11374ec74db0bb909f53728ba",
+    "tests/wave6-popgen.test.mjs": "707c131f061a6d746db560b9db672e4f936e5201804a143eeadd967d7f344424",
+    "tests/wave6-popgen-browser.mjs": "1a4bfd53658be44a08bffd3258279b3238204026a8f2e32aebcca51df9b8b0da",
+    "tests/wave6-popgen-reference.py": "33b0e23fd8d1080295a8ff9924443c902e6dff9908e7e020e3a356bc6334a579",
+    "tests/fixtures/wave6-popgen-reference.json": "ca6b2d351e57ac48fb2f18495ad88c1d2e4a916cb6e4690acaf63ea857d504e5",
+    "docs/verification/wave6-popgen-sources.json": "fd7fd5b24731342663078b07a4f15afc04005a99c81972d336a9f81c8784a77f",
+    "docs/verification/wave6-popgen-gates.json": "72a5e8af9599143a9e4d5317a18fc4ccb96c4437509fa7b3455f30fa1d3c4ba3"
+  }
+}

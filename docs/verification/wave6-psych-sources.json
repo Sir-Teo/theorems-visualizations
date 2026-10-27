@@ -1,0 +1,144 @@
+{
+  "status": "Source research complete; chapter author-verified, not independently accepted.",
+  "scope": "Precise actual reading and access boundaries. Index, abstract, body and figure inspection are separate claims. No stopped body/index was recovered.",
+  "reuse": "All teaching prose, stimulus geometry and implementation are original; no copied, traced or digitized source graphics.",
+  "writtenPrerequisitesRead": [
+    "stat-10.6 complete statement/idea/scope/caption/refs/deps/flags"
+  ],
+  "sources": [
+    {
+      "key": "openstax-gestalt",
+      "url": "https://openstax.org/books/psychology-2e/pages/5-6-gestalt-principles-of-perception",
+      "scope": "Main teaching body lines22–54 read, figure alt text only; actual source image pixels not yet inspected. Footer licensing read. No image/prose reuse planned."
+    },
+    {
+      "key": "heeger-depth",
+      "url": "https://www.cns.nyu.edu/~david/courses/perception/lecturenotes/depth/depth-size.html",
+      "scope": "Complete164line teaching body now read in returned chunks; image alt text only, source figure pixels not yet inspected. Some dated clinical/prevalence claims and neural absolutes are not adopted; chapter will use geometric/qualitative teaching facts with own derivations."
+    },
+    {
+      "key": "banks-index",
+      "url": "https://optometry.berkeley.edu/people/martin-banks-phd/",
+      "scope": "Publication index lines0–130read, including Ernst/Banks2002attribution. No individual PDF body acquired/read."
+    },
+    {
+      "key": "nasa-moon",
+      "url": "https://science.nasa.gov/solar-system/moon/the-moon-illusion-why-does-the-moon-look-so-big-sometimes/",
+      "scope": "Main body lines289–338 read; dated2023/updated2025. Geometry/appearance distinction, same-camera-setting comparison, atmospheric vertical flattening and unsettled explanation. No original image pixels inspected or used."
+    },
+    {
+      "key": "wagemans2018",
+      "url": "https://www.nssrperception.com/docs/Wagemans%202018%20Perceptual%20organization.pdf",
+      "scope": "Distinct2018single-author70pagechapter, not recovery of stopped2012review. CompletePDFacquired1297067bytes/SHA4f9c0bbeac5393ff661ad23481917f9f456ffbf9d5768320c10e5cb1cd7d89c3. Initial PDF0–120andlocaltext460–748,1285–1338,1478–1534read. Some broader460–810outputtruncated; unviewed remainder notclaimedread. Acquired pages beyondpreciseselections remainunread. Original PDF pp.3,4,5 personally inspected at original resolution, including Figs18.1–18.5. No source image or prose copied."
+    },
+    {
+      "key": "ernst-banks2002-gale",
+      "url": "https://go.gale.com/ps/i.do?asid=a3ca2f7b&id=GALE%7CA187492166&it=r&p=AONE&u=googlescholar&v=2.1",
+      "scope": "Complete original article main argument/results/methods andfigurecaptions lines44–126read via successful publisher-licensedGaleHTML; selected references131–173also returned. Four naive22–33yearoldobservers;55mmstandard, fourvisualnoiselevels, ±6/±3/0mmconflicts, independentGaussian/uniform-priorcalculation. Sourcefigures/PDFpixels absent; no original-PDFreading or figure-copy claim. Formula markup is degraded, so own precision weighting/variance derivation is independently checked."
+    },
+    {
+      "key": "bach-mullerlyer",
+      "url": "https://michaelbach.de/ot/sze-muelue/index.html",
+      "scope": "Complete main teaching discussion15–27andbibliography28–51read; Brentano variant, perspective explanation as author preference with debate. Live app/code/figures not copied."
+    },
+    {
+      "key": "amir-firestone2025-preprint",
+      "url": "https://perception.jhu.edu/files/PDFs/25_MullerLyer/AmirFirestone_InPress_MullerLyer_PsychReview.pdf",
+      "scope": "Only title/abstract/firstintroduction lines0–52read from initial successful web response. Later local download403creates binding body stop; no further cached reading or alternate recovery. Broader argument and figures unread."
+    },
+    {
+      "key": "illusionsindex-necker",
+      "url": "https://www.illusionsindex.org/i/necker-cube",
+      "scope": "Main teaching/historical discussion32–79andselectedreferences82–85read; imagepixelsunviewed; no sourceimage/code/prosecopy."
+    },
+    {
+      "key": "illusionsindex-kanizsa",
+      "url": "https://www.illusionsindex.org/i/kanizsa-triangle",
+      "scope": "Main teaching discussion32–92andselectedreferences95–104read; modal/amodal distinction; mechanism explicitly not settled. Sourceimagesunviewed; no copy/derivation of licensedmedia."
+    },
+    {
+      "key": "nakamizo-imamura2004",
+      "url": "https://www.jstage.jst.go.jp/article/jpa/23/6/23_6_325/_article/-char/en",
+      "scope": "Complete5page main argument/methods/results/discussionPDFtext0–307read; bibliography308–345acquiredandreturned, not separately claimed verified. Actual19observers/8distances1–22.91m; virtual6observers/7simulateddistances1–24m. Fullvirtualrange fittedslope0.0219CIexcludes0.0175; restrictingto1–20mCIincludesit. Thus not universal exactequality or unqualifiedvirtual24msupport. Paperdistinguishes perceiveddistance fromphysicalsurface. Equationd*tan(alpha) usesitsangleconvention; own centered-rayconstruction2Dtan(theta/2)explicit. No photoflashprotocolwillbeimplemented. Source screenshot returned only an image marker, no pixels. First local retention502 now binds; source figure pixels never inspected."
+    },
+    {
+      "key": "illusionsindex-ebbinghaus",
+      "url": "https://www.illusionsindex.org/i/ebbinghaus-illusion",
+      "scope": "Main teaching body32–91 and references94–110 returned and read; author attribution165read. Adopt only basic size-context phenomenon, no broad dorsal/ventral, grasping, cultural or developmental claims independently verified. Own stimulus predates this acquisition; no figure pixels read/copied."
+    },
+    {
+      "key": "illusionsindex-ponzo",
+      "url": "https://www.illusionsindex.org/i/ponzo-illusion",
+      "scope": "Main teaching body32–88andreferences91–101returned/read, attribution166read. Alternative accounts acknowledged. No source figure pixels inspected/copied; independent own conditional rail geometry."
+    },
+    {
+      "key": "ittleson-distorted-room",
+      "url": "https://www.psy.ritsumei.ac.jp/akitaoka/Amesroom-source.pdf",
+      "scope": "First successful web acquisition11page scanned excerpt, text layer0lines. First localretention200,9234651bytes,SHAf083591f64585b52da21c9d81f3526954b21836197ab377aadbded7c409ccab3. Original PDF spreads1/2personally viewed: main chapter13pp.183–184 read, historical Fig13A.1–13A.5p185inspected. Preceding p182tiltingapparatus also visible, not used. Remaining excerpt unread. Own room predates these figure views; no copying/tracing/reconstruction."
+    },
+    {
+      "key": "gehringer-engel1986",
+      "url": "https://pubmed.ncbi.nlm.nih.gov/2940322/",
+      "scope": "Search result returned complete abstract; read144subject firstexperiment/reducedbutpersistentdistortion with expandedviewingaccess. First explicitopen returned only HHSfooter, no additional article body; no fullbodyreadingclaimed. No furtherrecoveryrequested."
+    },
+    {
+      "key": "apa-ames",
+      "url": "https://dictionary.apa.org/ames-room",
+      "scope": "Search definition snippet read; explicitopen returned onlyiframe, no actual page body. Definition not claimed as body reading or used as sole study evidence."
+    }
+  ],
+  "stops": [
+    {
+      "url": "https://bankslab.berkeley.edu/",
+      "scope": "INDEX ONLY; web tool reported URL inaccessible. Do not retry/recover same index through another tool or alternate route. No individual paper body has been requested here."
+    },
+    {
+      "url": "https://www.elderlab.yorku.ca/wp-content/uploads/2016/12/WagemansPsychBull12.pdf",
+      "scope": "Wagemans et al.2012Gestalt review I BODY: first web acquisition502BadGateway. Do not retry or recover this same body through PMC3482144, another mirror, cache or tool. Search/bibliography only, original body unread."
+    },
+    {
+      "url": "https://vis.cs.brown.edu/areas/themes/perception.html",
+      "scope": "INDEX ONLY; find returned no matching text, then first actual open502BadGateway. Do not retry/recover this index via another route/tool. No individual paper body was requested via Brown."
+    },
+    {
+      "url": "https://michaelbach.de/ot/cog-NeckerCube/index.html",
+      "scope": "Attempted teaching-page URL inaccessible via web tool. Do not retry/recover that attempted page. No Necker original body requested; use independent sources."
+    },
+    {
+      "url": "https://pressbooks.umn.edu/sensationandperception/chapter/size-distance-relationships/",
+      "scope": "UMNsize-distance teaching chapter BODY first web request403Forbidden; no retry or alternate recovery of that body."
+    },
+    {
+      "url": "https://perception.jhu.edu/files/PDFs/25_MullerLyer/AmirFirestone_InPress_MullerLyer_PsychReview.pdf",
+      "scope": "Amir/Firestone2025preprint BODY: initial web acquisition returned title/abstract/firstintroduction0–52, then local-byte retention request403Forbidden. Stop now; no retry, cached further pages, mirror or alternate tool recovery. Only already inspected0–52may be described; broader argument/figures remain unread."
+    },
+    {
+      "url": "https://www.jstage.jst.go.jp/article/jpa/23/6/23_6_325/_pdf/-char/en",
+      "scope": "First localbyte-retention after complete5pweb reading returned502BadGateway. Body stop now: no retry/furthercachedpages/screenshot/mirror/tool recovery. Already-read main0–307 remains actualreading; originalfigurepixels never returned and are uninspected."
+    },
+    {
+      "url": "https://www.illusionsindex.org/i/ames-room",
+      "scope": "First attempted teaching-page BODY inaccessible in webtool. No retry, cache, alternate tool or same-body recovery. Distinct Ittelson historical excerpt first acquired independently; not an alternate copy of this page."
+    }
+  ],
+  "plumbingFailures": [
+    "Unsupported num_lines in web open produced schema parse error before network action; corrected to supported lineno. Not an access barrier.",
+    "Web click using full landing URL plus link id returned invalid arguments; no network/body access denial. Retrying exact citation ref id, not alternate body recovery.",
+    "Correct exactcitationrefJstageclick succeeded; initialinvalidURLclickwasparserplumbing, notnetworkrestriction."
+  ],
+  "inheritedStops": "Every recorded prior binding source stop remains in force, including BEHAV original Easterlin/2008Stevenson-Wolfers/two2024letters and all older stops.",
+  "sourceDownloadFailure": {
+    "url": "https://perception.jhu.edu/files/PDFs/25_MullerLyer/AmirFirestone_InPress_MullerLyer_PsychReview.pdf",
+    "status": 403,
+    "localFileCreated": false,
+    "subsequentPdfToText": "failed because local file absent; no content read",
+    "sourcePixelsInspected": false
+  },
+  "sourceFiguresPersonallyViewed": [
+    "Wagemans2018originalPDFpage4: Figure18.2dot-alignment/goodcontinuation andaccompanyingtext; no copying/tracing.",
+    "Wagemans2018originalPDFpage5: Figures18.3–18.5curvedcontinuation andclosed-form context; no copying/tracing.",
+    "Wagemans2018originalPDFpage3,Figure18.1: proximity/similarity/conflictinggrouping/commonfate stimulus arrays. No copying/tracing.",
+    "Ittelson scanned original spreads1/2: chapter13pp183–184 main body read and Fig13A.1–13A.5p185 inspected; remainder of excerpt unread."
+  ],
+  "sourceViewerLimitation": "Web screenshot returned text marker only, no ImageContent/pixels. OriginalEmmertfigures therefore NOTpersonallyviewed; first localretention502stops furtherattempts."
+}

@@ -1,0 +1,18 @@
+# ECOL6 / NEURO6 local integration — 24 October 2026
+
+The continuous content goal authorizes this local31-lesson batch: ECOL6 at `180e6e90` and NEURO6 at `0fd715ad`. Their author reports retain64 passing focused groups and658 independent reference cases. Disjoint chapter production coverage totals124 layouts,2,448 native actions,836 actual Share-link replays,124 invalid-state rejections and120 raw fractional restores. NEURO’s additional24-layout/84-Share critical audit rechecks the same production layouts and is recorded separately. No independent acceptance, push, merge or deployment is claimed.
+
+The reading roster admits precisely ECOL6.1–6.14 and NEURO6.1–6.17 from committed source. All8,362 prior reading projections and76 aliases remain exact. [Content reconciliation](../integration/wave6-ecol-neuro-content.json) binds the8,393-item source snapshot and generated data. [Route-binding reconciliation](../integration/wave6-ecol-neuro-bindings.json) changes parent snapshot metadata/digests while preserving every individual target, task, source and ordered route array. Historical accepted36/1,057 is unchanged; author-available678 comprises that historical36 plus642 additional ideas. The three newly admitted source flags are ECOL6.13/6.14 and NEURO6.17, with their original-access stops intact.
+
+Reading source: `0fd715ad845e4550a27c4b4f871ac57b36cd0fd8`; projection digest `0b3426b7a61f31e2b4d71c24896bec0cf3dc5a039aa37f6d9026594bb326cc1f`; generated-data digest `2abba808ea90df609acc5ae7aa54df0325d351793a33df828da64bed83179b50`.
+
+Scoped reconciliation tests pass46/46. Strict build passes8,393 written/5,181 planned/575 chapters/85 collections, with zero errors/warnings; all8,330 static visualizations are clean. Coverage validation and the24-record read-only local continuation check pass. Logs: `/tmp/wave6-ecol-neuro-{reconciliation-tests,build,static,coverage,local}.log`.
+
+Completed from exact reconciliation commit `d341952c217172cfd5062c5dd835c6e7a16c9a5e`:
+
+- Full suite: **4,590/4,590 pass**, no failures, skips, cancellations or todos;1,010.615845 seconds on Node22.23.3 with test-file concurrency1. This adds64 chapter groups and one reading-preservation regression to the prior4,525-test checkpoint. Log: `/tmp/wave6-ecol-neuro-full-suite.log`.
+- Production smoke: **272 routes in light and272 in dark**, zero errors in both. Logs: `/tmp/wave6-ecol-neuro-smoke-{light,dark}.log`.
+- Verification used `/tmp/wave6-ecol-neuro-export-d341952c`, materialized directly from `git archive` in a detached no-checkout worktree, with its index set to that commit. The sole untracked runtime addition is a symlink to the existing Node dependencies. Generated data in both root and export reproduce the recorded digest. No chapter source changed during integration.
+- All40 ECOL6/NEURO6/MATHBIO6/POPGEN6 manifest hashes remain exact. Final direct rechecks reproduce the complete reading projection and data digest, preserve all8,362 earlier entries and76 aliases, and preserve every recorded target/route array. Frozen Wave6 assignments and core mathematics/renderer remain unchanged. Map-performance work stays deferred; no performance acceptance is inferred.
+
+This is a completed local integrated author checkpoint. Historical independent acceptance remains36/1,057; author-available content is678. All integration-owned browsers/servers are closed. Continue BIOINF6, preserving unfinished desktop GEO6/ODE6/ALG9 drafts and every source-access stop. The user explicitly reaffirmed visualization quality on24 October: scientific/explanatory integrity, native behavior and personal desktop/narrow both-theme pixel review remain gates before each new chapter counts.

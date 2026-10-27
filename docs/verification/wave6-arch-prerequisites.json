@@ -1,0 +1,184 @@
+[
+  {
+    "id": "arch-4.3",
+    "file": "content/arch/ch04.js",
+    "fileSHA256": "6703aa53512b6cc891a6db43fc985519b294ff299fd44467b721d688ee8107a7",
+    "item": {
+      "num": "4.3",
+      "kind": "Model",
+      "name": "Membrane theory of domes",
+      "statement": "A thin shell of revolution can carry its load by forces in its own surface alone, with no bending: a **meridional force** $N_\\varphi$ along each meridian and a **hoop force** $N_\\theta$ along each parallel circle, both per unit length of the shell. For a spherical dome of radius $a$ and constant thickness, with weight $w$ per unit area of surface, cutting the dome at the polar angle $\\varphi$ from the crown gives\n$$\\begin{gathered}N_\\varphi=-\\frac{w a}{1+\\cos\\varphi},\\\\N_\\theta=w a\\Big(\\frac1{1+\\cos\\varphi}-\\cos\\varphi\\Big)\\end{gathered}$$\n(compression negative). For a vertical load $p$ per unit area of *plan* (snow) the forces are $N_\\varphi=-pa/2$ and $N_\\theta=-\\tfrac12 pa\\cos2\\varphi$. The meridional force is always compressive; the hoop force starts as compression at the crown and, for a deep dome, changes sign lower down.",
+      "idea": "Cut the dome along a parallel circle and keep the cap above the cut. Its weight must be balanced by the vertical components of $N_\\varphi$ around the circle of radius $a\\sin\\varphi$, which fixes $N_\\varphi$ (this is the equilibrium of arch-1.2 applied to a cap). The weight of a small element has a component normal to the surface that $N_\\varphi$ and $N_\\theta$ must balance together, as the tension of a balloon balances pressure, and that equation gives $N_\\theta$ once $N_\\varphi$ is known. A dome is therefore a statically determinate system of arches (the meridians) held in place by rings (the parallels), which is why one can read off whether it can stand without tension (arch-4.4).\n\nThe distinction between surface weight and plan load uses the surface-area element of pma 10.46. For the sphere $$\\begin{aligned}&\\Phi(\\varphi,\\theta)=\\\\&\\quad(a\\sin\\varphi\\cos\\theta,\\\\&\\quad a\\sin\\varphi\\sin\\theta,a\\cos\\varphi),\\end{aligned}$$ the norm of the cross product of its partial derivatives is $a^2\\sin\\varphi$. Thus a cap of polar angle $\\varphi$ has weight $2\\pi wa^2(1-\\cos\\varphi)$; a uniform plan load instead contributes $p\\pi a^2\\sin^2\\varphi$. Substitution into the same vertical cap equilibrium yields respectively $-wa/(1+\\cos\\varphi)$ and $-pa/2$ for the meridional resultant. The pole is treated by a limiting chart or by removing a zero-area point, not by dividing by its zero circle radius.",
+      "caption": "Choose a load, set the opening angle of the dome, and drag the gold handle along the section: the plot shows $N_\\varphi$ (blue) and $N_\\theta$ (red) in units of $wa$ (or $pa$), and the dome is coloured along the meridian, blue where the hoop force is compression and red where it is tension. The dashed curves are the closed-form formulas; the full curves are computed numerically from equilibrium of every cap, so the two agree. With a lantern the crown is open and a ring load is added at its edge.",
+      "deps": [
+        "arch-3.2",
+        "pma-10.46"
+      ],
+      "see": [
+        "arch-4.4",
+        "arch-6.1"
+      ],
+      "tags": [
+        "dome",
+        "shells",
+        "membrane"
+      ],
+      "refs": [
+        "Heyman"
+      ],
+      "scope": "Thin, smoothly curved shell of revolution, loaded symmetrically, with supports free to follow the membrane forces (no edge bending). Near the base of a real dome, where the support restrains the hoop strain, bending develops that membrane theory cannot show.",
+      "links": {
+        "wikipedia": "https://en.wikipedia.org/wiki/Dome#Structure"
+      }
+    }
+  },
+  {
+    "id": "arch-3.1",
+    "file": "content/arch/ch03.js",
+    "fileSHA256": "50549637f9bb989e1c98572d3b8220bfbfbb3ea95539a9d2f14ca02baa732cd7",
+    "item": {
+      "num": "3.1",
+      "kind": "Principle",
+      "name": "Hooke’s inversion applied to masonry design",
+      "statement": "A flexible chain carrying weights hangs in the funicular polygon of those weights, every link in tension. Turn the picture upside down and every tension becomes a compression: a rigid arch whose axis follows the inverted shape is in equilibrium under the same loads with a line of thrust running along its axis and no bending anywhere. For masonry, which resists compression but not tension, this is a design method: choose the weights that stand for the voussoirs and whatever sits on them, hang them on a chain, invert it, and the arch stands for those loads however thin it is. When the loads change, the arch still stands as long as *some* funicular of the new loads (some horizontal thrust, some end points) fits inside the stone.",
+      "idea": "Hanging and standing are one equilibrium with the signs reversed: at each weight the two chain tensions and the weight close a force triangle (arch-1.4), and the horizontal component $H$ is the same all along (arch-1.5; arch-2.1 has the cable do it). Inverting the picture turns tensions into compressions without changing a force or a length, so the inverted chain is a line of thrust. Its height at any point is the beam moment divided by $H$, so a larger $H$ gives a flatter arch. A thick ring contains many funiculars, which is why real masonry tolerates changes of load that a thin one cannot (solid-9.10 treats the hanging chain itself).",
+      "caption": "The left panel is the chain hanging from two pins, the right panel the same shape turned over, with the stones set around it. Drag any column of weight (down on the chain, up on the arch) to make it heavier or lighter, or pick a preset; change the rise, the thickness of the stone ring, and add an extra load $Q$ on one block. The red line is the most central thrust line that fits the ring; it turns orange where it leaves the stone. Thin the ring or load the arch until no line fits, and the readout gives the thickness that would have been needed. The loads are illustrative numbers, not a real building.",
+      "deps": [
+        "arch-2.1",
+        "solid-9.10"
+      ],
+      "see": [
+        "arch-3.13",
+        "arch-4.6",
+        "arch-3.5"
+      ],
+      "refs": [
+        "Heyman"
+      ],
+      "credit": "Hooke, announced 1675–76; used by Poleni (1748) and Gaudí (hanging models for the Colònia Güell church, from 1898)",
+      "scope": "Plane arch of constant thickness under vertical point loads; no sliding, no crushing (arch-3.4). The loads, in kN per metre of depth, are illustrative.",
+      "tags": [
+        "hooke",
+        "funicular",
+        "form-finding"
+      ],
+      "links": {
+        "wikipedia": "https://en.wikipedia.org/wiki/Funicular_curve"
+      }
+    }
+  },
+  {
+    "id": "arch-2.1",
+    "file": "content/arch/ch02.js",
+    "fileSHA256": "8721e09e2598526860ade2c4a7dd1582145670df58d983936414710d3612488f",
+    "item": {
+      "num": "2.1",
+      "kind": "Model",
+      "name": "Cables under point loads take funicular shapes",
+      "statement": "A perfectly flexible, inextensible cable of given length $\\ell$, hung between two supports and carrying vertical loads $P_1, \\dots, P_n$, comes to rest in the **funicular polygon** of those loads: straight between the loads, kinked at each one. Its horizontal tension $H$ is the same in every segment, and the shape is\n$$y(x) = y_{\\text{chord}}(x) - \\frac{M(x)}{H},$$\nwhere $M$ is the bending moment a simply supported beam of the same span would have under the same loads. Of all the funicular polygons (one for each $H$), the cable picks the one whose length is $\\ell$: a shorter cable means a larger $H$. The segment tensions are $T_k = H\\sqrt{1 + y_k'^2}$, largest where the cable is steepest.\n\nWritten node by node, equilibrium says $\\sum_j q_{ij}(\\mathbf x_j - \\mathbf x_i) + \\mathbf p_i = 0$ with **force densities** $q_{ij} = T_{ij}/\\ell_{ij}$; for given $q$ this is a *linear* system, and the same equations shape a whole cable net in three dimensions.",
+      "idea": "A cable has no bending stiffness, so the only force it can carry is a tension along itself. At a load point the two segment tensions and the load must close as a force triangle (arch-1.4); with no horizontal loads the horizontal components of all segments are equal, and each segment's slope is (shear)/$H$, which integrates to the beam-moment formula. This is Varignon's funicular polygon (arch-1.5) built by the cable itself: the pole distance in the force diagram is $H$, and its position is fixed by the cable's length. Fixing the force densities instead of the length makes the node equations linear (Schek's force-density method, arch-6.6), which is how cable nets and membranes are form-found.\n\nFor the prescribed-force-density net, assume positive $q$ on each retained edge and that every component of free nodes is connected to a fixed boundary node. The reduced weighted graph matrix $L$ obeys $u^\\top Lu=\\sum_{\\text{free--free}}q_{ij}(u_i-u_j)^2+\\sum_{\\text{free--fixed}}q_{ij}u_i^2>0$ for nonzero free-node vectors, extending $u=0$ at fixed nodes. Thus its kernel is zero. The finite-dimensional injective--surjective theorem (ladr 3.65) makes $L$ invertible, so each coordinate has a unique solution for the given densities and boundary. A free component without an anchor has a constant null mode instead. This does not prove existence for an independently prescribed cable length or for arbitrary signed densities.",
+      "caption": "Drag the four weights sideways to move them and up or down to make them heavier (10 kN per metre of drop), drag support **B**, and change the cable length. The cable is recomputed from equilibrium every frame; the force polygon on the right is built from the same numbers, with the pole distance equal to $H$. Shorten the cable towards its chord and watch $H$ explode. Switch the right panel to **cable net**: a 7 × 7 net on a saddle-shaped boundary is solved live from its force densities (drag to rotate it); raising the corners or changing the ratio of the two families' force densities reshapes it, and every node balances exactly.",
+      "deps": [
+        "arch-1.5",
+        "ladr-3.65"
+      ],
+      "see": [
+        "arch-6.6",
+        "mech-5.11",
+        "arch-3.1"
+      ],
+      "refs": [
+        "Allen & Zalewski"
+      ],
+      "credit": "Varignon, 1725; force densities: Schek, 1974",
+      "tags": [
+        "cables",
+        "funicular",
+        "form-finding"
+      ]
+    }
+  },
+  {
+    "id": "arch-5.10",
+    "file": "content/arch/ch05-b.js",
+    "fileSHA256": "e35e12eb0747a99b29a0098ca0886e11aa27042c7fda375088da01280bb44d13",
+    "item": {
+      "num": "5.10",
+      "kind": "Theorem",
+      "name": "Maxwell’s rule for rigid frameworks",
+      "statement": "For a free planar bar framework with j distinct joints not all coincident and rigidity matrix R of rank r, let k be the dimension of internal infinitesimal mechanisms after removing the three rigid motions, and s the dimension of self-stress. Then\n$$k=2j-3-r,\\qquad s=m-r,$$\n$$m-s=2j-3-k.$$\nThus m=2j−3 is necessary for an isostatic framework, but the count alone does not establish infinitesimal rigidity.",
+      "idea": "An infinitesimal displacement gives the first-order change of each bar length through R. Its nullspace has dimension2j−r by the written rank-nullity theorem; the two translations and one rotation account for three dimensions when the joints are distinct and not all at one point. Self-stresses satisfy Rᵀt=0, whose dimension is m−r because row and column rank agree. Subtraction gives the identity. The collinear attached-joint example has both a self-stress and an infinitesimal mechanism although its count passes; that first-order motion need not extend to a finite flex. Supports impose additional constraints and are not silently removed by this free-framework formula.",
+      "caption": "Compare an unbraced square, one diagonal, two diagonals and a count-passing degenerate geometry. Read actual rank, mechanisms and self-stress rather than using a count as a certificate.",
+      "scope": "Unprestressed finite planar first-order bar framework with distinct joints and nonzero bar lengths; three independent rigid motions. Numerical rank uses the displayed scale-aware tolerance; near-singular values below that tolerance are not exact rank certificates. Infinitesimal rigidity, finite rigidity and prestress stability are distinct.",
+      "deps": [
+        "arch-5.7",
+        "ladr-3.21",
+        "ladr-3.57"
+      ],
+      "refs": [
+        "Connelly et al. 2009 §2.1; supplied planar rank-nullity derivation"
+      ],
+      "links": {
+        "source": "https://www-g.eng.cam.ac.uk/advancedstructures/files/pdf/2009GuestB.pdf"
+      },
+      "tags": [
+        "structural form",
+        "statics"
+      ]
+    }
+  },
+  {
+    "id": "mech-5.9",
+    "file": "content/mech/ch05-b.js",
+    "fileSHA256": "56d2b7f34c0e3f1fe54f3f358d68b55c8a82511ea99cfdb74ef8ef670b4e9bfe",
+    "item": {
+      "num": "5.9",
+      "kind": "Model",
+      "name": "Soap film between two rings: the catenoid",
+      "credit": "Euler, 1744 (catenoid); Goldschmidt, 1831 (discontinuous solution)",
+      "statement": "A soap film spanning two coaxial rings of radius $R$ a distance $2h$ apart minimises its area (surface tension times area is its energy). Among surfaces of revolution $r(x)$, $|x|\\le h$, the area $A=2\\pi\\int_{-h}^{h}r\\sqrt{1+r'^2}\\,dx$ is stationary exactly for **catenoids** $r=c\\cosh(x/c)$ with $c\\cosh(h/c)=R$. This equation has two solutions when $h/R<0.6627$ (a shallow, stable catenoid and a deep, unstable one), one at $h/R\\approx0.6627$, and none beyond. The two flat discs ($A=2\\pi R^2$, the **Goldschmidt solution**) beat the stable catenoid once $h/R>0.5277$; past $0.6627$ no catenoid exists and the film must jump to the discs.",
+      "idea": "The integrand $r\\sqrt{1+r'^2}$ does not contain $x$, so Beltrami's identity (5.6) gives $r/\\sqrt{1+r'^2}=c$, i.e. $r'=\\sqrt{r^2/c^2-1}$, integrated by $r=c\\cosh(x/c)$. Fitting both rings requires $c\\cosh(h/c)=R$; the left side, as a function of $c$, has a positive minimum, which is why solutions disappear in pairs as the rings separate. The Goldschmidt discs are not a smooth graph $r(x)$ — they are the limit of collapsing profiles — which is why the Euler–Lagrange equation alone cannot see them.",
+      "caption": "The film relaxes downhill on the area landscape below: it is drawn from a one-parameter family of trial surfaces (scaled catenaries through both rings), and its neck radius slides toward lower area. Drag the gold neck handle to deform it and let go; pull the rings apart with the slider or *Pull apart*. Below $h/R=0.6627$ the film settles in the stable catenoid (green); start it below the unstable one (red) or separate the rings further, and it collapses into two flat discs — the Goldschmidt jump. *New film* blows a fresh one.",
+      "scope": "Static films (no gravity, no air-pressure difference) with surface tension uniform; real films also respond to drafts and evaporation, and the collapse itself is a fast hydrodynamic event, here caricatured as a slide down the area landscape.",
+      "deps": [
+        "mech-5.6"
+      ],
+      "refs": [
+        "Goldstein §2.2"
+      ],
+      "tags": [
+        "minimal surface",
+        "catenoid",
+        "stability"
+      ],
+      "links": {
+        "wikipedia": "https://en.wikipedia.org/wiki/Catenoid"
+      }
+    }
+  },
+  {
+    "id": "fluid-2.7",
+    "file": "content/fluid/ch02.js",
+    "fileSHA256": "ae0ab7052ec4c32615c80fafe80ff10973fae61e689627141798c0e265d50f95",
+    "item": {
+      "num": "2.7",
+      "kind": "Law",
+      "name": "Surface tension and the Young–Laplace law",
+      "statement": "An interface with surface tension $\\gamma$ (energy per unit area, equivalently force per unit length) supports a pressure jump equal to $\\gamma$ times the sum of its principal curvatures, $\\Delta p=\\gamma\\,(1/R_1+1/R_2)$, the higher pressure on the concave side. For a spherical drop of liquid or a bubble in liquid, $\\Delta p=2\\gamma/R$; for a soap bubble, with two films, $\\Delta p=4\\gamma/R$. Smaller spheres therefore have higher internal pressure.",
+      "idea": "Balance the forces on one half of a sphere: the pressure difference pushes on the cross-section $\\pi R^2$, and the surface tension pulls along the rim of length $2\\pi R$ (twice, for two films). That gives $\\Delta p\\,\\pi R^2=2\\pi R\\gamma$. The same result follows from virtual work: inflating the sphere by $dR$ against pressure costs $\\Delta p\\,dV$ and creates area $dA$, so $\\Delta p=\\gamma\\,dA/dV=2\\gamma/R$. It rests on pressure being a scalar jump across the interface (2.1).",
+      "caption": "Two bubbles, one tube, a valve. Set the radii and the surface tension, and open the valve when the animation reaches 1 s. The small bubble has the higher pressure, so it empties into the large one and keeps shrinking until only a cap at the tube mouth remains. The log-log plot shows $\\Delta p\\propto1/R$, with the two bubbles as moving points.",
+      "deps": [
+        "fluid-2.1"
+      ],
+      "refs": [
+        "Kundu §1.6"
+      ],
+      "credit": "Young, 1805; Laplace, 1806",
+      "tags": [
+        "surface tension",
+        "capillarity"
+      ],
+      "scope": "Static interfaces, spherical caps (or small drops where gravity is negligible); the dynamics here is a schematic volume transfer driven by $\\Delta p$, not a model of the viscous flow in the tube."
+    }
+  }
+]

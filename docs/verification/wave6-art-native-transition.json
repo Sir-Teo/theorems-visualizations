@@ -1,0 +1,130 @@
+{
+  "status": "PASS",
+  "scope": "Only lesson2 marked-index labels and fixed-staircase control/readout presentation changed after the full56-layout run. All other13complete lesson functions and all helpers reconstruct exactly. The only other guard differences are the generated index timestamp and strictly additive scientific assertions.",
+  "allOtherGuardInputsByteExact": true,
+  "guards": [
+    {
+      "run": "native-final-a",
+      "summary": {
+        "path": "/workspace/scratch/wave6-art-research/native-final-a/summary.json",
+        "bytes": 13254,
+        "sha256": "65a7fdcd92b000052dc09b68fbff6e0bec21fc3e18be398b51466ff5881d856c"
+      },
+      "isolatedProvedDifferences": [
+        "../content/art/ch06.viz.js",
+        "../data/index.json",
+        "./wave6-art-native-science.mjs"
+      ]
+    },
+    {
+      "run": "native-final-b",
+      "summary": {
+        "path": "/workspace/scratch/wave6-art-research/native-final-b/summary.json",
+        "bytes": 13259,
+        "sha256": "5a265b8720501bb5f9326c0269da2ee75c6979c83509ebdb71aa25c61ce34fb8"
+      },
+      "isolatedProvedDifferences": [
+        "../content/art/ch06.viz.js",
+        "../data/index.json",
+        "./wave6-art-native-science.mjs"
+      ]
+    },
+    {
+      "run": "native-extra-a",
+      "summary": {
+        "path": "/workspace/scratch/wave6-art-research/native-extra-a/summary.json",
+        "bytes": 6803,
+        "sha256": "f3a4ea00abcc325f8ee588a31b4a763d19663823ef4caf9ace0bbbe0dbec1fce"
+      },
+      "isolatedProvedDifferences": [
+        "../content/art/ch06.viz.js",
+        "./wave6-art-native-science.mjs"
+      ]
+    },
+    {
+      "run": "native-extra-b",
+      "summary": {
+        "path": "/workspace/scratch/wave6-art-research/native-extra-b/summary.json",
+        "bytes": 8411,
+        "sha256": "857fd806660fcf3d4a92bc643f606f84ce1048612cdcb4398679d48c221b0812"
+      },
+      "isolatedProvedDifferences": [
+        "../content/art/ch06.viz.js",
+        "./wave6-art-native-science.mjs"
+      ]
+    },
+    {
+      "run": "native-knee-final",
+      "summary": {
+        "path": "/workspace/scratch/wave6-art-research/native-knee-final/summary.json",
+        "bytes": 3568,
+        "sha256": "03ef833ec006307e2c3e870fe3db2a1ef79663fcae897a9a970da020876e778f"
+      },
+      "isolatedProvedDifferences": [
+        "./wave6-art-native-science.mjs"
+      ]
+    },
+    {
+      "run": "native-knee-labels-final",
+      "summary": {
+        "path": "/workspace/scratch/wave6-art-research/native-knee-labels-final/summary.json",
+        "bytes": 3568,
+        "sha256": "fcb55b7b9f79f9795ea13961cb70ce1df7b812cc6b558bb730fa2241f39330ea"
+      },
+      "isolatedProvedDifferences": []
+    },
+    {
+      "run": "default-v5",
+      "summary": {
+        "path": "/workspace/scratch/wave6-art-research/default-v5/summary.json",
+        "bytes": 518274,
+        "sha256": "8d22ad6f2cda3f0078b2df1316a6f3b74ab00a278c1e207171b25ecc624129f6"
+      },
+      "isolatedProvedDifferences": [
+        "../content/art/ch06.viz.js",
+        "../data/index.json"
+      ]
+    },
+    {
+      "run": "default-knee-final",
+      "summary": {
+        "path": "/workspace/scratch/wave6-art-research/default-knee-final/summary.json",
+        "bytes": 50866,
+        "sha256": "b6a2421657c8acb665d9cad9fdbe4a545504a46fe00b04d97ab6c07438012b72"
+      },
+      "isolatedProvedDifferences": []
+    }
+  ],
+  "lesson2Proof": {
+    "status": "PASS",
+    "scope": "Only lesson2 renderer/readout changed after the complete56-layout run and28enhanced-coordinate replays. All helpers and the other13complete lesson bodies remain byte-exact. Pure models, source prose, metadata and ART data shard are unchanged. Lesson2 receives complete current4-layout native and4-layout default replays.",
+    "oldVizSHA256": "cb705a2421f569d08488f12d185e444faf18195671cf91823938765065eee7c1",
+    "newVizSHA256": "99188e303ffe8e2af2d9f869a7f960a1dbb9202ad2beb28234a4238bcc0a078f",
+    "oldLesson2SHA256": "4a2be27ac1f998ba11d9c29ecf77598bc1e8e5d51599b4e29bb5f7aa84676390",
+    "newLesson2SHA256": "75db81247ae4cbe0627617548bba1b1fe824869c3f786c5f33d6ed17fbec04ed"
+  },
+  "indexProof": {
+    "status": "PASS",
+    "scope": "Strict rebuild after all56guarded native layouts and all56default layouts closed. Every index property except generated timestamp is deeply exact, and the entire ART detail shard is byte-exact. Production files remain exact.",
+    "oldGenerated": "2026-10-27T08:25:38.480Z",
+    "newGenerated": "2026-10-27T09:06:00.866Z",
+    "oldIndexSHA256": "062438c4a85e2cfd1385e097222bf5892456ecb250aa3046d5bb1a59ddbb7840",
+    "newIndexSHA256": "b49ca38ecf743e7f142d2228107e38641c8e56e524607e845bbe9805413b7e8e",
+    "artDataSHA256": "5e18a8561dcb60ff2cbe57cef99117aa44a777d799ba3d978b944b67dc871a39"
+  },
+  "additiveAssertions": [
+    {
+      "status": "PASS",
+      "oldSHA256": "28e568ca65643c1d1d2f45454aaf11fb78aee154f4d22a2d3f0b89aed35a45fe",
+      "newSHA256": "1ce88095bc5d49c455283bca8167bba66ec29709bc4fc7f9077ee1cff2d05776",
+      "scope": "Only additional assertions inserted for lessons3,4,7,8,9,10,11; production and earlier checks byte-exact. Supplemental current replays cover every affected layout."
+    },
+    {
+      "status": "PASS",
+      "oldSHA256": "1ce88095bc5d49c455283bca8167bba66ec29709bc4fc7f9077ee1cff2d05776",
+      "newSHA256": "b507e77792624ef894f9f9d7048009fa186cfe668b6ac74d255f33c43dea3430",
+      "scope": "Only new lesson2 marked-index/glyph-spacing assertions; all other scientific checks byte-exact. Full current lesson2four-layout replay follows."
+    }
+  ],
+  "currentReplays": "All28layouts affected by extra coordinate/trace checks pass; all4lesson2layouts pass both the isolated product repair and final actual-index/3px-glyph-gap checks. Current default4 and ordinary light/dark lesson2 replays also pass."
+}

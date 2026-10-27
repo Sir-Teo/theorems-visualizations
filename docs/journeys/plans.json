@@ -379,9 +379,9 @@
     "kind": "author-check",
     "scope": "local-preview",
     "author": "atlas-editor",
-    "checkedOn": "2026-10-24",
-    "contentDigest": "1db62d4ec20cd79d5d616d6dfd97f2a1cec02a25e43c279a9d033769c958cc9b",
+    "checkedOn": "2026-10-27",
+    "contentDigest": "243689d9fcfa94bddf8c82ddbc94f6564d1b8b73265226f463fadcf7902687d3",
     "artifactDigest": "ff19c4a9828fd3b260c199c4963c1f85265be51d9cf59bd0c7e9e94aadd9f56e",
-    "evidencePath": "docs/verification/wave6-main-merge.md"
+    "evidencePath": "docs/verification/wave6-arch-ling-integration.md"
   }
 }

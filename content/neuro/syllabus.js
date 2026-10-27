@@ -142,48 +142,300 @@ export default {
       ],
     },
     {
-      n: 6,
-      title: 'Spike trains and neural coding',
-      summary: String.raw`Neural responses are variable, so coding is statistical. Firing rates, Poisson and renewal processes, Fano factors and spectra describe spike trains; tuning curves, reverse correlation and linear–nonlinear–Poisson models describe how stimuli drive them. Decoding asks how well an observer can read a stimulus back, bounded by Fisher information, and efficient-coding arguments explain why response curves match the statistics of the world. Noise models make firing itself probabilistic and can even help detection.`,
-      items: [
-        { num: '6.1', kind: 'Concept', name: 'Firing rate and the peri-stimulus time histogram', deps: [], refs: ['Dayan–Abbott ch. 1', 'Gerstner §7.2'],
-          pic: 'Repeat a stimulus many times and stack spike rasters; binning across trials gives the PSTH, and changing the bin width trades time resolution for noise.' },
-        { num: '6.2', kind: 'Model', name: 'Poisson spike trains', deps: ['neuro-6.1', 'stoch-9.3'], refs: ['Dayan–Abbott ch. 1'],
-          pic: 'Generate homogeneous and inhomogeneous Poisson spike trains; interspike intervals are exponential and spike counts in windows are Poisson, checked against histograms.' },
-        { num: '6.3', kind: 'Concept', name: 'Fano factor and coefficient of variation', deps: ['neuro-6.2'], refs: ['Gerstner §7.2', 'Gerstner §7.3'],
-          pic: 'Compare a Poisson train, a regular train with refractoriness and a bursting train; Fano factor and CV are read out, falling below or rising above 1 respectively.' },
-        { num: '6.4', kind: 'Concept', name: 'Renewal processes, survivor function and hazard', deps: ['neuro-6.3', 'stoch-11.1'], refs: ['Gerstner §7.5'],
-          pic: 'Draw an interspike-interval density; its survivor function and hazard are computed, and a hazard that is zero during refractoriness then rises reproduces the measured interval histogram.' },
-        { num: '6.5', kind: 'Concept', name: 'Spike-train autocorrelation and power spectrum', deps: ['neuro-6.2'], refs: ['Gerstner §7.4'],
-          pic: 'Compute the autocorrelation and power spectrum of a recorded spike train; refractoriness carves a dip at low lags and a trough in the spectrum, and oscillatory firing shows a peak.' },
-        { num: '6.6', kind: 'Concept', name: 'Tuning curves', deps: ['neuro-6.1'], refs: ['Dayan–Abbott ch. 1'],
-          pic: 'Rotate a bar of light and record a model V1 neuron; mean rate against orientation traces a bell-shaped tuning curve with error bars from trial-to-trial variability.' },
-        { num: '6.7', kind: 'Method', name: 'Spike-triggered average and reverse correlation', deps: ['neuro-6.2'], refs: ['Dayan–Abbott ch. 2'],
-          pic: 'Drive a model neuron with white noise and average the stimulus preceding each spike; the spike-triggered average converges to the neuron’s linear filter as spikes accumulate.' },
-        { num: '6.8', kind: 'Model', name: 'Linear–nonlinear–Poisson model', deps: ['neuro-6.7'], refs: ['Gerstner §11.2'],
-          pic: 'Filter a stimulus, pass it through a static nonlinearity and generate Poisson spikes; recover both stages from simulated data and compare predicted and actual PSTHs.' },
-        { num: '6.9', kind: 'Model', name: 'Receptive fields: Gabor and difference-of-Gaussians', deps: ['neuro-6.6', 'rca-8.13'], refs: ['Dayan–Abbott ch. 2'],
-          pic: 'Convolve natural images with centre–surround and Gabor receptive fields; responses highlight edges and oriented features, and drifting gratings map out spatial-frequency tuning.' },
-        { num: '6.10', kind: 'Method', name: 'Population-vector decoding', deps: ['neuro-6.6'], refs: ['Dayan–Abbott ch. 3'],
-          pic: 'Motor-cortex neurons with cosine tuning each vote with their preferred direction weighted by rate; the summed vector points close to the true reach direction, with errors shrinking as more neurons are added.' },
-        { num: '6.11', kind: 'Theorem', name: 'Fisher information and the Cramér–Rao bound for population codes', deps: ['neuro-6.6', 'stat-4.4'], refs: ['Dayan–Abbott ch. 3'],
-          pic: 'For a population of tuning curves, Fisher information is computed as a function of stimulus; the variance of a decoder across trials stays above 1/I_F, and is most precise on tuning-curve flanks.' },
-        { num: '6.12', kind: 'Method', name: 'Maximum a posteriori decoding', deps: ['neuro-6.10'], refs: ['Gerstner §11.3', 'Dayan–Abbott ch. 3'],
-          pic: 'Combine Poisson likelihoods from a population with a prior over stimuli; the posterior is drawn for each trial, and its peak outperforms the population vector when tuning is uneven.' },
-        { num: '6.13', kind: 'Concept', name: 'Efficient coding and histogram equalization (Laughlin)', deps: ['neuro-6.6', 'info-2.5'], refs: ['Dayan–Abbott ch. 4'],
-          pic: 'The response curve that maximizes information for a noisy neuron with bounded output is the cumulative distribution of natural contrasts; it matches the fly interneuron data Laughlin recorded.' },
-        { num: '6.14', kind: 'Theorem', name: 'Time-rescaling theorem for spike trains', deps: ['neuro-6.4'], refs: ['Gerstner §10.3'],
-          pic: 'Rescale time by the integrated conditional intensity of a fitted model; if the model is right the rescaled intervals are unit exponential, checked by a Kolmogorov–Smirnov plot against the diagonal.' },
-        { num: '6.15', kind: 'Model', name: 'Escape noise and the noisy integrate-and-fire neuron', deps: ['neuro-5.1', 'neuro-6.4'], refs: ['Gerstner §9.1', 'Gerstner §8.4'],
-          pic: 'Let a neuron fire stochastically with a rate that rises steeply with voltage; interval distributions broaden, and diffusive input noise and escape noise give matching histograms.' },
-        { num: '6.16', kind: 'Phenomenon', name: 'Stochastic resonance', deps: ['neuro-6.15'], refs: ['Gerstner §9.4'],
-          pic: 'A subthreshold periodic input alone never makes the neuron fire; add noise and spikes lock to the signal, with signal-to-noise ratio peaking at an intermediate noise level.' },
-        { num: '6.17', kind: 'Paper', name: 'Receptive Fields and Functional Architecture in Cat Cortex',
-          paper: { authors: 'D. H. Hubel and T. N. Wiesel', year: 1962, title: 'Receptive fields, binocular interaction and functional architecture in the cat’s visual cortex',
-                   venue: 'Journal of Physiology 160 (1): 106–154', doi: '10.1113/jphysiol.1962.sp006837' },
-          introduces: [], deps: ['neuro-6.6', 'psych-4.6'], refs: [],
-          pic: 'Hubel and Wiesel’s bench: sweep a bar of light across a simulated cortical cell’s receptive field and hear its spikes; a simple cell fires only for the right orientation over its excitatory strip, a complex cell for the right orientation anywhere in its field, and an electrode track through the cortex steps through orientation and ocular-dominance columns.' },
-      ],
+      "n": 6,
+      "title": "Spike trains and neural coding",
+      "summary": "Statistical descriptions of spikes depend on the averaging operation, observation window and conditional intensity. Synthetic Poisson and stationary renewal processes expose rates, variability, hazards and spectra; Gaussian stimuli then support reverse correlation and an explicitly fitted exponential LNP model. Declared population codes distinguish directional vectors, local information bounds and discrete Bayesian decisions. Histogram equalization and two noise mechanisms show how coding claims depend on constraints, while a modern receptive-field construction keeps the unread historical paper separate.",
+      "items": [
+        {
+          "num": "6.1",
+          "kind": "Concept",
+          "name": "Firing rate and the peri-stimulus time histogram",
+          "deps": [],
+          "refs": [
+            "Gerstner, Kistler, Naud & Paninski (2014), Neuronal Dynamics, official online corrected edition §7.2.1–7.2.2",
+            "Direct derivation for the declared synthetic model"
+          ],
+          "links": {
+            "book": "https://neuronaldynamics.epfl.ch/online/Ch7.S2.html"
+          },
+          "pic": "Rebin repeated synthetic spike rasters, change trial count and modulation, and compare the observed PSTH with its known expected bin-average rate. The last bin uses its actual exposure."
+        },
+        {
+          "num": "6.2",
+          "kind": "Model",
+          "name": "Poisson spike trains",
+          "deps": [
+            "neuro-6.1",
+            "stoch-9.3"
+          ],
+          "refs": [
+            "Gerstner, Kistler, Naud & Paninski (2014), Neuronal Dynamics, official online corrected edition §7.2.1–7.2.2; §7.3",
+            "Direct derivation for the declared synthetic model"
+          ],
+          "links": {
+            "book": "https://neuronaldynamics.epfl.ch/online/Ch7.S2.html"
+          },
+          "pic": "Switch constant and modulated count intensities and compare actual count frequencies with the exact Poisson law. A separate homogeneous waiting-time sample checks the Exp(1) law after multiplying intervals by rate."
+        },
+        {
+          "num": "6.3",
+          "kind": "Concept",
+          "name": "Fano factor and coefficient of variation",
+          "deps": [
+            "neuro-6.2"
+          ],
+          "refs": [
+            "Gerstner, Kistler, Naud & Paninski (2014), Neuronal Dynamics, official online corrected edition §7.2.1; §7.3; §7.5.1–7.5.2",
+            "Direct derivation for the declared synthetic model"
+          ],
+          "links": {
+            "book": "https://neuronaldynamics.epfl.ch/online/Ch7.S3.html"
+          },
+          "pic": "Compare stationary Poisson, regular and hyperexponential trains at equal mean rate. Change count-window duration and compare the observed count Fano factor with a separately sampled interval CV and its theoretical long-window limit."
+        },
+        {
+          "num": "6.4",
+          "kind": "Concept",
+          "name": "Renewal processes, survivor function and hazard",
+          "deps": [
+            "neuro-6.3",
+            "stoch-11.1"
+          ],
+          "refs": [
+            "Gerstner, Kistler, Naud & Paninski (2014), Neuronal Dynamics, official online corrected edition §7.5.1, Eqs.7.24–7.31",
+            "Direct derivation for the declared synthetic model"
+          ],
+          "links": {
+            "book": "https://neuronaldynamics.epfl.ch/online/Ch7.S5.html"
+          },
+          "pic": "Change dead time, number of exponential phases and phase rate. Probe the survivor, density and conditional hazard at a chosen age, and distinguish the two quantities measured per second."
+        },
+        {
+          "num": "6.5",
+          "kind": "Concept",
+          "name": "Spike-train autocorrelation and power spectrum",
+          "deps": [
+            "neuro-6.2"
+          ],
+          "refs": [
+            "Gerstner, Kistler, Naud & Paninski (2014), Neuronal Dynamics, official online corrected edition §7.4; §7.5.2, Eqs.7.37–7.48",
+            "Direct derivation for the declared synthetic model"
+          ],
+          "links": {
+            "book": "https://neuronaldynamics.epfl.ch/online/Ch7.S5.html"
+          },
+          "pic": "Compare regular, Poisson, broad-interval and oscillatory synthetic trains. Read positive-lag pair density beside eight averaged finite periodograms, with the appropriate renewal or finite-window Poisson expectation."
+        },
+        {
+          "num": "6.6",
+          "kind": "Concept",
+          "name": "Tuning curves",
+          "deps": [
+            "neuro-6.1"
+          ],
+          "refs": [
+            "Gerstner, Kistler, Naud & Paninski (2014), Neuronal Dynamics, official online corrected edition §12.1.1; §7.2",
+            "Direct derivation for the declared synthetic model"
+          ],
+          "links": {
+            "book": "https://neuronaldynamics.epfl.ch/online/Ch12.S1.html"
+          },
+          "pic": "Rotate the preferred and probe orientations, adjust baseline, amplitude and sharpness, and compare the known tuning curve with actual sample means, one-standard-deviation bars and independent probe rasters."
+        },
+        {
+          "num": "6.7",
+          "kind": "Method",
+          "name": "Spike-triggered average and reverse correlation",
+          "deps": [
+            "neuro-6.2"
+          ],
+          "refs": [
+            "Gerstner, Kistler, Naud & Paninski (2014), Neuronal Dynamics, official online corrected edition §11.2.1, Eq.11.6 and reverse-correlation discussion",
+            "Direct derivation for the declared synthetic model"
+          ],
+          "links": {
+            "book": "https://neuronaldynamics.epfl.ch/online/Ch11.S2.html"
+          },
+          "pic": "Compare white and correlated Gaussian stimuli. Observe the raw sample STA, the exact population covariance prediction, the true filter and a regularized sample covariance correction as sample size changes."
+        },
+        {
+          "num": "6.8",
+          "kind": "Model",
+          "name": "Linear–nonlinear–Poisson model",
+          "deps": [
+            "neuro-6.7"
+          ],
+          "refs": [
+            "Gerstner, Kistler, Naud & Paninski (2014), Neuronal Dynamics, official online corrected edition §10.1.2; §10.2.1–10.2.2; §10.3 introduction; §11.2.1",
+            "Direct derivation for the declared synthetic model"
+          ],
+          "links": {
+            "book": "https://neuronaldynamics.epfl.ch/online/Ch10.S2.html"
+          },
+          "pic": "Fit the eight-lag filter and intercept from actual synthetic Poisson counts. Change stimulus correlation, data exposure and regularization, and compare the fitted filter and independent held-out predictions with known truth."
+        },
+        {
+          "num": "6.9",
+          "kind": "Model",
+          "name": "Receptive fields: Gabor and difference-of-Gaussians",
+          "deps": [
+            "neuro-6.6",
+            "rca-8.13"
+          ],
+          "refs": [
+            "Gerstner, Kistler, Naud & Paninski (2014), Neuronal Dynamics, official online corrected edition §11.2.1; written RCA8.13 and PSYCH4.6",
+            "Direct derivation for the declared synthetic model"
+          ],
+          "links": {
+            "book": "https://neuronaldynamics.epfl.ch/online/Ch11.S2.html"
+          },
+          "pic": "Choose Gabor or center–surround weights, change a synthetic grating’s orientation, phase and spatial frequency, and inspect the actual cross-correlation map and numerical response coefficients."
+        },
+        {
+          "num": "6.10",
+          "kind": "Method",
+          "name": "Population-vector decoding",
+          "deps": [
+            "neuro-6.6"
+          ],
+          "refs": [
+            "Direct cosine expansion and sums of roots of unity; Poisson count model derived in NEURO6.2"
+          ],
+          "links": {
+            "statistics": "https://neuronaldynamics.epfl.ch/online/Ch7.S2.html"
+          },
+          "pic": "Change population size, stimulus direction, tuning depth and observation duration. Compare each cell’s actual count with its mean, then compare the realized vector, expected vector and true direction."
+        },
+        {
+          "num": "6.11",
+          "kind": "Theorem",
+          "name": "Fisher information and the Cramér–Rao bound for population codes",
+          "deps": [
+            "neuro-6.6",
+            "stat-4.4"
+          ],
+          "refs": [
+            "Actual written STAT4.4, including biased/local mean-derivative bound and score regularity",
+            "Direct score and information calculation for the declared independent Poisson population"
+          ],
+          "links": {
+            "countModel": "https://neuronaldynamics.epfl.ch/online/Ch7.S2.html"
+          },
+          "pic": "Move a calibration point through a real-valued Gaussian tuning population and compare its information with actual repeated score-estimator errors. Vary width, population and exposure, including a single cell at its tuning peak."
+        },
+        {
+          "num": "6.12",
+          "kind": "Method",
+          "name": "Maximum a posteriori decoding",
+          "deps": [
+            "neuro-6.10"
+          ],
+          "refs": [
+            "Gerstner, Kistler, Naud & Paninski (2014), Neuronal Dynamics, official online corrected edition §11.3.1; §10.2.1",
+            "Direct derivation for the declared synthetic model"
+          ],
+          "links": {
+            "book": "https://neuronaldynamics.epfl.ch/online/Ch11.S3.html"
+          },
+          "pic": "Decode an actual synthetic population count sample over eight directions. Adjust uneven coverage, tuning, prior and exposure, and inspect all posterior modes beside the naive vector angle."
+        },
+        {
+          "num": "6.13",
+          "kind": "Concept",
+          "name": "Efficient coding and histogram equalization (Laughlin)",
+          "deps": [
+            "neuro-6.6",
+            "info-2.5"
+          ],
+          "refs": [
+            "Simoncelli & Olshausen (2001), Natural Image Statistics and Neural Representation, Annual Review of Neuroscience24:1193–1216, selected pp.1195–1196 and1200",
+            "Actual written INFO2.5, information nonnegativity; direct probability-integral-transform and entropy argument"
+          ],
+          "links": {
+            "review": "https://www.cns.nyu.edu/pub/lcv/simoncelli01-reprint.pdf",
+            "doi": "https://doi.org/10.1146/annurev.neuro.24.1.1193"
+          },
+          "pic": "Change the synthetic Beta stimulus distribution and sample size. Follow its density through the monotone CDF response and compare the actual transformed histogram with the uniform reference."
+        },
+        {
+          "num": "6.14",
+          "kind": "Theorem",
+          "name": "Time-rescaling theorem for spike trains",
+          "deps": [
+            "neuro-6.4"
+          ],
+          "refs": [
+            "Gerstner, Kistler, Naud & Paninski (2014), Neuronal Dynamics, official online corrected edition §10.3.3, Eqs.10.42–10.45; §7.5.1",
+            "Direct derivation for the declared synthetic model"
+          ],
+          "links": {
+            "book": "https://neuronaldynamics.epfl.ch/online/Ch10.S3.html"
+          },
+          "pic": "Compare the correct renewal hazard with a wrong constant mean rate on the same complete intervals. Inspect the uniform CDF diagnostic, nominal KS band and consecutive-interval scatter separately."
+        },
+        {
+          "num": "6.15",
+          "kind": "Model",
+          "name": "Escape noise and the noisy integrate-and-fire neuron",
+          "deps": [
+            "neuro-5.1",
+            "neuro-6.4"
+          ],
+          "refs": [
+            "Gerstner, Kistler, Naud & Paninski (2014), Neuronal Dynamics, official online corrected edition §9.1.1–9.1.2; §9.4.1",
+            "Direct derivation for the declared synthetic model"
+          ],
+          "links": {
+            "book": "https://neuronaldynamics.epfl.ch/online/Ch9.S1.html"
+          },
+          "pic": "Switch escape and diffusive voltage noise, alter drive and noise parameters, and compare the actual voltage trace, raster, finite-run rate and completed-interval variability."
+        },
+        {
+          "num": "6.16",
+          "kind": "Phenomenon",
+          "name": "Stochastic resonance",
+          "deps": [
+            "neuro-6.15"
+          ],
+          "refs": [
+            "Gerstner, Kistler, Naud & Paninski (2014), Neuronal Dynamics, official online corrected edition §9.4.2; direct binary-threshold information calculation",
+            "Direct derivation for the declared synthetic model"
+          ],
+          "links": {
+            "book": "https://neuronaldynamics.epfl.ch/online/Ch9.S4.html"
+          },
+          "pic": "Change subthreshold amplitude and noise. Compare the analytic information curve with actual detector events for a periodic binary signal, including zero signal and zero-noise endpoints."
+        },
+        {
+          "num": "6.17",
+          "kind": "Paper",
+          "name": "Receptive Fields and Functional Architecture in Cat Cortex",
+          "deps": [
+            "neuro-6.6",
+            "psych-4.6"
+          ],
+          "paper": {
+            "authors": "D. H. Hubel and T. N. Wiesel",
+            "year": 1962,
+            "title": "Receptive fields, binocular interaction and functional architecture in the cat’s visual cortex",
+            "venue": "Journal of Physiology 160 (1): 106–154",
+            "doi": "10.1113/jphysiol.1962.sp006837"
+          },
+          "introduces": [],
+          "refs": [
+            "Hubel & Wiesel (1962), archive index and bibliographic record only; full body blocked by explicit access challenge",
+            "Gerstner, Kistler, Naud & Paninski (2014), Neuronal Dynamics, official online corrected edition selected §12.1.1 receptive-field and column discussion, and §11.2.1 LNP discussion; original reprinted figures not used",
+            "Direct normalized Gaussian Fourier and even–odd quadrature calculation"
+          ],
+          "links": {
+            "record": "https://pmc.ncbi.nlm.nih.gov/articles/PMC1359523/",
+            "doi": "https://doi.org/10.1113/jphysiol.1962.sp006837",
+            "modern": "https://neuronaldynamics.epfl.ch/online/Ch12.S1.html"
+          },
+          "verify": true,
+          "pic": "Rotate and phase-shift a synthetic grating. Compare a declared even receptive field, simple and quadrature-energy phase responses, and independent synthetic spike rasters, with the original-source limitation visible."
+        }
+      ]
     },
     {
       n: 7,

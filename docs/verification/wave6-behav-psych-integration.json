@@ -1,0 +1,166 @@
+{
+  "status": "PASS",
+  "checkedOn": "2026-10-26",
+  "scope": "Local chapter-author integration only; no additional independent acceptance, publication, release or deployment.",
+  "exactExportCommit": "32b07974eb5c7cb9840459250c5c6d4febbaab0a",
+  "exactExportPath": "/workspace/scratch/wave6-behav-psych-export-32b07974",
+  "archive": {
+    "status": "PASS",
+    "commit": "32b07974eb5c7cb9840459250c5c6d4febbaab0a",
+    "path": "/workspace/scratch/wave6-behav-psych-export-32b07974",
+    "archive": "/workspace/scratch/wave6-behav-psych-integration/exact-export-32b07974.tar",
+    "archiveSHA256": "1ac6b5f0ce7fffc27fe78700b53024b5a250cce8a3b635d37c2b15efc9eb11f6",
+    "trackedRegularFilesExactlyEqual": 7030
+  },
+  "chapterSourceCommit": "74be2b102669b00b9a7035e461b6422d8c9bd3e7",
+  "reading": {
+    "retainedCompleteProjections": 8585,
+    "addedIdeas": 25,
+    "total": 8610,
+    "aliases": 76,
+    "snapshotDigest": "934df09c8977e4dbf3390e93b4e3a13b06a96e512c31bf77e2873aa06ac36f36",
+    "dataDigest": "4cee6140a1264897608559f27f5f4753d5a11a9f14513bcae8473732851413e8"
+  },
+  "availability": {
+    "authorAvailable": 895,
+    "goal": 1057,
+    "historicalIndependent": 36,
+    "additionalAuthorVerified": 859,
+    "SOC6Counted": false
+  },
+  "preservation": {
+    "chapterSourcePins": 491,
+    "earlierCompleteProjections": 8585,
+    "aliases": 76,
+    "unchangedBindingArrays": 4,
+    "fiveSnapshotBindingFilesPreimageChecked": true,
+    "sourceAssetsScriptsFrozenPlansExact": true
+  },
+  "checks": {
+    "focusedIntegration": {
+      "passed": 38,
+      "failed": 0,
+      "skipped": 0,
+      "cancelled": 0,
+      "durationMs": 17763.715688
+    },
+    "strict": {
+      "written": 8610,
+      "planned": 4964,
+      "chapters": 593,
+      "collections": 85,
+      "errors": 0,
+      "warnings": 0
+    },
+    "static": {
+      "visualizations": 8547,
+      "errors": 0,
+      "warnings": 0
+    },
+    "fullNode22": {
+      "version": "22.23.3",
+      "fileConcurrency": 1,
+      "passed": 5006,
+      "failed": 0,
+      "skipped": 0,
+      "cancelled": 0,
+      "durationMs": 847950.107688,
+      "ranAlone": true
+    },
+    "productionSmoke": {
+      "light": 272,
+      "dark": 272,
+      "routesWithErrors": 0
+    },
+    "coverageStructure": {
+      "result": "PASS",
+      "domains": 30,
+      "primaryCollections": 85
+    },
+    "readOnlyContinuation": {
+      "records": 24,
+      "modelChecks": "passed"
+    }
+  },
+  "proofs": [
+    {
+      "status": "PASS",
+      "root": "/workspace/theorems-visualizations",
+      "commit": "32b07974eb5c7cb9840459250c5c6d4febbaab0a",
+      "readingIdeas": 8610,
+      "retainedEarlierProjections": 8585,
+      "aliases": 76,
+      "pinnedFiles": 491,
+      "unchangedBindingArrays": 4,
+      "snapshotDigest": "934df09c8977e4dbf3390e93b4e3a13b06a96e512c31bf77e2873aa06ac36f36",
+      "dataDigest": "4cee6140a1264897608559f27f5f4753d5a11a9f14513bcae8473732851413e8",
+      "sourceAssetsFrozenPlansExact": true,
+      "cleanTrackedTree": true
+    },
+    {
+      "status": "PASS",
+      "root": "/workspace/scratch/wave6-behav-psych-export-32b07974",
+      "commit": "32b07974eb5c7cb9840459250c5c6d4febbaab0a",
+      "readingIdeas": 8610,
+      "retainedEarlierProjections": 8585,
+      "aliases": 76,
+      "pinnedFiles": 491,
+      "unchangedBindingArrays": 4,
+      "snapshotDigest": "934df09c8977e4dbf3390e93b4e3a13b06a96e512c31bf77e2873aa06ac36f36",
+      "dataDigest": "4cee6140a1264897608559f27f5f4753d5a11a9f14513bcae8473732851413e8",
+      "sourceAssetsFrozenPlansExact": true,
+      "cleanTrackedTree": true
+    }
+  ],
+  "retainedFailures": [
+    {
+      "scope": "The first reconciliation checked the old static snapshot raw pin after changing that intended metadata file and correctly rejected the mismatch. Its partial outputs were archived, all five metadata files restored to exact preimages, and all preimage checks moved before mutation. The final postcheck exempts only those five intended snapshot/binding metadata files from old raw hashes while independently preserving all complete projections, aliases and four route arrays. No scientific/test gate was weakened.",
+      "failedLog": {
+        "path": "/workspace/scratch/wave6-behav-psych-integration/reconcile-partial-failure.log",
+        "sha256": "a32ca78d85c87298137f6cd8eb2c83d9793f2864721c85b7438868d834af22c2"
+      },
+      "repairedLog": {
+        "path": "/workspace/scratch/wave6-behav-psych-integration/reconcile-repaired.log",
+        "sha256": "74e8da5b6c90c8a732e429b7f1c1bd737e8ea9d3e422bd4232acdede03e3b09c"
+      }
+    }
+  ],
+  "historicalScope": "The earlier019944fb FIN/GAME export remains historical; its4965 tests and272/theme smoke predate the later home cosmetics, BEHAV7 andPSYCH6. This current5006-test exact export includes those source bytes. Old chapter manifests bind their own historical commits; the mutable continuation handoff is an explicit later documentation change, not a retroactive hash match.",
+  "allOwnedBrowsersAndServersClosed": true,
+  "sourceStops": "All inherited original-body/figure access stops remain binding. SOC6 source research keeps its new stops and precise partial-reading scopes in scratch; no stopped body recovered.",
+  "logs": {
+    "scoped.log": {
+      "path": "/workspace/scratch/wave6-behav-psych-integration/scoped.log",
+      "sha256": "3f661a6fa2033b07a9bd15a5e9ccde1dd4ed70980fa5b0a388bacbf693a05920"
+    },
+    "coverage.log": {
+      "path": "/workspace/scratch/wave6-behav-psych-integration/coverage.log",
+      "sha256": "65134ca2bcf2f6f352c7ab87781ed45ee451e736df09efb7f37cd819f7786e0a"
+    },
+    "local.log": {
+      "path": "/workspace/scratch/wave6-behav-psych-integration/local.log",
+      "sha256": "b4a95b8406bd356992f0f774c2f9c5083b1c8c343685f94dd2ce397d9873c231"
+    },
+    "export-build.log": {
+      "path": "/workspace/scratch/wave6-behav-psych-integration/export-build.log",
+      "sha256": "25287b232840b270c4bed47859c365788f4703d401fdce554304e4d5fcc1f3a8"
+    },
+    "export-static.log": {
+      "path": "/workspace/scratch/wave6-behav-psych-integration/export-static.log",
+      "sha256": "5566a2061674cb8889906a3529ba18fdfaa79598ee093668391b44237cfa4b51"
+    },
+    "export-full-suite.log": {
+      "path": "/workspace/scratch/wave6-behav-psych-integration/export-full-suite.log",
+      "sha256": "0762fd8a26d316b66c47d2d7cdd4f9bc136e867eed7b800d01180f6cc529bb6d"
+    },
+    "export-smoke-light.log": {
+      "path": "/workspace/scratch/wave6-behav-psych-integration/export-smoke-light.log",
+      "sha256": "cc036ad2be5c310e4e9e65a8c6914b837f91e9627872eb733b75f1f6f724f0c0"
+    },
+    "export-smoke-dark.log": {
+      "path": "/workspace/scratch/wave6-behav-psych-integration/export-smoke-dark.log",
+      "sha256": "cc036ad2be5c310e4e9e65a8c6914b837f91e9627872eb733b75f1f6f724f0c0"
+    }
+  },
+  "next": "Continue SOC6 eight frozen lessons, thenPOLSCI7 eleven. SOC pure-model and source/design preparation exists only in scratch; noSOC availability promotion. Continuous expansion and highest visualization-quality requirement remain active. Do not stop at chapters, commits, integration checkpoints or waves."
+}

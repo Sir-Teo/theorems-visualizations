@@ -1,0 +1,141 @@
+{
+  "status": "PASS; author verification only",
+  "newFrozenLessons": 14,
+  "purposeBuiltPanels": 43,
+  "authorAvailability": 953,
+  "historicalIndependentAccepted": 36,
+  "additionalAuthorVerified": 917,
+  "independentAcceptanceAdded": 0,
+  "model": {
+    "cases": 1627,
+    "families": 15,
+    "comparisons": 306605,
+    "numericalValues": 278113,
+    "exactValues": 28492,
+    "completePrecisionCorporaByteIdentical": true,
+    "freshInstalledGeneratorByteIdentical": true
+  },
+  "focused": {
+    "groups": 37,
+    "newChapterGroups": 23,
+    "affectedHistoricalGroups": 14,
+    "failed": 0,
+    "skipped": 0,
+    "cancelled": 0,
+    "duration_ms": 950.945024,
+    "log": {
+      "path": "/workspace/scratch/wave6-art-research/focused-author-final.log",
+      "bytes": 7909,
+      "sha256": "c5bd521f0435eeb59739bfd3994af7e2fddf96585afdfec1add4006922f1764f"
+    }
+  },
+  "strict": {
+    "items": 8668,
+    "planned": 4906,
+    "chapters": 598,
+    "collections": 85,
+    "errors": 0,
+    "warnings": 0,
+    "log": {
+      "path": "/workspace/scratch/wave6-art-research/strict-author-final.log",
+      "bytes": 217,
+      "sha256": "a6708c1f333e9a103da414c95825097e3b21c3da2a3f8a2c764cd6645ad6e4c2"
+    }
+  },
+  "static": {
+    "items": 8605,
+    "errors": 0,
+    "warnings": 0,
+    "log": {
+      "path": "/workspace/scratch/wave6-art-research/global-static-author.log",
+      "bytes": 54,
+      "sha256": "bcf178a88af57aa0cb78db1466896b3edd6c0d8b9d70a7fe966dd4a027e98e77"
+    }
+  },
+  "ordinaryProduction": {
+    "light": {
+      "effectiveRoutes": 14,
+      "priorFullRun": {
+        "path": "/workspace/scratch/wave6-art-research/production-final-light.log",
+        "bytes": 943,
+        "sha256": "b14e780b978bece41371028e4232fdcfbf02130ecfae89d888553c4cb989640a"
+      },
+      "currentLesson2Replacement": {
+        "path": "/workspace/scratch/wave6-art-research/production-knee-light.log",
+        "bytes": 163,
+        "sha256": "2f93ad38f2ddb64e2cd18544819c49f4d910aaff0eeb854e9793dbbc5a2dfcd3"
+      },
+      "failed": 0,
+      "texBlankWarnings": 0,
+      "qualityWarnings": 0
+    },
+    "dark": {
+      "effectiveRoutes": 14,
+      "priorFullRun": {
+        "path": "/workspace/scratch/wave6-art-research/production-final-dark.log",
+        "bytes": 943,
+        "sha256": "b14e780b978bece41371028e4232fdcfbf02130ecfae89d888553c4cb989640a"
+      },
+      "currentLesson2Replacement": {
+        "path": "/workspace/scratch/wave6-art-research/production-knee-dark.log",
+        "bytes": 163,
+        "sha256": "2f93ad38f2ddb64e2cd18544819c49f4d910aaff0eeb854e9793dbbc5a2dfcd3"
+      },
+      "failed": 0,
+      "texBlankWarnings": 0,
+      "qualityWarnings": 0
+    }
+  },
+  "native": {
+    "layouts": 56,
+    "actions": 1512,
+    "shares": 756,
+    "invalid": 92,
+    "raw": 36,
+    "critical": 388,
+    "checks": 2852,
+    "modelComparisons": 924956,
+    "domRangeRounding": 356,
+    "pixelComparisons": 535984,
+    "customActions": 24
+  },
+  "allRetainedSuccessfulNativeRuns": {
+    "layouts": 92,
+    "actions": 2552,
+    "shares": 1284,
+    "invalid": 156,
+    "raw": 60,
+    "critical": 656,
+    "checks": 4820,
+    "modelComparisons": 1477604,
+    "domRangeRounding": 580,
+    "pixelComparisons": 692480,
+    "customActions": 40
+  },
+  "visual": {
+    "completeTargets": 728,
+    "actualProductImageViews": 205,
+    "actualOriginalPixelViews": 197,
+    "draftDetailViewsExcluded": 8
+  },
+  "preservation": {
+    "previousRawFilesByteExact": 836,
+    "frozenMetadataAndPropertyAbsenceExact": true,
+    "wholeOldArtTestByteExact": true,
+    "soleSyllabusException": "Chapter6researchedrefs/pic"
+  },
+  "fullGlobalSuite": "Latest completed global/reading export a71d15c0:5053tests,8629reading entries/76aliases; predatesDEMO6/MUSIC10/ART6. Run full suite alone after the39entry integration batch.",
+  "ownedBrowsersAndServersExplicitlyClosed": true,
+  "postReceiptPreservationCheck": {
+    "passed": 37,
+    "failed": 0,
+    "skipped": 0,
+    "cancelled": 0,
+    "durationMs": 885.600888,
+    "log": {
+      "path": "/workspace/scratch/wave6-art-research/focused-author-doccheck.log",
+      "bytes": 7905,
+      "sha256": "71e9cb27307c43bc58416bb1f76391acdfb4cd8236bd2d62ac029821e6d5fbab"
+    }
+  }
+}

@@ -1,0 +1,83 @@
+{
+  "status": "PASS",
+  "scope": "1627 complete independent reference objects across15families; full90/180digit and fresh-installed90digit outputs byte-identical",
+  "cases": 1627,
+  "families": {
+    "centreSurround": 144,
+    "mach": 54,
+    "contrast": 25,
+    "albers": 49,
+    "assimilation": 36,
+    "constancy": 12,
+    "vonKries": 288,
+    "retinex": 216,
+    "dress": 12,
+    "hueChanges": 81,
+    "brightness": 325,
+    "checker": 42,
+    "equiluminance": 240,
+    "chevreul": 73,
+    "sceneSample": 30
+  },
+  "fixtureBytes": 4612994,
+  "fixtureSHA256": "071fd9001b97482642fded38e5b6c5fe0bf46f910a7e007ba959fb5b8cc501b9",
+  "comparisons": 306605,
+  "numericalValues": 278113,
+  "exactValues": 28492,
+  "maxNormalizedError": 0.005551115123125783,
+  "focusedInitial": {
+    "groups": 37,
+    "failed": 0,
+    "skipped": 0,
+    "duration_ms": 673.37952
+  },
+  "inputs": {
+    "content/art/ch06.shared.js": "d7aaa78cafe2c3c7847e41330a4495a97db092943efbae60d43f14f8b23739b0",
+    "tests/wave6-art-reference.py": "ab5e4399e171b7ff6e0e4733951430adb6d377d27551f9bbef71c48d6d73fd76"
+  },
+  "limits": [
+    "Bounded authored numerical models; no empirical appearance validation",
+    "No global-suite claim at this author stage",
+    "Reference matrix cross-zero cleanup is below1000mpmath eps; legitimate finite quantities retained",
+    "Initial90/180comparison exposed266 sub-epsilon matrix inverse cancellation residues; explicit numerical-zero cleanup in preview corrected reference canonicalisation, with retained original outputs in scratch"
+  ],
+  "focusedFinal": {
+    "groups": 37,
+    "newChapterGroups": 23,
+    "affectedHistoricalGroups": 14,
+    "failed": 0,
+    "skipped": 0,
+    "cancelled": 0,
+    "duration_ms": 950.945024,
+    "log": {
+      "path": "/workspace/scratch/wave6-art-research/focused-author-final.log",
+      "bytes": 7909,
+      "sha256": "c5bd521f0435eeb59739bfd3994af7e2fddf96585afdfec1add4006922f1764f"
+    }
+  },
+  "precisionAndFreshOutputs": [
+    {
+      "path": "/workspace/scratch/wave6-art-research/reference-90.json",
+      "bytes": 4612994,
+      "sha256": "071fd9001b97482642fded38e5b6c5fe0bf46f910a7e007ba959fb5b8cc501b9"
+    },
+    {
+      "path": "/workspace/scratch/wave6-art-research/reference-180.json",
+      "bytes": 4612994,
+      "sha256": "071fd9001b97482642fded38e5b6c5fe0bf46f910a7e007ba959fb5b8cc501b9"
+    },
+    {
+      "path": "/workspace/scratch/wave6-art-research/reference-fresh-90.json",
+      "bytes": 4612994,
+      "sha256": "071fd9001b97482642fded38e5b6c5fe0bf46f910a7e007ba959fb5b8cc501b9"
+    }
+  ],
+  "numericalBudget": "2e-11+3e-11*abs(reference), cyclic hue comparison; exact structural/byte/integer leaves remain exact. No budget widened.",
+  "worst": {
+    "path": "vonKries whiteError",
+    "actual": 1.1102230246251565e-13,
+    "expected": 0,
+    "budget": 2e-11,
+    "maxNormalizedError": 0.005551115123125783
+  }
+}

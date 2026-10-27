@@ -1,0 +1,15 @@
+{
+  "baseCommit": "0841d5ae71cbe34b309877db517be41c13832bea",
+  "sha256": {
+    "content/sysbio/ch06.js": "b2657c3f019303bbdd57ef78b22674321f2976a3f5f912d939e34833e6b355b5",
+    "content/sysbio/ch06.shared.js": "ec2578bd3aaa8e9297c53138e99ee5a69f86c0d8f7f52fb0f0bdc4a7b83b662f",
+    "content/sysbio/ch06.viz.js": "2fd724efb903c3ed62bef2ddc4cbaee890d4aa683c8ec29e071ba10a1c73401d",
+    "content/sysbio/syllabus.js": "2e688c87ffb4a333626fea1d6741f8cb0cfa9e5a7541dd0124d8261ed881ffed",
+    "tests/wave6-sysbio.test.mjs": "b52f82c382a76e96a1526f8ca0c72259078b6aa120c98b81b5131cb9664bd84a",
+    "tests/wave6-sysbio-browser.mjs": "963584452fe6ca60d07c11b8be25941ae9efb3c2961c5f6e74fcc6dbe0b66884",
+    "tests/wave6-sysbio-reference.py": "7cd1c5c712464e472ef11d7a9a5e5e1018e784fc52ff03d9b30c604689f8ec1d",
+    "tests/fixtures/wave6-sysbio-reference.json": "4ce3b39309832995ca2f0410feb13fadf95c6ff03e577c09856473c81892506b",
+    "docs/verification/wave6-sysbio-sources.json": "d293c1b03fab82dcabf8c2ffa8c605de4208cdbdd6f2fc0dcc5bc7f082811685",
+    "docs/verification/wave6-sysbio-gates.json": "55a4c1785ee55ef46978b61d2f7b087bd1c09a98ad9226ba0d4bdcba1cd556f8"
+  }
+}

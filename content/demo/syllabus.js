@@ -1,4 +1,4 @@
-// Demography — baseline preserved; chapter5 researched metadata.
+// Demography — baseline preserved; chapters5/6 researched refs and captions.
 export default {
   "collection": "demo",
   "chapters": [
@@ -876,9 +876,10 @@ export default {
             "demo-5.6"
           ],
           "refs": [
-            "PHG ch. 7"
+            "UN World Population Prospects 2024: retained female fertility and life-table schedules; estimates 1950–2023",
+            "Rodríguez, Stable Populations (2017), pp 1,4–5; own fixed-law spectral/renewal derivation"
           ],
-          "pic": "Under constant rates the projected pyramid stops changing shape and just scales; a toggle overlays the analytic stable distribution on the projected one."
+          "pic": "Choose a retained period schedule and an authored starting population. The selected census advances its actual age shares; an overlay shows the analytic target of that same annual law. A size history and the maternity contributions reveal why shape and scale behave differently."
         },
         {
           "num": "6.2",
@@ -890,9 +891,10 @@ export default {
             "mathbio-4.6"
           ],
           "refs": [
-            "PHG ch. 7"
+            "UN World Population Prospects 2024: retained female fertility and life-table schedules; estimates 1950–2023",
+            "Rodríguez (2017), actual pp 1–3; written DEMO 4.3 and MATHBIO 4.6; own monotonicity proof"
           ],
-          "pic": "Plot ∫ e^{−ra} l(a) m(a) da against r for a real human schedule; the curve falls monotonically and crosses one at a unique r, read off live as you edit fertility."
+          "pic": "Move a trial growth rate along the actual Lotka curve for a selected period schedule. A logarithmic vertical scale keeps the crossing at one visible. The contribution chart separates maternal-age bands at the trial and intrinsic rates; zero fertility has an explicit zero-kernel view."
         },
         {
           "num": "6.3",
@@ -903,9 +905,10 @@ export default {
             "mathbio-4.8"
           ],
           "refs": [
-            "PHG ch. 7"
+            "UN World Population Prospects 2024: retained female fertility and life-table schedules; estimates 1950–2023",
+            "Written MATHBIO 4.8; own exponential-tangent bound and cumulant calculation"
           ],
-          "pic": "Scatter the exact r against ln NRR / T for every country’s schedule; points hug the diagonal, and the error grows only for very high fertility."
+          "pic": "Compare all 50 retained country-year schedules against the equality line, then inspect the selected schedule's maternity timing and actual first- and second-order errors. A common fertility multiplier changes the calculation for every displayed point."
         },
         {
           "num": "6.4",
@@ -915,9 +918,10 @@ export default {
             "demo-6.2"
           ],
           "refs": [
-            "PHG ch. 7"
+            "UN World Population Prospects 2024: retained female fertility and life-table schedules; estimates 1950–2023",
+            "Rodríguez (2017), actual p 4; own normalization and rate-balance derivation"
           ],
-          "pic": "Build the stable pyramid from a survival curve and r; raising r tilts the pyramid into a wide-based triangle, lowering it below zero inverts the top."
+          "pic": "Build an age profile from survival, a chosen exponential tilt and a normalizer. Select an age to see the complete multiplication. The final accounting chart connects female births, deaths and growth, including the 100+ tail."
         },
         {
           "num": "6.5",
@@ -927,9 +931,10 @@ export default {
             "demo-6.4"
           ],
           "refs": [
-            "PHG ch. 7"
+            "UN World Population Prospects 2024: retained female fertility and life-table schedules; estimates 1950–2023",
+            "Coale (1957), actual reprint in Smith & Keyfitz (2013), pp 168–172, especially p 170; own proportional-fertility and uniform-hazard proofs"
           ],
-          "pic": "Change fertility and mortality separately in a stable population: lowering mortality barely changes the mean age (it saves the young as much as the old), while lowering fertility ages the population sharply."
+          "pic": "Change fertility, early-life mortality and later-life mortality separately. Compare their actual stable profiles and mean ages on common scales. A separate uniform-hazard example shows how identical age shares can accompany different growth and death rates."
         },
         {
           "num": "6.6",
@@ -940,9 +945,10 @@ export default {
             "demo-2.4"
           ],
           "refs": [
-            "PHG ch. 7"
+            "UN World Population Prospects 2024: retained female fertility and life-table schedules; estimates 1950–2023",
+            "Rodríguez (2017), actual p 4; written DEMO 2.4; own stationary flow and lifetime-moment derivation"
           ],
-          "pic": "Set r = 0 and see the pyramid become the survival curve on its side; the crude birth and death rates both equal 1/e₀, and the mean age of the living matches its formula."
+          "pic": "Rescale maternity to replacement and inspect the survival area, balanced birth/death flows and the two different mean ages. A mortality control changes the complete survival law and its oldest-age tail."
         },
         {
           "num": "6.7",
@@ -953,9 +959,10 @@ export default {
             "mathbio-4.13"
           ],
           "refs": [
-            "K&C: Understanding Population Characteristics"
+            "Written MATHBIO 4.13: renewal framework; own complete Erlang convolution/mode proof",
+            "Rodríguez (2017), actual pp 1–2,5: renewal identity and growth correction"
           ],
-          "pic": "Births computed from the renewal equation oscillate in damped waves of generation length before settling on e^{rt}; the complex roots that govern the waves are plotted in the plane."
+          "pic": "Watch the computed renewal stream, its growth-corrected limit and every eigenvalue of the explicit phase system. The second time plot separates specified forcing from the positive renewal contribution. Shape and mean timing change the damping mechanism."
         },
         {
           "num": "6.8",
@@ -965,9 +972,10 @@ export default {
             "demo-6.4"
           ],
           "refs": [
-            "PHG ch. 8"
+            "Preston & Coale (1982), Population Index 48(2):217–259, historical attribution",
+            "Own continuity-equation proof and fully specified birth-history calculation"
           ],
-          "pic": "For a non-stable population, compute age-specific growth rates from two censuses; the generalized formula c(a) = b exp(−∫₀ᵃ r(x)dx) l(a) reproduces the observed age distribution exactly."
+          "pic": "A chosen cyclical birth history generates the current age density. Compare instantaneous growth with two-census average growth, then inspect the exact reconstruction and the finite-census substitute. The substitute's total mass is reported before any separate normalization."
         },
         {
           "num": "6.9",
@@ -977,9 +985,10 @@ export default {
             "demo-5.6"
           ],
           "refs": [
-            "K&C: Some Types of Instability"
+            "Schoen (2001), Toward a General Model for Populations with Changing Rates, §2.1, printed 166: changing-law context",
+            "Written DEMO 5.6; own quantitative ratio-range contraction proof"
           ],
-          "pic": "Two different starting pyramids subjected to the same sequence of time-varying rates converge toward each other, though neither settles into a fixed shape."
+          "pic": "Start two different age profiles under one periodic or Thue–Morse sequence. Compare their changing shapes, actual total-variation distance and normalized ratio-range contraction against its proved block bound."
         },
         {
           "num": "6.10",
@@ -989,9 +998,10 @@ export default {
             "demo-6.1"
           ],
           "refs": [
-            "K&C: Understanding Population Characteristics"
+            "Sharpe & Lotka (1911), actual reprint p 98: procreation may depend on both sex distributions",
+            "Own specified two-sex capacity closure and cohort accounting"
           ],
-          "pic": "Male- and female-based projections of the same population disagree on r; a marriage-squeeze slider shows how a harmonic-mean pairing function reconciles them."
+          "pic": "Compare female-only, male-only and the chosen two-sex birth streams from the same initial age vectors. Change the initial sex mix, birth-sex share and capacity utilization. Selected sex-specific age bars and the capacity calculation reveal the source of disagreement."
         },
         {
           "num": "6.11",
@@ -1012,8 +1022,11 @@ export default {
             "demo-2.3",
             "demo-4.1"
           ],
-          "refs": [],
-          "pic": "Start a population from any age pyramid with fixed age-specific fertility and survival: births oscillate in dying waves while the age distribution converges to the stable shape c(a) = b e^(−ra) l(a), with r the real root of their characteristic equation; edit the starting pyramid to see that the destination does not depend on it."
+          "refs": [
+            "Sharpe & Lotka (1911), actual reprint in Smith & Keyfitz, Mathematical Demography: Selected Papers (2013), pp 98–100",
+            "Own conditional finite-law projection"
+          ],
+          "pic": "Select an age to trace a cohort from its birth level through survival. Compare the actual paper's 11 female age-group entries, calculated and observed, on one categorical scale. A separate same-law projection lets you change the authored starting profile while tracing distance from its same-law target."
         },
         {
           "num": "6.12",
@@ -1033,8 +1046,11 @@ export default {
             "demo-6.11",
             "demo-6.4"
           ],
-          "refs": [],
-          "pic": "Two sliders, fertility and mortality, drive a stable population’s pyramid: raising fertility turns it from a column into a broad triangle, while lowering mortality, which mostly saves infants and children, barely changes its shape and can even make the population younger; compare the stable pyramids with observed ones from the 1950s."
+          "refs": [
+            "Coale (1957), actual reprint in Smith & Keyfitz (2013), pp 168–172; reported Swedish examples and stated limitations",
+            "UN World Population Prospects 2024: retained female fertility and life-table schedules; estimates 1950–2023"
+          ],
+          "pic": "Swap fertility and mortality years independently for a selected country and compare all four stable-equivalent profiles and their intrinsic growth. A separate historical source panel retains Coale's two reported Swedish life expectancies without inventing source age curves."
         }
       ]
     },

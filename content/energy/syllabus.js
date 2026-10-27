@@ -441,35 +441,203 @@ export default {
       ]
     },
     {
-      n: 6,
-      title: 'Storage',
-      summary: String.raw`Storage decouples when energy is produced from when it is used. Batteries are electrochemical cells whose voltage comes from reaction free energies, whose usable capacity falls at high discharge rates, and whose life depends on how deeply they are cycled. Pumped hydro, compressed air, flywheels, supercapacitors and hydrogen fill other niches, and the Ragone plot maps them all by energy and power density.`,
-      items: [
-        { num: '6.1', kind: 'Definition', name: 'Energy capacity, power capacity and round-trip efficiency', deps: ['energy-1.1'], refs: ['Tester ch. 16'],
-          pic: 'Charge and discharge a generic store: its energy rating sets how long it can run and its power rating how fast, and round-trip losses are shaded on the energy flow.' },
-        { num: '6.2', kind: 'Model', name: 'Cell voltage from free energy: the Nernst equation', deps: ['pchem-8.6', 'pchem-8.5'], refs: ['Tester ch. 16'],
-          pic: 'Vary the state of charge of a cell: the open-circuit voltage computed from ΔG and the Nernst equation drifts with concentration, matching the plateau and tails of a measured discharge curve.' },
-        { num: '6.3', kind: 'Model', name: 'Battery as a source with internal resistance', deps: ['circ-1.7', 'energy-6.2'], refs: ['Tester ch. 16'],
-          pic: 'Draw increasing current from a battery: terminal voltage sags and internal heating grows as I²R, so fast charging and discharging waste a growing fraction of the energy.' },
-        { num: '6.4', kind: 'Law', name: 'Peukert’s law', deps: ['energy-6.3'], refs: ['Tester ch. 16'],
-          pic: 'Discharge a lead-acid battery at different currents: run time falls faster than 1/I, following I^{−k} with a Peukert exponent near 1.2, while lithium-ion cells stay close to k = 1.' },
-        { num: '6.5', kind: 'Definition', name: 'State of charge and C-rate', deps: ['energy-6.1'], refs: ['Tester ch. 16'],
-          pic: 'A battery gauge is estimated by coulomb counting; charging at 1C fills it in an hour, at 0.2C in five, and a voltage-based estimate is compared and seen to drift.' },
-        { num: '6.6', kind: 'Model', name: 'Cycle life and depth of discharge', deps: ['energy-6.5'], refs: ['Tester ch. 16'],
-          pic: 'Cycle a cell between different state-of-charge windows: capacity fade per cycle grows with depth, so shallow cycling delivers more total lifetime energy.' },
-        { num: '6.7', kind: 'Model', name: 'Pumped hydro storage', deps: ['energy-5.7', 'energy-6.1'], refs: ['MacKay ch. 26', 'Tester ch. 16'],
-          pic: 'Pump water uphill at night and release it at the evening peak: the stored energy mgh and round-trip efficiency near 75% are computed for a reservoir of chosen size and height.' },
-        { num: '6.8', kind: 'Model', name: 'Compressed-air storage', deps: ['pchem-2.7', 'energy-6.1'], refs: ['Tester ch. 16'],
-          pic: 'Compress air into a cavern adiabatically or isothermally: the work stored and the heat lost are compared on a p–V diagram, showing why storing the heat of compression matters.' },
-        { num: '6.9', kind: 'Model', name: 'Flywheel storage', deps: ['mech-10.2', 'solid-1.8'], refs: ['Tester ch. 16'],
-          pic: 'Spin up a flywheel until hoop stress reaches the material’s strength: the maximum energy per kilogram scales with strength over density, ranking steel against carbon fibre.' },
-        { num: '6.10', kind: 'Model', name: 'Supercapacitors', deps: ['circ-5.3'], refs: ['Tester ch. 16'],
-          pic: 'A supercapacitor stores ½CV²: its voltage falls linearly during constant-current discharge, delivering huge power for seconds but little energy compared with a battery of the same mass.' },
-        { num: '6.11', kind: 'Model', name: 'Hydrogen round trip: electrolysis and fuel cells', deps: ['pchem-8.10', 'pchem-8.14'], refs: ['Tester ch. 16'],
-          pic: 'Follow a kilowatt-hour through an electrolyser, compressor, storage tank and fuel cell: losses at each stage leave about a third, compared with a battery round trip on the same chart.' },
-        { num: '6.12', kind: 'Concept', name: 'The Ragone plot', deps: ['energy-6.1'], refs: ['Tester ch. 16'],
-          pic: 'Place storage technologies on log axes of energy density against power density: discharge time is constant along diagonals, and dragging a requirement point shows which technologies qualify.' },
-      ],
+      "n": 6,
+      "title": "Storage",
+      "summary": "Storage separates energy capacity from power and makes conversion losses explicit. These bounded models connect reversible cell voltage, charge estimation and cycling assumptions to water, gas, rotor, capacitor and hydrogen stores. Each comparison declares its physical boundary and distinguishes illustrative specifications from measured device data.",
+      "items": [
+        {
+          "num": "6.1",
+          "kind": "Definition",
+          "name": "Energy capacity, power capacity and round-trip efficiency",
+          "deps": [
+            "energy-1.1"
+          ],
+          "refs": [
+            "Independent integration of constant-power charge/discharge and exact energy balance",
+            "MIT 10.626, Lecture 3 (2014), storage conventions; own corrected capacitor balance"
+          ],
+          "links": {
+            "storageNotes": "https://ocw.mit.edu/courses/10-626-electrochemical-energy-systems-spring-2014/a92649689a63cbda3675655ea1ea088f_MIT10_626S14_Lec3.pdf"
+          },
+          "scope": "A single ideal store with constant electrical power on each active leg, fixed charge/discharge efficiencies, no idle loss and no simultaneous charging/discharging. Stored-energy capacity is inside the conversion boundary. The right-hand power at the full event is discharge power; both powers are zero at the completed empty endpoint. Efficiencies are chosen inputs, not measured equipment values.",
+          "pic": "Move cycle progress from empty through full to empty again. The time plot uses actual hours, so unequal power ratings change the two slopes and leg durations. The adjacent energy ledger closes at every instant; change capacity, power or either efficiency and compare what changes. Zero capacity has no transferred-energy round-trip ratio."
+        },
+        {
+          "num": "6.2",
+          "kind": "Model",
+          "name": "Cell voltage from free energy: the Nernst equation",
+          "deps": [
+            "pchem-8.6",
+            "pchem-8.5"
+          ],
+          "refs": [
+            "MIT 10.626, Thermodynamics of Electrochemical Reactions, rewritten 2014, selected PDF pp. 1–7",
+            "Independent whole-cell Gibbs-work derivation and ideal activity model"
+          ],
+          "links": {
+            "nernstNotes": "https://ocw.mit.edu/courses/10-626-electrochemical-energy-systems-spring-2014/548952ce8b570fbbde640f2e561c4f96_MIT10_626S14_S11lec08.pdf"
+          },
+          "scope": "Reversible open-circuit potential at fixed temperature/pressure, a fixed reference electrode and the declared activity model. The widget excludes zero activities and uses $0.01\\le x\\le0.99$. It omits polarization, phase coexistence, hysteresis, transport and measured chemistry-specific voltage curves. One mole means one mole of the specified whole-cell reaction; $n$ is its electron stoichiometry, not an adjustable unit convention.",
+          "pic": "Change charged fraction, temperature, electron count, standard voltage or activity ratio. The voltage curve and selected point show the Nernst response; the second panel separates the standard Gibbs term from the composition shift in kJ per mole of reaction. Near equal activities, the shift changes sign without losing its tiny nonzero value."
+        },
+        {
+          "num": "6.3",
+          "kind": "Model",
+          "name": "Battery as a source with internal resistance",
+          "deps": [
+            "circ-1.7",
+            "energy-6.2"
+          ],
+          "refs": [
+            "Circuit voltage and resistor-power laws (CIRC1.7)",
+            "Independent signed-power balance for a Thevenin cell"
+          ],
+          "scope": "An instantaneous Thevenin approximation with chosen constant open-circuit voltage and resistance, no capacity depletion, reaction kinetics, temperature feedback or frequency dependence. Charging efficiency here is chemical power divided by terminal input; discharge efficiency is terminal output divided by chemical power. These are instantaneous model ratios, not a measured cycle efficiency or a permissible fast-charge rating.",
+          "pic": "Switch between charge and discharge and move the current fraction. Read terminal voltage on the signed current–voltage line, then compare useful power and resistor heat. The selected power ledger uses the same current and resistance; at zero current its efficiency is undefined because no power is transferred."
+        },
+        {
+          "num": "6.4",
+          "kind": "Law",
+          "name": "Peukert’s law",
+          "deps": [
+            "energy-6.3"
+          ],
+          "refs": [
+            "Victron BMV-700H manual, Battery capacity and Peukert exponent, public example",
+            "Independent dimensionless normalization of the empirical law; original Peukert body unread"
+          ],
+          "links": {
+            "manufacturerExample": "https://www.victronenergy.com/media/pg/BMV-700H/en/battery-capacity-and-peukert-exponent.html"
+          },
+          "scope": "An empirical constant-current relation at fixed temperature, age and cutoff voltage over a suitable rating range. No zero-current limit, recovery dynamics, variable-current integration, energy-efficiency claim or universal lithium-ion exponent is inferred. The adjustable parameter range is illustrative; a real battery needs its own test data and manufacturer restrictions.",
+          "pic": "Compare the empirical duration curve with the constant-charge $k=1$ curve, and inspect available ampere-hours separately. Adjust the exponent and reference rating, or select the clearly labelled manufacturer example. The reference point lies on both curves; currents are in amperes and delivered charge in ampere-hours."
+        },
+        {
+          "num": "6.5",
+          "kind": "Definition",
+          "name": "State of charge and C-rate",
+          "deps": [
+            "energy-6.1"
+          ],
+          "refs": [
+            "Independent exact charge accounting and meter-error integration",
+            "Declared linear open-circuit relation and 2 mΩ comparison model"
+          ],
+          "scope": "A fixed 100 Ah ideal charge reservoir with unit charge efficiency and a chosen linear open-circuit relation; neither curve is a measured calibration. C-rate is a current-to-charge ratio, not an energy or lifetime rating. The model omits self-discharge, aging, hysteresis and electrochemical relaxation. A one-hour empty-to-full result at 1C requires this constant-current, unit-efficiency idealization.",
+          "pic": "Choose charge, discharge or rest and move elapsed time. Compare true state of charge, the biased coulomb counter and the voltage-only estimate, with current switching visible at cutoff. Change meter gain or offset to separate accumulated drift from load-induced voltage error. The estimator is deliberately allowed outside 0–100%."
+        },
+        {
+          "num": "6.6",
+          "kind": "Model",
+          "name": "Cycle life and depth of discharge",
+          "deps": [
+            "energy-6.5"
+          ],
+          "refs": [
+            "Independent integration of an explicitly declared depth/life and linear-fade model"
+          ],
+          "scope": "A continuous empirical-style teaching model, not fitted battery data, a universal degradation law or a product warranty. Depth, reference life and exponent are chosen inputs; fade is prescribed as linear in cycle count until 80% capacity. Calendar aging, temperature, charge rates, variable histories, repair and replacement are excluded. Delivered energy uses the evolving modeled capacity.",
+          "pic": "Vary depth and the explicitly illustrative exponent. Compare retained capacity against cycle count, then against delivered lifetime energy, using full-depth cycling as a fixed reference. Move the selected life fraction to inspect actual degradation and throughput; the readout states whether shallow cycling helps this chosen energy metric."
+        },
+        {
+          "num": "6.7",
+          "kind": "Model",
+          "name": "Pumped hydro storage",
+          "deps": [
+            "energy-5.7",
+            "energy-6.1"
+          ],
+          "refs": [
+            "DOE, How Pumped Storage Hydropower Works, public water-transfer explanation",
+            "Independent equal-area reservoir work integral and electrical balance"
+          ],
+          "links": {
+            "waterTransfer": "https://www.energy.gov/cmei/water/how-pumped-storage-hydropower-works"
+          },
+          "scope": "Equal constant reservoir areas, incompressible water of chosen density 1000 kg/m³, standard gravity, no evaporation or inflows, constant efficiencies and no pipe dynamics. Area is entered in km² and converted exactly; transfer volume is in m³. The reservoir drawing is schematic and does not set a geographic scale. Efficiencies are inputs, not a universal 75% plant value or an operating forecast.",
+          "pic": "Switch between pumping and release, then move transfer progress. The connected reservoirs conserve water volume; P marks pumping and T marks generation on the schematic pipe. Water fills show volume fractions, while the labelled head and energy curve use the changing levels. Change area to reveal when fixed-head $m g H_0$ misses a meaningful amount of energy, and compare pump input with turbine output."
+        },
+        {
+          "num": "6.8",
+          "kind": "Model",
+          "name": "Compressed-air storage",
+          "deps": [
+            "pchem-2.7",
+            "energy-6.1"
+          ],
+          "refs": [
+            "Ideal-gas reversible adiabatic relation (PCHEM2.7)",
+            "Independent piston-work and complete heat/work cycle integrals"
+          ],
+          "scope": "A closed piston parcel with chosen constant ideal-gas properties, initial pressure 100 kPa and $1.01\\le\\gamma\\le5/3$ in the widget. It is not an open-flow rigid-cavern model and excludes pressure drops, machinery losses, heat-exchanger limits and fuel addition. Retained heat is perfectly recoverable only in the stated reversible limit. Isothermal work is an availability comparison, not increased ideal-gas internal energy.",
+          "pic": "Compare reject-heat and retain-heat paths on the pressure–volume diagram. Follow the selected compression state and inspect compression work, returned work, cooling heat and ambient heat separately. At ratio one no work is transferred and a work-efficiency ratio is undefined; near one the small work difference remains explicit."
+        },
+        {
+          "num": "6.9",
+          "kind": "Model",
+          "name": "Flywheel storage",
+          "deps": [
+            "mech-10.2",
+            "solid-1.8"
+          ],
+          "refs": [
+            "Sandia Energy Storage Handbook, Flywheels, selected rotor discussion PDF pp. 5–6",
+            "Independent thin-ring force balance and rotational-energy derivation"
+          ],
+          "links": {
+            "rotorDiscussion": "https://www.sandia.gov/app/uploads/sites/163/2022/03/ESHB_Ch07_Flywheels_Bender.pdf"
+          },
+          "scope": "An ideal thin ring with uniform density and allowable tensile stress, no hub, bearings, enclosure, motor, losses, fatigue or rotor dynamics. Material parameters are chosen illustrations, not measured steel/composite product rankings. Energy per kilogram uses rotor mass only; it must not be compared directly with whole-system ratings. The phase drawing is approximate numerical geometry, while energy and stress retain original input factors.",
+          "pic": "Change speed fraction, radius, mass, density, chosen strength or safety factor. The large rotor rescales for legibility and labels its actual diameter; the gold trail leads to the computed phase marker. Move physical snapshot time to inspect that time sample. The second panel links energy to hoop stress and marks the fraction of the allowable stress in use. Radius changes speed and phase while the ideal rotor-specific energy limit stays fixed."
+        },
+        {
+          "num": "6.10",
+          "kind": "Model",
+          "name": "Supercapacitors",
+          "deps": [
+            "circ-5.3"
+          ],
+          "refs": [
+            "Capacitor energy and charge relations (CIRC5.3)",
+            "Independent constant-current work integral and cutoff accounting"
+          ],
+          "scope": "Constant ideal capacitance and an ideal controlled current sink, no series resistance, leakage, temperature effects, converter loss or current limit beyond the chosen input range. The widget makes no empirical claim about duration, energy per mass or battery comparisons. The post-cutoff voltage remains at its cutoff value; the right-hand actual current and power are zero.",
+          "pic": "Move discharge progress and compare voltage, actual terminal power and the energy partition. Change cutoff to expose retained energy and shortened useful duration. Open and filled endpoint markers distinguish power immediately before cutoff from power after the current controller stops. Current changes duration and power without changing the ideal usable energy at fixed cutoff."
+        },
+        {
+          "num": "6.11",
+          "kind": "Model",
+          "name": "Hydrogen round trip: electrolysis and fuel cells",
+          "deps": [
+            "pchem-8.10",
+            "pchem-8.14"
+          ],
+          "refs": [
+            "DOE, Hydrogen Production: Electrolysis, public process and stoichiometry explanation",
+            "MIT 10.626 Lecture 2, selected galvanic-cell/Gibbs-work discussion PDF pp. 8–10",
+            "Independent total-input compressor allocation and LHV balance"
+          ],
+          "links": {
+            "electrolysis": "https://www.energy.gov/cmei/fuels/hydrogen-production-electrolysis",
+            "gibbsWork": "https://ocw.mit.edu/courses/10-626-electrochemical-energy-systems-spring-2014/ca1416c480deca1321a5edd1aa971557_MIT10_626S14_Lec2.pdf"
+          },
+          "scope": "A declared LHV budget with no exported heat credit or recovery of compression/expansion energy. The rounded LHV is a model reference, not a measured sample value; unrecovered terms are energy-budget losses, not a calorimetric heat-flow prediction. Chosen efficiencies lie in 0–1 and omit external thermal inputs. Real electrolyser conventions, water phases, pressure, auxiliary systems and plant boundaries require separate data. At zero input no actual round-trip ratio exists.",
+          "pic": "Follow the energy bands from electrical input through electrolysis, hydrogen retention and the fuel cell. Band widths are proportional to energy relative to the same total electrical input; side branches expose each unrecovered budget term. The adjacent ledger adds those terms and output to exactly that input, with the battery comparison separated below. Adjust each stage to see how the returned electricity changes."
+        },
+        {
+          "num": "6.12",
+          "kind": "Concept",
+          "name": "The Ragone plot",
+          "deps": [
+            "energy-6.1"
+          ],
+          "refs": [
+            "Independent logarithmic rating geometry and explicit illustrative specifications"
+          ],
+          "scope": "Illustrative specification screening with consistent declared mass boundaries: battery example 100 Wh/kg and 500 W/kg, flywheel example 20 Wh/kg and 2000 W/kg, supercapacitor example 5 Wh/kg and 5000 W/kg. These are authored numbers, not measured or recommended product ratings. Rated peak power need not be sustainable for the quotient duration; usable energy can depend on rate, temperature and cutoff. Cost, safety, efficiency, life and the complete load profile require additional evidence.",
+          "pic": "Drag the requirement point across the log axes and watch each declared example pass or fail both thresholds. Duration diagonals connect power and energy through the exact 3600-second conversion. The readout reports exact saved coordinates and signed margins, so adjacent values at a specification boundary are not silently treated as equal."
+        }
+      ]
     },
     // ───────────────────────────────────────────────────────────── 7
     {

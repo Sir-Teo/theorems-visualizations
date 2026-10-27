@@ -1,0 +1,206 @@
+{
+  "status": "actual research inputs and passing pure-model checks; no lesson/native/personal visual gate or availability promotion",
+  "checkedOn": "2026-10-26",
+  "frozenChapter": {
+    "collection": "micro",
+    "chapter": 12,
+    "items": 16,
+    "packet": "/tmp/wave6-micro-research/frozen-chapter.json",
+    "sha256": "bbc6ffa2bf3697442dc756b05e19ae2b0295477b5fe1f2fcececdf33da644e8e"
+  },
+  "prerequisites": {
+    "count": 7,
+    "ids": [
+      "micro-1.3",
+      "micro-2.7",
+      "micro-3.10",
+      "micro-3.8",
+      "micro-3.9",
+      "micro-4.11",
+      "micro-9.2"
+    ],
+    "scope": "Complete actual written statement,idea,scope,caption bodies read, not just titles",
+    "packet": "/tmp/wave6-micro-research/written-prerequisites.json",
+    "sha256": "e3f8b10be49f48feb8ffe47bf7ed194266a59746fe2552c0712fb7c62fd2e0dd"
+  },
+  "sources": [
+    {
+      "name": "core12",
+      "url": "https://books.core-econ.org/the-economy-v1/book/text/12.html",
+      "status": 200,
+      "finalURL": "https://books.core-econ.org/the-economy-v1/book/text/12.html",
+      "contentType": "text/html; charset=utf-8",
+      "bytes": 323366,
+      "sha256": "f75659636961fd75de664156d741bd49d4fd9390c175865f8109677a51b49ffa",
+      "path": "/tmp/wave6-micro-research/sources/core12.html",
+      "actualReading": "Complete12.1,12.2,12.5;12.3 from heading through original extracted line605, beginning implementation limits. These selected passages are not a whole-unit claim. Original figures12.1d,12.4c,12.5c personally viewed."
+    },
+    {
+      "name": "core20",
+      "url": "https://books.core-econ.org/the-economy-v1/book/text/20.html",
+      "status": 200,
+      "finalURL": "https://books.core-econ.org/the-economy-v1/book/text/20.html",
+      "contentType": "text/html; charset=utf-8",
+      "bytes": 471005,
+      "sha256": "8ead6456ef1cd30cc6bc44ac9aff41f3c56f09c9a532325697248c90991359e1",
+      "path": "/tmp/wave6-micro-research/sources/core20.html",
+      "actualReading": "Complete20.5 visible body text, original image placeholders omitted; original20.16f separately personally viewed. Dated statistics are not adopted as current facts. Other sections not read."
+    },
+    {
+      "name": "coase-landing",
+      "url": "https://chicagounbound.uchicago.edu/journal_articles/3178/",
+      "status": 200,
+      "finalURL": "https://chicagounbound.uchicago.edu/journal_articles/3178/",
+      "contentType": "text/html; charset=UTF-8",
+      "bytes": 24617,
+      "sha256": "00583ab695af5805ab0298bb38613e1a077d6758cb4636811e6ca228f84d1610",
+      "path": "/tmp/wave6-micro-research/sources/coase-landing.html",
+      "actualReading": "Official bibliography actually read; explicitly full text unavailable. No original body or historical cattle table read; binding unavailability, no alternate recovery."
+    },
+    {
+      "name": "samuelson-original",
+      "url": "https://publics22.classes.ryansafner.com/readings/Samuelson-1954.pdf",
+      "status": 200,
+      "finalURL": "https://publics22.classes.ryansafner.com/readings/Samuelson-1954.pdf",
+      "contentType": "application/pdf",
+      "bytes": 451833,
+      "sha256": "a79d99ca7726158c5e9597ff2e99133e5fc7e6e3f0e745c47f8bdddfb5a7f62a",
+      "path": "/tmp/wave6-micro-research/sources/samuelson-original.pdf",
+      "actualReading": "Cover bibliography read; all3 original body pages printed387–389/PDF2–4 actually viewed at125dpi, assumptions/eq1–3 and sections1–4. Cover-only text layer; OCR navigation and actual-image formulas."
+    },
+    {
+      "name": "core4",
+      "url": "https://books.core-econ.org/the-economy-v1/book/text/04.html",
+      "status": 200,
+      "finalURL": "https://books.core-econ.org/the-economy-v1/book/text/04.html",
+      "contentType": "text/html; charset=utf-8",
+      "bytes": 391426,
+      "sha256": "dc31e2bd13ee9627e0f2850afed1a9b5cfcaac6506a0659986106d4119605588",
+      "path": "/tmp/wave6-micro-research/sources/core4.html",
+      "actualReading": "Complete4.6 visible text including Ostrom/common-property/open-access distinction and repeated interaction; figures omitted, not viewed. No whole-unit or empirical-original reading claim."
+    },
+    {
+      "name": "core21",
+      "url": "https://books.core-econ.org/the-economy-v1/book/text/21.html",
+      "status": 200,
+      "finalURL": "https://books.core-econ.org/the-economy-v1/book/text/21.html",
+      "contentType": "text/html; charset=utf-8",
+      "bytes": 434847,
+      "sha256": "e4d177247067407addb6d4bcfa3708dbb939aa1c0c366d877480873565e1e7b7",
+      "path": "/tmp/wave6-micro-research/sources/core21.html",
+      "actualReading": "Complete21.4 demand-side network effects subsection through beforeQuestion21.4; figures omitted, not viewed. No whole-unit reading claim."
+    },
+    {
+      "name": "weitzman-original",
+      "url": "https://scholar.harvard.edu/files/weitzman/files/prices_vs_quantities.pdf",
+      "error": "The read operation timed out",
+      "accessStop": true,
+      "actualReading": "Single30-second author-PDF read timeout. Binding original-body stop, no retries/mirrors/caches; no original body read. Bibliography only from actual official Oxford search result."
+    },
+    {
+      "name": "core12-costs",
+      "url": "https://d3gfi2nflvifht.cloudfront.net/the-economy/v1/book/images/web/figure-12-01-d.svg",
+      "status": 200,
+      "finalURL": "https://d3gfi2nflvifht.cloudfront.net/the-economy/v1/book/images/web/figure-12-01-d.svg",
+      "contentType": "image/svg+xml",
+      "bytes": 12310,
+      "sha256": "0ef9d5117b2c9ba6d264b320e38e2a4445e49e86cb4971b962c69d385cf8eb18",
+      "path": "/tmp/wave6-micro-research/sources/core12-costs.svg",
+      "actualReading": "Untouched original SVG rendered in memory in Chromium and personally viewed; source/render digests in figure-render-receipt.json."
+    },
+    {
+      "name": "core12-bargain",
+      "url": "https://d3gfi2nflvifht.cloudfront.net/the-economy/v1/book/images/web/figure-12-04-c.svg",
+      "status": 200,
+      "finalURL": "https://d3gfi2nflvifht.cloudfront.net/the-economy/v1/book/images/web/figure-12-04-c.svg",
+      "contentType": "image/svg+xml",
+      "bytes": 8437,
+      "sha256": "d7e426f67cc7fb51a7c8694042dff95919ed80e7167d358391ba84c678024311",
+      "path": "/tmp/wave6-micro-research/sources/core12-bargain.svg",
+      "actualReading": "Untouched original SVG rendered in memory in Chromium and personally viewed; source/render digests in figure-render-receipt.json."
+    },
+    {
+      "name": "core12-tax",
+      "url": "https://d3gfi2nflvifht.cloudfront.net/the-economy/v1/book/images/web/figure-12-05-c.svg",
+      "status": 200,
+      "finalURL": "https://d3gfi2nflvifht.cloudfront.net/the-economy/v1/book/images/web/figure-12-05-c.svg",
+      "contentType": "image/svg+xml",
+      "bytes": 9839,
+      "sha256": "ad6c431bf75ca75117310046e24fc8855050f6a48f01a8fe9019672958890381",
+      "path": "/tmp/wave6-micro-research/sources/core12-tax.svg",
+      "actualReading": "Untouched original SVG rendered in memory in Chromium and personally viewed; source/render digests in figure-render-receipt.json."
+    },
+    {
+      "name": "core20-permits",
+      "url": "https://d3gfi2nflvifht.cloudfront.net/the-economy/v1/book/images/web/figure-20-16-f.svg",
+      "status": 200,
+      "finalURL": "https://d3gfi2nflvifht.cloudfront.net/the-economy/v1/book/images/web/figure-20-16-f.svg",
+      "contentType": "image/svg+xml",
+      "bytes": 5454,
+      "sha256": "d02443ec8b434c4b5f6af834d52d947c57c8ef1c8db0fbc8ccd925dfd528a7e5",
+      "path": "/tmp/wave6-micro-research/sources/core20-permits.svg",
+      "actualReading": "Untouched original SVG rendered in memory in Chromium and personally viewed; source/render digests in figure-render-receipt.json."
+    },
+    {
+      "name": "berkeley-teaching",
+      "url": "https://gspp.berkeley.edu/assets/uploads/courses/notes/Lec3-Externality.pdf",
+      "status": 200,
+      "finalURL": "https://gspp.berkeley.edu/archived/files/courses/notes/Lec3-Externality.pdf",
+      "contentType": "application/pdf",
+      "bytes": 1453405,
+      "sha256": "33b009d99f02398afaf18c4d24d4c4ec23f52d0de175a480c4a71d5773d3232c",
+      "path": "/tmp/wave6-micro-research/sources/berkeley-teaching.pdf",
+      "actualReading": "Distinct Hilary Hoynes PG-Externalities, UC Davis Winter2012,49-page teaching PDF hosted by Berkeley; text23–27 complete,22 final permit paragraphs; original figure pixels26/27 personally viewed. Not the original Weitzman paper or recovery of it."
+    }
+  ],
+  "stops": [
+    "Coase original body explicitly unavailable from official ChicagoUnbound3178 record. No original alternate recovery.",
+    "Weitzman original author PDF timed out after30seconds; no retry/alternate original recovery.",
+    "All inherited source-body/figure stops remain binding. Commercial Varian/Mankiw bodies not requested/read."
+  ],
+  "scientificBoundary": "Own named teaching models/derivations; original Samuelson condition checked, own special cases distinct from original general theory. Coase cattle worksheet cannot be called verified historical-table replication. Weitzman linear-quadratic own proof is not a read original proof.",
+  "figureRenderReceipt": [
+    {
+      "name": "core12-costs",
+      "original": "/tmp/wave6-micro-research/sources/core12-costs.svg",
+      "originalSHA256": "0ef9d5117b2c9ba6d264b320e38e2a4445e49e86cb4971b962c69d385cf8eb18",
+      "render": "/tmp/wave6-micro-research/sources/core12-costs-render.png",
+      "renderSHA256": "b8106bf3254818680094faf50136f4ab547b36022b1013616b7bd7a0f6260a4a",
+      "qualification": "Original downloaded SVG rendered directly in Chromium; no edits, annotations or resampling; acquisition does not itself imply personal inspection"
+    },
+    {
+      "name": "core12-bargain",
+      "original": "/tmp/wave6-micro-research/sources/core12-bargain.svg",
+      "originalSHA256": "d7e426f67cc7fb51a7c8694042dff95919ed80e7167d358391ba84c678024311",
+      "render": "/tmp/wave6-micro-research/sources/core12-bargain-render.png",
+      "renderSHA256": "a86e51e4a172abb66b7923a404656e016945497f00da938cbbfd95dc6d4bf7e8",
+      "qualification": "Original downloaded SVG rendered directly in Chromium; no edits, annotations or resampling; acquisition does not itself imply personal inspection"
+    },
+    {
+      "name": "core12-tax",
+      "original": "/tmp/wave6-micro-research/sources/core12-tax.svg",
+      "originalSHA256": "ad6c431bf75ca75117310046e24fc8855050f6a48f01a8fe9019672958890381",
+      "render": "/tmp/wave6-micro-research/sources/core12-tax-render.png",
+      "renderSHA256": "a72851f2f4c3e5bb7050454853e240e11d2283ec8feb4207e1163836c6481353",
+      "qualification": "Original downloaded SVG rendered directly in Chromium; no edits, annotations or resampling; acquisition does not itself imply personal inspection"
+    },
+    {
+      "name": "core20-permits",
+      "original": "/tmp/wave6-micro-research/sources/core20-permits.svg",
+      "originalSHA256": "d02443ec8b434c4b5f6af834d52d947c57c8ef1c8db0fbc8ccd925dfd528a7e5",
+      "render": "/tmp/wave6-micro-research/sources/core20-permits-render.png",
+      "renderSHA256": "4dd2e5483b457e50f552a633a03b1191c2e46b239f7822c3db3bc9880a6d6715",
+      "qualification": "Original downloaded SVG rendered directly in Chromium; no edits, annotations or resampling; acquisition does not itself imply personal inspection"
+    }
+  ],
+  "provisionalDesign": "/tmp/wave6-micro-research/provisional-design.md",
+  "previousIntegration": {
+    "export": "ff692f721d8d6930c7ee1cd4938b85ea06249067",
+    "fullTests": 4878,
+    "lightRoutes": 272,
+    "darkRoutes": 272,
+    "failures": 0,
+    "availability": 826,
+    "historicalIndependent": 36
+  }
+}

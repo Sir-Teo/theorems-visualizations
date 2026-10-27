@@ -217,40 +217,242 @@ export default {
       ],
     },
     {
-      n: 6,
-      title: 'Selection and drift together',
-      summary: String.raw`In a finite population even a beneficial mutation is usually lost by chance. Branching processes give Haldane’s 2s and Kimura’s diffusion formula gives the full fixation probability, which shows that selection is effectively invisible when |Ns| is small. That idea underlies the nearly neutral and drift-barrier hypotheses; adaptation then proceeds by origin and fixation of mutations, which interfere in asexual populations and accumulate deleterious load through Muller’s ratchet.`,
-      items: [
-        { num: '6.1', kind: 'Model', name: 'Branching-process approximation for a new mutant', deps: ['popgen-4.2', 'mathbio-11.2', 'stoch-3.9', 'prob-4.3.8a'], refs: ['Ewens §1.4'],
-          pic: 'A single new beneficial mutant founds a lineage whose offspring numbers are Poisson with mean 1 + s; most lineages die within a few generations even when s is large.' },
-        { num: '6.2', kind: 'Theorem', name: 'Haldane’s fixation probability ≈ 2s', deps: ['popgen-6.1'], refs: ['Ewens §1.4'],
-          pic: 'Count surviving lineages out of thousands of simulated mutants for several values of s; the survival fraction falls on the line 2s, and the exact branching-process root is also plotted.' },
-        { num: '6.3', kind: 'Theorem', name: 'Kimura’s fixation probability', deps: ['popgen-2.11', 'popgen-4.3'], refs: ['Ewens §4.3', 'Ewens §5.3'],
-          pic: 'Plot u(p) = (1 − e^{−4Nsp})/(1 − e^{−4Ns}) for positive, zero and negative s, and overlay fixation fractions from Wright–Fisher simulations with selection.' },
-        { num: '6.4', kind: 'Concept', name: 'Effective neutrality: |Nₑs| ≪ 1', deps: ['popgen-6.3'], refs: ['Gillespie'],
-          pic: 'Scan s for fixed N and plot the fixation probability relative to neutral; a flat region around s = 0 of width about 1/N shows where selection cannot be distinguished from drift.' },
-        { num: '6.5', kind: 'Hypothesis', name: 'Nearly neutral theory (Ohta)', deps: ['popgen-6.4', 'popgen-3.10'], refs: ['Gillespie'],
-          pic: 'Mutations of slightly deleterious effect fix often in small populations and rarely in large ones; the substitution rate per year is plotted against population size for several effect distributions.' },
-        { num: '6.6', kind: 'Hypothesis', name: 'Drift-barrier hypothesis', deps: ['popgen-6.5'], refs: ['Nielsen–Slatkin'],
-          pic: 'Let selection improve a trait such as replication fidelity until further gains fall below 1/Nₑ; the predicted floor of the mutation rate drops with population size, compared with measured rates across taxa.' },
-        { num: '6.7', kind: 'Theorem', name: 'Fixation time of a beneficial allele ≈ (2/s) ln(2N)', deps: ['popgen-6.3'], refs: ['Ewens §5.3'],
-          pic: 'Time sweeps conditioned on fixation for several N and s; the mean fixation times line up with the logarithmic formula, far shorter than the 4N of neutral alleles.' },
-        { num: '6.8', kind: 'Theorem', name: 'Origin–fixation rate of adaptive substitution', deps: ['popgen-6.2', 'popgen-3.8'], refs: ['Gillespie'],
-          pic: 'Beneficial mutations arise at rate 2Nμ and each fixes with probability about 2s; the simulated substitution rate is compared with 4Nμs as both N and s vary.' },
-        { num: '6.9', kind: 'Concept', name: 'Distribution of fitness effects', deps: ['popgen-6.4'], refs: ['Nielsen–Slatkin'],
-          pic: 'Draw a distribution of selection coefficients and shade the effectively neutral band |s| < 1/2N; changing N reclassifies which mutations behave as neutral, deleterious or beneficial.' },
-        { num: '6.10', kind: 'Model', name: 'Clonal interference', deps: ['popgen-6.8'], refs: ['Gillespie'],
-          pic: 'In an asexual population, competing beneficial clones are drawn as a Muller plot; raise the mutation supply and simultaneous clones interfere, so the adaptation rate saturates instead of growing linearly.' },
-        { num: '6.11', kind: 'Phenomenon', name: 'Muller’s ratchet', deps: ['popgen-6.4', 'popgen-5.1'], refs: ['Gillespie'],
-          pic: 'Track the least-loaded class of an asexual population; when its expected size N e^{−U/s} is small it is lost by drift, the ratchet clicks, and the clicks get more frequent as N shrinks.' },
-        { num: '6.12', kind: 'Phenomenon', name: 'Evolutionary rescue', deps: ['popgen-6.2', 'mathbio-11.2'], refs: ['Nielsen–Slatkin'],
-          pic: 'A population declining after an environmental change can be saved by a resistant mutant; the U-shaped population trajectory appears in some runs, and rescue probability is plotted against initial size.' },
-        { num: '6.13', kind: 'Paper', name: 'A Mathematical Theory of Natural and Artificial Selection, V',
-          paper: { authors: 'J. B. S. Haldane', year: 1927, title: 'A Mathematical Theory of Natural and Artificial Selection, Part V: Selection and Mutation',
-                   venue: 'Proceedings of the Cambridge Philosophical Society 23 (7): 838–844', doi: '10.1017/S0305004100015644' },
-          introduces: ['popgen-6.2'], deps: ['stoch-3.9', 'popgen-4.2'], refs: [],
-          pic: 'Haldane’s 2s: a single new mutant with advantage s leaves a Poisson number of offspring with mean 1 + s; iterate the generating function to get the chance its line never dies out and run thousands of simulated lineages — most beneficial mutations are lost by chance, and the surviving fraction tracks 2s.' },
-      ],
+      "n": 6,
+      "title": "Selection and drift together",
+      "summary": "A new mutant can be beneficial and still disappear. Explicit branching, diffusion and finite-chain models separate establishment, fixation and waiting time. Nearly neutral and drift-barrier hypotheses motivate carefully scoped effect mixtures, while finite clonal competition, irreversible mutation load and conditional rescue show where independent-sweep approximations fail.",
+      "items": [
+        {
+          "num": "6.1",
+          "kind": "Model",
+          "name": "Branching-process approximation for a new mutant",
+          "deps": [
+            "popgen-4.2",
+            "mathbio-11.2",
+            "stoch-3.9",
+            "prob-4.3.8a"
+          ],
+          "refs": [
+            "Felsenstein, Theoretical Evolutionary Genetics (December 2019), VII.7, pp.314–330, especially Eqs.(VII-63)–(VII-97): https://felsenst.github.io/pgbook/pgbook.pdf"
+          ],
+          "links": {
+            "teaching": "https://felsenst.github.io/pgbook/pgbook.pdf"
+          },
+          "pic": "Follow 48 seeded lineages, compare their log counts with the unconditional mean, and compare finite-generation extinction with its eventual value. An observation cap stops a path after a complete sampled generation; censored paths are counted separately."
+        },
+        {
+          "num": "6.2",
+          "kind": "Theorem",
+          "name": "Haldane’s fixation probability ≈ 2s",
+          "deps": [
+            "popgen-6.1"
+          ],
+          "refs": [
+            "Felsenstein, Theoretical Evolutionary Genetics (December 2019), VII.7, pp.314–330, especially Eqs.(VII-63)–(VII-97): https://felsenst.github.io/pgbook/pgbook.pdf"
+          ],
+          "links": {
+            "teaching": "https://felsenst.github.io/pgbook/pgbook.pdf"
+          },
+          "pic": "Move s along the exact survival curve and the line 2s. A second panel reports their ratio, showing why the approximation is useful near zero and progressively inaccurate away from it."
+        },
+        {
+          "num": "6.3",
+          "kind": "Theorem",
+          "name": "Kimura’s fixation probability",
+          "deps": [
+            "popgen-2.11",
+            "popgen-4.3"
+          ],
+          "refs": [
+            "Felsenstein, Theoretical Evolutionary Genetics (December 2019), VII.7, pp.314–330, especially Eqs.(VII-63)–(VII-97): https://felsenst.github.io/pgbook/pgbook.pdf"
+          ],
+          "links": {
+            "teaching": "https://felsenst.github.io/pgbook/pgbook.pdf"
+          },
+          "pic": "Change positive or negative selection and compare the diffusion curve with exact finite-chain fixation probabilities. The second panel subtracts the neutral probability. A continuous requested starting frequency is kept distinct from integer copy counts."
+        },
+        {
+          "num": "6.4",
+          "kind": "Concept",
+          "name": "Effective neutrality: |Nₑs| ≪ 1",
+          "deps": [
+            "popgen-6.3"
+          ],
+          "refs": [
+            "Felsenstein, Theoretical Evolutionary Genetics (December 2019), VII.7, pp.314–330, especially Eqs.(VII-63)–(VII-97): https://felsenst.github.io/pgbook/pgbook.pdf"
+          ],
+          "links": {
+            "teaching": "https://felsenst.github.io/pgbook/pgbook.pdf"
+          },
+          "pic": "Vary effective size and a signed selection coefficient. The fixation probability relative to neutral is continuous through one; the shaded convention band narrows as effective size rises. The starting frequency is explicitly 0.2."
+        },
+        {
+          "num": "6.5",
+          "kind": "Hypothesis",
+          "name": "Nearly neutral theory (Ohta)",
+          "deps": [
+            "popgen-6.4",
+            "popgen-3.10"
+          ],
+          "refs": [
+            "Felsenstein, Theoretical Evolutionary Genetics (December 2019), VII.7, pp.314–330, especially Eqs.(VII-63)–(VII-97): https://felsenst.github.io/pgbook/pgbook.pdf",
+            "Ohta (1993), Interaction of selection and drift in molecular evolution, §§1–3 pp.529–533: DOI 10.1266/jjg.68.529"
+          ],
+          "links": {
+            "primary": "https://www.jstage.jst.go.jp/article/jjg/68/6/68_6_529/_article"
+          },
+          "pic": "Use a synthetic four-class neutral/deleterious distribution. Compare its per-generation substitution rate across reference population sizes and inspect each class’s new-mutation weight and contribution to the rate."
+        },
+        {
+          "num": "6.6",
+          "kind": "Hypothesis",
+          "name": "Drift-barrier hypothesis",
+          "deps": [
+            "popgen-6.5"
+          ],
+          "refs": [
+            "Lynch (2011), The lower bound to the evolution of mutation rates, actual PubMed abstract, DOI10.1093/gbe/evr066: https://pubmed.ncbi.nlm.nih.gov/21821597/",
+            "Felsenstein, Theoretical Evolutionary Genetics (December 2019), VII.7, pp.314–330, especially Eqs.(VII-63)–(VII-97): https://felsenst.github.io/pgbook/pgbook.pdf"
+          ],
+          "links": {
+            "primaryAbstract": "https://pubmed.ncbi.nlm.nih.gov/21821597/"
+          },
+          "pic": "Move effective size, the benefit scale and available step size. Compare the next-step gain with the drift scale along a progress coordinate, and inspect fixation relative to neutral at the selected point."
+        },
+        {
+          "num": "6.7",
+          "kind": "Theorem",
+          "name": "Fixation time of a beneficial allele ≈ (2/s) ln(2N)",
+          "deps": [
+            "popgen-6.3"
+          ],
+          "refs": [
+            "Felsenstein, Theoretical Evolutionary Genetics (December 2019), VII.7, pp.314–330, especially Eqs.(VII-63)–(VII-97): https://felsenst.github.io/pgbook/pgbook.pdf",
+            "Desai & Fisher (2007), Beneficial Mutation–Selection Balance and the Effect of Linkage on Positive Selection, pp.1759–1761 and1768–1769: https://www.desai-lab.com/publications/PDFs/desaifisher07.pdf"
+          ],
+          "links": {
+            "teaching": "https://felsenst.github.io/pgbook/pgbook.pdf",
+            "primary": "https://www.desai-lab.com/publications/PDFs/desaifisher07.pdf"
+          },
+          "pic": "Compare the exact finite-chain conditional mean from one copy, the leading-log approximation and the exact deterministic endpoint passage. A second panel shows conditional fixation time and unconditional time to either endpoint across all initial counts."
+        },
+        {
+          "num": "6.8",
+          "kind": "Theorem",
+          "name": "Origin–fixation rate of adaptive substitution",
+          "deps": [
+            "popgen-6.2",
+            "popgen-3.8"
+          ],
+          "refs": [
+            "Felsenstein, Theoretical Evolutionary Genetics (December 2019), VII.7, pp.314–330, especially Eqs.(VII-63)–(VII-97): https://felsenst.github.io/pgbook/pgbook.pdf",
+            "Ohta (1993), §3 Eq.(1), supply times fixation probability: DOI 10.1266/jjg.68.529",
+            "Desai & Fisher (2007), Beneficial Mutation–Selection Balance and the Effect of Linkage on Positive Selection, pp.1759–1761 and1768–1769: https://www.desai-lab.com/publications/PDFs/desaifisher07.pdf"
+          ],
+          "links": {
+            "primary": "https://www.jstage.jst.go.jp/article/jjg/68/6/68_6_529/_article",
+            "linkage": "https://www.desai-lab.com/publications/PDFs/desaifisher07.pdf"
+          },
+          "pic": "Compare the full diffusion origin–fixation rate with 4Nμs over reference sizes. Inspect exponential waiting probability, the mean waiting time and an overlap diagnostic at the selected parameters."
+        },
+        {
+          "num": "6.9",
+          "kind": "Concept",
+          "name": "Distribution of fitness effects",
+          "deps": [
+            "popgen-6.4"
+          ],
+          "refs": [
+            "Felsenstein, Theoretical Evolutionary Genetics (December 2019), VII.7, pp.314–330, especially Eqs.(VII-63)–(VII-97): https://felsenst.github.io/pgbook/pgbook.pdf",
+            "Ohta (1993), §3 and conceptual classification Fig.2, pp.531–533: DOI 10.1266/jjg.68.529",
+            "Desai & Fisher (2007), Beneficial Mutation–Selection Balance and the Effect of Linkage on Positive Selection, pp.1759–1761 and1768–1769: https://www.desai-lab.com/publications/PDFs/desaifisher07.pdf"
+          ],
+          "links": {
+            "primary": "https://www.jstage.jst.go.jp/article/jjg/68/6/68_6_529/_article",
+            "linkage": "https://www.desai-lab.com/publications/PDFs/desaifisher07.pdf"
+          },
+          "pic": "Compare two normalized bar charts on seven explicit effect classes. Change population size, effect scale, and neutral/beneficial fractions. Read the mean effects and the new-mutation mass inside a stated scaled-neutrality band."
+        },
+        {
+          "num": "6.10",
+          "kind": "Model",
+          "name": "Clonal interference",
+          "deps": [
+            "popgen-6.8"
+          ],
+          "refs": [
+            "Desai & Fisher (2007), Beneficial Mutation–Selection Balance and the Effect of Linkage on Positive Selection, pp.1759–1761 and1768–1769: https://www.desai-lab.com/publications/PDFs/desaifisher07.pdf",
+            "Felsenstein (2019), VIII, Fisher–Muller discussion p.397: https://felsenst.github.io/pgbook/pgbook.pdf"
+          ],
+          "links": {
+            "primary": "https://www.desai-lab.com/publications/PDFs/desaifisher07.pdf",
+            "teaching": "https://felsenst.github.io/pgbook/pgbook.pdf"
+          },
+          "pic": "Inspect a stacked composition plot and the actual integer genotype counts. Change the two advantages, delay between planted clones, census, recombination and seed. With recombination off no double mutants arise."
+        },
+        {
+          "num": "6.11",
+          "kind": "Phenomenon",
+          "name": "Muller’s ratchet",
+          "deps": [
+            "popgen-6.4",
+            "popgen-5.1"
+          ],
+          "refs": [
+            "Felsenstein (2019), VIII, Muller’s Ratchet and Fisher–Muller discussion p.397: https://felsenst.github.io/pgbook/pgbook.pdf",
+            "Felsenstein, Theoretical Evolutionary Genetics (December 2019), VII.7, pp.314–330, especially Eqs.(VII-63)–(VII-97): https://felsenst.github.io/pgbook/pgbook.pdf"
+          ],
+          "links": {
+            "teaching": "https://felsenst.github.io/pgbook/pgbook.pdf"
+          },
+          "pic": "Track a seeded population from load zero. Compare minimum and mean loads over time, and inspect the load histogram and least-class size at the selected generation. Zero mutation stops the ratchet; zero selection removes the finite equilibrium reference."
+        },
+        {
+          "num": "6.12",
+          "kind": "Phenomenon",
+          "name": "Evolutionary rescue",
+          "deps": [
+            "popgen-6.2",
+            "mathbio-11.2"
+          ],
+          "refs": [
+            "Orr & Unckless (2014), The Population Genetics of Evolutionary Rescue, model and new/standing-rescue calculation pp.1–3, conditioning discussion pp.3–4: https://journals.plos.org/plosgenetics/article?id=10.1371/journal.pgen.1004551",
+            "Felsenstein, Theoretical Evolutionary Genetics (December 2019), VII.7, pp.314–330, especially Eqs.(VII-63)–(VII-97): https://felsenst.github.io/pgbook/pgbook.pdf"
+          ],
+          "links": {
+            "primary": "https://journals.plos.org/plosgenetics/article?id=10.1371/journal.pgen.1004551",
+            "teaching": "https://felsenst.github.io/pgbook/pgbook.pdf"
+          },
+          "pic": "Compare conditional resident, mutant and total counts with eventual rescue probability across initial sizes. Separate standing-lineage rescue from new-origin rescue by the selected time. Zero initial copies or zero absolute growth leaves the conditional count curve undefined."
+        },
+        {
+          "num": "6.13",
+          "kind": "Paper",
+          "name": "A Mathematical Theory of Natural and Artificial Selection, V",
+          "deps": [
+            "stoch-3.9",
+            "popgen-4.2"
+          ],
+          "paper": {
+            "authors": "J. B. S. Haldane",
+            "year": 1927,
+            "title": "A Mathematical Theory of Natural and Artificial Selection, Part V: Selection and Mutation",
+            "venue": "Proceedings of the Cambridge Philosophical Society 23 (7): 838–844",
+            "doi": "10.1017/S0305004100015644"
+          },
+          "introduces": [
+            "popgen-6.2"
+          ],
+          "refs": [
+            "Felsenstein, Theoretical Evolutionary Genetics (December 2019), VII.7, pp.314–330, especially Eqs.(VII-63)–(VII-97): https://felsenst.github.io/pgbook/pgbook.pdf"
+          ],
+          "links": {
+            "publisher": "https://www.cambridge.org/core/journals/mathematical-proceedings-of-the-cambridge-philosophical-society/article/abs/mathematical-theory-of-natural-and-artificial-selection-part-v-selection-and-mutation/9B6F4FE68136A70E06133E2E389EFA5B",
+            "teaching": "https://felsenst.github.io/pgbook/pgbook.pdf"
+          },
+          "verify": true,
+          "pic": "Iterate the offspring generating function from zero and compare finite-generation extinction with the eventual fixed point. Change advantage and iteration count to see slow convergence near the critical case."
+        }
+      ]
     },
     {
       n: 7,

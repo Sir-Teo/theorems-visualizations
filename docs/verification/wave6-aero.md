@@ -1,0 +1,39 @@
+# AERO6 · Stability and control
+
+All eleven frozen lessons and thirty purpose-built panels are author-verified. Availability is826/1057:36 historical independently accepted plus790 additional author-verified. Historical independent acceptance remains36. The ROBOT6/AERO6 reading integration is next; the previous global checkpoint does not serve as new-chapter acceptance.
+
+The chapter separates initial static tendencies, simultaneous lift/moment trim and calculated time-dependent modes. Static diagrams use aft-measured positions, nose-up-positive moments and a CG-dependent tail arm. The phugoid connects actual height, signed energy contributions and a phase trace. Short-period motion integrates a finite elevator pulse and pitch rate. Lateral motion uses a real four-state matrix, its eigenvectors and integrated yaw. An enlarged Dutch-roll locus and separate spiral-growth plot make small pole movements visible.
+
+The ideal feedback model distinguishes attitude stiffness from rate damping; rate-only feedback cannot stabilize positive bare pitch stiffness. Its trim-drag curve is a stated illustrative load penalty. Flutter has a separate mass-normalized circulatory model with calculated motion, poles, frequency branches and generalized power. Positive-damping growth onset differs from stiffness-branch coalescence; exact undamped coalescence is defective and can grow polynomially. The wing’s deformation multiplier is labeled and fits large motion, while traces/readouts retain unscaled coordinates.
+
+The Wright lesson depicts a cambered, ribbed biplane with wing warping and a forward control surface. Chosen control coefficients remain separate from the historical lift worksheet. Error estimates use explicit overestimate denominators; unmeasured interference is not fitted to reconstruct an observed flight. The linked source is an author-revised1902 reprint transcription of the1901 address, not a1901 facsimile.
+
+## Scientific evidence
+
+352 independent cases in nine families pass15716 comparisons. Direct load solves, principal-minor characteristic coefficients, analytic quadratic roots, a scalar slow-root solve and independent mpmath exponentials use1000-digit algebra/90-digit dynamics. All352 complete expected objects agree at2000/180 digits; canonical regeneration is byte-identical. Fixture SHA256:`b42fefd896c08ee3d821c3272dde6e40d7f6a049965a16bd2540ec4763b0ea77`.
+
+The19 focused and17 affected prior groups pass36/36, zero failures/skips/cancellations. The physical relative gate is3e−11 outside subnormal range; the observed maximum is1.3924792104428472e−11. Signs, range statuses, exact characteristic classification and isolated-root brackets are checked separately from approximate trajectories, other roots and eigenvectors.
+
+A generic eigensolver erased the slow spiral pole at adjacent inputs around16/3 degrees. Exact retained polynomial-sign isolation now yields positive3.66008e−18, positive9.15019e−19 and negative1.83004e−18 at those inputs, with adjacent-binary64 brackets. A monotonicity bound isolates the unique slow root in[−1/8,1/8]. The independent high-precision reference validates the result. Time-only frames cache the fixed model/poles; no FPS claim is made.
+
+The selected trim residual is formed from retained lift before subtraction/rounding. A formerly displayed zero is correctly shown as+4.15464e−17; nonzero residuals receive no exact-zero dot. A reference-oracle halfway rounding defect was repaired by exact quadratic trace symmetry, without snapping physical roots or classifications.
+
+## Final visual and native evidence
+
+Two fresh disjoint runs consume identical complete source, runtime/math, generated collection/index and harness hashes. All44 layouts—11 lessons at320/1200 CSS pixels in light/dark—pass1232 native actions,624 actual Create-state-link replays,44 invalid resets,44 raw-binary64 restores and352 critical restores. There are2332 audits and398512 scientific/render consistency comparisons. All browsers/servers closed, with both runs polled exit0.
+
+The matrix checks every slider endpoint/native mouse position, every select and newly revealed control, camera drag, animation/pause/restart, exact intended restored parts and identical shared readouts. Rendered checks include physical trace samples, poles, retained ledger signs, proper rotation, fin area, flutter mesh deformation and freshly painted axis bounds. Compact scientific ticks retain actual physical coordinates and must appear in the rendered glyphs.
+
+All44 final complete native widgets,176 complete narrow critical plot/readout cards,16 narrow offered-mode plot/readout cards and88 complete narrow rich fields match personally inspected original CSS pixels. Tall cards were reviewed in every overlapping piece. Critical/mode cards include all plots and complete readouts; controls/legends are omitted only from those cards. Defaults include complete widgets, controls and legends.165 used gallery sheets have exact mappings;185 sheets were actually inspected overall. PNG-byte hashes and pixel-region equality are recorded separately.
+
+Fresh44 default/rich captures have zero draw/ink/overflow issues.42/44 default widgets match the earlier personally reviewed root-polish pixels; both changed narrow2 widgets and two native1 rasterization differences were personally rechecked.82/88 current narrow rich fields match the reviewed baseline; all6 changed lesson2 fields were reviewed after removing an orphan punctuation line. Both current11-item all-mode themes have zero errors, TeX/blank warnings or quality warnings. Strict build8541written/5033planned/588chapters/85collections and static8478 are clean.
+
+The review drove concrete repairs: concise narrow equations/axis labels, separated CG and moment indicators, endpoint-marker margins, aligned desktop panel heights, enlarged pole movement, dense time traces, complete phugoid energy excursion, labeled flutter fitting and period-appropriate biplane geometry. Extreme unstable feedback initially clipped long tick labels. Compact scientific ticks fixed that, and an added glyph assertion exposed stale first-frame axes. A chapter-local view/repaint helper now installs and paints the view before curves; the final full matrix checks their agreement. Earlier failing runs remain preserved as development evidence.
+
+## Sources and preservation
+
+The [source ledger](wave6-aero-sources.json) records the actual selected MIT lecture text/pages and rendered figures, complete Wright transcription and linked image reading, selected NASA paper text/figure, all seven actual written prerequisite bodies and every unrequested/unread source. Later CTRL9.5/SOLID7.9 remain unwritten; the controller and aeroelastic arguments are locally derived. Commercial Anderson chapter7 was not requested/read. Every inherited original-body/figure access stop remains binding.
+
+All203 preceding pins remain byte-exact. The eleven identities, kinds, dependencies, Paper citation/introduces and flags are preserved. Only chapter6 researched refs/pic change in the syllabus; all other metadata is exact. The historical Wave5 assertion delegates current chapter6 to the complete new before/after proof while preserving its embedded historical baseline. Shared math/renderer/assets, frozen plans, private S2 and deferred map/performance work remain unchanged.
+
+[Model receipt](wave6-aero-model-receipt.json), [gates](wave6-aero-gates.json), [native receipt](wave6-aero-native-receipt.json), [personal visual receipt](wave6-aero-visual-receipt.json) and [design](wave6-aero-design.json) bind the precise evidence. This is author verification of chosen teaching models, not aircraft calibration, independent expert/learner/accessibility acceptance, release or deployment. Continue the20-lesson ROBOT6/AERO6 integration, then MICRO12 under the same scientific and visual gates without stopping at this boundary.

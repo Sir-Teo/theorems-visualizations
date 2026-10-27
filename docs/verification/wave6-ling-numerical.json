@@ -1,0 +1,40 @@
+{
+  "status": "PASS",
+  "fixture": "tests/fixtures/wave6-ling-reference.json",
+  "bytes": 8911457,
+  "sha256": "08bc29d566e31bf932f30d97800c6f5031b7938251bedcd61c91c3cbf7403955",
+  "families": {
+    "reference": 72,
+    "composition": 513,
+    "truthWorld": 1020,
+    "quantifiers": 756,
+    "scope": 635,
+    "presupposition": 16,
+    "scalar": 432,
+    "deixis": 90,
+    "prototype": 100,
+    "colorFocus": 1494,
+    "distribution": 396,
+    "vagueness": 264,
+    "signValue": 120
+  },
+  "statistics": {
+    "cases": 5908,
+    "comparisons": 1363253,
+    "numerical": 1245896,
+    "exact": 117357,
+    "maxNormalizedError": 7.825184169946019e-05,
+    "worst": {
+      "path": "distribution {\"text\":\"Cats chase mice. Dogs chase cats. Cats eat fish. Dogs eat meat. Birds eat seeds. Birds chase bugs. Mice eat seeds.\",\"window\":2,\"target\":0,\"other\":1,\"xContext\":0,\"yContext\":1}.norms.1",
+      "actual": 1.4142135623730951,
+      "expected": 1.4142135623731,
+      "absoluteError": 4.884981308350689e-15,
+      "budget": 6.2426406871193e-11
+    }
+  },
+  "absoluteBudget": 2e-11,
+  "relativeBudget": 3e-11,
+  "whole90_180_fresh90ByteIdentical": true,
+  "curatedExamples": "Eight authored dialogues and speech-act record conventions are distinct from the13independent mathematical families. A192-combination speech-act regression checks that no entered effect leaves the record unchanged.",
+  "independentAcceptedRemains": 36
+}

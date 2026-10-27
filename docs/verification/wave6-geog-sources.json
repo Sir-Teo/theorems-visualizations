@@ -1,0 +1,55 @@
+{
+  "date": "2026-10-24",
+  "prerequisitesRead": [
+    "geog-1.4",
+    "xtal-1.11"
+  ],
+  "dataAcquisition": [
+    {
+      "id": "deaths",
+      "url": "https://raw.githubusercontent.com/vincentarelbundock/Rdatasets/master/csv/HistData/Snow.deaths.csv",
+      "bytes": 14710,
+      "sha256": "177f399588453ab9fbbe32d5a68f139a20204f5c55952ffb1436bedfbd3dab4d"
+    },
+    {
+      "id": "pumps",
+      "url": "https://raw.githubusercontent.com/vincentarelbundock/Rdatasets/master/csv/HistData/Snow.pumps.csv",
+      "bytes": 494,
+      "sha256": "cdfe1abf91bfb728c9df7f72b89fb7b0dee8571b82c350e366206ba392cb56c2"
+    },
+    {
+      "id": "doc",
+      "url": "https://vincentarelbundock.github.io/Rdatasets/doc/HistData/Snow.html",
+      "error": "HTTP Error 404: Not Found",
+      "stop": true
+    }
+  ],
+  "readSources": [
+    {
+      "url": "https://geodacenter.github.io/workbook/5a_global_auto/lab5a.html",
+      "scope": "Actual Concept, Moran statistic, row-standardized lag/slope and permutation-inference sections, lines83\u2013102; not the whole workbook or its house-sales dataset."
+    },
+    {
+      "url": "https://geostat-framework.readthedocs.io/projects/gstools/en/v1.7.0/examples/05_kriging/index.html",
+      "scope": "Complete kriging overview: weighted prediction, unknown-mean unbiased constraint, covariance, measurement error and redundant-data warnings. Production solver is independently implemented, not GSTools code."
+    },
+    {
+      "url": "https://content-animation.org.uk/htmls/tobler.htm",
+      "scope": "Public original-text transcription: opening model purpose; local dependence and first law; impulse response/unit inhabitant; convolution; time-varying coefficients and stated smoothing/CBD limitations, through concluding model qualifications. Image-only equations, original scan pixels and linked movie were not read/viewed."
+    },
+    {
+      "url": "https://epi-snow.ph.ucla.edu/Stream2_BSPoutbreak_a.html",
+      "scope": "Actual selected Snow1855 passages on inquiry,83 death investigations, reported water use, workhouse/brewery/manufactory comparisons, remote water users and map explanation; modern bracketed correction to handle-removal myth; walking-boundary aside. Not the complete monograph or scan pixels."
+    },
+    {
+      "url": "https://epi-snow.ph.ucla.edu/Stream2_BSPoutbreak_f.html",
+      "scope": "Actual mapping/error chronology and map-making/myth-making text through conclusion: map construction after investigation; varying574/616 and pump inventories; different map interpretations; later correction of pump placement. Not original map-pixel verification or a re-georeference of the downloaded digital dataset."
+    }
+  ],
+  "limits": [
+    "No Haggett textbook section or Hagerstrand original book/body is claimed as read.",
+    "The guessed Snow.html documentation route returned404 and was not recovered; CSV headers, values and source hashes are retained.",
+    "Snow CSV has578 marks and13 pumps; no exact match to a particular original map version is claimed.",
+    "No new source denial was circumvented; earlier GEOG7 and all global source stops remain unchanged."
+  ]
+}

@@ -1,0 +1,358 @@
+{
+  "status": "All12 frozen lessons author-verified after model, native and personal visual gates; no independent acceptance promotion",
+  "baseCommit": "4eb5bb31",
+  "frozenChapter": "/tmp/wave6-solid-research/frozen-chapter.json",
+  "frozenIdentities": 12,
+  "actualPrerequisiteBodies": {
+    "baseCommit": "4eb5bb31",
+    "status": "Six actual frozen prerequisite bodies personally read in full from repository objects, including statements, proof ideas, captions, scopes, dependencies and refs",
+    "bodyFile": "/tmp/wave6-solid-research/prerequisite-bodies.json",
+    "sha256": "889e661e0907a79d14fcbbbfd18eb51a19f50333f1769472e3cad349625f9a45",
+    "ids": [
+      "mech-1.6",
+      "mech-10.3",
+      "pma-6.21",
+      "solid-1.2",
+      "solid-1.4",
+      "solid-4.5"
+    ],
+    "notes": [
+      "Mass parallel-axis proof adapts by replacing dm with dA; area moments have units length^4, not mass inertia units.",
+      "Static force and moment balance will be stated/derived explicitly. No acceleration or material test simulation is implied.",
+      "PMA6.21 is the integral/antiderivative theorem; jump conditions for concentrated loads need separate local equilibrium, not a pointwise differentiability claim.",
+      "Plastic bending uses elastic-perfectly plastic monotone loading and explicit fibre integration;1.5 is rectangle-specific and no universal I-section factor is asserted."
+    ]
+  },
+  "sourcesActuallyRead": [
+    {
+      "id": "roylance-statics",
+      "title": "Statics of Bending: Shear and Bending Moment Diagrams",
+      "author": "David Roylance",
+      "actualDate": "November15,2000",
+      "readScope": "Extracted lines1–345: PDF1–8 and opening9; rest of module/problems not read",
+      "use": "Static force/moment balance, point-load jumps and integrated load/shear relations, with explicit conversion to our sign convention",
+      "cautions": "Actual renderedp8 maximum9qL²/32 differs from independent9qL²/128. Source Mprime=-V uses different shear/load signs.",
+      "requestedURL": "https://ocw.mit.edu/courses/3-11-mechanics-of-materials-fall-1999/b8e832b3c8bf3c1700c26425a4baddb1_MIT3_11F99_statics.pdf",
+      "finalURL": "https://ocw.mit.edu/courses/3-11-mechanics-of-materials-fall-1999/b8e832b3c8bf3c1700c26425a4baddb1_MIT3_11F99_statics.pdf",
+      "status": 200,
+      "file": "/tmp/wave6-solid-research/sources/roylance-statics.pdf",
+      "sha256": "5a5795cdf48bb9aaa2fac0b76cf2b5050c3c6e5105f7a85db3edee00b6751042",
+      "bytes": 399308
+    },
+    {
+      "id": "roylance-stress",
+      "title": "Stresses in Beams",
+      "author": "David Roylance",
+      "actualDate": "November21,2000",
+      "readScope": "Extracted lines1–620: PDF1–14 and opening15; remaining problems/ASTM discussion not verified",
+      "use": "Plane-section kinematics, elastic section integrals, parallel-axis area theorem and width-average beam shear",
+      "cautions": "Actual renderedp5 extreme-distance sentence uses ybar/2 for a T shape; derive both actual distances. p9 cross-reference sign differs from Statics Eq8. Buckling discussion is outside our scope and is not relied upon.",
+      "requestedURL": "https://ocw.mit.edu/courses/3-11-mechanics-of-materials-fall-1999/96d839b02e4a6c63cf8031800e89cccd_MIT3_11F99_bstress.pdf",
+      "finalURL": "https://ocw.mit.edu/courses/3-11-mechanics-of-materials-fall-1999/96d839b02e4a6c63cf8031800e89cccd_MIT3_11F99_bstress.pdf",
+      "status": 200,
+      "file": "/tmp/wave6-solid-research/sources/roylance-stress.pdf",
+      "sha256": "0153d50224ff0a58b2b7c5005ac76aa9277909a15712d96af39476d324682d32",
+      "bytes": 466811
+    },
+    {
+      "id": "lagace-unit14",
+      "title": "Unit14 Behavior of General (including Unsymmetric Cross-section) Beams",
+      "author": "Paul A. Lagace",
+      "actualDate": "Fall2002, copyright2001",
+      "readScope": "All732 extracted lines, all30PDF pages as text; selected rendered20/27 viewed",
+      "use": "E-weighted section properties, coupled nonprincipal bending and shear-centre concept",
+      "cautions": "Explicit source moment-resultant conventions differ from our right-hand My convention. No source thermal/orthotropic/polar derivation is reproduced.",
+      "requestedURL": "https://ocw.mit.edu/courses/16-20-structural-mechanics-fall-2002/13881c48c7c4654e4b5b689cb6987803_unit14.pdf",
+      "finalURL": "https://ocw.mit.edu/courses/16-20-structural-mechanics-fall-2002/13881c48c7c4654e4b5b689cb6987803_unit14.pdf",
+      "status": 200,
+      "file": "/tmp/wave6-solid-research/sources/lagace-unit14.pdf",
+      "sha256": "c2282efe6f15ab6cbffad5ba2fd1a7dfb834f1babb5622cbe5f33482612d42cf",
+      "bytes": 417721
+    },
+    {
+      "id": "nptel-beams",
+      "title": "Chapter8 Bending of Prismatic Straight Beams",
+      "author": "NPTEL official course105106049 teaching text; chapter byline not yet identified",
+      "readScope": "Opening overview/plain text1–35; selected thin-wall/shear-centre alt-text1290–1610, including8.204–8.229. No figure pixels inspected. Other sections not claimed read.",
+      "use": "General thin-wall force/moment integration and distinction between geometric centroid and shear centre",
+      "cautions": "Its finite-thickness channel dimensions/formula8.226 differ from our independently derived leading midline model. Polar arc-length statements are not used. ISO/Latin1 source decoding/ASCII math line wrapping are disclosed.",
+      "requestedURL": "https://archive.nptel.ac.in/content/storage2/courses/105106049/lecnotes/mainch8.html",
+      "finalURL": "https://archive.nptel.ac.in/content/storage2/courses/105106049/lecnotes/mainch8.html",
+      "status": 200,
+      "file": "/tmp/wave6-solid-research/sources/nptel-beams.html",
+      "sha256": "df9c738b9703c554d3d09a858b439d146f7f02e518c9f7258904cabbb4a555b4",
+      "bytes": 214446
+    }
+  ],
+  "selectedSourcePageImages": [
+    {
+      "file": "/tmp/wave6-solid-research/sources/rendered/lagace-unit14-20.png",
+      "sha256": "f3434af8688a0a8f384aaec3e21749d84b02bf7f32d78a2b0248bb030bbc0e89",
+      "status": "Personally viewed original rendered page"
+    },
+    {
+      "file": "/tmp/wave6-solid-research/sources/rendered/lagace-unit14-27.png",
+      "sha256": "920ff28157da8f25cf7d149f8df35efa71597e9328ec510624aae30f6aad5739",
+      "status": "Personally viewed original rendered page"
+    },
+    {
+      "file": "/tmp/wave6-solid-research/sources/rendered/roylance-statics-06.png",
+      "sha256": "79569834f35be58bae8176f934056e14973fb2ab0094d4c0114de8e9d9242b6c",
+      "status": "Personally viewed original rendered page"
+    },
+    {
+      "file": "/tmp/wave6-solid-research/sources/rendered/roylance-statics-08.png",
+      "sha256": "9a6e5e47f13e2011135f678a9d87a672a6f96b49853b4398c2dca56a4025fb2d",
+      "status": "Personally viewed original rendered page"
+    },
+    {
+      "file": "/tmp/wave6-solid-research/sources/rendered/roylance-stress-02.png",
+      "sha256": "5ceef0335d0438771b7b82ad944462cdca154c6e1c72467d5b582bc1be1ec301",
+      "status": "Personally viewed original rendered page"
+    },
+    {
+      "file": "/tmp/wave6-solid-research/sources/rendered/roylance-stress-05.png",
+      "sha256": "efda80646cd4cdbfde8044d2cce8a6175badd918fbef8800c8d803722986222e",
+      "status": "Personally viewed original rendered page"
+    },
+    {
+      "file": "/tmp/wave6-solid-research/sources/rendered/roylance-stress-09.png",
+      "sha256": "d8e8882abcef666a7c40cb17ccc85800f568e0cc0466487af19c6e13f78ced4d",
+      "status": "Personally viewed original rendered page"
+    }
+  ],
+  "acquisitions": [
+    {
+      "id": "roylance-statics-resource",
+      "requestedURL": "https://ocw.mit.edu/courses/3-11-mechanics-of-materials-fall-1999/resources/mit3_11f99_statics/",
+      "finalURL": "https://ocw.mit.edu/courses/3-11-mechanics-of-materials-fall-1999/resources/mit3_11f99_statics/",
+      "status": 200,
+      "contentType": "text/html",
+      "bytes": 66860,
+      "sha256": "3a6e5422147ed21c69f92706d62701700cbb9752626ea830b2c5436cb6775de6",
+      "file": "/tmp/wave6-solid-research/sources/roylance-statics-resource.html",
+      "attempts": 1
+    },
+    {
+      "id": "roylance-statics",
+      "requestedURL": "https://ocw.mit.edu/courses/3-11-mechanics-of-materials-fall-1999/b8e832b3c8bf3c1700c26425a4baddb1_MIT3_11F99_statics.pdf",
+      "finalURL": "https://ocw.mit.edu/courses/3-11-mechanics-of-materials-fall-1999/b8e832b3c8bf3c1700c26425a4baddb1_MIT3_11F99_statics.pdf",
+      "status": 200,
+      "contentType": "application/pdf",
+      "bytes": 399308,
+      "sha256": "5a5795cdf48bb9aaa2fac0b76cf2b5050c3c6e5105f7a85db3edee00b6751042",
+      "file": "/tmp/wave6-solid-research/sources/roylance-statics.pdf",
+      "attempts": 1
+    },
+    {
+      "id": "roylance-stress-resource",
+      "requestedURL": "https://ocw.mit.edu/courses/3-11-mechanics-of-materials-fall-1999/resources/mit3_11f99_bstress/",
+      "finalURL": "https://ocw.mit.edu/courses/3-11-mechanics-of-materials-fall-1999/resources/mit3_11f99_bstress/",
+      "status": 200,
+      "contentType": "text/html",
+      "bytes": 66780,
+      "sha256": "889218a671b970ea6c7f23b4ce790c6b3e8f958d7be40637af848dc2cecc213c",
+      "file": "/tmp/wave6-solid-research/sources/roylance-stress-resource.html",
+      "attempts": 1
+    },
+    {
+      "id": "roylance-stress",
+      "requestedURL": "https://ocw.mit.edu/courses/3-11-mechanics-of-materials-fall-1999/96d839b02e4a6c63cf8031800e89cccd_MIT3_11F99_bstress.pdf",
+      "finalURL": "https://ocw.mit.edu/courses/3-11-mechanics-of-materials-fall-1999/96d839b02e4a6c63cf8031800e89cccd_MIT3_11F99_bstress.pdf",
+      "status": 200,
+      "contentType": "application/pdf",
+      "bytes": 466811,
+      "sha256": "0153d50224ff0a58b2b7c5005ac76aa9277909a15712d96af39476d324682d32",
+      "file": "/tmp/wave6-solid-research/sources/roylance-stress.pdf",
+      "attempts": 1
+    },
+    {
+      "id": "lagace-unit14-resource",
+      "requestedURL": "https://ocw.mit.edu/courses/16-20-structural-mechanics-fall-2002/resources/unit14/",
+      "finalURL": "https://ocw.mit.edu/courses/16-20-structural-mechanics-fall-2002/resources/unit14/",
+      "status": 200,
+      "contentType": "text/html",
+      "bytes": 58984,
+      "sha256": "7faab86a432578b4fc8ca0926100d9b991d31a2857ed575980659e92fafff035",
+      "file": "/tmp/wave6-solid-research/sources/lagace-unit14-resource.html",
+      "attempts": 1
+    },
+    {
+      "id": "lagace-unit14",
+      "requestedURL": "https://ocw.mit.edu/courses/16-20-structural-mechanics-fall-2002/13881c48c7c4654e4b5b689cb6987803_unit14.pdf",
+      "finalURL": "https://ocw.mit.edu/courses/16-20-structural-mechanics-fall-2002/13881c48c7c4654e4b5b689cb6987803_unit14.pdf",
+      "status": 200,
+      "contentType": "application/pdf",
+      "bytes": 417721,
+      "sha256": "c2282efe6f15ab6cbffad5ba2fd1a7dfb834f1babb5622cbe5f33482612d42cf",
+      "file": "/tmp/wave6-solid-research/sources/lagace-unit14.pdf",
+      "attempts": 1
+    },
+    {
+      "id": "nptel-beams",
+      "requestedURL": "https://archive.nptel.ac.in/content/storage2/courses/105106049/lecnotes/mainch8.html",
+      "finalURL": "https://archive.nptel.ac.in/content/storage2/courses/105106049/lecnotes/mainch8.html",
+      "status": 200,
+      "contentType": "text/html",
+      "bytes": 214446,
+      "sha256": "df9c738b9703c554d3d09a858b439d146f7f02e518c9f7258904cabbb4a555b4",
+      "file": "/tmp/wave6-solid-research/sources/nptel-beams.html",
+      "attempts": 1
+    },
+    {
+      "id": "ignou-unit16",
+      "requestedURL": "https://egyankosh.ac.in/bitstream/123456789/29516/1/Unit-16.pdf",
+      "finalURL": "https://egyankosh.ac.in/bitstream/123456789/29516/1/Unit-16.pdf",
+      "status": 503,
+      "contentType": "text/plain",
+      "bytes": 216,
+      "sha256": "b5b660bc2bb92e97199b4b045f7e21eca39307fa087b8be85bb006cc7d83b34b",
+      "file": "/tmp/wave6-solid-research/sources/ignou-unit16.pdf",
+      "attempts": 1,
+      "stop": "Binding: no retry/alternate recovery"
+    }
+  ],
+  "unreadOriginals": "Gere–Goodno and Timoshenko–Goodier commercial bodies/section numbering remain unverified planning pointers. No original plastic-hinge publication/body is claimed. Plastic bending will use an explicit own fibre integral from actual written SOLID4.5.",
+  "newBindingStop": {
+    "id": "ignou-unit16",
+    "url": "https://egyankosh.ac.in/bitstream/123456789/29516/1/Unit-16.pdf",
+    "status": 503,
+    "bytes": 216,
+    "bodyRead": false,
+    "rule": "Do not retry/retrieve/recover via alternate host, cache, mirror or format."
+  },
+  "inheritedStops": "Every original-body/figure stop in docs/wave-continuation.md and prior source ledgers remains binding, including SOLID5 with-solutions404 and all ENERGY6 stops.",
+  "sourceSanity": {
+    "halfSpanUDL": {
+      "q": 1,
+      "L": 1,
+      "leftReaction": "1/8",
+      "peakPosition": "5/8",
+      "independentPeak": "9/128",
+      "sourcePrintedPeak": "9/32",
+      "ratioPrintedToComputed": "4"
+    },
+    "TSectionExample": {
+      "webWidth": 1,
+      "webHeight": 2,
+      "flangeWidth": 3,
+      "flangeThickness": 1,
+      "centroidFromBottom": "19/10",
+      "topExtremeDistance": "11/10",
+      "bottomExtremeDistance": "19/10",
+      "sourceStyleYbarOver2": "19/20"
+    },
+    "scope": "Independent equilibrium/area algebra confirms the caution; no original commercial text claim."
+  },
+  "designNotes": "/tmp/wave6-solid-research/design-notes.json",
+  "priorRecentManifestFiles": 149,
+  "priorReceipt": "/tmp/wave6-solid-research/prior-manifest-preservation.json",
+  "setupFailures": [
+    {
+      "kind": "Local Python module setup",
+      "detail": "requests was unavailable before any HTTP attempt; acquisition uses curl without retries."
+    },
+    {
+      "kind": "Local text decode setup",
+      "detail": "UTF8 decoding failed for a Latin1 source byte; local-only parser corrected to retain mathematical alt text. No HTTP retried."
+    }
+  ],
+  "scopeCautions": [
+    "Width-average engineering shear is not a full2D corner/plate solution.",
+    "Thin-wall shear-centre result is leading asymptotics; no computed twist angle without a torsion model.",
+    "E-weighted neutral axis differs from geometric centroid.",
+    "Plastic section capacity is a limit, not a finite-curvature snap or a global-collapse guarantee.",
+    "I-section shape factor depends on actual geometry, and fixed-area comparison excludes buckling/local stability."
+  ],
+  "next": "Integrate ENERGY6+SOLID6 as24 exact lessons, then continue ROBOT6 Dynamics without stopping.",
+  "modelCheckpoint": {
+    "status": "Model-only author checkpoint: all12 pure kernels independently checked; no SOLID6 main/UI/syllabus/count promotion",
+    "baseCommit": "f4cd6e76",
+    "sourceSHA256": {
+      "content/solid/ch06.shared.js": "610f0767481d1a05ab7f363d044b6a6ace15142283b78ac091a0f974f40d89d4",
+      "content/solid/ch06.exact.shared.js": "a102a6f2b0fa92e8d6a4ec07b550ca580dd4e43d5c565f55c69dc5744f26e28c",
+      "tests/wave6-solid.test.mjs": "f1e8922a8b337df2d185f67381e60abf0dc64fe6fea243027e3838acacf1acb6",
+      "tests/wave6-solid-reference.py": "de21523ac9df72503a6793502315d2ef343e73b68ca9089a70693ccef0f3b419",
+      "tests/fixtures/wave6-solid-reference.json": "695a685905fc28be34609a3a3d6c8fdbcd4fe91632089c421b9378ecb33bcace"
+    },
+    "modelCases": 1247,
+    "families": 12,
+    "additionalPhysicalProfileProbes": 2570,
+    "method": "Exact original-input Python Fraction area/force/stress integrals, raw-coordinate3x3 Gaussian elimination and90/1800-digit mpmath geometry; no JS import",
+    "pythonMpmathVersion": "1.3.0",
+    "focusedGroups": 20,
+    "affectedWave5Groups": 15,
+    "all35Groups": "pass",
+    "correctRounding": "Every algebraic quantity matches independent Fraction-to-binary64 rounding exactly, including signed underflow/overflow status. Numerical geometry is separately checked to2e-12 absolute.",
+    "canonicalRegeneration": "byte identical",
+    "referenceSHA256": "695a685905fc28be34609a3a3d6c8fdbcd4fe91632089c421b9378ecb33bcace",
+    "logs": {
+      "initial": "/tmp/wave6-solid-research/initial-focused.log",
+      "focusedAndAffected": "/tmp/wave6-solid-research/model-focused-and-legacy.log",
+      "generation": "/tmp/wave6-solid-research/reference-generation.log",
+      "regeneration": "/tmp/wave6-solid-research/canonical-regeneration.log"
+    },
+    "priorRecentManifestFiles": 149,
+    "priorMismatches": 0,
+    "allBrowsersAndServersClosed": true,
+    "next": "Author all12 complete explanations and purposeful physical diagrams, synchronize only SOLID6 syllabus metadata, then finish native/Share/inner-ink and personal-pixel gates before author counts change."
+  },
+  "uiDraft": {
+    "models": "all12 independently verified",
+    "lessons": 12,
+    "panels": 31,
+    "focusedGroups": 21,
+    "affectedGroups": 15,
+    "strictBuild": {
+      "written": 8521,
+      "planned": 5053,
+      "chapters": 586,
+      "collections": 85,
+      "errors": 0,
+      "warnings": 0
+    },
+    "static": {
+      "items": 12,
+      "errors": 0,
+      "warnings": 0
+    },
+    "authorAvailabilityUnchanged": "794/1057",
+    "independentAcceptanceUnchanged": 36,
+    "complete": false,
+    "historical": true
+  },
+  "finalCheckpoint": {
+    "lessons": 12,
+    "panels": 31,
+    "availability": 806,
+    "goal": 1057,
+    "independentAcceptance": 36,
+    "native": {
+      "layouts": 48,
+      "actions": 1928,
+      "replays": 840,
+      "checks": 3670,
+      "modelChecks": 66780,
+      "invalidReplays": 48,
+      "rawReplays": 48,
+      "criticalReplays": 340,
+      "distinctCriticalCases": 85
+    },
+    "personal": {
+      "completeDefaultWidgets": 48,
+      "completeNarrowCriticalPlotRegions": 170,
+      "selectedCompleteCriticalReadouts": 72,
+      "completeNarrowRichFields": 96,
+      "widgetGallerySheets": 105,
+      "originalRichSheetsPersonallyViewed": 24,
+      "finalReferenceSheetsPersonallyViewed": 6,
+      "personallyInspectedExactGalleryArtifacts": 135,
+      "nativeCSSPixels": true,
+      "resampling": false,
+      "tallPartOverlapPixels": 40,
+      "cropQualification": "Critical plot regions exclude controls/readouts;72 selected complete readouts supplement them. Default widgets are complete. Statement captures include scope. All source field images are complete."
+    },
+    "priorRecentFilesExact": 149,
+    "allOwnedBrowsersAndServersClosed": true
+  }
+}

@@ -1,0 +1,218 @@
+{
+  "status": "All seven complete written prerequisite bodies actually read before ART6 authoring",
+  "prerequisites": [
+    {
+      "id": "art-5.7",
+      "file": "content/art/ch05.js",
+      "fileSHA256": "f88d2345306f6a4770a3b827baa75691502828cdd4ebc16a308b8d58d8b2b145",
+      "item": {
+        "num": "5.7",
+        "kind": "Concept",
+        "name": "Opponent-process theory (Hering)",
+        "statement": "Colour information depends on comparisons between cone signals, rather than three independent colour labels attached to L, M and S cones. Cone-opponent combinations such as L\u2212M and S\u2212(L+M) are useful models. Their weights and zero crossings do not by themselves specify Hering\u2019s perceptual unique hues. Here a declared linear transform illustrates signal differencing, not a fitted neural circuit.",
+        "idea": "Each cone responds to a broad wavelength range. Subtracting normalised responses can cancel common excitation while retaining spectral differences. Two ends of a signed model axis are mutually exclusive by construction; that mathematical fact is not evidence for an unrestricted claim about every colour percept.",
+        "caption": "Change an authored Gaussian spectrum and add equal-energy light. The first graph shows the spectrum and the second its normalised cone responses and three explicit combinations. Equal-energy input makes the two opponent differences zero under the chosen normalisation.",
+        "deps": [
+          "art-4.1"
+        ],
+        "refs": [
+          "Conway & Livingstone2006, J Neurosci26:10826\u201310846, Introduction and cone-opponent cell results; CIE170-1:2006 Table6.7 cone fundamentals; authored transform"
+        ],
+        "links": {
+          "source": "https://pmc.ncbi.nlm.nih.gov/articles/PMC2963176/"
+        },
+        "tags": [
+          "opponency"
+        ],
+        "scope": "CIE2006 2\u00b0 energy-based cone fundamentals, a different observer model from1931 XYZ. Integrals use5nm trapezoids over the tabulated390\u2013830nm domain (S ends615nm, zero extension); each is divided by its equal-energy integral. Chosen channels are (L+M)/2, L\u2212M, S\u2212(L+M)/2. These unitless toy signals are neither measured neural firing nor calibrated red/green/blue/yellow appearance. No spectral patch is fabricated."
+      }
+    },
+    {
+      "id": "rca-8.13",
+      "file": "content/rca/ch08-a3.js",
+      "fileSHA256": "7c8f58ba79a16140dcc17e25c8c1ab022148ed2f6141d0bca352c029bcb11d27",
+      "item": {
+        "num": "8.13",
+        "kind": "Definition",
+        "name": "Convolution on the line",
+        "statement": "For measurable functions $f$ and $g$ on $\\R$ (Lebesgue measure $m$), the **convolution** $f*g$ is\n$$(f*g)(x)=\\int_{-\\infty}^{\\infty}f(x-y)\\,g(y)\\,dy$$\nat every $x$ for which $\\int|f(x-y)g(y)|\\,dy<\\infty$. The substitution $y\\mapsto x-y$ shows that $f*g=g*f$ wherever either side is defined.",
+        "idea": "To compute $(f*g)(x)$, reflect $f$, slide the reflected copy so that its origin sits at $x$, multiply by $g$, and take the area. So $f*g$ is a moving weighted average of $g$ with weights given by $f$, which is why convolution smooths: a box convolved with a box is a tent, and a jump convolved with a narrow bump becomes a smooth ramp. For measurability one replaces $f,g$ by Borel functions equal to them a.e.; then $(x,y)\\mapsto f(x-y)g(y)$ is Borel on $\\R^2$ and the Fubini theorem can be applied, as in 8.14.",
+        "caption": "Top: $g(y)$ (blue), the reflected and shifted copy $y\\mapsto f(x-y)$ (orange), and their product (green), whose area is $(f*g)(x)$. Bottom: the graph of $f*g$, traced as $x$ moves. Play the animation or pause and drag $x$. The second example shows the reflection (a one-sided $f$ appears backwards); the third shows smoothing \u2014 a ragged step function convolved with a narrow bump.",
+        "deps": [
+          "rca-2.20",
+          "rca-1.30"
+        ],
+        "see": [
+          "fa-6.30"
+        ],
+        "tags": [
+          "convolution"
+        ],
+        "verify": true
+      }
+    },
+    {
+      "id": "art-4.6",
+      "file": "content/art/ch04.js",
+      "fileSHA256": "45659a5dd2d4a7c4d33c5124460b262d8d7e183eadaeb96a892a37bef10ec9a8",
+      "item": {
+        "num": "4.6",
+        "kind": "Definition",
+        "name": "CIE 1931 XYZ tristimulus values",
+        "credit": "Commission Internationale de l\u2019\u00c9clairage, 1931",
+        "statement": "The CIE 1931 standard colorimetric observer is defined by three functions $\\bar x,\\bar y,\\bar z$ of wavelength, obtained from the experimental $\\bar r,\\bar g,\\bar b$ by a fixed linear transformation (art-4.5) chosen so that all three are non-negative and $\\bar y(\\lambda)$ equals the luminous-efficiency function $V(\\lambda)$. The tristimulus values of a light $S(\\lambda)$ are\n$$X=\\int S\\,\\bar x\\,d\\lambda,\\quad Y=\\int S\\,\\bar y\\,d\\lambda,\\quad Z=\\int S\\,\\bar z\\,d\\lambda ,$$\nso $Y$ is the luminance, and the equal-energy stimulus has $X=Y=Z$. Two lights match for the standard observer exactly when their $XYZ$ agree.",
+        "idea": "A change of primaries is a $3\\times3$ matrix $T$ acting on the matching functions (and on all tristimulus triples); because the algebra of mixing is linear (art-4.4), any invertible $T$ gives equally valid coordinates. The CIE picked the one with $\\bar x,\\bar y,\\bar z\\ge0$ (no negative lobes, so calculations by hand had no sign problems) and with all luminance in $Y$ alone. The price is that the primaries $X,Y,Z$ are imaginary: they lie outside the spectral locus (art-4.7) and cannot be produced by any light.",
+        "caption": "Top: the matching functions (choose $XYZ$ or the CIE RGB system they come from). Bottom: drag the seven handles to draw a spectrum $S(\\lambda)$; the shaded area under $S\\bar y$ is $Y$. The readout gives $X,Y,Z$, the chromaticity $(x,y)$, and recomputes $X,Y,Z$ from the $\\bar r\\bar g\\bar b$ route with the standard matrix to show that the two coordinate systems carry the same information.",
+        "deps": [
+          "art-4.5",
+          "pma-9.4"
+        ],
+        "refs": [
+          "Fairchild ch. 3"
+        ],
+        "tags": [
+          "CIE 1931",
+          "XYZ"
+        ],
+        "scope": "The curves are the Wyman\u2013Sloan\u2013Shirley analytic fit to the 1931 two-degree tables, accurate to within about a percent of the peak; the matrix with the constant $0.17697$ is the one quoted for the CIE RGB to $XYZ$ conversion. 2\u00b0 field, photopic vision.",
+        "links": {
+          "wikipedia": "https://en.wikipedia.org/wiki/CIE_1931_color_space"
+        }
+      }
+    },
+    {
+      "id": "art-4.1",
+      "file": "content/art/ch04.js",
+      "fileSHA256": "45659a5dd2d4a7c4d33c5124460b262d8d7e183eadaeb96a892a37bef10ec9a8",
+      "item": {
+        "num": "4.1",
+        "kind": "Concept",
+        "name": "Cone fundamentals: L, M and S",
+        "statement": "Photopic trichromatic colour matching can be modelled by three relative cone signals. Here $\\bar l,\\bar m,\\bar s$ are the **CIE 2006 2\u00b0 energy-based cone fundamentals**: standard-observer corneal sensitivities, including the effects of ocular filtering. For spectral power density $S(\\lambda)$ in consistent energy units,\n$$q_i=\\int S(\\lambda)\\,\\bar c_i(\\lambda)\\,d\\lambda.$$\nHere $i=L,M,S$.\nA cone obeys univariance: its response depends on absorption rate rather than a separate wavelength label. These three relative signals are not a complete account of spatial, temporal or adapted colour appearance.",
+        "idea": "Multiplying the spectrum by a sensitivity curve weights the wavelengths that contribute to that cone signal; integration adds their contributions. Scaling the spectrum scales every signal. A single signal cannot distinguish an intensity change from a wavelength change that gives the same response. The curves overlap, so ratios can carry information under restricted stimulus assumptions, but $L/M$ alone does not identify an arbitrary spectrum or its perceived hue.\n\nThe numerical source tabulates energy-based sensitivities separately normalized for the three classes; their heights do not measure relative cone counts or absolute gains. We linearly interpolate the published 5 nm table and integrate numerically. Bars divide each $q_i$ by that cone\u2019s response to unit, equal-energy spectral density over the table range, so that reference gives $(1,1,1)$. The spectrum concept is art-3.2.",
+        "caption": "Choose an authored spectrum, its intensity, and the cone whose product is shaded. Broad and narrow bands are Gaussian shapes; narrow means 8 nm FWHM, not a delta function. The gold spectrum and shaded product use the same relative spectral-density scale. Compare the actual integral bars, including zero intensity and the equal-energy reference. The black-body option is an authored 2856 K Planck spectrum, not a measured lamp.",
+        "deps": [
+          "art-3.2"
+        ],
+        "refs": [
+          "CIE 170-1:2006 Table 6.7, official energy-based 2\u00b0 dataset/metadata, DOI 10.25039/CIE.DS.tijidesg",
+          "Stockman & Sharpe (2000), \u00a7\u00a71.1\u20131.2; Stockman & Rider (2023), \u00a7\u00a71/1.1,2.3,6\u20137"
+        ],
+        "tags": [
+          "cones",
+          "vision",
+          "spectrum"
+        ],
+        "scope": "Standard-observer photopic, centrally viewed 2\u00b0 matching conditions; individual observers vary. The CIE table is a standardized estimate, not three raw single-cone recordings. Its L/M columns cover 390\u2013830 nm; its S column ends at 615 nm. Missing S values are zero-extended as specified by the dataset convention, not asserted to be physiological zeros. Spectra are restricted to this numerical band; FWHM describes the Gaussian before that band limit. The published 2000 paper\u2019s own Table 2 is quantal; it is not the energy table used here. No display colour or subjective hue is inferred from these bars.",
+        "links": {
+          "source": "https://cie.co.at/datatable/cie-2006-lms-cone-fundamentals-2-field-size-terms-energy",
+          "account": "https://doi.org/10.1002/col.22879"
+        },
+        "verify": false
+      }
+    },
+    {
+      "id": "art-5.1",
+      "file": "content/art/ch05.js",
+      "fileSHA256": "f88d2345306f6a4770a3b827baa75691502828cdd4ebc16a308b8d58d8b2b145",
+      "item": {
+        "num": "5.1",
+        "kind": "Concept",
+        "name": "Hue, chroma and lightness",
+        "statement": "Hue describes a colour\u2019s position around a perceptual colour family; chroma relates colourfulness to a similarly illuminated neutral reference; lightness relates brightness to an illuminated white reference. In CIELAB, the correlates $L^*$, $C^*_{ab}=\\sqrt{a^{*2}+b^{*2}}$ and $h_{ab}=\\operatorname{atan2}(b^*,a^*)$ separate these coordinates. Hue angle is undefined at zero chroma.",
+        "idea": "Polar coordinates replace the rectangular chromatic axes by radius and angle. Changing a coordinate holds the other two numerical coordinates fixed, but does not guarantee an isolated perceptual change. In particular, a high-chroma coordinate may lie outside the display gamut.",
+        "caption": "Move lightness, chroma and hue. The plane is a constant-lightness slice; uncoloured regions indicate coordinates outside sRGB. The separate patch clips channels only for display, while the dot and readout retain the requested coordinates.",
+        "deps": [
+          "art-4.7"
+        ],
+        "refs": [
+          "CIE S017:2020 e-ILV17-22-063/067/074 and17-23-076; W3C CSS Color4 \u00a79 and19"
+        ],
+        "links": {
+          "source": "https://cie.co.at/eilvterm/17-23-076"
+        },
+        "tags": [
+          "colour order",
+          "CIELAB"
+        ],
+        "scope": "CIE1931 2\u00b0; D65 reference white, Y\u2099=1. Patches are clipped sRGB previews. Actual appearance depends on display, adaptation and surroundings."
+      }
+    },
+    {
+      "id": "art-4.13",
+      "file": "content/art/ch04-b.js",
+      "fileSHA256": "2c84a7aab934124496f67773956d4bf846d27472fa612452747157d2e721494a",
+      "item": {
+        "num": "4.13",
+        "kind": "Concept",
+        "name": "Luminance, V(\u03bb) and the Purkinje shift",
+        "verify": false,
+        "statement": "Photopic luminance weights spectral radiance with V(\u03bb). The SI constant Kcd=683lm/W applies exactly at540THz; the maximum photopic efficacy at the555nm peak is approximately683.002lm/W in standard air. The standard scotopic peak is507nm; the supplied rounded table has equal maximum samples at506,507,508nm. They are different standard weightings for defined visual conditions, not universal measures of perceived brightness.\nThe Purkinje phenomenon is the relative reduction in brightness of a predominantly long-wavelength stimulus compared with a predominantly short-wavelength one when both luminances are reduced in the same proportion into mesopic/scotopic conditions. The spectral shapes are held fixed. Field size, position and adaptation matter; photopic V remains the applicable convention for narrow foveal tasks even at low luminance.",
+        "idea": "The CIE/BIPM mesopic function at a specified coefficient is Vmes,m(\u03bb)=[mV(\u03bb)+(1\u2212m)V\u2032(\u03bb)]/M(m), where M makes the maximum equal1. The coefficient depends on the adaptation field; it is not simply a universal rod/cone percentage derived from one white card's luminance.\nHere m is supplied directly. Integrating the same authored lamp times each reflectance against these weights shows how relative responses change. Dividing by the corresponding white-card integral cancels the absolute efficacy factor. The standard's normalized curve is distinct from the authored card spectra and gray display proxies.",
+        "caption": "Move the continuous coefficient m:0 gives the actual scotopic table,1 the photopic table. The full401-point curves cover380\u2013780nm, the complete available scotopic dataset. Choose a lamp model. Top swatches are fixed photopic color proxies for its cards; lower swatches encode each current weighted response relative to white using the sRGB gray transfer. They are not a simulation of color fading or another person's brightness.\nThe readout reports raw weighted integrals, white-relative responses, their ratios to the photopic values, curve normalization and every maximum sample. No adaptation luminance is inferred from m.",
+        "deps": [
+          "art-4.1"
+        ],
+        "refs": [
+          "BIPM/CIE2019, Principles Governing Photometry, \u00a7\u00a73\u20136.4, Eq.1\u201311",
+          "CIE2019 scotopic owner data DOI10.25039/CIE.DS.gr6w4b5g; CIE1931 XYZ owner data",
+          "CIE e-ILV2020 term17-22-036, Purkinje phenomenon"
+        ],
+        "tags": [
+          "luminance",
+          "scotopic",
+          "Purkinje"
+        ],
+        "credit": "CIE/BIPM standard photometry; authored lamp/card comparison, no priority date asserted.",
+        "scope": "Actual BIPM2019/05 passages and tables are checked. The official V\u2032 CSV has401 rows380\u2013780nm, as its column headers, validation sums and original BIPM Table2 confirm; its metadata abstract's360\u2013830nm range conflicts with those actual bytes. The displayed photopic y-bar table is restricted to the same band. Both use linear interpolation. At m=0.8, this formula applied to the two owner input tables differs from the separate owner mesopic table by up to4.507\u00d710\u207b\u2079 in this band; that discrepancy is retained without assuming its cause. All lamps and reflectances are the declared finite models of3.2; exact cubic-product quadrature applies on each1nm interval. The normalized blend follows BIPM Eq.1 at user-specified m; the source's adaptation-field equations10\u201311 and the full2026 outdoor-lighting recommendations are not implemented or certified. The displayed efficacy uses the source's rounded555.017nm air reference and is approximate. No universal0.01\u20133cd/m\u00b2 transition, personal adaptation response, exact color appearance or biological rod percentage is claimed. Gray swatches are an authored encoding of calculated ratios.",
+        "links": {
+          "standard": "https://www.bipm.org/documents/20126/41749107/Principles%2B-governing%2B-photometry/8365350c-bf72-3cf2-bf03-324bf5c01b62",
+          "scotopic": "https://doi.org/10.25039/CIE.DS.gr6w4b5g",
+          "phenomenon": "https://cie.co.at/eilvterm/17-22-036"
+        }
+      }
+    },
+    {
+      "id": "art-3.3",
+      "file": "content/art/ch03.js",
+      "fileSHA256": "ad6e546373cf5a45ef03bcb0c0f95a361a394edfd65debe6d7aeca7f49214676",
+      "item": {
+        "num": "3.3",
+        "kind": "Concept",
+        "name": "Newton\u2019s colour circle and centre-of-gravity mixing",
+        "verify": false,
+        "credit": "Isaac Newton, Opticks1704, BookI PartII PropositionVI",
+        "statement": "Newton\u2019s1704 rule places quantities at the centers of gravity of seven spectral-color arcs, then takes their common center of gravity Z. The direction O\u2192Z selects a point Y on the rim, and |OZ| is its \u201cfullness\u201d for a unit circle. This is an approximate historical color rule. Newton explicitly cautions that two opposed primary colors need not yield a perfect white, even when the circle predicts a central resultant. The arithmetic alone cannot certify an actual color match.",
+        "idea": "For declared points c\u1d62 and nonnegative amounts w\u1d62, the geometric rule is Z=\u03a3w\u1d62c\u1d62/\u03a3w\u1d62. In modern CIE xy coordinates, standard-observer XYZ responses add linearly, but their chromaticities average with weights proportional to radiant power times X+Y+Z. Thus equal radiant powers do not generally have equal chromaticity weights. The second panel checks that separate modern statement for seven explicitly authored monochromatic wavelengths.\n\nThe geometric center is a convex combination in the sense of opt 2.1: for nonnegative amounts with positive total, w_i/\u03a3w_j are nonnegative and sum to one. Hence Z lies in the convex hull of the declared arc centroids, regardless of whether its direction is numerically resolvable. This is a statement about Newton\u2019s geometric construction, not proof that those weights or centroids reproduce physical color matching. Zero total light is excluded from the division and is treated separately.",
+        "caption": "Change all seven continuous amounts, step through the construction, and try the example, a geometric balance, equal amounts, a pair, or zero light. The first panel follows the actual printed1704 fractions. The second shows seven chosen spectral chromaticities and their CIE mixture; it does not project Newton\u2019s hue onto that diagram.",
+        "scope": "Checked against the actual1704 first-edition scan, BookI PartII pp.114\u2013117, including the fraction glyphs and worked example; Fig.11 is the source construction. The actual orange fraction is1/16 and blue1/10. Oxford's diplomatic transcription currently renders orange1/10; the print pixels govern this illustration. Arc fractions are normalized to a full circle. Its geometric centroids and barycentric arithmetic are exact for the declared model, apart from floating-point arithmetic; its color predictions are historical approximations. Near-center direction is marked unresolved below64 machine epsilons, without calling that a physiological white. Categorical ring colors are authored labels, not wavelength measurements. No light is distinguished from white light. Saved numeric controls need at most15 significant digits and an exact native-range round-trip with the same bounds and step; unsupported raw values are visibly rejected. The balance preset is rounded to that precision and is a numerical geometric balance. The modern comparison uses conventional wavelengths 660 / 607 / 577 / 532 / 482 / 452 / 420 nm, equal-radiant-power units and the official CIE1931 standard-observer table. These are not Newton's measured wavelengths, photon counts or individual visual judgments. XYZ is normalized by the largest entered amount for numerical stability, preserving chromaticity; the readout names that normalization.",
+        "deps": [
+          "art-3.1",
+          "opt-2.1"
+        ],
+        "refs": [
+          "Newton1704, BookI PartII PropositionVI pp.114\u2013117",
+          "CIE1931 official matching-function dataset DOI10.25039/CIE.DS.xvudnb9b"
+        ],
+        "tags": [
+          "Newton",
+          "colour circle",
+          "mixing"
+        ],
+        "links": {
+          "original": "https://www.wilbourhall.org/pdfs/newton/opticks1704englishwh.pdf",
+          "transcription": "https://newtonproject.ox.ac.uk/view/texts/diplomatic/NATP00034"
+        }
+      }
+    }
+  ],
+  "cautions": [
+    "RCA8.13 retains verify=true; new finite discrete models do not certify its measure-theoretic proof.",
+    "Art4.6 written XYZ prerequisite still describes an analytic fit; do not silently treat it as an exact official-table model.",
+    "CIE2006 cone fundamentals, CIE1931 XYZ, a chosen Bradford basis and perceived appearance are distinct.",
+    "Opponent channels in5.7 and adaptation examples are declared models, not fitted neural circuits or universal appearance predictions.",
+    "Luminance differs from brightness; numerical CIELAB/gamut coordinates do not guarantee appearance or an individual match.",
+    "Newton3.3 is an approximate historical rule with actual first-edition qualifications; do not inherit complement-addition as an exact modern law."
+  ],
+  "bodyFileSHA256": "dd9fbf290bbb0ac14b1fade63c0c0af4324cc62c92c77996efd1a9fbc499e1ae"
+}

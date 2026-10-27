@@ -1,0 +1,162 @@
+{
+  "status": "author-verified; independent acceptance remains36",
+  "availability": {
+    "before": 849,
+    "after": 858,
+    "goal": 1057,
+    "historicalIndependentlyAccepted": 36,
+    "additionalAuthorVerified": 822
+  },
+  "lessonCount": 9,
+  "purposeBuiltPanels": 26,
+  "model": {
+    "referenceCases": 1950,
+    "families": 9,
+    "comparisons": 233821,
+    "precision": {
+      "status": "PASS",
+      "cases": 1950,
+      "families": [
+        "bounds",
+        "claims",
+        "densityRecovery",
+        "earlyCall",
+        "parity",
+        "payoff",
+        "protectivePut",
+        "strategies",
+        "strikeConvexity"
+      ],
+      "method": "All physical results use exact Fraction expressions/integration and correctly rounded conversion. Only final log-magnitude formatting uses mpmath.",
+      "logFormattingDigits": {
+        "canonical": 100,
+        "higher": 200
+      },
+      "canonicalRepeatByteIdentical": true,
+      "completeHigherExpectedObjectsEqual": true,
+      "higherBytesIdentical": true,
+      "fixtureSHA256": "771902bef6635506b16701b6c6287029c07f3eb1adaa8d812b0955e258e68db1",
+      "original1941CompleteObjectsPreserved": true,
+      "additionalUIdefaults": 9
+    },
+    "worstLogAbsolute": 4.547473508864641e-13,
+    "physicalGate": "Exact correctly rounded independent Fraction-to-binary64 agreement with strict sign/range and signed-zero checks."
+  },
+  "focused": {
+    "newGroups": 17,
+    "affectedPriorFinanceGroups": 15,
+    "passed": 32,
+    "failed": 0,
+    "skipped": 0,
+    "cancelled": 0,
+    "durationMs": 377.014338,
+    "log": "/workspace/scratch/wave6-fin-research/focused-final-v2.log",
+    "logSHA256": "2fe779da8fca1abd995a243ad2846cb464782fcc8f2415e465eb33d8ee5ee203"
+  },
+  "strictBuild": {
+    "written": 8573,
+    "planned": 5001,
+    "chapters": 590,
+    "collections": 85,
+    "errors": 0,
+    "warnings": 0,
+    "log": "/workspace/scratch/wave6-fin-research/build-display-repaired.log"
+  },
+  "globalStatic": {
+    "items": 8510,
+    "errors": 0,
+    "warnings": 0,
+    "log": "/workspace/scratch/wave6-fin-research/static-final.log"
+  },
+  "productionModes": {
+    "light": {
+      "run": 9,
+      "failed": 0,
+      "texBlankWarnings": 0,
+      "qualityWarnings": 0
+    },
+    "dark": {
+      "run": 9,
+      "failed": 0,
+      "texBlankWarnings": 0,
+      "qualityWarnings": 0
+    }
+  },
+  "nativeControlRun": {
+    "layouts": 36,
+    "actions": 1516,
+    "shares": 684,
+    "invalid": 36,
+    "raw": 36,
+    "critical": 312,
+    "checks": 2620,
+    "modelComparisons": 1211346
+  },
+  "finalCriticalReplay": {
+    "layouts": 36,
+    "actions": 348,
+    "shares": 348,
+    "invalid": 36,
+    "raw": 36,
+    "critical": 312,
+    "checks": 1116,
+    "modelComparisons": 464068
+  },
+  "groupModes": {
+    "modes": 62,
+    "actions": 142,
+    "shares": 62,
+    "checks": 222,
+    "comparisons": 122638
+  },
+  "visual": {
+    "targets": 326,
+    "counts": {
+      "defaults": 36,
+      "rich": 72,
+      "critical": 156,
+      "modes": 62
+    },
+    "reviewedSheets": 95,
+    "usedSheets": 91,
+    "missing": 0
+  },
+  "preservation": {
+    "rawPins": 310,
+    "syllabusSemanticOnly9RefsPic": true,
+    "existingPaperExact": true,
+    "allFrozenIdentityDepsFlagsExact": true
+  },
+  "latestFullGlobalExport": {
+    "commit": "82260ace7c1bd64308d1bf18089499785ee217a6",
+    "tests": 4921,
+    "productionRoutesPerTheme": 272,
+    "scope": "MICRO12/MACRO6 integration. This preceding full-suite result does not cover later FIN changes. Current chapter has32focused groups and full scientific/native/visual gates."
+  },
+  "readingIntegration": "FIN9 not yet added to the8564-entry roster; integrate after the next frozen GAME6chapter completes.",
+  "ownedBrowsersServersClosed": true,
+  "sourceStopsPreserved": true,
+  "publicationDeploymentIndependentAcceptanceClaimed": false,
+  "logs": {
+    "focused-final-v2.log": {
+      "path": "/workspace/scratch/wave6-fin-research/focused-final-v2.log",
+      "sha256": "2fe779da8fca1abd995a243ad2846cb464782fcc8f2415e465eb33d8ee5ee203"
+    },
+    "build-display-repaired.log": {
+      "path": "/workspace/scratch/wave6-fin-research/build-display-repaired.log",
+      "sha256": "33f1739bf959fdab21dae02d5d224e97e2e583dbb216c937e16c055172d7b3b3"
+    },
+    "static-final.log": {
+      "path": "/workspace/scratch/wave6-fin-research/static-final.log",
+      "sha256": "00fa00f4f08ba6807d1f1e7f4ad6c5bc6328ee0f8d8744b72deaaff16e3b8932"
+    },
+    "production-modes-light.log": {
+      "path": "/workspace/scratch/wave6-fin-research/production-modes-light.log",
+      "sha256": "d5da9c19f2428e3d52e3d84d289818444d470cc9a5f93669b23519a4963c6c26"
+    },
+    "production-modes-dark.log": {
+      "path": "/workspace/scratch/wave6-fin-research/production-modes-dark.log",
+      "sha256": "d5da9c19f2428e3d52e3d84d289818444d470cc9a5f93669b23519a4963c6c26"
+    }
+  }
+}

@@ -1,0 +1,64 @@
+{
+  "status": "Historical uncounted draft progress; final author gates now supersede",
+  "authorAvailability": 849,
+  "independentAcceptance": 36,
+  "product": {
+    "newLessons": 9,
+    "panels": 26,
+    "existingPaper": "fin-7.10 preserved"
+  },
+  "pureReference": {
+    "cases": 1950,
+    "preservedCases": 1941,
+    "addedUIDefaultCases": 9,
+    "canonicalRepeat100andHigher200ByteIdentical": true,
+    "sha256": "771902bef6635506b16701b6c6287029c07f3eb1adaa8d812b0955e258e68db1",
+    "comparisons": 233821,
+    "worstLogAbsolute": 4.547473508864641e-13
+  },
+  "focused": {
+    "newGroups": 17,
+    "priorFinanceGroups": 15,
+    "passed": 32,
+    "log": "/workspace/scratch/wave6-fin-research/focused-final.log"
+  },
+  "nativeControlRuns": {
+    "native-v2-a": {
+      "layouts": 20,
+      "actions": 728,
+      "shares": 344,
+      "invalid": 20,
+      "raw": 20,
+      "critical": 172,
+      "checks": 1304,
+      "modelComparisons": 376412
+    },
+    "native-v2-b": {
+      "layouts": 16,
+      "actions": 788,
+      "shares": 340,
+      "invalid": 16,
+      "raw": 16,
+      "critical": 140,
+      "checks": 1316,
+      "modelComparisons": 834934
+    }
+  },
+  "nativeScope": "Complete controls, actual load-recipe button, all hidden-leg editors, native keyboard/clicks, exact actual Share replay and312 critical restores in36 layouts. Later changes only formatted decimal approximation marks and lesson4 equation wrapping; every final critical state, all offered modes and final default/rich screenshots are being rerun. Control registration/state/Load callbacks, rational models and scientific geometry are unchanged.",
+  "gatesOpen": [
+    "final decimal-label/critical captures",
+    "all62group options/loaded recipes",
+    "final original-pixel qualification",
+    "final production both themes",
+    "preservation/manifest/availability update"
+  ],
+  "genuineDraftFailures": [
+    "Initial refs/pic mirror utility missed9next-line captions; content test caught it and corrected without changing metadata",
+    "Initial36rich captures136ink issues; logical equation splitting repaired them, no font shrinking",
+    "Personal image review caught butterfly curve cutting across peak; union exact critical anchors into all sample grids",
+    "Native raw insurance probability marker clipped near baseline; lower plot boundary now\u2212.06",
+    "Native critical selector3 was numeric while saved labels strings; intended-state lookup now compares label text, all registered values remain exact",
+    "Final lesson4 display punctuation exceeded narrow math box by3px; equation now split into two named-lower-bound lines, rerun pending"
+  ],
+  "supersededBy": "docs/verification/wave6-fin-gates.json"
+}

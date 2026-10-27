@@ -1,0 +1,54 @@
+{
+  "status": "author-verified",
+  "addedLessons": 16,
+  "panels": 49,
+  "availability": 980,
+  "historicalIndependentAccepted": 36,
+  "additionalAuthorVerified": 944,
+  "focusedGroups": 44,
+  "independentCases": 5908,
+  "independentFamilies": 13,
+  "referenceComparisons": 1363253,
+  "nativeLayouts": 64,
+  "criticalRecipes": 68,
+  "nativeTotals": {
+    "layouts": 64,
+    "actions": 3086,
+    "shares": 852,
+    "trustedShares": 852,
+    "invalid": 384,
+    "raw": 60,
+    "critical": 272,
+    "checks": 3886,
+    "modelComparisons": 776710,
+    "geometryComparisons": 546308,
+    "paintedPixelAudits": 11914,
+    "pixelSamples": 173920,
+    "domRangeRounding": 48
+  },
+  "personallyReviewedTargets": 360,
+  "currentOriginalDetailSheets": 80,
+  "strict": {
+    "written": 8695,
+    "planned": 4879,
+    "chapters": 600,
+    "collections": 85,
+    "errors": 0,
+    "warnings": 0
+  },
+  "static": {
+    "items": 8632,
+    "errors": 0,
+    "warnings": 0
+  },
+  "ordinary": {
+    "light": 16,
+    "dark": 16,
+    "failures": 0,
+    "warnings": 0
+  },
+  "rawFilesExact": 955,
+  "ownedBrowsersServersClosed": true,
+  "globalSuite": "Latest prior5138-test export predatesARCH/LING. Run full suite ALONE after this27-lesson catalogue integration, before the authorized push/main merge.",
+  "next": "Integrate ARCH11+LING16; full suite ALONE; push branch and merge to main as explicitly requested; then continue PHIL6eleven without stopping."
+}

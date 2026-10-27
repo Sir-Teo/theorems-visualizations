@@ -284,29 +284,148 @@ export default {
     },
     // ───────────────────────────────────────────────────────────── 8
     {
-      n: 8,
-      title: 'Spatial analysis',
-      summary: String.raw`Tobler's first law — near things are more related than distant things — underlies the statistics of space. Spatial autocorrelation quantifies it, Voronoi polygons and interpolation methods exploit it to fill in unsampled places, distance decay and diffusion describe how influence and innovation spread, and John Snow's cholera map is the founding example of reasoning with location.`,
-      items: [
-        { num: '8.1', kind: 'Principle', name: 'Tobler’s first law of geography', deps: ['geog-1.4'], refs: ['Haggett'],
-          pic: 'Scatter sample points over a smooth random field: the correlation between pairs is plotted against their separation and decays with distance, while a shuffled field shows no decay at all.' },
-        { num: '8.2', kind: 'Definition', name: 'Spatial autocorrelation: Moran’s I', deps: ['geog-8.1'], refs: ['Haggett'],
-          pic: 'Paint values on a grid of cells: Moran’s I is computed live, positive for clusters, near zero for random patterns and negative for checkerboards, with a permutation test giving its significance.' },
-        { num: '8.3', kind: 'Concept', name: 'Voronoi (Thiessen) polygons', deps: ['geog-8.1', 'xtal-1.11'], refs: ['Haggett'],
-          pic: 'Drop rain gauges on a map: each claims the region closer to it than to any other, the polygons update as gauges are dragged, and the area-weighted rainfall estimate changes accordingly.' },
-        { num: '8.4', kind: 'Method', name: 'Spatial interpolation: inverse-distance weighting, kriging', deps: ['geog-8.2', 'geog-8.3'], refs: ['Haggett'],
-          pic: 'Interpolate a surface from scattered samples by IDW with an adjustable power and by kriging with a fitted variogram: cross-validation errors are compared, and kriging also maps its own uncertainty.' },
-        { num: '8.5', kind: 'Law', name: 'Distance decay', deps: ['geog-8.1'], refs: ['Haggett'],
-          pic: 'Plot interactions (phone calls, shoppers, migrants) against distance from a centre: power-law and exponential decay curves are fitted, and their parameters change with transport cost.' },
-        { num: '8.6', kind: 'Event', name: 'John Snow’s cholera map', deps: ['geog-8.3'], refs: ['Haggett'],
-          pic: 'Plot 1854 cholera deaths in Soho with the water pumps: the Voronoi cell of the Broad Street pump captures the cluster, and switching to walking distances sharpens the match.' },
-        { num: '8.7', kind: 'Model', name: 'Hägerstrand’s spatial diffusion of innovations', deps: ['geog-8.5'], refs: ['Haggett'],
-          pic: 'Seed an innovation in a few farms and let adopters tell neighbours with a distance-decaying contact field: adoption spreads in a wave, and the cumulative count follows an S-curve.' },
-        { num: '8.8', kind: 'Paper', name: 'Computer Movie Simulating Urban Growth in the Detroit Region',
-          paper: { authors: 'W. R. Tobler', year: 1970, title: 'A Computer Movie Simulating Urban Growth in the Detroit Region', venue: 'Economic Geography 46: 234–240', doi: '10.2307/143141' },
-          introduces: ['geog-8.1'], deps: ['geog-8.5'], refs: [],
-          pic: 'Run Tobler’s computer movie: Detroit’s population grows year by year on a grid as each cell responds to its neighbours, nearer ones weighted more — “everything is related to everything else, but near things are more related than distant things” — and the reader changes the distance-decay kernel to see the city sprawl or clump.' },
-      ],
+      "n": 8,
+      "title": "Spatial analysis",
+      "summary": "Spatial analysis begins by stating what distance and neighborhood mean. Exact nearest-site geometry, weighted spatial association and covariance-based prediction answer different questions; none alone establishes a causal mechanism. Historical and explicitly synthetic examples distinguish observed locations from modeled contacts, migration and diffusion.",
+      "items": [
+        {
+          "num": "8.1",
+          "kind": "Principle",
+          "name": "Tobler’s first law of geography",
+          "deps": [
+            "geog-1.4"
+          ],
+          "refs": [
+            "Tobler (1970), A Computer Movie Simulating Urban Growth in the Detroit Region, public text transcription: local influence, impulse response and convolution",
+            "Anselin, GeoDa Workbook, Global Spatial Autocorrelation (1), revised2020: Moran statistic, row-standardized lag and permutation inference"
+          ],
+          "links": {
+            "originalText": "https://content-animation.org.uk/htmls/tobler.htm",
+            "methods": "https://geodacenter.github.io/workbook/5a_global_auto/lab5a.html"
+          },
+          "pic": "Compare a smooth synthetic map with a checkerboard and independent noise. Every dot in the second panel is an actual pair from the displayed map, at its computed separation and half-squared difference. Change amplitude or the random seed to test how the pattern changes."
+        },
+        {
+          "num": "8.2",
+          "kind": "Definition",
+          "name": "Spatial autocorrelation: Moran’s I",
+          "deps": [
+            "geog-8.1"
+          ],
+          "refs": [
+            "Anselin, GeoDa Workbook, Global Spatial Autocorrelation (1), revised2020: Moran statistic, row-standardized lag and permutation inference"
+          ],
+          "links": {
+            "methods": "https://geodacenter.github.io/workbook/5a_global_auto/lab5a.html"
+          },
+          "pic": "Choose a clustered, alternating, noisy or constant arrangement and rook or queen neighbors. Compare the map, actual lag scatter and199 seeded random reallocations. The orange line marks the observed statistic, and the readout gives an upper-tail Monte Carlo p-value."
+        },
+        {
+          "num": "8.3",
+          "kind": "Concept",
+          "name": "Voronoi (Thiessen) polygons",
+          "deps": [
+            "geog-8.1",
+            "xtal-1.11"
+          ],
+          "refs": [
+            "XTAL1.11: half-space construction of a Wigner–Seitz cell"
+          ],
+          "pic": "Move the fifth site and the red query. Compare the nearest-site regions with all five actual distances and the computed cell areas. Place sites together to reveal a nonunique nearest-site assignment."
+        },
+        {
+          "num": "8.4",
+          "kind": "Method",
+          "name": "Spatial interpolation: inverse-distance weighting, kriging",
+          "deps": [
+            "geog-8.2",
+            "geog-8.3"
+          ],
+          "refs": [
+            "GSTools1.7.0 documentation, Kriging overview: weighted prediction, unbiased constraint, covariance and measurement error"
+          ],
+          "links": {
+            "methods": "https://geostat-framework.readthedocs.io/projects/gstools/en/v1.7.0/examples/05_kriging/index.html"
+          },
+          "pic": "Move the query over four synthetic samples. Compare IDW with ordinary kriging, and inspect the actual prediction weights. Change the distance exponent or covariance range and measurement-error variance; the surface and readout show the consequences."
+        },
+        {
+          "num": "8.5",
+          "kind": "Law",
+          "name": "Distance decay",
+          "deps": [
+            "geog-8.1"
+          ],
+          "refs": [
+            "Tobler (1970), A Computer Movie Simulating Urban Growth in the Detroit Region, public text transcription: local influence, impulse response and convolution",
+            "Local radial-integration derivation supplied here"
+          ],
+          "links": {
+            "historicalContext": "https://content-animation.org.uk/htmls/tobler.htm"
+          },
+          "pic": "Compare exponential and power-law decay and adjust their scale and exponent. The second panel integrates actual ring contributions within a finite radius-12 disk. Move the radius marker to distinguish a point's influence from accumulated influence."
+        },
+        {
+          "num": "8.6",
+          "kind": "Event",
+          "name": "John Snow’s cholera map",
+          "deps": [
+            "geog-8.3"
+          ],
+          "refs": [
+            "Snow (1855), On the Mode of Communication of Cholera, Broad Street investigation and map explanation; actual selected passages in UCLA John Snow archive",
+            "HistData Snow.deaths and Snow.pumps, digital coordinates distributed through Rdatasets"
+          ],
+          "links": {
+            "originalPassages": "https://epi-snow.ph.ucla.edu/Stream2_BSPoutbreak_a.html",
+            "historicalCautions": "https://epi-snow.ph.ucla.edu/Stream2_BSPoutbreak_f.html",
+            "deathCoordinates": "https://raw.githubusercontent.com/vincentarelbundock/Rdatasets/master/csv/HistData/Snow.deaths.csv",
+            "pumpCoordinates": "https://raw.githubusercontent.com/vincentarelbundock/Rdatasets/master/csv/HistData/Snow.pumps.csv"
+          },
+          "pic": "Explore578 digitized death marks and13 pump locations from a transcription of the historical map. Choose a pump and compare Euclidean with city-block nearest-pump assignments. The highlighted region is an accessibility hypothesis, not a set of proven water exposures."
+        },
+        {
+          "num": "8.7",
+          "kind": "Model",
+          "name": "Hägerstrand’s spatial diffusion of innovations",
+          "deps": [
+            "geog-8.5"
+          ],
+          "refs": [
+            "Tobler (1970), A Computer Movie Simulating Urban Growth in the Detroit Region, public text transcription: local influence, impulse response and convolution; explicit connection to Hägerstrand’s mean information fields",
+            "Modern finite contact-probability model and update convention derived here"
+          ],
+          "links": {
+            "historicalConnection": "https://content-animation.org.uk/htmls/tobler.htm"
+          },
+          "pic": "Change the distance scale, social contacts and external information, then scrub through generations. New adopters are gold and earlier adopters blue. The fixed random seed reproduces a realization whose aggregate curve is calculated from actual adoption events."
+        },
+        {
+          "num": "8.8",
+          "kind": "Paper",
+          "name": "Computer Movie Simulating Urban Growth in the Detroit Region",
+          "paper": {
+            "authors": "W. R. Tobler",
+            "year": 1970,
+            "title": "A Computer Movie Simulating Urban Growth in the Detroit Region",
+            "venue": "Economic Geography 46: 234–240",
+            "doi": "10.2307/143141"
+          },
+          "introduces": [
+            "geog-8.1"
+          ],
+          "deps": [
+            "geog-8.5"
+          ],
+          "refs": [
+            "Tobler (1970), A Computer Movie Simulating Urban Growth in the Detroit Region, public text transcription: local influence, impulse response and convolution"
+          ],
+          "links": {
+            "originalText": "https://content-animation.org.uk/htmls/tobler.htm"
+          },
+          "pic": "Explore an unfitted local-kernel movie, change its distance scale, redistribution and net growth, then advance the step slider. Compare the evolving map with the actual total population and the mass-balance prediction."
+        }
+      ]
     },
     // ───────────────────────────────────────────────────────────── 9
     {

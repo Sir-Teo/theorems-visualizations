@@ -1,0 +1,14 @@
+{
+  "baseCommit": "2f37674a3223fd79eddc0cacfbe6eb50a4183105",
+  "sha256": {
+    "content/geog/ch08.js": "e94ceb84354347252bb1919cd883cf87739012df626491d1ca5cef2c6df1491a",
+    "content/geog/ch08.shared.js": "e69132333601a6f86478062b2e5d345895d67ed35d5de976e0ab9d488aa8950c",
+    "content/geog/ch08.snow.js": "6823f6f7f1d9221f1fccf415f62bf2c50147d22e700fae89af21b83e86d5c741",
+    "content/geog/ch08.viz.js": "46f0ad86b51562a70d5b2261aa303c038262c240291e02c2ef594774aada83f9",
+    "content/geog/syllabus.js": "5703cbf1903ead2989b4b2a11d1ce3ceaf7a66fae9c0edba739efe080e1d3ff3",
+    "tests/wave6-geog.test.mjs": "b97bec076c11c27b93e1d46bde735c12ca8ec61e79ffe4ab367b8ba68aa642ce",
+    "tests/wave6-geog-browser.mjs": "d83afa68d04d4686093b2b5c711bccba217c3e5afbc61a10af5105734cacc345",
+    "tests/wave6-geog-reference.py": "bb64d6f2e0d1d0bf95d952d5a3f172ef6e796e26ffa964cdeea2495ee50bd2f3",
+    "tests/fixtures/wave6-geog-reference.json": "6eef0b94746df60e2c4f1d343fd09eaee82f09739ccfa0372e456bcd4fc07a59"
+  }
+}

@@ -1,0 +1,179 @@
+{
+  "status": "PASS; independent bounded models and complete short buffers",
+  "cases": 8204,
+  "families": {
+    "pulse": 36,
+    "meter": 4,
+    "necklace": 556,
+    "euclidean": 358,
+    "oddity": 4200,
+    "syncopation": 792,
+    "swing": 255,
+    "autocorrelation": 484,
+    "additive": 6,
+    "phasing": 900,
+    "hypermeter": 144,
+    "hemiola": 15,
+    "ratio": 404,
+    "fejerSample": 50
+  },
+  "statistics": {
+    "cases": 8204,
+    "comparisons": 1617805,
+    "numericalValues": 234010,
+    "exactValues": 1383795,
+    "maxNormalizedError": 0.14359858331664854,
+    "worst": {
+      "path": "swing {\"bpm\":40,\"ratio\":100,\"jitter\":1,\"seed\":0}.events.7.deviation",
+      "actual": 0.14000000000032742,
+      "expected": 0.14,
+      "absoluteError": 3.2740476996195866e-13,
+      "budget": 2.28e-12
+    }
+  },
+  "fixture": {
+    "path": "/workspace/theorems-visualizations/tests/fixtures/wave6-music-reference.json",
+    "bytes": 17545532,
+    "sha256": "506671409d562148936658a4e781f6d5871d26696135a42aace8724f9c9334d0"
+  },
+  "precision": {
+    "full90": {
+      "path": "/workspace/scratch/wave6-music-research/reference-90-v4.json",
+      "bytes": 17545532,
+      "sha256": "506671409d562148936658a4e781f6d5871d26696135a42aace8724f9c9334d0"
+    },
+    "full180": {
+      "path": "/workspace/scratch/wave6-music-research/reference-180-v4.json",
+      "bytes": 17545532,
+      "sha256": "506671409d562148936658a4e781f6d5871d26696135a42aace8724f9c9334d0"
+    },
+    "byteIdentical": true,
+    "freshInstalled90": {
+      "path": "/workspace/scratch/wave6-music-research/canonical-regeneration-90-v4.json",
+      "bytes": 17545532,
+      "sha256": "506671409d562148936658a4e781f6d5871d26696135a42aace8724f9c9334d0"
+    },
+    "freshInstalledLog": {
+      "path": "/workspace/scratch/wave6-music-research/canonical-regeneration-90-v4.log",
+      "bytes": 97,
+      "sha256": "2221e79dd5df4aa2de1b9ebab3b14e9c973da9f70d0eed8d083eb07566bc9090"
+    },
+    "byteIdenticalToFixture": true
+  },
+  "audio": {
+    "completeShortBuffers": 11,
+    "statistics": {
+      "cases": 11,
+      "sampleComparisons": 13275,
+      "metadataComparisons": 49,
+      "maxSampleNormalizedError": 0.006272653786497254,
+      "worst": {
+        "family": "eventAudio",
+        "args": {
+          "duration": 0.06,
+          "events": [
+            {
+              "time": 0.01,
+              "frequency": 1200,
+              "gain": 1
+            },
+            {
+              "time": 0.025,
+              "frequency": 500,
+              "gain": 0.7
+            }
+          ]
+        },
+        "index": 1323,
+        "actual": -6.272653786497254e-15,
+        "expected": 0,
+        "budget": 1e-12
+      }
+    },
+    "fixture": {
+      "path": "/workspace/theorems-visualizations/tests/fixtures/wave6-music-audio-reference.json",
+      "bytes": 232196,
+      "sha256": "3be97b228d01ea13f83167f27b9103714257fbd96a3e9444de6d540f7444d911"
+    },
+    "precision90": {
+      "path": "/workspace/scratch/wave6-music-research/audio-reference-90-v3.json",
+      "bytes": 232196,
+      "sha256": "3be97b228d01ea13f83167f27b9103714257fbd96a3e9444de6d540f7444d911"
+    },
+    "precision180": {
+      "path": "/workspace/scratch/wave6-music-research/audio-reference-180-v3.json",
+      "bytes": 232196,
+      "sha256": "3be97b228d01ea13f83167f27b9103714257fbd96a3e9444de6d540f7444d911"
+    },
+    "byteIdentical": true,
+    "freshInstalled90": {
+      "path": "/workspace/scratch/wave6-music-research/canonical-audio-regeneration-90-v3.json",
+      "bytes": 232196,
+      "sha256": "3be97b228d01ea13f83167f27b9103714257fbd96a3e9444de6d540f7444d911"
+    },
+    "freshInstalledLog": {
+      "path": "/workspace/scratch/wave6-music-research/canonical-audio-regeneration-90-v3.log",
+      "bytes": 93,
+      "sha256": "3c717d6d4282ad71dd6fe13003c855e8f5bd101ec7c5ca98699431e3134cf44f"
+    },
+    "byteIdenticalToFixture": true,
+    "contract": "Every sample in all 11 complete short buffers: two Float32 ULPs or 1e-12, whichever is larger. Non-cancelling double metadata: 2e-12 relative. Browser backend and cursor checks are a separate pending gate; no human-listening certification."
+  },
+  "focused": {
+    "passed": 41,
+    "newChapterGroups": 30,
+    "affectedHistoricalGroups": 11,
+    "failed": 0,
+    "skipped": 0,
+    "cancelled": 0,
+    "durationMs": 2048.52179,
+    "log": {
+      "path": "/workspace/scratch/wave6-music-research/focused-author-final.log",
+      "bytes": 9417,
+      "sha256": "6f9a9e0cdb321b749b440fdf6385aefc80e3610f101362c8f049c3c72a94c0db"
+    }
+  },
+  "independence": "Python uses exact Fraction/integer combinatorics, independent string-group recursion, NumPy integer polynomial correlation, high-precision rational spectral coefficients and full harmonic recurrences. It never imports production JavaScript. The production pulse uses a sine quotient, and production correlation uses direct lag loops. Native render checks add no independent cases.",
+  "audioReferenceRepair": {
+    "observed": "First90/180digit outputs differed only in ten signed-zero Float32 carrier samples at exact rational sine zeros.",
+    "correction": "Evaluate those mathematically exact integer-half-turn sine values symbolically using Fraction coordinates. No numerical-value clipping or tolerance widening. Regenerate both complete corpora.",
+    "differences": {
+      "path": "/workspace/scratch/wave6-music-research/audio-first-precision-differences.json",
+      "sha256": "a60f4ca84f572a99742ade4764d59857bdd228c1346305e80980654fe5d9db43"
+    },
+    "first90": {
+      "path": "/workspace/scratch/wave6-music-research/audio-reference-90-v1.json",
+      "sha256": "6b6796f6a23625447d0f0a1e923c3308c63f52caf6e86ce45ac9c9323c95c82d"
+    },
+    "first180": {
+      "path": "/workspace/scratch/wave6-music-research/audio-reference-180-v1.json",
+      "sha256": "483de868ace27b3b97b7c6353b1f4e676f40888c218dde6ddddc8a42ffc84d00"
+    }
+  },
+  "audioEndFadeRepair": {
+    "finding": {
+      "path": "/workspace/scratch/wave6-music-research/audio-endfade-finding.json",
+      "bytes": 1150,
+      "sha256": "47e9876437001353806a8f2a52d8934ab1c2269c82b470d1f1402c5d27a8c1e7"
+    },
+    "beforeProduction": {
+      "path": "/workspace/scratch/wave6-music-research/ch10.audio-before-endfade.shared.js",
+      "bytes": 1790,
+      "sha256": "2ccd400013f3cdb90d9c9421c243c055d440ae5e240aec7902679cc9056aa928"
+    },
+    "beforeReference": {
+      "path": "/workspace/scratch/wave6-music-research/audio-reference-before-endfade.py",
+      "bytes": 3273,
+      "sha256": "c63411644f983d6a14c132a96e7c5332a58f18a4aadfa6c1a25e6ece4e73cfb0"
+    },
+    "repair": "Apply a 10-ms terminal fade before peak normalization. An independent truncated-last-event regression compares every sample and confirms the finite buffer ends at zero."
+  },
+  "sourceFacts": {
+    "fixture": {
+      "path": "/workspace/theorems-visualizations/tests/fixtures/wave6-music-source-facts.json",
+      "bytes": 2117,
+      "sha256": "b6c09dc0a860f79b39d1088eab9bdfdfdf48d409cca021c914ee02d851cf7284"
+    },
+    "checks": "Personally read grouping examples and full E(5,13) source trace, 16 metric weights, Son onsets and metricity 13/17/4. Authored eight-onset contrast 15/23/8 versus rest contrast 4 is labeled separately."
+  }
+}

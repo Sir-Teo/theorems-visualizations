@@ -1,0 +1,15 @@
+{
+  "baseCommit": "64ec149cdaf44195de90507a9698b391bcd9bc84",
+  "sha256": {
+    "content/ecol/ch06.js": "57710158a2410a164c51c5f2395a0f799be2983aa0a0a13021a62bb6e06274ac",
+    "content/ecol/ch06.shared.js": "2d34382a52eaac175444bcc3759d61ad64148271df14e745b8e6d374a4c997fb",
+    "content/ecol/ch06.viz.js": "1f2eb7148548e33a72345fb07ff020560c85710ee24d6272d9182d5150cc7953",
+    "content/ecol/syllabus.js": "3767ddabb7290c40df364606eb9f10795d103a884541dc8f8b039e6864f03f48",
+    "tests/wave6-ecol.test.mjs": "46f9f5debf3ff02653a274670ac439b59758d944fb4560e78ce325f037c9608f",
+    "tests/wave6-ecol-browser.mjs": "d73071aeabcbcda8efc90cb74044527f4599ca6c9078cb92d3ca15f42dd95616",
+    "tests/wave6-ecol-reference.py": "60a83b0ffd7cc6442fc647de218664d2099a71be22a7504911eb6dfb829291df",
+    "tests/fixtures/wave6-ecol-reference.json": "b5f859de863b8d2c3a1ac230bd3c40aa41946a34fbb19c91d558dd71eef1451b",
+    "docs/verification/wave6-ecol-sources.json": "c252cc6f8755a8634c782b6fe3bb338526e3464b582db005a1ce319a389c201b",
+    "docs/verification/wave6-ecol-gates.json": "c40fedd991a957a22b94525873aebe2b86998202c6f58cc02b7c4580e534de33"
+  }
+}

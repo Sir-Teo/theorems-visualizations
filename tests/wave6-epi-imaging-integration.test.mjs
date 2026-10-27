@@ -1,0 +1,20 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import fs from 'node:fs';
+import {execFileSync} from 'node:child_process';
+import {createHash} from 'node:crypto';
+import {loadAll,ROOT} from '../scripts/lib.mjs';
+import {projectIdeas,selectFrozenIdeas,digest} from '../scripts/static-ideas.mjs';
+test('EPI6/IMAGING6 reading integration adds exactly twenty-two frozen lessons and retains every earlier projection',async()=>{
+ const old=JSON.parse(execFileSync('git',['show','118a0e1be9d63151b5080b2a48d3f646fb0f3c52:static-pages/accepted.json'],{cwd:ROOT,encoding:'utf8'}));
+ const current=JSON.parse(fs.readFileSync(ROOT+'/static-pages/accepted.json'));
+ const evidence=JSON.parse(fs.readFileSync(ROOT+'/docs/integration/wave6-epi-imaging-content.json'));
+ const bytes=fs.readFileSync(ROOT+'/docs/integration/wave6-epi-imaging-content.json');
+ assert.equal(createHash('sha256').update(bytes).digest('hex'),'df98d7b983414d64123d08e4841d3a1b9010de2cbefc2032fd38767657189feb');
+ const data=await loadAll();assert.equal(digest(projectIdeas(data,old.ids,old.aliases)),old.snapshotDigest);assert.ok(old.aliases.every(a=>current.aliases.some(b=>a.id===b.id&&a.to===b.to)));
+ const expected=[...[1,2,3,4,5,8].map(i=>'epi-6.'+i),...Array.from({length:16},(_,i)=>'imaging-6.'+(i+2))].sort();
+ assert.deepEqual(evidence.addedIds,expected);assert.deepEqual(evidence.changedRetainedItems,[]);assert.equal(evidence.retainedIdeas,8441);assert.equal(evidence.mergedIdeas,8463);
+ const selected=selectFrozenIdeas(data,{schemaVersion:1,acceptedCommit:evidence.sourceCommit,ids:[...old.ids,...expected].sort(),aliases:old.aliases,snapshotDigest:evidence.snapshotDigest});assert.equal(selected.selected.length,8463);assert.ok(expected.every(id=>current.ids.includes(id)));
+ assert.ok(old.ids.every(id=>current.ids.includes(id)));assert.equal(evidence.sourceCommit,'41830b9374e22fb6b7cf5ded24930b88c09a9b41');assert.match(evidence.dataDigest,/^[a-f0-9]{64}$/);
+ const flags=selected.selected.filter(p=>expected.includes(p.item.id)&&p.item.verify).map(p=>p.item.id);assert.deepEqual(flags.sort(),['imaging-6.16','imaging-6.17']);
+});

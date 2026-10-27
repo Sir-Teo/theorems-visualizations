@@ -317,49 +317,300 @@ export default {
       ]
     },
     {
-      n: 6,
-      title: 'Pharmacodynamics: receptors and dose–response',
-      summary: String.raw`What a drug does to the body starts with binding to receptors. Occupancy theory and the Emax/Hill model give sigmoid concentration–effect curves characterized by potency and efficacy; partial and inverse agonists, spare receptors and the operational model explain why effect is not simply occupancy. Antagonists shift curves in characteristic ways that Schild analysis and the Cheng–Prusoff relation quantify, and combinations are judged against additivity.`,
-      items: [
-        { num: '6.1', kind: 'Model', name: 'Receptor occupancy theory (Clark)', deps: ['mathbio-5.2'], refs: ['Goodman–Gilman ch. 3'],
-          pic: 'Ligand and receptor bind by mass action; fractional occupancy follows C/(C + K_D), drawn on linear and log-concentration axes with K_D marked.' },
-        { num: '6.2', kind: 'Model', name: 'Emax model and the Hill equation for drug effect', deps: ['pharm-6.1', 'sysbio-1.3'], refs: ['Goodman–Gilman ch. 3', 'Rowland–Tozer'],
-          pic: 'Fit effect data with E = E_max·Cⁿ/(EC50ⁿ + Cⁿ); the Hill coefficient sets steepness, and the 20–80% effect range of concentrations is shaded.' },
-        { num: '6.3', kind: 'Concept', name: 'Potency versus efficacy', deps: ['pharm-6.2'], refs: ['Goodman–Gilman ch. 3'],
-          pic: 'Compare two drugs: one with lower EC50 (more potent) and one with higher E_max (more efficacious); their curves cross, showing why potency alone does not rank drugs.' },
-        { num: '6.4', kind: 'Concept', name: 'Log dose–response curves', deps: ['pharm-6.2'], refs: ['Goodman–Gilman ch. 3'],
-          pic: 'Replot a hyperbolic dose–response on a log-dose axis; it becomes a symmetric sigmoid that is nearly linear between 20% and 80% of maximum.' },
-        { num: '6.5', kind: 'Concept', name: 'Full, partial and inverse agonists', deps: ['pharm-6.2'], refs: ['Goodman–Gilman ch. 3'],
-          pic: 'With constitutive receptor activity present, full agonists raise activity to the top, partial agonists to an intermediate ceiling and inverse agonists below baseline.' },
-        { num: '6.6', kind: 'Model', name: 'Operational model of agonism and receptor reserve', deps: ['pharm-6.5', 'sysbio-6.8'], refs: ['Goodman–Gilman ch. 3'],
-          pic: 'Raise the transducer ratio τ: the effect EC50 moves left of the binding K_D; irreversibly removing receptors first shifts the curve right before lowering its maximum.' },
-        { num: '6.7', kind: 'Model', name: 'Del Castillo–Katz two-state receptor model', deps: ['pharm-6.5'], refs: ['Goodman–Gilman ch. 3'],
-          pic: 'A receptor binds ligand and then isomerizes to an active state; efficacy is the isomerization constant, and the occupancy and response curves separate as it grows.' },
-        { num: '6.8', kind: 'Model', name: 'Competitive antagonism and the Schild equation', deps: ['pharm-6.1', 'mathbio-5.7'], refs: ['Goodman–Gilman ch. 3'],
-          pic: 'Add increasing antagonist concentrations: agonist curves shift right in parallel; the Schild plot of log(dose ratio − 1) against log antagonist is a line of slope 1 crossing at pA₂.' },
-        { num: '6.9', kind: 'Theorem', name: 'Cheng–Prusoff equation: IC50 to Ki', deps: ['pharm-6.8'], refs: ['Goodman–Gilman ch. 3'],
-          pic: 'Measure an inhibitor’s IC50 against different radioligand concentrations; IC50 rises linearly with ligand, and K_i = IC50/(1 + L/K_D) is constant across experiments.' },
-        { num: '6.10', kind: 'Concept', name: 'Non-competitive antagonism depresses E_max', deps: ['pharm-6.8'], refs: ['Goodman–Gilman ch. 3'],
-          pic: 'An irreversible or allosteric antagonist lowers the agonist’s maximal effect without shifting EC50 (unless spare receptors exist), contrasted with the competitive parallel shift.' },
-        { num: '6.11', kind: 'Model', name: 'Allosteric modulators', deps: ['pharm-6.1', 'mathbio-5.9'], refs: ['Goodman–Gilman ch. 3'],
-          pic: 'A modulator at a separate site multiplies agonist affinity or efficacy by cooperativity factors; positive modulators shift the curve left and saturate, giving a ceiling to their effect.' },
-        { num: '6.12', kind: 'Concept', name: 'Binding kinetics: on-rate, off-rate and residence time', deps: ['pharm-6.1'], refs: ['Goodman–Gilman ch. 3'],
-          pic: 'Two drugs with the same K_D but different k_off are washed out; the slow-off drug keeps receptors occupied long after plasma levels fall.' },
-        { num: '6.13', kind: 'Concept', name: 'Tolerance, tachyphylaxis and desensitization', deps: ['pharm-6.2'], refs: ['Goodman–Gilman ch. 3'],
-          pic: 'Repeated doses down-regulate receptors in a feedback model; the effect of the same concentration shrinks over doses, and the dose–response curve shifts right.' },
-        { num: '6.14', kind: 'Method', name: 'Drug combinations: isobolograms and Loewe additivity', deps: ['pharm-6.2'], refs: ['Goodman–Gilman ch. 3'],
-          pic: 'Plot dose pairs of two drugs that give the same effect; points on the straight additivity line, below it (synergy) or above it (antagonism) are classified.' },
-        { num: '6.15', kind: 'Paper', name: 'The Reaction between Acetyl Choline and Muscle Cells',
-          paper: { authors: 'A. J. Clark', year: 1926, title: 'The reaction between acetyl choline and muscle cells',
-                   venue: 'Journal of Physiology 61 (4): 530–546', doi: '10.1113/jphysiol.1926.sp002314' },
-          introduces: ['pharm-6.1'], deps: ['mathbio-5.2'], refs: [],
-          pic: 'Clark’s concentration–action curves: the response of frog heart or rectus abdominis to acetylcholine follows Kx = y/(100 − y), the hyperbola of a drug occupying receptors by mass action; fit K to the data, see the curve become a symmetric sigmoid on a logarithmic axis, and compare with a curve the occupancy law cannot fit.' },
-        { num: '6.16', kind: 'Paper', name: 'Some Quantitative Uses of Drug Antagonists',
-          paper: { authors: 'O. Arunlakshana and H. O. Schild', year: 1959, title: 'Some quantitative uses of drug antagonists',
-                   venue: 'British Journal of Pharmacology and Chemotherapy 14 (1): 48–58', doi: '10.1111/j.1476-5381.1959.tb00928.x' },
-          introduces: ['pharm-6.8'], deps: ['pharm-6.1'], refs: [],
-          pic: 'The Schild plot: add increasing antagonist concentrations, measure how far each shifts the agonist curve (the dose ratio r), and plot log(r − 1) against log[B]; a straight line of slope 1 marks competitive antagonism and its intercept gives pA₂ — test a competitive and a non-competitive antagonist side by side.' },
-      ],
+      "n": 6,
+      "title": "Pharmacodynamics: receptors and dose–response",
+      "summary": "Binding, activation and transduction answer different questions. Follow equilibrium receptor inventories into potency, constitutive activity, reserve and antagonism, then compare time-dependent binding, availability feedback and mixture reference models. Every concentration is illustrative; historical paper lessons preserve their bibliographic identities while marking unread original bodies explicitly.",
+      "items": [
+        {
+          "num": "6.1",
+          "kind": "Model",
+          "name": "Receptor occupancy theory (Clark)",
+          "deps": [
+            "mathbio-5.2"
+          ],
+          "refs": [
+            "IUPHAR PEP: actual pharmacodynamics affinity body",
+            "Buchwald 2019: selected main-concepts discussion",
+            "Own closed component balances"
+          ],
+          "links": {
+            "education": "https://pharmacologyeducation.org/pharmacodynamics/",
+            "modern": "https://www.frontiersin.org/journals/pharmacology/articles/10.3389/fphar.2019.00605/full"
+          },
+          "pic": "Choose maintained free ligand or a closed total supply. Move ligand and receptor inventories, compare occupancy curves, and inspect the separate free/bound component stacks."
+        },
+        {
+          "num": "6.2",
+          "kind": "Model",
+          "name": "Emax model and the Hill equation for drug effect",
+          "deps": [
+            "pharm-6.1",
+            "sysbio-1.3"
+          ],
+          "refs": [
+            "IUPHAR PEP: actual dose–response, potency and efficacy text",
+            "Own Hill response and derivative"
+          ],
+          "links": {
+            "education": "https://pharmacologyeducation.org/pharmacodynamics/"
+          },
+          "pic": "Change response scale, steepness and limiting effect, then select a free concentration. Compare the response and its derivative with an n=1 curve at the same scale and maximum."
+        },
+        {
+          "num": "6.3",
+          "kind": "Concept",
+          "name": "Potency versus efficacy",
+          "deps": [
+            "pharm-6.2"
+          ],
+          "refs": [
+            "IUPHAR PEP: actual potency and efficacy explanation",
+            "Own exact absolute-effect inversion"
+          ],
+          "links": {
+            "education": "https://pharmacologyeducation.org/pharmacodynamics/"
+          },
+          "pic": "Compare two agents with independently chosen response scales and maxima. Move the common absolute target and examine each exact target concentration alongside the inverse-curve segments."
+        },
+        {
+          "num": "6.4",
+          "kind": "Concept",
+          "name": "Log dose–response curves",
+          "deps": [
+            "pharm-6.2"
+          ],
+          "refs": [
+            "IUPHAR PEP: actual dose–response explanation",
+            "Own log-odds and interval derivation"
+          ],
+          "links": {
+            "education": "https://pharmacologyeducation.org/pharmacodynamics/"
+          },
+          "pic": "Compare the same law on linear and logarithmic concentration axes with the same upper endpoint 10K. Move K and n; the band and open endpoints show the actual 10–90% interval."
+        },
+        {
+          "num": "6.5",
+          "kind": "Concept",
+          "name": "Full, partial and inverse agonists",
+          "deps": [
+            "pharm-6.2"
+          ],
+          "refs": [
+            "IUPHAR PEP: actual receptors, partial/inverse/neutral paragraphs",
+            "Buchwald 2019: selected constitutive-activity discussion",
+            "Own four-state ensemble"
+          ],
+          "links": {
+            "education": "https://pharmacologyeducation.org/receptors/",
+            "modern": "https://www.frontiersin.org/journals/pharmacology/articles/10.3389/fphar.2019.00605/full"
+          },
+          "pic": "Select full, partial, neutral, inverse or a custom bound activity. Vary constitutive activity and free ligand; compare occupancy with active fraction and the four normalized state bars."
+        },
+        {
+          "num": "6.6",
+          "kind": "Model",
+          "name": "Operational model of agonism and receptor reserve",
+          "deps": [
+            "pharm-6.5",
+            "sysbio-6.8"
+          ],
+          "refs": [
+            "Buchwald 2019: selected operational-model comparison",
+            "IUPHAR PEP: actual spare-receptor paragraph",
+            "Own transduction algebra"
+          ],
+          "links": {
+            "modern": "https://www.frontiersin.org/journals/pharmacology/articles/10.3389/fphar.2019.00605/full",
+            "education": "https://pharmacologyeducation.org/receptors/"
+          },
+          "pic": "Move receptor inventory and transduction scale. Compare binding, absolute response and response divided by its own maximum; the second panel tracks the maximum and EC50/Kd as inventory changes."
+        },
+        {
+          "num": "6.7",
+          "kind": "Model",
+          "name": "Del Castillo–Katz two-state receptor model",
+          "deps": [
+            "pharm-6.5"
+          ],
+          "refs": [
+            "Buchwald 2019: selected minimal two-state versus operational discussion",
+            "Own three-state partition and composite half-scale"
+          ],
+          "links": {
+            "modern": "https://www.frontiersin.org/journals/pharmacology/articles/10.3389/fphar.2019.00605/full"
+          },
+          "pic": "Change microscopic binding and the opening equilibrium ratio. Follow the three equilibrium state probabilities, then compare total occupancy with open fraction over free agonist concentration."
+        },
+        {
+          "num": "6.8",
+          "kind": "Model",
+          "name": "Competitive antagonism and the Schild equation",
+          "deps": [
+            "pharm-6.1",
+            "mathbio-5.7"
+          ],
+          "refs": [
+            "Buchwald 2019: selected competition and affinity concepts",
+            "Own competitive partition and Schild derivation"
+          ],
+          "links": {
+            "modern": "https://www.frontiersin.org/journals/pharmacology/articles/10.3389/fphar.2019.00605/full"
+          },
+          "pic": "Increase free antagonist and compare the right-shifted binding curve with its no-antagonist reference. Inspect the ideal Schild line, molar intercept and current antagonist point."
+        },
+        {
+          "num": "6.9",
+          "kind": "Theorem",
+          "name": "Cheng–Prusoff equation: IC50 to Ki",
+          "deps": [
+            "pharm-6.8"
+          ],
+          "refs": [
+            "CSPT: actual Cheng–Prusoff definition and stated hypotheses",
+            "Own free-tracer derivation and conserved closed-species solution"
+          ],
+          "links": {
+            "education": "https://pharmacologycanada.org/Cheng-Prusoff-equation"
+          },
+          "pic": "Choose maintained free ligands or closed total ligands. Change tracer, inhibitor and receptor inventories, compare normalized displacement, and inspect every free/bound component pool."
+        },
+        {
+          "num": "6.10",
+          "kind": "Concept",
+          "name": "Non-competitive antagonism depresses E_max",
+          "deps": [
+            "pharm-6.8"
+          ],
+          "refs": [
+            "IUPHAR PEP: actual receptor reserve discussion",
+            "Buchwald 2019: selected operational-model comparison",
+            "Own retained-inventory algebra"
+          ],
+          "links": {
+            "education": "https://pharmacologyeducation.org/receptors/",
+            "modern": "https://www.frontiersin.org/journals/pharmacology/articles/10.3389/fphar.2019.00605/full"
+          },
+          "pic": "Move the surviving receptor fraction while comparing original and reduced-inventory curves. Examine the limiting response and half-scale across the entire removal range, including complete removal."
+        },
+        {
+          "num": "6.11",
+          "kind": "Model",
+          "name": "Allosteric modulators",
+          "deps": [
+            "pharm-6.1",
+            "mathbio-5.9"
+          ],
+          "refs": [
+            "Jakubík et al. 2019: actual selected Introduction, Methods model and Figure 1 caption",
+            "Own reciprocal-convention partition and efficacy/transduction example"
+          ],
+          "links": {
+            "article": "https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0214255"
+          },
+          "pic": "Vary modulator, binding cooperativity and joint-state efficacy independently. Compare agonist occupancy with functional response and the four state probabilities, including the no-modulator reference."
+        },
+        {
+          "num": "6.12",
+          "kind": "Concept",
+          "name": "Binding kinetics: on-rate, off-rate and residence time",
+          "deps": [
+            "pharm-6.1"
+          ],
+          "refs": [
+            "IUPHAR PEP: actual equilibrium affinity explanation as a contrast",
+            "Own kinetic mass action and exact piecewise solution"
+          ],
+          "links": {
+            "education": "https://pharmacologyeducation.org/pharmacodynamics/"
+          },
+          "pic": "Change a shared Kd, faster koff, pulse length and observation interval. Compare the actual maintained input and exact occupancy trajectories for rate pairs differing tenfold."
+        },
+        {
+          "num": "6.13",
+          "kind": "Concept",
+          "name": "Tolerance, tachyphylaxis and desensitization",
+          "deps": [
+            "pharm-6.2"
+          ],
+          "refs": [
+            "IUPHAR PEP: complete actual desensitisation and tachyphylaxis body",
+            "Own two-state availability propagation"
+          ],
+          "links": {
+            "education": "https://pharmacologyeducation.org/desensitisation-and-tachyphylaxis/"
+          },
+          "pic": "Switch between repeated pulses and continuous exposure. Change desensitization and recovery rates; compare the actual maintained input with availability, response and each pulse-onset response."
+        },
+        {
+          "num": "6.14",
+          "kind": "Method",
+          "name": "Drug combinations: isobolograms and Loewe additivity",
+          "deps": [
+            "pharm-6.2"
+          ],
+          "refs": [
+            "Kavčič et al. 2021: selected actual Loewe/Bliss, self-combination and no-double-bound text plus Figure 1 caption",
+            "Own exact inverse curves, reference root and departure isobole"
+          ],
+          "links": {
+            "article": "https://journals.plos.org/ploscompbiol/article?id=10.1371/journal.pcbi.1008529"
+          },
+          "pic": "Choose both single-agent curves, mixture and target. Inspect the normalized isobole and a response profile obtained by scaling the selected mixture; compare the actual-effect equivalent-dose sum."
+        },
+        {
+          "num": "6.15",
+          "kind": "Paper",
+          "name": "The Reaction between Acetyl Choline and Muscle Cells",
+          "paper": {
+            "authors": "A. J. Clark",
+            "year": 1926,
+            "title": "The reaction between acetyl choline and muscle cells",
+            "venue": "Journal of Physiology 61 (4): 530–546",
+            "doi": "10.1113/jphysiol.1926.sp002314"
+          },
+          "introduces": [
+            "pharm-6.1"
+          ],
+          "deps": [
+            "mathbio-5.2"
+          ],
+          "refs": [
+            "Clark 1926: bibliographic record only; original body stopped/unread",
+            "Buchwald 2019: distinct actual selected occupancy/operational discussion",
+            "Own modern model comparison"
+          ],
+          "links": {
+            "modern": "https://www.frontiersin.org/journals/pharmacology/articles/10.3389/fphar.2019.00605/full"
+          },
+          "verify": true,
+          "pic": "Compare a modern proportional-occupancy curve with operational transduction at the same maximum. Change binding and transduction parameters, then inspect their absolute and normalized response panels."
+        },
+        {
+          "num": "6.16",
+          "kind": "Paper",
+          "name": "Some Quantitative Uses of Drug Antagonists",
+          "paper": {
+            "authors": "O. Arunlakshana and H. O. Schild",
+            "year": 1959,
+            "title": "Some quantitative uses of drug antagonists",
+            "venue": "British Journal of Pharmacology and Chemotherapy 14 (1): 48–58",
+            "doi": "10.1111/j.1476-5381.1959.tb00928.x"
+          },
+          "introduces": [
+            "pharm-6.8"
+          ],
+          "deps": [
+            "pharm-6.1"
+          ],
+          "refs": [
+            "Arunlakshana and Schild 1959: frozen bibliography; original body stopped/unread",
+            "Own competitive equilibrium dose-ratio and two-agonist comparison"
+          ],
+          "links": {},
+          "verify": true,
+          "pic": "Compare two agonists before and after a chosen antagonist. Switch between shared and different antagonist constants; inspect the resulting synthetic Schild relations and their molar pA2 intercepts."
+        }
+      ]
     },
     {
       n: 7,

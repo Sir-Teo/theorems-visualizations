@@ -44,9 +44,10 @@ test('degree-spacing normalization renders both original failed expressions with
 test('builder refuses absent, existing and source-checkout output directories before writes',async()=>{
  await assert.rejects(buildStaticIdeas(),/explicit/);await assert.rejects(buildStaticIdeas({out:ROOT}),/outside/);await assert.rejects(buildStaticIdeas({out:'/tmp'}),/exists/);await assert.rejects(buildStaticIdeas({out:join(ROOT,'reading-output')}),/outside/);
 });
-test('real 8,321-item merged reading freeze matches the reconciled source',async()=>{
+test('current committed reading freeze matches the reconciled source and complete roster',async()=>{
  const m=JSON.parse(await readFile(join(ROOT,'static-pages/accepted.json'),'utf8')),selected=selectFrozenIdeas(await loadAll(),m);
- assert.equal(selected.selected.length,8321);assert.equal(selected.aliases.length,76);assert.ok(!selected.selected.some(p=>p.item.id.startsWith('x-')));
+ assert.equal(selected.selected.length,m.ids.length);assert.equal(selected.aliases.length,76);assert.ok(!selected.selected.some(p=>p.item.id.startsWith('x-')));
+ assert.deepEqual(selected.selected.map(p=>p.item.id).sort(),(await loadAll()).items.map(p=>p.id).sort());
 });
 test('copied data binding ignores only generation timestamps and rejects stale fields or extra files',async()=>{
  const dir=await mkdtemp(join(tmpdir(),'atlas-static-data-'));

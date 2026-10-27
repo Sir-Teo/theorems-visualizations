@@ -1,0 +1,214 @@
+{
+  "status": "SOC6 final author-verified8lessons/23panels; current scientific/native/personal gates complete. Original-body/abstract/figure scopes and every binding stop remain exactly scoped below.",
+  "currentIntegration": "Completed BEHAV/PSYCH exact32b07974 remains latest full global checkpoint; SOC6 has separate current author gates and awaits a meaningful subsequent batch integration.",
+  "writtenPrerequisitesRead": [
+    "soc-1.8 complete Granovetter threshold lesson, statement/idea/scope/caption/refs/deps/flags",
+    "soc-2.1 complete social network graphs lesson",
+    "soc-2.10 complete selection versus influence lesson",
+    "soc-3.4 complete DeGroot lesson and its assumptions/degree stationary weights"
+  ],
+  "laterPrerequisitesNotClaimedReadOrAccepted": [
+    "stoch-12.1",
+    "ode-8.17"
+  ],
+  "stops": [
+    {
+      "url": "https://psyc604.stasson.org/Asch1956.pdf",
+      "scope": "FIRST original1956Paper BODY acquisition returned502BadGateway. Stop: no retry, mirror, alternate tool/cache/Scribd recovery of this same work. Search metadata only; original body/figures unread. Preserve frozen Paper metadata and absent verify flag; clearly cite distinct actualread1955article instead of claiming original1956verification."
+    },
+    {
+      "url": "https://www.tandfonline.com/doi/full/10.1080/1369118X.2018.1428656",
+      "scope": "FIRST Dubois/Blank2018original BODY open403Forbidden. Stop samework: no PDF/ORA/author-course mirror/cache/tool recovery. Search-returned snippets only, no body or figure inspection."
+    },
+    {
+      "url": "https://dukespace.lib.duke.edu/bitstreams/c0704216-0ecc-43b2-90e4-f779208bf906/download",
+      "scope": "FIRST Bail2018original BODY acquisition returned Anubis not-a-bot challenge, no article bytes. Stop samework: no EPFL/PMC6140520/publisher/arxiv/mirror/cache/tool recovery. Search metadata/snippets only; originalmainbody/figuresunread."
+    }
+  ],
+  "inheritedStops": "All previous binding stops remain in force, including BEHAV and PSYCH originals/indexes. No recovery of stopped1956Asch body.",
+  "sources": [
+    {
+      "key": "asch1955",
+      "url": "https://www.panarchy.org/asch/social.pressure.1955.html",
+      "scope": "DISTINCT1955ScientificAmerican article Opinions and Social Pressure, not copy/recovery of stopped1956monograph. Complete main transcription lines99\u2013159 read. Websiteeditorialpreface93\u201395 distinct/notadopted.18trials/12critical/123collegeyoungmen/36.8percent selections, quarterneverconformed, majority2=13.6percent/3=31.8percent; truthfulpartner reduceserrors to onefourth, wrongextremepartner9percent. No invented exact partner rate from qualitativeonefourth and no populationuniversalprediction. Imagealttext121read; actualsourcepixelsuninspected/nocopy."
+    },
+    {
+      "key": "hegselmann-krause2002",
+      "url": "https://www.jasss.org/5/3/2.html",
+      "body": "https://www.jasss.org/5/3/2/2.pdf",
+      "scope": "Complete landing32lines/abstract read. Original33pagePDF firstsuccessfullyacquired; only returnedmain0\u2013113(throughbeginningPDFpage4) actuallyread sofar. Restacquiredunread. Fixedrowstochastic/variableweightsframework; NOTyetclaimboundedconfidence sectionread. Later selectedoriginalPDF100\u2013210and235\u2013341read, plusfind-returnednoncontiguousotherfragments. Equal-neighbor threshold<=epsilon actualdefinition; homogeneoussymmetriccase, finiteconsensus results andsimulationssetup625synchronousagentsread. No blanketreadingofentire33pages/appendix. Selected full PDF pages5and10 now personally read/viewed; see sourceImageInspection."
+    },
+    {
+      "key": "easley-kleinberg-index",
+      "url": "https://www.cs.cornell.edu/home/kleinber/networks-book/",
+      "scope": "Complete235linebookindex read. \u00a74.2selection/influence,\u00a716.1followingcrowd,\u00a719.6knowledge/thresholds,\u00a721.5synchronization. Indexaloneisnobodyreading."
+    },
+    {
+      "key": "easley-kleinberg19",
+      "url": "https://www.cs.cornell.edu/home/kleinber/networks-book/networks-book-ch19.pdf",
+      "scope": "Selectedactual\u00a719.6main669\u2013783read, following earlieracquisition. Private thresholds/knownneighbors/commonknowledge coordination distinctfromordinarypublicparticipationcascade. Figure19.14alttextonly; remainingchapternotclaimedread."
+    },
+    {
+      "key": "easley-kleinberg16",
+      "url": "https://www.cs.cornell.edu/home/kleinber/networks-book/networks-book-ch16.pdf",
+      "scope": "Originalfirstchapterbody0\u2013160read(throughpartof\u00a716.2).\u00a716.1notAschlineexperiment; distinguishesinformationinferencefrompressure/directbenefits. ReplacefrozenpointerwithactualAsch1955sourceinnewlessonrefs."
+    },
+    {
+      "key": "easley-kleinberg21",
+      "url": "https://www.cs.cornell.edu/home/kleinber/networks-book/networks-book-ch21.pdf",
+      "scope": "FirstsuccessPDF43pages1398lines. Find-returned\u00a721.5main480\u2013577readplusothernoncontiguouscontext. ThissectionisepidemicSIRSsynchronization,NOTclapping/fireflies/Kuramoto. Do notuseitassoleclappingmechanismorpropagateoutdatedclinicalclaims."
+    },
+    {
+      "key": "sood-redner2005",
+      "url": "https://sites.santafe.edu/~redner/pubs/pdf/voter.pdf",
+      "scope": "Original4pagePDFsuccess. Actualrule/bipartiteexitprobability/meanconsensustimepassage0\u2013220read. Initialshare exit probability explicitlyregulargraphs;starperipheryall1/center0has1/2exitprobregardlesssize. Latergeneralarbitrarydegreeclosuremain221+andfiguresunread. Useownexactfinitegraphmartingaleproofinstead ofadoptingasymptoticuncorrelatedgraphconsensustime."
+    },
+    {
+      "key": "axelrod1997",
+      "url": "https://web.mit.edu/curhan/www/docs/Articles/15341_Readings/Culture_and_Identity/Axelrod-1997.pdf",
+      "scope": "Original25pagePDFsuccess. Initial0\u201368read; find-returnedmethod249\u2013301plusselectedotherfragmentsread. Actualasynchronousactive-siteuniform/neighborhooduniform/similarityprobability/one-different-feature-copy andnoteequivalentrandomfeaturegateunderstood. Table1numbersreturned/readbutWILLNOTCOPY. Fullbackgroundbefore249andresultsbeyondselectedparagraphsandallfiguresunread. Selected full PDF pages7and9 now personally read/viewed; see sourceImageInspection. This replaces earlier all-figures-unread status only for Figure1."
+    },
+    {
+      "key": "neda2000",
+      "url": "https://barabasi.com/media/pub_imports/files/570.pdf",
+      "scope": "Completeoriginal6page MAIN0\u2013359read through overlapping successfulwebchunks. Bibliography360\u2013374returned butnotindependentlyverified.47hallrecordings/73students/100one-personrepeats; period-doubling/narrowerfrequencydistribution, globallycoupledKuramototheorywiththermodynamic/equilibriumlimits, andqualitativemodelinterpretation. Sourcefigurescaptionsreadbutnoactualimagepixelsyet. Datedmenstrualsynchronyclaim, sweepingneural/biologicalexamples andspeculativehistoricalpoliticalapplauseclaimsNOTadopted. CriticalKformulaPDFtextdegraded:notcopied; finiteNdisplaywonotpromiseuniversaljump. Selected full PDF page4 now personally read/viewed; Figures2\u20134pixels inspected, no other sourcefigureinspectionclaimed."
+    },
+    {
+      "key": "prentice-miller1993",
+      "url": "https://pubmed.ncbi.nlm.nih.gov/8433272/",
+      "scope": "CompletePubMedabstract239\u2013242read. Fourcampusalcoholnormstudies/selfvsotherdiscomfort, friendestimatevariant, genderdifferentsemesterchange/alienationcorrelations. FullarticlebodyNOTrequested/read; limitedabstractclaimonly. Noclincial/interventionadvice."
+    },
+    {
+      "key": "cinelli2021",
+      "url": "https://www.isi.it/wp-content/uploads/2024/01/the-echo-chamber-effect-on-social-media_e2023301118.full.pdf",
+      "scope": "DISTINCToriginal2021PNAS8pagearticle firstsuccessfullyacquired; completeMAIN0\u2013540read(includingmethods/Table1/conclusions/acknowledgments); references541\u2013566returnednotindependentlyverified, remainingbibliographyunread. Morethan100millionpieces/1millionactiveusers, differingtopic/timewindows/proxyedgesandopinionlabels, actualnetworksbutSIMULATEDSIRdiffusionratherthanobservedindividualexposure. Facebook/Redditcommon-topiccomparisonstillobservational. DoesNOTproveplatformcausation. Sourcefigurecaptionsread,imagepixelsnotyetviewed. Preprint2020search1BclaimNOTusedinplaceoffinalversion. Selected full PDF page6 now personally read/viewed including Figure4; other sourcefiguresnotpersonallyviewed."
+    },
+    {
+      "key": "terren-borge2021",
+      "url": "https://rcommunicationr.org/index.php/rcr/article/view/16",
+      "scope": "Completeactuallandingabstract48\u201351read:55studyreview, methoddependence(digitaltracesvs selfreport)andcallforcombinedapproaches. Selectedbibliographyandlicensealso read, notindependentverificationofcitedstudies. PDFlink100returnedHTMLviewer /article/view/16/16 with0bodylines; no mainPDFbodyrequested/read andnoneclaimed. Canuseexplicitreview-abstractlimitedclaimonly."
+    }
+  ],
+  "plumbingFailures": [
+    "Initial web call used unsupported search_query instead of system2_search_query; emptyerrorresult beforeanysourceacquisition. Correctedschema, not accessbarrier."
+  ],
+  "designFindings": [
+    "Voter model node-update copying on an irregular undirected graph conserves degree-weighted opinion share in expectation; simple initialshare winningprobability needsregulargraph. Frozenpic can be correctedafteractualsource research.",
+    "HK equal-neighborweights depend oncurrentopinion; ordinarymean is not generallyconserved. Preserve convexhull and exposechanging confidenceneighbors; exactthresholdcomparisons atoneULP.",
+    "Asch localresponses are illustrative/uncalibrated and not replicated experiment results. Keep sourcedaggregate rates separate fromuser choices; do not invent automatic conformityprobability or guarantee dissenter effect.",
+    "Synchrony finiteKuramoto/orderparameterexplorer is not actualrecordedclapping/firefly data; do not claim universaljump/criticalcoupling, need proper source/modelassumptions.",
+    "Echochamber evidence mustseparate platform/population/exposuredefinition, selectionvsinfluence and experimental/observationalidentification. No modeltrajectoryimpliesempiricalcausation.",
+    "HKsourcepropertysplitwordingisnotadoptedforarbitrarynonadjacentpairs: owncounterexample[0,.4,.8]epsilon.5makesendpointsapproach. Onlyanadjacentorderedgap>epsilonisapersistentbarrier.",
+    "Axelrodstablemeans everyedgeoverlap0or1, nevermerelynochangeforfixedattempts. F1istriviallyfrozen; globalculturecount/regioncount/averagelinksimilarityneednotmonotonicallyimprove."
+  ],
+  "next": "Finish full32-layout native controls/Share/critical/clock checks and complete original-pixel qualification for current default/rich/important-mode states. No new source acquisition required. Preserve all source stops and frozen1956Paper flag property presence.",
+  "localRetention": [
+    {
+      "key": "hegselmann-krause2002",
+      "url": "https://www.jasss.org/5/3/2/2.pdf",
+      "status": 200,
+      "pdf": true,
+      "bytes": 1929897,
+      "sha256": "a800c575539a4f0202436997847b7b0ae9eb4a335df5cfffd26bb80e9a3de6f0",
+      "path": "/workspace/scratch/wave6-soc-research/sources/hegselmann-krause2002.pdf",
+      "scope": "First local retention succeeded after successful web acquisition; actual selected rendered-page inspection is recorded separately, not a whole-body reading claim."
+    },
+    {
+      "key": "axelrod1997",
+      "url": "https://web.mit.edu/curhan/www/docs/Articles/15341_Readings/Culture_and_Identity/Axelrod-1997.pdf",
+      "status": 200,
+      "pdf": true,
+      "bytes": 965693,
+      "sha256": "e7212c623475d333e661569f69bf23c0f94c4dda2ed26481bb0e6c99dfd66c2e",
+      "path": "/workspace/scratch/wave6-soc-research/sources/axelrod1997.pdf",
+      "scope": "First local retention succeeded after successful web acquisition; actual selected rendered-page inspection is recorded separately, not a whole-body reading claim."
+    },
+    {
+      "key": "neda2000",
+      "url": "https://barabasi.com/media/pub_imports/files/570.pdf",
+      "status": 200,
+      "pdf": true,
+      "bytes": 108708,
+      "sha256": "623ee83d29192704f52f93ddbeb98f56d0419cda1054ffc979c6d5d91421920b",
+      "path": "/workspace/scratch/wave6-soc-research/sources/neda2000.pdf",
+      "scope": "First local retention succeeded after successful web acquisition; actual selected rendered-page inspection is recorded separately, not a whole-body reading claim."
+    },
+    {
+      "key": "cinelli2021",
+      "url": "https://www.isi.it/wp-content/uploads/2024/01/the-echo-chamber-effect-on-social-media_e2023301118.full.pdf",
+      "status": 200,
+      "pdf": true,
+      "bytes": 1037286,
+      "sha256": "e9df984b1f6f98ed481c0719820164598b74da5fa793d21e50fa0ff5904369ec",
+      "path": "/workspace/scratch/wave6-soc-research/sources/cinelli2021.pdf",
+      "scope": "First local retention succeeded after successful web acquisition; actual selected rendered-page inspection is recorded separately, not a whole-body reading claim."
+    }
+  ],
+  "webToolCaution": "A follow-up open using prioropaque ref turn257382view1 andlineno193 unexpectedly returned the reviewlanding URL, notAxelrod. ActualreturnedURL/body was inspected; no additionalAxelrodreadingclaimedfromthatcall. UsefullURLsforfollow-upopens andverifyactualreturnedURL before recording scope.",
+  "sourceImageInspection": {
+    "status": "six selected source pages personally inspected",
+    "pages": [
+      {
+        "path": "/workspace/scratch/wave6-soc-research/source-pages/hegselmann-krause2002-page5.png",
+        "sha256": "1863c03e52a69ebd99f8fa58e6dec0ae3766a50be99354e8c8e961c7696e4a43",
+        "dimensions": [
+          992,
+          1404
+        ],
+        "scope": "Personally viewed/read the full original rendered PDF page5 at120dpi, including bounded-confidence update definition and stated classical consensus theorem. No source graphic copied.",
+        "inspection": "actual full original-resolution image personally viewed; not inferred from alt text"
+      },
+      {
+        "path": "/workspace/scratch/wave6-soc-research/source-pages/hegselmann-krause2002-page10.png",
+        "sha256": "b50b36fc217ebb19f869418b0bea7d8a224b3a02fe5927d0255e646748089fae",
+        "dimensions": [
+          992,
+          1404
+        ],
+        "scope": "Personally viewed/read full page10, including Figure2 three625-agent trajectories at epsilon.01/.15/.25 and surrounding simulation description. Own trajectories and counts will differ; no digitization/copy.",
+        "inspection": "actual full original-resolution image personally viewed; not inferred from alt text"
+      },
+      {
+        "path": "/workspace/scratch/wave6-soc-research/source-pages/axelrod1997-page7.png",
+        "sha256": "9eacb3dadc65ac25df4d76456c05fd8d698bace67cb22bb3ccd0750713c6973f",
+        "dimensions": [
+          685,
+          1071
+        ],
+        "scope": "Personally viewed/read full PDF page7, printed208: culture-vector definition, finite grid, active-site/neighbor choice, similarity-proportional interaction, copying one differing feature, equivalent random-feature gate footnote. Prior truncated display was not counted; this complete view replaces it.",
+        "inspection": "actual full original-resolution image personally viewed; not inferred from alt text"
+      },
+      {
+        "path": "/workspace/scratch/wave6-soc-research/source-pages/axelrod1997-page9.png",
+        "sha256": "cffdacf9ae2e293fd32f4a5813b62fba76b171bf47123076c4ad2d0594d79039",
+        "dimensions": [
+          685,
+          1071
+        ],
+        "scope": "Personally viewed/read full PDF page9, printed210: Figure1 similarity-boundary maps at0/20000/40000/80000attempted events, fivefeatures/tentraits and edge-gray legend. Own trait-strip layout and finite grid will use no source cells or trajectories.",
+        "inspection": "actual full original-resolution image personally viewed; not inferred from alt text"
+      },
+      {
+        "path": "/workspace/scratch/wave6-soc-research/source-pages/neda2000-page4.png",
+        "sha256": "ed9255ca064b2fe2ed71e5fe55aea13ae88c74a6957d485bf16b86f5ae9f8913",
+        "dimensions": [
+          1020,
+          1320
+        ],
+        "scope": "Personally viewed/read full PDF page4, printed6990: measured short/long-window signals, experimental order parameter and one clapping period Figure2; mode-I/II frequency distributions and frequency ratios Figures3/4. These are empirical recordings, distinct from our finite Kuramoto phase coherence R. No traces/histograms reused; source discussion is a proposed mechanism, not a universal transition claim.",
+        "inspection": "actual full original-resolution image personally viewed; not inferred from alt text"
+      },
+      {
+        "path": "/workspace/scratch/wave6-soc-research/source-pages/cinelli2021-page6.png",
+        "sha256": "efb199bb8a33c1115257a9d113c3c4cae8801113f71d82c7e5ff80afed550a63",
+        "dimensions": [
+          975,
+          1305
+        ],
+        "scope": "Personally viewed/read full PDF page6: Figure4 Facebook/Reddit common-news comparison; leaning distributions, detected communities and SIMULATED SIR influence-set means under platform-specific beta. Caption and observational interpretation read. No source density/communities/data copied; no causal platform-effect inference.",
+        "inspection": "actual full original-resolution image personally viewed; not inferred from alt text"
+      }
+    ],
+    "sourceCopying": "None; original finite examples/graphics only."
+  }
+}

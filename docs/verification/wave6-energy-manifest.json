@@ -1,0 +1,19 @@
+{
+  "baseCommit": "61c5f426",
+  "status": "All12 frozen ENERGY6 lessons author-verified locally, including complete original-pixel visual gates. No independent acceptance/release/deploy claim.",
+  "sha256": {
+    "content/energy/ch06.js": "c7c9a1a0a16c5196d30d150494efbb4dd4fdb8412b19fc6e5da56f3bac0f4803",
+    "content/energy/ch06.shared.js": "b3d6deae1ab896f88c5d86c055aeb1638fd48144ee724d72106feba3d8342dc2",
+    "content/energy/ch06.exact.shared.js": "d272e03b1c0d088ada1491ba6483f36c7839f84af81caa12fed437a00d8f517f",
+    "content/energy/ch06.viz.js": "5ce8a3084dfdfb5a0c03ef9fbc6063857a56d1b40808202ca64f9afdd7749452",
+    "content/energy/syllabus.js": "cdda9729dc8923f94d56c4294fe4eb3272b231044f82a99d676f51f0633fc752",
+    "tests/wave6-energy.test.mjs": "b23436739a533d1dfd25d2cdb7fd0dbdef99afc385abfb4e253ff9358b9a6c67",
+    "tests/wave6-energy-browser.mjs": "f2ac0b9d0c26ba2ce19201135adab09fb1cdb92c8f101e32ec80852fd7e8a1fa",
+    "tests/wave6-energy-reference.py": "dce99ceb38b29774f2d3a414b7bdf3f2e960b6a23397ddb80b51174ceb39394d",
+    "tests/fixtures/wave6-energy-reference.json": "4845c3400499ed0801ba19e44cbad88be62aeb9ca47e06e118617e117a789081",
+    "tests/wave5-energy.test.mjs": "f8bfd332b16066ee120ad61f2a5a80a313960078922e78b147982c60cb3ce758",
+    "docs/verification/wave6-energy-sources.json": "1d11a81bfe5874824d042f64e31231e7a009b02d51693ab11196b47c4574cb0f",
+    "docs/verification/wave6-energy-gates.json": "0fd4dfb85550ec9a8ed4789c211d14e9cc373e3f18e2e0b3d81bb2ad05f679d5",
+    "docs/verification/wave6-energy-visual-receipt.json": "ceb29e571592cd23f40ac98feeeafb7a887b377ac629d87f51a9a94a4f56ecb1"
+  }
+}

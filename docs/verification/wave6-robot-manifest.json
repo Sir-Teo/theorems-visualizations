@@ -1,0 +1,30 @@
+{
+  "baseCommit": "b804bb2e3edb0ced62455a14e3f1ebb8620bbaa8",
+  "status": "author-verified; independent acceptance remains36; no release/deploy promotion",
+  "fileCount": 23,
+  "sha256": {
+    "content/robot/ch06.js": "1b9771101d07a384b565d371e9e099ae30dc2858b7cb4f49d2d261e7724c4213",
+    "content/robot/ch06.viz.js": "689674289131202dec92c009b82ec8492e4815a7eda07471bf0ac6582137f2de",
+    "content/robot/ch06.shared.js": "e585f8631205c7cf403cfeb242f6e63e1e557a4f0ad307f6e6fcb2ff4762b0d7",
+    "content/robot/ch06.exact.shared.js": "68751873d8405ebd2cef296a3e8d5b092f2ee9ca8bb0f9a3c6090f9e8d3d61c2",
+    "content/robot/syllabus.js": "4acd5c0bf5736f89ae807f1ad477f813b65e7ee270aa8fc5fdf65b4841c96dd3",
+    "tests/wave6-robot.test.mjs": "c9e8984d24ae491dbabfd9b1be66faefce3a00b3842b43ec63b14ea834381a7f",
+    "tests/wave6-robot-reference.py": "0e23bcc3e060dd6d4f4d2a8d5c369d9ecd4e8ccd22494493f73692a8ca2aba64",
+    "tests/fixtures/wave6-robot-reference.json": "bf2d5731b8bde06924d01034df626a6c28a41693a2abf540b4e1ee1419e234fc",
+    "tests/wave6-robot-browser.mjs": "4e42e9133f9671f85cff0d276acf0d2da937ba607b015f2e56080fb7eb20a7b1",
+    "tests/wave6-robot-browser.shared.mjs": "2e8eb42535cfc8f66035e83530c269e1f93695ad59cf63208161396742abf88e",
+    "tests/wave6-robot-native.mjs": "8834d585c63af7115e10fdea78516213a0f61a138f279924fabe44f6eae3e82c",
+    "tests/wave6-robot-native-science.mjs": "7e2465c4713e4269bc7d40cc8905910e46f4312af734b95b319f6f0e3f90d969",
+    "tests/wave6-robot-native-cases.mjs": "7e5cccd3702e481b5de38d646823bab31c19e1e24583abead3b1b81ce891aea6",
+    "docs/verification/wave6-robot-design.json": "44c77295ea8c1d5cf9fb33866174d2c0a5b269f41a334d1a01e2cf107f889f1f",
+    "docs/verification/wave6-robot-gates.json": "173b1b10f5ab5b7e80c2bbe2f5d4bc9b34b18c82c683bbaf1e285ee789e4b3a8",
+    "docs/verification/wave6-robot-model-followup.json": "6be0e10a73cab557a165749c8d2ab3c7e6fe79b606b23cea3b63f1b1b70cd60a",
+    "docs/verification/wave6-robot-model-receipt.json": "2bfd58fd7f0f503b1561a49783fbb23dfb40d13acd9d6560669b42e57e1c0943",
+    "docs/verification/wave6-robot-momentum-repair.json": "b34825b3f207c7f8299d6d4e6ba7416e240f865f25477abb107cf767341691a9",
+    "docs/verification/wave6-robot-native-receipt.json": "ec8176a4059d9742ca2b3e6278b87824aa49abf7d55ad7e2d50237c596e77546",
+    "docs/verification/wave6-robot-sources.json": "509c92bacd40f922d447f9f04a15e73902532f399fbfb011b7ef886dfa03e238",
+    "docs/verification/wave6-robot-visual-checkpoint.json": "c9744ef01be4260f25731df035e5269ff0ad3b0c5d5f0c99a125c4370061f2e2",
+    "docs/verification/wave6-robot-visual-receipt.json": "0d00e7ed07128b3b2e3262afc16397a7d1972203939c5ff8ec1b2d867d0b05c3",
+    "docs/verification/wave6-robot.md": "dec167d829d50a9ae71cb0541b933d0ca293fa49336d6a554ad53638959338db"
+  }
+}

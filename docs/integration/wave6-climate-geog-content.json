@@ -1,0 +1,42 @@
+{
+  "checkedOn": "2026-10-24",
+  "baseIntegrationCommit": "a5c0d50be3dcd37fbb7dcac48ca1676db5f64417",
+  "baseManifestSha256": "a5b4a60395fc5de54e2e40b8abf70e8d6d6d3e5f9435de535abe0939f7d40679",
+  "baseCommit": "84d784cb8a1d67eac40e32ffc1c97c9d1ddb3e14",
+  "sourceCommit": "642359f6d8a7c303dd396ebd19e1105522e86e10",
+  "baseIdeas": 8321,
+  "retainedIdeas": 8321,
+  "addedIdeas": 17,
+  "mergedIdeas": 8338,
+  "addedIds": [
+    "climate-6.1",
+    "climate-6.2",
+    "climate-6.3",
+    "climate-6.4",
+    "climate-6.5",
+    "climate-6.6",
+    "climate-6.7",
+    "climate-6.8",
+    "climate-6.9",
+    "geog-8.1",
+    "geog-8.2",
+    "geog-8.3",
+    "geog-8.4",
+    "geog-8.5",
+    "geog-8.6",
+    "geog-8.7",
+    "geog-8.8"
+  ],
+  "changedRetainedItems": [],
+  "baseSnapshotDigest": "ec3f27e836ca57bcd83d0e788de47fc0de71bacd5af36c55a8566167886dae93",
+  "baseDataDigest": "6b3c7838c51784c97133d804de430ba67cd5f6249cb8b1958b1a5509cc240645",
+  "snapshotDigest": "993b7f0a3579c1377065b2cbe2e6613d72dc70789f2751c24b4c4c79e7a88915",
+  "dataDigest": "e8ddebc9601522fcd05fb10f422ebae512e7ccbeaeb5b5223cbaa088bdb7e91c",
+  "aliasesUnchanged": true,
+  "chapterReports": [
+    "docs/verification/wave6-climate.md",
+    "docs/verification/wave6-geog.md"
+  ],
+  "scope": "User-directed continuous local content work; chapter author gates, no new independent review or deployment. Historical Wave6 accepted36/1057 remains unchanged.",
+  "result": "PASS"
+}

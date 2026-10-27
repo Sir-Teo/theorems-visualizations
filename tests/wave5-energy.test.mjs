@@ -23,5 +23,5 @@ test('frozen chapter identities, original Paper uncertainty and other chapters a
  assert.deepEqual(items.map(identity),plan.items.map(identity));assert.equal(items.length,12);assert.equal(items.at(-1).verify,true);assert.match(items.at(-1).statement,/have not been read/);
  assert.deepEqual(items.at(-1).paper,{authors:'A. Betz',year:1920,title:'Das Maximum der theoretisch möglichen Ausnützung des Windes durch Windmotoren',venue:'Zeitschrift für das gesamte Turbinenwesen 26: 307–309'});assert.deepEqual(items.at(-1).introduces,['energy-5.2']);
  for(const i of items){const row=syllabus.chapters.find(c=>c.n===5).items.find(r=>r.num===i.num);assert.deepEqual(row.deps,i.deps);assert.deepEqual(row.refs,i.refs);assert.equal(row.pic,i.caption);assert.equal(typeof i.viz,'function');assert.ok(!i.deps.some(d=>['aero-7.3','fluid-11.3','fluid-9.2','fluid-9.3','pchem-10.6'].includes(d)));}
- const strip=s=>({...s,chapters:s.chapters.filter(c=>c.n!==5)});assert.equal(crypto.createHash('sha256').update(JSON.stringify(strip(syllabus))).digest('hex'),'ec6c36b56f8f9129e38e083c9fabcb3cafef29e273f11bc76d63bf33c0b8e48a');
+ const strip=s=>({...s,chapters:s.chapters.filter(c=>![5,6].includes(c.n))});assert.equal(crypto.createHash('sha256').update(JSON.stringify(strip(syllabus))).digest('hex'),'0b5b313d52a11b131649af746077fc03bddbde130d29d865aa85beddc48f031c');
 });

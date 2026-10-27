@@ -1,0 +1,67 @@
+[
+  {
+    "file": "miki-2011.pdf",
+    "url": "https://arxiv.org/pdf/1104.3801",
+    "finalURL": "https://arxiv.org/pdf/1104.3801",
+    "status": 200,
+    "bytes": 1955270,
+    "sha256": "70e32a7064c32cfdc4c949a0036492d59cf7da4adcbd4e41735e0dfb19900f21",
+    "pdf": true,
+    "stop": false,
+    "noAlternateRecovery": false
+  },
+  {
+    "file": "naicu-harris-williams-2014.pdf",
+    "url": "https://purehost.bath.ac.uk/ws/files/113812911/WCTE_2014_Timber_Gridshells_Design_methods_and_their_application_to_a_temporary_pavilion_Naicu_Harris_Williams.pdf",
+    "finalURL": "https://purehost.bath.ac.uk/ws/files/113812911/WCTE_2014_Timber_Gridshells_Design_methods_and_their_application_to_a_temporary_pavilion_Naicu_Harris_Williams.pdf",
+    "status": 200,
+    "bytes": 1561309,
+    "sha256": "9f839f205f9663548f112110ac33d224456bf1ea0a0222e73525e4a6dd5620eb",
+    "pdf": true,
+    "stop": false,
+    "noAlternateRecovery": false
+  },
+  {
+    "file": "nasa-sp8032-1969.pdf",
+    "url": "https://www.vibrationdata.com/tutorials/nasa8032.pdf",
+    "finalURL": "https://www.vibrationdata.com/tutorials/nasa8032.pdf",
+    "status": 200,
+    "bytes": 1572582,
+    "sha256": "cdef8a6ad90076140ec6b6e34d1b7d292a01111e1e4635292d83f04d068121d0",
+    "pdf": true,
+    "stop": false,
+    "noAlternateRecovery": false
+  },
+  {
+    "file": "barnes-thesis-1977.pdf",
+    "url": "https://openaccess.city.ac.uk/11887/1/Form%20finding%20and%20analysis%20of%20tension%20space%20structures%20by%20dynamic%20relaxation.pdf",
+    "finalURL": "https://openaccess.city.ac.uk/id/eprint/11887/1/Form%20finding%20and%20analysis%20of%20tension%20space%20structures%20by%20dynamic%20relaxation.pdf",
+    "status": 200,
+    "bytes": 20865487,
+    "sha256": "e7fd3dd7316a82dfd7a751e48fd0c4799c2a5a1aad0ca79412ce2cb3d82d98d3",
+    "pdf": true,
+    "stop": false,
+    "noAlternateRecovery": false
+  },
+  {
+    "url": "https://www-g.eng.cam.ac.uk/advancedstructures/files/pdf/2009GuestB.pdf",
+    "stage": "BODY",
+    "stop": true,
+    "noAlternateRecovery": true,
+    "error": "web tool502 before any body read"
+  },
+  {
+    "url": "https://www.sciencedirect.com/science/article/pii/0045782574900450/pdf",
+    "stage": "BODY",
+    "stop": true,
+    "noAlternateRecovery": true,
+    "error": "Publisher search result explicitly requires purchase/organizational access; complete abstract only, no full-body acquisition"
+  },
+  {
+    "url": "https://journals.sagepub.com/doi/pdf/10.1260/0266351991494722",
+    "stage": "BODY",
+    "stop": true,
+    "noAlternateRecovery": true,
+    "error": "Publisher search result explicitly restricted access; abstract and bibliographic metadata only. The distinct1977thesis is a separate earlier work, not recovery of the1999article."
+  }
+]

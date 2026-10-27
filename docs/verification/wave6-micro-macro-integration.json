@@ -1,0 +1,133 @@
+{
+  "status": "PASS",
+  "checkedOn": "2026-10-26",
+  "scope": "Local source-backed author integration; no independent acceptance, release or deployment. Historical independent acceptance remains36/1057.",
+  "exactExportCommit": "82260ace7c1bd64308d1bf18089499785ee217a6",
+  "exactExportPath": "/workspace/scratch/wave6-micro-macro-export-82260ace",
+  "chapterSourceCommit": "cdca5ccd5644602d9d14bc00b88a0644b62fce94",
+  "reading": {
+    "retainedIdeas": 8541,
+    "addedIdeas": 23,
+    "total": 8564,
+    "aliases": 76,
+    "snapshotDigest": "bfb25478881e953e3fc964753235c2d7a094126cb72c9bb6170e7e6f7673a2e5",
+    "dataDigest": "2b92f420d0c1229fbf7a2f55d42c82fc30487cf45cd7d946755bb585c8d5b7f5"
+  },
+  "availability": {
+    "authorAvailable": 849,
+    "goal": 1057,
+    "historicalIndependent": 36,
+    "additionalAuthorVerified": 813
+  },
+  "checks": {
+    "focusedIntegration": {
+      "passed": 47,
+      "failed": 0,
+      "skipped": 0,
+      "cancelled": 0
+    },
+    "strict": {
+      "written": 8564,
+      "planned": 5010,
+      "chapters": 590,
+      "collections": 85,
+      "errors": 0,
+      "warnings": 0
+    },
+    "static": {
+      "visualizations": 8501,
+      "errors": 0,
+      "warnings": 0
+    },
+    "fullNode22": {
+      "version": "22.23.3",
+      "fileConcurrency": 1,
+      "passed": 4921,
+      "failed": 0,
+      "skipped": 0,
+      "cancelled": 0,
+      "durationMs": 920245.623763
+    },
+    "productionSmoke": {
+      "light": 272,
+      "dark": 272,
+      "routesWithErrors": 0
+    },
+    "coverageStructure": "PASS;30domains/85primarycollections",
+    "readOnlyContinuation": {
+      "records": 24,
+      "modelChecks": "passed"
+    }
+  },
+  "proofs": [
+    {
+      "status": "PASS",
+      "root": "/workspace/theorems-visualizations",
+      "commit": "82260ace7c1bd64308d1bf18089499785ee217a6",
+      "readingIdeas": 8564,
+      "retainedEarlierProjections": 8541,
+      "aliases": 76,
+      "pinnedFiles": 276,
+      "unchangedBindingArrays": 4,
+      "snapshotDigest": "bfb25478881e953e3fc964753235c2d7a094126cb72c9bb6170e7e6f7673a2e5",
+      "dataDigest": "2b92f420d0c1229fbf7a2f55d42c82fc30487cf45cd7d946755bb585c8d5b7f5",
+      "sourceAssetsFrozenPlansExact": true,
+      "cleanTrackedTree": true
+    },
+    {
+      "status": "PASS",
+      "root": "/workspace/scratch/wave6-micro-macro-export-82260ace",
+      "commit": "82260ace7c1bd64308d1bf18089499785ee217a6",
+      "readingIdeas": 8564,
+      "retainedEarlierProjections": 8541,
+      "aliases": 76,
+      "pinnedFiles": 276,
+      "unchangedBindingArrays": 4,
+      "snapshotDigest": "bfb25478881e953e3fc964753235c2d7a094126cb72c9bb6170e7e6f7673a2e5",
+      "dataDigest": "2b92f420d0c1229fbf7a2f55d42c82fc30487cf45cd7d946755bb585c8d5b7f5",
+      "sourceAssetsFrozenPlansExact": true,
+      "cleanTrackedTree": true
+    }
+  ],
+  "allOwnedBrowsersAndServersClosed": true,
+  "sourceStops": "Inherited restrictions remain binding. Earlier /tmp artifacts erased by managed restart; committed source/read/visual receipts remain durable. Current new evidence uses /workspace/scratch.",
+  "logs": {
+    "integration-scoped": {
+      "path": "/workspace/scratch/wave6-macro-research/integration-scoped.log",
+      "sha256": "46d3a23303adac8b2ef1ab4a7104ccc676392cfe758af3c36d4050d3eea36469"
+    },
+    "integration-build": {
+      "path": "/workspace/scratch/wave6-macro-research/integration-build.log",
+      "sha256": "5f311993846c50bcb23bb78bd75031e9ae6eabaaeba098c6a55e6d83c7228246"
+    },
+    "integration-coverage": {
+      "path": "/workspace/scratch/wave6-macro-research/integration-coverage.log",
+      "sha256": "65134ca2bcf2f6f352c7ab87781ed45ee451e736df09efb7f37cd819f7786e0a"
+    },
+    "integration-local": {
+      "path": "/workspace/scratch/wave6-macro-research/integration-local.log",
+      "sha256": "b4a95b8406bd356992f0f774c2f9c5083b1c8c343685f94dd2ce397d9873c231"
+    },
+    "export-build": {
+      "path": "/workspace/scratch/wave6-macro-research/export-build.log",
+      "sha256": "ab26382524d5b704a0654a0ba8a5e6459140ed0a12f173eb81a6299e9783ab69"
+    },
+    "export-static": {
+      "path": "/workspace/scratch/wave6-macro-research/export-static.log",
+      "sha256": "78545e7a59e0edeebc42342f90cdd34d5b3145eb4f35b78f04f80d14d796db7f"
+    },
+    "export-full-suite": {
+      "path": "/workspace/scratch/wave6-macro-research/export-full-suite.log",
+      "sha256": "2c29836d440ec83c2dde4a3530001fee05ad1c8e2bfb21042c3ae8b15ce0616c"
+    },
+    "export-smoke-light": {
+      "path": "/workspace/scratch/wave6-macro-research/export-smoke-light.log",
+      "sha256": "cc036ad2be5c310e4e9e65a8c6914b837f91e9627872eb733b75f1f6f724f0c0"
+    },
+    "export-smoke-dark": {
+      "path": "/workspace/scratch/wave6-macro-research/export-smoke-dark.log",
+      "sha256": "cc036ad2be5c310e4e9e65a8c6914b837f91e9627872eb733b75f1f6f724f0c0"
+    }
+  },
+  "next": "FIN7 nine frozen new lessons; source preparation and six scratch models exist; no FIN availability increase. Continue without stopping at a chapter, commit or wave."
+}

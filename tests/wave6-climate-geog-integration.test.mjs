@@ -1,0 +1,20 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import fs from 'node:fs';
+import {execFileSync} from 'node:child_process';
+import {createHash} from 'node:crypto';
+import {loadAll,ROOT} from '../scripts/lib.mjs';
+import {projectIdeas,selectFrozenIdeas,digest} from '../scripts/static-ideas.mjs';
+test('CLIMATE6/GEOG8 reading integration adds exactly seventeen frozen lessons and retains every earlier projection',async()=>{
+ const old=JSON.parse(execFileSync('git',['show','a5c0d50be3dcd37fbb7dcac48ca1676db5f64417:static-pages/accepted.json'],{cwd:ROOT,encoding:'utf8'}));
+ const current=JSON.parse(fs.readFileSync(ROOT+'/static-pages/accepted.json'));
+ const evidence=JSON.parse(fs.readFileSync(ROOT+'/docs/integration/wave6-climate-geog-content.json'));
+ const bytes=fs.readFileSync(ROOT+'/docs/integration/wave6-climate-geog-content.json');
+ assert.equal(createHash('sha256').update(bytes).digest('hex'),'5b8e211928ff04bda4cc9b050892b792bf5c8892717893d0be3a9fd32afb8508');
+ const data=await loadAll();assert.equal(digest(projectIdeas(data,old.ids,old.aliases)),old.snapshotDigest);assert.ok(old.aliases.every(a=>current.aliases.some(b=>a.id===b.id&&a.to===b.to)));
+ const expected=[...Array.from({length:9},(_,i)=>'climate-6.'+(i+1)),...Array.from({length:8},(_,i)=>'geog-8.'+(i+1))].sort();
+ assert.deepEqual(evidence.addedIds,expected);assert.deepEqual(evidence.changedRetainedItems,[]);assert.equal(evidence.retainedIdeas,8321);assert.equal(evidence.mergedIdeas,8338);
+ const selected=selectFrozenIdeas(data,{schemaVersion:1,acceptedCommit:evidence.sourceCommit,ids:[...old.ids,...expected].sort(),aliases:old.aliases,snapshotDigest:evidence.snapshotDigest});assert.equal(selected.selected.length,8338);assert.ok(expected.every(id=>current.ids.includes(id)));
+ assert.ok(old.ids.every(id=>current.ids.includes(id)));assert.equal(evidence.sourceCommit,'642359f6d8a7c303dd396ebd19e1105522e86e10');assert.match(evidence.dataDigest,/^[a-f0-9]{64}$/);
+ const flags=selected.selected.filter(p=>expected.includes(p.item.id)&&p.item.verify).map(p=>p.item.id);assert.deepEqual(flags,['climate-6.9']);
+});

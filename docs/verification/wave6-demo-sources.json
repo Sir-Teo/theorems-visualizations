@@ -1,0 +1,113 @@
+{
+  "status": "Recorded source reading and access boundaries; chapter-wide browser and visual qualification remain in progress.",
+  "checkedOn": "2026-10-27",
+  "actualWrittenPrerequisites": "docs/verification/wave6-demo-prerequisites.json; eight complete written prerequisite bodies read before the new source research.",
+  "sources": [
+    {
+      "work": "Rodriguez, Stable Populations, Spring2017",
+      "fetchReceipt": {
+        "path": "/workspace/scratch/wave6-demo-research/rodriguez-stable-fetch.json",
+        "sha256": "6bc53cd2b6ba88e3b50ce909cecb3388a02931245a277f62ef87c8f476a0a185"
+      },
+      "read": "All5actual PDF pages complete text; equations/argument on2,4,5 additionally personally viewed as original page rasters",
+      "use": "Female-dominant renewal equation; intrinsic root; normalized stable profile; midpoint versus continuous distinction",
+      "limits": "Do not adopt unqualified constant-rate convergence or claim smoothing alone proves nonlattice convergence; supply explicit hypotheses/local proof. Egypt1977andUS1991examples are not imported.",
+      "fetch": {
+        "url": "https://grodri.github.io/demography/StablePopulations.pdf",
+        "checkedOn": "2026-10-27",
+        "attempts": 1,
+        "status": 200,
+        "finalURL": "https://grodri.github.io/demography/StablePopulations.pdf",
+        "contentType": "application/pdf",
+        "bytes": 201581,
+        "sha256": "697e93f44f7b42dd65ed78016d9a95bf08c42f72293210e660ec64224d81f611"
+      }
+    },
+    {
+      "work": "Smith/Keyfitz, Mathematical Demography: Selected Papers, second revised edition2013, hosted by MPI",
+      "fetchReceipt": {
+        "path": "/workspace/scratch/wave6-demo-research/selected-papers-mpi-fetch.json",
+        "sha256": "8574b00e0e440af8d28692dbfcef83c1fdd5d38db1c1ebb52d879957d9e5dd2e"
+      },
+      "read": "Title pages1–3 and contents23; locator search across341pages, not full book reading. Actual Sharpe/Lotka1911 reprint cover115 and complete body116–118 (printed98–100). Actual Coale1957 reprint cover183 and complete body184–188 (printed168–172). Selected1922pages120–121 were only previews, not complete paper reading.",
+      "pixelViews": [
+        117,
+        118,
+        184,
+        186,
+        188
+      ],
+      "use": "Originals as actually reproduced in this2013reprint; formal identities, two-sex dependence, historical table and scoped fertility/mortality argument. No reproduced source graph or digitized curve.",
+      "limits": "Frozen original venue pagination remains unchanged; reprint coverCoale83–88differs from frozen83–89. Do not assert publisher-original completeness or silently repair metadata. Historical roots use multiplicative r and log r-prime; modern teaching uses continuous annual r. Reprint p100normalizer appears to omit the negative sign; derive the correct normalizer independently. No universal fertility-dominance,50–100year convergence or arbitrary changing-rate assertion is adopted.",
+      "fetch": {
+        "url": "https://www.demogr.mpg.de/books/drm/011/978-3-642-35858-6_Book_Online.pdf",
+        "checkedOn": "2026-10-27",
+        "attempts": 1,
+        "status": 200,
+        "finalURL": "https://www.demogr.mpg.de/books/drm/011/978-3-642-35858-6_Book_Online.pdf",
+        "contentType": "application/pdf",
+        "bytes": 46678844,
+        "sha256": "b007651a86af3fe647f53d97428786daf2d294341ca2b7e2bada23470c1d475a"
+      }
+    },
+    {
+      "work": "Schoen2001, Toward a General Model for Populations with Changing Rates, Demographic Research4:163–184",
+      "fetchReceipt": {
+        "path": "/workspace/scratch/wave6-demo-research/schoen-2001-fetch.json",
+        "sha256": "1e186212bd4cd1a03c2c4703c6eb2395f49a72ffb9bc6e816079eecf73cda68c"
+      },
+      "read": "Actual complete PDF1–6 (cover,contents,abstract and printed164–166);7–9 previews/locator extraction only; remaining body not read",
+      "use": "Explicit distinction between fixed and changing rate matrices; weak-ergodicity context only",
+      "limits": "Do not adopt pointwise primitivity/positive products without quantitative uniformity; use a stated uniform block bound and own elementary ratio proof. No claim to have read Preston–Coale1982originalbody.",
+      "fetch": {
+        "checkedOn": "2026-10-27",
+        "htmlURL": "https://www.demographic-research.org/articles/volume/4/6",
+        "attemptsPerResource": 1,
+        "htmlStatus": 200,
+        "pdfURL": "https://www.demographic-research.org/volumes/vol4/6/4-6.pdf",
+        "status": 200,
+        "finalURL": "https://www.demographic-research.org/volumes/vol4/6/4-6.pdf",
+        "contentType": "application/pdf",
+        "bytes": 219374,
+        "sha256": "2b1881a59d7293902179ff6dc38effe26b5baf1aaae149903ce1cf5a9b6f8e53"
+      }
+    }
+  ],
+  "newAccessStops": [
+    {
+      "work": "Brian Arthur, The Ergodic Theorems of Demography: A Simple Proof",
+      "attemptedURL": "https://pure.iiasa.ac.at/id/eprint/1858/",
+      "checkedOn": "2026-10-27",
+      "scope": "repository item page; no paper body read",
+      "result": "Anubis access denied error9e4edb5b6b850c41",
+      "accessStop": true,
+      "noRecovery": "Do not fetch RR-83-16.pdf, id/file/232336, any mirror/cache or alternate-tool copy of this work after the challenge."
+    }
+  ],
+  "inheritedStops": [
+    "PMC2011EspenshadeBODY CAPTCHA",
+    "WPP2019methodsBODY403",
+    "MagalBODYtimeout before relevant PF/Leslie material",
+    "ENSunavailable/DNS",
+    "Boylecertificate mismatch",
+    "WPI502"
+  ],
+  "notRead": [
+    "OriginalKeyfitz1971",
+    "CommercialPHG",
+    "Keyfitz/Caswell bodies",
+    "Preston/Coale1982originalbody"
+  ],
+  "personalOriginalPageViews": 8,
+  "continuousGoalActive": true,
+  "existingDataAuditRead": {
+    "path": "docs/verification/demo-reproduction-followup.md",
+    "scope": "Actually displayed primary-source acquisition/units, full2800-scalar prior-audit summary, reconstruction boundaries and selected gate sections; report output was partially truncated, not a full report reading. No original CSVs or source PDFs reacquired in this session.",
+    "sourceFacts": "source-facts.json;50schedules independently parsed from the pinned literal JS source vectors, not from helpers.",
+    "sourceHashes": {
+      "content/demo/ch03.shared.js": "044c99eae10794cc08e913dd2e55020c703506fa5f93bf76b5aaf58e17ce7cc7",
+      "content/demo/ch04.shared.js": "b28ce1a6463b30586f924c04d1ccc1f4ed3ea593c0e0c33b011056542ecb5565"
+    }
+  },
+  "sourceFigurePolicy": "The source pages listed as personal pixel views were actually inspected. The new charts are calculated or authored diagrams. No Swedish source age curve was digitized or invented."
+}

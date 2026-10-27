@@ -1,0 +1,24 @@
+{
+  "status": "PASS",
+  "scope": "Only five explicitly reconciled snapshot metadata bindings and three exactly reconstructed historical guard adapters can differ; every other prior raw pin remains unconditional",
+  "files": [
+    {
+      "path": "tests/wave6-demo.test.mjs",
+      "beforeSHA256": "58b54bfd070eec7b59f9e77ad95585bb8d9469a74ed9a54e08887c0dec65d274",
+      "afterSHA256": "19c3eef376401ef035bc9a809bd32b87643e5f9eaf37035cdc4e83fc1474005c",
+      "scope": "One import and one pin-read adapter only; entire original test reconstructs exactly. All original cases/assertions remain."
+    },
+    {
+      "path": "tests/wave6-music.test.mjs",
+      "beforeSHA256": "befca716329599977aae3b4fbaa509168dd3ec8d693963fb3bf93518cf72af98",
+      "afterSHA256": "147165beb71ec1311445a6b9727706ba3265bcc7646b75ceee1c511e8f464c6c",
+      "scope": "One import and one pin-read adapter only; entire original test reconstructs exactly. All original cases/assertions remain."
+    },
+    {
+      "path": "tests/wave6-art.test.mjs",
+      "beforeSHA256": "0666f6e0c9353276ac362bc75a602ec3b442e29d191444fa147bb202b787d25d",
+      "afterSHA256": "2314bcf44b10bc4e399f7faebaf4a13cf447d5e833cae7ff9fbf42a723f6f6f8",
+      "scope": "One import and one pin-read adapter only; entire original test reconstructs exactly. All original cases/assertions remain."
+    }
+  ]
+}

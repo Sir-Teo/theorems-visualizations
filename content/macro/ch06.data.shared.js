@@ -1,0 +1,455 @@
+// The Economist Big Mac index:45 price-only observations, acquired2026-10-26.
+// Economist-generated data CC BY4.0; exact source/provenance in docs/verification/wave6-macro-sources.json.
+// GDP_bigmac and adjusted indices are deliberately excluded. No interpolation or convergence fit.
+export const BIG_MAC = [
+  {
+    "date": "2022-07-01",
+    "iso_a3": "AUS",
+    "currency_code": "AUD",
+    "name": "Australia",
+    "local_price": "6.7",
+    "dollar_ex": "1.44843568945539",
+    "dollar_price": "4.62567999999999",
+    "USD_raw": "-0.10181"
+  },
+  {
+    "date": "2022-07-01",
+    "iso_a3": "CHE",
+    "currency_code": "CHF",
+    "name": "Switzerland",
+    "local_price": "6.5",
+    "dollar_ex": "0.96845",
+    "dollar_price": "6.71175589860086",
+    "USD_raw": "0.30325"
+  },
+  {
+    "date": "2022-07-01",
+    "iso_a3": "GBR",
+    "currency_code": "GBP",
+    "name": "Britain",
+    "local_price": "3.69",
+    "dollar_ex": "0.831079999999998",
+    "dollar_price": "4.44000577561728",
+    "USD_raw": "-0.13786"
+  },
+  {
+    "date": "2022-07-01",
+    "iso_a3": "JPN",
+    "currency_code": "JPY",
+    "name": "Japan",
+    "local_price": "390",
+    "dollar_ex": "137.865",
+    "dollar_price": "2.82885431400283",
+    "USD_raw": "-0.45071"
+  },
+  {
+    "date": "2022-07-01",
+    "iso_a3": "USA",
+    "currency_code": "USD",
+    "name": "United States",
+    "local_price": "5.15",
+    "dollar_ex": "1",
+    "dollar_price": "5.15",
+    "USD_raw": "0"
+  },
+  {
+    "date": "2023-01-01",
+    "iso_a3": "AUS",
+    "currency_code": "AUD",
+    "name": "Australia",
+    "local_price": "7.25",
+    "dollar_ex": "1.41854032200865",
+    "dollar_price": "5.11088750000001",
+    "USD_raw": "-0.04648"
+  },
+  {
+    "date": "2023-01-01",
+    "iso_a3": "CHE",
+    "currency_code": "CHF",
+    "name": "Switzerland",
+    "local_price": "6.7",
+    "dollar_ex": "0.92315",
+    "dollar_price": "7.25775876076477",
+    "USD_raw": "0.35406"
+  },
+  {
+    "date": "2023-01-01",
+    "iso_a3": "GBR",
+    "currency_code": "GBP",
+    "name": "Britain",
+    "local_price": "3.79",
+    "dollar_ex": "0.81205",
+    "dollar_price": "4.6672002955483",
+    "USD_raw": "-0.12925"
+  },
+  {
+    "date": "2023-01-01",
+    "iso_a3": "JPN",
+    "currency_code": "JPY",
+    "name": "Japan",
+    "local_price": "410",
+    "dollar_ex": "130.1",
+    "dollar_price": "3.15142198308993",
+    "USD_raw": "-0.41205"
+  },
+  {
+    "date": "2023-01-01",
+    "iso_a3": "USA",
+    "currency_code": "USD",
+    "name": "United States",
+    "local_price": "5.36",
+    "dollar_ex": "1",
+    "dollar_price": "5.36",
+    "USD_raw": "0"
+  },
+  {
+    "date": "2023-07-01",
+    "iso_a3": "AUS",
+    "currency_code": "AUD",
+    "name": "Australia",
+    "local_price": "7.45",
+    "dollar_ex": "1.48400979446464",
+    "dollar_price": "5.02018250000001",
+    "USD_raw": "-0.10033"
+  },
+  {
+    "date": "2023-07-01",
+    "iso_a3": "CHE",
+    "currency_code": "CHF",
+    "name": "Switzerland",
+    "local_price": "6.7",
+    "dollar_ex": "0.86685",
+    "dollar_price": "7.72913422160697",
+    "USD_raw": "0.38515"
+  },
+  {
+    "date": "2023-07-01",
+    "iso_a3": "GBR",
+    "currency_code": "GBP",
+    "name": "Britain",
+    "local_price": "4.19",
+    "dollar_ex": "0.77721",
+    "dollar_price": "5.39107834433422",
+    "USD_raw": "-0.03386"
+  },
+  {
+    "date": "2023-07-01",
+    "iso_a3": "JPN",
+    "currency_code": "JPY",
+    "name": "Japan",
+    "local_price": "450",
+    "dollar_ex": "142.08",
+    "dollar_price": "3.16722972972973",
+    "USD_raw": "-0.4324"
+  },
+  {
+    "date": "2023-07-01",
+    "iso_a3": "USA",
+    "currency_code": "USD",
+    "name": "United States",
+    "local_price": "5.58",
+    "dollar_ex": "1",
+    "dollar_price": "5.58",
+    "USD_raw": "0"
+  },
+  {
+    "date": "2024-01-01",
+    "iso_a3": "AUS",
+    "currency_code": "AUD",
+    "name": "Australia",
+    "local_price": "7.7",
+    "dollar_ex": "1.51745068285281",
+    "dollar_price": "5.07429999999999",
+    "USD_raw": "-0.10821"
+  },
+  {
+    "date": "2024-01-01",
+    "iso_a3": "CHE",
+    "currency_code": "CHF",
+    "name": "Switzerland",
+    "local_price": "7.1",
+    "dollar_ex": "0.86935",
+    "dollar_price": "8.1670213377811",
+    "USD_raw": "0.43533"
+  },
+  {
+    "date": "2024-01-01",
+    "iso_a3": "GBR",
+    "currency_code": "GBP",
+    "name": "Britain",
+    "local_price": "4.49",
+    "dollar_ex": "0.78629",
+    "dollar_price": "5.71036131707131",
+    "USD_raw": "0.00358"
+  },
+  {
+    "date": "2024-01-01",
+    "iso_a3": "JPN",
+    "currency_code": "JPY",
+    "name": "Japan",
+    "local_price": "450",
+    "dollar_ex": "147.86",
+    "dollar_price": "3.04341945083187",
+    "USD_raw": "-0.46513"
+  },
+  {
+    "date": "2024-01-01",
+    "iso_a3": "USA",
+    "currency_code": "USD",
+    "name": "United States",
+    "local_price": "5.69",
+    "dollar_ex": "1",
+    "dollar_price": "5.69",
+    "USD_raw": "0"
+  },
+  {
+    "date": "2024-07-01",
+    "iso_a3": "AUS",
+    "currency_code": "AUD",
+    "name": "Australia",
+    "local_price": "7.75",
+    "dollar_ex": "1.53139356814701",
+    "dollar_price": "5.06075000000001",
+    "USD_raw": "-0.11059"
+  },
+  {
+    "date": "2024-07-01",
+    "iso_a3": "CHE",
+    "currency_code": "CHF",
+    "name": "Switzerland",
+    "local_price": "7.1",
+    "dollar_ex": "0.88025",
+    "dollar_price": "8.06589037205339",
+    "USD_raw": "0.41756"
+  },
+  {
+    "date": "2024-07-01",
+    "iso_a3": "GBR",
+    "currency_code": "GBP",
+    "name": "Britain",
+    "local_price": "4.59",
+    "dollar_ex": "0.77854",
+    "dollar_price": "5.89565083361163",
+    "USD_raw": "0.03614"
+  },
+  {
+    "date": "2024-07-01",
+    "iso_a3": "JPN",
+    "currency_code": "JPY",
+    "name": "Japan",
+    "local_price": "480",
+    "dollar_ex": "150.46",
+    "dollar_price": "3.19021666888209",
+    "USD_raw": "-0.43933"
+  },
+  {
+    "date": "2024-07-01",
+    "iso_a3": "USA",
+    "currency_code": "USD",
+    "name": "United States",
+    "local_price": "5.69",
+    "dollar_ex": "1",
+    "dollar_price": "5.69",
+    "USD_raw": "0"
+  },
+  {
+    "date": "2025-01-01",
+    "iso_a3": "AUS",
+    "currency_code": "AUD",
+    "name": "Australia",
+    "local_price": "7.75",
+    "dollar_ex": "1.59121648500278",
+    "dollar_price": "4.87048750000002",
+    "USD_raw": "-0.15881"
+  },
+  {
+    "date": "2025-01-01",
+    "iso_a3": "CHE",
+    "currency_code": "CHF",
+    "name": "Switzerland",
+    "local_price": "7.2",
+    "dollar_ex": "0.90085",
+    "dollar_price": "7.9924515735139",
+    "USD_raw": "0.38039"
+  },
+  {
+    "date": "2025-01-01",
+    "iso_a3": "GBR",
+    "currency_code": "GBP",
+    "name": "Britain",
+    "local_price": "4.59",
+    "dollar_ex": "0.80164",
+    "dollar_price": "5.72576218751559",
+    "USD_raw": "-0.01109"
+  },
+  {
+    "date": "2025-01-01",
+    "iso_a3": "JPN",
+    "currency_code": "JPY",
+    "name": "Japan",
+    "local_price": "480",
+    "dollar_ex": "154.355",
+    "dollar_price": "3.109714618898",
+    "USD_raw": "-0.46292"
+  },
+  {
+    "date": "2025-01-01",
+    "iso_a3": "USA",
+    "currency_code": "USD",
+    "name": "United States",
+    "local_price": "5.79",
+    "dollar_ex": "1",
+    "dollar_price": "5.79",
+    "USD_raw": "0"
+  },
+  {
+    "date": "2025-07-01",
+    "iso_a3": "AUS",
+    "currency_code": "AUD",
+    "name": "Australia",
+    "local_price": "8",
+    "dollar_ex": "1.53385995858578",
+    "dollar_price": "5.2156",
+    "USD_raw": "-0.13218"
+  },
+  {
+    "date": "2025-07-01",
+    "iso_a3": "CHE",
+    "currency_code": "CHF",
+    "name": "Switzerland",
+    "local_price": "7.2",
+    "dollar_ex": "0.80065",
+    "dollar_price": "8.99269343658278",
+    "USD_raw": "0.49629"
+  },
+  {
+    "date": "2025-07-01",
+    "iso_a3": "GBR",
+    "currency_code": "GBP",
+    "name": "Britain",
+    "local_price": "5.09",
+    "dollar_ex": "0.74649",
+    "dollar_price": "6.81857760988091",
+    "USD_raw": "0.13454"
+  },
+  {
+    "date": "2025-07-01",
+    "iso_a3": "JPN",
+    "currency_code": "JPY",
+    "name": "Japan",
+    "local_price": "480",
+    "dollar_ex": "148.82",
+    "dollar_price": "3.22537293374546",
+    "USD_raw": "-0.46333"
+  },
+  {
+    "date": "2025-07-01",
+    "iso_a3": "USA",
+    "currency_code": "USD",
+    "name": "United States",
+    "local_price": "6.01",
+    "dollar_ex": "1",
+    "dollar_price": "6.01",
+    "USD_raw": "0"
+  },
+  {
+    "date": "2026-01-01",
+    "iso_a3": "AUS",
+    "currency_code": "AUD",
+    "name": "Australia",
+    "local_price": "8.5",
+    "dollar_ex": "1.49264870512725",
+    "dollar_price": "5.69457499999999",
+    "USD_raw": "-0.06951"
+  },
+  {
+    "date": "2026-01-01",
+    "iso_a3": "CHE",
+    "currency_code": "CHF",
+    "name": "Switzerland",
+    "local_price": "7.3",
+    "dollar_ex": "0.8036",
+    "dollar_price": "9.08412145345943",
+    "USD_raw": "0.48433"
+  },
+  {
+    "date": "2026-01-01",
+    "iso_a3": "GBR",
+    "currency_code": "GBP",
+    "name": "Britain",
+    "local_price": "5.29",
+    "dollar_ex": "0.74708",
+    "dollar_price": "7.08090164373293",
+    "USD_raw": "0.15701"
+  },
+  {
+    "date": "2026-01-01",
+    "iso_a3": "JPN",
+    "currency_code": "JPY",
+    "name": "Japan",
+    "local_price": "480",
+    "dollar_ex": "158.545",
+    "dollar_price": "3.02753161562963",
+    "USD_raw": "-0.50531"
+  },
+  {
+    "date": "2026-01-01",
+    "iso_a3": "USA",
+    "currency_code": "USD",
+    "name": "United States",
+    "local_price": "6.12",
+    "dollar_ex": "1",
+    "dollar_price": "6.12",
+    "USD_raw": "0"
+  },
+  {
+    "date": "2026-07-01",
+    "iso_a3": "AUS",
+    "currency_code": "AUD",
+    "name": "Australia",
+    "local_price": "8.5",
+    "dollar_ex": "1.42867347667691",
+    "dollar_price": "5.94957499999998",
+    "USD_raw": "-0.04348"
+  },
+  {
+    "date": "2026-07-01",
+    "iso_a3": "CHE",
+    "currency_code": "CHF",
+    "name": "Switzerland",
+    "local_price": "7.3",
+    "dollar_ex": "0.80735",
+    "dollar_price": "9.0419272929956",
+    "USD_raw": "0.45369"
+  },
+  {
+    "date": "2026-07-01",
+    "iso_a3": "GBR",
+    "currency_code": "GBP",
+    "name": "Britain",
+    "local_price": "5.49",
+    "dollar_ex": "0.74187",
+    "dollar_price": "7.40021836709936",
+    "USD_raw": "0.18975"
+  },
+  {
+    "date": "2026-07-01",
+    "iso_a3": "JPN",
+    "currency_code": "JPY",
+    "name": "Japan",
+    "local_price": "500",
+    "dollar_ex": "162.135",
+    "dollar_price": "3.08384987818793",
+    "USD_raw": "-0.5042"
+  },
+  {
+    "date": "2026-07-01",
+    "iso_a3": "USA",
+    "currency_code": "USD",
+    "name": "United States",
+    "local_price": "6.22",
+    "dollar_ex": "1",
+    "dollar_price": "6.22",
+    "USD_raw": "0"
+  }
+];

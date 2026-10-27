@@ -1,0 +1,869 @@
+{
+  "status": "PASS",
+  "scope": "All11lessons in both themes at320/1200. Every offered native slider, conditional preset control, selector and switch; actual Play/Pause/Restart3/11; actual Create state link and fresh-page exact replay. Scientific sliders are integers; fractional binary64 clocks are covered as critical restores. Browser consistency adds no independent mathematical cases.",
+  "totals": {
+    "layouts": 44,
+    "actions": 1776,
+    "shares": 768,
+    "invalid": 44,
+    "raw": 0,
+    "critical": 248,
+    "checks": 2872,
+    "modelComparisons": 2355538,
+    "domRangeRounding": 0
+  },
+  "sourceHashes": {
+    "../content/polsci/ch07.data.shared.js": "f82a91092025f938b7c3f1e35a23a353a4e9801c507691dacd5db84ec5ea4658",
+    "../content/polsci/ch07.exact.shared.js": "49ff23aec06cf6950e1fd1fec6bcc6d9e963eedfd7a5827ba707db817dcd4516",
+    "../content/polsci/ch07.js": "3acc37097db4c41a171a02aae4d3ad08f0eef457d6d8c05c8824e3a10ad56e4c",
+    "../content/polsci/ch07.shared.js": "c1f2244b6309eaaf967980410b1f9ebd94f72a02449124309045aa101f34d25f",
+    "../content/polsci/ch07.viz.js": "af57221182d017666526b5dc18bf296d82150e3a63e4b8ecd252f1fe96efb026",
+    "../content/polsci/syllabus.js": "231c35bdf140c52f9268ccff6cfe4e76e4e3e3ca221ce20f1032aad13830b15d",
+    "../assets/js/viz/core.js": "a6fa1753d9d9e8b9a05a7161fffc58dfd53b27002d9d393a3266aeb96515fe73",
+    "../assets/js/viz/math.js": "439c335e1cc47907bc72bb76559216aa093be4710e0589f41c70192729eb223e",
+    "../assets/js/share-state.js": "13c6a9ac1237d566fc5d79c89e0f4d3029aa8c2817d2c08247a02b1b053a59b1",
+    "../assets/js/app.js": "2f5762e6bf80723a5cb8691f8b19c552dd1d731ab998d5bfcdb27828e2e9a6ce",
+    "../assets/css/style.css": "eef34e3d7aaf8b38233a78d9dc6545e5e0c9d00b09a3a6876d19f3e0e0af15b6",
+    "./fixtures/wave6-polsci-reference.json": "e0dc2730e5683199f9ded12ec725f09d54f1f3ebde603f548a01089a75a9f393",
+    "../data/col/polsci.json": "42d6fd221e8b2ca1f365eb9e4ac1a8f06e2468a275e59703ee28c97f3edcb0e7",
+    "../data/index.json": "ab1c451690618593956fae7c95e1484edbbdd0c0a4f30dc38d888ffce063c45f",
+    "./wave6-polsci-native.mjs": "3f400680b37114b2296b0c42ebae5075b6b7a46b6bb427dba253e17fa20d564d",
+    "./wave6-polsci-native-science.mjs": "8ee2e812d67d5659bc60fbd52d52588c44d84d98d7c88a576c709b9396c972e5",
+    "./wave6-polsci-native-cases.mjs": "b24d5c36d0b13d0fc83fbec490e05464b8a252b13df00acbee638d763c4a8354",
+    "./wave6-polsci-browser.shared.mjs": "c55b82336701f493192c423ec7994d18e43b16dd97160b53ea7b07ab683a96fb"
+  },
+  "cohorts": [
+    {
+      "status": "PASS",
+      "totals": {
+        "layouts": 24,
+        "actions": 904,
+        "shares": 380,
+        "invalid": 24,
+        "raw": 0,
+        "critical": 108,
+        "checks": 1436,
+        "modelComparisons": 789470,
+        "domRangeRounding": 0
+      },
+      "rows": [
+        {
+          "id": 1,
+          "theme": "light",
+          "width": 320,
+          "criticalCases": 4,
+          "totals": {
+            "layouts": 1,
+            "actions": 40,
+            "shares": 17,
+            "invalid": 1,
+            "raw": 0,
+            "critical": 4,
+            "checks": 63,
+            "modelComparisons": 22423,
+            "domRangeRounding": 0
+          }
+        },
+        {
+          "id": 1,
+          "theme": "light",
+          "width": 1200,
+          "criticalCases": 4,
+          "totals": {
+            "layouts": 1,
+            "actions": 40,
+            "shares": 17,
+            "invalid": 1,
+            "raw": 0,
+            "critical": 4,
+            "checks": 63,
+            "modelComparisons": 22423,
+            "domRangeRounding": 0
+          }
+        },
+        {
+          "id": 1,
+          "theme": "dark",
+          "width": 320,
+          "criticalCases": 4,
+          "totals": {
+            "layouts": 1,
+            "actions": 40,
+            "shares": 17,
+            "invalid": 1,
+            "raw": 0,
+            "critical": 4,
+            "checks": 63,
+            "modelComparisons": 22423,
+            "domRangeRounding": 0
+          }
+        },
+        {
+          "id": 1,
+          "theme": "dark",
+          "width": 1200,
+          "criticalCases": 4,
+          "totals": {
+            "layouts": 1,
+            "actions": 40,
+            "shares": 17,
+            "invalid": 1,
+            "raw": 0,
+            "critical": 4,
+            "checks": 63,
+            "modelComparisons": 22423,
+            "domRangeRounding": 0
+          }
+        },
+        {
+          "id": 2,
+          "theme": "light",
+          "width": 320,
+          "criticalCases": 4,
+          "totals": {
+            "layouts": 1,
+            "actions": 23,
+            "shares": 10,
+            "invalid": 1,
+            "raw": 0,
+            "critical": 4,
+            "checks": 39,
+            "modelComparisons": 28200,
+            "domRangeRounding": 0
+          }
+        },
+        {
+          "id": 2,
+          "theme": "light",
+          "width": 1200,
+          "criticalCases": 4,
+          "totals": {
+            "layouts": 1,
+            "actions": 23,
+            "shares": 10,
+            "invalid": 1,
+            "raw": 0,
+            "critical": 4,
+            "checks": 39,
+            "modelComparisons": 28146,
+            "domRangeRounding": 0
+          }
+        },
+        {
+          "id": 2,
+          "theme": "dark",
+          "width": 320,
+          "criticalCases": 4,
+          "totals": {
+            "layouts": 1,
+            "actions": 23,
+            "shares": 10,
+            "invalid": 1,
+            "raw": 0,
+            "critical": 4,
+            "checks": 39,
+            "modelComparisons": 28200,
+            "domRangeRounding": 0
+          }
+        },
+        {
+          "id": 2,
+          "theme": "dark",
+          "width": 1200,
+          "criticalCases": 4,
+          "totals": {
+            "layouts": 1,
+            "actions": 23,
+            "shares": 10,
+            "invalid": 1,
+            "raw": 0,
+            "critical": 4,
+            "checks": 39,
+            "modelComparisons": 28146,
+            "domRangeRounding": 0
+          }
+        },
+        {
+          "id": 3,
+          "theme": "light",
+          "width": 320,
+          "criticalCases": 6,
+          "totals": {
+            "layouts": 1,
+            "actions": 38,
+            "shares": 14,
+            "invalid": 1,
+            "raw": 0,
+            "critical": 6,
+            "checks": 59,
+            "modelComparisons": 22281,
+            "domRangeRounding": 0
+          }
+        },
+        {
+          "id": 3,
+          "theme": "light",
+          "width": 1200,
+          "criticalCases": 6,
+          "totals": {
+            "layouts": 1,
+            "actions": 38,
+            "shares": 14,
+            "invalid": 1,
+            "raw": 0,
+            "critical": 6,
+            "checks": 59,
+            "modelComparisons": 22281,
+            "domRangeRounding": 0
+          }
+        },
+        {
+          "id": 3,
+          "theme": "dark",
+          "width": 320,
+          "criticalCases": 6,
+          "totals": {
+            "layouts": 1,
+            "actions": 38,
+            "shares": 14,
+            "invalid": 1,
+            "raw": 0,
+            "critical": 6,
+            "checks": 59,
+            "modelComparisons": 22281,
+            "domRangeRounding": 0
+          }
+        },
+        {
+          "id": 3,
+          "theme": "dark",
+          "width": 1200,
+          "criticalCases": 6,
+          "totals": {
+            "layouts": 1,
+            "actions": 38,
+            "shares": 14,
+            "invalid": 1,
+            "raw": 0,
+            "critical": 6,
+            "checks": 59,
+            "modelComparisons": 22281,
+            "domRangeRounding": 0
+          }
+        },
+        {
+          "id": 4,
+          "theme": "light",
+          "width": 320,
+          "criticalCases": 4,
+          "totals": {
+            "layouts": 1,
+            "actions": 51,
+            "shares": 21,
+            "invalid": 1,
+            "raw": 0,
+            "critical": 4,
+            "checks": 78,
+            "modelComparisons": 25264,
+            "domRangeRounding": 0
+          }
+        },
+        {
+          "id": 4,
+          "theme": "light",
+          "width": 1200,
+          "criticalCases": 4,
+          "totals": {
+            "layouts": 1,
+            "actions": 51,
+            "shares": 21,
+            "invalid": 1,
+            "raw": 0,
+            "critical": 4,
+            "checks": 78,
+            "modelComparisons": 25264,
+            "domRangeRounding": 0
+          }
+        },
+        {
+          "id": 4,
+          "theme": "dark",
+          "width": 320,
+          "criticalCases": 4,
+          "totals": {
+            "layouts": 1,
+            "actions": 51,
+            "shares": 21,
+            "invalid": 1,
+            "raw": 0,
+            "critical": 4,
+            "checks": 78,
+            "modelComparisons": 25264,
+            "domRangeRounding": 0
+          }
+        },
+        {
+          "id": 4,
+          "theme": "dark",
+          "width": 1200,
+          "criticalCases": 4,
+          "totals": {
+            "layouts": 1,
+            "actions": 51,
+            "shares": 21,
+            "invalid": 1,
+            "raw": 0,
+            "critical": 4,
+            "checks": 78,
+            "modelComparisons": 25264,
+            "domRangeRounding": 0
+          }
+        },
+        {
+          "id": 5,
+          "theme": "light",
+          "width": 320,
+          "criticalCases": 4,
+          "totals": {
+            "layouts": 1,
+            "actions": 33,
+            "shares": 17,
+            "invalid": 1,
+            "raw": 0,
+            "critical": 4,
+            "checks": 56,
+            "modelComparisons": 51857,
+            "domRangeRounding": 0
+          }
+        },
+        {
+          "id": 5,
+          "theme": "light",
+          "width": 1200,
+          "criticalCases": 4,
+          "totals": {
+            "layouts": 1,
+            "actions": 33,
+            "shares": 17,
+            "invalid": 1,
+            "raw": 0,
+            "critical": 4,
+            "checks": 56,
+            "modelComparisons": 52412,
+            "domRangeRounding": 0
+          }
+        },
+        {
+          "id": 5,
+          "theme": "dark",
+          "width": 320,
+          "criticalCases": 4,
+          "totals": {
+            "layouts": 1,
+            "actions": 33,
+            "shares": 17,
+            "invalid": 1,
+            "raw": 0,
+            "critical": 4,
+            "checks": 56,
+            "modelComparisons": 51857,
+            "domRangeRounding": 0
+          }
+        },
+        {
+          "id": 5,
+          "theme": "dark",
+          "width": 1200,
+          "criticalCases": 4,
+          "totals": {
+            "layouts": 1,
+            "actions": 33,
+            "shares": 17,
+            "invalid": 1,
+            "raw": 0,
+            "critical": 4,
+            "checks": 56,
+            "modelComparisons": 52412,
+            "domRangeRounding": 0
+          }
+        },
+        {
+          "id": 6,
+          "theme": "light",
+          "width": 320,
+          "criticalCases": 5,
+          "totals": {
+            "layouts": 1,
+            "actions": 41,
+            "shares": 16,
+            "invalid": 1,
+            "raw": 0,
+            "critical": 5,
+            "checks": 64,
+            "modelComparisons": 47092,
+            "domRangeRounding": 0
+          }
+        },
+        {
+          "id": 6,
+          "theme": "light",
+          "width": 1200,
+          "criticalCases": 5,
+          "totals": {
+            "layouts": 1,
+            "actions": 41,
+            "shares": 16,
+            "invalid": 1,
+            "raw": 0,
+            "critical": 5,
+            "checks": 64,
+            "modelComparisons": 47092,
+            "domRangeRounding": 0
+          }
+        },
+        {
+          "id": 6,
+          "theme": "dark",
+          "width": 320,
+          "criticalCases": 5,
+          "totals": {
+            "layouts": 1,
+            "actions": 41,
+            "shares": 16,
+            "invalid": 1,
+            "raw": 0,
+            "critical": 5,
+            "checks": 64,
+            "modelComparisons": 47092,
+            "domRangeRounding": 0
+          }
+        },
+        {
+          "id": 6,
+          "theme": "dark",
+          "width": 1200,
+          "criticalCases": 5,
+          "totals": {
+            "layouts": 1,
+            "actions": 41,
+            "shares": 16,
+            "invalid": 1,
+            "raw": 0,
+            "critical": 5,
+            "checks": 64,
+            "modelComparisons": 47092,
+            "domRangeRounding": 0
+          }
+        }
+      ],
+      "errors": [],
+      "sourceHashes": {
+        "../content/polsci/ch07.data.shared.js": "f82a91092025f938b7c3f1e35a23a353a4e9801c507691dacd5db84ec5ea4658",
+        "../content/polsci/ch07.exact.shared.js": "49ff23aec06cf6950e1fd1fec6bcc6d9e963eedfd7a5827ba707db817dcd4516",
+        "../content/polsci/ch07.js": "3acc37097db4c41a171a02aae4d3ad08f0eef457d6d8c05c8824e3a10ad56e4c",
+        "../content/polsci/ch07.shared.js": "c1f2244b6309eaaf967980410b1f9ebd94f72a02449124309045aa101f34d25f",
+        "../content/polsci/ch07.viz.js": "af57221182d017666526b5dc18bf296d82150e3a63e4b8ecd252f1fe96efb026",
+        "../content/polsci/syllabus.js": "231c35bdf140c52f9268ccff6cfe4e76e4e3e3ca221ce20f1032aad13830b15d",
+        "../assets/js/viz/core.js": "a6fa1753d9d9e8b9a05a7161fffc58dfd53b27002d9d393a3266aeb96515fe73",
+        "../assets/js/viz/math.js": "439c335e1cc47907bc72bb76559216aa093be4710e0589f41c70192729eb223e",
+        "../assets/js/share-state.js": "13c6a9ac1237d566fc5d79c89e0f4d3029aa8c2817d2c08247a02b1b053a59b1",
+        "../assets/js/app.js": "2f5762e6bf80723a5cb8691f8b19c552dd1d731ab998d5bfcdb27828e2e9a6ce",
+        "../assets/css/style.css": "eef34e3d7aaf8b38233a78d9dc6545e5e0c9d00b09a3a6876d19f3e0e0af15b6",
+        "./fixtures/wave6-polsci-reference.json": "e0dc2730e5683199f9ded12ec725f09d54f1f3ebde603f548a01089a75a9f393",
+        "../data/col/polsci.json": "42d6fd221e8b2ca1f365eb9e4ac1a8f06e2468a275e59703ee28c97f3edcb0e7",
+        "../data/index.json": "ab1c451690618593956fae7c95e1484edbbdd0c0a4f30dc38d888ffce063c45f",
+        "./wave6-polsci-native.mjs": "3f400680b37114b2296b0c42ebae5075b6b7a46b6bb427dba253e17fa20d564d",
+        "./wave6-polsci-native-science.mjs": "8ee2e812d67d5659bc60fbd52d52588c44d84d98d7c88a576c709b9396c972e5",
+        "./wave6-polsci-native-cases.mjs": "b24d5c36d0b13d0fc83fbec490e05464b8a252b13df00acbee638d763c4a8354",
+        "./wave6-polsci-browser.shared.mjs": "c55b82336701f493192c423ec7994d18e43b16dd97160b53ea7b07ab683a96fb"
+      }
+    },
+    {
+      "status": "PASS",
+      "totals": {
+        "layouts": 20,
+        "actions": 872,
+        "shares": 388,
+        "invalid": 20,
+        "raw": 0,
+        "critical": 140,
+        "checks": 1436,
+        "modelComparisons": 1566068,
+        "domRangeRounding": 0
+      },
+      "rows": [
+        {
+          "id": 7,
+          "theme": "light",
+          "width": 320,
+          "criticalCases": 8,
+          "totals": {
+            "layouts": 1,
+            "actions": 60,
+            "shares": 27,
+            "invalid": 1,
+            "raw": 0,
+            "critical": 8,
+            "checks": 97,
+            "modelComparisons": 159248,
+            "domRangeRounding": 0
+          }
+        },
+        {
+          "id": 7,
+          "theme": "light",
+          "width": 1200,
+          "criticalCases": 8,
+          "totals": {
+            "layouts": 1,
+            "actions": 60,
+            "shares": 27,
+            "invalid": 1,
+            "raw": 0,
+            "critical": 8,
+            "checks": 97,
+            "modelComparisons": 159248,
+            "domRangeRounding": 0
+          }
+        },
+        {
+          "id": 7,
+          "theme": "dark",
+          "width": 320,
+          "criticalCases": 8,
+          "totals": {
+            "layouts": 1,
+            "actions": 60,
+            "shares": 27,
+            "invalid": 1,
+            "raw": 0,
+            "critical": 8,
+            "checks": 97,
+            "modelComparisons": 159248,
+            "domRangeRounding": 0
+          }
+        },
+        {
+          "id": 7,
+          "theme": "dark",
+          "width": 1200,
+          "criticalCases": 8,
+          "totals": {
+            "layouts": 1,
+            "actions": 60,
+            "shares": 27,
+            "invalid": 1,
+            "raw": 0,
+            "critical": 8,
+            "checks": 97,
+            "modelComparisons": 159248,
+            "domRangeRounding": 0
+          }
+        },
+        {
+          "id": 8,
+          "theme": "light",
+          "width": 320,
+          "criticalCases": 7,
+          "totals": {
+            "layouts": 1,
+            "actions": 24,
+            "shares": 12,
+            "invalid": 1,
+            "raw": 0,
+            "critical": 7,
+            "checks": 45,
+            "modelComparisons": 106425,
+            "domRangeRounding": 0
+          }
+        },
+        {
+          "id": 8,
+          "theme": "light",
+          "width": 1200,
+          "criticalCases": 7,
+          "totals": {
+            "layouts": 1,
+            "actions": 24,
+            "shares": 12,
+            "invalid": 1,
+            "raw": 0,
+            "critical": 7,
+            "checks": 45,
+            "modelComparisons": 106425,
+            "domRangeRounding": 0
+          }
+        },
+        {
+          "id": 8,
+          "theme": "dark",
+          "width": 320,
+          "criticalCases": 7,
+          "totals": {
+            "layouts": 1,
+            "actions": 24,
+            "shares": 12,
+            "invalid": 1,
+            "raw": 0,
+            "critical": 7,
+            "checks": 45,
+            "modelComparisons": 106425,
+            "domRangeRounding": 0
+          }
+        },
+        {
+          "id": 8,
+          "theme": "dark",
+          "width": 1200,
+          "criticalCases": 7,
+          "totals": {
+            "layouts": 1,
+            "actions": 24,
+            "shares": 12,
+            "invalid": 1,
+            "raw": 0,
+            "critical": 7,
+            "checks": 45,
+            "modelComparisons": 106425,
+            "domRangeRounding": 0
+          }
+        },
+        {
+          "id": 9,
+          "theme": "light",
+          "width": 320,
+          "criticalCases": 6,
+          "totals": {
+            "layouts": 1,
+            "actions": 50,
+            "shares": 21,
+            "invalid": 1,
+            "raw": 0,
+            "critical": 6,
+            "checks": 79,
+            "modelComparisons": 34122,
+            "domRangeRounding": 0
+          }
+        },
+        {
+          "id": 9,
+          "theme": "light",
+          "width": 1200,
+          "criticalCases": 6,
+          "totals": {
+            "layouts": 1,
+            "actions": 50,
+            "shares": 21,
+            "invalid": 1,
+            "raw": 0,
+            "critical": 6,
+            "checks": 79,
+            "modelComparisons": 34122,
+            "domRangeRounding": 0
+          }
+        },
+        {
+          "id": 9,
+          "theme": "dark",
+          "width": 320,
+          "criticalCases": 6,
+          "totals": {
+            "layouts": 1,
+            "actions": 50,
+            "shares": 21,
+            "invalid": 1,
+            "raw": 0,
+            "critical": 6,
+            "checks": 79,
+            "modelComparisons": 34122,
+            "domRangeRounding": 0
+          }
+        },
+        {
+          "id": 9,
+          "theme": "dark",
+          "width": 1200,
+          "criticalCases": 6,
+          "totals": {
+            "layouts": 1,
+            "actions": 50,
+            "shares": 21,
+            "invalid": 1,
+            "raw": 0,
+            "critical": 6,
+            "checks": 79,
+            "modelComparisons": 34122,
+            "domRangeRounding": 0
+          }
+        },
+        {
+          "id": 10,
+          "theme": "light",
+          "width": 320,
+          "criticalCases": 6,
+          "totals": {
+            "layouts": 1,
+            "actions": 42,
+            "shares": 19,
+            "invalid": 1,
+            "raw": 0,
+            "critical": 6,
+            "checks": 69,
+            "modelComparisons": 36951,
+            "domRangeRounding": 0
+          }
+        },
+        {
+          "id": 10,
+          "theme": "light",
+          "width": 1200,
+          "criticalCases": 6,
+          "totals": {
+            "layouts": 1,
+            "actions": 42,
+            "shares": 19,
+            "invalid": 1,
+            "raw": 0,
+            "critical": 6,
+            "checks": 69,
+            "modelComparisons": 36951,
+            "domRangeRounding": 0
+          }
+        },
+        {
+          "id": 10,
+          "theme": "dark",
+          "width": 320,
+          "criticalCases": 6,
+          "totals": {
+            "layouts": 1,
+            "actions": 42,
+            "shares": 19,
+            "invalid": 1,
+            "raw": 0,
+            "critical": 6,
+            "checks": 69,
+            "modelComparisons": 36951,
+            "domRangeRounding": 0
+          }
+        },
+        {
+          "id": 10,
+          "theme": "dark",
+          "width": 1200,
+          "criticalCases": 6,
+          "totals": {
+            "layouts": 1,
+            "actions": 42,
+            "shares": 19,
+            "invalid": 1,
+            "raw": 0,
+            "critical": 6,
+            "checks": 69,
+            "modelComparisons": 36951,
+            "domRangeRounding": 0
+          }
+        },
+        {
+          "id": 11,
+          "theme": "light",
+          "width": 320,
+          "criticalCases": 8,
+          "totals": {
+            "layouts": 1,
+            "actions": 42,
+            "shares": 18,
+            "invalid": 1,
+            "raw": 0,
+            "critical": 8,
+            "checks": 69,
+            "modelComparisons": 54771,
+            "domRangeRounding": 0
+          }
+        },
+        {
+          "id": 11,
+          "theme": "light",
+          "width": 1200,
+          "criticalCases": 8,
+          "totals": {
+            "layouts": 1,
+            "actions": 42,
+            "shares": 18,
+            "invalid": 1,
+            "raw": 0,
+            "critical": 8,
+            "checks": 69,
+            "modelComparisons": 54771,
+            "domRangeRounding": 0
+          }
+        },
+        {
+          "id": 11,
+          "theme": "dark",
+          "width": 320,
+          "criticalCases": 8,
+          "totals": {
+            "layouts": 1,
+            "actions": 42,
+            "shares": 18,
+            "invalid": 1,
+            "raw": 0,
+            "critical": 8,
+            "checks": 69,
+            "modelComparisons": 54771,
+            "domRangeRounding": 0
+          }
+        },
+        {
+          "id": 11,
+          "theme": "dark",
+          "width": 1200,
+          "criticalCases": 8,
+          "totals": {
+            "layouts": 1,
+            "actions": 42,
+            "shares": 18,
+            "invalid": 1,
+            "raw": 0,
+            "critical": 8,
+            "checks": 69,
+            "modelComparisons": 54771,
+            "domRangeRounding": 0
+          }
+        }
+      ],
+      "errors": [],
+      "sourceHashes": {
+        "../content/polsci/ch07.data.shared.js": "f82a91092025f938b7c3f1e35a23a353a4e9801c507691dacd5db84ec5ea4658",
+        "../content/polsci/ch07.exact.shared.js": "49ff23aec06cf6950e1fd1fec6bcc6d9e963eedfd7a5827ba707db817dcd4516",
+        "../content/polsci/ch07.js": "3acc37097db4c41a171a02aae4d3ad08f0eef457d6d8c05c8824e3a10ad56e4c",
+        "../content/polsci/ch07.shared.js": "c1f2244b6309eaaf967980410b1f9ebd94f72a02449124309045aa101f34d25f",
+        "../content/polsci/ch07.viz.js": "af57221182d017666526b5dc18bf296d82150e3a63e4b8ecd252f1fe96efb026",
+        "../content/polsci/syllabus.js": "231c35bdf140c52f9268ccff6cfe4e76e4e3e3ca221ce20f1032aad13830b15d",
+        "../assets/js/viz/core.js": "a6fa1753d9d9e8b9a05a7161fffc58dfd53b27002d9d393a3266aeb96515fe73",
+        "../assets/js/viz/math.js": "439c335e1cc47907bc72bb76559216aa093be4710e0589f41c70192729eb223e",
+        "../assets/js/share-state.js": "13c6a9ac1237d566fc5d79c89e0f4d3029aa8c2817d2c08247a02b1b053a59b1",
+        "../assets/js/app.js": "2f5762e6bf80723a5cb8691f8b19c552dd1d731ab998d5bfcdb27828e2e9a6ce",
+        "../assets/css/style.css": "eef34e3d7aaf8b38233a78d9dc6545e5e0c9d00b09a3a6876d19f3e0e0af15b6",
+        "./fixtures/wave6-polsci-reference.json": "e0dc2730e5683199f9ded12ec725f09d54f1f3ebde603f548a01089a75a9f393",
+        "../data/col/polsci.json": "42d6fd221e8b2ca1f365eb9e4ac1a8f06e2468a275e59703ee28c97f3edcb0e7",
+        "../data/index.json": "ab1c451690618593956fae7c95e1484edbbdd0c0a4f30dc38d888ffce063c45f",
+        "./wave6-polsci-native.mjs": "3f400680b37114b2296b0c42ebae5075b6b7a46b6bb427dba253e17fa20d564d",
+        "./wave6-polsci-native-science.mjs": "8ee2e812d67d5659bc60fbd52d52588c44d84d98d7c88a576c709b9396c972e5",
+        "./wave6-polsci-native-cases.mjs": "b24d5c36d0b13d0fc83fbec490e05464b8a252b13df00acbee638d763c4a8354",
+        "./wave6-polsci-browser.shared.mjs": "c55b82336701f493192c423ec7994d18e43b16dd97160b53ea7b07ab683a96fb"
+      }
+    }
+  ],
+  "logs": [
+    {
+      "path": "/workspace/scratch/wave6-polsci-research/native-full-v2-a.log",
+      "sha256": "45e91a8526c202bc744f6a89bc054910cd159731d362bad0af6aed02269413d3"
+    },
+    {
+      "path": "/workspace/scratch/wave6-polsci-research/native-full-v2-b.log",
+      "sha256": "a688c49082158d9083c4732cfb6026027619ec6843ee65b3d1a47f10c0febf74"
+    }
+  ]
+}

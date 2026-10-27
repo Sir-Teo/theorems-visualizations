@@ -1,0 +1,621 @@
+{
+  "status": "PASS current complete source and generated data; author verification only",
+  "scope": "All9 lessons at320/1200 CSSpx in light/dark, full native controls/actual Create state link/replay and scientific-render checks. Earlier mixed-source receipts are historical, superseded by these two fresh disjoint runs.",
+  "totals": {
+    "layouts": 36,
+    "actions": 1692,
+    "shares": 732,
+    "invalid": 36,
+    "raw": 36,
+    "critical": 320,
+    "checks": 2844,
+    "modelComparisons": 1752694
+  },
+  "distinctCriticalCases": 80,
+  "sourceHashes": {
+    "../content/robot/ch06.js": "1b9771101d07a384b565d371e9e099ae30dc2858b7cb4f49d2d261e7724c4213",
+    "../content/robot/ch06.viz.js": "689674289131202dec92c009b82ec8492e4815a7eda07471bf0ac6582137f2de",
+    "../content/robot/ch06.shared.js": "e585f8631205c7cf403cfeb242f6e63e1e557a4f0ad307f6e6fcb2ff4762b0d7",
+    "../content/robot/ch06.exact.shared.js": "68751873d8405ebd2cef296a3e8d5b092f2ee9ca8bb0f9a3c6090f9e8d3d61c2",
+    "../content/robot/syllabus.js": "4acd5c0bf5736f89ae807f1ad477f813b65e7ee270aa8fc5fdf65b4841c96dd3",
+    "../assets/js/viz/core.js": "a6fa1753d9d9e8b9a05a7161fffc58dfd53b27002d9d393a3266aeb96515fe73",
+    "../assets/js/share-state.js": "13c6a9ac1237d566fc5d79c89e0f4d3029aa8c2817d2c08247a02b1b053a59b1",
+    "../data/col/robot.json": "49de94f9b75015dfebffd454d9bdf80ecc9a61cf46743164d5ae5ac4f82a1068",
+    "../data/index.json": "a5e3115fd6f38337e70ad7dfa5be313431d653b0dd202b6330fd2e478831e7d0",
+    "./wave6-robot-native.mjs": "8834d585c63af7115e10fdea78516213a0f61a138f279924fabe44f6eae3e82c",
+    "./wave6-robot-native-science.mjs": "7e2465c4713e4269bc7d40cc8905910e46f4312af734b95b319f6f0e3f90d969",
+    "./wave6-robot-native-cases.mjs": "7e5cccd3702e481b5de38d646823bab31c19e1e24583abead3b1b81ce891aea6",
+    "./wave6-robot-browser.shared.mjs": "2e8eb42535cfc8f66035e83530c269e1f93695ad59cf63208161396742abf88e"
+  },
+  "rows": [
+    {
+      "id": 1,
+      "theme": "light",
+      "width": 320,
+      "criticalCases": 12,
+      "totals": {
+        "layouts": 1,
+        "actions": 56,
+        "shares": 25,
+        "invalid": 1,
+        "raw": 1,
+        "critical": 12,
+        "checks": 96,
+        "modelComparisons": 115115
+      }
+    },
+    {
+      "id": 1,
+      "theme": "light",
+      "width": 1200,
+      "criticalCases": 12,
+      "totals": {
+        "layouts": 1,
+        "actions": 56,
+        "shares": 25,
+        "invalid": 1,
+        "raw": 1,
+        "critical": 12,
+        "checks": 96,
+        "modelComparisons": 115115
+      }
+    },
+    {
+      "id": 1,
+      "theme": "dark",
+      "width": 320,
+      "criticalCases": 12,
+      "totals": {
+        "layouts": 1,
+        "actions": 56,
+        "shares": 25,
+        "invalid": 1,
+        "raw": 1,
+        "critical": 12,
+        "checks": 96,
+        "modelComparisons": 115115
+      }
+    },
+    {
+      "id": 1,
+      "theme": "dark",
+      "width": 1200,
+      "criticalCases": 12,
+      "totals": {
+        "layouts": 1,
+        "actions": 56,
+        "shares": 25,
+        "invalid": 1,
+        "raw": 1,
+        "critical": 12,
+        "checks": 96,
+        "modelComparisons": 115115
+      }
+    },
+    {
+      "id": 2,
+      "theme": "light",
+      "width": 320,
+      "criticalCases": 9,
+      "totals": {
+        "layouts": 1,
+        "actions": 51,
+        "shares": 21,
+        "invalid": 1,
+        "raw": 1,
+        "critical": 9,
+        "checks": 83,
+        "modelComparisons": 37848
+      }
+    },
+    {
+      "id": 2,
+      "theme": "light",
+      "width": 1200,
+      "criticalCases": 9,
+      "totals": {
+        "layouts": 1,
+        "actions": 51,
+        "shares": 21,
+        "invalid": 1,
+        "raw": 1,
+        "critical": 9,
+        "checks": 83,
+        "modelComparisons": 37848
+      }
+    },
+    {
+      "id": 2,
+      "theme": "dark",
+      "width": 320,
+      "criticalCases": 9,
+      "totals": {
+        "layouts": 1,
+        "actions": 51,
+        "shares": 21,
+        "invalid": 1,
+        "raw": 1,
+        "critical": 9,
+        "checks": 83,
+        "modelComparisons": 37848
+      }
+    },
+    {
+      "id": 2,
+      "theme": "dark",
+      "width": 1200,
+      "criticalCases": 9,
+      "totals": {
+        "layouts": 1,
+        "actions": 51,
+        "shares": 21,
+        "invalid": 1,
+        "raw": 1,
+        "critical": 9,
+        "checks": 83,
+        "modelComparisons": 37848
+      }
+    },
+    {
+      "id": 3,
+      "theme": "light",
+      "width": 320,
+      "criticalCases": 7,
+      "totals": {
+        "layouts": 1,
+        "actions": 32,
+        "shares": 14,
+        "invalid": 1,
+        "raw": 1,
+        "critical": 7,
+        "checks": 56,
+        "modelComparisons": 29868
+      }
+    },
+    {
+      "id": 3,
+      "theme": "light",
+      "width": 1200,
+      "criticalCases": 7,
+      "totals": {
+        "layouts": 1,
+        "actions": 32,
+        "shares": 14,
+        "invalid": 1,
+        "raw": 1,
+        "critical": 7,
+        "checks": 56,
+        "modelComparisons": 29868
+      }
+    },
+    {
+      "id": 3,
+      "theme": "dark",
+      "width": 320,
+      "criticalCases": 7,
+      "totals": {
+        "layouts": 1,
+        "actions": 32,
+        "shares": 14,
+        "invalid": 1,
+        "raw": 1,
+        "critical": 7,
+        "checks": 56,
+        "modelComparisons": 29868
+      }
+    },
+    {
+      "id": 3,
+      "theme": "dark",
+      "width": 1200,
+      "criticalCases": 7,
+      "totals": {
+        "layouts": 1,
+        "actions": 32,
+        "shares": 14,
+        "invalid": 1,
+        "raw": 1,
+        "critical": 7,
+        "checks": 56,
+        "modelComparisons": 29868
+      }
+    },
+    {
+      "id": 4,
+      "theme": "light",
+      "width": 320,
+      "criticalCases": 9,
+      "totals": {
+        "layouts": 1,
+        "actions": 51,
+        "shares": 21,
+        "invalid": 1,
+        "raw": 1,
+        "critical": 9,
+        "checks": 83,
+        "modelComparisons": 49883
+      }
+    },
+    {
+      "id": 4,
+      "theme": "light",
+      "width": 1200,
+      "criticalCases": 9,
+      "totals": {
+        "layouts": 1,
+        "actions": 51,
+        "shares": 21,
+        "invalid": 1,
+        "raw": 1,
+        "critical": 9,
+        "checks": 83,
+        "modelComparisons": 49883
+      }
+    },
+    {
+      "id": 4,
+      "theme": "dark",
+      "width": 320,
+      "criticalCases": 9,
+      "totals": {
+        "layouts": 1,
+        "actions": 51,
+        "shares": 21,
+        "invalid": 1,
+        "raw": 1,
+        "critical": 9,
+        "checks": 83,
+        "modelComparisons": 49883
+      }
+    },
+    {
+      "id": 4,
+      "theme": "dark",
+      "width": 1200,
+      "criticalCases": 9,
+      "totals": {
+        "layouts": 1,
+        "actions": 51,
+        "shares": 21,
+        "invalid": 1,
+        "raw": 1,
+        "critical": 9,
+        "checks": 83,
+        "modelComparisons": 49883
+      }
+    },
+    {
+      "id": 5,
+      "theme": "light",
+      "width": 320,
+      "criticalCases": 9,
+      "totals": {
+        "layouts": 1,
+        "actions": 60,
+        "shares": 26,
+        "invalid": 1,
+        "raw": 1,
+        "critical": 9,
+        "checks": 99,
+        "modelComparisons": 39264
+      }
+    },
+    {
+      "id": 5,
+      "theme": "light",
+      "width": 1200,
+      "criticalCases": 9,
+      "totals": {
+        "layouts": 1,
+        "actions": 60,
+        "shares": 26,
+        "invalid": 1,
+        "raw": 1,
+        "critical": 9,
+        "checks": 99,
+        "modelComparisons": 39264
+      }
+    },
+    {
+      "id": 5,
+      "theme": "dark",
+      "width": 320,
+      "criticalCases": 9,
+      "totals": {
+        "layouts": 1,
+        "actions": 60,
+        "shares": 26,
+        "invalid": 1,
+        "raw": 1,
+        "critical": 9,
+        "checks": 99,
+        "modelComparisons": 39264
+      }
+    },
+    {
+      "id": 5,
+      "theme": "dark",
+      "width": 1200,
+      "criticalCases": 9,
+      "totals": {
+        "layouts": 1,
+        "actions": 60,
+        "shares": 26,
+        "invalid": 1,
+        "raw": 1,
+        "critical": 9,
+        "checks": 99,
+        "modelComparisons": 39264
+      }
+    },
+    {
+      "id": 6,
+      "theme": "light",
+      "width": 320,
+      "criticalCases": 8,
+      "totals": {
+        "layouts": 1,
+        "actions": 33,
+        "shares": 15,
+        "invalid": 1,
+        "raw": 1,
+        "critical": 8,
+        "checks": 59,
+        "modelComparisons": 29890
+      }
+    },
+    {
+      "id": 6,
+      "theme": "light",
+      "width": 1200,
+      "criticalCases": 8,
+      "totals": {
+        "layouts": 1,
+        "actions": 33,
+        "shares": 15,
+        "invalid": 1,
+        "raw": 1,
+        "critical": 8,
+        "checks": 59,
+        "modelComparisons": 29890
+      }
+    },
+    {
+      "id": 6,
+      "theme": "dark",
+      "width": 320,
+      "criticalCases": 8,
+      "totals": {
+        "layouts": 1,
+        "actions": 33,
+        "shares": 15,
+        "invalid": 1,
+        "raw": 1,
+        "critical": 8,
+        "checks": 59,
+        "modelComparisons": 29890
+      }
+    },
+    {
+      "id": 6,
+      "theme": "dark",
+      "width": 1200,
+      "criticalCases": 8,
+      "totals": {
+        "layouts": 1,
+        "actions": 33,
+        "shares": 15,
+        "invalid": 1,
+        "raw": 1,
+        "critical": 8,
+        "checks": 59,
+        "modelComparisons": 29890
+      }
+    },
+    {
+      "id": 7,
+      "theme": "light",
+      "width": 320,
+      "criticalCases": 8,
+      "totals": {
+        "layouts": 1,
+        "actions": 43,
+        "shares": 19,
+        "invalid": 1,
+        "raw": 1,
+        "critical": 8,
+        "checks": 73,
+        "modelComparisons": 35343
+      }
+    },
+    {
+      "id": 7,
+      "theme": "light",
+      "width": 1200,
+      "criticalCases": 8,
+      "totals": {
+        "layouts": 1,
+        "actions": 43,
+        "shares": 19,
+        "invalid": 1,
+        "raw": 1,
+        "critical": 8,
+        "checks": 73,
+        "modelComparisons": 35343
+      }
+    },
+    {
+      "id": 7,
+      "theme": "dark",
+      "width": 320,
+      "criticalCases": 8,
+      "totals": {
+        "layouts": 1,
+        "actions": 43,
+        "shares": 19,
+        "invalid": 1,
+        "raw": 1,
+        "critical": 8,
+        "checks": 73,
+        "modelComparisons": 35343
+      }
+    },
+    {
+      "id": 7,
+      "theme": "dark",
+      "width": 1200,
+      "criticalCases": 8,
+      "totals": {
+        "layouts": 1,
+        "actions": 43,
+        "shares": 19,
+        "invalid": 1,
+        "raw": 1,
+        "critical": 8,
+        "checks": 73,
+        "modelComparisons": 35343
+      }
+    },
+    {
+      "id": 8,
+      "theme": "light",
+      "width": 320,
+      "criticalCases": 9,
+      "totals": {
+        "layouts": 1,
+        "actions": 43,
+        "shares": 19,
+        "invalid": 1,
+        "raw": 1,
+        "critical": 9,
+        "checks": 73,
+        "modelComparisons": 62283
+      }
+    },
+    {
+      "id": 8,
+      "theme": "light",
+      "width": 1200,
+      "criticalCases": 9,
+      "totals": {
+        "layouts": 1,
+        "actions": 43,
+        "shares": 19,
+        "invalid": 1,
+        "raw": 1,
+        "critical": 9,
+        "checks": 73,
+        "modelComparisons": 62288
+      }
+    },
+    {
+      "id": 8,
+      "theme": "dark",
+      "width": 320,
+      "criticalCases": 9,
+      "totals": {
+        "layouts": 1,
+        "actions": 43,
+        "shares": 19,
+        "invalid": 1,
+        "raw": 1,
+        "critical": 9,
+        "checks": 73,
+        "modelComparisons": 62343
+      }
+    },
+    {
+      "id": 8,
+      "theme": "dark",
+      "width": 1200,
+      "criticalCases": 9,
+      "totals": {
+        "layouts": 1,
+        "actions": 43,
+        "shares": 19,
+        "invalid": 1,
+        "raw": 1,
+        "critical": 9,
+        "checks": 73,
+        "modelComparisons": 62288
+      }
+    },
+    {
+      "id": 9,
+      "theme": "light",
+      "width": 320,
+      "criticalCases": 9,
+      "totals": {
+        "layouts": 1,
+        "actions": 54,
+        "shares": 23,
+        "invalid": 1,
+        "raw": 1,
+        "critical": 9,
+        "checks": 89,
+        "modelComparisons": 38662
+      }
+    },
+    {
+      "id": 9,
+      "theme": "light",
+      "width": 1200,
+      "criticalCases": 9,
+      "totals": {
+        "layouts": 1,
+        "actions": 54,
+        "shares": 23,
+        "invalid": 1,
+        "raw": 1,
+        "critical": 9,
+        "checks": 89,
+        "modelComparisons": 38662
+      }
+    },
+    {
+      "id": 9,
+      "theme": "dark",
+      "width": 320,
+      "criticalCases": 9,
+      "totals": {
+        "layouts": 1,
+        "actions": 54,
+        "shares": 23,
+        "invalid": 1,
+        "raw": 1,
+        "critical": 9,
+        "checks": 89,
+        "modelComparisons": 38662
+      }
+    },
+    {
+      "id": 9,
+      "theme": "dark",
+      "width": 1200,
+      "criticalCases": 9,
+      "totals": {
+        "layouts": 1,
+        "actions": 54,
+        "shares": 23,
+        "invalid": 1,
+        "raw": 1,
+        "critical": 9,
+        "checks": 89,
+        "modelComparisons": 38662
+      }
+    }
+  ],
+  "runs": [
+    {
+      "summary": "/tmp/wave6-robot-native-sign-final-a/summary.json",
+      "sha256": "66b4358d5d45f327e92430aaec52f096080c2305b01073164d7496163a0ffe6f"
+    },
+    {
+      "summary": "/tmp/wave6-robot-native-sign-final-b/summary.json",
+      "sha256": "0727a9765e510cb1b9e6e625d55ddd667dcb9cfa89e1a582cb6127c886cfd10a"
+    }
+  ],
+  "newAssertion": "Every defined ledger row has one numeric label, matching physical sign; nonzero quantities cannot be labeled exact zero.",
+  "originalSignDefect": "/tmp/wave6-robot-label-sign-defect/failure.txt",
+  "allOwnedNativeBrowsersAndServers": "closed with exit0"
+}

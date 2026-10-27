@@ -1,0 +1,129 @@
+{
+  "status": "author-verified; independent acceptance remains36",
+  "availability": {
+    "before": 815,
+    "after": 826,
+    "goal": 1057,
+    "historicalIndependentlyAccepted": 36,
+    "additionalAuthorVerified": 790
+  },
+  "lessonCount": 11,
+  "purposeBuiltPanels": 30,
+  "model": {
+    "referenceCases": 352,
+    "families": 9,
+    "focusedGroups": 19,
+    "affectedPriorGroups": 17,
+    "totalGroups": 36,
+    "precision": {
+      "cases": 352,
+      "ordinaryDigits": {
+        "algebra": 1000,
+        "dynamics": 90
+      },
+      "higherDigits": {
+        "algebra": 2000,
+        "dynamics": 180
+      },
+      "completeExpectedObjectsExact": true,
+      "differences": [],
+      "fixtureSHA256": "b42fefd896c08ee3d821c3272dde6e40d7f6a049965a16bd2540ec4763b0ea77"
+    },
+    "comparisons": 15716,
+    "worstPhysicalRelativeOutsideSubnormal": 1.3924792104428472e-11,
+    "physicalRelativeGate": 3e-11,
+    "canonicalRegeneration": "byte-identical"
+  },
+  "focusedPrior": {
+    "tests": 36,
+    "failed": 0,
+    "skipped": 0,
+    "cancelled": 0,
+    "log": "/tmp/wave6-aero-axis-final-focused.log"
+  },
+  "catalogue": {
+    "written": 8541,
+    "planned": 5033,
+    "chapters": 588,
+    "collections": 85,
+    "errors": 0,
+    "warnings": 0,
+    "log": "/tmp/wave6-aero-axis-final-build.log"
+  },
+  "static": {
+    "items": 8478,
+    "errors": 0,
+    "warnings": 0,
+    "log": "/tmp/wave6-aero-axis-final-static.log"
+  },
+  "modeChecks": {
+    "light": 11,
+    "dark": 11,
+    "failed": 0,
+    "texBlankWarnings": 0,
+    "qualityWarnings": 0,
+    "logs": [
+      "/tmp/wave6-aero-axis-final-light.log",
+      "/tmp/wave6-aero-axis-final-dark-current.log"
+    ]
+  },
+  "native": {
+    "layouts": 44,
+    "actions": 1232,
+    "shares": 624,
+    "invalid": 44,
+    "raw": 44,
+    "critical": 352,
+    "checks": 2332,
+    "modelComparisons": 398512
+  },
+  "personalVisualReview": {
+    "defaults": 44,
+    "critical": 176,
+    "modes": 16,
+    "rich": 88
+  },
+  "preservation": {
+    "pins": 203,
+    "allExact": true,
+    "beforeAeroCommit": "2311a5e1",
+    "onlyContentChanges": [
+      "content/aero/ch06.exact.shared.js",
+      "content/aero/ch06.js",
+      "content/aero/ch06.shared.js",
+      "content/aero/ch06.viz.js",
+      "content/aero/syllabus.js"
+    ],
+    "syllabus": "Complete before/after proof: only researched chapter6 refs/pic change; all other fields remain exact.",
+    "priorWave5Assertion": "Original historical embedded baseline preserved; chapter6 now delegates to the complete new before/after assertion.",
+    "frozenPlansSharedMathRendererAssets": "unchanged"
+  },
+  "readingIntegration": {
+    "status": "Next: integrate20 author-verified ROBOT6/AERO6 lessons",
+    "currentIntegratedIdeas": 8521,
+    "aliases": 76,
+    "lastCompleteGlobalCheckpoint": "ENERGY6/SOLID6 exact export4e884665:4836/4836 full tests and272 production routes per theme. This is previous evidence, not rerun or attributed to the new20."
+  },
+  "allOwnedBrowsersServers": "Both native lanes, final default/rich capture and final light/dark modes polled exit0; browsers/servers closed.",
+  "limitations": [
+    "Chosen teaching aircraft/control/aeroelastic models, not measured aircraft performance or flight certification.",
+    "Time trajectories, trigonometry, other eigenvalues and eigenvectors remain numerical approximations; exact retained algebra/classification and isolated slow-pole signs have separate gates.",
+    "Wright source is the author-revised1902 transcription of the1901 address; approximate lift errors are not fitted to reconstruct flight.",
+    "No universal FPS, global map, independent expert, accessibility acceptance, release or deployment claim."
+  ],
+  "failureEvidence": [
+    "/tmp/wave6-aero-research/spiral-pole-sign-check.json",
+    "/tmp/wave6-aero-research/trim-display-subtraction-defect.json",
+    "/tmp/wave6-aero-native-root-final-b/failure.txt",
+    "/tmp/wave6-aero-native-tick-probe-9/failure.txt",
+    "/tmp/wave6-aero-final-polish/axis-default-comparison.json"
+  ],
+  "finalRepairs": [
+    "Retained exact slow-root signs adjacent to16/3 degrees using polynomial-sign isolation.",
+    "Selected-state trim lift residual formed before rounding/subtraction; zero dots only for exact zeros.",
+    "Aligned desktop panel heights, enlarged pole movement, dense time traces, labeled automatic flutter fit, cambered/ribbed Wright biplane.",
+    "Compact scientific ticks preserve full physical values at extreme unstable responses.",
+    "Chapter-local repaint installs the view before drawing axes and curves on the first restored frame.",
+    "Removed an orphan punctuation line in the neutral-point statement."
+  ]
+}

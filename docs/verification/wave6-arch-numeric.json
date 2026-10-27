@@ -1,0 +1,54 @@
+{
+  "status": "PASS; independent numerical reference, distinct from browser consistency audits",
+  "families": {
+    "curvedStiffness": 31,
+    "hypar": 36,
+    "tensionPatch": 40,
+    "minimalGraph": 24,
+    "cableNet": 52,
+    "hangingModel": 33,
+    "dynamicRelaxation": 49,
+    "gridshell": 33,
+    "tensegrity": 40,
+    "pneumatic": 41,
+    "shellThinness": 34
+  },
+  "cases": 413,
+  "comparisons": 577264,
+  "numerical": 576223,
+  "exact": 1041,
+  "maxNormalizedError": 0.0006122927795758728,
+  "worst": {
+    "path": "pneumatic {\"a\":1,\"N\":1,\"alpha\":0.02,\"branch\":\"shallow\"}.large.grid.8.32.1",
+    "actual": -1.2245855591517456e-14,
+    "expected": 0,
+    "absoluteError": 1.2245855591517456e-14,
+    "budget": 2e-11
+  },
+  "fixture": {
+    "path": "/workspace/theorems-visualizations/tests/fixtures/wave6-arch-reference.json",
+    "bytes": 8620344,
+    "sha256": "90e1f11c96e4dff3fa0e2ba3ac9618af7afdded5f8f775e7ef8fc9bd92466811"
+  },
+  "outputs": [
+    {
+      "path": "/workspace/scratch/wave6-arch-research/reference-sampling-90.json",
+      "bytes": 8620344,
+      "sha256": "90e1f11c96e4dff3fa0e2ba3ac9618af7afdded5f8f775e7ef8fc9bd92466811"
+    },
+    {
+      "path": "/workspace/scratch/wave6-arch-research/reference-sampling-180.json",
+      "bytes": 8620344,
+      "sha256": "90e1f11c96e4dff3fa0e2ba3ac9618af7afdded5f8f775e7ef8fc9bd92466811"
+    },
+    {
+      "path": "/workspace/scratch/wave6-arch-research/reference-sampling-fresh-90.json",
+      "bytes": 8620344,
+      "sha256": "90e1f11c96e4dff3fa0e2ba3ac9618af7afdded5f8f775e7ef8fc9bd92466811"
+    }
+  ],
+  "complete90and180AndFresh90BytesExact": true,
+  "budget": "2e-11 + 3e-11 * abs(expected)",
+  "method": "Independent Python/mpmath; edge-incidence matrix and LU solves rather than production edge assembly/Cholesky; numerical derivatives rather than analytic graph derivatives. 15 significant decimal serialization; residues below1e-70 canonicalized to zero. Native binary64 arguments preserved.",
+  "limits": "Finite authored analogues, not measured buildings or certified engineering designs. Scherk quadrature finite32x32; stiffness and potential claims apply only to stated constrained families."
+}

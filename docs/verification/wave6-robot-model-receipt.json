@@ -1,0 +1,47 @@
+{
+  "status": "Historical pure-model receipt at9f3d9651; superseded by wave6-robot-model-followup.json",
+  "frozenSourceCommit": "fd7bb0e055ea87074a4c4c6f9e912c51ce7dae46",
+  "files": [
+    "content/robot/ch06.shared.js",
+    "content/robot/ch06.exact.shared.js",
+    "tests/wave6-robot-reference.py",
+    "tests/fixtures/wave6-robot-reference.json",
+    "tests/wave6-robot.test.mjs"
+  ],
+  "sha256": {
+    "content/robot/ch06.shared.js": "35a845f0b69cf8be35ad199b7db60c42d0220bdffa44d7551cdfcccd356bfa18",
+    "content/robot/ch06.exact.shared.js": "154d8c116ae7eff190338a780573e0e3baaeaa58ea903a5393924a4152a4397f",
+    "tests/wave6-robot-reference.py": "5026f64ac1375db553b9a57906874ba18feccda180684f844531da0b033733a7",
+    "tests/fixtures/wave6-robot-reference.json": "3b0be19757408b91ce0ba8a9eb94afc476dcb8eeae09ef2b135c7aadb89294e5",
+    "tests/wave6-robot.test.mjs": "910d92620a2dbaddf5d92f5237c1c48d6dd25f9c7755fc41bf89ef074e5454bd"
+  },
+  "referenceCases": 1110,
+  "families": 9,
+  "focusedGroups": 19,
+  "affectedGroups": 11,
+  "totalFocusedAffectedGroups": 30,
+  "comparisonChecks": 252539,
+  "precisionDigits": [
+    90,
+    2600
+  ],
+  "higherPrecision": {
+    "cases": 64,
+    "digits": 5200,
+    "expectedObjects": "all exact",
+    "receipt": "/tmp/wave6-robot-research/higher-precision-64-from-log.json"
+  },
+  "canonicalRegeneration": "byte-identical",
+  "priorRecentFiles": 163,
+  "priorRecentFilesExact": true,
+  "modelLog": "/tmp/wave6-robot-focused-and-affected.log",
+  "failureEvidence": [
+    "/tmp/wave6-robot-model-tests-initial.log",
+    "/tmp/wave6-robot-model-tests-final.log"
+  ],
+  "availability": 806,
+  "independentAcceptance": 36,
+  "browsersAndServers": "all closed",
+  "checkpointCommit": "9f3d9651",
+  "followup": "docs/verification/wave6-robot-model-followup.json"
+}

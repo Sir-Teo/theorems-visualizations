@@ -1,0 +1,142 @@
+{
+  "status": "author-verified; independent acceptance remains36",
+  "availability": {
+    "before": 826,
+    "after": 842,
+    "goal": 1057,
+    "historicalIndependentlyAccepted": 36,
+    "additionalAuthorVerified": 806
+  },
+  "lessonCount": 16,
+  "purposeBuiltPanels": 44,
+  "model": {
+    "referenceCases": 410,
+    "families": 13,
+    "comparisons": 34652,
+    "focusedPureGroups": 22,
+    "precision": {
+      "cases": 410,
+      "families": 13,
+      "precisionDigits": {
+        "canonical": [
+          1400,
+          90
+        ],
+        "higher": [
+          2800,
+          180
+        ]
+      },
+      "completeExpectedObjectsEqual": true,
+      "differences": [],
+      "canonicalRepeatByteIdentical": true,
+      "fixtureSHA256": "49e6b441609a7de52b0b1b8aff6f99602e5317ab74d9a21e4bb3bef5c223623f"
+    },
+    "observed": {
+      "cases": 410,
+      "comparisons": 34652,
+      "worstPhysicalRelative": 0,
+      "worstTrajectoryRelative": 3.5059395544260234e-11,
+      "worstAlgebraLogAbsolute": 4.547473508864641e-13,
+      "worstTrajectoryLogAbsolute": 3.505817858240334e-11
+    },
+    "gates": {
+      "algebraPhysicalRelativeOutsideSubnormal": 3e-13,
+      "algebraLogAbsolute": 8e-12,
+      "trajectoryPhysicalRelativeOutsideSubnormal": 2e-10,
+      "trajectoryLogAbsolute": 2e-9,
+      "subnormal": "two binary64 subnormal ulps; retained signs and range flags checked independently",
+      "exactZero": "Exact physical sign/range and signed rounded0 checked separately; no epsilon changes a classification or quantity."
+    }
+  },
+  "focusedPrior": {
+    "tests": 40,
+    "newGroups": 24,
+    "affectedPriorGroups": 16,
+    "failed": 0,
+    "skipped": 0,
+    "cancelled": 0,
+    "durationMs": 394.95528,
+    "log": "/tmp/wave6-micro-focused-sealed.log"
+  },
+  "catalogue": {
+    "written": 8557,
+    "planned": 5017,
+    "chapters": 589,
+    "collections": 85,
+    "errors": 0,
+    "warnings": 0,
+    "log": "/tmp/wave6-micro-build-final-tax.log"
+  },
+  "static": {
+    "items": 8494,
+    "errors": 0,
+    "warnings": 0,
+    "log": "/tmp/wave6-micro-static-final.log"
+  },
+  "modeChecks": {
+    "light": 16,
+    "dark": 16,
+    "failed": 0,
+    "texBlankWarnings": 0,
+    "qualityWarnings": 0,
+    "logs": [
+      "/tmp/wave6-micro-production-final-light.log",
+      "/tmp/wave6-micro-production-final-dark.log"
+    ]
+  },
+  "native": {
+    "layouts": 64,
+    "actions": 2136,
+    "shares": 1028,
+    "invalid": 64,
+    "raw": 64,
+    "critical": 488,
+    "checks": 3840,
+    "modelComparisons": 617164
+  },
+  "finalSupplementalCriticalCapture": {
+    "layouts": 32,
+    "actions": 276,
+    "shares": 276,
+    "invalid": 32,
+    "raw": 32,
+    "critical": 244,
+    "checks": 892,
+    "modelComparisons": 149062
+  },
+  "all92ModeCoverage": {
+    "modes": 92,
+    "actions": 184,
+    "shares": 92,
+    "checks": 308,
+    "comparisons": 32084
+  },
+  "personalVisualReview": {
+    "defaults": 64,
+    "rich": 128,
+    "modes": 92,
+    "critical": 244
+  },
+  "personallyReviewedSheetCount": 194,
+  "usedSheetCount": 158,
+  "finalDefaultRich": {
+    "layouts": 64,
+    "richFields": 256,
+    "narrowRichFields": 128,
+    "issues": 0,
+    "errors": []
+  },
+  "preservation": {
+    "pins": 225,
+    "allExact": true,
+    "receipt": "wave6-micro-preservation.json"
+  },
+  "globalCheckpoint": {
+    "export": "ff692f721d8d6930c7ee1cd4938b85ea06249067",
+    "fullTests": 4878,
+    "productionRoutesPerTheme": 272,
+    "scope": "Pre-MICRO ROBOT/AERO checkpoint; no new full-suite or reading integration claim for MICRO alone."
+  },
+  "continuation": "Continue MACRO6 seven frozen lessons; then form a meaningful reading/global integration batch. No stop at chapters or commits."
+}

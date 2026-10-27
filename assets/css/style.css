@@ -200,6 +200,7 @@ main { flex: 1; }
 .hero p.lede { font-family: var(--font-serif); font-size: clamp(18px, 2vw, 20px); color: var(--ink-2); max-width: 520px; margin-top: 14px; line-height: 1.45; }
 .hero-layout { display: grid; grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr); gap: 64px; align-items: center; }
 .hero-intro { min-width: 0; }
+.hero-intro .refs-inline a { display: inline-block; max-width: 100%; }
 #chain { max-height: 240px; overflow: auto; overscroll-behavior: contain; padding: 4px; }
 .hero-actions { display: flex; align-items: center; flex-wrap: wrap; gap: 24px; margin-top: 20px; }
 .hero-actions .btn { min-height: 38px; gap: 12px; padding: 8px 0; border: 0; border-radius: 0; background: none; color: var(--c-accent); }

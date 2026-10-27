@@ -1,0 +1,92 @@
+{
+  "date": "2026-10-24",
+  "status": "Nine lessons author-verified; precise reading/access boundaries retained",
+  "baseCommit": "d341952c217172cfd5062c5dd835c6e7a16c9a5e",
+  "frozenLessonCount": 9,
+  "prerequisitesRead": [
+    "bioinf-5.5",
+    "bioinf-5.7",
+    "bioinf-5.11",
+    "bioinf-5.13",
+    "stat-9.2",
+    "stoch-4.12"
+  ],
+  "laterPrerequisites": [
+    "stoch-7.2: planned; derive finite symmetric-MH stationary law locally",
+    "popgen-10.2: planned; derive three-lineage waiting-time/ILS probabilities locally"
+  ],
+  "acquisitionReceipts": [
+    {
+      "id": "durbin1998",
+      "url": "https://www.mcb111.org/w06/durbin_book.pdf",
+      "status": 200,
+      "finalUrl": "https://www.mcb111.org/w06/durbin_book.pdf",
+      "type": "application/pdf",
+      "bytes": 4564180,
+      "sha256": "184b505ff97f375c99ceec07178378f716d76db505f3d86b416f250e5a1538dc",
+      "edition": "1998 first publication; seventh printing2002, actual copyright page inspected",
+      "readScope": "Selected actual printed179,195,199\u2013204,206\u2013208,212\u2013217,224\u2013227; selected OCRtextread and equations/pruning/pulley/Gamma formulas personally inspected in rendered pages. Other acquired pages and whole book not claimed read. No source text/figures/data reproduced."
+    },
+    {
+      "id": "felsenstein-home",
+      "url": "https://felsenst.github.io/",
+      "status": 200,
+      "finalUrl": "https://felsenst.github.io/",
+      "type": "text/html; charset=utf-8",
+      "bytes": 11767,
+      "sha256": "ce42ee4d35a23fb5148d6841deec89ffced74fe5a002739c8fdff4bdebdf0ab8"
+    },
+    {
+      "id": "felsenstein-cv",
+      "url": "https://felsenst.github.io/felsenstein.cv.html",
+      "status": 200,
+      "finalUrl": "https://felsenst.github.io/felsenstein.cv.html",
+      "type": "text/html; charset=utf-8",
+      "bytes": 59368,
+      "sha256": "1edde0bf6a8aa2ba98e96dabfd4c144ccb160da752c0248eefa271055609ca0f"
+    },
+    {
+      "id": "felsenstein1981",
+      "foundOn": "https://felsenst.github.io/felsenstein.cv.html",
+      "linkedUrl": "http://xyala2.bio.ed.ac.uk/teaching/tutorials/phylogenetics/Bayesian_Workshop/PDFs/Felsenstein%20J%20Mol%20Evol%201981.pdf",
+      "url": "https://xyala2.bio.ed.ac.uk/teaching/tutorials/phylogenetics/Bayesian_Workshop/PDFs/Felsenstein%20J%20Mol%20Evol%201981.pdf",
+      "transport": "Normal HTTPS selected for the author-linked URL before any source access attempt or denial.",
+      "stop": true,
+      "reason": "HTTP Error 503: Service Unavailable"
+    },
+    {
+      "id": "felsenstein2019",
+      "url": "https://felsenst.github.io/pgbook/pgbook.pdf",
+      "acquisition": "Reused legitimate earlier POPGEN6 download; independently rehashed exact bytes. Distinct2019 book, not alternate recovery of stopped1981 original.",
+      "bytes": 2874881,
+      "sha256": "c205439d1efed09521ac1fceb092d4c9bd465a4fac1d835179015f727cc2e88e",
+      "readScope": "Actual title/December2019 date/copyright and selected X.4 text printed464 and466\u2013467 read: gene-copy ancestry, rare pairwise WF coalescence, random pair, exponential waits, finite-sample/large-population approximation and time rescaling. No book figures/data reproduced. Species-tree formula to be derived locally, not claimed printed here."
+    }
+  ],
+  "bindingBoundaries": [
+    "Original Felsenstein1981 author-linked PDF returned503; no publisher/mirror/cache/alternate original-body recovery after this stop. Actual authorCV bibliography alone is verified; original body not read.",
+    "Prior Woese\u2013Fox originalPDFinterstitial, CaltechNJinaccessible redirect and Graham\u2013Fouldstimeout remain binding.",
+    "Durbin and Felsenstein2019 are distinct modern works; no original1981reprintedfigure/data recovery is used. Own models/derivations and paraphrases only."
+  ],
+  "methodNotes": [
+    "Actual Durbin8.3 supplies tree sum/product and pruning, stationary root/detailedbalance/semigroup pulley proof.",
+    "Actual Durbin8.4 supplies symmetricMetropolis with repeated rejected states; discrete finite-grid teaching target planned rather than claimed continuous full-tree posterior.",
+    "Actual Durbin8.5 scales every edge by the SAME rate at a site and integrates likelihood overthat rate. Do not multiply separately averaged edge transitions.",
+    "Gamma density is unbounded at zero for shape<1; use CDF or explicitlyfinitebinaverages, and disclose unplotted tail mass.",
+    "Bootstrap clades need an explicit root/outgroup; ties and MC uncertainty stay visible.",
+    "CFN long-branch example uses the actual written5.13 counterexample, not original1978or1981 measurements.",
+    "Actual2019X.4 supplies rare pairwiseWFcoalescence and exponential/random-pair approximation; planned species-tree three-lineage formula will be derived explicitly with2Ne-time units.",
+    "The printed216 log-likelihood-decrease phrase is not adopted as a model property; own likelihood sign conventions and references will be checked."
+  ],
+  "verificationPending": [],
+  "modelScope": [
+    "Full hidden-state sums and log-domain pruning; max-scaled conditional vectors are not ancestral posteriors",
+    "Stationary reversible equal-input versus nonreversible four-cycle; nonreversibility need not change every pattern",
+    "Shared Gamma site rates across the whole tree; exact pair Laplace transform, finite bin averages, disclosed unplotted tail",
+    "Column bootstrap with raw-distance NJ, exact integer ties, declared D outgroup, unresolved replicates retained in denominator",
+    "Finite63-state MH target, separate data/chain seeds, retained rejection repeats, no full continuous posterior claim",
+    "Binary CFN example from actual5.13; global one-internal-edge profile with known pendants, not joint five-edge optimization",
+    "Independent neutral three-lineage coalescent in2Ne diploid-generation units, correct event ordering, unresolved \u03c40speciesstar",
+    "Original1981metadata author-CV verified; modern own pruning/profile/root construction, no original alignment/figure/numerical fit"
+  ]
+}

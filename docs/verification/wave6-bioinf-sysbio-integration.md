@@ -1,0 +1,18 @@
+# BIOINF6 / SYSBIO6 local integration — 24 October 2026
+
+The continuous content goal authorizes this local17-lesson batch: BIOINF6 at33f5aea2 and SYSBIO6 atdd3af67c. Chapter author reports retain45 focused groups and313 independent cases. Their disjoint native matrices cover68 layouts,1848 physical actions,740 actual Share links,68 invalid-state rejections,68 raw fractional restores and204 exact critical restores. Historical independent acceptance remains36/1057; author-available content is695. No push, merge, release or independent review is claimed.
+
+Source reconciliation retains all8393 earlier reading projections and76 aliases and adds exactly BIOINF6.1–6.9 and SYSBIO6.1–6.8. All individual target, source, task and ordered route arrays remain exact; only parent snapshot metadata/digests change. Receipts: [content](../integration/wave6-bioinf-sysbio-content.json), [bindings](../integration/wave6-bioinf-sysbio-bindings.json). The newly admitted original-access flag is BIOINF6.9; all historical source-access stops remain binding.
+
+The source reading snapshot is `dd3af67c865f1287f257555b860b5ff0e70c88ed`; projection digest `be47c90cc257cd17ec09519b4637f0b4784424d7780736169e965f5ea9e20f96`; generated-data digest `7bf165c53826da4a82b349bf005f7c28d9dfb63bdaf7a234e1bb3f74decb96d4`. Direct source and regenerated-data checks reproduce both digests.
+
+Scoped reconciliation checks pass23/23 core groups plus24/24 route/program groups,47 total. Strict build8410 written/5164 planned/577 chapters/85 collections is clean, all8347 static visualizations pass, coverage validation passes and the24-record read-only local-continuation check passes. Logs: `/tmp/wave6-bioinf-sysbio-{reconciliation-tests,reconciliation-routes,build,static,coverage,local}.log`. A copied temporary script initially expected the new8410 count for the old8393 roster; its assertion stopped before any mutation. Correcting that bookkeeping fixture gave the exact17-lesson reconciliation; failed log remains `reconciliation-v1.log`.
+
+Completed from exact reconciliation commit `cb26fc5680b85bd5e1d785aca7626072f0cec0c0`:
+
+- **Full suite:4,636/4,636 pass**, zero failures, skips, cancellations or todos. Node22.23.3, test-file concurrency1,754.413217seconds. This adds45 chapter groups and one reading-preservation regression to the previous4,590-test checkpoint. Log: `/tmp/wave6-bioinf-sysbio-full-suite.log`.
+- **Production smoke:272 routes in light and272 in dark**, zero errors in either theme. Logs: `/tmp/wave6-bioinf-sysbio-smoke-{light,dark}.log`.
+- Export `/tmp/wave6-bioinf-sysbio-export-cb26fc56` came directly from `git archive` in a detached no-checkout worktree with its index set to that commit. The only untracked runtime addition is the dependency symlink. Root and export data independently reproduce the exact recorded digest; no chapter source changed during integration.
+- Final checks preserve all8,393 earlier reading projections, all76 aliases, every target/source/task/route array and all60 recent POPGEN6/MATHBIO6/ECOL6/NEURO6/BIOINF6/SYSBIO6 manifest hashes. Frozen Wave6 assignments and core math/renderer remain exact. Desktop GEO6/ODE6/ALG9 drafts are untouched; renderer/performance work remains deferred.
+
+This is a completed local integrated author checkpoint. Historical independent acceptance remains36/1,057; author-available content is695. All integration-owned browsers and servers are closed. Continue PHYSIO6, retaining every original-access stop and the user's explicit highest-visualization-quality gate: scientific integrity, useful native behavior, exact state replay and personal desktop/narrow both-theme visual inspection before new lessons count.

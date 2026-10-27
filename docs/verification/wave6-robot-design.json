@@ -1,0 +1,116 @@
+{
+  "status": "All9 lessons/25 panels authored and author-verified; final evidence in wave6-robot-gates.json and visual/native receipts",
+  "frozenIdentityRule": "Preserve all nine frozen num/kind/name/deps and flags; refine pictures honestly around actual computations.",
+  "visualSystem": {
+    "model": "Consistent planar two-link arm: two uniform slender rods; q1 measured CCW from world +x, q2 relative; world y up; m in kg, length m, time s, torque N m.",
+    "craft": [
+      "Same joint, tool and COM glyphs across lessons",
+      "Arm geometry in physical equal x/y scale",
+      "Theme-aware ink with distinct quantity colors and redundant labels",
+      "Separate force/torque/energy panels when quantities have incompatible units",
+      "Reserve label gutters and avoid tiny text or overlapping arrows",
+      "No fake numerical floor, hidden clipping or singularity snapping",
+      "Meaningful controls and full native/actual Share replay",
+      "Personal original CSS-pixel inspection at320/1200, both themes, all defaults and critical/mode states before availability"
+    ],
+    "colors": {
+      "link1": "teal",
+      "link2": "blue",
+      "applied": "orange",
+      "gravity": "green",
+      "inertia": "blue",
+      "coupling": "magenta",
+      "reaction": "green",
+      "momentum": "gold"
+    }
+  },
+  "chain": {
+    "parameters": "m1,m2 in[0.5,5], l1,l2 in[0.5,2]; uniform COM lc=l/2 and I=m*l^2/12",
+    "A": "m1*l1^2/3+m2*(l1^2+l2^2/3)",
+    "B": "m2*l2^2/3",
+    "D": "m2*l1*l2/2",
+    "M": "[[A+2D cos(q2), B+D cos(q2)],[B+D cos(q2), B]]",
+    "detMPositiveFactor": "l1^2*l2^2*(m1*m2/9+m2^2*(1/12+sin(q2)^2/4))",
+    "h": "D sin(q2)",
+    "c": "[-h*(2*dq1*dq2+dq2^2), h*dq1^2]",
+    "C": "[[-h*dq2,-h*(dq1+dq2)],[h*dq1,0]]",
+    "Mdot": "[[-2h*dq2,-h*dq2],[-h*dq2,0]]",
+    "U": "g*((m1*l1/2+m2*l1)*sin(q1)+m2*l2/2*sin(q1+q2))",
+    "gVector": "g*[(m1*l1/2+m2*l1)*cos(q1)+m2*l2/2*cos(q1+q2),m2*l2/2*cos(q1+q2)]",
+    "inverse": "tau=M*ddq+c+g; own uniform-rod model differs from source point masses",
+    "oracle": "Independent90-digit kinetic energy from COM point Jacobians and rotational velocities; numerical differentiation of that energy for M, Christoffel c, g; raw-coordinate Newton force/moment sum for recursive check.2600digits used for original binary64 extreme factor arithmetic. Do not call bounded iterative solves exact."
+  },
+  "numerics": [
+    "Retain algebraic original binary64 factors in a chapter-local exact rational helper copied locally, with sign/log/belowRange/aboveRange status.",
+    "Trigonometry is approximate. Unit-circle rational half-angle parametrization preserves s^2+c^2=1 algebraically; special degree0/90/180 cases are exact. For tiny half-angle use a controlled series without premature underflow; quadrant reduction avoids tan(pi/2).",
+    "Use angle addition for q1+q2 rather than adding already rounded angles; do not call approximate transcendental values exact physical arithmetic.",
+    "Use determinant/lambdaMax for the smaller eigenvalue, factored det(J)^2/det(M) at task rank loss, and square roots before rounding tiny squared magnitudes.",
+    "Draw representable geometry only; quantity flags distinguish exact0, nonzero sub-range and above-range values. Never pass Infinity/NaN to renderer."
+  ],
+  "lessons": [
+    {
+      "num": "6.1",
+      "model": "axisymmetric uniform ellipsoid plus separate coaxial wrench mode",
+      "math": "Iperp=m*(a^2+c^2)/5, Iz=2*m*a^2/5; Omega=(Iz-Iperp)*w3/Iperp; wb=(wperp*cos(Omega*t),wperp*sin(Omega*t),w3); L=norm([Iperp*wperp,0,Iz*w3]); tilt=atan2(Iperp*wperp,Iz*w3); R=Rz(L*t/Iperp)*Ry(-tilt)*Rz(-Omega*t). Coaxial: wz=w0+tau*t/Iz, theta=w0*t+tau*t^2/(2Iz), x=Fx*t^2/(2m), vx=Fx*t/m.",
+      "visual": "True3D ellipsoid, fixed world angular-momentum arrow and body angular velocity; rotational/translational kinetic/work panel. COM-following camera explicitly labeled. Sphere and zero-momentum states distinct. No unverified general tumbling integration.",
+      "critical": "zero wrench, sphere, no spin, reversed axial spin, tiny nonzero wrench/time"
+    },
+    {
+      "num": "6.2",
+      "model": "prescribed inverse-dynamics cycle",
+      "math": "qi=q0i+Ai*sin(2*pi*progress), dqi=Ai*(2*pi/T)*cos(...), ddqi=-Ai*(2*pi/T)^2*sin(...); amplitudes converted to radians before derivatives",
+      "visual": "Arm/COM/gravity view plus separate tau1/tau2 signed term ledgers with shared torque scale; actual required torque is sum. State explicitly prescribed motion, not free gravity simulation.",
+      "critical": "rest, gravity off, exact cycle endpoints, torque cancellation, tiny nonzero amplitude"
+    },
+    {
+      "num": "6.3",
+      "model": "constant kinetic-energy contour",
+      "math": "T=.5*dq^T*M*dq; M SPD by positive factored determinant; semi axes sqrt(2E/lambda), energy0 collapses to a point",
+      "visual": "Arm posture and velocity-space ellipse with physical rad/s axes; selected velocity arrow and actual energy. Distinguish source's different unit-acceleration-to-torque ellipsoid.",
+      "critical": "straight/folded SPD, E0, positive MIN energy, large anisotropy"
+    },
+    {
+      "num": "6.4",
+      "model": "Christoffel passivity along prescribed cycle",
+      "math": "S=Mdot-2C=[[0,h*(2dq1+dq2)],[-h*(2dq1+dq2),0]]; dq^T*S*dq=0; Edot=dq^T*tau with U time independent",
+      "visual": "Arm and cycle energy/power plus cancellation ledger with meaningful scale. C definition explained; no claim that arbitrary C with same C*dq has the skew property.",
+      "critical": "zero velocity, gravity off, power crossing, nonzero tiny motion, exact identity"
+    },
+    {
+      "num": "6.5",
+      "model": "planar recursive Newton-Euler and general spatial statement",
+      "math": "Outward omega1=dq1, alpha1=ddq1; omega2=dq1+dq2, alpha2=ddq1+ddq2; aElbow=alpha1*perp(r1)-omega1^2*r1; ac1=alpha1*perp(c1)-omega1^2*c1; ac2=aElbow+alpha2*perp(c2)-omega2^2*c2. Inward F2=m2*(ac2+[0,g]), tau2=I2*alpha2+cross(c2,F2); F1=m1*(ac1+[0,g])+F2; tau1=I1*alpha1+cross(c1,m1*(ac1+[0,g]))+cross(r1,F2)+tau2.",
+      "visual": "Two clearly labeled computational sweeps on fixed physical state; active link/COM and local force/moment diagrams; compare returned torques with independent Lagrange result. Computational progress is not physical time.",
+      "critical": "all sweep steps, static gravity, velocity-only, reversed rates, zero state"
+    },
+    {
+      "num": "6.6",
+      "model": "Cartesian tool-point operational dynamics",
+      "math": "J=[[-l1*s1-l2*s12,-l2*s12],[l1*c1+l2*c12,l2*c12]]; A=J*M^-1*J^T always PSD; Lambda=A^-1 only at full task rank. Under tau=J^T*F, Lambda*xddot+Lambda*(J*M^-1*h-Jdot*dq)=F. Directional inertia=1/(d^T*A*d) when denominator positive.",
+      "visual": "Arm with selected tool force and acceleration, separate force-to-acceleration response ellipse with m/s^2 axes. Straight/folded rank1 is a line and Lambda undefined; near singular retains actual positive determinant without snapping. Zero force does not erase inertia property.",
+      "critical": "q2=0/180, tiny positive q2, MIN q2, zero force, off-principal direction"
+    },
+    {
+      "num": "6.7",
+      "model": "ideal gearing with explicit rotor mounting",
+      "math": "Remote ground-mounted rotors add diag(Jm1*N1^2,Jm2*N2^2). Motor2 onlink1 has absolute wm2=dq1+s*N2*dq2 and adds [[Jm1*N1^2+Jm2,s*Jm2*N2],[s*Jm2*N2,Jm2*N2^2]]. The original uniform rods are retained; localized motor/stator mass, translation and transverse rotor inertia are excluded from this axial-spin idealization. taujoint=N*taumotor by relative-motion power.",
+      "visual": "Honestly located motors and schematic transmission, signed speed/torque relationship, squared-inertia bars and relative coupling curve. Large ratios reduce relative coupling under stated positive rotor inertias, not exact universal decoupling.",
+      "critical": "N1/N2 low/high, opposite gear sense, Jm0, both mounting modes, zero rate"
+    },
+    {
+      "num": "6.8",
+      "model": "actual shoulder-driven free elbow, gravity off",
+      "math": "q1=Omega*t, tau2=0, ddq2=-(D/B)*Omega^2*sin(q2). Shoulder torque=M12*ddq2+c1. Solve scalar pendulum with initial dq2=0, q20 in[5,150]deg signed. RK4 dimensionless step <=.001. Independent mpmath Jacobi reference k=sin(q20/2), m=k^2,u=abs(Omega)*sqrt(D/B)*t; q2=2asin(k*cn(u,m)/dn(u,m)); dq2=-2*k*wn*sqrt(1-m)*sn(u,m)/dn(u,m). Tiny u uses retained-factor local Taylor series.",
+      "visual": "Actual arm motion and trace, elbow angle and velocity-product torques. Explicit shoulder speed actuator remains on; total kinetic energy changes by shoulder power. Relative invariant .5*B*dq2^2-D*Omega^2*cos(q2) is separately identified.",
+      "critical": "Omega0, reversed shoulder, t0, high speed/large initial bend, tiny nonzero Omega/time, exact torque2=0"
+    },
+    {
+      "num": "6.9",
+      "model": "instantaneous regular frictionless contact versus bilateral guide and free arm",
+      "math": "Allowed gap f=n dot(p-pwall)>=0; G=n^T*J. Compatible tangent dq=gamma*[-G2,G1]. aFree=M^-1*(tau-c-g); A=G*M^-1*G^T; b=G*aFree+Gdot*dq; lambdaReq=-b/A; ddq=aFree+M^-1*G^T*lambda. Wall lambda>=0 or detach(lambda0); guide allows signed lambda. At G0 no unique reaction; never divide or snap. Own lambda is wall-on-robot sign.",
+      "visual": "Physical wall through current tool, normal reaction and tangent velocity, free/active acceleration arrows in separate equal-scale panels; show local snapshot/compatible initial velocity, no impact or uncomputed sliding trajectory. Remove wall exposes actual free acceleration.",
+      "critical": "active push, detach, zero reaction, guide negative force, free mode, G0 incompatible/undefined, tiny nonzero normal mobility"
+    }
+  ],
+  "completionGates": "Freeze research and prior163 recent manifests; independent models/fixtures and canonical regeneration; complete9lessons; strict/static/focused checks;36 native layouts with actual Share/invalid/raw/critical restore; complete rich-text and inner ink audits; all original default/critical pixels personally reviewed; only then author availability changes. Preserve any genuine failures and all source stops."
+}

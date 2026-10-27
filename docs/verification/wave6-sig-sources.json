@@ -1,0 +1,92 @@
+{
+  "status": "All13 SIG6 lessons author-verified locally; actual source-reading boundaries and access stops below remain binding. No independent acceptance claim.",
+  "prerequisiteBodiesRead": [
+    "rca-17.23",
+    "rca-19.2",
+    "sig-2.9",
+    "sig-3.10",
+    "sig-4.4",
+    "sig-5.11",
+    "sig-5.15",
+    "sig-5.17",
+    "sig-5.6"
+  ],
+  "plannedInputsNotRead": [
+    "circ-6.2",
+    "circ-7.6"
+  ],
+  "retainedFlag": "RCA17.23 verify:true remains unchanged.",
+  "acquisitionReceipts": [
+    {
+      "id": "oppenheim-verghese-2010-mit-notes",
+      "url": "https://ocw.mit.edu/courses/6-011-introduction-to-communication-control-and-signal-processing-spring-2010/a6bddaee5966f6e73450e6fe79ab0566_MIT6_011S10_notes.pdf",
+      "requestedAtUTC": "2026-10-25T05:02:53.696911+00:00",
+      "work": "Distinct2010 Oppenheim\u2013Verghese MIT teaching notes; not commercial Oppenheim\u2013Willsky/Lathi or a stopped Stanford uncertainty body.",
+      "status": 200,
+      "finalURL": "https://ocw.mit.edu/courses/6-011-introduction-to-communication-control-and-signal-processing-spring-2010/a6bddaee5966f6e73450e6fe79ab0566_MIT6_011S10_notes.pdf",
+      "contentType": "application/pdf",
+      "result": "successful normal acquisition",
+      "bytes": 3402983,
+      "sha256": "4875493a0e7a31fe5ca87f9563452bc83fcbe2df67939948188542b18e372918",
+      "bodyReading": {
+        "actualTextLines": [
+          [
+            1765,
+            2010
+          ],
+          [
+            2186,
+            2528
+          ],
+          [
+            10160,
+            10222
+          ]
+        ],
+        "renderedPDFPagesPersonallyInspected": [
+          39,
+          49
+        ],
+        "printedPages": "selected49\u201353,57\u201364,205\u2013206; actual formula pixels51 and61",
+        "limits": "Other extracted text and source figures not claimed read. Rendered pages contain figures incidentally; no source artwork is reused."
+      }
+    },
+    {
+      "id": "smith-minimum-phase",
+      "url": "https://www.dsprelated.com/freebooks/filters/Minimum_Phase_Filters.html",
+      "work": "Julius O. Smith, Introduction to Digital Filters, distinct public minimum-phase section",
+      "requestedAtUTC": "2026-10-25T05:08:02.753220+00:00",
+      "status": 200,
+      "finalURL": "https://www.dsprelated.com/freebooks/filters/Minimum_Phase_Filters.html",
+      "contentType": "text/html; charset=UTF-8",
+      "result": "access challenge stop; no body reading; no alternate body recovery"
+    },
+    {
+      "id": "eom-paley-wiener",
+      "url": "https://encyclopediaofmath.org/wiki/Paley-Wiener_theorem",
+      "work": "Encyclopedia of Mathematics, distinct public Paley-Wiener theorem entry",
+      "requestedAtUTC": "2026-10-25T05:08:03.584255+00:00",
+      "result": "access stop; no retry or alternate body recovery",
+      "error": "HTTP Error 502: Bad Gateway"
+    }
+  ],
+  "sourceCautions": [
+    "The engineering raw Fourier transform has a minus exponent; RCA19.2 uses the upper half-plane and a plus exponent. The own outer-function proof explicitly reflects the half-plane.",
+    "MIT2010 CT minimum-phase discussion explicitly limits a causal stable inverse equivalence to equal finite pole/zero counts. Strictly proper inverse differentiation is not BIBO stable.",
+    "MIT2010 printed51 Eq3.15 appears to retain the positive-center phase in the negative-frequency expansion. The chapter derives its own Hermitian phase and exact complex Gaussian construction; it does not transfer that sign.",
+    "The real-line gain\u2013phase sign and normalization are derived for the declared rational family, not copied from the circle convention in RCA17.23."
+  ],
+  "ownDerivations": [
+    "Full causal L2 modulus criterion via subtracted outer construction, Poisson/Jensen and Cayley/Jensen necessity; RCA19.2 supplies the read H2 representation. No original Paley\u2013Wiener body claimed read.",
+    "Exact sinc truncation, multitone filters, complex Gaussian dispersion, rational Bode/gain\u2013phase, state-equation transients and matched-bandwidth all-pass counterexample.",
+    "Trapezoidal spectra and sinc-product kernels/step quadrature are newly authored ideal designs, explicitly noncausal."
+  ],
+  "inheritedStops": [
+    "Stanford uncertainty-note404 from Wave5; no retry or alternate body recovery. Exact historical URL absent from the reports; no invented URL.",
+    "All earlier source stops remain binding; see earlier chapter ledgers."
+  ],
+  "commercialBodies": "Lathi and Oppenheim\u2013Willsky were never requested/read. This is unread status, not an invented access stop.",
+  "referenceMethod": "90-digit references import exact original binary64 stimulus values, including adjacent pole/zero values. Matrix exponential ODE realizations and direct spectral/time/PV integrals are independent of JS code.",
+  "temporaryEvidence": "/tmp/wave6-sig-research",
+  "finalVerification": "wave6-sig.md and wave6-sig-gates.json"
+}

@@ -1,0 +1,24 @@
+import test,{after}from'node:test';import assert from'node:assert/strict';import fs from'node:fs';import * as H from'../content/behav/ch07.shared.js';import chapter from'../content/behav/ch07.js';import syllabus from'../content/behav/syllabus.js';
+const fixture=JSON.parse(fs.readFileSync(new URL('./fixtures/wave6-behav-reference.json',import.meta.url))),stats={cases:0,comparisons:0,worstLogAbsolute:0};
+function compare(a,b,path){
+ if(b&&typeof b==='object'&&!Array.isArray(b)&&'logMagnitude'in b){assert.equal(a.exact.n.toString(),b.exact.n,path+' exact numerator');assert.equal(a.exact.d.toString(),b.exact.d,path+' exact denominator');for(const k of['value','sign','belowRange','aboveRange','approximate'])assert.ok(Object.is(a[k],k==='value'&&b.aboveRange?b.sign*Infinity:b[k]),path+'.'+k);if(b.logMagnitude===null)assert.equal(a.logMagnitude,-Infinity,path+' exact-zero log');else{const e=Math.abs(a.logMagnitude-b.logMagnitude);stats.worstLogAbsolute=Math.max(stats.worstLogAbsolute,e);assert.ok(e<=8e-12,path+' log '+e);}stats.comparisons+=8;return;}
+ if(b&&typeof b==='object'){assert.equal(Array.isArray(a),Array.isArray(b),path+' shape');assert.deepEqual(Object.keys(a),Object.keys(b),path+' complete keys');for(const k of Object.keys(b))compare(a[k],b[k],path+'.'+k);return;}
+ assert.ok(Object.is(a,b),path+' primitive');stats.comparisons++;
+}
+for(const family of [...new Set(fixture.rows.map(r=>r.name))])test('BEHAV7 independent complete '+family+' outputs',()=>{for(const row of fixture.rows.filter(r=>r.name===family)){compare(H[family](row.parameters),row.expected,family+' '+JSON.stringify(row.parameters));stats.cases++;}});
+test('BEHAV7 rejects undeclared domains and invalid empirical sample choices',()=>{
+ for(const[family,parameters]of[['episode',{duration:-Number.MIN_VALUE}],['episode',{start:NaN}],['episode',{peakWeight:1+Number.EPSILON}],['extension',{duration:0}],['extension',{reliefRatio:2}],['adaptation',{halfTime:0}],['adaptation',{lastingFraction:-.1}],['focusing',{attention:2}],['forecasting',{forecastHalfTime:Infinity}],['economicComparisons',{window:'unrecorded'}],['economicComparisons',{horizon:0}],['incomeDistribution',{percentilePercent:101}],['incomeDistribution',{threshold:-1}],['rankCoupling',{person:2.5}],['rankCoupling',{pattern:'unrecorded'}],['coldHandEvidence',{sample:'unrecorded'}],['tenureEvidence',{period:'unrecorded'}],['episodeAt',{elapsedFraction:2}]])assert.throws(()=>H[family](parameters),family+' invalid domain');
+});
+test('BEHAV7 cumulative endpoint matches the independently checked whole-episode integral',()=>{
+ for(const duration of[0,Number.MIN_VALUE,.1,60,180])for(const start of[0,2,10]){const p={duration,start,middle:8,end:6},a=H.episode(p),b=H.episodeAt({...p,elapsedFraction:1});assert.equal(H.Q.sign(H.Q.sub(a.area.exact,b.cumulative.exact)),0);assert.equal(b.empty,a.empty);}
+});
+test('BEHAV7 alternative matchings retain both marginal value sets while individual changes differ',()=>{
+ const signatures=[];for(const pattern of['fixed rank','reversed ranks','shuffled ranks']){const z=H.rankCoupling({pattern,person:0}),lo=z.rows.map(r=>H.Q.exactText(r.first.exact)).sort(),hi=z.rows.map(r=>H.Q.exactText(r.second.exact)).sort();signatures.push({lo,hi,mean:H.Q.exactText(z.meanChange.exact),individual:H.Q.exactText(z.selectedChange.exact)});}for(const s of signatures.slice(1)){assert.deepEqual(s.lo,signatures[0].lo);assert.deepEqual(s.hi,signatures[0].hi);assert.equal(s.mean,signatures[0].mean);}assert.equal(new Set(signatures.map(s=>s.individual)).size,3);
+});
+test('BEHAV7 eight complete teaching drafts retain frozen identities and source flags',()=>{
+ const frozen=JSON.parse(fs.readFileSync(new URL('../docs/wave-6-plan.json',import.meta.url))).chapters.find(c=>c.collection==='behav').items,outline=syllabus.chapters.find(c=>c.n===7).items;assert.equal(chapter.items.length,8);for(const[i,item]of chapter.items.entries()){for(const k of['num','kind','name','deps','paper','introduces','verify','see'])assert.deepEqual(item[k],frozen[i][k],item.num+' frozen '+k);for(const k of['num','kind','name','deps','refs'])assert.deepEqual(item[k],outline[i][k]);assert.equal(item.caption,outline[i].pic);for(const k of['statement','idea','scope','caption'])assert.ok(item[k].length>120,item.num+' complete '+k);assert.equal(typeof item.viz,'function');}
+});
+test('BEHAV7 preserves the complete previous syllabus except eight researched refs and picture captions',()=>{
+ const old=JSON.parse(fs.readFileSync(new URL('./fixtures/wave6-behav-syllabus-before.json',import.meta.url))),omit=c=>c.n!==7?c:{...c,items:c.items.map(({refs,pic,...rest})=>rest)};assert.deepEqual({...syllabus,chapters:syllabus.chapters.map(omit)},{...old,chapters:old.chapters.map(omit)});
+});
+after(()=>{assert.equal(stats.cases,640);console.log('BEHAV7 independent reference statistics '+JSON.stringify(stats));});

@@ -380,27 +380,113 @@ export default {
       ]
     },
     {
-      n: 6,
-      title: 'Second-order circuits',
-      summary: String.raw`With one capacitor and one inductor, energy can slosh back and forth between electric and magnetic form, and the circuit can oscillate. The series RLC circuit obeys exactly the equation of a damped mass on a spring, so the same three regimes appear — overdamped, critically damped and ringing. The state-variable view, with capacitor voltages and inductor currents as coordinates, prepares the ground for control theory.`,
-      items: [
-        { num: '6.1', kind: 'Model', name: 'Series RLC circuit: the second-order equation', deps: ['circ-5.5', 'circ-5.7', 'mech-4.7', 'ode-3.14'], refs: ['Agarwal–Lang §12.2'],
-          pic: 'Step the source of a series RLC circuit: the capacitor voltage is simulated live, with R, L and C sliders, and the characteristic roots are plotted in the complex plane beside the waveform.' },
-        { num: '6.2', kind: 'Definition', name: 'Natural frequency and damping ratio', deps: ['circ-6.1'], refs: ['Agarwal–Lang §12.2'],
-          pic: 'Drag the roots in the s-plane: their distance from the origin is ω₀ and the cosine of their angle is ζ; the corresponding R, L, C and step response update together.' },
-        { num: '6.3', kind: 'Phenomenon', name: 'Overdamped, critically damped and underdamped responses', deps: ['circ-6.2'], refs: ['Agarwal–Lang §12.2'],
-          pic: 'Sweep R through the critical value: two real roots merge and split into a complex pair, and the step response changes from sluggish to fastest-without-overshoot to ringing.' },
-        { num: '6.4', kind: 'Model', name: 'LC tank: undamped oscillation', deps: ['circ-6.1', 'circ-5.3'], refs: ['Agarwal–Lang §12.1'],
-          pic: 'Bar meters for ½CV² and ½LI² trade energy back and forth at twice the oscillation frequency while their sum stays constant; add a little resistance and the total decays.' },
-        { num: '6.5', kind: 'Model', name: 'Parallel RLC circuit', deps: ['circ-6.1'], refs: ['Agarwal–Lang §12.4'],
-          pic: 'The parallel circuit is the dual of the series one: increasing R reduces damping, and the two circuits are shown side by side with matched responses.' },
-        { num: '6.6', kind: 'Principle', name: 'Electromechanical analogies', deps: ['circ-6.1', 'mech-4.7'], refs: ['Agarwal–Lang §12.2'],
-          pic: 'A mass–spring–damper and a series RLC circuit run in lockstep: mass ↔ inductance, spring compliance ↔ capacitance, damping ↔ resistance, with one parameter panel driving both.' },
-        { num: '6.7', kind: 'Method', name: 'State variables: capacitor voltages and inductor currents', deps: ['circ-6.1', 'circ-5.4', 'ode-3.1'], refs: ['Agarwal–Lang §12.8'],
-          pic: 'The RLC state (v_C, i_L) moves on a phase plane while the time-domain traces scroll; spirals, nodes and the critically damped case are traced from draggable initial conditions.' },
-        { num: '6.8', kind: 'Phenomenon', name: 'Ringing on digital edges', deps: ['circ-6.3'], refs: ['Agarwal–Lang §10.6'],
-          pic: 'A fast logic edge drives a trace with parasitic inductance and load capacitance: overshoot and ringing appear, and a small series damping resistor tames them.' },
-      ],
+      "n": 6,
+      "title": "Second-order circuits",
+      "summary": "With one capacitor and one inductor, energy can slosh back and forth between electric and magnetic form, and the circuit can oscillate. The series RLC circuit obeys exactly the equation of a damped mass on a spring, so the same three regimes appear — overdamped, critically damped and ringing. The state-variable view, with capacitor voltages and inductor currents as coordinates, prepares the ground for control theory.",
+      "items": [
+        {
+          "num": "6.1",
+          "kind": "Model",
+          "name": "Series RLC circuit: the second-order equation",
+          "deps": [
+            "circ-5.5",
+            "circ-5.7",
+            "mech-4.7"
+          ],
+          "refs": [
+            "MIT OCW 6.002, lecture 15b, PDF pp. 10–21; own KVL/state reduction"
+          ],
+          "pic": "Change the resistance, inductance and capacitance. Compare the capacitor-voltage step with its characteristic roots, and read the selected current and element voltage balance on the circuit."
+        },
+        {
+          "num": "6.2",
+          "kind": "Definition",
+          "name": "Natural frequency and damping ratio",
+          "deps": [
+            "circ-6.1"
+          ],
+          "refs": [
+            "MIT OCW 6.002, lecture 15b, PDF pp. 16–24; own conjugate-root geometry"
+          ],
+          "pic": "Drag the upper root; its conjugate follows. The radius and projection show natural frequency and damping ratio, while the corresponding resistance, capacitance and step response update together."
+        },
+        {
+          "num": "6.3",
+          "kind": "Phenomenon",
+          "name": "Overdamped, critically damped and underdamped responses",
+          "deps": [
+            "circ-6.2"
+          ],
+          "refs": [
+            "MIT OCW 6.002, lecture 15b, PDF pp. 18–21; own repeated-root limit and fixed-frequency comparison"
+          ],
+          "pic": "Sweep damping through one and compare with the critical reference. Watch the two roots merge and split, and distinguish a slow real-root return from an oscillatory response."
+        },
+        {
+          "num": "6.4",
+          "kind": "Model",
+          "name": "LC tank: undamped oscillation",
+          "deps": [
+            "circ-6.1",
+            "circ-5.3"
+          ],
+          "refs": [
+            "MIT OCW 6.002, lecture 15, PDF pp. 15–19; own doubled-frequency and Joule-energy derivation"
+          ],
+          "pic": "Move through the oscillation and watch electric and magnetic energy trade places. Add resistance to see total stored energy fall and the separately accumulated Joule heat rise."
+        },
+        {
+          "num": "6.5",
+          "kind": "Model",
+          "name": "Parallel RLC circuit",
+          "deps": [
+            "circ-6.1"
+          ],
+          "refs": [
+            "Own KCL/inductor-law derivation and exact coefficient matching from the stated circuits"
+          ],
+          "pic": "Change the parallel resistance and watch damping fall as resistance rises. Enable matched damping to align its normalized inductor-current step with the series capacitor-voltage step; the source and output labels keep amperes and volts distinct."
+        },
+        {
+          "num": "6.6",
+          "kind": "Principle",
+          "name": "Electromechanical analogies",
+          "deps": [
+            "circ-6.1",
+            "mech-4.7"
+          ],
+          "refs": [
+            "MECH4.7 and own force–voltage coefficient/energy correspondence"
+          ],
+          "pic": "Move one parameter panel and advance the selected time. The mass and capacitor charge move together, while velocity/current and the normalized response show the same damping mechanism."
+        },
+        {
+          "num": "6.7",
+          "kind": "Method",
+          "name": "State variables: capacitor voltages and inductor currents",
+          "deps": [
+            "circ-6.1",
+            "circ-5.4",
+            "ode-3.1"
+          ],
+          "refs": [
+            "MIT OCW 6.002, lecture 15b, PDF pp. 10–11 state variables; ODE3.1 and own normalized flow/energy derivation"
+          ],
+          "pic": "Drag the initial state and vary damping. Follow the actual current position through the phase plane and compare both state traces; closed orbits, spirals and real-root returns come from the same initial-value solution."
+        },
+        {
+          "num": "6.8",
+          "kind": "Phenomenon",
+          "name": "Ringing on digital edges",
+          "deps": [
+            "circ-6.3"
+          ],
+          "refs": [
+            "MIT OCW 6.002, lectures 15/15b, digital-edge demonstration as qualitative context; own finite-rise lumped model"
+          ],
+          "pic": "Adjust parasitic L and C, series resistance and source rise time. Compare the actual input and output with the ideal-step reference, and inspect the largest sampled output within the declared time window."
+        }
+      ]
     },
     // ───────────────────────────────────────────────────────────── 7
     {

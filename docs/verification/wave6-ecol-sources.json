@@ -1,0 +1,130 @@
+{
+  "date": "2026-10-24",
+  "baseCommit": "64ec149cdaf44195de90507a9698b391bcd9bc84",
+  "prerequisitesRead": [
+    "mathbio-3.9",
+    "mathbio-3.21"
+  ],
+  "prerequisiteScope": "Both actual written bodies read; no later/unwritten external prerequisite in this frozen chapter. New intra-chapter dependencies are preserved exactly.",
+  "acquisitionReceipts": [
+    {
+      "id": "paine1966",
+      "url": "https://www.journals.uchicago.edu/doi/10.1086/282400",
+      "stop": true,
+      "reason": "HTTP Error 403: Forbidden"
+    },
+    {
+      "id": "may1972",
+      "url": "https://www.nature.com/articles/238413a0",
+      "finalUrl": "https://www.nature.com/articles/238413a0?error=cookies_not_supported&code=91ebc650-909f-43d5-9b4e-f688602f9c93",
+      "status": 200,
+      "bytes": 219945,
+      "sha256": "619a5961c4cc3a0c396a2bb81be34083ae14f1803ccb3e2d23f65a4c1f843242",
+      "type": "text/html; charset=utf-8",
+      "stop": true,
+      "reason": "Actual publisher page explicitly says preview of subscription content / access via institution. Abstract and bibliographic metadata only read; no original body, figure expansion, PDF or alternate recovery."
+    },
+    {
+      "id": "williams-martinez2000",
+      "url": "https://www.nature.com/articles/35004572",
+      "finalUrl": "https://www.nature.com/articles/35004572?error=cookies_not_supported&code=074cac9c-4201-46b6-a078-72c726010f59",
+      "status": 200,
+      "bytes": 286483,
+      "sha256": "3d4aaf8cdc284c123fbe7739f05d04ca9ade8fef17a3ce1e87d11c3693f93ae9",
+      "type": "text/html; charset=utf-8",
+      "stop": true,
+      "reason": "Actual publisher page explicitly says preview of subscription content / access via institution. Abstract and bibliographic metadata only read; no original body, figure expansion, PDF or alternate recovery."
+    },
+    {
+      "id": "stearns-communities",
+      "url": "https://oyc.yale.edu/ecology-and-evolutionary-biology/eeb-122/lecture-28",
+      "finalUrl": "https://oyc.yale.edu/ecology-and-evolutionary-biology/eeb-122/lecture-28",
+      "status": 200,
+      "bytes": 55541,
+      "sha256": "a51f8ea4a700aaf451c76fddb8ce7b60324cbca0a16522759466809d7cf69c29",
+      "type": "text/html; charset=UTF-8"
+    },
+    {
+      "id": "plos-search",
+      "url": "https://api.plos.org/search?q=title:%22food%20web%22&fl=id,title&rows=10&wt=json",
+      "finalUrl": "https://api.plos.org/search?q=title:%22food%20web%22&fl=id,title&rows=10&wt=json",
+      "status": 200,
+      "bytes": 1417,
+      "sha256": "d01fa31284180104b112782739efde2cd7d66b26fc650811e9362d07fd8da1d8",
+      "type": "application/json;charset=utf-8"
+    },
+    {
+      "id": "dougoud-feasibility2018",
+      "url": "https://journals.plos.org/ploscompbiol/article?id=10.1371/journal.pcbi.1005988",
+      "finalUrl": "https://journals.plos.org/ploscompbiol/article?id=10.1371/journal.pcbi.1005988",
+      "status": 200,
+      "bytes": 258843,
+      "sha256": "66ef72c968f4fcefa445ec11729c1f38169163f880e9c02fb997ee68ebdb08d0",
+      "type": "text/html;charset=UTF-8"
+    },
+    {
+      "id": "williams-probabilistic2010",
+      "url": "https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0012092",
+      "finalUrl": "https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0012092",
+      "status": 200,
+      "bytes": 195555,
+      "sha256": "ac8442e1591014aab9c2460be9dac022033cc2174ae47c05dbe0674d0306fd1c",
+      "type": "text/html;charset=UTF-8"
+    },
+    {
+      "id": "biomass-reallocation2017",
+      "url": "https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0170725",
+      "finalUrl": "https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0170725",
+      "status": 200,
+      "bytes": 198845,
+      "sha256": "a24e8c65366cde9aa634ffd7f87b52de7c24ad1ab1261071356166a70b8dbb68",
+      "type": "text/html;charset=UTF-8"
+    },
+    {
+      "id": "bacterioplankton-insurance2012",
+      "url": "https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0037620",
+      "finalUrl": "https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0037620",
+      "status": 200,
+      "bytes": 230464,
+      "sha256": "469c73def6887f8cb114aa1f2e3953966ba0d6bb2253b06edb2f327fd47b63c0",
+      "type": "text/html;charset=UTF-8"
+    },
+    {
+      "id": "williams-probabilistic2010-pdf",
+      "url": "https://journals.plos.org/plosone/article/file?id=10.1371/journal.pone.0012092&type=printable",
+      "status": 200,
+      "bytes": 381306,
+      "sha256": "6310205eb975420eedcaf92d94c3cadcb6e1ba02f61b80d1b749b2ec6006b9d2"
+    }
+  ],
+  "readSources": [
+    {
+      "id": "stearns-communities",
+      "scope": "Actual Open Yale Courses EEB122Lecture28 Ecological Communities. Overview/introduction and complete selected transcript Chapter3 (04:42–23:08, heading spelled Trophic Cacades) read. Secondary account of predator-mediated coexistence, density/behavior cascades and webs versus chains. Transcript misspells Paine as Payne and conflates sites/chronology; those details, a known mismatched image and the killer-whale/salmon anecdote are not copied. No original15-to-8 count read or reproduced. No source images reused."
+    },
+    {
+      "id": "williams-probabilistic2010",
+      "scope": "Actual Williams, Anandanadesan & Purves2010 PLoS ONE5:e12092. Abstract, complete Introduction and selected Distributions of parameters read. Successful actual printablePDF with pp3/5 pixels inspected, including Figure1 interval/probabilistic distinction and parameter discussion. Classical uniform positions, beta widths with mean2C and uniform diet-center assumptions are distinguished from fitted probabilistic diets and their nonuniform centers. Explicit Beta(1,beta) generator declared here; no original2000 body/code recovery, empirical matrix/table reproduction or79.7% fit claim."
+    },
+    {
+      "id": "dougoud-feasibility2018",
+      "scope": "Actual Dougoud, Vinckenbosch, Rohr, Bersier & Mazza2018 PLoS Computational Biology14:e1005988. Abstract/Author summary and selected Introduction through local stability/feasibility argument read. Feasible positive equilibria are not established by random-matrix stability; interaction architecture/signs/strength matter. Subsequent figure captions were encountered, without claiming unread equation images or full derivation. No original May1972 body read."
+    },
+    {
+      "id": "biomass-reallocation2017",
+      "scope": "Actual Caskenette & McCann2017 PLoS ONE12:e0170725. Abstract and selected opening Introduction paragraphs read. Motivates context-dependent stabilization through feedback/energy redistribution and stage structure. The authored type-II module and GLV omnivory example are separate teaching constructions; no published stage model, figure or simulation is replicated."
+    },
+    {
+      "id": "bacterioplankton-insurance2012",
+      "scope": "Actual Bouvier, Venail, Pommier, Bouvier, Barbera & Mouquet2012 PLoS ONE7:e37620. Abstract/bibliography, complete Introduction, Results and selected opening Discussion read. Production CV was lower at intermediate/high diversity; abundance CV had no overall main diversity effect, with a diversity-by-immigration interaction. The outcomes are not conflated. No experimental time series/tables or fitted coefficients are used; positive periodic covariance construction is independently authored."
+    }
+  ],
+  "additionalDiscoveryBoundaries": [
+    {
+      "service": "Crossref",
+      "scope": "Two targeted queries returned429; no retry. A third metadata result was not used as scientific evidence."
+    }
+  ],
+  "accessPolicy": "Paine1966 Chicago403 and the explicit subscription previews for May1972 and Williams–Martinez2000 are binding original-body stops. Only Nature abstracts and bibliography were read; no original PDF, figure expansion, alternate-host, cache or mirror recovery. The distinct successful2010 paper is not the original2000 work. All prior continuation stops remain binding.",
+  "preservation": "All14 frozen identities/kinds/names/ordered dependencies, complete Paper bibliographies and introduces links retained. All other syllabus chapters/root fields unchanged. Paper6.13/6.14 carry explicit verification flags for uninspected original bodies. Frozen plan and accepted36/1057 remain unchanged."
+}

@@ -1,0 +1,32 @@
+{
+  "status": "Model-only author checkpoint: all12 pure kernels independently checked; no SOLID6 main/UI/syllabus/count promotion",
+  "baseCommit": "f4cd6e76",
+  "sourceSHA256": {
+    "content/solid/ch06.shared.js": "610f0767481d1a05ab7f363d044b6a6ace15142283b78ac091a0f974f40d89d4",
+    "content/solid/ch06.exact.shared.js": "a102a6f2b0fa92e8d6a4ec07b550ca580dd4e43d5c565f55c69dc5744f26e28c",
+    "tests/wave6-solid.test.mjs": "f1e8922a8b337df2d185f67381e60abf0dc64fe6fea243027e3838acacf1acb6",
+    "tests/wave6-solid-reference.py": "de21523ac9df72503a6793502315d2ef343e73b68ca9089a70693ccef0f3b419",
+    "tests/fixtures/wave6-solid-reference.json": "695a685905fc28be34609a3a3d6c8fdbcd4fe91632089c421b9378ecb33bcace"
+  },
+  "modelCases": 1247,
+  "families": 12,
+  "additionalPhysicalProfileProbes": 2570,
+  "method": "Exact original-input Python Fraction area/force/stress integrals, raw-coordinate3x3 Gaussian elimination and90/1800-digit mpmath geometry; no JS import",
+  "pythonMpmathVersion": "1.3.0",
+  "focusedGroups": 20,
+  "affectedWave5Groups": 15,
+  "all35Groups": "pass",
+  "correctRounding": "Every algebraic quantity matches independent Fraction-to-binary64 rounding exactly, including signed underflow/overflow status. Numerical geometry is separately checked to2e-12 absolute.",
+  "canonicalRegeneration": "byte identical",
+  "referenceSHA256": "695a685905fc28be34609a3a3d6c8fdbcd4fe91632089c421b9378ecb33bcace",
+  "logs": {
+    "initial": "/tmp/wave6-solid-research/initial-focused.log",
+    "focusedAndAffected": "/tmp/wave6-solid-research/model-focused-and-legacy.log",
+    "generation": "/tmp/wave6-solid-research/reference-generation.log",
+    "regeneration": "/tmp/wave6-solid-research/canonical-regeneration.log"
+  },
+  "priorRecentManifestFiles": 149,
+  "priorMismatches": 0,
+  "allBrowsersAndServersClosed": true,
+  "next": "Author all12 complete explanations and purposeful physical diagrams, synchronize only SOLID6 syllabus metadata, then finish native/Share/inner-ink and personal-pixel gates before author counts change."
+}

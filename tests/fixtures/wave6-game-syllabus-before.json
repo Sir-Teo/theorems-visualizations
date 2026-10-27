@@ -1,0 +1,1470 @@
+{
+  "collection": "game",
+  "chapters": [
+    {
+      "n": 1,
+      "title": "Strategic games and Nash equilibrium",
+      "summary": "A strategic game lists players, their actions and how each player ranks the possible outcomes. A Nash equilibrium is a profile in which nobody gains by deviating alone — a fixed point of best responses. The classic two-by-two games show what can happen: the Prisoner’s Dilemma (equilibrium against everyone’s interest), coordination games (several equilibria), Matching Pennies (none in pure strategies). Eliminating dominated strategies, step by step, solves some games outright, as in the beauty contest.",
+      "items": [
+        {
+          "num": "1.1",
+          "kind": "Definition",
+          "name": "Strategic-form game",
+          "deps": [
+            "micro-4.3"
+          ],
+          "refs": [
+            "Osborne §2.1",
+            "MSZ §4.1"
+          ],
+          "pic": "Edit a payoff bimatrix by clicking cells; each player’s payoffs are coloured on their own scale, and the reader can switch between table, tree and best-response views of the same game."
+        },
+        {
+          "num": "1.2",
+          "kind": "Definition",
+          "name": "Best responses",
+          "deps": [
+            "game-1.1",
+            "pma-4.16",
+            "pma-5.8"
+          ],
+          "refs": [
+            "Osborne §2.8"
+          ],
+          "pic": "For each opponent action, the payoff-maximising replies are underlined in the bimatrix; in a continuous-action game the best-response curves are drawn and move as payoffs change."
+        },
+        {
+          "num": "1.3",
+          "kind": "Definition",
+          "name": "Nash equilibrium",
+          "deps": [
+            "game-1.2",
+            "prob-1.6.1",
+            "comb-3.1"
+          ],
+          "refs": [
+            "Osborne §2.6",
+            "MSZ §4.8"
+          ],
+          "pic": "Cells where both best-response marks coincide are highlighted as equilibria; from any other cell an arrow shows a profitable unilateral deviation."
+        },
+        {
+          "num": "1.4",
+          "kind": "Paradox",
+          "name": "Prisoner’s Dilemma",
+          "deps": [
+            "game-1.3"
+          ],
+          "refs": [
+            "Osborne §2.2"
+          ],
+          "pic": "Play against strategies of your choice and tune the temptation, reward, punishment and sucker payoffs; defection stays dominant while mutual cooperation pays both players more, as long as T > R > P > S."
+        },
+        {
+          "num": "1.5",
+          "kind": "Model",
+          "name": "Coordination games: Bach or Stravinsky and the Stag Hunt",
+          "deps": [
+            "game-1.3"
+          ],
+          "refs": [
+            "Osborne §2.3",
+            "Osborne §2.5"
+          ],
+          "pic": "Slide the payoffs of a two-by-two coordination game; two pure equilibria appear, and the basin in which each player’s belief leads to each equilibrium is drawn, showing risk dominance versus payoff dominance in the Stag Hunt."
+        },
+        {
+          "num": "1.6",
+          "kind": "Model",
+          "name": "Matching Pennies: no pure equilibrium",
+          "deps": [
+            "game-1.3"
+          ],
+          "refs": [
+            "Osborne §2.4"
+          ],
+          "pic": "Best-response arrows chase each other around the four cells without ever settling, and a simulated pure best-response dynamic cycles forever."
+        },
+        {
+          "num": "1.7",
+          "kind": "Definition",
+          "name": "Dominated strategies and iterated elimination",
+          "deps": [
+            "game-1.1",
+            "game-1.3"
+          ],
+          "refs": [
+            "Osborne §2.9",
+            "Osborne §12.2"
+          ],
+          "pic": "Strike out strictly dominated rows and columns one round at a time in a larger matrix; the surviving sub-game is shown, and the order of elimination is shown not to matter for strict dominance."
+        },
+        {
+          "num": "1.8",
+          "kind": "Model",
+          "name": "Keynes’s beauty contest: guess 2/3 of the average",
+          "deps": [
+            "game-1.7",
+            "pma-3.20"
+          ],
+          "refs": [
+            "Osborne ch. 12"
+          ],
+          "pic": "Simulated players with different depths of reasoning submit guesses; iterated elimination drives the equilibrium to 0, while the reader’s own guess is scored against a realistic population."
+        },
+        {
+          "num": "1.9",
+          "kind": "Model",
+          "name": "Public goods game and free riding",
+          "deps": [
+            "game-1.7",
+            "micro-12.10"
+          ],
+          "refs": [
+            "Osborne §2.8"
+          ],
+          "pic": "Each of n players chooses a contribution, multiplied by r and shared equally; contributing nothing is dominant whenever r < n, though full contribution would make everyone richer."
+        },
+        {
+          "num": "1.10",
+          "kind": "Model",
+          "name": "War of attrition",
+          "deps": [
+            "game-1.3",
+            "pma-6.21",
+            "prob-4.1.13"
+          ],
+          "refs": [
+            "Osborne §3.4"
+          ],
+          "pic": "Two contestants pay a cost per unit time to keep fighting for a prize; the pure equilibria (one quits at once) and the symmetric mixed one with exponential quitting times are simulated."
+        },
+        {
+          "num": "1.11",
+          "kind": "Paper",
+          "name": "Equilibrium Points in n-Person Games",
+          "paper": {
+            "authors": "John F. Nash, Jr.",
+            "year": 1950,
+            "title": "Equilibrium Points in n-Person Games",
+            "venue": "Proceedings of the National Academy of Sciences 36 (1): 48–49",
+            "doi": "10.1073/pnas.36.1.48"
+          },
+          "introduces": [
+            "game-1.3",
+            "game-2.3"
+          ],
+          "deps": [
+            "game-2.4",
+            "game-3.11"
+          ],
+          "refs": [],
+          "pic": "Nash’s one-page argument made visible: for a 2 × 2 game with payoffs you edit, each player’s best-response correspondence is drawn in the unit square of mixed strategies and their crossings are the equilibrium points; drag the payoffs through coordination, matching-pennies and prisoner’s-dilemma shapes and watch one or three crossings appear, but never none."
+        }
+      ]
+    },
+    {
+      "n": 2,
+      "title": "Mixed strategies and the existence of equilibrium",
+      "summary": "Allowing players to randomize, with expected-utility preferences, guarantees that every finite game has an equilibrium; Nash proved it with a fixed-point theorem. In a mixed equilibrium each player is indifferent among the actions she uses, which is how equilibria are computed, and the Lemke–Howson path-following algorithm finds one in two-player games — though finding equilibria is computationally hard in general. Correlated equilibria, trembling-hand perfection and purification refine or reinterpret the concept, and real data from sport fit the theory surprisingly well.",
+      "items": [
+        {
+          "num": "2.1",
+          "kind": "Definition",
+          "name": "Mixed strategies and expected payoffs",
+          "deps": [
+            "game-1.1",
+            "micro-13.2",
+            "prob-1.6.1",
+            "prob-2.1.13"
+          ],
+          "refs": [
+            "Osborne §4.3",
+            "MSZ §5.1"
+          ],
+          "pic": "Each player’s mixture is a point on a simplex (a segment for two actions); expected payoffs are drawn as planes over the square of mixture pairs."
+        },
+        {
+          "num": "2.2",
+          "kind": "Theorem",
+          "name": "Indifference principle for mixed equilibria",
+          "deps": [
+            "game-2.1",
+            "game-1.3"
+          ],
+          "refs": [
+            "Osborne §4.3",
+            "Osborne §4.10"
+          ],
+          "pic": "Drag the column player’s mixture until the row player’s two payoff lines cross; only at the crossing can the row player mix, and the crossing point is the equilibrium of the other player."
+        },
+        {
+          "num": "2.3",
+          "kind": "Theorem",
+          "name": "Nash’s existence theorem",
+          "deps": [
+            "game-2.2",
+            "top-13.11"
+          ],
+          "refs": [
+            "MSZ §5.3"
+          ],
+          "pic": "Nash’s improvement map pushes mixed profiles toward better replies; iterating it on a random 3 × 3 game is animated and its fixed points are exactly the equilibria found by enumeration."
+        },
+        {
+          "num": "2.4",
+          "kind": "Theorem",
+          "name": "Kakutani’s fixed-point theorem and best-response correspondences",
+          "deps": [
+            "top-13.11",
+            "game-2.2"
+          ],
+          "refs": [
+            "MSZ §24.1",
+            "MSZ §5.4"
+          ],
+          "pic": "The best-response correspondence of a 2 × 2 game is drawn as a set-valued graph in the square; its intersection with the diagonal shows the fixed points, and making a set non-convex breaks existence."
+        },
+        {
+          "num": "2.5",
+          "kind": "Algorithm",
+          "name": "Lemke–Howson algorithm",
+          "deps": [
+            "game-2.2",
+            "graph-1.2.1"
+          ],
+          "refs": [
+            "MSZ §5.2"
+          ],
+          "pic": "Label the best-response polytopes of a bimatrix game and drop a label; the path pivots edge by edge through the polytopes until it reaches a completely labelled equilibrium."
+        },
+        {
+          "num": "2.6",
+          "kind": "Theorem",
+          "name": "Computing a Nash equilibrium is PPAD-complete",
+          "deps": [
+            "game-2.5",
+            "algo-14.2"
+          ],
+          "refs": [
+            "MSZ §5.2"
+          ],
+          "pic": "On families of hard instances the number of Lemke–Howson pivots grows exponentially, plotted against size, while each step stays easy to check — the “guaranteed to exist, hard to find” character of PPAD."
+        },
+        {
+          "num": "2.7",
+          "kind": "Model",
+          "name": "Volunteer’s dilemma (reporting a crime)",
+          "deps": [
+            "game-2.2"
+          ],
+          "refs": [
+            "Osborne §4.8"
+          ],
+          "pic": "Each of n bystanders calls at a personal cost; the symmetric mixed equilibrium is computed and the probability that anyone calls falls as n grows, as the plot shows."
+        },
+        {
+          "num": "2.8",
+          "kind": "Phenomenon",
+          "name": "Mixed equilibria in sport: penalty kicks and serves",
+          "deps": [
+            "game-2.2"
+          ],
+          "refs": [
+            "Osborne §4.6"
+          ],
+          "pic": "Enter scoring probabilities for kicks left or right against dives left or right; equilibrium mixtures are computed and compared with published professional frequencies, which nearly equalise success rates."
+        },
+        {
+          "num": "2.9",
+          "kind": "Definition",
+          "name": "Correlated equilibrium",
+          "deps": [
+            "game-2.3",
+            "algo-11.15",
+            "prob-4.1.1a"
+          ],
+          "refs": [
+            "MSZ §8.2"
+          ],
+          "pic": "A traffic-light mediator recommends actions in Chicken; the obedience inequalities carve a polytope of correlated equilibria that contains the Nash equilibria and higher total payoffs."
+        },
+        {
+          "num": "2.10",
+          "kind": "Definition",
+          "name": "Trembling-hand perfect equilibrium",
+          "deps": [
+            "game-2.3",
+            "pma-3.6"
+          ],
+          "refs": [
+            "MSZ §7.3"
+          ],
+          "pic": "Let each player tremble to every action with small probability ε; equilibria relying on weakly dominated strategies disappear as ε → 0, while perfect ones survive."
+        },
+        {
+          "num": "2.11",
+          "kind": "Theorem",
+          "name": "Harsanyi purification",
+          "deps": [
+            "game-2.3"
+          ],
+          "refs": [
+            "MSZ §9.5"
+          ],
+          "pic": "Add small private payoff shocks to Matching Pennies; each player uses a pure threshold rule, and as the shocks shrink the induced action frequencies converge to the mixed equilibrium."
+        }
+      ]
+    },
+    {
+      "n": 3,
+      "title": "Zero-sum games and the minimax theorem",
+      "summary": "When one player’s gain is the other’s loss, playing safe and playing optimally coincide: von Neumann’s minimax theorem says that with mixed strategies the maxmin and minmax values agree. Separating hyperplanes or linear-programming duality prove it, small games can be solved graphically, and simple learning rules — fictitious play and multiplicative weights — converge to the value. The theorem reaches far: Yao’s principle for randomized algorithms, Colonel Blotto, and Blackwell’s approachability for vector payoffs.",
+      "items": [
+        {
+          "num": "3.1",
+          "kind": "Definition",
+          "name": "Zero-sum games: maxmin and minmax values",
+          "deps": [
+            "game-1.1"
+          ],
+          "refs": [
+            "Osborne §11.1",
+            "MSZ §4.12"
+          ],
+          "pic": "In a matrix game, each row’s minimum and each column’s maximum are marked; the best guaranteed payoffs for each side are read off and compared."
+        },
+        {
+          "num": "3.2",
+          "kind": "Theorem",
+          "name": "Saddle points: maxmin ≤ minmax, with equality at a saddle",
+          "deps": [
+            "game-3.1",
+            "game-1.3"
+          ],
+          "refs": [
+            "MSZ §4.12",
+            "Osborne §11.4"
+          ],
+          "pic": "Edit entries of a matrix and watch the two pure values; a saddle point appears exactly when they meet, and Matching Pennies shows a gap."
+        },
+        {
+          "num": "3.3",
+          "kind": "Theorem",
+          "name": "Von Neumann’s minimax theorem",
+          "deps": [
+            "game-3.2",
+            "game-2.1",
+            "fa-3.4"
+          ],
+          "refs": [
+            "MSZ §5.6",
+            "MSZ §24.2"
+          ],
+          "pic": "Each column of a 2 × n game is a point in the plane; the set of achievable payoff vectors is separated from the quadrant below the value by a line whose normal is the optimal mixed strategy."
+        },
+        {
+          "num": "3.4",
+          "kind": "Theorem",
+          "name": "Minimax by linear-programming duality",
+          "deps": [
+            "game-3.1",
+            "game-2.1",
+            "algo-11.19",
+            "pma-4.16"
+          ],
+          "refs": [
+            "von Stengel (2023), §2, equations (10)–(12)"
+          ],
+          "pic": "Normalize the equal positive objectives of a shifted primal–dual pair to obtain optimal mixtures; draggable security levels and reproducible random matrices separate numerical residual checks from exact duality."
+        },
+        {
+          "num": "3.5",
+          "kind": "Method",
+          "name": "Solving 2 × n games graphically",
+          "deps": [
+            "game-3.3",
+            "opt-3.6"
+          ],
+          "refs": [
+            "MSZ §5.2"
+          ],
+          "pic": "Plot the column player’s payoff lines against the row player’s mixing probability; the peak of their lower envelope is the value, and the lines through it identify the column player’s support."
+        },
+        {
+          "num": "3.6",
+          "kind": "Algorithm",
+          "name": "Fictitious play in zero-sum games (Robinson)",
+          "deps": [
+            "game-3.3",
+            "pma-3.6"
+          ],
+          "refs": [
+            "Robinson (1951), pp. 296–301, Definition 1 and Lemmas 1–4"
+          ],
+          "pic": "Compare Robinson’s simultaneous and alternating best-reply timings; full empirical paths and locally nonmonotone security bounds illustrate convergence to the value and optimal-strategy sets."
+        },
+        {
+          "num": "3.7",
+          "kind": "Algorithm",
+          "name": "Multiplicative weights and no-regret learning",
+          "deps": [
+            "game-3.3",
+            "game-3.6",
+            "stat-1.16"
+          ],
+          "refs": [
+            "MSZ §14.8"
+          ],
+          "pic": "A learner reweights actions by exp(−η·loss) against an adversary; its regret grows like √T, and when both players use it the time-averaged play converges to minimax strategies."
+        },
+        {
+          "num": "3.8",
+          "alias": "cplx-10.3",
+          "name": "Yao’s minimax principle"
+        },
+        {
+          "num": "3.9",
+          "kind": "Model",
+          "name": "Colonel Blotto",
+          "deps": [
+            "game-3.3",
+            "game-3.4"
+          ],
+          "refs": [
+            "Hart (2008), pp.441–443, Introduction and §2.1; own finite three-field proof and complete LP checks"
+          ],
+          "pic": "Inspect every integer allocation and pure reply, the N=3 balanced saddle, the exact defeating-reply proof for N≥4, and an independently checked numerical LP mixture with proportional support areas."
+        },
+        {
+          "num": "3.10",
+          "kind": "Theorem",
+          "name": "Blackwell’s approachability theorem",
+          "deps": [
+            "game-3.3",
+            "rca-4.10",
+            "ladr-6.14"
+          ],
+          "refs": [
+            "Blackwell (1956), pp.1–6, definition p.2 and Theorems1/3"
+          ],
+          "pic": "Compare complete mean-vector and sampled-action records, distinguish positive numerical direction coverage from a failed-direction witness or unresolved band, and inspect the cross terms needed for a valid pathwise distance bound."
+        },
+        {
+          "num": "3.11",
+          "kind": "Paper",
+          "name": "Zur Theorie der Gesellschaftsspiele",
+          "paper": {
+            "authors": "J. v. Neumann",
+            "year": 1928,
+            "title": "Zur Theorie der Gesellschaftsspiele",
+            "venue": "Mathematische Annalen 100: 295–320",
+            "doi": "10.1007/BF01448847"
+          },
+          "introduces": [
+            "game-3.3"
+          ],
+          "deps": [
+            "game-3.2",
+            "game-2.1"
+          ],
+          "refs": [
+            "von Neumann (1928), §§I–III, especially pp. 305–311; §§IV–V for coalition discussion"
+          ],
+          "pic": "Edit a 2 × 2 zero-sum matrix and compare the lower and upper security envelopes using their exact endpoint/intersection candidates; complete optimal probability intervals include pure saddles and flat ties, with replayable matrix edits and probability handles."
+        }
+      ]
+    },
+    {
+      "n": 4,
+      "title": "Extensive games and backward induction",
+      "summary": "Games played over time are trees. In finite games of perfect information backward induction finds a subgame perfect equilibrium in pure strategies, proving that chess is determined, but its predictions in the centipede and chain-store games strain belief. Imperfect information brings information sets and behaviour strategies, equivalent to mixed strategies under perfect recall (Kuhn). Strategy stealing shows the first player wins Hex and Chomp without saying how, and the Sprague–Grundy theory solves all impartial games by reduction to Nim.",
+      "items": [
+        {
+          "num": "4.1",
+          "kind": "Definition",
+          "name": "Extensive game with perfect information",
+          "deps": [
+            "game-1.1",
+            "game-1.3",
+            "comb-1.1"
+          ],
+          "refs": [
+            "Bonanno (2024), §§3.1, 3.3",
+            "Osborne & Rubinstein (1994), §§6.1.1–6.1.3; notes pp.114–115"
+          ],
+          "pic": "Edit terminal payoffs in three finite deterministic trees; every complete contingent plan and profile payoff is retained in the strategic form, with actual pure Nash cells highlighted."
+        },
+        {
+          "num": "4.2",
+          "kind": "Method",
+          "name": "Backward induction",
+          "deps": [
+            "game-4.1"
+          ],
+          "refs": [
+            "Bonanno (2024), Definition 3.2.1",
+            "Osborne & Rubinstein (1994), Proposition 99.2"
+          ],
+          "pic": "Evaluate every node of a seeded binary or ternary finite tree in postorder; inspect each continuation at readable size and compare coherent first/last tie selections."
+        },
+        {
+          "num": "4.3",
+          "kind": "Theorem",
+          "name": "Zermelo: chess is determined",
+          "deps": [
+            "game-4.2"
+          ],
+          "refs": [
+            "Zermelo (1913), Proceedings of the Fifth ICM, vol. II, pp.501–504",
+            "Bonanno (2024), §3.5, Theorem 3.5.2, pp.92–93"
+          ],
+          "pic": "Solve small finite board games (tic-tac-toe, a 3 × 3 chess-like game) by exhaustive backward induction; every position is coloured win, loss or draw for the player to move."
+        },
+        {
+          "num": "4.4",
+          "kind": "Definition",
+          "name": "Subgame perfect equilibrium",
+          "deps": [
+            "game-4.1",
+            "game-1.3"
+          ],
+          "refs": [
+            "Osborne & Rubinstein (1994), Definition 97.2 and Lemma 98.2; notes pp.114–115",
+            "Bonanno (2024), Definition 4.4.1"
+          ],
+          "pic": "The full entry-payoff control lattice, including both indifference boundaries, separates every pure SPE from Nash-only cells and shows the selected profile path."
+        },
+        {
+          "num": "4.5",
+          "kind": "Theorem",
+          "name": "Kuhn: perfect-information games have a pure subgame perfect equilibrium",
+          "deps": [
+            "game-4.2",
+            "game-4.4",
+            "alg-2.5"
+          ],
+          "refs": [
+            "Osborne & Rubinstein (1994), Proposition 99.2 and following uniqueness discussion; notes pp.114–115",
+            "Bonanno (2024), §§3.2, 4.4"
+          ],
+          "pic": "Inspect or edit any decision of a complete pure profile, independently verify every subgame, and compare pure-profile counts with backward-induction node evaluations."
+        },
+        {
+          "num": "4.6",
+          "kind": "Paradox",
+          "name": "Centipede game",
+          "deps": [
+            "game-4.2",
+            "game-4.4"
+          ],
+          "refs": [
+            "McKelvey & Palfrey, Social Science Working Paper 732, revised August 1991, §§1–3 and Figures 1–2"
+          ],
+          "pic": "Inspect every finite subgame and complete authored level-response plan; all levels 0–10 remain reachable and the full terminal-index grid is separate from source experimental behavior."
+        },
+        {
+          "num": "4.7",
+          "kind": "Model",
+          "name": "Ultimatum game",
+          "deps": [
+            "game-4.4"
+          ],
+          "refs": [
+            "Güth, Schmittberger & Schwarze (1982), §§1–2, especially §2.1",
+            "Fehr & Schmidt (1999), Eq. (2), §III.A/Proposition 1 and footnote 8"
+          ],
+          "pic": "Compare every integer offer and all tied best replies under both pure-money SPE, explicit finite threshold populations or a stated Fehr–Schmidt utility slice; probabilities are authored, not observations."
+        },
+        {
+          "num": "4.8",
+          "kind": "Paradox",
+          "name": "Chain-store paradox",
+          "deps": [
+            "game-4.2",
+            "game-4.4",
+            "game-1.3",
+            "prob-4.1.1a"
+          ],
+          "refs": [
+            "Selten (1974), IMW Working Paper18, §§1–2/7–8, Table1 and perfect-equilibrium theorem"
+          ],
+          "pic": "Compare the original complete-information induction with a declared commitment-type game, retaining every town probability and horizon payoff, exact threshold indifference and explicit initial-state best replies/Bayes updates."
+        },
+        {
+          "num": "4.9",
+          "kind": "Definition",
+          "name": "Information sets and behaviour strategies",
+          "deps": [
+            "game-4.1",
+            "game-2.1",
+            "game-1.3",
+            "prob-4.1.1a"
+          ],
+          "refs": [
+            "Osborne & Rubinstein (1994), Definitions 200.1, 203.1, 203.3, 212.1",
+            "Bonanno (2024), Definitions 4.1.1–4.1.2 and 7.1.1"
+          ],
+          "pic": "Inspect every information constraint, complete pure deviation and distinct terminal history in two authored games; continuous profiles include exact equilibrium presets and numerical regret checks."
+        },
+        {
+          "num": "4.10",
+          "kind": "Theorem",
+          "name": "Kuhn: realization equivalence with perfect recall",
+          "deps": [
+            "game-4.9"
+          ],
+          "refs": [
+            "Osborne & Rubinstein (1994), Proposition 214.1, proof p.215 and Figure 215.1",
+            "Bonanno (2024), §7.1, Theorem 7.1.1 and Figure 7.4"
+          ],
+          "pic": "Expose every mixed-plan weight and own-prefix conditional probability, including exact zero and rare positive prefixes; a forgotten-action determinant separates terminal distributions without perfect recall."
+        },
+        {
+          "num": "4.11",
+          "kind": "Theorem",
+          "name": "Strategy stealing: the first player wins Hex and Chomp",
+          "deps": [
+            "game-4.3"
+          ],
+          "refs": [
+            "Gale (1974), pp.876–879; Gale (1979), §2 pp.818–822"
+          ],
+          "pic": "Play and replay complete Chomp/Hex histories, inspect every safe winning move and small-board opening, and compare the exact corner-reply argument with the general extra-stone existence proof."
+        },
+        {
+          "num": "4.12",
+          "kind": "Theorem",
+          "name": "Nim and the Sprague–Grundy theorem",
+          "deps": [
+            "game-4.2"
+          ],
+          "refs": [
+            "Sprague (1935), Über mathematische Kampfspiele, §§1–9, Theorems I–III, pp.438–442"
+          ],
+          "pic": "Play Nim against the computer, which moves to make the binary XOR of the heaps zero; Grundy values of other impartial games (subtraction games, Kayles) are computed and added like Nim heaps."
+        },
+        {
+          "num": "4.13",
+          "kind": "Theorem",
+          "name": "High-dimensional tic-tac-toe: the first player wins",
+          "deps": [
+            "comb-11.9",
+            "game-4.3",
+            "game-4.11"
+          ],
+          "refs": [
+            "Golomb & Hales (2002), §§1–3, pp.167–171",
+            "Conlon & Kamčev, Intervals in the Hales–Jewett theorem, §1 p.1"
+          ],
+          "pic": "Inspect every geometric line through an actual cell and distinguish a full line-free colouring, an exhaustive impossibility proof and a budget-limited unknown across fifteen boards; colouring existence is separate from optimal alternating play."
+        }
+      ]
+    },
+    {
+      "n": 5,
+      "title": "Repeated games and cooperation",
+      "summary": "Repeated interaction makes future consequences part of today's incentives. This chapter separates finite-horizon unraveling, credible infinite-horizon punishments and incomplete-information reputation. Exact finite-state calculations check deviations; seeded tournaments and spatial imitation are authored simulations, not historical observations or universal cooperation guarantees.",
+      "items": [
+        {
+          "num": "5.1",
+          "kind": "Definition",
+          "name": "Repeated games and discounted payoffs",
+          "deps": [
+            "game-1.1"
+          ],
+          "refs": [
+            "Ozdaglar, MIT6.254 Lecture15 (2010), slides4–7,11"
+          ],
+          "pic": "Pair two deterministic strategies and choose the displayed prefix length and discount factor. Inspect the row player's actual payoff stream and the normalized cumulative prefix. The readout separates present value, prefix value, finite weighted average and the remaining infinite-tail interval."
+        },
+        {
+          "num": "5.2",
+          "kind": "Theorem",
+          "name": "The finitely repeated Prisoner’s Dilemma unravels",
+          "deps": [
+            "game-5.1",
+            "game-4.2",
+            "game-1.4"
+          ],
+          "refs": [
+            "Ozdaglar, MIT6.254 Lecture15 (2010), slides8–10; direct PD induction"
+          ],
+          "pic": "Work backward through a known horizon. The green tail marks rounds whose unique PD equilibrium has been established at every history. Switch to a coordination stage game: both constant C and constant D are stage equilibria, so the uniqueness step fails."
+        },
+        {
+          "num": "5.3",
+          "kind": "Definition",
+          "name": "Grim trigger and tit-for-tat",
+          "deps": [
+            "game-5.1"
+          ],
+          "refs": [
+            "Ozdaglar Lecture15, slides12–15 (public grim); Axelrod TourExec1993/96 source routines TFT/Pavlov; definitions here"
+          ],
+          "pic": "Pair the rules, optionally flip the row player's action once, and inspect a selected round. The action strip is generated from actual histories. The right panel shows the row rule's two output states and its switching conditions, with the intended selected state in gold."
+        },
+        {
+          "num": "5.4",
+          "kind": "Theorem",
+          "name": "One-deviation principle",
+          "deps": [
+            "game-5.1",
+            "game-4.4"
+          ],
+          "refs": [
+            "Manea, MIT14.126 Single-Deviation Principle (2016), Theorem1, slides2–8"
+          ],
+          "pic": "Check all eight player/history-state deviations of a deterministic memory-one profile. Compare the worst one-shot gain with the actual best strategy within an initial window of up to eight rounds, then returning to the profile. Custom masks specify D with bits for previous CC,CD,DC,DD."
+        },
+        {
+          "num": "5.5",
+          "kind": "Theorem",
+          "name": "Cooperation in the infinitely repeated Prisoner’s Dilemma",
+          "deps": [
+            "game-5.3",
+            "game-5.4"
+          ],
+          "refs": [
+            "Ozdaglar Lecture15, slides13–15 (correct inequality derived here); direct four-state TFT calculation"
+          ],
+          "pic": "Switch between public grim and TFT and compare their complete deviation tests. Change δ and the temptation payoff. Grim has two regimes; TFT has four last-outcome states. The threshold line applies to grim, while the bars show the selected profile's actual one-shot gains."
+        },
+        {
+          "num": "5.6",
+          "kind": "Theorem",
+          "name": "Folk theorem",
+          "deps": [
+            "game-5.4",
+            "game-5.5"
+          ],
+          "refs": [
+            "Manea, MIT14.126 Repeated Games (2016), slides3–13, Theorems1–2; direct PD Nash-reversion proof here"
+          ],
+          "pic": "The shaded polygon is the PD's strictly individually rational candidate region (its lower boundary is excluded), not the exact equilibrium set at the selected δ. Choose a public lottery over CC,CD,DC,DD and check the complete one-shot inequalities for that target under Nash reversion."
+        },
+        {
+          "num": "5.7",
+          "kind": "Model",
+          "name": "Tacit collusion in repeated oligopoly",
+          "deps": [
+            "game-5.4",
+            "game-5.5",
+            "micro-10.16"
+          ],
+          "refs": [
+            "Own continuous-price Bertrand derivation; micro10.16 supplies the present-value incentive comparison; Nash-reversion logic in Manea Theorem1"
+          ],
+          "see": [
+            "game-5.6"
+          ],
+          "pic": "Change the number of firms, patience and undercut. The open endpoint is the deviation-profit supremum; quoting the exact monopoly price is instead a tie and shares the market. Compare the actual quote with the normalized cooperative and supremum-deviation values."
+        },
+        {
+          "num": "5.8",
+          "kind": "Phenomenon",
+          "name": "Axelrod’s tournaments",
+          "deps": [
+            "game-5.3"
+          ],
+          "refs": [
+            "Axelrod TourExec1.1 documentation and source,1993/96; authored finite tournament/update rules"
+          ],
+          "pic": "Run an authored six-rule round robin with action noise and8 separately seeded pseudorandom repetitions. Inspect its measured payoff matrix and scores with Monte Carlo SE. Switch to a declared population update using that measured matrix; no historical ranking or ecological outcome is preloaded."
+        },
+        {
+          "num": "5.9",
+          "kind": "Model",
+          "name": "Spatial Prisoner’s Dilemma (Nowak–May)",
+          "deps": [
+            "game-1.1",
+            "game-1.4"
+          ],
+          "refs": [
+            "Nowak–May1992 abstract (qualitative local imitation); fully specified authored finite lattice rules"
+          ],
+          "see": [
+            "game-5.8"
+          ],
+          "pic": "Change temptation, boundary and initial board, then replay the actual lattice updates. Green sites cooperate and red sites defect. Inspect a gold-ringed cell's score and the complete computed cooperation trace; extinction and recurrence remain visible rather than being replaced by a patterned animation."
+        },
+        {
+          "num": "5.10",
+          "kind": "Theorem",
+          "name": "Reputation in finitely repeated games (Kreps–Milgrom–Roberts–Wilson)",
+          "deps": [
+            "game-5.2",
+            "game-5.3"
+          ],
+          "refs": [
+            "Kreps–Milgrom–Roberts–Wilson1982, pp.246–250, Model1 and Steps1–8 (original author scan read)"
+          ],
+          "pic": "Compute the original theorem's conservative bounds as horizon and commitment prior change. The first curve is the guaranteed cooperative-round fraction lower bound, clipped at zero when vacuous. The second panel compares the all-equilibrium bound B with the qualified end-window1+K; neither curve is an invented equilibrium path."
+        }
+      ]
+    },
+    {
+      "n": 6,
+      "title": "Evolution, learning and congestion",
+      "summary": "Evolutionary game theory replaces rational players with populations whose strategies spread according to payoff. An evolutionarily stable strategy resists invasion by rare mutants; under replicator dynamics such strategies are stable rest points and stable rest points are Nash equilibria, while Rock–Paper–Scissors cycles. In finite noisy populations, fixation probabilities and stochastic stability select among equilibria. Potential and congestion games always have pure equilibria reached by best-response dynamics, but selfish routing can be inefficient — Braess’s paradox and the price of anarchy quantify how much.",
+      "items": [
+        {
+          "num": "6.1",
+          "kind": "Definition",
+          "name": "Evolutionarily stable strategy",
+          "deps": [
+            "game-2.1"
+          ],
+          "refs": [
+            "Osborne §13.1",
+            "MSZ §5.9"
+          ],
+          "pic": "Inject a small fraction of mutants playing another strategy into a population; the incumbent is stable if it earns more against the mix, checked for every mutant on a slider of invasion sizes."
+        },
+        {
+          "num": "6.2",
+          "kind": "Model",
+          "name": "Hawk–Dove game",
+          "deps": [
+            "game-6.1"
+          ],
+          "refs": [
+            "Osborne §13.2"
+          ],
+          "pic": "Vary the value of the resource V and the cost of fighting C; the stable proportion of hawks V/C is computed and reached by a simulated population."
+        },
+        {
+          "num": "6.3",
+          "kind": "Theorem",
+          "name": "ESS and Nash equilibrium",
+          "deps": [
+            "game-6.1",
+            "game-2.3"
+          ],
+          "refs": [
+            "MSZ §5.9"
+          ],
+          "pic": "For random symmetric games, all symmetric equilibria are listed and tested for evolutionary stability: every ESS is an equilibrium, every strict equilibrium is an ESS, and some games have no ESS at all."
+        },
+        {
+          "num": "6.4",
+          "kind": "Model",
+          "name": "Replicator dynamics",
+          "deps": [
+            "game-6.1"
+          ],
+          "refs": [
+            "MSZ §5.9"
+          ],
+          "pic": "Strategy shares on the simplex flow in proportion to their payoff advantage; the vector field and trajectories are drawn for a chosen 3 × 3 game."
+        },
+        {
+          "num": "6.5",
+          "kind": "Theorem",
+          "name": "ESS are asymptotically stable under the replicator dynamics",
+          "deps": [
+            "game-6.4",
+            "ode-5.9"
+          ],
+          "refs": [
+            "MSZ §5.9"
+          ],
+          "pic": "The relative entropy from an ESS to the current state is plotted along trajectories; it decreases steadily, acting as a Lyapunov function, and fails to for non-ESS equilibria."
+        },
+        {
+          "num": "6.6",
+          "kind": "Model",
+          "name": "Rock–Paper–Scissors cycles",
+          "deps": [
+            "game-6.4"
+          ],
+          "refs": [
+            "MSZ §5.9"
+          ],
+          "pic": "Tune the win and loss payoffs of Rock–Paper–Scissors; replicator trajectories spiral inward, cycle on closed orbits or spiral out to the boundary, as for side-blotched lizards."
+        },
+        {
+          "num": "6.7",
+          "kind": "Theorem",
+          "name": "Fixation probabilities in finite populations",
+          "deps": [
+            "game-6.1",
+            "popgen-2.5"
+          ],
+          "refs": [
+            "Osborne ch. 13"
+          ],
+          "pic": "Run a frequency-dependent Moran process for a 2 × 2 game in a population of N; the probability that one mutant takes over is compared with the neutral value 1/N to decide whether selection favours it."
+        },
+        {
+          "num": "6.8",
+          "kind": "Theorem",
+          "name": "Stochastic stability selects the risk-dominant equilibrium",
+          "deps": [
+            "game-1.5",
+            "stoch-4.4"
+          ],
+          "refs": [
+            "Osborne ch. 13"
+          ],
+          "pic": "Players best-respond with rare mistakes in a Stag Hunt; the long-run time fractions concentrate on the risk-dominant convention as the mistake rate goes to 0, matching the stationary distribution of the perturbed chain."
+        },
+        {
+          "num": "6.9",
+          "kind": "Theorem",
+          "name": "Potential games and best-response dynamics",
+          "deps": [
+            "game-1.3"
+          ],
+          "refs": [
+            "Osborne ch. 2"
+          ],
+          "pic": "For a game with an exact potential, each improving move raises the potential, drawn as a height map; best-response dynamics climb it and stop at a pure equilibrium."
+        },
+        {
+          "num": "6.10",
+          "kind": "Theorem",
+          "name": "Rosenthal: congestion games have pure equilibria",
+          "deps": [
+            "game-6.9"
+          ],
+          "refs": [
+            "Osborne ch. 2"
+          ],
+          "pic": "Players choose routes whose costs depend on usage; Rosenthal’s potential is computed and decreases with every selfish switch until no one can improve."
+        },
+        {
+          "num": "6.11",
+          "kind": "Paradox",
+          "name": "Braess’s paradox",
+          "deps": [
+            "game-6.10",
+            "algo-9.1"
+          ],
+          "refs": [
+            "Osborne ch. 2"
+          ],
+          "pic": "Add a zero-cost shortcut to a road network carrying selfish traffic; at the new Wardrop equilibrium everyone’s travel time rises, and deleting the road restores the better outcome."
+        },
+        {
+          "num": "6.12",
+          "kind": "Theorem",
+          "name": "Price of anarchy for selfish routing is 4/3",
+          "deps": [
+            "game-6.11"
+          ],
+          "refs": [
+            "Osborne ch. 2"
+          ],
+          "pic": "For networks with linear latencies, the cost of the selfish equilibrium is divided by the optimal cost; random instances never exceed 4/3, and Pigou’s two-link example attains it."
+        }
+      ]
+    },
+    {
+      "n": 7,
+      "title": "Bargaining, matching and fair division",
+      "summary": "How should a surplus be split? Nash’s axioms single out the split maximising the product of gains, and Rubinstein’s alternating-offers game reaches nearly the same split when players are patient. In two-sided markets, deferred acceptance yields a stable matching that is best for the proposing side and safe for it to report truthfully, while one-sided problems may have no stable outcome; top trading cycles reallocate houses or kidneys. Fair division asks for cake cuts that leave nobody envious, and topology and convexity guarantee they exist.",
+      "items": [
+        {
+          "num": "7.1",
+          "kind": "Theorem",
+          "name": "Nash bargaining solution",
+          "deps": [
+            "micro-13.2"
+          ],
+          "refs": [
+            "MSZ §16.3",
+            "Osborne §16.3"
+          ],
+          "pic": "Draw a convex bargaining set and disagreement point; the point maximising the product of gains is found by sliding level curves of the Nash product until they touch the frontier."
+        },
+        {
+          "num": "7.2",
+          "kind": "Theorem",
+          "name": "Rubinstein’s alternating-offers bargaining",
+          "deps": [
+            "game-4.4",
+            "game-7.1"
+          ],
+          "refs": [
+            "Osborne §16.1",
+            "Osborne §16.4"
+          ],
+          "pic": "Two players with discount factors δ₁, δ₂ alternate offers; the unique subgame perfect split is shown, the first-mover advantage shrinks as both δ → 1, and the limit is the Nash solution."
+        },
+        {
+          "num": "7.3",
+          "kind": "Theorem",
+          "name": "Deferred acceptance gives the proposer-optimal stable matching",
+          "deps": [
+            "algo-11.14"
+          ],
+          "refs": [
+            "MSZ §23.2",
+            "MSZ §23.4"
+          ],
+          "pic": "Run deferred acceptance with men proposing and with women proposing on preference lists you edit; every stable matching (found by brute force) is weakly worse for the proposers than their algorithm’s outcome."
+        },
+        {
+          "num": "7.4",
+          "kind": "Theorem",
+          "name": "The lattice of stable matchings",
+          "deps": [
+            "game-7.3"
+          ],
+          "refs": [
+            "MSZ §23.4"
+          ],
+          "pic": "All stable matchings of an instance are drawn as a lattice ordered by the men’s preferences; taking each man’s better partner of two stable matchings gives another stable matching."
+        },
+        {
+          "num": "7.5",
+          "kind": "Theorem",
+          "name": "Deferred acceptance is strategy-proof for proposers",
+          "deps": [
+            "game-7.3"
+          ],
+          "refs": [
+            "MSZ §23.5"
+          ],
+          "pic": "Let one proposer misreport preferences in every possible way; none improves his match, while a receiver can sometimes gain by truncating her list."
+        },
+        {
+          "num": "7.6",
+          "kind": "Proposition",
+          "name": "Stable roommates may not exist",
+          "deps": [
+            "algo-11.14"
+          ],
+          "refs": [
+            "MSZ §23.5"
+          ],
+          "pic": "Four roommates with cyclic preferences are paired in all three ways; each pairing has a blocking pair, shown with arrows, so no stable outcome exists."
+        },
+        {
+          "num": "7.7",
+          "kind": "Algorithm",
+          "name": "Top trading cycles (Shapley–Scarf housing market)",
+          "deps": [
+            "game-1.3"
+          ],
+          "refs": [
+            "Osborne §8.5"
+          ],
+          "pic": "Each owner points at the owner of their favourite house; cycles are traded and removed round by round, and the final allocation is checked to be strategy-proof and in the core."
+        },
+        {
+          "num": "7.8",
+          "kind": "Model",
+          "name": "Kidney exchange",
+          "deps": [
+            "game-7.7"
+          ],
+          "refs": [
+            "Osborne §8.5"
+          ],
+          "pic": "Patient–donor pairs with incompatible donors form a compatibility graph; short exchange cycles and chains are found to maximise transplants, with cycle-length limits on a slider."
+        },
+        {
+          "num": "7.9",
+          "kind": "Algorithm",
+          "name": "Cut and choose and proportional division",
+          "deps": [
+            "game-1.1"
+          ],
+          "refs": [
+            "Osborne ch. 8"
+          ],
+          "pic": "Players with different value densities on a cake run cut-and-choose and the last-diminisher procedure; each player’s share of their own valuation is shown to be at least 1/n."
+        },
+        {
+          "num": "7.10",
+          "kind": "Algorithm",
+          "name": "Selfridge–Conway envy-free division for three",
+          "deps": [
+            "game-7.9"
+          ],
+          "refs": [
+            "Osborne ch. 8"
+          ],
+          "pic": "Step through the trimming procedure with three valuations you draw; at the end each player values their own pieces at least as much as anyone else’s, with an envy table that stays empty."
+        },
+        {
+          "num": "7.11",
+          "kind": "Theorem",
+          "name": "Envy-free divisions exist (Stromquist, Su)",
+          "deps": [
+            "top-9.9",
+            "game-7.10"
+          ],
+          "refs": [
+            "Osborne ch. 8"
+          ],
+          "pic": "Triangulate the simplex of possible cuts and label each vertex by the owner’s preferred piece; Sperner’s lemma finds a fully labelled cell, approximating an envy-free division as the mesh is refined."
+        },
+        {
+          "num": "7.12",
+          "kind": "Theorem",
+          "name": "Exact division exists (Dubins–Spanier)",
+          "deps": [
+            "fa-5.5",
+            "game-7.9"
+          ],
+          "refs": [
+            "Osborne ch. 8"
+          ],
+          "pic": "For several players’ valuations, the range of the vector measure of all cuts is computed and shown to be convex, so a division giving every player exactly 1/n by every valuation is found."
+        },
+        {
+          "num": "7.13",
+          "kind": "Paper",
+          "name": "College Admissions and the Stability of Marriage",
+          "paper": {
+            "authors": "D. Gale and L. S. Shapley",
+            "year": 1962,
+            "title": "College Admissions and the Stability of Marriage",
+            "venue": "American Mathematical Monthly 69 (1): 9–15",
+            "doi": "10.1080/00029890.1962.11989827"
+          },
+          "introduces": [
+            "algo-11.14",
+            "game-7.3",
+            "game-7.6"
+          ],
+          "deps": [],
+          "refs": [],
+          "pic": "Edit rank lists for men and women, or for applicants and colleges with quotas: run deferred acceptance step by step, with proposals, tentative holds and rejections, and check that no pair would rather have each other than their partners; swap who proposes to get the other side’s best stable matching, and try their four-person roommates example, which has no stable pairing at all."
+        }
+      ]
+    },
+    {
+      "n": 8,
+      "title": "Cooperative games",
+      "summary": "When players can sign binding agreements, the question becomes which coalitions form and how they split their worth. The core contains the allocations no coalition can improve upon; the Bondareva–Shapley theorem says exactly when it is nonempty, and in market games it contains the competitive outcomes. The Shapley value is the unique fair rule by its axioms and averages marginal contributions; the nucleolus minimises the largest complaint and resolves a two-thousand-year-old puzzle from the Talmud.",
+      "items": [
+        {
+          "num": "8.1",
+          "kind": "Definition",
+          "name": "Coalitional games with transferable utility",
+          "deps": [
+            "game-1.1"
+          ],
+          "refs": [
+            "MSZ §17.1",
+            "Osborne §8.1"
+          ],
+          "pic": "Enter the worth of every coalition of three or four players; the game is shown as a table and as a lattice of coalitions with superadditivity checked on each pair."
+        },
+        {
+          "num": "8.2",
+          "kind": "Definition",
+          "name": "The core",
+          "deps": [
+            "game-8.1",
+            "micro-9.4"
+          ],
+          "refs": [
+            "MSZ §18.1",
+            "Osborne §8.2"
+          ],
+          "pic": "For a three-player game, the imputation triangle is drawn and each coalition constraint cuts off a strip; what remains (possibly nothing) is the core."
+        },
+        {
+          "num": "8.3",
+          "kind": "Theorem",
+          "name": "Bondareva–Shapley theorem",
+          "deps": [
+            "game-8.2",
+            "algo-11.19"
+          ],
+          "refs": [
+            "MSZ §18.3"
+          ],
+          "pic": "Check balancedness by solving the linear program over balanced collections of coalitions; the core is nonempty exactly when no balanced collection earns more than the grand coalition."
+        },
+        {
+          "num": "8.4",
+          "kind": "Theorem",
+          "name": "Market games have nonempty cores",
+          "deps": [
+            "game-8.3",
+            "micro-9.11"
+          ],
+          "refs": [
+            "MSZ §18.4"
+          ],
+          "pic": "Build a market from traders’ endowments and concave utilities; the induced coalitional game is shown to be balanced and the competitive allocation is plotted inside its core."
+        },
+        {
+          "num": "8.5",
+          "kind": "Theorem",
+          "name": "Convex games: the core and the Shapley value",
+          "deps": [
+            "game-8.2"
+          ],
+          "refs": [
+            "MSZ §18.7",
+            "MSZ §19.7"
+          ],
+          "pic": "For supermodular games, the marginal vectors of all orderings are plotted; they are the vertices of the core, which therefore contains their average, the Shapley value."
+        },
+        {
+          "num": "8.6",
+          "kind": "Theorem",
+          "name": "The Shapley value: axioms determine it",
+          "deps": [
+            "game-8.1"
+          ],
+          "refs": [
+            "MSZ §19.1",
+            "MSZ §19.3"
+          ],
+          "pic": "Decompose a game into unanimity games and apply efficiency, symmetry, null player and additivity to each; the resulting allocation is compared with other rules that break one axiom."
+        },
+        {
+          "num": "8.7",
+          "kind": "Theorem",
+          "name": "Shapley value as average marginal contribution",
+          "deps": [
+            "game-8.6",
+            "comb-1.5"
+          ],
+          "refs": [
+            "MSZ §19.3"
+          ],
+          "pic": "Players enter a room in random order and each receives their marginal contribution; averaging over all n! orderings, or over sampled ones, converges to the Shapley value."
+        },
+        {
+          "num": "8.8",
+          "kind": "Model",
+          "name": "Cost sharing: the airport game",
+          "deps": [
+            "game-8.7"
+          ],
+          "refs": [
+            "MSZ §19.4"
+          ],
+          "pic": "Airlines needing runways of different lengths share the cost; the Shapley value splits each runway segment equally among its users, shown as stacked bars."
+        },
+        {
+          "num": "8.9",
+          "kind": "Definition",
+          "name": "The nucleolus",
+          "deps": [
+            "game-8.2"
+          ],
+          "refs": [
+            "MSZ §21.1",
+            "MSZ §21.4"
+          ],
+          "pic": "Coalition excesses are sorted from largest to smallest for any proposed allocation; a sequence of linear programs lowers the largest excess lexicographically until the nucleolus is reached."
+        },
+        {
+          "num": "8.10",
+          "kind": "Theorem",
+          "name": "The Talmud bankruptcy rule is the nucleolus (Aumann–Maschler)",
+          "deps": [
+            "game-8.9"
+          ],
+          "refs": [
+            "MSZ §21.8"
+          ],
+          "pic": "An estate is divided among creditors by filling linked vessels; the Talmud’s puzzling divisions for estates of 100, 200 and 300 are reproduced and equal the nucleolus of the bankruptcy game."
+        },
+        {
+          "num": "8.11",
+          "kind": "Paper",
+          "name": "A Value for n-Person Games",
+          "paper": {
+            "authors": "L. S. Shapley",
+            "year": 1953,
+            "title": "A Value for n-Person Games",
+            "venue": "Contributions to the Theory of Games II (Annals of Mathematics Studies 28), Princeton University Press: 307–317",
+            "doi": "10.1515/9781400881970-018"
+          },
+          "introduces": [
+            "game-8.6",
+            "game-8.7"
+          ],
+          "deps": [
+            "game-8.1"
+          ],
+          "refs": [],
+          "pic": "Define a small coalitional game by editing what each coalition can earn: the value is built as each player’s marginal contribution averaged over all orders of arrival, animated order by order, and checked against Shapley’s axioms (symmetry, efficiency, null player, additivity), which pick it out uniquely."
+        }
+      ]
+    },
+    {
+      "n": 9,
+      "title": "Incomplete information and mechanism design",
+      "summary": "When players hold private information, they reason about each other’s beliefs: Bayesian games, common knowledge and its surprising strength (the muddy children, Aumann’s agreement theorem, the electronic mail game). Signalling games need beliefs off the equilibrium path, refined by the intuitive criterion, while cheap talk transmits only coarse information. Mechanism design reverses the game: the revelation principle reduces any mechanism to truthful reporting, VCG implements efficient choices with payments, Myerson characterises optimal auctions, and impossibility theorems mark the limits.",
+      "items": [
+        {
+          "num": "9.1",
+          "kind": "Definition",
+          "name": "Bayesian games and Bayesian Nash equilibrium",
+          "deps": [
+            "game-2.1"
+          ],
+          "refs": [
+            "Osborne §9.2",
+            "MSZ §9.4"
+          ],
+          "pic": "Players draw private types from a common prior and choose type-contingent strategies; the reader edits type distributions and sees each type’s interim best reply in a Bayesian Cournot game."
+        },
+        {
+          "num": "9.2",
+          "kind": "Definition",
+          "name": "Knowledge and common knowledge",
+          "deps": [
+            "game-9.1"
+          ],
+          "refs": [
+            "MSZ §9.1"
+          ],
+          "pic": "States of the world are partitioned differently by each player; the meet of the partitions is drawn, and an event is common knowledge exactly when it contains the cell of the meet."
+        },
+        {
+          "num": "9.3",
+          "kind": "Paradox",
+          "name": "Muddy children",
+          "deps": [
+            "game-9.2"
+          ],
+          "refs": [
+            "MSZ §9.1"
+          ],
+          "pic": "Children see each other’s foreheads but not their own; after the public announcement “someone is muddy”, the rounds of reasoning are simulated and the k muddy children step forward together in round k."
+        },
+        {
+          "num": "9.4",
+          "kind": "Theorem",
+          "name": "Aumann’s agreement theorem",
+          "deps": [
+            "game-9.2"
+          ],
+          "refs": [
+            "MSZ §9.2"
+          ],
+          "pic": "Two agents with a common prior repeatedly announce their posteriors for an event; the announcements converge to a common value, as the shrinking partition cells show."
+        },
+        {
+          "num": "9.5",
+          "kind": "Paradox",
+          "name": "Rubinstein’s electronic mail game",
+          "deps": [
+            "game-9.2",
+            "game-1.5"
+          ],
+          "refs": [
+            "MSZ §9.1"
+          ],
+          "pic": "Confirmations bounce back and forth until a message is lost; however many arrive, the unique equilibrium never coordinates on the risky action, showing almost common knowledge is not enough."
+        },
+        {
+          "num": "9.6",
+          "kind": "Definition",
+          "name": "Perfect Bayesian equilibrium and signalling games",
+          "deps": [
+            "game-9.1",
+            "game-4.4"
+          ],
+          "refs": [
+            "Osborne §10.4",
+            "Osborne §10.5"
+          ],
+          "pic": "A sender of private type chooses a message and a receiver updates beliefs by Bayes’ rule; pooling and separating equilibria are found, with off-path beliefs on sliders."
+        },
+        {
+          "num": "9.7",
+          "kind": "Theorem",
+          "name": "The intuitive criterion selects the least-cost separating equilibrium",
+          "deps": [
+            "game-9.6",
+            "micro-13.7"
+          ],
+          "refs": [
+            "Osborne §10.7"
+          ],
+          "pic": "In the education signalling game, all PBE are listed; the Cho–Kreps test removes pooling equilibria and every separating one except the cheapest for the high type."
+        },
+        {
+          "num": "9.8",
+          "kind": "Model",
+          "name": "Cheap talk (Crawford–Sobel)",
+          "deps": [
+            "game-9.6"
+          ],
+          "refs": [
+            "Osborne §10.8"
+          ],
+          "pic": "A sender with bias b reports a state in [0, 1]; the equilibrium partitions of the interval are computed, and the number of distinguishable messages falls as b grows."
+        },
+        {
+          "num": "9.9",
+          "kind": "Theorem",
+          "name": "Revelation principle",
+          "deps": [
+            "game-9.1"
+          ],
+          "refs": [
+            "MSZ §12.8"
+          ],
+          "pic": "Wrap any mechanism and its equilibrium in a direct mechanism that plays the equilibrium on the agents’ behalf; outcomes coincide and truth-telling is an equilibrium, checked on examples."
+        },
+        {
+          "num": "9.10",
+          "kind": "Theorem",
+          "name": "Vickrey–Clarke–Groves mechanisms",
+          "deps": [
+            "game-9.9",
+            "micro-13.13"
+          ],
+          "refs": [
+            "MSZ §12.8"
+          ],
+          "pic": "Agents report values for public projects or item bundles; VCG picks the efficient outcome and charges each agent the externality they impose, and no misreport ever raises an agent’s utility."
+        },
+        {
+          "num": "9.11",
+          "kind": "Theorem",
+          "name": "Myerson’s optimal auction",
+          "deps": [
+            "game-9.9",
+            "micro-13.15"
+          ],
+          "refs": [
+            "MSZ §12.10"
+          ],
+          "pic": "For chosen value distributions, virtual values are plotted and the revenue-maximising allocation is computed; a reserve price where virtual value crosses zero raises revenue above the plain second-price auction."
+        },
+        {
+          "num": "9.12",
+          "kind": "Theorem",
+          "name": "Myerson–Satterthwaite impossibility",
+          "deps": [
+            "game-9.9",
+            "micro-13.15"
+          ],
+          "refs": [
+            "MSZ §12.9"
+          ],
+          "pic": "A buyer and a seller with private values on overlapping ranges trade through any mechanism you design; efficiency, incentive compatibility, individual rationality and budget balance cannot all hold, as the budget deficit readout shows."
+        },
+        {
+          "num": "9.13",
+          "kind": "Theorem",
+          "name": "Strategy-proof voting on single-peaked domains (Moulin)",
+          "deps": [
+            "polsci-3.6",
+            "polsci-4.2"
+          ],
+          "refs": [
+            "MSZ §22.3"
+          ],
+          "pic": "Voters with single-peaked preferences report peaks; generalised median rules with phantom voters are shown to be strategy-proof, escaping Gibbard–Satterthwaite, while plurality is manipulable on the same profiles."
+        }
+      ]
+    }
+  ]
+}

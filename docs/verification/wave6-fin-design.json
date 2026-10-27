@@ -1,0 +1,208 @@
+{
+  "status": "Final nine complete lessons /26purpose-built panels; scientific/native/Share/original-pixel gates pass",
+  "identityRule": "Frozen IDs/kinds/names/ordereddeps/flags exact; preserve existing fin-7.10 and its file bytes. New chapter part ch07.js or ch07-b.js after checking filenames, no alteration to old Paper.",
+  "visualRule": "Consistent blue call/equity, orange put/debt, teal stock, muted bond/funding, purple combined payoff, pink profit, gold selected state, red violated restriction. Exact anchored payoff corners, selected values and density peaks; readable original phone/desktop pixels in both themes. Original rational normalization preserves tiny ledger proportions.",
+  "common": [
+    "Nonnegative terminal underlying and strike; matching maturity, exercise style and settlement. No dividends in simple parity/bounds. Frictionless unrestricted trades and safe borrowing/lending stated.",
+    "A direct supplied positive discount factor B prices one fixed remaining period. This is B=exp(−rT) in continuous-rate notation, with B<=1 equivalent to nonnegative rates; do not add an inconsistent independent maturity control. Exact rational original factors retain tiny signs and differences.",
+    "Use complete original binary64 rational arithmetic and independent Fraction/mpmath reference. No max(0,tiny) floors, numerical finite differences from rounded prices, fabricated market quotes, forecasts or copied original-paper assertions.",
+    "Constructed finite/state-price or triangular continuous Q laws are assumptions, not estimates. Continuous-density pricing is explicitly assumed beyond the finite FTAP prerequisite. Physical law can differ without changing Q prices.",
+    "UI initial B=7/8 gives clean educational values. Pure model default B=.95 and every original midpoint reference remain exact; nine independently calculated UI defaults appended. Literal displayed decimals are compared as exact decimal rationals, so subnormal rounding is marked honestly."
+  ],
+  "lessons": [
+    {
+      "id": "fin-7.1",
+      "model": "Signed long/short max(ST−K,0) or max(K−ST,0); profit subtracts signed premium, with explicit nominal or terminal-financed convention. Breakeven absent when put premium exceedsK; boundary at0 valid.",
+      "panels": [
+        "Chosen exercise cash exchange with separate payoff/premium/profit ledgers",
+        "Selected right/side signed payoff and profit, with exact corners and zero-profit markers/ranges"
+      ],
+      "critical": [
+        "zero strike and free option",
+        "zero premium call interval",
+        "zero premium put ray",
+        "put cannot recover premium",
+        "short call adjacent below strike",
+        "short put adjacent above strike",
+        "nominal premium hides discount",
+        "retained tiny premium",
+        "all tiny cash flows"
+      ]
+    },
+    {
+      "id": "fin-7.2",
+      "model": "C+B K=P+S. Construct P=max(BK−S,0)+timeValue and C=P+S−BK+wedge from original factors. The retained parity gap equals authored wedge even when displayed quote rounds back. Show actual signed initial receipt and exactly zero terminal net payoff of the matching portfolio trade.",
+      "panels": [
+        "Call+strike bond and put+stock payment stacks",
+        "Equal terminal portfolio curves over allST",
+        "Signed initial-price ledger and arbitrage direction"
+      ],
+      "critical": [
+        "exact parity",
+        "positive invisible discrepancy",
+        "negative invisible discrepancy",
+        "midpoint quote rounding retained",
+        "zero terminal and strike",
+        "tiny portfolio stack",
+        "tiny strike with large stock",
+        "extreme negative comparison quote"
+      ]
+    },
+    {
+      "id": "fin-7.3",
+      "model": "Call bounds max(S−BK,0)<=C<=S; put bounds max(BK−S,0)<=P<=BK. Quote relative to selected boundary; classify exact direction. Witness lower call=call+Kbond−stock (or buy negative-price claim); upper call=stock−call. Lower put=put+stock−Kbond (or buy negative-price claim); upper put=Kbond−put. All selected witness terminal payoffs nonnegative for everyST and initial receipt positive.",
+      "panels": [
+        "Necessary price band and selected quote",
+        "Actual statewise witness payoff including zero and strike",
+        "Signed portfolio inventory and initial/terminal cash"
+      ],
+      "critical": [
+        "exact lower bound",
+        "just below lower bound",
+        "just above upper bound",
+        "put just below lower",
+        "put just above upper",
+        "degenerate zero strike call",
+        "tiny put witness",
+        "negative put quote",
+        "expensive call"
+      ]
+    },
+    {
+      "id": "fin-7.4",
+      "model": "No-dividend American call need never be exercised early for r>=0; strict ITM postponement whenK>0,r>0,T>0. Zero-rate/zero-strike/zero-maturity ties explicit; lower bound need not strictly exceed zero OTM. Outside assumptions use a separately declared deterministic imminent-cash-dividend scenario: continuation=max(S−D−BK,0), immediate=max(S−K,0), American=max(both). Negative rates can also break the claim. Do not claim a general stochastic exercise boundary.",
+      "panels": [
+        "Exercise now vs retaining option rights timeline",
+        "Correct lower-bound and intrinsic curves",
+        "Interest benefit K(1−B), dividend and deterministic continuation ledger"
+      ],
+      "critical": [
+        "zero-rate equality",
+        "adjacent positive rate",
+        "adjacent negative rate",
+        "invisible dividend changes choice",
+        "zero strike equality",
+        "out of the money equality",
+        "all stock distributed",
+        "nonbinary dividend domain",
+        "large dividend early exercise"
+      ]
+    },
+    {
+      "id": "fin-7.5",
+      "model": "Use constructed consistent option price law plus arbitrary ordered three strikes. Weighted long wing calls minus middle call is a pointwise nonnegative butterfly for lambda=(Kmid−Klow)/(Khigh−Klow). Raise middle quote to create exact negative butterfly cost. Positive second difference checks this triplet only. A zero-cost butterfly is an arbitrage only if positive payoff occurs in a possible state; do not infer from unsupported outside-support states.",
+      "panels": [
+        "Call price versus strike with chord and selected quote",
+        "Weighted three-leg butterfly payoff",
+        "Exact cost and nonnegative payoff certificate"
+      ],
+      "critical": [
+        "exact chord",
+        "tiny convexity violation",
+        "tiny nonviolation",
+        "fair reference",
+        "left support asymmetric",
+        "right support asymmetric",
+        "selected wing corner",
+        "outside butterfly support"
+      ]
+    },
+    {
+      "id": "fin-7.6",
+      "model": "Editable three option legs (call/put, strike, signed units) plus stock; named bullspread/bearputspread/straddle/butterfly/protectiveput presets. Compute each original payoff and exact sum. Distinguish payoff from profit and supplied synthetic premiums from market prices. Plan concise active-leg controls; dormant fields remain exact Share state.",
+      "panels": [
+        "Each signed payoff component",
+        "Combined payoff/profit with breakpoints",
+        "Position cost, funded cost, selected payoff/profit and exact sum residual, with full inventory in readout"
+      ],
+      "critical": [
+        "zero all positions",
+        "identical cancelling calls",
+        "retained cancelling premium",
+        "below-range unit times premium",
+        "hidden third leg retained",
+        "short stock and options",
+        "coincident three strikes",
+        "tiny terminal and strike"
+      ]
+    },
+    {
+      "id": "fin-7.7",
+      "model": "Assume a constructed triangular Q density on[a,b] with modec strictlyinside. C(K)=B EQ(X−K)+. Exact expectation: E−K forK<=a; 0forK>=b; (b−K)^3/[3(b−a)(b−c)] forK>=c; E−K+(K−a)^3/[3(b−a)(c−a)] belowc, E=(a+b+c)/3. Density is2(K−a)/[(b−a)(c−a)] belowc and2(b−K)/[(b−a)(b−c)] above. Derive Cprime=−B survival and Csecond=B density; general laws require a measure not a classical density. Symmetric finite difference divided byBh^2 is a triangular-kernel average, not universally exact density; h0 uses analytic derivative with diagnostic undefined.",
+      "panels": [
+        "Synthetic call strike curve",
+        "Actual analytic density and selected finite-bandwidth recovery",
+        "Separate unit-labelled implied stock price, butterfly cost, B h², analytic/recovered densities and recovery error"
+      ],
+      "critical": [
+        "undefined zero window",
+        "tiny window at density peak",
+        "tiny window at support left",
+        "tiny window at support right",
+        "adjacent left support",
+        "wide window spans left kink",
+        "wide window spans right peak",
+        "strike below support",
+        "strike beyond support"
+      ]
+    },
+    {
+      "id": "fin-7.8",
+      "model": "Stock+put=max(ST,K), paidS0+P0; terminal-financed cost(S0+P0)/B with S0=B EQX and P0=B EQ(K−X)+. Physical law can have another triangular mode. Transformed payoff distribution has a genuine atom atK with massFP(K), plus original continuous density aboveK. Show atom separately from bins and integrate exact CDF probabilities; not a simulated empirical histogram.",
+      "panels": [
+        "Underlying/put/combined floor payoff",
+        "Exact physical probability bins plus separately labelled floor atom",
+        "Premium/financed cost and floor profit ledger"
+      ],
+      "critical": [
+        "zero insurance floor",
+        "tiny floor",
+        "support endpoint no atom",
+        "tiny positive floor atom",
+        "all mass at upper support",
+        "entire insured payoff constant",
+        "physical mode low fixed pricing",
+        "physical mode high fixed pricing",
+        "pricing mode changes cost"
+      ]
+    },
+    {
+      "id": "fin-7.9",
+      "model": "Merton-style terminal payoff mechanism under an explicitly chosen law, no claim to a full continuous-time calibrated model. Equity=(V−F)+; debt=min(V,F)=F−(F−V)+; values from the sameB,Qlaw sum to assetvalueB EQV. Compare model Qdefault with a separately chosen physical Pdefault; neither is inferred real-world frequency. PromiseF differs from debtprice. F0/claimprice0 has undefined percentage return.",
+      "panels": [
+        "Selected terminal asset waterfall into debt/equity and put loss",
+        "Both claim values over face debt",
+        "Q versus physical default probabilities under declared laws"
+      ],
+      "critical": [
+        "no debt promise",
+        "nonzero debt below float range",
+        "just below firm value",
+        "just above firm value",
+        "zero terminal assets",
+        "fully distressed firm",
+        "physical low fixed claim prices",
+        "physical high fixed claim prices",
+        "opposing Q and physical laws"
+      ]
+    }
+  ],
+  "next": "Continue GAME6 frozen12lessons; preserve original-source access stops and all older code. Pairwise reading/global integration follows GAME6 author gates.",
+  "prototypeProgress": {
+    "implementedAndIndependentlyChecked": [
+      "payoff",
+      "parity",
+      "bounds",
+      "earlyCall",
+      "strikeConvexity",
+      "strategies",
+      "densityRecovery",
+      "protectivePut",
+      "claims"
+    ],
+    "independentCases": 1950,
+    "comparisons": 233821,
+    "worstLogAbsolute": 4.547473508864641e-13,
+    "rootProductFiles": "Five chapter-local pure helpers, complete chapter/main/viz and scoped tests installed; no shared renderer edits."
+  }
+}

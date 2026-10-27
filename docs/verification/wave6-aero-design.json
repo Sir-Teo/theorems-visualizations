@@ -1,0 +1,61 @@
+{
+  "status": "author-verified; final scientific/native/personal gates pass",
+  "lessons": 11,
+  "purposeBuiltPanels": 30,
+  "sourceLedger": "wave6-aero-sources.json",
+  "visualLanguage": [
+    "Theme palette only; teal wings and lift, blue tails and controls, purple additional modes/energy, orange velocity/forcing, gold selected state.",
+    "Actual-model traces, poles, balances and signed quantities; schematic shapes and separately scaled arrows labeled.",
+    "Equal physical geometry scales for 2D force/aircraft diagrams; explicit dimensionless aeroelastic coordinates.",
+    "Native320/1200 CSS-pixel capture in both themes; complete text and every offered mode; native controls and actual state-link replay.",
+    "Personal pixel review required after automatic audits, including critical sign/domain/coalescence states."
+  ],
+  "pureModels": [
+    "Static whole-aircraft wing/tail forces and exact moment translation",
+    "Simultaneous trim load split and angle/control solve with singular authority",
+    "Three-state phugoid with integrated height",
+    "Finite-pulse short-period response with integrated pitch",
+    "Signed fin/body directional derivative",
+    "Four-state lateral matrix with retained rational Routh coefficients",
+    "Ideal attitude/rate pitch feedback and explicitly chosen trim penalty",
+    "Two-coordinate nonconservative flutter with exact threshold classifier and defective real exponential",
+    "Historical prediction worksheet separate from schematic wing-warp/forward-elevator control"
+  ],
+  "knownRepairsSoFar": [
+    "Unsupported Stage3D.setTitle replaced by chapter-local title update.",
+    "Two narrow display equations split; axis labels changed to concise TeX.",
+    "Phugoid now shows actual height trace with selected schematic plane marker; traces resolve the fastest available oscillations.",
+    "Phugoid energy range must include the full potential-energy excursion, not just the initial kinetic perturbation.",
+    "Proper body-to-world rotation and signed schematic forces explicitly defined.",
+    "Wing-warp geometry now includes camber and ribs; source figure/edition qualifications preserved.",
+    "Pitch-moment couple placed in its own bay; duplicate tail labels removed.",
+    "Actual endpoint marker ink requires pixel margins; trim, phugoid and fin endpoints widened.",
+    "Background3D grid fits entirely within the rotation viewport.",
+    "Dihedral gets an enlarged upper-half-plane Dutch-roll locus; the full spectrum is in the preceding lesson.",
+    "Flutter has a separate frequency-vs-flow panel and labeled5x deformation with automatic fitting; all traces/readouts retain unscaled state.",
+    "The chosen trim-drag penalty uses a useful fixed coefficient range.",
+    "Selected trim lift residual is subtracted before rounding; a true4.1546e−17 residual was previously rendered as zero. Exact-zero dots now require an exact zero quantity.",
+    "Tail incidence rotates the actual tail schematic; fin polygon area follows its fin scale.",
+    "Flutter frequency/pole paths contain the exact merge, rounded growth onset and current speed, with extra resolution near the merge.",
+    "Panel heights match within each desktop row.",
+    "A chapter-local slow-pole isolator preserves signed spiral poles where the generic eigensolver returned zero.",
+    "Retained exact slow-root signs adjacent to16/3 degrees using polynomial-sign isolation.",
+    "Selected-state trim lift residual formed before rounding/subtraction; zero dots only for exact zeros.",
+    "Aligned desktop panel heights, enlarged pole movement, dense time traces, labeled automatic flutter fit, cambered/ribbed Wright biplane.",
+    "Compact scientific ticks preserve full physical values at extreme unstable responses.",
+    "Chapter-local repaint installs the view before drawing axes and curves on the first restored frame.",
+    "Removed an orphan punctuation line in the neutral-point statement."
+  ],
+  "deferred": [
+    "Private S2",
+    "Shared renderer/math edits",
+    "Global map work",
+    "Performance claims",
+    "Independent acceptance"
+  ],
+  "finalReceipts": [
+    "wave6-aero-gates.json",
+    "wave6-aero-native-receipt.json",
+    "wave6-aero-visual-receipt.json"
+  ]
+}

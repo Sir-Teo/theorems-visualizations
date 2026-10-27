@@ -1,0 +1,15 @@
+{
+  "baseCommit": "49d35017ef8d8dfef28fc88786dfe5aeb65a8e06",
+  "sha256": {
+    "content/bioinf/ch06.js": "27b96bc217799126d1077183933448a8dcab5199f7aea2bc21f8ec93fc62031b",
+    "content/bioinf/ch06.shared.js": "82b9cb8625a960d1c324e02325800c7aa252c3fc6dd7d6dd3f4180784cfbbeb8",
+    "content/bioinf/ch06.viz.js": "0f6dba8a28147b9d1567aba82104a2e833606ab0bf4ea3b3563d8ce2978b563c",
+    "content/bioinf/syllabus.js": "e3bcc95e65f40a1647591818250e52766a5b6c6f9cc0e8e03ecbf6dabec078be",
+    "tests/wave6-bioinf.test.mjs": "6ef08bfef619cd4ae96982a7acdc69d1e298b5638341e99c6f7507b22c85967f",
+    "tests/wave6-bioinf-browser.mjs": "de9960566fd0d10a0dc13e34218ae6dd4c240def5214274cf3516ccf72fb1fae",
+    "tests/wave6-bioinf-reference.py": "0d375ae268c210923114977b8f1ac36814320af551c36741a3a027166474e686",
+    "tests/fixtures/wave6-bioinf-reference.json": "86b80e62e7846e61a145dcc06df498705fc3463102ad4015c308822948ebf86c",
+    "docs/verification/wave6-bioinf-sources.json": "93791a07f2ee7ab8ad48fac84a929575f8c663250dcfe962a3e0be775d3f7748",
+    "docs/verification/wave6-bioinf-gates.json": "576a577fbfe733aa87353eee7e9b29d07d2cb86c5174a220f1a4e62a8366b814"
+  }
+}

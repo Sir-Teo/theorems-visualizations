@@ -1,0 +1,226 @@
+{
+  "status": "Source research supports explicitly bounded authored models; author chapter gate complete. No independent source/empirical acceptance added.",
+  "access": [
+    {
+      "file": "chevreul-1839.pdf",
+      "url": "https://archive.org/download/delaloiducontras00chev/delaloiducontras00chev.pdf",
+      "status": 200,
+      "bytes": 30840553,
+      "sha256": "5aa1da1cc5c60e01c57e44e6746bacec94cdc6ea98b0b536393afae365c904a8",
+      "challenge": false,
+      "stop": false
+    },
+    {
+      "file": "retinex-1971.pdf",
+      "url": "https://mccannimaging.com/Retinex/Retinex_files/L%26M1971.pdf",
+      "error": "HTTP Error 465: Unknown",
+      "stop": true,
+      "noRecovery": true
+    },
+    {
+      "file": "css-color4.html",
+      "url": "https://www.w3.org/TR/2026/CRD-css-color-4-20261020/",
+      "status": 200,
+      "bytes": 1049411,
+      "sha256": "782fff481e9df879f35ee686c65e8e079941e0b7cd6148f0b66083a27ce96a53",
+      "challenge": false,
+      "stop": false
+    },
+    {
+      "file": "mach-kingdom-2014.html",
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC4219435/",
+      "status": 200,
+      "bytes": 21357,
+      "sha256": "d54653c2fe2448a5ac7d8a68e0629a453e4e4367d1df740a106aa5f6f4353620",
+      "challenge": true,
+      "stop": true
+    },
+    {
+      "file": "pridmore-melgosa-2015.html",
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC4393130/",
+      "status": 200,
+      "bytes": 21355,
+      "sha256": "bc6fb70831d0cbe1feb8341727f599db4aeda6c77de7be931f1c1acb05aee9d6",
+      "challenge": true,
+      "stop": true
+    },
+    {
+      "file": "dress-2015.html",
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC4921196/",
+      "status": 200,
+      "bytes": 21357,
+      "sha256": "c27dce2ce7920eb2fa86389113e49190af1441f7bfe2b746fa4b252e2ac1bd29",
+      "challenge": true,
+      "stop": true
+    },
+    {
+      "file": "finlayson-1994-index.html",
+      "url": "https://www2.cs.sfu.ca/~colour/publications/JOSA-1994/index.html",
+      "status": 200,
+      "bytes": 2303,
+      "sha256": "cc49c5b37e03817c595c1ae8e77919b26a1a1f2e138a0a25e13a05ff480a5908",
+      "challenge": false,
+      "stop": false
+    },
+    {
+      "file": "assimilation-2001-index.html",
+      "url": "https://library.imaging.org/cic/articles/9/1/art00017",
+      "status": 200,
+      "bytes": 139270,
+      "sha256": "d9635d6eeba46ab4e5e4dd03910b53f84ea9e7f511f03d19a8fafa45b1032652",
+      "challenge": false,
+      "stop": false
+    },
+    {
+      "url": "https://persci.mit.edu/gallery/checkershadow/",
+      "stage": "INDEX",
+      "stop": true,
+      "error": "web tool 502",
+      "noRecovery": true
+    },
+    {
+      "url": "https://persci.mit.edu/gaz/publications/gazzan.dir/gazzan.htm",
+      "stage": "BODY",
+      "stop": true,
+      "error": "web tool 502",
+      "noRecovery": true
+    },
+    {
+      "file": "cie-066.html",
+      "url": "https://cie.co.at/eilvterm/17-22-066",
+      "status": 200,
+      "bytes": 67876,
+      "sha256": "b36f82402bd0120d1dffe8b3c9480951bcb48c19bfccd5e88042953cbe64b251"
+    },
+    {
+      "file": "cie-070.html",
+      "url": "https://cie.co.at/eilvterm/17-22-070",
+      "status": 200,
+      "bytes": 65510,
+      "sha256": "3b7283bdba1dbe853d346f5946d891294f3a2c7d93e86199741c6cbc626442bf"
+    },
+    {
+      "file": "cie-071.html",
+      "url": "https://cie.co.at/eilvterm/17-22-071",
+      "status": 200,
+      "bytes": 66260,
+      "sha256": "6698edbb095f76bb2e3e3ebf98986f0164dbcb03b04c6fef3512a7a0b837a25e"
+    },
+    {
+      "file": "mccann-retinex-history.html",
+      "url": "https://mccannimaging.com/Retinex/Retinex.html",
+      "error": "HTTP Error 465: Unknown",
+      "stop": true,
+      "noRecovery": true
+    },
+    {
+      "file": "mccann-assimilation-2001.pdf",
+      "url": "https://library.imaging.org/admin/apis/public/api/ist/website/downloadArticle/cic/9/1/art00017",
+      "status": 200,
+      "bytes": 355881,
+      "sha256": "39e38512ba0dabc3c4ca1ecafc789a06fe0b027c740d90d870ed4e3660f9b652"
+    },
+    {
+      "file": "livingstone-hubel-1987.pdf",
+      "url": "https://livingstone.hms.harvard.edu/sites/livingstone.hms.harvard.edu/files/publications/1987_November.%20Livingstone_Hubel.%20Psychophysical%20Evidence%20for%20Separate%20Channels%20for%20the%20Perception%20of%20Form%2C%20Color%2C%20Movement%2C%20and%20Depth.pdf",
+      "status": 200,
+      "bytes": 12936538,
+      "sha256": "fa4f2f102b8ffbbd766736b78e343596f0db06bae2df16cd713433a00f5ea240"
+    },
+    {
+      "url": "https://www2.cs.sfu.ca/~colour/publications/JOSA-1994/JOSA-1994.pdf",
+      "stage": "BODY",
+      "stop": true,
+      "error": "web tool timeout",
+      "noRecovery": true
+    }
+  ],
+  "readings": [
+    {
+      "work": "Chevreul 1839",
+      "file": "chevreul-1839.pdf",
+      "pages": 760,
+      "actuallyRead": "Title PDF5; complete preface viii–xiv (PDF10–16); complete printed7–16 (PDF25–34), §§8–19. Earlier printed1–6 were only partially read.",
+      "sourcePageImagesPersonallyViewed": [
+        5,
+        16,
+        25,
+        26,
+        32
+      ],
+      "correction": "The preface scan reads1835; OCR reads1855. Title scan confirms1839. Archive metadata reports missing375–378."
+    },
+    {
+      "work": "McCann 2001 Assimilation and Contrast",
+      "file": "mccann-assimilation-2001.pdf",
+      "pages": 6,
+      "actuallyRead": "All six pages, printed91–96, including captions and references.",
+      "sourcePageImagesPersonallyViewed": [
+        3,
+        5
+      ],
+      "limits": "No numerical data transcribed from figure bars. Model averages are authored; paper-specific claims remain bounded to its stimuli/observers."
+    },
+    {
+      "work": "Livingstone & Hubel 1987",
+      "file": "livingstone-hubel-1987.pdf",
+      "pages": 53,
+      "actuallyRead": "Complete PDF6–9, printed3421–3424, and first4000 characters of PDF1; no full-paper claim.",
+      "sourcePageImagesPersonallyViewed": [
+        7,
+        8
+      ],
+      "limits": "Task/observer/eccentricity dependence retained. No broad separate-pathway theorem or universal disappearance claim."
+    },
+    {
+      "work": "W3C CSS Color4 20October2026",
+      "file": "css-color4.html",
+      "actuallyRead": "§19 selected complete transfer functions, rational sRGB↔XYZ matrices, D65/D50 Bradford matrices, Lab definition/inverse excerpt; chapter5 retained provenance read as context.",
+      "limits": "Actual XYZ calculations use explicit white; CSS lab() D50 and our D65 Lab are distinguished."
+    },
+    {
+      "work": "CIE S017:2020 terms",
+      "files": [
+        "cie-066.html",
+        "cie-070.html",
+        "cie-071.html"
+      ],
+      "actuallyRead": "All three complete definitions and notes via web, downloaded exact bodies.",
+      "limits": "Definitions are not measured hue-locus/brightness datasets."
+    },
+    {
+      "work": "McCann Retinex—Definition and History",
+      "actuallyRead": "Web body lines0–143, including Lessons Learned, before subsequent local465.",
+      "limits": "Original1971 PDF465 and later local author-exposition465 are binding stops; no alternate recovery. Author exposition is not the original1971 body."
+    },
+    {
+      "work": "Lafer-Sousa etal2015",
+      "actuallyRead": "Search-result abstract excerpts only; PMC body challenge.",
+      "limits": "Illuminant-prior hypothesis only; no figure/data/observer-statistic transcription."
+    },
+    {
+      "work": "Pridmore & Melgosa2015",
+      "actuallyRead": "First97web lines including abstract and initial introduction only, before later challenge.",
+      "limits": "Not used as an inspected hue-data source."
+    },
+    {
+      "work": "Finlayson etal1994",
+      "actuallyRead": "Complete author index/abstract only; linked original PDF timed out.",
+      "limits": "No theorem/body proof claim."
+    }
+  ],
+  "actualSourceImageViews": 9,
+  "unreadBooks": [
+    "Livingstone Vision and Art",
+    "Fairchild Color Appearance Models",
+    "Kemp Science of Art",
+    "Albers Interaction of Color"
+  ],
+  "guardrails": [
+    "No alternate recovery of stopped works",
+    "All frozen chapter metadata, flags/property absence and Paper introductions remain immutable",
+    "No measured observer dataset or calibrated screen inferred",
+    "No numeric source facts from unread figure pixels",
+    "36 historical independently accepted remains unchanged"
+  ]
+}

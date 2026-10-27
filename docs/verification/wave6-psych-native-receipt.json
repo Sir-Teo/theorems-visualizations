@@ -1,0 +1,1311 @@
+{
+  "status": "PASS",
+  "scope": "Final full nativev6; all17lessons in both themes at320/1200. Render/model consistency is separate from the independent571case arithmetic gate.",
+  "totals": {
+    "layouts": 68,
+    "actions": 1764,
+    "shares": 800,
+    "invalid": 68,
+    "raw": 64,
+    "critical": 260,
+    "checks": 3020,
+    "modelComparisons": 12399336,
+    "domRangeRounding": 96
+  },
+  "sourceHashes": {
+    "../content/psych/ch06.exact.shared.js": "59c2391dcbd9126d21e12034cfe3f7a41ca8e180546fd14423c77e88c1fed12c",
+    "../content/psych/ch06.js": "49a0a3acd35ffe5e70996d470f024f61ea6e83d081d8f9c647b7d5be79caebd4",
+    "../content/psych/ch06.shared.js": "fbb2a2861d63c6eb9afb9967156c317eb86475804dc77fd39f6828e875736552",
+    "../content/psych/ch06.stimuli.shared.js": "03c0931cac25129d4260de597313f887671deed645e8ed237316a18f1236cc3e",
+    "../content/psych/ch06.viz.js": "ea2c853b5b8af71a75dd8f5f2d3373b823eb2b121ae4a3c1b29920817a9533b2",
+    "../content/psych/syllabus.js": "839d410ec997334668f9b57458901ed688c9af8da7f272060fc7673cd24641e3",
+    "../assets/js/viz/core.js": "a6fa1753d9d9e8b9a05a7161fffc58dfd53b27002d9d393a3266aeb96515fe73",
+    "../assets/js/viz/math.js": "439c335e1cc47907bc72bb76559216aa093be4710e0589f41c70192729eb223e",
+    "../assets/js/share-state.js": "13c6a9ac1237d566fc5d79c89e0f4d3029aa8c2817d2c08247a02b1b053a59b1",
+    "../assets/js/app.js": "2f5762e6bf80723a5cb8691f8b19c552dd1d731ab998d5bfcdb27828e2e9a6ce",
+    "../assets/css/style.css": "eef34e3d7aaf8b38233a78d9dc6545e5e0c9d00b09a3a6876d19f3e0e0af15b6",
+    "./fixtures/wave6-psych-reference.json": "5bc3d2c67c63e334c215106b2ec85ac104ad47d00fd4d337c0a7ad607521d047",
+    "../data/col/psych.json": "2128081cdf4532093ad6d05f52b3a7832f4d4d25b217ca270fecb81d4660eadc",
+    "../data/index.json": "fae39f76a3b4ff89faccdcaeb9360c8e4a3d3321d4f91377e38dedfea6d65710",
+    "./wave6-psych-native.mjs": "cc5d4abaf33e928f9becb8897b7cc687f5aab2a200d5ce5c2663362225030a9f",
+    "./wave6-psych-native-science.mjs": "8993c3eee7033eb1466b8c8de3725f8ef36c0ae6b0ead7e18eaff64f6850f9b6",
+    "./wave6-psych-native-cases.mjs": "9f66dc942bc21dbd56394555ee3be22942df64ebf1097352809ad744dba4023e",
+    "./wave6-psych-browser.shared.mjs": "c845a59e524acb37ca94a471824740cb35833c20e157c15b26e8ae752b4202ac"
+  },
+  "cohorts": [
+    {
+      "status": "PASS",
+      "totals": {
+        "layouts": 32,
+        "actions": 736,
+        "shares": 344,
+        "invalid": 32,
+        "raw": 28,
+        "critical": 120,
+        "checks": 1288,
+        "modelComparisons": 5228396,
+        "domRangeRounding": 48
+      },
+      "rows": [
+        {
+          "id": 8,
+          "theme": "light",
+          "width": 320,
+          "criticalCases": 6,
+          "totals": {
+            "layouts": 1,
+            "actions": 23,
+            "shares": 11,
+            "invalid": 1,
+            "raw": 1,
+            "critical": 6,
+            "checks": 43,
+            "modelComparisons": 9790,
+            "domRangeRounding": 3
+          }
+        },
+        {
+          "id": 8,
+          "theme": "light",
+          "width": 1200,
+          "criticalCases": 6,
+          "totals": {
+            "layouts": 1,
+            "actions": 23,
+            "shares": 11,
+            "invalid": 1,
+            "raw": 1,
+            "critical": 6,
+            "checks": 43,
+            "modelComparisons": 9790,
+            "domRangeRounding": 3
+          }
+        },
+        {
+          "id": 8,
+          "theme": "dark",
+          "width": 320,
+          "criticalCases": 6,
+          "totals": {
+            "layouts": 1,
+            "actions": 23,
+            "shares": 11,
+            "invalid": 1,
+            "raw": 1,
+            "critical": 6,
+            "checks": 43,
+            "modelComparisons": 9790,
+            "domRangeRounding": 3
+          }
+        },
+        {
+          "id": 8,
+          "theme": "dark",
+          "width": 1200,
+          "criticalCases": 6,
+          "totals": {
+            "layouts": 1,
+            "actions": 23,
+            "shares": 11,
+            "invalid": 1,
+            "raw": 1,
+            "critical": 6,
+            "checks": 43,
+            "modelComparisons": 9790,
+            "domRangeRounding": 3
+          }
+        },
+        {
+          "id": 1,
+          "theme": "light",
+          "width": 320,
+          "criticalCases": 3,
+          "totals": {
+            "layouts": 1,
+            "actions": 30,
+            "shares": 14,
+            "invalid": 1,
+            "raw": 1,
+            "critical": 3,
+            "checks": 50,
+            "modelComparisons": 855950,
+            "domRangeRounding": 0
+          }
+        },
+        {
+          "id": 1,
+          "theme": "light",
+          "width": 1200,
+          "criticalCases": 3,
+          "totals": {
+            "layouts": 1,
+            "actions": 30,
+            "shares": 14,
+            "invalid": 1,
+            "raw": 1,
+            "critical": 3,
+            "checks": 50,
+            "modelComparisons": 855950,
+            "domRangeRounding": 0
+          }
+        },
+        {
+          "id": 1,
+          "theme": "dark",
+          "width": 320,
+          "criticalCases": 3,
+          "totals": {
+            "layouts": 1,
+            "actions": 30,
+            "shares": 14,
+            "invalid": 1,
+            "raw": 1,
+            "critical": 3,
+            "checks": 50,
+            "modelComparisons": 855950,
+            "domRangeRounding": 0
+          }
+        },
+        {
+          "id": 1,
+          "theme": "dark",
+          "width": 1200,
+          "criticalCases": 3,
+          "totals": {
+            "layouts": 1,
+            "actions": 30,
+            "shares": 14,
+            "invalid": 1,
+            "raw": 1,
+            "critical": 3,
+            "checks": 50,
+            "modelComparisons": 855950,
+            "domRangeRounding": 0
+          }
+        },
+        {
+          "id": 2,
+          "theme": "light",
+          "width": 320,
+          "criticalCases": 4,
+          "totals": {
+            "layouts": 1,
+            "actions": 13,
+            "shares": 7,
+            "invalid": 1,
+            "raw": 1,
+            "critical": 4,
+            "checks": 27,
+            "modelComparisons": 36060,
+            "domRangeRounding": 9
+          }
+        },
+        {
+          "id": 2,
+          "theme": "light",
+          "width": 1200,
+          "criticalCases": 4,
+          "totals": {
+            "layouts": 1,
+            "actions": 13,
+            "shares": 7,
+            "invalid": 1,
+            "raw": 1,
+            "critical": 4,
+            "checks": 27,
+            "modelComparisons": 36066,
+            "domRangeRounding": 9
+          }
+        },
+        {
+          "id": 2,
+          "theme": "dark",
+          "width": 320,
+          "criticalCases": 4,
+          "totals": {
+            "layouts": 1,
+            "actions": 13,
+            "shares": 7,
+            "invalid": 1,
+            "raw": 1,
+            "critical": 4,
+            "checks": 27,
+            "modelComparisons": 36060,
+            "domRangeRounding": 9
+          }
+        },
+        {
+          "id": 2,
+          "theme": "dark",
+          "width": 1200,
+          "criticalCases": 4,
+          "totals": {
+            "layouts": 1,
+            "actions": 13,
+            "shares": 7,
+            "invalid": 1,
+            "raw": 1,
+            "critical": 4,
+            "checks": 27,
+            "modelComparisons": 36066,
+            "domRangeRounding": 9
+          }
+        },
+        {
+          "id": 3,
+          "theme": "light",
+          "width": 320,
+          "criticalCases": 4,
+          "totals": {
+            "layouts": 1,
+            "actions": 24,
+            "shares": 11,
+            "invalid": 1,
+            "raw": 1,
+            "critical": 4,
+            "checks": 42,
+            "modelComparisons": 82668,
+            "domRangeRounding": 0
+          }
+        },
+        {
+          "id": 3,
+          "theme": "light",
+          "width": 1200,
+          "criticalCases": 4,
+          "totals": {
+            "layouts": 1,
+            "actions": 24,
+            "shares": 11,
+            "invalid": 1,
+            "raw": 1,
+            "critical": 4,
+            "checks": 42,
+            "modelComparisons": 82704,
+            "domRangeRounding": 0
+          }
+        },
+        {
+          "id": 3,
+          "theme": "dark",
+          "width": 320,
+          "criticalCases": 4,
+          "totals": {
+            "layouts": 1,
+            "actions": 24,
+            "shares": 11,
+            "invalid": 1,
+            "raw": 1,
+            "critical": 4,
+            "checks": 42,
+            "modelComparisons": 82668,
+            "domRangeRounding": 0
+          }
+        },
+        {
+          "id": 3,
+          "theme": "dark",
+          "width": 1200,
+          "criticalCases": 4,
+          "totals": {
+            "layouts": 1,
+            "actions": 24,
+            "shares": 11,
+            "invalid": 1,
+            "raw": 1,
+            "critical": 4,
+            "checks": 42,
+            "modelComparisons": 82704,
+            "domRangeRounding": 0
+          }
+        },
+        {
+          "id": 4,
+          "theme": "light",
+          "width": 320,
+          "criticalCases": 3,
+          "totals": {
+            "layouts": 1,
+            "actions": 20,
+            "shares": 9,
+            "invalid": 1,
+            "raw": 1,
+            "critical": 3,
+            "checks": 35,
+            "modelComparisons": 66200,
+            "domRangeRounding": 0
+          }
+        },
+        {
+          "id": 4,
+          "theme": "light",
+          "width": 1200,
+          "criticalCases": 3,
+          "totals": {
+            "layouts": 1,
+            "actions": 20,
+            "shares": 9,
+            "invalid": 1,
+            "raw": 1,
+            "critical": 3,
+            "checks": 35,
+            "modelComparisons": 66200,
+            "domRangeRounding": 0
+          }
+        },
+        {
+          "id": 4,
+          "theme": "dark",
+          "width": 320,
+          "criticalCases": 3,
+          "totals": {
+            "layouts": 1,
+            "actions": 20,
+            "shares": 9,
+            "invalid": 1,
+            "raw": 1,
+            "critical": 3,
+            "checks": 35,
+            "modelComparisons": 66200,
+            "domRangeRounding": 0
+          }
+        },
+        {
+          "id": 4,
+          "theme": "dark",
+          "width": 1200,
+          "criticalCases": 3,
+          "totals": {
+            "layouts": 1,
+            "actions": 20,
+            "shares": 9,
+            "invalid": 1,
+            "raw": 1,
+            "critical": 3,
+            "checks": 35,
+            "modelComparisons": 66200,
+            "domRangeRounding": 0
+          }
+        },
+        {
+          "id": 5,
+          "theme": "light",
+          "width": 320,
+          "criticalCases": 3,
+          "totals": {
+            "layouts": 1,
+            "actions": 16,
+            "shares": 8,
+            "invalid": 1,
+            "raw": 1,
+            "critical": 3,
+            "checks": 30,
+            "modelComparisons": 2070,
+            "domRangeRounding": 0
+          }
+        },
+        {
+          "id": 5,
+          "theme": "light",
+          "width": 1200,
+          "criticalCases": 3,
+          "totals": {
+            "layouts": 1,
+            "actions": 16,
+            "shares": 8,
+            "invalid": 1,
+            "raw": 1,
+            "critical": 3,
+            "checks": 30,
+            "modelComparisons": 2070,
+            "domRangeRounding": 0
+          }
+        },
+        {
+          "id": 5,
+          "theme": "dark",
+          "width": 320,
+          "criticalCases": 3,
+          "totals": {
+            "layouts": 1,
+            "actions": 16,
+            "shares": 8,
+            "invalid": 1,
+            "raw": 1,
+            "critical": 3,
+            "checks": 30,
+            "modelComparisons": 2070,
+            "domRangeRounding": 0
+          }
+        },
+        {
+          "id": 5,
+          "theme": "dark",
+          "width": 1200,
+          "criticalCases": 3,
+          "totals": {
+            "layouts": 1,
+            "actions": 16,
+            "shares": 8,
+            "invalid": 1,
+            "raw": 1,
+            "critical": 3,
+            "checks": 30,
+            "modelComparisons": 2070,
+            "domRangeRounding": 0
+          }
+        },
+        {
+          "id": 6,
+          "theme": "light",
+          "width": 320,
+          "criticalCases": 4,
+          "totals": {
+            "layouts": 1,
+            "actions": 37,
+            "shares": 15,
+            "invalid": 1,
+            "raw": 1,
+            "critical": 4,
+            "checks": 58,
+            "modelComparisons": 237372,
+            "domRangeRounding": 0
+          }
+        },
+        {
+          "id": 6,
+          "theme": "light",
+          "width": 1200,
+          "criticalCases": 4,
+          "totals": {
+            "layouts": 1,
+            "actions": 37,
+            "shares": 15,
+            "invalid": 1,
+            "raw": 1,
+            "critical": 4,
+            "checks": 58,
+            "modelComparisons": 237372,
+            "domRangeRounding": 0
+          }
+        },
+        {
+          "id": 6,
+          "theme": "dark",
+          "width": 320,
+          "criticalCases": 4,
+          "totals": {
+            "layouts": 1,
+            "actions": 37,
+            "shares": 15,
+            "invalid": 1,
+            "raw": 1,
+            "critical": 4,
+            "checks": 58,
+            "modelComparisons": 237372,
+            "domRangeRounding": 0
+          }
+        },
+        {
+          "id": 6,
+          "theme": "dark",
+          "width": 1200,
+          "criticalCases": 4,
+          "totals": {
+            "layouts": 1,
+            "actions": 37,
+            "shares": 15,
+            "invalid": 1,
+            "raw": 1,
+            "critical": 4,
+            "checks": 58,
+            "modelComparisons": 237372,
+            "domRangeRounding": 0
+          }
+        },
+        {
+          "id": 7,
+          "theme": "light",
+          "width": 320,
+          "criticalCases": 3,
+          "totals": {
+            "layouts": 1,
+            "actions": 21,
+            "shares": 11,
+            "invalid": 1,
+            "raw": 0,
+            "critical": 3,
+            "checks": 37,
+            "modelComparisons": 16968,
+            "domRangeRounding": 0
+          }
+        },
+        {
+          "id": 7,
+          "theme": "light",
+          "width": 1200,
+          "criticalCases": 3,
+          "totals": {
+            "layouts": 1,
+            "actions": 21,
+            "shares": 11,
+            "invalid": 1,
+            "raw": 0,
+            "critical": 3,
+            "checks": 37,
+            "modelComparisons": 16968,
+            "domRangeRounding": 0
+          }
+        },
+        {
+          "id": 7,
+          "theme": "dark",
+          "width": 320,
+          "criticalCases": 3,
+          "totals": {
+            "layouts": 1,
+            "actions": 21,
+            "shares": 11,
+            "invalid": 1,
+            "raw": 0,
+            "critical": 3,
+            "checks": 37,
+            "modelComparisons": 16968,
+            "domRangeRounding": 0
+          }
+        },
+        {
+          "id": 7,
+          "theme": "dark",
+          "width": 1200,
+          "criticalCases": 3,
+          "totals": {
+            "layouts": 1,
+            "actions": 21,
+            "shares": 11,
+            "invalid": 1,
+            "raw": 0,
+            "critical": 3,
+            "checks": 37,
+            "modelComparisons": 16968,
+            "domRangeRounding": 0
+          }
+        }
+      ],
+      "errors": [],
+      "sourceHashes": {
+        "../content/psych/ch06.exact.shared.js": "59c2391dcbd9126d21e12034cfe3f7a41ca8e180546fd14423c77e88c1fed12c",
+        "../content/psych/ch06.js": "49a0a3acd35ffe5e70996d470f024f61ea6e83d081d8f9c647b7d5be79caebd4",
+        "../content/psych/ch06.shared.js": "fbb2a2861d63c6eb9afb9967156c317eb86475804dc77fd39f6828e875736552",
+        "../content/psych/ch06.stimuli.shared.js": "03c0931cac25129d4260de597313f887671deed645e8ed237316a18f1236cc3e",
+        "../content/psych/ch06.viz.js": "ea2c853b5b8af71a75dd8f5f2d3373b823eb2b121ae4a3c1b29920817a9533b2",
+        "../content/psych/syllabus.js": "839d410ec997334668f9b57458901ed688c9af8da7f272060fc7673cd24641e3",
+        "../assets/js/viz/core.js": "a6fa1753d9d9e8b9a05a7161fffc58dfd53b27002d9d393a3266aeb96515fe73",
+        "../assets/js/viz/math.js": "439c335e1cc47907bc72bb76559216aa093be4710e0589f41c70192729eb223e",
+        "../assets/js/share-state.js": "13c6a9ac1237d566fc5d79c89e0f4d3029aa8c2817d2c08247a02b1b053a59b1",
+        "../assets/js/app.js": "2f5762e6bf80723a5cb8691f8b19c552dd1d731ab998d5bfcdb27828e2e9a6ce",
+        "../assets/css/style.css": "eef34e3d7aaf8b38233a78d9dc6545e5e0c9d00b09a3a6876d19f3e0e0af15b6",
+        "./fixtures/wave6-psych-reference.json": "5bc3d2c67c63e334c215106b2ec85ac104ad47d00fd4d337c0a7ad607521d047",
+        "../data/col/psych.json": "2128081cdf4532093ad6d05f52b3a7832f4d4d25b217ca270fecb81d4660eadc",
+        "../data/index.json": "fae39f76a3b4ff89faccdcaeb9360c8e4a3d3321d4f91377e38dedfea6d65710",
+        "./wave6-psych-native.mjs": "cc5d4abaf33e928f9becb8897b7cc687f5aab2a200d5ce5c2663362225030a9f",
+        "./wave6-psych-native-science.mjs": "8993c3eee7033eb1466b8c8de3725f8ef36c0ae6b0ead7e18eaff64f6850f9b6",
+        "./wave6-psych-native-cases.mjs": "9f66dc942bc21dbd56394555ee3be22942df64ebf1097352809ad744dba4023e",
+        "./wave6-psych-browser.shared.mjs": "c845a59e524acb37ca94a471824740cb35833c20e157c15b26e8ae752b4202ac"
+      }
+    },
+    {
+      "status": "PASS",
+      "totals": {
+        "layouts": 36,
+        "actions": 1028,
+        "shares": 456,
+        "invalid": 36,
+        "raw": 36,
+        "critical": 140,
+        "checks": 1732,
+        "modelComparisons": 7170940,
+        "domRangeRounding": 48
+      },
+      "rows": [
+        {
+          "id": 16,
+          "theme": "light",
+          "width": 320,
+          "criticalCases": 3,
+          "totals": {
+            "layouts": 1,
+            "actions": 20,
+            "shares": 10,
+            "invalid": 1,
+            "raw": 1,
+            "critical": 3,
+            "checks": 36,
+            "modelComparisons": 3348,
+            "domRangeRounding": 0
+          }
+        },
+        {
+          "id": 16,
+          "theme": "light",
+          "width": 1200,
+          "criticalCases": 3,
+          "totals": {
+            "layouts": 1,
+            "actions": 20,
+            "shares": 10,
+            "invalid": 1,
+            "raw": 1,
+            "critical": 3,
+            "checks": 36,
+            "modelComparisons": 3348,
+            "domRangeRounding": 0
+          }
+        },
+        {
+          "id": 16,
+          "theme": "dark",
+          "width": 320,
+          "criticalCases": 3,
+          "totals": {
+            "layouts": 1,
+            "actions": 20,
+            "shares": 10,
+            "invalid": 1,
+            "raw": 1,
+            "critical": 3,
+            "checks": 36,
+            "modelComparisons": 3348,
+            "domRangeRounding": 0
+          }
+        },
+        {
+          "id": 16,
+          "theme": "dark",
+          "width": 1200,
+          "criticalCases": 3,
+          "totals": {
+            "layouts": 1,
+            "actions": 20,
+            "shares": 10,
+            "invalid": 1,
+            "raw": 1,
+            "critical": 3,
+            "checks": 36,
+            "modelComparisons": 3348,
+            "domRangeRounding": 0
+          }
+        },
+        {
+          "id": 17,
+          "theme": "light",
+          "width": 320,
+          "criticalCases": 5,
+          "totals": {
+            "layouts": 1,
+            "actions": 37,
+            "shares": 15,
+            "invalid": 1,
+            "raw": 1,
+            "critical": 5,
+            "checks": 60,
+            "modelComparisons": 52054,
+            "domRangeRounding": 0
+          }
+        },
+        {
+          "id": 17,
+          "theme": "light",
+          "width": 1200,
+          "criticalCases": 5,
+          "totals": {
+            "layouts": 1,
+            "actions": 37,
+            "shares": 15,
+            "invalid": 1,
+            "raw": 1,
+            "critical": 5,
+            "checks": 60,
+            "modelComparisons": 53186,
+            "domRangeRounding": 0
+          }
+        },
+        {
+          "id": 17,
+          "theme": "dark",
+          "width": 320,
+          "criticalCases": 5,
+          "totals": {
+            "layouts": 1,
+            "actions": 37,
+            "shares": 15,
+            "invalid": 1,
+            "raw": 1,
+            "critical": 5,
+            "checks": 60,
+            "modelComparisons": 52054,
+            "domRangeRounding": 0
+          }
+        },
+        {
+          "id": 17,
+          "theme": "dark",
+          "width": 1200,
+          "criticalCases": 5,
+          "totals": {
+            "layouts": 1,
+            "actions": 37,
+            "shares": 15,
+            "invalid": 1,
+            "raw": 1,
+            "critical": 5,
+            "checks": 60,
+            "modelComparisons": 53186,
+            "domRangeRounding": 0
+          }
+        },
+        {
+          "id": 9,
+          "theme": "light",
+          "width": 320,
+          "criticalCases": 5,
+          "totals": {
+            "layouts": 1,
+            "actions": 38,
+            "shares": 18,
+            "invalid": 1,
+            "raw": 1,
+            "critical": 5,
+            "checks": 64,
+            "modelComparisons": 1639818,
+            "domRangeRounding": 0
+          }
+        },
+        {
+          "id": 9,
+          "theme": "light",
+          "width": 1200,
+          "criticalCases": 5,
+          "totals": {
+            "layouts": 1,
+            "actions": 38,
+            "shares": 18,
+            "invalid": 1,
+            "raw": 1,
+            "critical": 5,
+            "checks": 64,
+            "modelComparisons": 1639818,
+            "domRangeRounding": 0
+          }
+        },
+        {
+          "id": 9,
+          "theme": "dark",
+          "width": 320,
+          "criticalCases": 5,
+          "totals": {
+            "layouts": 1,
+            "actions": 38,
+            "shares": 18,
+            "invalid": 1,
+            "raw": 1,
+            "critical": 5,
+            "checks": 64,
+            "modelComparisons": 1639818,
+            "domRangeRounding": 0
+          }
+        },
+        {
+          "id": 9,
+          "theme": "dark",
+          "width": 1200,
+          "criticalCases": 5,
+          "totals": {
+            "layouts": 1,
+            "actions": 38,
+            "shares": 18,
+            "invalid": 1,
+            "raw": 1,
+            "critical": 5,
+            "checks": 64,
+            "modelComparisons": 1639818,
+            "domRangeRounding": 0
+          }
+        },
+        {
+          "id": 10,
+          "theme": "light",
+          "width": 320,
+          "criticalCases": 4,
+          "totals": {
+            "layouts": 1,
+            "actions": 33,
+            "shares": 15,
+            "invalid": 1,
+            "raw": 1,
+            "critical": 4,
+            "checks": 55,
+            "modelComparisons": 29312,
+            "domRangeRounding": 0
+          }
+        },
+        {
+          "id": 10,
+          "theme": "light",
+          "width": 1200,
+          "criticalCases": 4,
+          "totals": {
+            "layouts": 1,
+            "actions": 33,
+            "shares": 15,
+            "invalid": 1,
+            "raw": 1,
+            "critical": 4,
+            "checks": 55,
+            "modelComparisons": 29312,
+            "domRangeRounding": 0
+          }
+        },
+        {
+          "id": 10,
+          "theme": "dark",
+          "width": 320,
+          "criticalCases": 4,
+          "totals": {
+            "layouts": 1,
+            "actions": 33,
+            "shares": 15,
+            "invalid": 1,
+            "raw": 1,
+            "critical": 4,
+            "checks": 55,
+            "modelComparisons": 29312,
+            "domRangeRounding": 0
+          }
+        },
+        {
+          "id": 10,
+          "theme": "dark",
+          "width": 1200,
+          "criticalCases": 4,
+          "totals": {
+            "layouts": 1,
+            "actions": 33,
+            "shares": 15,
+            "invalid": 1,
+            "raw": 1,
+            "critical": 4,
+            "checks": 55,
+            "modelComparisons": 29312,
+            "domRangeRounding": 0
+          }
+        },
+        {
+          "id": 11,
+          "theme": "light",
+          "width": 320,
+          "criticalCases": 3,
+          "totals": {
+            "layouts": 1,
+            "actions": 20,
+            "shares": 8,
+            "invalid": 1,
+            "raw": 1,
+            "critical": 3,
+            "checks": 34,
+            "modelComparisons": 8315,
+            "domRangeRounding": 3
+          }
+        },
+        {
+          "id": 11,
+          "theme": "light",
+          "width": 1200,
+          "criticalCases": 3,
+          "totals": {
+            "layouts": 1,
+            "actions": 20,
+            "shares": 8,
+            "invalid": 1,
+            "raw": 1,
+            "critical": 3,
+            "checks": 34,
+            "modelComparisons": 8315,
+            "domRangeRounding": 3
+          }
+        },
+        {
+          "id": 11,
+          "theme": "dark",
+          "width": 320,
+          "criticalCases": 3,
+          "totals": {
+            "layouts": 1,
+            "actions": 20,
+            "shares": 8,
+            "invalid": 1,
+            "raw": 1,
+            "critical": 3,
+            "checks": 34,
+            "modelComparisons": 8315,
+            "domRangeRounding": 3
+          }
+        },
+        {
+          "id": 11,
+          "theme": "dark",
+          "width": 1200,
+          "criticalCases": 3,
+          "totals": {
+            "layouts": 1,
+            "actions": 20,
+            "shares": 8,
+            "invalid": 1,
+            "raw": 1,
+            "critical": 3,
+            "checks": 34,
+            "modelComparisons": 8315,
+            "domRangeRounding": 3
+          }
+        },
+        {
+          "id": 12,
+          "theme": "light",
+          "width": 320,
+          "criticalCases": 4,
+          "totals": {
+            "layouts": 1,
+            "actions": 25,
+            "shares": 12,
+            "invalid": 1,
+            "raw": 1,
+            "critical": 4,
+            "checks": 44,
+            "modelComparisons": 12080,
+            "domRangeRounding": 6
+          }
+        },
+        {
+          "id": 12,
+          "theme": "light",
+          "width": 1200,
+          "criticalCases": 4,
+          "totals": {
+            "layouts": 1,
+            "actions": 25,
+            "shares": 12,
+            "invalid": 1,
+            "raw": 1,
+            "critical": 4,
+            "checks": 44,
+            "modelComparisons": 12080,
+            "domRangeRounding": 6
+          }
+        },
+        {
+          "id": 12,
+          "theme": "dark",
+          "width": 320,
+          "criticalCases": 4,
+          "totals": {
+            "layouts": 1,
+            "actions": 25,
+            "shares": 12,
+            "invalid": 1,
+            "raw": 1,
+            "critical": 4,
+            "checks": 44,
+            "modelComparisons": 12080,
+            "domRangeRounding": 6
+          }
+        },
+        {
+          "id": 12,
+          "theme": "dark",
+          "width": 1200,
+          "criticalCases": 4,
+          "totals": {
+            "layouts": 1,
+            "actions": 25,
+            "shares": 12,
+            "invalid": 1,
+            "raw": 1,
+            "critical": 4,
+            "checks": 44,
+            "modelComparisons": 12080,
+            "domRangeRounding": 6
+          }
+        },
+        {
+          "id": 13,
+          "theme": "light",
+          "width": 320,
+          "criticalCases": 3,
+          "totals": {
+            "layouts": 1,
+            "actions": 23,
+            "shares": 11,
+            "invalid": 1,
+            "raw": 1,
+            "critical": 3,
+            "checks": 40,
+            "modelComparisons": 6224,
+            "domRangeRounding": 0
+          }
+        },
+        {
+          "id": 13,
+          "theme": "light",
+          "width": 1200,
+          "criticalCases": 3,
+          "totals": {
+            "layouts": 1,
+            "actions": 23,
+            "shares": 11,
+            "invalid": 1,
+            "raw": 1,
+            "critical": 3,
+            "checks": 40,
+            "modelComparisons": 6224,
+            "domRangeRounding": 0
+          }
+        },
+        {
+          "id": 13,
+          "theme": "dark",
+          "width": 320,
+          "criticalCases": 3,
+          "totals": {
+            "layouts": 1,
+            "actions": 23,
+            "shares": 11,
+            "invalid": 1,
+            "raw": 1,
+            "critical": 3,
+            "checks": 40,
+            "modelComparisons": 6224,
+            "domRangeRounding": 0
+          }
+        },
+        {
+          "id": 13,
+          "theme": "dark",
+          "width": 1200,
+          "criticalCases": 3,
+          "totals": {
+            "layouts": 1,
+            "actions": 23,
+            "shares": 11,
+            "invalid": 1,
+            "raw": 1,
+            "critical": 3,
+            "checks": 40,
+            "modelComparisons": 6224,
+            "domRangeRounding": 0
+          }
+        },
+        {
+          "id": 14,
+          "theme": "light",
+          "width": 320,
+          "criticalCases": 4,
+          "totals": {
+            "layouts": 1,
+            "actions": 36,
+            "shares": 15,
+            "invalid": 1,
+            "raw": 1,
+            "critical": 4,
+            "checks": 58,
+            "modelComparisons": 13218,
+            "domRangeRounding": 3
+          }
+        },
+        {
+          "id": 14,
+          "theme": "light",
+          "width": 1200,
+          "criticalCases": 4,
+          "totals": {
+            "layouts": 1,
+            "actions": 36,
+            "shares": 15,
+            "invalid": 1,
+            "raw": 1,
+            "critical": 4,
+            "checks": 58,
+            "modelComparisons": 13218,
+            "domRangeRounding": 3
+          }
+        },
+        {
+          "id": 14,
+          "theme": "dark",
+          "width": 320,
+          "criticalCases": 4,
+          "totals": {
+            "layouts": 1,
+            "actions": 36,
+            "shares": 15,
+            "invalid": 1,
+            "raw": 1,
+            "critical": 4,
+            "checks": 58,
+            "modelComparisons": 13218,
+            "domRangeRounding": 3
+          }
+        },
+        {
+          "id": 14,
+          "theme": "dark",
+          "width": 1200,
+          "criticalCases": 4,
+          "totals": {
+            "layouts": 1,
+            "actions": 36,
+            "shares": 15,
+            "invalid": 1,
+            "raw": 1,
+            "critical": 4,
+            "checks": 58,
+            "modelComparisons": 13218,
+            "domRangeRounding": 3
+          }
+        },
+        {
+          "id": 15,
+          "theme": "light",
+          "width": 320,
+          "criticalCases": 4,
+          "totals": {
+            "layouts": 1,
+            "actions": 25,
+            "shares": 10,
+            "invalid": 1,
+            "raw": 1,
+            "critical": 4,
+            "checks": 42,
+            "modelComparisons": 27800,
+            "domRangeRounding": 0
+          }
+        },
+        {
+          "id": 15,
+          "theme": "light",
+          "width": 1200,
+          "criticalCases": 4,
+          "totals": {
+            "layouts": 1,
+            "actions": 25,
+            "shares": 10,
+            "invalid": 1,
+            "raw": 1,
+            "critical": 4,
+            "checks": 42,
+            "modelComparisons": 27800,
+            "domRangeRounding": 0
+          }
+        },
+        {
+          "id": 15,
+          "theme": "dark",
+          "width": 320,
+          "criticalCases": 4,
+          "totals": {
+            "layouts": 1,
+            "actions": 25,
+            "shares": 10,
+            "invalid": 1,
+            "raw": 1,
+            "critical": 4,
+            "checks": 42,
+            "modelComparisons": 27800,
+            "domRangeRounding": 0
+          }
+        },
+        {
+          "id": 15,
+          "theme": "dark",
+          "width": 1200,
+          "criticalCases": 4,
+          "totals": {
+            "layouts": 1,
+            "actions": 25,
+            "shares": 10,
+            "invalid": 1,
+            "raw": 1,
+            "critical": 4,
+            "checks": 42,
+            "modelComparisons": 27800,
+            "domRangeRounding": 0
+          }
+        }
+      ],
+      "errors": [],
+      "sourceHashes": {
+        "../content/psych/ch06.exact.shared.js": "59c2391dcbd9126d21e12034cfe3f7a41ca8e180546fd14423c77e88c1fed12c",
+        "../content/psych/ch06.js": "49a0a3acd35ffe5e70996d470f024f61ea6e83d081d8f9c647b7d5be79caebd4",
+        "../content/psych/ch06.shared.js": "fbb2a2861d63c6eb9afb9967156c317eb86475804dc77fd39f6828e875736552",
+        "../content/psych/ch06.stimuli.shared.js": "03c0931cac25129d4260de597313f887671deed645e8ed237316a18f1236cc3e",
+        "../content/psych/ch06.viz.js": "ea2c853b5b8af71a75dd8f5f2d3373b823eb2b121ae4a3c1b29920817a9533b2",
+        "../content/psych/syllabus.js": "839d410ec997334668f9b57458901ed688c9af8da7f272060fc7673cd24641e3",
+        "../assets/js/viz/core.js": "a6fa1753d9d9e8b9a05a7161fffc58dfd53b27002d9d393a3266aeb96515fe73",
+        "../assets/js/viz/math.js": "439c335e1cc47907bc72bb76559216aa093be4710e0589f41c70192729eb223e",
+        "../assets/js/share-state.js": "13c6a9ac1237d566fc5d79c89e0f4d3029aa8c2817d2c08247a02b1b053a59b1",
+        "../assets/js/app.js": "2f5762e6bf80723a5cb8691f8b19c552dd1d731ab998d5bfcdb27828e2e9a6ce",
+        "../assets/css/style.css": "eef34e3d7aaf8b38233a78d9dc6545e5e0c9d00b09a3a6876d19f3e0e0af15b6",
+        "./fixtures/wave6-psych-reference.json": "5bc3d2c67c63e334c215106b2ec85ac104ad47d00fd4d337c0a7ad607521d047",
+        "../data/col/psych.json": "2128081cdf4532093ad6d05f52b3a7832f4d4d25b217ca270fecb81d4660eadc",
+        "../data/index.json": "fae39f76a3b4ff89faccdcaeb9360c8e4a3d3321d4f91377e38dedfea6d65710",
+        "./wave6-psych-native.mjs": "cc5d4abaf33e928f9becb8897b7cc687f5aab2a200d5ce5c2663362225030a9f",
+        "./wave6-psych-native-science.mjs": "8993c3eee7033eb1466b8c8de3725f8ef36c0ae6b0ead7e18eaff64f6850f9b6",
+        "./wave6-psych-native-cases.mjs": "9f66dc942bc21dbd56394555ee3be22942df64ebf1097352809ad744dba4023e",
+        "./wave6-psych-browser.shared.mjs": "c845a59e524acb37ca94a471824740cb35833c20e157c15b26e8ae752b4202ac"
+      }
+    }
+  ],
+  "actualInteractions": "Keyboard Home/End and native pointer slider placement; visible label switch clicks; every selector option; actual Play/Pause/Restart; actual Create Share button followed by fresh-page restore; whole invalid-state rejection; original binary64 restoration;260 exact intended critical restores.",
+  "explicitPlatformRules": [
+    "DOM range-thumb serialization may differ by at most4ULPs; saved state and primary model inputs remain exact.96observations counted.",
+    "Chromium canvas lineWidth uses float32; actual pen must exactly equal Math.fround(requested). Geometric endpoints remain strict.",
+    "Nonfinite log-of-zero sentinel uses exact Object.is equality. No approximation tolerance added."
+  ],
+  "retainedFailures": [
+    {
+      "path": "/workspace/scratch/wave6-psych-research/native-full-v4-a/failure.txt",
+      "sha256": "764a367c6c711922c2407efbc8b91200c155369b260f0edd614413c16782c78d",
+      "meaning": "Retained superseded/failed or intentionally interrupted native run; not counted as final qualification."
+    },
+    {
+      "path": "/workspace/scratch/wave6-psych-research/native-full-v4-b/failure.txt",
+      "sha256": "ac4f2c75039d126c9ce2ad81798db10008d2106775f6f7d231a89514923167e7",
+      "meaning": "Retained superseded/failed or intentionally interrupted native run; not counted as final qualification."
+    },
+    {
+      "path": "/workspace/scratch/wave6-psych-research/native-full-v5-a/failure.txt",
+      "sha256": "7c15ac03d113ac2dcbed0caf1d54fdead8670b4ad42eb944c5c48e61ae6d0c57",
+      "meaning": "Retained superseded/failed or intentionally interrupted native run; not counted as final qualification."
+    },
+    {
+      "path": "/workspace/scratch/wave6-psych-research/native-full-v5-b/failure.txt",
+      "sha256": "ebc7fcd6c30572ea5f6b4bc76f3b344939d8214ca1987a02422e0ce02111ff05",
+      "meaning": "Retained superseded/failed or intentionally interrupted native run; not counted as final qualification."
+    },
+    {
+      "path": "/workspace/scratch/wave6-psych-research/native-preflight-v1-a/failure.txt",
+      "sha256": "101514382590049f54eb07d7f0c201d5de67f18910a2e5fe07599f6ba1e47447",
+      "meaning": "Retained superseded/failed or intentionally interrupted native run; not counted as final qualification."
+    },
+    {
+      "path": "/workspace/scratch/wave6-psych-research/native-preflight-v1-b/failure.txt",
+      "sha256": "d8da2b143fe6bcf31b745a3e78254df0c35738d3f9debbee7149d2ab10319657",
+      "meaning": "Retained superseded/failed or intentionally interrupted native run; not counted as final qualification."
+    },
+    {
+      "path": "/workspace/scratch/wave6-psych-research/native-preflight-v2-b/failure.txt",
+      "sha256": "b934aa7f8dc0e8249c8d687b89c6f54baa891b1d9f5c3a67dffb35acd2958ac2",
+      "meaning": "Retained superseded/failed or intentionally interrupted native run; not counted as final qualification."
+    }
+  ],
+  "allOwnedBrowsersAndServersExplicitlyPolledClosed": true
+}
