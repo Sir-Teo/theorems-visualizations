@@ -1,0 +1,1437 @@
+{
+  "purpose": "Additive raster-glyph audit after correcting an inherited descent-bound sign error. No ARCH author source, prior tests or prior receipts were changed. No independent acceptance is added.",
+  "sourceDefect": "The old probe subtracted actualBoundingBoxDescent from the baseline instead of adding it. The supplement rasterizes text with the live font, baseline, alignment and transform.",
+  "scope": "44 unchanged default layouts and all 184 original critical states, light/dark at 320/1200 CSS pixels. Glyph edge/overlap, overlay, rich text, math and document overflow checks; this supplements the existing full geometry/native audit.",
+  "totals": {
+    "layouts": 228,
+    "stages": 684,
+    "glyphs": 4090
+  },
+  "issues": [],
+  "runs": [
+    {
+      "sourceHashes": {
+        "content/arch/ch06.js": "e6373a6cff36c2cc682dfe14d5a79f002c67452a02822473d1de100ed2c9c660",
+        "content/arch/ch06.shared.js": "5f49fc9b53ee97ae82b4522fb930145b0da1547ba279b1093f416b9e2ebebe31",
+        "content/arch/ch06.viz.js": "3e2c965f2d470ccdd71041f42a706d22e54372a74d3c0155b5d587341466b59b",
+        "content/arch/syllabus.js": "76c2bf253d1bfdcd9175bbf411d102f783954b13aefe6f0d153d4d7c7b29bb6c",
+        "tests/wave6-arch-native-cases.mjs": "3aeeb8493eeaf2f688088fcd6cea0b05e839194de73b3f18d432e794b4a70a83",
+        "tests/wave6-arch-glyph-supplement.mjs": "ebeaf3956b198b5bc0796b4ae561b30cb78f5af92e845f13c0d72f926cc4c4d4",
+        "tests/wave6-ling-browser.shared.mjs": "5a49a6d5e5c391d023e2483b4c20accae1d84691a9dc7e6a578f8eae5de51228",
+        "tests/wave6-ling-glyph.shared.mjs": "87e31d5f01c0e93492f901a8c411e88c7e1e9c551d9c2843c128c6538b9b9eb0",
+        "assets/js/viz/core.js": "a6fa1753d9d9e8b9a05a7161fffc58dfd53b27002d9d393a3266aeb96515fe73",
+        "assets/js/viz/math.js": "439c335e1cc47907bc72bb76559216aa093be4710e0589f41c70192729eb223e",
+        "assets/js/app.js": "2f5762e6bf80723a5cb8691f8b19c552dd1d731ab998d5bfcdb27828e2e9a6ce",
+        "assets/css/style.css": "eef34e3d7aaf8b38233a78d9dc6545e5e0c9d00b09a3a6876d19f3e0e0af15b6",
+        "assets/js/share-state.js": "13c6a9ac1237d566fc5d79c89e0f4d3029aa8c2817d2c08247a02b1b053a59b1",
+        "data/index.json": "97510ff1028402057a692b932371a757885a45412ebf5bc2274ab65cff1201fa",
+        "data/col/arch.json": "26e0b3b0efdde89f209f0432a712c7f466bc270af214bf4c59cc1bb5af438348"
+      },
+      "sourceDataHarnessUnchanged": true,
+      "layouts": 114,
+      "stages": 342,
+      "glyphs": 2045,
+      "issues": [],
+      "errors": [],
+      "rows": [
+        {
+          "label": "arch-6.1-light-320-default",
+          "issues": [],
+          "stages": 3,
+          "glyphs": 16
+        },
+        {
+          "label": "arch-6.1-light-320-critical-0",
+          "issues": [],
+          "stages": 3,
+          "glyphs": 16
+        },
+        {
+          "label": "arch-6.1-light-320-critical-1",
+          "issues": [],
+          "stages": 3,
+          "glyphs": 18
+        },
+        {
+          "label": "arch-6.1-light-320-critical-2",
+          "issues": [],
+          "stages": 3,
+          "glyphs": 16
+        },
+        {
+          "label": "arch-6.1-light-320-critical-3",
+          "issues": [],
+          "stages": 3,
+          "glyphs": 16
+        },
+        {
+          "label": "arch-6.1-light-1200-default",
+          "issues": [],
+          "stages": 3,
+          "glyphs": 19
+        },
+        {
+          "label": "arch-6.1-light-1200-critical-0",
+          "issues": [],
+          "stages": 3,
+          "glyphs": 19
+        },
+        {
+          "label": "arch-6.1-light-1200-critical-1",
+          "issues": [],
+          "stages": 3,
+          "glyphs": 18
+        },
+        {
+          "label": "arch-6.1-light-1200-critical-2",
+          "issues": [],
+          "stages": 3,
+          "glyphs": 19
+        },
+        {
+          "label": "arch-6.1-light-1200-critical-3",
+          "issues": [],
+          "stages": 3,
+          "glyphs": 19
+        },
+        {
+          "label": "arch-6.2-light-320-default",
+          "issues": [],
+          "stages": 3,
+          "glyphs": 16
+        },
+        {
+          "label": "arch-6.2-light-320-critical-0",
+          "issues": [],
+          "stages": 3,
+          "glyphs": 17
+        },
+        {
+          "label": "arch-6.2-light-320-critical-1",
+          "issues": [],
+          "stages": 3,
+          "glyphs": 20
+        },
+        {
+          "label": "arch-6.2-light-320-critical-2",
+          "issues": [],
+          "stages": 3,
+          "glyphs": 17
+        },
+        {
+          "label": "arch-6.2-light-1200-default",
+          "issues": [],
+          "stages": 3,
+          "glyphs": 22
+        },
+        {
+          "label": "arch-6.2-light-1200-critical-0",
+          "issues": [],
+          "stages": 3,
+          "glyphs": 17
+        },
+        {
+          "label": "arch-6.2-light-1200-critical-1",
+          "issues": [],
+          "stages": 3,
+          "glyphs": 20
+        },
+        {
+          "label": "arch-6.2-light-1200-critical-2",
+          "issues": [],
+          "stages": 3,
+          "glyphs": 17
+        },
+        {
+          "label": "arch-6.3-light-320-default",
+          "issues": [],
+          "stages": 3,
+          "glyphs": 20
+        },
+        {
+          "label": "arch-6.3-light-320-critical-0",
+          "issues": [],
+          "stages": 3,
+          "glyphs": 20
+        },
+        {
+          "label": "arch-6.3-light-320-critical-1",
+          "issues": [],
+          "stages": 3,
+          "glyphs": 19
+        },
+        {
+          "label": "arch-6.3-light-320-critical-2",
+          "issues": [],
+          "stages": 3,
+          "glyphs": 23
+        },
+        {
+          "label": "arch-6.3-light-1200-default",
+          "issues": [],
+          "stages": 3,
+          "glyphs": 23
+        },
+        {
+          "label": "arch-6.3-light-1200-critical-0",
+          "issues": [],
+          "stages": 3,
+          "glyphs": 20
+        },
+        {
+          "label": "arch-6.3-light-1200-critical-1",
+          "issues": [],
+          "stages": 3,
+          "glyphs": 23
+        },
+        {
+          "label": "arch-6.3-light-1200-critical-2",
+          "issues": [],
+          "stages": 3,
+          "glyphs": 23
+        },
+        {
+          "label": "arch-6.4-light-320-default",
+          "issues": [],
+          "stages": 3,
+          "glyphs": 17
+        },
+        {
+          "label": "arch-6.4-light-320-critical-0",
+          "issues": [],
+          "stages": 3,
+          "glyphs": 18
+        },
+        {
+          "label": "arch-6.4-light-320-critical-1",
+          "issues": [],
+          "stages": 3,
+          "glyphs": 18
+        },
+        {
+          "label": "arch-6.4-light-320-critical-2",
+          "issues": [],
+          "stages": 3,
+          "glyphs": 18
+        },
+        {
+          "label": "arch-6.4-light-320-critical-3",
+          "issues": [],
+          "stages": 3,
+          "glyphs": 18
+        },
+        {
+          "label": "arch-6.4-light-320-critical-4",
+          "issues": [],
+          "stages": 3,
+          "glyphs": 18
+        },
+        {
+          "label": "arch-6.4-light-1200-default",
+          "issues": [],
+          "stages": 3,
+          "glyphs": 21
+        },
+        {
+          "label": "arch-6.4-light-1200-critical-0",
+          "issues": [],
+          "stages": 3,
+          "glyphs": 18
+        },
+        {
+          "label": "arch-6.4-light-1200-critical-1",
+          "issues": [],
+          "stages": 3,
+          "glyphs": 18
+        },
+        {
+          "label": "arch-6.4-light-1200-critical-2",
+          "issues": [],
+          "stages": 3,
+          "glyphs": 18
+        },
+        {
+          "label": "arch-6.4-light-1200-critical-3",
+          "issues": [],
+          "stages": 3,
+          "glyphs": 18
+        },
+        {
+          "label": "arch-6.4-light-1200-critical-4",
+          "issues": [],
+          "stages": 3,
+          "glyphs": 18
+        },
+        {
+          "label": "arch-6.5-light-320-default",
+          "issues": [],
+          "stages": 3,
+          "glyphs": 9
+        },
+        {
+          "label": "arch-6.5-light-320-critical-0",
+          "issues": [],
+          "stages": 3,
+          "glyphs": 9
+        },
+        {
+          "label": "arch-6.5-light-320-critical-1",
+          "issues": [],
+          "stages": 3,
+          "glyphs": 9
+        },
+        {
+          "label": "arch-6.5-light-320-critical-2",
+          "issues": [],
+          "stages": 3,
+          "glyphs": 9
+        },
+        {
+          "label": "arch-6.5-light-320-critical-3",
+          "issues": [],
+          "stages": 3,
+          "glyphs": 9
+        },
+        {
+          "label": "arch-6.5-light-1200-default",
+          "issues": [],
+          "stages": 3,
+          "glyphs": 9
+        },
+        {
+          "label": "arch-6.5-light-1200-critical-0",
+          "issues": [],
+          "stages": 3,
+          "glyphs": 9
+        },
+        {
+          "label": "arch-6.5-light-1200-critical-1",
+          "issues": [],
+          "stages": 3,
+          "glyphs": 9
+        },
+        {
+          "label": "arch-6.5-light-1200-critical-2",
+          "issues": [],
+          "stages": 3,
+          "glyphs": 15
+        },
+        {
+          "label": "arch-6.5-light-1200-critical-3",
+          "issues": [],
+          "stages": 3,
+          "glyphs": 9
+        },
+        {
+          "label": "arch-6.6-light-320-default",
+          "issues": [],
+          "stages": 3,
+          "glyphs": 11
+        },
+        {
+          "label": "arch-6.6-light-320-critical-0",
+          "issues": [],
+          "stages": 3,
+          "glyphs": 10
+        },
+        {
+          "label": "arch-6.6-light-320-critical-1",
+          "issues": [],
+          "stages": 3,
+          "glyphs": 10
+        },
+        {
+          "label": "arch-6.6-light-1200-default",
+          "issues": [],
+          "stages": 3,
+          "glyphs": 11
+        },
+        {
+          "label": "arch-6.6-light-1200-critical-0",
+          "issues": [],
+          "stages": 3,
+          "glyphs": 10
+        },
+        {
+          "label": "arch-6.6-light-1200-critical-1",
+          "issues": [],
+          "stages": 3,
+          "glyphs": 10
+        },
+        {
+          "label": "arch-6.7-light-320-default",
+          "issues": [],
+          "stages": 3,
+          "glyphs": 15
+        },
+        {
+          "label": "arch-6.7-light-320-critical-0",
+          "issues": [],
+          "stages": 3,
+          "glyphs": 14
+        },
+        {
+          "label": "arch-6.7-light-320-critical-1",
+          "issues": [],
+          "stages": 3,
+          "glyphs": 15
+        },
+        {
+          "label": "arch-6.7-light-320-critical-2",
+          "issues": [],
+          "stages": 3,
+          "glyphs": 15
+        },
+        {
+          "label": "arch-6.7-light-1200-default",
+          "issues": [],
+          "stages": 3,
+          "glyphs": 27
+        },
+        {
+          "label": "arch-6.7-light-1200-critical-0",
+          "issues": [],
+          "stages": 3,
+          "glyphs": 32
+        },
+        {
+          "label": "arch-6.7-light-1200-critical-1",
+          "issues": [],
+          "stages": 3,
+          "glyphs": 27
+        },
+        {
+          "label": "arch-6.7-light-1200-critical-2",
+          "issues": [],
+          "stages": 3,
+          "glyphs": 27
+        },
+        {
+          "label": "arch-6.8-light-320-default",
+          "issues": [],
+          "stages": 3,
+          "glyphs": 9
+        },
+        {
+          "label": "arch-6.8-light-320-critical-0",
+          "issues": [],
+          "stages": 3,
+          "glyphs": 10
+        },
+        {
+          "label": "arch-6.8-light-320-critical-1",
+          "issues": [],
+          "stages": 3,
+          "glyphs": 9
+        },
+        {
+          "label": "arch-6.8-light-320-critical-2",
+          "issues": [],
+          "stages": 3,
+          "glyphs": 9
+        },
+        {
+          "label": "arch-6.8-light-1200-default",
+          "issues": [],
+          "stages": 3,
+          "glyphs": 14
+        },
+        {
+          "label": "arch-6.8-light-1200-critical-0",
+          "issues": [],
+          "stages": 3,
+          "glyphs": 10
+        },
+        {
+          "label": "arch-6.8-light-1200-critical-1",
+          "issues": [],
+          "stages": 3,
+          "glyphs": 14
+        },
+        {
+          "label": "arch-6.8-light-1200-critical-2",
+          "issues": [],
+          "stages": 3,
+          "glyphs": 14
+        },
+        {
+          "label": "arch-6.9-light-320-default",
+          "issues": [],
+          "stages": 3,
+          "glyphs": 20
+        },
+        {
+          "label": "arch-6.9-light-320-critical-0",
+          "issues": [],
+          "stages": 3,
+          "glyphs": 16
+        },
+        {
+          "label": "arch-6.9-light-320-critical-1",
+          "issues": [],
+          "stages": 3,
+          "glyphs": 16
+        },
+        {
+          "label": "arch-6.9-light-320-critical-2",
+          "issues": [],
+          "stages": 3,
+          "glyphs": 16
+        },
+        {
+          "label": "arch-6.9-light-320-critical-3",
+          "issues": [],
+          "stages": 3,
+          "glyphs": 16
+        },
+        {
+          "label": "arch-6.9-light-320-critical-4",
+          "issues": [],
+          "stages": 3,
+          "glyphs": 16
+        },
+        {
+          "label": "arch-6.9-light-1200-default",
+          "issues": [],
+          "stages": 3,
+          "glyphs": 23
+        },
+        {
+          "label": "arch-6.9-light-1200-critical-0",
+          "issues": [],
+          "stages": 3,
+          "glyphs": 23
+        },
+        {
+          "label": "arch-6.9-light-1200-critical-1",
+          "issues": [],
+          "stages": 3,
+          "glyphs": 23
+        },
+        {
+          "label": "arch-6.9-light-1200-critical-2",
+          "issues": [],
+          "stages": 3,
+          "glyphs": 24
+        },
+        {
+          "label": "arch-6.9-light-1200-critical-3",
+          "issues": [],
+          "stages": 3,
+          "glyphs": 25
+        },
+        {
+          "label": "arch-6.9-light-1200-critical-4",
+          "issues": [],
+          "stages": 3,
+          "glyphs": 23
+        },
+        {
+          "label": "arch-6.10-light-320-default",
+          "issues": [],
+          "stages": 3,
+          "glyphs": 17
+        },
+        {
+          "label": "arch-6.10-light-320-critical-0",
+          "issues": [],
+          "stages": 3,
+          "glyphs": 17
+        },
+        {
+          "label": "arch-6.10-light-320-critical-1",
+          "issues": [],
+          "stages": 3,
+          "glyphs": 17
+        },
+        {
+          "label": "arch-6.10-light-320-critical-2",
+          "issues": [],
+          "stages": 3,
+          "glyphs": 17
+        },
+        {
+          "label": "arch-6.10-light-320-critical-3",
+          "issues": [],
+          "stages": 3,
+          "glyphs": 21
+        },
+        {
+          "label": "arch-6.10-light-320-critical-4",
+          "issues": [],
+          "stages": 3,
+          "glyphs": 21
+        },
+        {
+          "label": "arch-6.10-light-320-critical-5",
+          "issues": [],
+          "stages": 3,
+          "glyphs": 21
+        },
+        {
+          "label": "arch-6.10-light-320-critical-6",
+          "issues": [],
+          "stages": 3,
+          "glyphs": 17
+        },
+        {
+          "label": "arch-6.10-light-320-critical-7",
+          "issues": [],
+          "stages": 3,
+          "glyphs": 17
+        },
+        {
+          "label": "arch-6.10-light-320-critical-8",
+          "issues": [],
+          "stages": 3,
+          "glyphs": 21
+        },
+        {
+          "label": "arch-6.10-light-320-critical-9",
+          "issues": [],
+          "stages": 3,
+          "glyphs": 21
+        },
+        {
+          "label": "arch-6.10-light-1200-default",
+          "issues": [],
+          "stages": 3,
+          "glyphs": 19
+        },
+        {
+          "label": "arch-6.10-light-1200-critical-0",
+          "issues": [],
+          "stages": 3,
+          "glyphs": 19
+        },
+        {
+          "label": "arch-6.10-light-1200-critical-1",
+          "issues": [],
+          "stages": 3,
+          "glyphs": 19
+        },
+        {
+          "label": "arch-6.10-light-1200-critical-2",
+          "issues": [],
+          "stages": 3,
+          "glyphs": 23
+        },
+        {
+          "label": "arch-6.10-light-1200-critical-3",
+          "issues": [],
+          "stages": 3,
+          "glyphs": 27
+        },
+        {
+          "label": "arch-6.10-light-1200-critical-4",
+          "issues": [],
+          "stages": 3,
+          "glyphs": 27
+        },
+        {
+          "label": "arch-6.10-light-1200-critical-5",
+          "issues": [],
+          "stages": 3,
+          "glyphs": 27
+        },
+        {
+          "label": "arch-6.10-light-1200-critical-6",
+          "issues": [],
+          "stages": 3,
+          "glyphs": 19
+        },
+        {
+          "label": "arch-6.10-light-1200-critical-7",
+          "issues": [],
+          "stages": 3,
+          "glyphs": 23
+        },
+        {
+          "label": "arch-6.10-light-1200-critical-8",
+          "issues": [],
+          "stages": 3,
+          "glyphs": 27
+        },
+        {
+          "label": "arch-6.10-light-1200-critical-9",
+          "issues": [],
+          "stages": 3,
+          "glyphs": 27
+        },
+        {
+          "label": "arch-6.11-light-320-default",
+          "issues": [],
+          "stages": 3,
+          "glyphs": 21
+        },
+        {
+          "label": "arch-6.11-light-320-critical-0",
+          "issues": [],
+          "stages": 3,
+          "glyphs": 21
+        },
+        {
+          "label": "arch-6.11-light-320-critical-1",
+          "issues": [],
+          "stages": 3,
+          "glyphs": 21
+        },
+        {
+          "label": "arch-6.11-light-320-critical-2",
+          "issues": [],
+          "stages": 3,
+          "glyphs": 21
+        },
+        {
+          "label": "arch-6.11-light-320-critical-3",
+          "issues": [],
+          "stages": 3,
+          "glyphs": 21
+        },
+        {
+          "label": "arch-6.11-light-1200-default",
+          "issues": [],
+          "stages": 3,
+          "glyphs": 21
+        },
+        {
+          "label": "arch-6.11-light-1200-critical-0",
+          "issues": [],
+          "stages": 3,
+          "glyphs": 21
+        },
+        {
+          "label": "arch-6.11-light-1200-critical-1",
+          "issues": [],
+          "stages": 3,
+          "glyphs": 21
+        },
+        {
+          "label": "arch-6.11-light-1200-critical-2",
+          "issues": [],
+          "stages": 3,
+          "glyphs": 21
+        },
+        {
+          "label": "arch-6.11-light-1200-critical-3",
+          "issues": [],
+          "stages": 3,
+          "glyphs": 21
+        }
+      ],
+      "failure": null
+    },
+    {
+      "sourceHashes": {
+        "content/arch/ch06.js": "e6373a6cff36c2cc682dfe14d5a79f002c67452a02822473d1de100ed2c9c660",
+        "content/arch/ch06.shared.js": "5f49fc9b53ee97ae82b4522fb930145b0da1547ba279b1093f416b9e2ebebe31",
+        "content/arch/ch06.viz.js": "3e2c965f2d470ccdd71041f42a706d22e54372a74d3c0155b5d587341466b59b",
+        "content/arch/syllabus.js": "76c2bf253d1bfdcd9175bbf411d102f783954b13aefe6f0d153d4d7c7b29bb6c",
+        "tests/wave6-arch-native-cases.mjs": "3aeeb8493eeaf2f688088fcd6cea0b05e839194de73b3f18d432e794b4a70a83",
+        "tests/wave6-arch-glyph-supplement.mjs": "ebeaf3956b198b5bc0796b4ae561b30cb78f5af92e845f13c0d72f926cc4c4d4",
+        "tests/wave6-ling-browser.shared.mjs": "5a49a6d5e5c391d023e2483b4c20accae1d84691a9dc7e6a578f8eae5de51228",
+        "tests/wave6-ling-glyph.shared.mjs": "87e31d5f01c0e93492f901a8c411e88c7e1e9c551d9c2843c128c6538b9b9eb0",
+        "assets/js/viz/core.js": "a6fa1753d9d9e8b9a05a7161fffc58dfd53b27002d9d393a3266aeb96515fe73",
+        "assets/js/viz/math.js": "439c335e1cc47907bc72bb76559216aa093be4710e0589f41c70192729eb223e",
+        "assets/js/app.js": "2f5762e6bf80723a5cb8691f8b19c552dd1d731ab998d5bfcdb27828e2e9a6ce",
+        "assets/css/style.css": "eef34e3d7aaf8b38233a78d9dc6545e5e0c9d00b09a3a6876d19f3e0e0af15b6",
+        "assets/js/share-state.js": "13c6a9ac1237d566fc5d79c89e0f4d3029aa8c2817d2c08247a02b1b053a59b1",
+        "data/index.json": "97510ff1028402057a692b932371a757885a45412ebf5bc2274ab65cff1201fa",
+        "data/col/arch.json": "26e0b3b0efdde89f209f0432a712c7f466bc270af214bf4c59cc1bb5af438348"
+      },
+      "sourceDataHarnessUnchanged": true,
+      "layouts": 114,
+      "stages": 342,
+      "glyphs": 2045,
+      "issues": [],
+      "errors": [],
+      "rows": [
+        {
+          "label": "arch-6.1-dark-320-default",
+          "issues": [],
+          "stages": 3,
+          "glyphs": 16
+        },
+        {
+          "label": "arch-6.1-dark-320-critical-0",
+          "issues": [],
+          "stages": 3,
+          "glyphs": 16
+        },
+        {
+          "label": "arch-6.1-dark-320-critical-1",
+          "issues": [],
+          "stages": 3,
+          "glyphs": 18
+        },
+        {
+          "label": "arch-6.1-dark-320-critical-2",
+          "issues": [],
+          "stages": 3,
+          "glyphs": 16
+        },
+        {
+          "label": "arch-6.1-dark-320-critical-3",
+          "issues": [],
+          "stages": 3,
+          "glyphs": 16
+        },
+        {
+          "label": "arch-6.1-dark-1200-default",
+          "issues": [],
+          "stages": 3,
+          "glyphs": 19
+        },
+        {
+          "label": "arch-6.1-dark-1200-critical-0",
+          "issues": [],
+          "stages": 3,
+          "glyphs": 19
+        },
+        {
+          "label": "arch-6.1-dark-1200-critical-1",
+          "issues": [],
+          "stages": 3,
+          "glyphs": 18
+        },
+        {
+          "label": "arch-6.1-dark-1200-critical-2",
+          "issues": [],
+          "stages": 3,
+          "glyphs": 19
+        },
+        {
+          "label": "arch-6.1-dark-1200-critical-3",
+          "issues": [],
+          "stages": 3,
+          "glyphs": 19
+        },
+        {
+          "label": "arch-6.2-dark-320-default",
+          "issues": [],
+          "stages": 3,
+          "glyphs": 16
+        },
+        {
+          "label": "arch-6.2-dark-320-critical-0",
+          "issues": [],
+          "stages": 3,
+          "glyphs": 17
+        },
+        {
+          "label": "arch-6.2-dark-320-critical-1",
+          "issues": [],
+          "stages": 3,
+          "glyphs": 20
+        },
+        {
+          "label": "arch-6.2-dark-320-critical-2",
+          "issues": [],
+          "stages": 3,
+          "glyphs": 17
+        },
+        {
+          "label": "arch-6.2-dark-1200-default",
+          "issues": [],
+          "stages": 3,
+          "glyphs": 22
+        },
+        {
+          "label": "arch-6.2-dark-1200-critical-0",
+          "issues": [],
+          "stages": 3,
+          "glyphs": 17
+        },
+        {
+          "label": "arch-6.2-dark-1200-critical-1",
+          "issues": [],
+          "stages": 3,
+          "glyphs": 20
+        },
+        {
+          "label": "arch-6.2-dark-1200-critical-2",
+          "issues": [],
+          "stages": 3,
+          "glyphs": 17
+        },
+        {
+          "label": "arch-6.3-dark-320-default",
+          "issues": [],
+          "stages": 3,
+          "glyphs": 20
+        },
+        {
+          "label": "arch-6.3-dark-320-critical-0",
+          "issues": [],
+          "stages": 3,
+          "glyphs": 20
+        },
+        {
+          "label": "arch-6.3-dark-320-critical-1",
+          "issues": [],
+          "stages": 3,
+          "glyphs": 19
+        },
+        {
+          "label": "arch-6.3-dark-320-critical-2",
+          "issues": [],
+          "stages": 3,
+          "glyphs": 23
+        },
+        {
+          "label": "arch-6.3-dark-1200-default",
+          "issues": [],
+          "stages": 3,
+          "glyphs": 23
+        },
+        {
+          "label": "arch-6.3-dark-1200-critical-0",
+          "issues": [],
+          "stages": 3,
+          "glyphs": 20
+        },
+        {
+          "label": "arch-6.3-dark-1200-critical-1",
+          "issues": [],
+          "stages": 3,
+          "glyphs": 23
+        },
+        {
+          "label": "arch-6.3-dark-1200-critical-2",
+          "issues": [],
+          "stages": 3,
+          "glyphs": 23
+        },
+        {
+          "label": "arch-6.4-dark-320-default",
+          "issues": [],
+          "stages": 3,
+          "glyphs": 17
+        },
+        {
+          "label": "arch-6.4-dark-320-critical-0",
+          "issues": [],
+          "stages": 3,
+          "glyphs": 18
+        },
+        {
+          "label": "arch-6.4-dark-320-critical-1",
+          "issues": [],
+          "stages": 3,
+          "glyphs": 18
+        },
+        {
+          "label": "arch-6.4-dark-320-critical-2",
+          "issues": [],
+          "stages": 3,
+          "glyphs": 18
+        },
+        {
+          "label": "arch-6.4-dark-320-critical-3",
+          "issues": [],
+          "stages": 3,
+          "glyphs": 18
+        },
+        {
+          "label": "arch-6.4-dark-320-critical-4",
+          "issues": [],
+          "stages": 3,
+          "glyphs": 18
+        },
+        {
+          "label": "arch-6.4-dark-1200-default",
+          "issues": [],
+          "stages": 3,
+          "glyphs": 21
+        },
+        {
+          "label": "arch-6.4-dark-1200-critical-0",
+          "issues": [],
+          "stages": 3,
+          "glyphs": 18
+        },
+        {
+          "label": "arch-6.4-dark-1200-critical-1",
+          "issues": [],
+          "stages": 3,
+          "glyphs": 18
+        },
+        {
+          "label": "arch-6.4-dark-1200-critical-2",
+          "issues": [],
+          "stages": 3,
+          "glyphs": 18
+        },
+        {
+          "label": "arch-6.4-dark-1200-critical-3",
+          "issues": [],
+          "stages": 3,
+          "glyphs": 18
+        },
+        {
+          "label": "arch-6.4-dark-1200-critical-4",
+          "issues": [],
+          "stages": 3,
+          "glyphs": 18
+        },
+        {
+          "label": "arch-6.5-dark-320-default",
+          "issues": [],
+          "stages": 3,
+          "glyphs": 9
+        },
+        {
+          "label": "arch-6.5-dark-320-critical-0",
+          "issues": [],
+          "stages": 3,
+          "glyphs": 9
+        },
+        {
+          "label": "arch-6.5-dark-320-critical-1",
+          "issues": [],
+          "stages": 3,
+          "glyphs": 9
+        },
+        {
+          "label": "arch-6.5-dark-320-critical-2",
+          "issues": [],
+          "stages": 3,
+          "glyphs": 9
+        },
+        {
+          "label": "arch-6.5-dark-320-critical-3",
+          "issues": [],
+          "stages": 3,
+          "glyphs": 9
+        },
+        {
+          "label": "arch-6.5-dark-1200-default",
+          "issues": [],
+          "stages": 3,
+          "glyphs": 9
+        },
+        {
+          "label": "arch-6.5-dark-1200-critical-0",
+          "issues": [],
+          "stages": 3,
+          "glyphs": 9
+        },
+        {
+          "label": "arch-6.5-dark-1200-critical-1",
+          "issues": [],
+          "stages": 3,
+          "glyphs": 9
+        },
+        {
+          "label": "arch-6.5-dark-1200-critical-2",
+          "issues": [],
+          "stages": 3,
+          "glyphs": 15
+        },
+        {
+          "label": "arch-6.5-dark-1200-critical-3",
+          "issues": [],
+          "stages": 3,
+          "glyphs": 9
+        },
+        {
+          "label": "arch-6.6-dark-320-default",
+          "issues": [],
+          "stages": 3,
+          "glyphs": 11
+        },
+        {
+          "label": "arch-6.6-dark-320-critical-0",
+          "issues": [],
+          "stages": 3,
+          "glyphs": 10
+        },
+        {
+          "label": "arch-6.6-dark-320-critical-1",
+          "issues": [],
+          "stages": 3,
+          "glyphs": 10
+        },
+        {
+          "label": "arch-6.6-dark-1200-default",
+          "issues": [],
+          "stages": 3,
+          "glyphs": 11
+        },
+        {
+          "label": "arch-6.6-dark-1200-critical-0",
+          "issues": [],
+          "stages": 3,
+          "glyphs": 10
+        },
+        {
+          "label": "arch-6.6-dark-1200-critical-1",
+          "issues": [],
+          "stages": 3,
+          "glyphs": 10
+        },
+        {
+          "label": "arch-6.7-dark-320-default",
+          "issues": [],
+          "stages": 3,
+          "glyphs": 15
+        },
+        {
+          "label": "arch-6.7-dark-320-critical-0",
+          "issues": [],
+          "stages": 3,
+          "glyphs": 14
+        },
+        {
+          "label": "arch-6.7-dark-320-critical-1",
+          "issues": [],
+          "stages": 3,
+          "glyphs": 15
+        },
+        {
+          "label": "arch-6.7-dark-320-critical-2",
+          "issues": [],
+          "stages": 3,
+          "glyphs": 15
+        },
+        {
+          "label": "arch-6.7-dark-1200-default",
+          "issues": [],
+          "stages": 3,
+          "glyphs": 27
+        },
+        {
+          "label": "arch-6.7-dark-1200-critical-0",
+          "issues": [],
+          "stages": 3,
+          "glyphs": 32
+        },
+        {
+          "label": "arch-6.7-dark-1200-critical-1",
+          "issues": [],
+          "stages": 3,
+          "glyphs": 27
+        },
+        {
+          "label": "arch-6.7-dark-1200-critical-2",
+          "issues": [],
+          "stages": 3,
+          "glyphs": 27
+        },
+        {
+          "label": "arch-6.8-dark-320-default",
+          "issues": [],
+          "stages": 3,
+          "glyphs": 9
+        },
+        {
+          "label": "arch-6.8-dark-320-critical-0",
+          "issues": [],
+          "stages": 3,
+          "glyphs": 10
+        },
+        {
+          "label": "arch-6.8-dark-320-critical-1",
+          "issues": [],
+          "stages": 3,
+          "glyphs": 9
+        },
+        {
+          "label": "arch-6.8-dark-320-critical-2",
+          "issues": [],
+          "stages": 3,
+          "glyphs": 9
+        },
+        {
+          "label": "arch-6.8-dark-1200-default",
+          "issues": [],
+          "stages": 3,
+          "glyphs": 14
+        },
+        {
+          "label": "arch-6.8-dark-1200-critical-0",
+          "issues": [],
+          "stages": 3,
+          "glyphs": 10
+        },
+        {
+          "label": "arch-6.8-dark-1200-critical-1",
+          "issues": [],
+          "stages": 3,
+          "glyphs": 14
+        },
+        {
+          "label": "arch-6.8-dark-1200-critical-2",
+          "issues": [],
+          "stages": 3,
+          "glyphs": 14
+        },
+        {
+          "label": "arch-6.9-dark-320-default",
+          "issues": [],
+          "stages": 3,
+          "glyphs": 20
+        },
+        {
+          "label": "arch-6.9-dark-320-critical-0",
+          "issues": [],
+          "stages": 3,
+          "glyphs": 16
+        },
+        {
+          "label": "arch-6.9-dark-320-critical-1",
+          "issues": [],
+          "stages": 3,
+          "glyphs": 16
+        },
+        {
+          "label": "arch-6.9-dark-320-critical-2",
+          "issues": [],
+          "stages": 3,
+          "glyphs": 16
+        },
+        {
+          "label": "arch-6.9-dark-320-critical-3",
+          "issues": [],
+          "stages": 3,
+          "glyphs": 16
+        },
+        {
+          "label": "arch-6.9-dark-320-critical-4",
+          "issues": [],
+          "stages": 3,
+          "glyphs": 16
+        },
+        {
+          "label": "arch-6.9-dark-1200-default",
+          "issues": [],
+          "stages": 3,
+          "glyphs": 23
+        },
+        {
+          "label": "arch-6.9-dark-1200-critical-0",
+          "issues": [],
+          "stages": 3,
+          "glyphs": 23
+        },
+        {
+          "label": "arch-6.9-dark-1200-critical-1",
+          "issues": [],
+          "stages": 3,
+          "glyphs": 23
+        },
+        {
+          "label": "arch-6.9-dark-1200-critical-2",
+          "issues": [],
+          "stages": 3,
+          "glyphs": 24
+        },
+        {
+          "label": "arch-6.9-dark-1200-critical-3",
+          "issues": [],
+          "stages": 3,
+          "glyphs": 25
+        },
+        {
+          "label": "arch-6.9-dark-1200-critical-4",
+          "issues": [],
+          "stages": 3,
+          "glyphs": 23
+        },
+        {
+          "label": "arch-6.10-dark-320-default",
+          "issues": [],
+          "stages": 3,
+          "glyphs": 17
+        },
+        {
+          "label": "arch-6.10-dark-320-critical-0",
+          "issues": [],
+          "stages": 3,
+          "glyphs": 17
+        },
+        {
+          "label": "arch-6.10-dark-320-critical-1",
+          "issues": [],
+          "stages": 3,
+          "glyphs": 17
+        },
+        {
+          "label": "arch-6.10-dark-320-critical-2",
+          "issues": [],
+          "stages": 3,
+          "glyphs": 17
+        },
+        {
+          "label": "arch-6.10-dark-320-critical-3",
+          "issues": [],
+          "stages": 3,
+          "glyphs": 21
+        },
+        {
+          "label": "arch-6.10-dark-320-critical-4",
+          "issues": [],
+          "stages": 3,
+          "glyphs": 21
+        },
+        {
+          "label": "arch-6.10-dark-320-critical-5",
+          "issues": [],
+          "stages": 3,
+          "glyphs": 21
+        },
+        {
+          "label": "arch-6.10-dark-320-critical-6",
+          "issues": [],
+          "stages": 3,
+          "glyphs": 17
+        },
+        {
+          "label": "arch-6.10-dark-320-critical-7",
+          "issues": [],
+          "stages": 3,
+          "glyphs": 17
+        },
+        {
+          "label": "arch-6.10-dark-320-critical-8",
+          "issues": [],
+          "stages": 3,
+          "glyphs": 21
+        },
+        {
+          "label": "arch-6.10-dark-320-critical-9",
+          "issues": [],
+          "stages": 3,
+          "glyphs": 21
+        },
+        {
+          "label": "arch-6.10-dark-1200-default",
+          "issues": [],
+          "stages": 3,
+          "glyphs": 19
+        },
+        {
+          "label": "arch-6.10-dark-1200-critical-0",
+          "issues": [],
+          "stages": 3,
+          "glyphs": 19
+        },
+        {
+          "label": "arch-6.10-dark-1200-critical-1",
+          "issues": [],
+          "stages": 3,
+          "glyphs": 19
+        },
+        {
+          "label": "arch-6.10-dark-1200-critical-2",
+          "issues": [],
+          "stages": 3,
+          "glyphs": 23
+        },
+        {
+          "label": "arch-6.10-dark-1200-critical-3",
+          "issues": [],
+          "stages": 3,
+          "glyphs": 27
+        },
+        {
+          "label": "arch-6.10-dark-1200-critical-4",
+          "issues": [],
+          "stages": 3,
+          "glyphs": 27
+        },
+        {
+          "label": "arch-6.10-dark-1200-critical-5",
+          "issues": [],
+          "stages": 3,
+          "glyphs": 27
+        },
+        {
+          "label": "arch-6.10-dark-1200-critical-6",
+          "issues": [],
+          "stages": 3,
+          "glyphs": 19
+        },
+        {
+          "label": "arch-6.10-dark-1200-critical-7",
+          "issues": [],
+          "stages": 3,
+          "glyphs": 23
+        },
+        {
+          "label": "arch-6.10-dark-1200-critical-8",
+          "issues": [],
+          "stages": 3,
+          "glyphs": 27
+        },
+        {
+          "label": "arch-6.10-dark-1200-critical-9",
+          "issues": [],
+          "stages": 3,
+          "glyphs": 27
+        },
+        {
+          "label": "arch-6.11-dark-320-default",
+          "issues": [],
+          "stages": 3,
+          "glyphs": 21
+        },
+        {
+          "label": "arch-6.11-dark-320-critical-0",
+          "issues": [],
+          "stages": 3,
+          "glyphs": 21
+        },
+        {
+          "label": "arch-6.11-dark-320-critical-1",
+          "issues": [],
+          "stages": 3,
+          "glyphs": 21
+        },
+        {
+          "label": "arch-6.11-dark-320-critical-2",
+          "issues": [],
+          "stages": 3,
+          "glyphs": 21
+        },
+        {
+          "label": "arch-6.11-dark-320-critical-3",
+          "issues": [],
+          "stages": 3,
+          "glyphs": 21
+        },
+        {
+          "label": "arch-6.11-dark-1200-default",
+          "issues": [],
+          "stages": 3,
+          "glyphs": 21
+        },
+        {
+          "label": "arch-6.11-dark-1200-critical-0",
+          "issues": [],
+          "stages": 3,
+          "glyphs": 21
+        },
+        {
+          "label": "arch-6.11-dark-1200-critical-1",
+          "issues": [],
+          "stages": 3,
+          "glyphs": 21
+        },
+        {
+          "label": "arch-6.11-dark-1200-critical-2",
+          "issues": [],
+          "stages": 3,
+          "glyphs": 21
+        },
+        {
+          "label": "arch-6.11-dark-1200-critical-3",
+          "issues": [],
+          "stages": 3,
+          "glyphs": 21
+        }
+      ],
+      "failure": null
+    }
+  ]
+}

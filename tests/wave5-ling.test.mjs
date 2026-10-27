@@ -1,4 +1,5 @@
 import test from 'node:test';import assert from 'node:assert/strict';import * as L from '../content/ling/ch05.shared.js';
+import {lingSyllabusAtWave5} from './wave6-ling-preservation.shared.mjs';
 const treeCode=t=>t.sym+'('+t.kids.map(treeCode).join(',')+')';
 // Independent complete top-down span enumeration for strict binary, epsilon-free grammars.
 function referenceTrees(g,w,a=g.start,i=0,j=w.length){const out=[];for(const r of g.rules.filter(r=>r.lhs===a)){
@@ -86,7 +87,7 @@ test('syntax chapter preserves all frozen identities, Paper links and every othe
  for(const i of items){const p=plan.items.find(x=>x.num===i.num);for(const k of['deps','refs','introduces','paper','verify','see'])assert.deepEqual(i[k],p[k],i.num+' '+k);assert.equal(typeof i.viz,'function');}
  assert.deepEqual(items[15].paper,{authors:'Noam Chomsky',year:1957,title:'Syntactic Structures',venue:'’s-Gravenhage: Mouton, 1957',doi:'10.1515/9783112316009'});assert.deepEqual(items[15].introduces,['ling-5.3','ling-5.12']);assert.equal(items[15].verify,true);
  assert.deepEqual(items.flatMap(i=>i.deps).filter(x=>/^toc-(6|7|8)\./.test(x)),[]);
- assert.equal(createHash('sha256').update(JSON.stringify(s.chapters.filter(c=>c.n!==5))).digest('hex'),'f34d0eb13d94d9da25f1363271a9dab321c9ea04dd4941903da88a2f86229851');
+ assert.equal(createHash('sha256').update(JSON.stringify(lingSyllabusAtWave5(s).chapters.filter(c=>c.n!==5))).digest('hex'),'f34d0eb13d94d9da25f1363271a9dab321c9ea04dd4941903da88a2f86229851');
 });
 
 test('packed forest retains exact counts and ranks beyond binary64 integer precision',()=>{

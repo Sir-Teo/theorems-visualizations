@@ -1,0 +1,14 @@
+{
+  "rawExpandedRows": 110784,
+  "rawCompressedResponses": 18172,
+  "chromaticRows": 25383,
+  "uniqueConsultantTermCellChoices": 25311,
+  "repeatedConsultantTermCellChoices": 72,
+  "excludedFromChromaticPanel": 85401,
+  "excludedByReason": {
+    "A/J achromatic grid row": 84502,
+    "neutral column0": 899
+  },
+  "aggregation": "Unique consultant IDs per(language,term,chromatic cell); any-term view also deduplicates consultant/cell across terms. Fractions use distinct consultants with at least one recorded chromatic choice in selected scope. Multiple focal cells per person remain possible; fractions across chips need not sum to1.",
+  "termScope": "Recorded abbreviations with source dictionary aliases. Not certified counts of basic terms. No trajectory inferred from cross-sectional languages."
+}

@@ -1,0 +1,51 @@
+[
+  {
+    "file": "mit-18.pdf",
+    "scope": "Complete selected PDFpages25-41,48-53,55-63actuallyread; otherpage previews not full reading",
+    "note": "Source photographs/figures not reproduced"
+  },
+  {
+    "file": "mit-20.pdf",
+    "scope": "Page previews and extracted text encountered; not a proof input for LING6; full body not claimed"
+  },
+  {
+    "file": "slp-H.pdf",
+    "scope": "Complete selected PDFpages4-12 actuallyread; \u00a7\u00a7H.2/H.3 through beginning of H.3.5; remainder notread"
+  },
+  {
+    "file": "slp-5.pdf",
+    "scope": "Complete selected PDFpages5-10 actuallyread; \u00a7\u00a75.2-5.4 and beginning of5.5; restnotread"
+  },
+  {
+    "file": "mit-grice.pdf",
+    "scope": "Complete one-page handout actuallyread"
+  },
+  {
+    "file": "iep-frege.html.txt",
+    "scope": "Complete selected \u00a73b lines183-188actuallyread, plus bounded surrounding commentary; original1892body remainsunread/restricted"
+  },
+  {
+    "file": "sep-presupposition.html.txt",
+    "scope": "Complete selected lines179-345 including \u00a71.2Projection and \u00a71.3Cancellability through summary; restnotread"
+  },
+  {
+    "file": "sep-concepts.html.txt",
+    "scope": "Complete \u00a72.2lines479-532 actuallyread; selected following lines only; Rosch originalbodies unread"
+  },
+  {
+    "file": "sep-speech-acts.html.txt",
+    "scope": "Selected lines240-300,616-725 actuallyread; partial\u00a72.1, complete\u00a73.3, partial\u00a73.4; notfullentry"
+  },
+  {
+    "file": "saussure-part2.html.txt",
+    "scope": "Complete selected chIV\u00a7\u00a71-2 lines126-159actuallyread from1971edition transcription of1916work; restnotread/no1916facsimile claim"
+  },
+  {
+    "url": "https://plato.stanford.edu/entries/indexicals/",
+    "scope": "Web introductory lines12-18actuallyread; nofullentryorKaplanoriginal claim"
+  },
+  {
+    "file": "wcs-data.html.txt",
+    "scope": "Complete archive introduction/file-description text and allselectedfileREADMEs actuallyread; factual files acquired/parsed, no fieldwork/participant observationclaim"
+  }
+]

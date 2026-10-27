@@ -1,0 +1,1458 @@
+{
+  "status": "PASS",
+  "scope": "64distinct final layouts: all16lessons,320/1200CSSpx,light/dark; real sliders, keyboard/pointer controls, toggles, menus, canvas edits, typed textarea, native survey selects and trusted Share/fresh-document replay.",
+  "criticalRecipes": 68,
+  "totals": {
+    "layouts": 64,
+    "actions": 3086,
+    "shares": 852,
+    "trustedShares": 852,
+    "invalid": 384,
+    "raw": 60,
+    "critical": 272,
+    "checks": 3886,
+    "modelComparisons": 776710,
+    "geometryComparisons": 546308,
+    "paintedPixelAudits": 11914,
+    "pixelSamples": 173920,
+    "domRangeRounding": 48
+  },
+  "runs": [
+    {
+      "receipt": "/workspace/scratch/wave6-ling-research/native-v4-light/receipt.json",
+      "sha256": "14af0190138a48539b5763accd8d328ba03ec6ad4a6ad21a216afab446040760",
+      "selectedLabels": [
+        "ling-6.4-light-320",
+        "ling-6.4-light-1200",
+        "ling-6.5-light-320",
+        "ling-6.5-light-1200",
+        "ling-6.6-light-320",
+        "ling-6.6-light-1200",
+        "ling-6.7-light-320",
+        "ling-6.7-light-1200",
+        "ling-6.8-light-320",
+        "ling-6.8-light-1200",
+        "ling-6.11-light-320",
+        "ling-6.11-light-1200",
+        "ling-6.12-light-320",
+        "ling-6.12-light-1200",
+        "ling-6.14-light-320",
+        "ling-6.14-light-1200",
+        "ling-6.16-light-320",
+        "ling-6.16-light-1200"
+      ],
+      "completeRunPassed": true,
+      "sourceHashes": {
+        "content/ling/ch06.js": "13f25122f19037b1f21a7de06208af07ff8b1ec1838037c605fb6e6015dcbd15",
+        "content/ling/ch06.shared.js": "f772d5202ff7ec9182c0c651eda027ec6084b7afd86b88c5f074e798ec51187a",
+        "content/ling/ch06.data.js": "cff758ab46785e207a013961a7d7a591394051dc00f80751d393f22dee310c3f",
+        "content/ling/ch06.viz.js": "ab6e983a53bb4e5e9c3681763f84dd08163ddb93d6413e307d0fa75e349b03df",
+        "content/ling/syllabus.js": "4668ea53a40161d97100421ab3f828ee88019e4018b8b29e9da0088eecd2a5d1",
+        "assets/js/viz/core.js": "a6fa1753d9d9e8b9a05a7161fffc58dfd53b27002d9d393a3266aeb96515fe73",
+        "assets/js/viz/math.js": "439c335e1cc47907bc72bb76559216aa093be4710e0589f41c70192729eb223e",
+        "assets/js/share-state.js": "13c6a9ac1237d566fc5d79c89e0f4d3029aa8c2817d2c08247a02b1b053a59b1",
+        "assets/js/app.js": "2f5762e6bf80723a5cb8691f8b19c552dd1d731ab998d5bfcdb27828e2e9a6ce",
+        "assets/css/style.css": "eef34e3d7aaf8b38233a78d9dc6545e5e0c9d00b09a3a6876d19f3e0e0af15b6",
+        "data/index.json": "d189c6dbeac60a144d4d0b0f75a6da50029e55a612cee1ced5e29f860f1d3fab",
+        "data/col/ling.json": "77bf166aeb6401ce583de83cc33964fe5fee61ced25a3883ea2dfcf14c74b3ff",
+        "tests/fixtures/wave6-ling-reference.json": "08bc29d566e31bf932f30d97800c6f5031b7938251bedcd61c91c3cbf7403955",
+        "tests/wave6-ling-native.mjs": "cff266e4f58d4c0b3421269851beeae783f40af2bc6652090dac93885c79ead0",
+        "tests/wave6-ling-native-science.mjs": "793577df87dd730148e7b55c73ff0507c2031f44b636ff857a1b3deeba516334",
+        "tests/wave6-ling-native-cases.mjs": "88d185234d81fdd6bb245f695d23d752201ff9e3a61224fff42bf78fccacca06",
+        "tests/wave6-ling-browser.shared.mjs": "5a49a6d5e5c391d023e2483b4c20accae1d84691a9dc7e6a578f8eae5de51228",
+        "tests/wave6-ling-glyph.shared.mjs": "87e31d5f01c0e93492f901a8c411e88c7e1e9c551d9c2843c128c6538b9b9eb0"
+      }
+    },
+    {
+      "receipt": "/workspace/scratch/wave6-ling-research/native-v4-dark/receipt.json",
+      "sha256": "96ca0987d5b3dae22e5b6d8110eb1652f07862724d993cfe6f6e3548649126ee",
+      "selectedLabels": [
+        "ling-6.4-dark-320",
+        "ling-6.4-dark-1200",
+        "ling-6.5-dark-320",
+        "ling-6.5-dark-1200",
+        "ling-6.6-dark-320",
+        "ling-6.6-dark-1200",
+        "ling-6.7-dark-320",
+        "ling-6.7-dark-1200",
+        "ling-6.8-dark-320",
+        "ling-6.8-dark-1200",
+        "ling-6.11-dark-320",
+        "ling-6.11-dark-1200",
+        "ling-6.12-dark-320",
+        "ling-6.12-dark-1200",
+        "ling-6.14-dark-320",
+        "ling-6.14-dark-1200",
+        "ling-6.16-dark-320",
+        "ling-6.16-dark-1200"
+      ],
+      "completeRunPassed": true,
+      "sourceHashes": {
+        "content/ling/ch06.js": "13f25122f19037b1f21a7de06208af07ff8b1ec1838037c605fb6e6015dcbd15",
+        "content/ling/ch06.shared.js": "f772d5202ff7ec9182c0c651eda027ec6084b7afd86b88c5f074e798ec51187a",
+        "content/ling/ch06.data.js": "cff758ab46785e207a013961a7d7a591394051dc00f80751d393f22dee310c3f",
+        "content/ling/ch06.viz.js": "ab6e983a53bb4e5e9c3681763f84dd08163ddb93d6413e307d0fa75e349b03df",
+        "content/ling/syllabus.js": "4668ea53a40161d97100421ab3f828ee88019e4018b8b29e9da0088eecd2a5d1",
+        "assets/js/viz/core.js": "a6fa1753d9d9e8b9a05a7161fffc58dfd53b27002d9d393a3266aeb96515fe73",
+        "assets/js/viz/math.js": "439c335e1cc47907bc72bb76559216aa093be4710e0589f41c70192729eb223e",
+        "assets/js/share-state.js": "13c6a9ac1237d566fc5d79c89e0f4d3029aa8c2817d2c08247a02b1b053a59b1",
+        "assets/js/app.js": "2f5762e6bf80723a5cb8691f8b19c552dd1d731ab998d5bfcdb27828e2e9a6ce",
+        "assets/css/style.css": "eef34e3d7aaf8b38233a78d9dc6545e5e0c9d00b09a3a6876d19f3e0e0af15b6",
+        "data/index.json": "d189c6dbeac60a144d4d0b0f75a6da50029e55a612cee1ced5e29f860f1d3fab",
+        "data/col/ling.json": "77bf166aeb6401ce583de83cc33964fe5fee61ced25a3883ea2dfcf14c74b3ff",
+        "tests/fixtures/wave6-ling-reference.json": "08bc29d566e31bf932f30d97800c6f5031b7938251bedcd61c91c3cbf7403955",
+        "tests/wave6-ling-native.mjs": "cff266e4f58d4c0b3421269851beeae783f40af2bc6652090dac93885c79ead0",
+        "tests/wave6-ling-native-science.mjs": "793577df87dd730148e7b55c73ff0507c2031f44b636ff857a1b3deeba516334",
+        "tests/wave6-ling-native-cases.mjs": "88d185234d81fdd6bb245f695d23d752201ff9e3a61224fff42bf78fccacca06",
+        "tests/wave6-ling-browser.shared.mjs": "5a49a6d5e5c391d023e2483b4c20accae1d84691a9dc7e6a578f8eae5de51228",
+        "tests/wave6-ling-glyph.shared.mjs": "87e31d5f01c0e93492f901a8c411e88c7e1e9c551d9c2843c128c6538b9b9eb0"
+      }
+    },
+    {
+      "receipt": "/workspace/scratch/wave6-ling-research/native-v5-light/receipt.json",
+      "sha256": "5b3a388607067730325c3f3d4ce023c6c986b214a66bc5f94814456cb18876c7",
+      "selectedLabels": [
+        "ling-6.2-light-320",
+        "ling-6.2-light-1200",
+        "ling-6.3-light-320",
+        "ling-6.3-light-1200",
+        "ling-6.9-light-320",
+        "ling-6.9-light-1200",
+        "ling-6.10-light-320",
+        "ling-6.10-light-1200",
+        "ling-6.13-light-320",
+        "ling-6.13-light-1200"
+      ],
+      "completeRunPassed": true,
+      "sourceHashes": {
+        "content/ling/ch06.js": "13f25122f19037b1f21a7de06208af07ff8b1ec1838037c605fb6e6015dcbd15",
+        "content/ling/ch06.shared.js": "50e26183cd91390be6965975dbda52f661a69cbdde540eebae17683b41b27913",
+        "content/ling/ch06.data.js": "cff758ab46785e207a013961a7d7a591394051dc00f80751d393f22dee310c3f",
+        "content/ling/ch06.viz.js": "21f7825b9b0ed5149d95b32a64587a42a6dfe64b12036e4f4fac808f8b4b08c9",
+        "content/ling/syllabus.js": "4668ea53a40161d97100421ab3f828ee88019e4018b8b29e9da0088eecd2a5d1",
+        "assets/js/viz/core.js": "a6fa1753d9d9e8b9a05a7161fffc58dfd53b27002d9d393a3266aeb96515fe73",
+        "assets/js/viz/math.js": "439c335e1cc47907bc72bb76559216aa093be4710e0589f41c70192729eb223e",
+        "assets/js/share-state.js": "13c6a9ac1237d566fc5d79c89e0f4d3029aa8c2817d2c08247a02b1b053a59b1",
+        "assets/js/app.js": "2f5762e6bf80723a5cb8691f8b19c552dd1d731ab998d5bfcdb27828e2e9a6ce",
+        "assets/css/style.css": "eef34e3d7aaf8b38233a78d9dc6545e5e0c9d00b09a3a6876d19f3e0e0af15b6",
+        "data/index.json": "d189c6dbeac60a144d4d0b0f75a6da50029e55a612cee1ced5e29f860f1d3fab",
+        "data/col/ling.json": "77bf166aeb6401ce583de83cc33964fe5fee61ced25a3883ea2dfcf14c74b3ff",
+        "tests/fixtures/wave6-ling-reference.json": "08bc29d566e31bf932f30d97800c6f5031b7938251bedcd61c91c3cbf7403955",
+        "tests/wave6-ling-native.mjs": "cff266e4f58d4c0b3421269851beeae783f40af2bc6652090dac93885c79ead0",
+        "tests/wave6-ling-native-science.mjs": "cd30928002e5c8ad56e0f5fd4efa5bc914bc479f1712c6dd81c6e42dcd579d3a",
+        "tests/wave6-ling-native-cases.mjs": "88d185234d81fdd6bb245f695d23d752201ff9e3a61224fff42bf78fccacca06",
+        "tests/wave6-ling-browser.shared.mjs": "5a49a6d5e5c391d023e2483b4c20accae1d84691a9dc7e6a578f8eae5de51228",
+        "tests/wave6-ling-glyph.shared.mjs": "87e31d5f01c0e93492f901a8c411e88c7e1e9c551d9c2843c128c6538b9b9eb0"
+      }
+    },
+    {
+      "receipt": "/workspace/scratch/wave6-ling-research/native-v5-dark/receipt.json",
+      "sha256": "29ae7bd3d77c0ce380695f09f688371215be2040b7b5418c1a82a26ea40c0fc1",
+      "selectedLabels": [
+        "ling-6.2-dark-320",
+        "ling-6.2-dark-1200",
+        "ling-6.3-dark-320",
+        "ling-6.3-dark-1200",
+        "ling-6.9-dark-320",
+        "ling-6.9-dark-1200",
+        "ling-6.10-dark-320",
+        "ling-6.10-dark-1200",
+        "ling-6.13-dark-320",
+        "ling-6.13-dark-1200"
+      ],
+      "completeRunPassed": true,
+      "sourceHashes": {
+        "content/ling/ch06.js": "13f25122f19037b1f21a7de06208af07ff8b1ec1838037c605fb6e6015dcbd15",
+        "content/ling/ch06.shared.js": "50e26183cd91390be6965975dbda52f661a69cbdde540eebae17683b41b27913",
+        "content/ling/ch06.data.js": "cff758ab46785e207a013961a7d7a591394051dc00f80751d393f22dee310c3f",
+        "content/ling/ch06.viz.js": "21f7825b9b0ed5149d95b32a64587a42a6dfe64b12036e4f4fac808f8b4b08c9",
+        "content/ling/syllabus.js": "4668ea53a40161d97100421ab3f828ee88019e4018b8b29e9da0088eecd2a5d1",
+        "assets/js/viz/core.js": "a6fa1753d9d9e8b9a05a7161fffc58dfd53b27002d9d393a3266aeb96515fe73",
+        "assets/js/viz/math.js": "439c335e1cc47907bc72bb76559216aa093be4710e0589f41c70192729eb223e",
+        "assets/js/share-state.js": "13c6a9ac1237d566fc5d79c89e0f4d3029aa8c2817d2c08247a02b1b053a59b1",
+        "assets/js/app.js": "2f5762e6bf80723a5cb8691f8b19c552dd1d731ab998d5bfcdb27828e2e9a6ce",
+        "assets/css/style.css": "eef34e3d7aaf8b38233a78d9dc6545e5e0c9d00b09a3a6876d19f3e0e0af15b6",
+        "data/index.json": "d189c6dbeac60a144d4d0b0f75a6da50029e55a612cee1ced5e29f860f1d3fab",
+        "data/col/ling.json": "77bf166aeb6401ce583de83cc33964fe5fee61ced25a3883ea2dfcf14c74b3ff",
+        "tests/fixtures/wave6-ling-reference.json": "08bc29d566e31bf932f30d97800c6f5031b7938251bedcd61c91c3cbf7403955",
+        "tests/wave6-ling-native.mjs": "cff266e4f58d4c0b3421269851beeae783f40af2bc6652090dac93885c79ead0",
+        "tests/wave6-ling-native-science.mjs": "cd30928002e5c8ad56e0f5fd4efa5bc914bc479f1712c6dd81c6e42dcd579d3a",
+        "tests/wave6-ling-native-cases.mjs": "88d185234d81fdd6bb245f695d23d752201ff9e3a61224fff42bf78fccacca06",
+        "tests/wave6-ling-browser.shared.mjs": "5a49a6d5e5c391d023e2483b4c20accae1d84691a9dc7e6a578f8eae5de51228",
+        "tests/wave6-ling-glyph.shared.mjs": "87e31d5f01c0e93492f901a8c411e88c7e1e9c551d9c2843c128c6538b9b9eb0"
+      }
+    },
+    {
+      "receipt": "/workspace/scratch/wave6-ling-research/native-v6-light/receipt.json",
+      "sha256": "c50321423e6b40bd15a82859e06614feb8321606783de429b9b2b0d4e0065748",
+      "selectedLabels": [
+        "ling-6.15-light-320",
+        "ling-6.15-light-1200"
+      ],
+      "completeRunPassed": true,
+      "sourceHashes": {
+        "content/ling/ch06.js": "13f25122f19037b1f21a7de06208af07ff8b1ec1838037c605fb6e6015dcbd15",
+        "content/ling/ch06.shared.js": "50e26183cd91390be6965975dbda52f661a69cbdde540eebae17683b41b27913",
+        "content/ling/ch06.data.js": "cff758ab46785e207a013961a7d7a591394051dc00f80751d393f22dee310c3f",
+        "content/ling/ch06.viz.js": "068ed122a15948ab44e0c44aaea71ed5d725f813c772db59093fcc10472f5a12",
+        "content/ling/syllabus.js": "4668ea53a40161d97100421ab3f828ee88019e4018b8b29e9da0088eecd2a5d1",
+        "assets/js/viz/core.js": "a6fa1753d9d9e8b9a05a7161fffc58dfd53b27002d9d393a3266aeb96515fe73",
+        "assets/js/viz/math.js": "439c335e1cc47907bc72bb76559216aa093be4710e0589f41c70192729eb223e",
+        "assets/js/share-state.js": "13c6a9ac1237d566fc5d79c89e0f4d3029aa8c2817d2c08247a02b1b053a59b1",
+        "assets/js/app.js": "2f5762e6bf80723a5cb8691f8b19c552dd1d731ab998d5bfcdb27828e2e9a6ce",
+        "assets/css/style.css": "eef34e3d7aaf8b38233a78d9dc6545e5e0c9d00b09a3a6876d19f3e0e0af15b6",
+        "data/index.json": "d189c6dbeac60a144d4d0b0f75a6da50029e55a612cee1ced5e29f860f1d3fab",
+        "data/col/ling.json": "77bf166aeb6401ce583de83cc33964fe5fee61ced25a3883ea2dfcf14c74b3ff",
+        "tests/fixtures/wave6-ling-reference.json": "08bc29d566e31bf932f30d97800c6f5031b7938251bedcd61c91c3cbf7403955",
+        "tests/wave6-ling-native.mjs": "d78b544085406933f336dcd43c1e3675c8e547e5eadd5e36627051c789a5fb77",
+        "tests/wave6-ling-native-science.mjs": "e8ec12e887b44a67c81e1972b9f97086e7adf5e9b20163fb33a7d4aff96d074d",
+        "tests/wave6-ling-native-cases.mjs": "e093082f4d6bc548eee872ea4eca20cd6d93105605b1b729dccb5cb8d1d4fe53",
+        "tests/wave6-ling-browser.shared.mjs": "5a49a6d5e5c391d023e2483b4c20accae1d84691a9dc7e6a578f8eae5de51228",
+        "tests/wave6-ling-glyph.shared.mjs": "87e31d5f01c0e93492f901a8c411e88c7e1e9c551d9c2843c128c6538b9b9eb0"
+      }
+    },
+    {
+      "receipt": "/workspace/scratch/wave6-ling-research/native-v6-dark/receipt.json",
+      "sha256": "4305e7a59431e0d1e62a2a17cf33f97f2c6509c380be36d6b89b1ab8b591e67f",
+      "selectedLabels": [
+        "ling-6.15-dark-320",
+        "ling-6.15-dark-1200"
+      ],
+      "completeRunPassed": true,
+      "sourceHashes": {
+        "content/ling/ch06.js": "13f25122f19037b1f21a7de06208af07ff8b1ec1838037c605fb6e6015dcbd15",
+        "content/ling/ch06.shared.js": "50e26183cd91390be6965975dbda52f661a69cbdde540eebae17683b41b27913",
+        "content/ling/ch06.data.js": "cff758ab46785e207a013961a7d7a591394051dc00f80751d393f22dee310c3f",
+        "content/ling/ch06.viz.js": "068ed122a15948ab44e0c44aaea71ed5d725f813c772db59093fcc10472f5a12",
+        "content/ling/syllabus.js": "4668ea53a40161d97100421ab3f828ee88019e4018b8b29e9da0088eecd2a5d1",
+        "assets/js/viz/core.js": "a6fa1753d9d9e8b9a05a7161fffc58dfd53b27002d9d393a3266aeb96515fe73",
+        "assets/js/viz/math.js": "439c335e1cc47907bc72bb76559216aa093be4710e0589f41c70192729eb223e",
+        "assets/js/share-state.js": "13c6a9ac1237d566fc5d79c89e0f4d3029aa8c2817d2c08247a02b1b053a59b1",
+        "assets/js/app.js": "2f5762e6bf80723a5cb8691f8b19c552dd1d731ab998d5bfcdb27828e2e9a6ce",
+        "assets/css/style.css": "eef34e3d7aaf8b38233a78d9dc6545e5e0c9d00b09a3a6876d19f3e0e0af15b6",
+        "data/index.json": "d189c6dbeac60a144d4d0b0f75a6da50029e55a612cee1ced5e29f860f1d3fab",
+        "data/col/ling.json": "77bf166aeb6401ce583de83cc33964fe5fee61ced25a3883ea2dfcf14c74b3ff",
+        "tests/fixtures/wave6-ling-reference.json": "08bc29d566e31bf932f30d97800c6f5031b7938251bedcd61c91c3cbf7403955",
+        "tests/wave6-ling-native.mjs": "d78b544085406933f336dcd43c1e3675c8e547e5eadd5e36627051c789a5fb77",
+        "tests/wave6-ling-native-science.mjs": "e8ec12e887b44a67c81e1972b9f97086e7adf5e9b20163fb33a7d4aff96d074d",
+        "tests/wave6-ling-native-cases.mjs": "e093082f4d6bc548eee872ea4eca20cd6d93105605b1b729dccb5cb8d1d4fe53",
+        "tests/wave6-ling-browser.shared.mjs": "5a49a6d5e5c391d023e2483b4c20accae1d84691a9dc7e6a578f8eae5de51228",
+        "tests/wave6-ling-glyph.shared.mjs": "87e31d5f01c0e93492f901a8c411e88c7e1e9c551d9c2843c128c6538b9b9eb0"
+      }
+    },
+    {
+      "receipt": "/workspace/scratch/wave6-ling-research/native-v7-light/receipt.json",
+      "sha256": "299509b6dc1fc2a549c22dc0b056c0558d865fa20ffad680974aee642a73cffe",
+      "selectedLabels": [
+        "ling-6.1-light-320",
+        "ling-6.1-light-1200"
+      ],
+      "completeRunPassed": true,
+      "sourceHashes": {
+        "content/ling/ch06.js": "13f25122f19037b1f21a7de06208af07ff8b1ec1838037c605fb6e6015dcbd15",
+        "content/ling/ch06.shared.js": "50e26183cd91390be6965975dbda52f661a69cbdde540eebae17683b41b27913",
+        "content/ling/ch06.data.js": "cff758ab46785e207a013961a7d7a591394051dc00f80751d393f22dee310c3f",
+        "content/ling/ch06.viz.js": "068ed122a15948ab44e0c44aaea71ed5d725f813c772db59093fcc10472f5a12",
+        "content/ling/syllabus.js": "4668ea53a40161d97100421ab3f828ee88019e4018b8b29e9da0088eecd2a5d1",
+        "assets/js/viz/core.js": "a6fa1753d9d9e8b9a05a7161fffc58dfd53b27002d9d393a3266aeb96515fe73",
+        "assets/js/viz/math.js": "439c335e1cc47907bc72bb76559216aa093be4710e0589f41c70192729eb223e",
+        "assets/js/share-state.js": "13c6a9ac1237d566fc5d79c89e0f4d3029aa8c2817d2c08247a02b1b053a59b1",
+        "assets/js/app.js": "2f5762e6bf80723a5cb8691f8b19c552dd1d731ab998d5bfcdb27828e2e9a6ce",
+        "assets/css/style.css": "eef34e3d7aaf8b38233a78d9dc6545e5e0c9d00b09a3a6876d19f3e0e0af15b6",
+        "data/index.json": "b7da733f22d48e4f80fbcc2c53a0df7b9b9eff02d9c9e37c74cc39afe3bd36bb",
+        "data/col/ling.json": "77bf166aeb6401ce583de83cc33964fe5fee61ced25a3883ea2dfcf14c74b3ff",
+        "tests/fixtures/wave6-ling-reference.json": "08bc29d566e31bf932f30d97800c6f5031b7938251bedcd61c91c3cbf7403955",
+        "tests/wave6-ling-native.mjs": "d78b544085406933f336dcd43c1e3675c8e547e5eadd5e36627051c789a5fb77",
+        "tests/wave6-ling-native-science.mjs": "e8ec12e887b44a67c81e1972b9f97086e7adf5e9b20163fb33a7d4aff96d074d",
+        "tests/wave6-ling-native-cases.mjs": "e093082f4d6bc548eee872ea4eca20cd6d93105605b1b729dccb5cb8d1d4fe53",
+        "tests/wave6-ling-browser.shared.mjs": "5a49a6d5e5c391d023e2483b4c20accae1d84691a9dc7e6a578f8eae5de51228",
+        "tests/wave6-ling-glyph.shared.mjs": "87e31d5f01c0e93492f901a8c411e88c7e1e9c551d9c2843c128c6538b9b9eb0"
+      }
+    },
+    {
+      "receipt": "/workspace/scratch/wave6-ling-research/native-v7-dark/receipt.json",
+      "sha256": "559466a31175ab908809275ddb0727d63639e1b8f0ead09d20288715a79711a9",
+      "selectedLabels": [
+        "ling-6.1-dark-320",
+        "ling-6.1-dark-1200"
+      ],
+      "completeRunPassed": true,
+      "sourceHashes": {
+        "content/ling/ch06.js": "13f25122f19037b1f21a7de06208af07ff8b1ec1838037c605fb6e6015dcbd15",
+        "content/ling/ch06.shared.js": "50e26183cd91390be6965975dbda52f661a69cbdde540eebae17683b41b27913",
+        "content/ling/ch06.data.js": "cff758ab46785e207a013961a7d7a591394051dc00f80751d393f22dee310c3f",
+        "content/ling/ch06.viz.js": "068ed122a15948ab44e0c44aaea71ed5d725f813c772db59093fcc10472f5a12",
+        "content/ling/syllabus.js": "4668ea53a40161d97100421ab3f828ee88019e4018b8b29e9da0088eecd2a5d1",
+        "assets/js/viz/core.js": "a6fa1753d9d9e8b9a05a7161fffc58dfd53b27002d9d393a3266aeb96515fe73",
+        "assets/js/viz/math.js": "439c335e1cc47907bc72bb76559216aa093be4710e0589f41c70192729eb223e",
+        "assets/js/share-state.js": "13c6a9ac1237d566fc5d79c89e0f4d3029aa8c2817d2c08247a02b1b053a59b1",
+        "assets/js/app.js": "2f5762e6bf80723a5cb8691f8b19c552dd1d731ab998d5bfcdb27828e2e9a6ce",
+        "assets/css/style.css": "eef34e3d7aaf8b38233a78d9dc6545e5e0c9d00b09a3a6876d19f3e0e0af15b6",
+        "data/index.json": "b7da733f22d48e4f80fbcc2c53a0df7b9b9eff02d9c9e37c74cc39afe3bd36bb",
+        "data/col/ling.json": "77bf166aeb6401ce583de83cc33964fe5fee61ced25a3883ea2dfcf14c74b3ff",
+        "tests/fixtures/wave6-ling-reference.json": "08bc29d566e31bf932f30d97800c6f5031b7938251bedcd61c91c3cbf7403955",
+        "tests/wave6-ling-native.mjs": "d78b544085406933f336dcd43c1e3675c8e547e5eadd5e36627051c789a5fb77",
+        "tests/wave6-ling-native-science.mjs": "e8ec12e887b44a67c81e1972b9f97086e7adf5e9b20163fb33a7d4aff96d074d",
+        "tests/wave6-ling-native-cases.mjs": "e093082f4d6bc548eee872ea4eca20cd6d93105605b1b729dccb5cb8d1d4fe53",
+        "tests/wave6-ling-browser.shared.mjs": "5a49a6d5e5c391d023e2483b4c20accae1d84691a9dc7e6a578f8eae5de51228",
+        "tests/wave6-ling-glyph.shared.mjs": "87e31d5f01c0e93492f901a8c411e88c7e1e9c551d9c2843c128c6538b9b9eb0"
+      }
+    }
+  ],
+  "rows": [
+    {
+      "label": "ling-6.4-light-320",
+      "counts": {
+        "layouts": 1,
+        "actions": 47,
+        "shares": 14,
+        "trustedShares": 14,
+        "invalid": 6,
+        "raw": 0,
+        "critical": 4,
+        "checks": 58,
+        "modelComparisons": 1182,
+        "geometryComparisons": 174,
+        "paintedPixelAudits": 174,
+        "pixelSamples": 0,
+        "domRangeRounding": 0
+      }
+    },
+    {
+      "label": "ling-6.4-light-1200",
+      "counts": {
+        "layouts": 1,
+        "actions": 47,
+        "shares": 14,
+        "trustedShares": 14,
+        "invalid": 6,
+        "raw": 0,
+        "critical": 4,
+        "checks": 58,
+        "modelComparisons": 1182,
+        "geometryComparisons": 174,
+        "paintedPixelAudits": 174,
+        "pixelSamples": 0,
+        "domRangeRounding": 0
+      }
+    },
+    {
+      "label": "ling-6.5-light-320",
+      "counts": {
+        "layouts": 1,
+        "actions": 43,
+        "shares": 13,
+        "trustedShares": 13,
+        "invalid": 6,
+        "raw": 0,
+        "critical": 4,
+        "checks": 55,
+        "modelComparisons": 1467,
+        "geometryComparisons": 562,
+        "paintedPixelAudits": 165,
+        "pixelSamples": 0,
+        "domRangeRounding": 0
+      }
+    },
+    {
+      "label": "ling-6.5-light-1200",
+      "counts": {
+        "layouts": 1,
+        "actions": 43,
+        "shares": 13,
+        "trustedShares": 13,
+        "invalid": 6,
+        "raw": 0,
+        "critical": 4,
+        "checks": 55,
+        "modelComparisons": 1467,
+        "geometryComparisons": 562,
+        "paintedPixelAudits": 165,
+        "pixelSamples": 0,
+        "domRangeRounding": 0
+      }
+    },
+    {
+      "label": "ling-6.6-light-320",
+      "counts": {
+        "layouts": 1,
+        "actions": 25,
+        "shares": 9,
+        "trustedShares": 9,
+        "invalid": 4,
+        "raw": 0,
+        "critical": 3,
+        "checks": 33,
+        "modelComparisons": 1239,
+        "geometryComparisons": 99,
+        "paintedPixelAudits": 99,
+        "pixelSamples": 0,
+        "domRangeRounding": 0
+      }
+    },
+    {
+      "label": "ling-6.6-light-1200",
+      "counts": {
+        "layouts": 1,
+        "actions": 25,
+        "shares": 9,
+        "trustedShares": 9,
+        "invalid": 4,
+        "raw": 0,
+        "critical": 3,
+        "checks": 33,
+        "modelComparisons": 1239,
+        "geometryComparisons": 99,
+        "paintedPixelAudits": 99,
+        "pixelSamples": 0,
+        "domRangeRounding": 0
+      }
+    },
+    {
+      "label": "ling-6.7-light-320",
+      "counts": {
+        "layouts": 1,
+        "actions": 39,
+        "shares": 15,
+        "trustedShares": 15,
+        "invalid": 4,
+        "raw": 0,
+        "critical": 9,
+        "checks": 53,
+        "modelComparisons": 848,
+        "geometryComparisons": 106,
+        "paintedPixelAudits": 159,
+        "pixelSamples": 0,
+        "domRangeRounding": 0
+      }
+    },
+    {
+      "label": "ling-6.7-light-1200",
+      "counts": {
+        "layouts": 1,
+        "actions": 39,
+        "shares": 15,
+        "trustedShares": 15,
+        "invalid": 4,
+        "raw": 0,
+        "critical": 9,
+        "checks": 53,
+        "modelComparisons": 848,
+        "geometryComparisons": 106,
+        "paintedPixelAudits": 159,
+        "pixelSamples": 0,
+        "domRangeRounding": 0
+      }
+    },
+    {
+      "label": "ling-6.8-light-320",
+      "counts": {
+        "layouts": 1,
+        "actions": 44,
+        "shares": 14,
+        "trustedShares": 14,
+        "invalid": 6,
+        "raw": 3,
+        "critical": 4,
+        "checks": 58,
+        "modelComparisons": 5446,
+        "geometryComparisons": 2110,
+        "paintedPixelAudits": 174,
+        "pixelSamples": 0,
+        "domRangeRounding": 3
+      }
+    },
+    {
+      "label": "ling-6.8-light-1200",
+      "counts": {
+        "layouts": 1,
+        "actions": 44,
+        "shares": 14,
+        "trustedShares": 14,
+        "invalid": 6,
+        "raw": 3,
+        "critical": 4,
+        "checks": 58,
+        "modelComparisons": 5446,
+        "geometryComparisons": 2110,
+        "paintedPixelAudits": 174,
+        "pixelSamples": 0,
+        "domRangeRounding": 3
+      }
+    },
+    {
+      "label": "ling-6.11-light-320",
+      "counts": {
+        "layouts": 1,
+        "actions": 39,
+        "shares": 12,
+        "trustedShares": 12,
+        "invalid": 6,
+        "raw": 4,
+        "critical": 3,
+        "checks": 53,
+        "modelComparisons": 2544,
+        "geometryComparisons": 1560,
+        "paintedPixelAudits": 159,
+        "pixelSamples": 0,
+        "domRangeRounding": 0
+      }
+    },
+    {
+      "label": "ling-6.11-light-1200",
+      "counts": {
+        "layouts": 1,
+        "actions": 39,
+        "shares": 12,
+        "trustedShares": 12,
+        "invalid": 6,
+        "raw": 4,
+        "critical": 3,
+        "checks": 53,
+        "modelComparisons": 2544,
+        "geometryComparisons": 1560,
+        "paintedPixelAudits": 159,
+        "pixelSamples": 0,
+        "domRangeRounding": 0
+      }
+    },
+    {
+      "label": "ling-6.12-light-320",
+      "counts": {
+        "layouts": 1,
+        "actions": 160,
+        "shares": 13,
+        "trustedShares": 13,
+        "invalid": 5,
+        "raw": 0,
+        "critical": 4,
+        "checks": 171,
+        "modelComparisons": 113394,
+        "geometryComparisons": 28044,
+        "paintedPixelAudits": 513,
+        "pixelSamples": 13680,
+        "domRangeRounding": 0
+      }
+    },
+    {
+      "label": "ling-6.12-light-1200",
+      "counts": {
+        "layouts": 1,
+        "actions": 147,
+        "shares": 9,
+        "trustedShares": 9,
+        "invalid": 5,
+        "raw": 0,
+        "critical": 4,
+        "checks": 158,
+        "modelComparisons": 104775,
+        "geometryComparisons": 101752,
+        "paintedPixelAudits": 474,
+        "pixelSamples": 50560,
+        "domRangeRounding": 0
+      }
+    },
+    {
+      "label": "ling-6.14-light-320",
+      "counts": {
+        "layouts": 1,
+        "actions": 38,
+        "shares": 13,
+        "trustedShares": 13,
+        "invalid": 5,
+        "raw": 4,
+        "critical": 5,
+        "checks": 53,
+        "modelComparisons": 30952,
+        "geometryComparisons": 30316,
+        "paintedPixelAudits": 159,
+        "pixelSamples": 0,
+        "domRangeRounding": 3
+      }
+    },
+    {
+      "label": "ling-6.14-light-1200",
+      "counts": {
+        "layouts": 1,
+        "actions": 38,
+        "shares": 13,
+        "trustedShares": 13,
+        "invalid": 5,
+        "raw": 4,
+        "critical": 5,
+        "checks": 53,
+        "modelComparisons": 30952,
+        "geometryComparisons": 30316,
+        "paintedPixelAudits": 159,
+        "pixelSamples": 0,
+        "domRangeRounding": 3
+      }
+    },
+    {
+      "label": "ling-6.16-light-320",
+      "counts": {
+        "layouts": 1,
+        "actions": 42,
+        "shares": 14,
+        "trustedShares": 14,
+        "invalid": 7,
+        "raw": 0,
+        "critical": 3,
+        "checks": 53,
+        "modelComparisons": 1113,
+        "geometryComparisons": 318,
+        "paintedPixelAudits": 159,
+        "pixelSamples": 0,
+        "domRangeRounding": 0
+      }
+    },
+    {
+      "label": "ling-6.16-light-1200",
+      "counts": {
+        "layouts": 1,
+        "actions": 42,
+        "shares": 14,
+        "trustedShares": 14,
+        "invalid": 7,
+        "raw": 0,
+        "critical": 3,
+        "checks": 53,
+        "modelComparisons": 1113,
+        "geometryComparisons": 318,
+        "paintedPixelAudits": 159,
+        "pixelSamples": 0,
+        "domRangeRounding": 0
+      }
+    },
+    {
+      "label": "ling-6.4-dark-320",
+      "counts": {
+        "layouts": 1,
+        "actions": 47,
+        "shares": 14,
+        "trustedShares": 14,
+        "invalid": 6,
+        "raw": 0,
+        "critical": 4,
+        "checks": 58,
+        "modelComparisons": 1182,
+        "geometryComparisons": 174,
+        "paintedPixelAudits": 174,
+        "pixelSamples": 0,
+        "domRangeRounding": 0
+      }
+    },
+    {
+      "label": "ling-6.4-dark-1200",
+      "counts": {
+        "layouts": 1,
+        "actions": 47,
+        "shares": 14,
+        "trustedShares": 14,
+        "invalid": 6,
+        "raw": 0,
+        "critical": 4,
+        "checks": 58,
+        "modelComparisons": 1182,
+        "geometryComparisons": 174,
+        "paintedPixelAudits": 174,
+        "pixelSamples": 0,
+        "domRangeRounding": 0
+      }
+    },
+    {
+      "label": "ling-6.5-dark-320",
+      "counts": {
+        "layouts": 1,
+        "actions": 43,
+        "shares": 13,
+        "trustedShares": 13,
+        "invalid": 6,
+        "raw": 0,
+        "critical": 4,
+        "checks": 55,
+        "modelComparisons": 1467,
+        "geometryComparisons": 562,
+        "paintedPixelAudits": 165,
+        "pixelSamples": 0,
+        "domRangeRounding": 0
+      }
+    },
+    {
+      "label": "ling-6.5-dark-1200",
+      "counts": {
+        "layouts": 1,
+        "actions": 43,
+        "shares": 13,
+        "trustedShares": 13,
+        "invalid": 6,
+        "raw": 0,
+        "critical": 4,
+        "checks": 55,
+        "modelComparisons": 1467,
+        "geometryComparisons": 562,
+        "paintedPixelAudits": 165,
+        "pixelSamples": 0,
+        "domRangeRounding": 0
+      }
+    },
+    {
+      "label": "ling-6.6-dark-320",
+      "counts": {
+        "layouts": 1,
+        "actions": 25,
+        "shares": 9,
+        "trustedShares": 9,
+        "invalid": 4,
+        "raw": 0,
+        "critical": 3,
+        "checks": 33,
+        "modelComparisons": 1239,
+        "geometryComparisons": 99,
+        "paintedPixelAudits": 99,
+        "pixelSamples": 0,
+        "domRangeRounding": 0
+      }
+    },
+    {
+      "label": "ling-6.6-dark-1200",
+      "counts": {
+        "layouts": 1,
+        "actions": 25,
+        "shares": 9,
+        "trustedShares": 9,
+        "invalid": 4,
+        "raw": 0,
+        "critical": 3,
+        "checks": 33,
+        "modelComparisons": 1239,
+        "geometryComparisons": 99,
+        "paintedPixelAudits": 99,
+        "pixelSamples": 0,
+        "domRangeRounding": 0
+      }
+    },
+    {
+      "label": "ling-6.7-dark-320",
+      "counts": {
+        "layouts": 1,
+        "actions": 39,
+        "shares": 15,
+        "trustedShares": 15,
+        "invalid": 4,
+        "raw": 0,
+        "critical": 9,
+        "checks": 53,
+        "modelComparisons": 848,
+        "geometryComparisons": 106,
+        "paintedPixelAudits": 159,
+        "pixelSamples": 0,
+        "domRangeRounding": 0
+      }
+    },
+    {
+      "label": "ling-6.7-dark-1200",
+      "counts": {
+        "layouts": 1,
+        "actions": 39,
+        "shares": 15,
+        "trustedShares": 15,
+        "invalid": 4,
+        "raw": 0,
+        "critical": 9,
+        "checks": 53,
+        "modelComparisons": 848,
+        "geometryComparisons": 106,
+        "paintedPixelAudits": 159,
+        "pixelSamples": 0,
+        "domRangeRounding": 0
+      }
+    },
+    {
+      "label": "ling-6.8-dark-320",
+      "counts": {
+        "layouts": 1,
+        "actions": 44,
+        "shares": 14,
+        "trustedShares": 14,
+        "invalid": 6,
+        "raw": 3,
+        "critical": 4,
+        "checks": 58,
+        "modelComparisons": 5446,
+        "geometryComparisons": 2110,
+        "paintedPixelAudits": 174,
+        "pixelSamples": 0,
+        "domRangeRounding": 3
+      }
+    },
+    {
+      "label": "ling-6.8-dark-1200",
+      "counts": {
+        "layouts": 1,
+        "actions": 44,
+        "shares": 14,
+        "trustedShares": 14,
+        "invalid": 6,
+        "raw": 3,
+        "critical": 4,
+        "checks": 58,
+        "modelComparisons": 5446,
+        "geometryComparisons": 2110,
+        "paintedPixelAudits": 174,
+        "pixelSamples": 0,
+        "domRangeRounding": 3
+      }
+    },
+    {
+      "label": "ling-6.11-dark-320",
+      "counts": {
+        "layouts": 1,
+        "actions": 39,
+        "shares": 12,
+        "trustedShares": 12,
+        "invalid": 6,
+        "raw": 4,
+        "critical": 3,
+        "checks": 53,
+        "modelComparisons": 2544,
+        "geometryComparisons": 1560,
+        "paintedPixelAudits": 159,
+        "pixelSamples": 0,
+        "domRangeRounding": 0
+      }
+    },
+    {
+      "label": "ling-6.11-dark-1200",
+      "counts": {
+        "layouts": 1,
+        "actions": 39,
+        "shares": 12,
+        "trustedShares": 12,
+        "invalid": 6,
+        "raw": 4,
+        "critical": 3,
+        "checks": 53,
+        "modelComparisons": 2544,
+        "geometryComparisons": 1560,
+        "paintedPixelAudits": 159,
+        "pixelSamples": 0,
+        "domRangeRounding": 0
+      }
+    },
+    {
+      "label": "ling-6.12-dark-320",
+      "counts": {
+        "layouts": 1,
+        "actions": 160,
+        "shares": 13,
+        "trustedShares": 13,
+        "invalid": 5,
+        "raw": 0,
+        "critical": 4,
+        "checks": 171,
+        "modelComparisons": 113394,
+        "geometryComparisons": 28044,
+        "paintedPixelAudits": 513,
+        "pixelSamples": 13680,
+        "domRangeRounding": 0
+      }
+    },
+    {
+      "label": "ling-6.12-dark-1200",
+      "counts": {
+        "layouts": 1,
+        "actions": 147,
+        "shares": 9,
+        "trustedShares": 9,
+        "invalid": 5,
+        "raw": 0,
+        "critical": 4,
+        "checks": 158,
+        "modelComparisons": 104775,
+        "geometryComparisons": 101752,
+        "paintedPixelAudits": 474,
+        "pixelSamples": 50560,
+        "domRangeRounding": 0
+      }
+    },
+    {
+      "label": "ling-6.14-dark-320",
+      "counts": {
+        "layouts": 1,
+        "actions": 38,
+        "shares": 13,
+        "trustedShares": 13,
+        "invalid": 5,
+        "raw": 4,
+        "critical": 5,
+        "checks": 53,
+        "modelComparisons": 30952,
+        "geometryComparisons": 30316,
+        "paintedPixelAudits": 159,
+        "pixelSamples": 0,
+        "domRangeRounding": 3
+      }
+    },
+    {
+      "label": "ling-6.14-dark-1200",
+      "counts": {
+        "layouts": 1,
+        "actions": 38,
+        "shares": 13,
+        "trustedShares": 13,
+        "invalid": 5,
+        "raw": 4,
+        "critical": 5,
+        "checks": 53,
+        "modelComparisons": 30952,
+        "geometryComparisons": 30316,
+        "paintedPixelAudits": 159,
+        "pixelSamples": 0,
+        "domRangeRounding": 3
+      }
+    },
+    {
+      "label": "ling-6.16-dark-320",
+      "counts": {
+        "layouts": 1,
+        "actions": 42,
+        "shares": 14,
+        "trustedShares": 14,
+        "invalid": 7,
+        "raw": 0,
+        "critical": 3,
+        "checks": 53,
+        "modelComparisons": 1113,
+        "geometryComparisons": 318,
+        "paintedPixelAudits": 159,
+        "pixelSamples": 0,
+        "domRangeRounding": 0
+      }
+    },
+    {
+      "label": "ling-6.16-dark-1200",
+      "counts": {
+        "layouts": 1,
+        "actions": 42,
+        "shares": 14,
+        "trustedShares": 14,
+        "invalid": 7,
+        "raw": 0,
+        "critical": 3,
+        "checks": 53,
+        "modelComparisons": 1113,
+        "geometryComparisons": 318,
+        "paintedPixelAudits": 159,
+        "pixelSamples": 0,
+        "domRangeRounding": 0
+      }
+    },
+    {
+      "label": "ling-6.2-light-320",
+      "counts": {
+        "layouts": 1,
+        "actions": 48,
+        "shares": 14,
+        "trustedShares": 14,
+        "invalid": 8,
+        "raw": 0,
+        "critical": 2,
+        "checks": 60,
+        "modelComparisons": 1630,
+        "geometryComparisons": 780,
+        "paintedPixelAudits": 180,
+        "pixelSamples": 0,
+        "domRangeRounding": 0
+      }
+    },
+    {
+      "label": "ling-6.2-light-1200",
+      "counts": {
+        "layouts": 1,
+        "actions": 48,
+        "shares": 14,
+        "trustedShares": 14,
+        "invalid": 8,
+        "raw": 0,
+        "critical": 2,
+        "checks": 60,
+        "modelComparisons": 1630,
+        "geometryComparisons": 780,
+        "paintedPixelAudits": 180,
+        "pixelSamples": 0,
+        "domRangeRounding": 0
+      }
+    },
+    {
+      "label": "ling-6.3-light-320",
+      "counts": {
+        "layouts": 1,
+        "actions": 66,
+        "shares": 21,
+        "trustedShares": 21,
+        "invalid": 7,
+        "raw": 0,
+        "critical": 3,
+        "checks": 78,
+        "modelComparisons": 4812,
+        "geometryComparisons": 2886,
+        "paintedPixelAudits": 234,
+        "pixelSamples": 600,
+        "domRangeRounding": 0
+      }
+    },
+    {
+      "label": "ling-6.3-light-1200",
+      "counts": {
+        "layouts": 1,
+        "actions": 66,
+        "shares": 21,
+        "trustedShares": 21,
+        "invalid": 7,
+        "raw": 0,
+        "critical": 3,
+        "checks": 78,
+        "modelComparisons": 4812,
+        "geometryComparisons": 2886,
+        "paintedPixelAudits": 234,
+        "pixelSamples": 600,
+        "domRangeRounding": 0
+      }
+    },
+    {
+      "label": "ling-6.9-light-320",
+      "counts": {
+        "layouts": 1,
+        "actions": 40,
+        "shares": 15,
+        "trustedShares": 15,
+        "invalid": 8,
+        "raw": 0,
+        "critical": 6,
+        "checks": 55,
+        "modelComparisons": 1077,
+        "geometryComparisons": 236,
+        "paintedPixelAudits": 165,
+        "pixelSamples": 0,
+        "domRangeRounding": 0
+      }
+    },
+    {
+      "label": "ling-6.9-light-1200",
+      "counts": {
+        "layouts": 1,
+        "actions": 40,
+        "shares": 15,
+        "trustedShares": 15,
+        "invalid": 8,
+        "raw": 0,
+        "critical": 6,
+        "checks": 55,
+        "modelComparisons": 1077,
+        "geometryComparisons": 236,
+        "paintedPixelAudits": 165,
+        "pixelSamples": 0,
+        "domRangeRounding": 0
+      }
+    },
+    {
+      "label": "ling-6.10-light-320",
+      "counts": {
+        "layouts": 1,
+        "actions": 34,
+        "shares": 11,
+        "trustedShares": 11,
+        "invalid": 5,
+        "raw": 3,
+        "critical": 3,
+        "checks": 46,
+        "modelComparisons": 8280,
+        "geometryComparisons": 11500,
+        "paintedPixelAudits": 138,
+        "pixelSamples": 0,
+        "domRangeRounding": 6
+      }
+    },
+    {
+      "label": "ling-6.10-light-1200",
+      "counts": {
+        "layouts": 1,
+        "actions": 34,
+        "shares": 11,
+        "trustedShares": 11,
+        "invalid": 5,
+        "raw": 3,
+        "critical": 3,
+        "checks": 46,
+        "modelComparisons": 8280,
+        "geometryComparisons": 11500,
+        "paintedPixelAudits": 138,
+        "pixelSamples": 0,
+        "domRangeRounding": 6
+      }
+    },
+    {
+      "label": "ling-6.13-light-320",
+      "counts": {
+        "layouts": 1,
+        "actions": 47,
+        "shares": 15,
+        "trustedShares": 15,
+        "invalid": 7,
+        "raw": 0,
+        "critical": 8,
+        "checks": 64,
+        "modelComparisons": 11532,
+        "geometryComparisons": 9472,
+        "paintedPixelAudits": 256,
+        "pixelSamples": 0,
+        "domRangeRounding": 0
+      }
+    },
+    {
+      "label": "ling-6.13-light-1200",
+      "counts": {
+        "layouts": 1,
+        "actions": 47,
+        "shares": 15,
+        "trustedShares": 15,
+        "invalid": 7,
+        "raw": 0,
+        "critical": 8,
+        "checks": 64,
+        "modelComparisons": 11532,
+        "geometryComparisons": 9472,
+        "paintedPixelAudits": 256,
+        "pixelSamples": 0,
+        "domRangeRounding": 0
+      }
+    },
+    {
+      "label": "ling-6.2-dark-320",
+      "counts": {
+        "layouts": 1,
+        "actions": 48,
+        "shares": 14,
+        "trustedShares": 14,
+        "invalid": 8,
+        "raw": 0,
+        "critical": 2,
+        "checks": 60,
+        "modelComparisons": 1630,
+        "geometryComparisons": 780,
+        "paintedPixelAudits": 180,
+        "pixelSamples": 0,
+        "domRangeRounding": 0
+      }
+    },
+    {
+      "label": "ling-6.2-dark-1200",
+      "counts": {
+        "layouts": 1,
+        "actions": 48,
+        "shares": 14,
+        "trustedShares": 14,
+        "invalid": 8,
+        "raw": 0,
+        "critical": 2,
+        "checks": 60,
+        "modelComparisons": 1630,
+        "geometryComparisons": 780,
+        "paintedPixelAudits": 180,
+        "pixelSamples": 0,
+        "domRangeRounding": 0
+      }
+    },
+    {
+      "label": "ling-6.3-dark-320",
+      "counts": {
+        "layouts": 1,
+        "actions": 66,
+        "shares": 21,
+        "trustedShares": 21,
+        "invalid": 7,
+        "raw": 0,
+        "critical": 3,
+        "checks": 78,
+        "modelComparisons": 4812,
+        "geometryComparisons": 2886,
+        "paintedPixelAudits": 234,
+        "pixelSamples": 600,
+        "domRangeRounding": 0
+      }
+    },
+    {
+      "label": "ling-6.3-dark-1200",
+      "counts": {
+        "layouts": 1,
+        "actions": 66,
+        "shares": 21,
+        "trustedShares": 21,
+        "invalid": 7,
+        "raw": 0,
+        "critical": 3,
+        "checks": 78,
+        "modelComparisons": 4812,
+        "geometryComparisons": 2886,
+        "paintedPixelAudits": 234,
+        "pixelSamples": 600,
+        "domRangeRounding": 0
+      }
+    },
+    {
+      "label": "ling-6.9-dark-320",
+      "counts": {
+        "layouts": 1,
+        "actions": 40,
+        "shares": 15,
+        "trustedShares": 15,
+        "invalid": 8,
+        "raw": 0,
+        "critical": 6,
+        "checks": 55,
+        "modelComparisons": 1077,
+        "geometryComparisons": 236,
+        "paintedPixelAudits": 165,
+        "pixelSamples": 0,
+        "domRangeRounding": 0
+      }
+    },
+    {
+      "label": "ling-6.9-dark-1200",
+      "counts": {
+        "layouts": 1,
+        "actions": 40,
+        "shares": 15,
+        "trustedShares": 15,
+        "invalid": 8,
+        "raw": 0,
+        "critical": 6,
+        "checks": 55,
+        "modelComparisons": 1077,
+        "geometryComparisons": 236,
+        "paintedPixelAudits": 165,
+        "pixelSamples": 0,
+        "domRangeRounding": 0
+      }
+    },
+    {
+      "label": "ling-6.10-dark-320",
+      "counts": {
+        "layouts": 1,
+        "actions": 34,
+        "shares": 11,
+        "trustedShares": 11,
+        "invalid": 5,
+        "raw": 3,
+        "critical": 3,
+        "checks": 46,
+        "modelComparisons": 8280,
+        "geometryComparisons": 11500,
+        "paintedPixelAudits": 138,
+        "pixelSamples": 0,
+        "domRangeRounding": 6
+      }
+    },
+    {
+      "label": "ling-6.10-dark-1200",
+      "counts": {
+        "layouts": 1,
+        "actions": 34,
+        "shares": 11,
+        "trustedShares": 11,
+        "invalid": 5,
+        "raw": 3,
+        "critical": 3,
+        "checks": 46,
+        "modelComparisons": 8280,
+        "geometryComparisons": 11500,
+        "paintedPixelAudits": 138,
+        "pixelSamples": 0,
+        "domRangeRounding": 6
+      }
+    },
+    {
+      "label": "ling-6.13-dark-320",
+      "counts": {
+        "layouts": 1,
+        "actions": 47,
+        "shares": 15,
+        "trustedShares": 15,
+        "invalid": 7,
+        "raw": 0,
+        "critical": 8,
+        "checks": 64,
+        "modelComparisons": 11532,
+        "geometryComparisons": 9472,
+        "paintedPixelAudits": 256,
+        "pixelSamples": 0,
+        "domRangeRounding": 0
+      }
+    },
+    {
+      "label": "ling-6.13-dark-1200",
+      "counts": {
+        "layouts": 1,
+        "actions": 47,
+        "shares": 15,
+        "trustedShares": 15,
+        "invalid": 7,
+        "raw": 0,
+        "critical": 8,
+        "checks": 64,
+        "modelComparisons": 11532,
+        "geometryComparisons": 9472,
+        "paintedPixelAudits": 256,
+        "pixelSamples": 0,
+        "domRangeRounding": 0
+      }
+    },
+    {
+      "label": "ling-6.15-light-320",
+      "counts": {
+        "layouts": 1,
+        "actions": 42,
+        "shares": 14,
+        "trustedShares": 14,
+        "invalid": 7,
+        "raw": 1,
+        "critical": 5,
+        "checks": 56,
+        "modelComparisons": 12299,
+        "geometryComparisons": 11368,
+        "paintedPixelAudits": 168,
+        "pixelSamples": 10760,
+        "domRangeRounding": 0
+      }
+    },
+    {
+      "label": "ling-6.15-light-1200",
+      "counts": {
+        "layouts": 1,
+        "actions": 42,
+        "shares": 14,
+        "trustedShares": 14,
+        "invalid": 7,
+        "raw": 1,
+        "critical": 5,
+        "checks": 56,
+        "modelComparisons": 12299,
+        "geometryComparisons": 11368,
+        "paintedPixelAudits": 168,
+        "pixelSamples": 10760,
+        "domRangeRounding": 0
+      }
+    },
+    {
+      "label": "ling-6.15-dark-320",
+      "counts": {
+        "layouts": 1,
+        "actions": 42,
+        "shares": 14,
+        "trustedShares": 14,
+        "invalid": 7,
+        "raw": 1,
+        "critical": 5,
+        "checks": 56,
+        "modelComparisons": 12299,
+        "geometryComparisons": 11368,
+        "paintedPixelAudits": 168,
+        "pixelSamples": 10760,
+        "domRangeRounding": 0
+      }
+    },
+    {
+      "label": "ling-6.15-dark-1200",
+      "counts": {
+        "layouts": 1,
+        "actions": 42,
+        "shares": 14,
+        "trustedShares": 14,
+        "invalid": 7,
+        "raw": 1,
+        "critical": 5,
+        "checks": 56,
+        "modelComparisons": 12299,
+        "geometryComparisons": 11368,
+        "paintedPixelAudits": 168,
+        "pixelSamples": 10760,
+        "domRangeRounding": 0
+      }
+    },
+    {
+      "label": "ling-6.1-light-320",
+      "counts": {
+        "layouts": 1,
+        "actions": 24,
+        "shares": 8,
+        "trustedShares": 8,
+        "invalid": 5,
+        "raw": 0,
+        "critical": 2,
+        "checks": 32,
+        "modelComparisons": 672,
+        "geometryComparisons": 192,
+        "paintedPixelAudits": 96,
+        "pixelSamples": 0,
+        "domRangeRounding": 0
+      }
+    },
+    {
+      "label": "ling-6.1-light-1200",
+      "counts": {
+        "layouts": 1,
+        "actions": 24,
+        "shares": 8,
+        "trustedShares": 8,
+        "invalid": 5,
+        "raw": 0,
+        "critical": 2,
+        "checks": 32,
+        "modelComparisons": 672,
+        "geometryComparisons": 192,
+        "paintedPixelAudits": 96,
+        "pixelSamples": 0,
+        "domRangeRounding": 0
+      }
+    },
+    {
+      "label": "ling-6.1-dark-320",
+      "counts": {
+        "layouts": 1,
+        "actions": 24,
+        "shares": 8,
+        "trustedShares": 8,
+        "invalid": 5,
+        "raw": 0,
+        "critical": 2,
+        "checks": 32,
+        "modelComparisons": 672,
+        "geometryComparisons": 192,
+        "paintedPixelAudits": 96,
+        "pixelSamples": 0,
+        "domRangeRounding": 0
+      }
+    },
+    {
+      "label": "ling-6.1-dark-1200",
+      "counts": {
+        "layouts": 1,
+        "actions": 24,
+        "shares": 8,
+        "trustedShares": 8,
+        "invalid": 5,
+        "raw": 0,
+        "critical": 2,
+        "checks": 32,
+        "modelComparisons": 672,
+        "geometryComparisons": 192,
+        "paintedPixelAudits": 96,
+        "pixelSamples": 0,
+        "domRangeRounding": 0
+      }
+    }
+  ],
+  "sourceTransitionScope": "Late changes replace only lessons2/3/9/10/13 and15; all10other export spans remain byte-exact. Lesson1 has a fresh complete current-source run. Failed runs are retained and never counted as successful runs.",
+  "checksAreIndependentReferenceCases": false
+}

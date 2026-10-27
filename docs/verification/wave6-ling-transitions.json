@@ -1,0 +1,355 @@
+{
+  "status": "PASS",
+  "receipts": [
+    {
+      "file": "/workspace/scratch/wave6-ling-research/narrow-formulas-transition.json",
+      "sha256": "62f2bc365071af4f87386bfaf7a7ab3488d39fccd8bb86d290ec0d00a15c2d11",
+      "receipt": {
+        "scope": "Three teaching-field equations reflowed; all other whole source bytes reconstruct exactly. UI/model/control/state code unchanged. Initial capture harness renamed searchParams incorrectly; both initial theme receipts rejected, pageerror diagnosed with stack; corrected and explicit theme assertion added.",
+        "beforeSHA256": "766a8b660f9bbe797c3ef80504e8c4c17bbaa3b2021683dcba36f92f4da046d9",
+        "afterSHA256": "6c463b6149e10aecb2429ffd843f9af9e6fcdfbc4ddc823a6ca9710ad6e6f772",
+        "wholeOldSourceReconstructsByteExact": true,
+        "fields": [
+          {
+            "item": "6.8",
+            "field": "idea",
+            "before": "Let states k count successes among n items, with truthful messages none, some and all. A uniform literal listener gives $L_0(k\\mid u)=1/|\\llbracket u\\rrbracket|$ on compatible states. The modeled speaker uses\n $$S(u\\mid k)\\propto\\exp\\{\\alpha[\\log L_0(k\\mid u)-c(u)]\\},$$\n assigning zero weight to false messages. The pragmatic listener normalizes $P(k)S(\\text{some}\\mid k)$ over states compatible with the whole utterance. The supplied prior is binomial and the costs are authored. Plain some retains positive probability for all at every finite allowed setting, so the model does not turn the inference into an entailment. Adding in fact all restricts the state to n; adding but none leaves no compatible state and no posterior to normalize.",
+            "after": "Let states k count successes among n items, with truthful messages none, some and all. A uniform literal listener gives $L_0(k\\mid u)=1/|\\llbracket u\\rrbracket|$ on compatible states. Write $U(u,k)$ for $\\log L_0(k\\mid u)$ minus message cost $c(u)$. The modeled speaker uses\n $$S(u\\mid k)\\propto e^{\\alpha U(u,k)},$$\n assigning zero weight to false messages. The pragmatic listener normalizes $P(k)S(\\text{some}\\mid k)$ over states compatible with the whole utterance. The supplied prior is binomial and the costs are authored. Plain some retains positive probability for all at every finite allowed setting, so the model does not turn the inference into an entailment. Adding in fact all restricts the state to n; adding but none leaves no compatible state and no posterior to normalize."
+          },
+          {
+            "item": "6.11",
+            "field": "idea",
+            "before": "The exercise supplies four authored attributes and nonnegative importance weights. Its similarity to an all-feature prototype is\n $$T_w(x)=\\frac{\\sum_i w_i f_i(x)}{\\sum_i w_i},\\qquad \\sum_iw_i>0.$$\n Increasing a weight emphasizes the corresponding attribute; multiplying every weight by the same positive factor preserves the ratio. With only flight emphasized, an illustrative bat can resemble the prototype more than a flightless bird, while the biological category labels remain fixed. This exposes the difference between the chosen representation\u2019s similarity and membership. Setting every weight to zero leaves similarity undefined. Neither this feature table nor the weights are Rosch\u2019s observed data, and the plotted values are not response times or collected judgments.",
+            "after": "The exercise supplies four authored attributes and nonnegative importance weights. Its similarity to an all-feature prototype is\n $$T_w(x)=\\frac{\\sum_i w_i f_i(x)}{\\sum_i w_i}.$$\n Increasing a weight emphasizes the corresponding attribute; multiplying every weight by the same positive factor preserves the ratio. With only flight emphasized, an illustrative bat can resemble the prototype more than a flightless bird, while the biological category labels remain fixed. This exposes the difference between the chosen representation\u2019s similarity and membership. Setting every weight to zero leaves similarity undefined. Neither this feature table nor the weights are Rosch\u2019s observed data, and the plotted values are not response times or collected judgments."
+          },
+          {
+            "item": "6.14",
+            "field": "idea",
+            "before": "Let admissible cutoffs range over $[m-w,m+w]$. For positive w, h is supertrue when $h\\ge m+w$, superfalse when $h<m-w$, and otherwise in a gap. Uniformly weighting these cutoffs gives the fraction\n $$F(h)=\\min\\!\\left(1,\\max\\!\\left(0,\\frac{h-m+w}{2w}\\right)\\right).$$\n At the lower endpoint this fraction is zero, yet one admissible cutoff accepts and others reject: zero measure is not the same as no accepting definition. At $w=0$ there is one sharp rule. The separate logistic curve $1/[1+\\exp(-(h-m)/s)]$ is an authored response model. Its continuity is an assumption of that model, not evidence that a hidden sharp boundary is impossible. The written sorites prerequisite explains why unrestricted tolerance creates a logical problem.",
+            "after": "Let admissible cutoffs range over $[m-w,m+w]$. For positive w, h is supertrue when $h\\ge m+w$, superfalse when $h<m-w$, and otherwise in a gap. Uniformly weighting these cutoffs gives the fraction\n $$z=\\frac{h-m+w}{2w}.$$\n Set $F(h)=0$ for $z\\le0$, $F(h)=z$ for $0<z<1$, and $F(h)=1$ for $z\\ge1$. At the lower endpoint this fraction is zero, yet one admissible cutoff accepts and others reject: zero measure is not the same as no accepting definition. At $w=0$ there is one sharp rule. The separate logistic curve $1/[1+\\exp(-(h-m)/s)]$ is an authored response model. Its continuity is an assumption of that model, not evidence that a hidden sharp boundary is impossible. The written sorites prerequisite explains why unrestricted tolerance creates a logical problem."
+          }
+        ],
+        "failedLogs": [
+          "default-initial-light.log",
+          "default-initial-dark.log",
+          "diagnose-default-pageerror.log"
+        ],
+        "initialActuallyViewedProductImages": [
+          "default-initial-light/ling-6.1-light-320.png"
+        ],
+        "currentGate": "pending recapture; no visual/native completion count"
+      }
+    },
+    {
+      "file": "/workspace/scratch/wave6-ling-research/wcs-footer-glyph-transition.json",
+      "sha256": "106dba3716af6f7ce54be6e1ec3b2b5c2a1a6aa7f92ec3090c20e48ac27d312f",
+      "receipt": {
+        "scope": "Removed the redundant WCS window-footer label, which was drawn in both grid panels. All other whole UI bytes reconstruct exactly. Added raster glyph measurement and pairwise overlap checks, retaining prior edge/math/geometry/state assertions.",
+        "before": {
+          "content/ling/ch06.viz.js": "00e1b1fa2f3ee1595b6ffb439004bd553ec809b945fdd98a051c3f947b18b6bf",
+          "tests/wave6-ling-browser.shared.mjs": "01c4aadcd1e1bce8a4d84f3ad255892527c9d09818eb4cb285e7ad983b95f586",
+          "tests/wave6-ling-browser.mjs": "879f7b31ee2be6c44e3abb05c85b6569800eef684121f5500c04617c0146ffc3"
+        },
+        "uiAfterSHA256": "00a7ed990920323b90b740acb5187b3499890654aa644ca3de0f6e0f693e9e30",
+        "removedSpan": "const y=top-8*side-22;text(s,all?'All 40 hue columns':'Hue columns '+(start+1)+'\u2013'+(start+n),s.W/2,y,'muted',{align:'center',size:11});",
+        "wholeOldUIReconstructsByteExact": true,
+        "maskScope": "Untransformed raster masks with live font/alignment/baseline; original coordinate transforms;2CSSpx overlap tolerance for raster phase. No product/shared renderer edit.",
+        "observedProblem": "default-v2-light/ling-6.12-light-320.png",
+        "oldCheckDefect": "The inherited probe subtracted actualBoundingBoxDescent from the baseline instead of adding it; some resulting boxes had zero height. Font metric values themselves were not shown to be zero. Original receipts retained.",
+        "additiveARCHSupplement": "Planned: use corrected probe against unchanged ARCH defaults/critical states; no prior author source modification."
+      }
+    },
+    {
+      "file": "/workspace/scratch/wave6-ling-research/layout-v4-transition.json",
+      "sha256": "91abf48d6788a1ca3670b9483421a5c9eede0970598bd12c124b15a6aec67533",
+      "receipt": {
+        "beforeSHA256": "00a7ed990920323b90b740acb5187b3499890654aa644ca3de0f6e0f693e9e30",
+        "afterSHA256": "bb7a385e33e6aee96200856d0b01e55631dbe6c397841fdb1443ee3644fb0aeb",
+        "patchSHA256": "0c735650813aa4fb113877851878ac9e4888e59a9361ec2cb74a3870dceb20b0",
+        "scope": [
+          "Undefined-state axes cleared; valid plot axes restored",
+          "Integer success/context ticks",
+          "Speech-act footer fit",
+          "Word-vector balanced layout, origin arrows, textarea and selected count"
+        ],
+        "pureModelsAndReferenceUnchanged": true
+      }
+    },
+    {
+      "file": "/workspace/scratch/wave6-ling-research/shape-highlight-transition.json",
+      "sha256": "ac60530c473eb6be0b71972f46a03eb82b270eaa5a81eb1022a2c811bb80d5ba",
+      "receipt": {
+        "beforeSHA256": "bb7a385e33e6aee96200856d0b01e55631dbe6c397841fdb1443ee3644fb0aeb",
+        "afterSHA256": "ba3e7071d034fc71d7975830430a7441610555106a1dad8234d1b2a78b531ec9",
+        "wholeOldSourceReconstructsByteExact": true,
+        "scope": "Replace selected-object hollow disk, which filled over the object, with a transparent rounded slot outline drawn before the shape."
+      }
+    },
+    {
+      "file": "/workspace/scratch/wave6-ling-research/formatting-transition.json",
+      "sha256": "364b1c01516fb80fb1b8372a2207480de85a3c77229de01d702b4bb9e6657b65",
+      "receipt": {
+        "beforeSHA256": "ba3e7071d034fc71d7975830430a7441610555106a1dad8234d1b2a78b531ec9",
+        "afterSHA256": "4bea450cb4047cd7d7a47beeb076c1e3f9c5c31eeedaf5c9b010f0da84d81c45",
+        "continuousSlidersWithExplicitFormatter": 12,
+        "wholeOldSourceReconstructsByteExact": true,
+        "scope": "Explicit finite-number formatting for continuous sliders; shorten two panel headings to keep ink inside their cards. Pure calculations and frozen metadata unchanged."
+      }
+    },
+    {
+      "file": "/workspace/scratch/wave6-ling-research/typography-transition.json",
+      "sha256": "aa1eda589d4e31b0a058f1f6e07f32471b6a65e82278beb3f7653b159cf54f14",
+      "receipt": {
+        "scope": "Readable spacing in selected current citations, numeric limits and chapter references; remove repository-process assertions from teaching prose without changing source-reading limits or frozen metadata.",
+        "files": [
+          {
+            "file": "content/ling/ch06.js",
+            "beforeSHA256": "6c463b6149e10aecb2429ffd843f9af9e6fcdfbc4ddc823a6ca9710ad6e6f772",
+            "afterSHA256": "13f25122f19037b1f21a7de06208af07ff8b1ec1838037c605fb6e6015dcbd15"
+          },
+          {
+            "file": "content/ling/ch06.viz.js",
+            "beforeSHA256": "4bea450cb4047cd7d7a47beeb076c1e3f9c5c31eeedaf5c9b010f0da84d81c45",
+            "afterSHA256": "ab6e983a53bb4e5e9c3681763f84dd08163ddb93d6413e307d0fa75e349b03df"
+          },
+          {
+            "file": "content/ling/syllabus.js",
+            "beforeSHA256": "50cf41a9389673a095d1a009b77347bb985b65b13ed8fab331e30166e7562441",
+            "afterSHA256": "4668ea53a40161d97100421ab3f828ee88019e4018b8b29e9da0088eecd2a5d1"
+          }
+        ]
+      }
+    },
+    {
+      "file": "/workspace/scratch/wave6-ling-research/final-polish-transition.json",
+      "sha256": "682aad55b9c2540768c3a3d9e4c0f6eaf7f5f23884134f541a067bcd9450a5ca",
+      "receipt": {
+        "scope": "Five lessons only: explicit negation on composition root; grammatical finite-world sentences; unchanged speech-act record without an entered effect; disclosed rounded coordinate boundary; meaningful empty-corpus guidance and nonnegative integer count ticks. All13independently referenced mathematical families and5908complete fixture cases remain unchanged.",
+        "files": [
+          {
+            "file": "content/ling/ch06.shared.js",
+            "beforeSHA256": "f772d5202ff7ec9182c0c651eda027ec6084b7afd86b88c5f074e798ec51187a",
+            "afterSHA256": "50e26183cd91390be6965975dbda52f661a69cbdde540eebae17683b41b27913",
+            "replacements": [
+              {
+                "before": "\n return{kind,future,control,intent,authority,procedure,meal,content,utterance,force,effect,sincere,conditions,status:",
+                "after": "\n const before=kind==='declaration'?'unnamed':kind==='promise'?'no entered commitment':'no asserted transfer';\n return{kind,future,control,intent,authority,procedure,meal,content,utterance,force,effect,sincere,conditions,status:"
+              },
+              {
+                "before": "before:kind==='declaration'?'unnamed':kind==='promise'?'no entered commitment':'no asserted transfer',after:effect?(kind==='declaration'?'Aurora':'bring the book'):'no institutional entry'",
+                "after": "before,after:effect?(kind==='declaration'?'Aurora':'bring the book'):before"
+              }
+            ],
+            "addedSuffix": "",
+            "wholeOldSourceReconstructsByteExact": true
+          },
+          {
+            "file": "content/ling/ch06.viz.js",
+            "beforeSHA256": "ab6e983a53bb4e5e9c3681763f84dd08163ddb93d6413e307d0fa75e349b03df",
+            "afterSHA256": "21f7825b9b0ed5149d95b32a64587a42a6dfe64b12036e4f4fac808f8b4b08c9",
+            "replacements": [
+              {
+                "before": "const boolWord=x=>x===null?'undefined':x?'true':'false';",
+                "after": "const boolWord=x=>x===null?'undefined':x?'true':'false';\nconst worldSentence=z=>{const nouns={'red squares':['red square','red squares'],'blue circles':['blue circle','blue circles'],'all present objects':['present object','present objects']}[z.restrictor];return z.quantifier==='every'?'Every '+nouns[0]+' is '+z.predicate:z.quantifier==='no'?'No '+nouns[0]+' is '+z.predicate:(z.quantifier==='some'?'Some':z.quantifier==='most'?'Most':'Exactly three')+' '+nouns[1]+' are '+z.predicate;};"
+              },
+              {
+                "before": "function notice(s,message,color='muted'){",
+                "after": "const countTicks=b=>ticks(0,Math.max(1,b)).filter(([v])=>Number.isInteger(v));\nfunction notice(s,message,color='muted'){"
+              },
+              {
+                "before": "if(c===d){c-=.5;d+=.5;}",
+                "after": "if(c===d){if(c===0)d=1;else{c-=.5;d+=.5;}}"
+              },
+              {
+                "before": "nodes=[[5,6.9,'S : t']",
+                "after": "nodes=[[5,6.9,z.negative?'\u00acS : t':'S : t']"
+              },
+              {
+                "before": "z.quantifier.toUpperCase()+' A ARE B'",
+                "after": "({every:'EVERY A IS B',some:'SOME A ARE B',no:'NO A IS B',most:'MOST A ARE B','exactly three':'EXACTLY THREE A ARE B'})[z.quantifier]"
+              },
+              {
+                "before": "`${z.quantifier} ${z.restrictor} are ${z.predicate}: ${boolWord(z.truth)}.",
+                "after": "`${worldSentence(z)}: ${boolWord(z.truth)}."
+              },
+              {
+                "before": "The toy record changes from \u201c${z.before}\u201d to \u201c${z.after}\u201d.",
+                "after": "${z.effect?`The toy record changes from \u201c${z.before}\u201d to \u201c${z.after}\u201d.`:`The toy record remains \u201c${z.before}\u201d.`}"
+              },
+              {
+                "before": "it is ${boolWord(z.truth)} in that alternative world. Changing speaker",
+                "after": "it is ${boolWord(z.truth)} in that alternative world. ${!z.truth&&fmt(Math.abs(z.worldShift))===fmt(z.radius)?`The shift and tolerance round to the same displayed value. The exact shift magnitude is ${Math.abs(z.worldShift).toPrecision(17)} and the tolerance is ${z.radius.toPrecision(17)}; the shift is just outside the interval. `:''}Changing speaker"
+              },
+              {
+                "before": "{x:[1,Math.max(2,z.vocabulary.length)],xticks:",
+                "after": "{x:[1,Math.max(2,z.vocabulary.length)],y:[0,Math.max(1,...z.counts[z.selected],...z.counts[z.comparison])],yticks:countTicks(Math.max(...z.counts[z.selected],...z.counts[z.comparison])),xticks:"
+              },
+              {
+                "before": "notice(B,'Choose vocabulary indices in 1\u2026'+z.vocabulary.length+'.');",
+                "after": "notice(B,z.empty?'This text has no vocabulary indices. Add a sentence to form count vectors.':'Choose both word indices in 1\u2026'+z.vocabulary.length+'.');"
+              },
+              {
+                "before": "const a=z.projection[z.selected],b=z.projection[z.comparison];plot(D",
+                "after": "const a=z.projection[z.selected],b=z.projection[z.comparison],maxX=Math.max(1,a[0],b[0]),maxY=Math.max(1,a[1],b[1]);plot(D"
+              },
+              {
+                "before": "{x:[0,Math.max(1,a[0],b[0])],y:[0,Math.max(1,a[1],b[1])]}",
+                "after": "{x:[0,maxX],y:[0,maxY],xticks:countTicks(maxX),yticks:countTicks(maxY)}"
+              },
+              {
+                "before": "z.vocabulary.map((w,i)=>(i+1)+'='+w).join('; ')}.",
+                "after": "z.vocabulary.map((w,i)=>(i+1)+'='+w).join('; ')||'empty'}."
+              }
+            ],
+            "addedSuffix": "",
+            "wholeOldSourceReconstructsByteExact": true
+          },
+          {
+            "file": "tests/wave6-ling.test.mjs",
+            "beforeSHA256": "2d39ee34f18538a5b602867438211b32a7fe65dc4d472f9c92110a5c8d636b3f",
+            "afterSHA256": "6665bfb361b206e06bd65f86279ea4baa212c006d4cf01ed927010360425d665",
+            "replacements": [],
+            "addedSuffix": "\ntest('LING6 a failed act leaves its toy record unchanged while successful entries change it',()=>{for(const kind of['promise','declaration','salt question'])for(let mask=0;mask<64;mask++){const args=Object.fromEntries(['future','control','intent','authority','procedure','meal'].map((k,i)=>[k,!!(mask&(1<<i))])),z=H.speechAct({kind,...args});if(z.effect)assert.notEqual(z.after,z.before);else assert.equal(z.after,z.before);}});\n",
+            "wholeOldSourceReconstructsByteExact": true
+          },
+          {
+            "file": "tests/wave6-ling-native-science.mjs",
+            "beforeSHA256": "793577df87dd730148e7b55c73ff0507c2031f44b636ff857a1b3deeba516334",
+            "afterSHA256": "cd30928002e5c8ad56e0f5fd4efa5bc914bc479f1712c6dd81c6e42dcd579d3a",
+            "replacements": [
+              {
+                "before": "if(n===9){assert.equal(C.dots.length,z.conditions.length);",
+                "after": "if(n===9){if(!z.effect)assert.equal(z.after,z.before,'failed act retains the actual record');assert.equal(C.dots.length,z.conditions.length);"
+              },
+              {
+                "before": "if(n===13){for(const[s,values]",
+                "after": "if(n===13){if(B.paintedAxes)assert.ok(B.yticks.every(([v])=>Number.isInteger(v)&&v>=0),'nonnegative integer count ticks');if(D.paintedAxes)assert.ok(D.yticks.every(([v])=>Number.isInteger(v)&&v>=0),'nonnegative integer coordinate ticks');for(const[s,values]"
+              }
+            ],
+            "addedSuffix": "",
+            "wholeOldSourceReconstructsByteExact": true
+          }
+        ]
+      }
+    },
+    {
+      "file": "/workspace/scratch/wave6-ling-research/legend-polish-transition.json",
+      "sha256": "a0b8cf4d6a78ef1844e92191fe7abf378a2e7bb8e6a436da41fcf45cb63549c4",
+      "receipt": {
+        "scope": "Lesson15 only: invented contrasts stay purple in French or after neighbor removal. Existing first/neighbor meanings retain teal/orange; all202painted tile colours and actual interior pixels checked. One distinct remove-plus-add critical recipe added. Pure mathematics, corpus fixture and every other lesson unchanged.",
+        "files": [
+          {
+            "file": "content/ling/ch06.viz.js",
+            "beforeSHA256": "21f7825b9b0ed5149d95b32a64587a42a6dfe64b12036e4f4fac808f8b4b08c9",
+            "afterSHA256": "068ed122a15948ab44e0c44aaea71ed5d725f813c772db59093fcc10472f5a12",
+            "replacements": [
+              {
+                "before": "colors=['teal','orange','purple'];view(A)",
+                "after": "colorOf=l=>l.word==='new term'?'purple':l.word==='mutton'?'orange':'teal';view(A)"
+              },
+              {
+                "before": "fill:colors[z.before[i]]",
+                "after": "fill:colorOf(z.baseline[z.before[i]])"
+              },
+              {
+                "before": "fill:colors[z.assignment[i]]",
+                "after": "fill:colorOf(z.labels[z.assignment[i]])"
+              },
+              {
+                "before": "8.4,1.65,colors[i]",
+                "after": "8.4,1.65,colorOf(l)"
+              }
+            ],
+            "wholeOldSourceReconstructsByteExact": true
+          },
+          {
+            "file": "tests/wave6-ling-native-science.mjs",
+            "beforeSHA256": "cd30928002e5c8ad56e0f5fd4efa5bc914bc479f1712c6dd81c6e42dcd579d3a",
+            "afterSHA256": "e8ec12e887b44a67c81e1972b9f97086e7adf5e9b20163fb33a7d4aff96d074d",
+            "replacements": [
+              {
+                "before": "if(n===15){assert.equal(B.rects.filter(g=>g.style.fill!==undefined).length,202);geometryComparisons+=202;ink(A,z.labels[z.chosen].word);}",
+                "after": "if(n===15){const tiles=B.rects.filter(g=>g.style.fill!==undefined),color=word=>word==='new term'?'purple':word==='mutton'?'orange':'teal';assert.equal(tiles.length,202);for(let i=0;i<101;i++){assert.equal(tiles[2*i].style.fill,color(z.baseline[z.before[i]].word),'baseline semantic legend colour');assert.equal(tiles[2*i+1].style.fill,color(z.labels[z.assignment[i]].word),'current semantic legend colour');}geometryComparisons+=202;ink(A,z.labels[z.chosen].word);}"
+              }
+            ],
+            "wholeOldSourceReconstructsByteExact": true
+          },
+          {
+            "file": "tests/wave6-ling-native-cases.mjs",
+            "beforeSHA256": "88d185234d81fdd6bb245f695d23d752201ff9e3a61224fff42bf78fccacca06",
+            "afterSHA256": "e093082f4d6bc548eee872ea4eca20cd6d93105605b1b729dccb5cb8d1d4fe53",
+            "replacements": [
+              {
+                "before": "Q({'comparison view':'counterfactual change'})],",
+                "after": "Q({'comparison view':'counterfactual change'}),{toggles:{'remove the neighboring term':true,'add an invented contrast':true},sliders:{'invented contrast location':70}}],"
+              }
+            ],
+            "wholeOldSourceReconstructsByteExact": true
+          },
+          {
+            "file": "tests/wave6-ling-native.mjs",
+            "beforeSHA256": "cff266e4f58d4c0b3421269851beeae783f40af2bc6652090dac93885c79ead0",
+            "afterSHA256": "d78b544085406933f336dcd43c1e3675c8e547e5eadd5e36627051c789a5fb77",
+            "replacements": [
+              {
+                "before": "return samples;},id);",
+                "after": "if(id===15){const s=rt.stages[1],color=word=>word==='new term'?'purple':word==='mutton'?'orange':'teal';for(let i=0;i<101;i++)if(Math.abs(i-z.selected)>2){sample(s,i,6.15,rgb(rt.api.color(color(z.baseline[z.before[i]].word))),'baseline term '+i);sample(s,i,3.65,rgb(rt.api.color(color(z.labels[z.assignment[i]].word))),'current term '+i);}}return samples;},id);"
+              }
+            ],
+            "wholeOldSourceReconstructsByteExact": true
+          }
+        ]
+      }
+    },
+    {
+      "file": "/workspace/scratch/wave6-ling-research/reference-tiny-transition.json",
+      "sha256": "dec27606746067ed5a45de7c4075c93c1fd2df08285d58f83d5a6ed0637f1638",
+      "receipt": {
+        "beforeCases": 5888,
+        "currentCases": 5908,
+        "all5888EarlierCompleteCasesExact": true,
+        "onlyAddition": "20tiny-weight prototype cases; no old case changed",
+        "whole90and180BytesExact": true,
+        "bytes": 8911457,
+        "sha256": "08bc29d566e31bf932f30d97800c6f5031b7938251bedcd61c91c3cbf7403955",
+        "families": {
+          "reference": 72,
+          "composition": 513,
+          "truthWorld": 1020,
+          "quantifiers": 756,
+          "scope": 635,
+          "presupposition": 16,
+          "scalar": 432,
+          "deixis": 90,
+          "prototype": 100,
+          "colorFocus": 1494,
+          "distribution": 396,
+          "vagueness": 264,
+          "signValue": 120
+        }
+      }
+    }
+  ],
+  "unmodifiedExportSpans": [
+    1,
+    4,
+    5,
+    6,
+    7,
+    8,
+    11,
+    12,
+    14,
+    16
+  ],
+  "v5ExportSpansRetainedExactly": [
+    2,
+    3,
+    9,
+    10,
+    13
+  ],
+  "lastLegendChangeLesson": 15,
+  "mathematicalReferenceFixtureUnchanged": true,
+  "supplementaryArchitectureAudit": "wave6-arch-glyph-supplement.json"
+}

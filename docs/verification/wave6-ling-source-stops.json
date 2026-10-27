@@ -1,0 +1,18 @@
+[
+  {
+    "url": "https://langsci-press.org/catalog/book/231",
+    "stage": "INDEX",
+    "result": "429 Too Many Requests",
+    "bodyRead": false,
+    "noRetryOrAlternateRecovery": true,
+    "scope": "Kroeger Analyzing Meaning selected book; no alternate copy acquisition"
+  },
+  {
+    "url": "https://www.deutschestextarchiv.de/frege_sinn_1892",
+    "stage": "BODY",
+    "result": "web restricted URL",
+    "bodyRead": false,
+    "noRetryOrAlternateRecovery": true,
+    "scope": "Frege original1892 body; no alternate original/translation recovery"
+  }
+]
