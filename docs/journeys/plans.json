@@ -379,9 +379,9 @@
     "kind": "author-check",
     "scope": "local-preview",
     "author": "atlas-editor",
-    "checkedOn": "2026-10-26",
-    "contentDigest": "b312ac5698e496bf66fec5f77711846a119d48a8b2001ac93ccf3801b7afcc57",
+    "checkedOn": "2026-10-27",
+    "contentDigest": "853b5d950a15ffb738523a9fd57998da323bae8eb51b7f4233b9531b211048c7",
     "artifactDigest": "ff19c4a9828fd3b260c199c4963c1f85265be51d9cf59bd0c7e9e94aadd9f56e",
-    "evidencePath": "docs/verification/wave6-behav-psych-integration.md"
+    "evidencePath": "docs/verification/wave6-soc-polsci-integration.md"
   }
 }
