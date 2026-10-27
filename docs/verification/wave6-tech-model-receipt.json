@@ -1,0 +1,53 @@
+{
+  "schemaVersion": 1,
+  "status": "PASS",
+  "scope": "Pure numerical models only; no TECH author/native/visual promotion.",
+  "cases": 684,
+  "families": {
+    "steamDevice": 37,
+    "newcomen": 29,
+    "coke": 38,
+    "boring": 29,
+    "condenser": 29,
+    "sunPlanet": 20,
+    "governor": 78,
+    "parallelLink": 18,
+    "indicator": 63,
+    "highPressure": 28,
+    "carnot": 52,
+    "puddling": 38,
+    "rolling": 29,
+    "bessemer": 29,
+    "threads": 51,
+    "interchangeability": 104,
+    "governorCone": 12
+  },
+  "numericComparisons": 67345,
+  "exactComparisons": 2548,
+  "totalComparisons": 69893,
+  "maxNormalizedError": 0.0000678639855368883,
+  "maxErrorPath": "boring#135.curves[38].supported",
+  "budget": "2e-11 + 3e-11*abs(expected); additional strict relative linkage and subnormal admission regressions",
+  "fixtureSHA256": "41f17458f58ee928e4f5d6edae8507de840d67f8a17f9fb724394c710c3f6088",
+  "fixtureBytes": 4540737,
+  "regeneration": "Canonical100 / fresh200 / fresh100 complete installed bytes identical. Adaptive precision up to1706digits for direct-circle fifth-order linkage and1069digits for the tiny-time augmented governor matrix exponential.",
+  "prototypeCompleteCasesPreserved": 670,
+  "prototypeCompleteCaseProjectionSHA256": "cc874f7a4642745f23ddce88cadddfc79714db614d02ceee21aace855feb5cf0",
+  "olderRawPinsExact": 7277,
+  "sourceHashes": {
+    "content/tech/ch07.shared.js": "5802ee0b01c7e16f3c8f7175e6ec46d720e6f81223bc6682471f18083c868a64",
+    "tests/wave6-tech.test.mjs": "1a0e1f8923955d0eae76a471fc41c14407033627fd91eeceda66bd4487fe30b8",
+    "tests/refs/wave6-tech-reference.py": "035ae283fd86614b51ef5623b3b40d99cfa8b53d40ee57b2c97918b6baf1cbbd",
+    "tests/refs/wave6-tech-reference.shared.py": "84c504f46a249bbb644eb715b3a80343c09613680ef21c9f43dea05d933693f0"
+  },
+  "retainedFailures": [
+    {
+      "kind": "fixture assertion",
+      "detail": "An initial invariant compared -.3/6 to decimal-.05 with strict binary equality; corrected to an explicit1e-16 numerical assertion. All complete independent objects remain unchanged."
+    },
+    {
+      "kind": "reference precision",
+      "detail": "Initial fixed100/200-digit governor current.throttle at timeMIN differed. Complete failed100fixture was reconstructed raw-exact SHA9e978656015404eec31fc3a9af3b0bc95d22362371b6199597c5d66e37e472c7; failed200fixture5f0c26d53df6f09661f4e49d4ad30af1ff282dc90516c0b2887346691b33c831. Increased precision for the same complete augmented exponential; no skipped field/case or loosened numeric budget."
+    }
+  ]
+}

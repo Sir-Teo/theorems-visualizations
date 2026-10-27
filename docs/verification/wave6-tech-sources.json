@@ -1,0 +1,279 @@
+{
+  "schemaVersion": 1,
+  "scope": "Fourteen complete TECH7 teaching drafts and42bespoke panels; bounded source research only. Native/critical/current personal visual qualification and author promotion remain pending.",
+  "sources": [
+    {
+      "id": "Thurston1886",
+      "title": "A History of the Growth of the Steam-Engine, second revised edition1886",
+      "url": "https://www.gutenberg.org/files/35916/35916-h/35916-h.htm",
+      "wholeWorkRead": false,
+      "actualReadScope": "Selected web Savery754–812/984–986; Papin833–906; parallel-motion1357–1371/1404/1472/1683/2923; indicator1429–1441. Ranges denote selected returned lines, not every intervening page. Local ISO8859-1 decoded plain offsets282188–284688 Evans and731750–733750 Carnot commentary; not original Carnot. Front matter/TOC and incidental Fulton/late-pump excerpts are not a whole-book reading.",
+      "download": {
+        "url": "https://www.gutenberg.org/files/35916/35916-h/35916-h.htm",
+        "bytes": 1091974,
+        "sha256": "f551fc2e0073bee195d8c04ead22cc96f735ae3a8d827013d285b8c95df31ef2",
+        "scope": "Complete HTML downloaded; only explicitly selected excerpts/figures actually read may be cited as inspected. No full-book-read claim."
+      },
+      "sourceImages": [
+        {
+          "file": "illo062.png",
+          "url": "https://www.gutenberg.org/files/35916/35916-h/images/illo062.png",
+          "bytes": 47569,
+          "sha256": "893a7262d6e078b4f8864eccddf41dd5e2b33412de26b465d7ac052642dd67ae",
+          "status": "Actual original-detail image view completed; source diagram for research only, not copied into product."
+        },
+        {
+          "file": "illo077.png",
+          "url": "https://www.gutenberg.org/files/35916/35916-h/images/illo077.png",
+          "bytes": 11935,
+          "sha256": "e2ad8eac1007379a1114fc5121f4f65584b6104fa26a7e1151f6b79f1d4c74a8",
+          "status": "Actual original-detail image view completed; source diagram for research only, not copied into product."
+        },
+        {
+          "file": "illo086.png",
+          "url": "https://www.gutenberg.org/files/35916/35916-h/images/illo086.png",
+          "bytes": 73517,
+          "sha256": "63bf6c7e7055f3b8d53088917a663fea3a1ad50b3bcd82bf348699e98cbbcbae",
+          "status": "Actual original-detail image view completed; source diagram for research only, not copied into product."
+        },
+        {
+          "file": "illo131.png",
+          "url": "https://www.gutenberg.org/files/35916/35916-h/images/illo131.png",
+          "bytes": 90136,
+          "sha256": "87d687f9a4e1587e0fd600a34802f9ba02ff60374cadaf6795a43888af37b64a",
+          "status": "Actual original-detail image view completed; source diagram for research only, not copied into product."
+        }
+      ],
+      "caution": "Legacy Papin death year1810 not repeated; priority and quantitative performance are not accepted uncritically."
+    },
+    {
+      "id": "SMG-Lap",
+      "url": "https://collection.sciencemuseumgroup.org.uk/objects/co50948/rotative-steam-engine-by-boulton-and-watt-1788",
+      "actualReadLineRanges": [
+        [
+          156,
+          164
+        ]
+      ],
+      "wholeCuratorialMechanismBodyRead": true,
+      "sourceImagePixelsRead": false,
+      "caution": "Less-than-one-third specific-fuel claim is curator generalization; not model calibration/universal savings."
+    },
+    {
+      "id": "SMG-Maudslay",
+      "url": "https://collection.sciencemuseumgroup.org.uk/objects/co46284/henry-maudslays-original-screw-cutting-lathe-c-1800-lathes",
+      "actualReadLineRanges": [
+        [
+          41,
+          43
+        ]
+      ],
+      "wholeCuratorialMechanismBodyRead": true,
+      "sourceImagePixelsRead": false
+    },
+    {
+      "id": "EnglishHeritage-IronBridge",
+      "url": "https://www.english-heritage.org.uk/visit/places/iron-bridge/history/",
+      "actualReadLineRanges": [
+        [
+          223,
+          264
+        ],
+        [
+          285,
+          335
+        ]
+      ],
+      "wholePageRead": false,
+      "sourceImagePixelsRead": false,
+      "caution": "No fabricated historical fuel prices or forest areas; bridge components individually fit is not an interchangeability dataset."
+    },
+    {
+      "id": "SMG-Bessemer",
+      "url": "https://collection.sciencemuseumgroup.org.uk/objects/co19568/original-pilot-bessemer-converter-1865",
+      "actualReadLineRanges": [
+        [
+          41,
+          44
+        ]
+      ],
+      "wholeCuratorialMechanismBodyRead": true,
+      "sourceImagePixelsRead": false
+    },
+    {
+      "id": "SMG-Wilkinson",
+      "url": "https://collection.sciencemuseumgroup.org.uk/objects/co46448",
+      "actualReadLineRanges": [
+        [
+          41,
+          43
+        ]
+      ],
+      "wholeCuratorialMechanismBodyRead": true,
+      "sourceImagePixelsRead": false,
+      "caution": "Record calls Bersham provenance alleged; preserve uncertainty. No shilling-thickness measured calibration."
+    },
+    {
+      "id": "NPS-Armory",
+      "url": "https://www.nps.gov/spar/learn/historyculture/armory-and-city.htm",
+      "actualReadLineRanges": [
+        [
+          22,
+          32
+        ]
+      ],
+      "wholeExhibitBodyRead": true,
+      "sourceImagePixelsRead": false,
+      "caution": "Generic shaft/hole toy, no weapon design; gradual manufacturing system, no sole inventor inference."
+    },
+    {
+      "id": "NorthLan-Puddling",
+      "url": "https://www.northlanmuseums.co.uk/story/puddlers-shinglers-rollers-the-story-of-malleable-iron/",
+      "actualReadLineRanges": [
+        [
+          69,
+          155
+        ]
+      ],
+      "wholeArticleBodyRead": true,
+      "sourceImagePixelsRead": false,
+      "audioRead": false,
+      "caution": "Cort1784 patent built on earlier work; worker skill and later improvements matter. No measured productivity or chemical-rate calibration."
+    },
+    {
+      "id": "SMG-Trevithick",
+      "url": "https://collection.sciencemuseumgroup.org.uk/objects/co51033",
+      "actualReadLineRanges": [
+        [
+          55,
+          57
+        ]
+      ],
+      "wholeCuratorialMechanismBodyRead": true,
+      "sourceImagePixelsRead": false,
+      "caution": "Record1802 patent Trevithick/Vivian; objectc1805–1806. No universal no-previous-high-pressure assertion reproduced."
+    },
+    {
+      "id": "SMG-PuddledChain",
+      "url": "https://collection.sciencemuseumgroup.org.uk/objects/co19863/two-links-of-an-anchor-chain-forged-from-puddled-iron-with-cast-iron-stubs-late-18th-to-mid-19th-century",
+      "actualReadLineRanges": [
+        [
+          53,
+          54
+        ]
+      ],
+      "wholeCuratorialMechanismBodyRead": true,
+      "sourceImagePixelsRead": false
+    },
+    {
+      "id": "SMG-Newcomen",
+      "url": "https://collection.sciencemuseumgroup.org.uk/objects/co50900/newcomen-atmospheric-engine",
+      "actualReadLineRanges": [
+        [
+          41,
+          45
+        ]
+      ],
+      "wholeCuratorialMechanismBodyRead": true,
+      "sourceImagePixelsRead": false,
+      "caution": "Actual museum object1791; practical Newcomen type dated1712, not a surviving1712 original. Absolute safety/sole-cause rhetoric not reproduced."
+    }
+  ],
+  "prerequisites": [
+    {
+      "id": "tech-6.11",
+      "path": "content/tech/ch06-b.js",
+      "sha256": "73ab46f3f990fbed981ed320ac32e5aecd80b2fcb60a9450c70ace8302c41c84",
+      "readFields": "Complete written statement, idea, caption, scope, dependencies, refs, links and flags actually read; not title-only"
+    },
+    {
+      "id": "tech-2.1",
+      "path": "content/tech/ch02.js",
+      "sha256": "d4280ce9dc47ba44b285795be67f24026cf406fa62764dd2fbf5a10cad31967a",
+      "readFields": "Complete written statement, idea, caption, scope, dependencies, refs, links and flags actually read; not title-only"
+    },
+    {
+      "id": "tech-3.3",
+      "path": "content/tech/ch03.js",
+      "sha256": "bf99259061477732f9ebb6c0541028bd458c326f55cd8cfc77bc7eca1038e527",
+      "readFields": "Complete written statement, idea, caption, scope, dependencies, refs, links and flags actually read; not title-only"
+    },
+    {
+      "id": "tech-2.10",
+      "path": "content/tech/ch02-b.js",
+      "sha256": "5cfc461f55363f9f09c462418689fa84a88aa25c4981cc8b0720e1f79bab92a0",
+      "readFields": "Complete written statement, idea, caption, scope, dependencies, refs, links and flags actually read; not title-only"
+    },
+    {
+      "id": "ctrl-1.2",
+      "path": "content/ctrl/ch01.js",
+      "sha256": "2b1f1eb190080a5348a4f82c1d82c3ffc27cdb661bd75e51193d4dfb2a1b9d09",
+      "readFields": "Complete written statement, idea, caption, scope, dependencies, refs, links and flags actually read; not title-only"
+    },
+    {
+      "id": "mech-3.1",
+      "path": "content/mech/ch03.js",
+      "sha256": "84d17bfd468a8420f2dc59c9f7c7bfbc5cf56c159069db220f0eea88e1927d32",
+      "readFields": "Complete written statement, idea, caption, scope, dependencies, refs, links and flags actually read; not title-only"
+    },
+    {
+      "id": "tech-3.4",
+      "path": "content/tech/ch03.js",
+      "sha256": "bf99259061477732f9ebb6c0541028bd458c326f55cd8cfc77bc7eca1038e527",
+      "readFields": "Complete written statement, idea, caption, scope, dependencies, refs, links and flags actually read; not title-only"
+    },
+    {
+      "id": "thermo-2.7",
+      "path": "content/thermo/ch02.js",
+      "sha256": "f081b52b98a8ed92921d89c47c10d7b5b1d270c573eb53b055cedc2939cb99c7",
+      "readFields": "Complete written statement, idea, caption, scope, dependencies, refs, links and flags actually read; not title-only"
+    },
+    {
+      "id": "tech-2.4",
+      "path": "content/tech/ch02.js",
+      "sha256": "d4280ce9dc47ba44b285795be67f24026cf406fa62764dd2fbf5a10cad31967a",
+      "readFields": "Complete written statement, idea, caption, scope, dependencies, refs, links and flags actually read; not title-only"
+    }
+  ],
+  "transcriptHashes": {
+    "web-source-search-1.json": "4489114d63d54ceddce9a89bfd2bf8dc6e5a1682d8faa6fb5675984a281710aa",
+    "web-source-read-1.json": "3f65f33e1f22737d04901607bbbe1070041eba492955dab0bc8702010054ca48",
+    "web-source-find-1.json": "4e34cc27b35fb04f3aeab498547e832eebb1d08bad92bedcb0b43b18a248b834",
+    "web-source-search-2.json": "ba92e624ec96e10c4b33b3745c61317c2e1e3f71eafacb4c4b5fc784029f6b23",
+    "web-source-read-2.json": "5de48b609725ffbeed3565b9e02b1caf3f134443a8dd8136cdc46037537773d5",
+    "web-source-search-3.json": "d9f6f40d4de20080ec518860c86f3da2364a251354f7f2a5653f96d7b918db50",
+    "web-source-read-3.json": "c44f4ec91cc95118668ea4384a9e861340756be0c9638248395dcf5b265f25fc",
+    "web-source-search-4.json": "3dd02d81df667de5972849c45542bc5a09f32e53035e46c6f81e4253e89b276f",
+    "web-source-read-4.json": "648dcbc00b2be0ec352b6d51de650eac713028bce14bc2ab5090c2ef8411d765"
+  },
+  "newAccessStops": [
+    {
+      "work": "Carnot1824 original via DONum owner record",
+      "url": "https://donum.uliege.be/handle/2268.1/13610?locale=fr",
+      "stage": "owner record requested",
+      "result": "400 Timeout fetching",
+      "bodyRead": false,
+      "recoveryForbidden": "Do not retry, mirror, cache or use another tool/source to recover the same original work. Existing written THERMO2.7 and distinct Thurston commentary are separate sources."
+    },
+    {
+      "work": "Smithsonian Evans flue-boiler model nmah_846108 curatorial body",
+      "url": "https://americanhistory.si.edu/collections/object/nmah_846108",
+      "stage": "body requested",
+      "result": "500 Internal Server Error",
+      "bodyRead": false,
+      "recoveryForbidden": "No retry, mirror, cache, alternate-tool or alternate-host recovery of this same record body. Earlier search text remains search-only evidence."
+    }
+  ],
+  "originalBodiesNotRead": [
+    "Mokyr Levers of Riches",
+    "Cardwell From Watt to Clausius",
+    "Usher A History of Mechanical Inventions",
+    "Carnot1824 original"
+  ],
+  "excludedAsBodyEvidence": [
+    "Search-only Smithsonian Evans record; requested body500",
+    "DONum Carnot owner record timeout; original not read",
+    "Other search-only results and any original source not expressly included above"
+  ],
+  "ownModelPolicy": "All numeric inputs, material constants, fuel prices, wood yields, process rates and heat parameters are declared teaching values, not reconstructed historical observations. No borrowed source-image pixels in product."
+}

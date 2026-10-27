@@ -1,0 +1,13 @@
+import test from'node:test';import assert from'node:assert/strict';import fs from'node:fs';import{createHash}from'node:crypto';
+import chapter from'../content/tech/ch07.js';import syllabus from'../content/tech/syllabus.js';
+const read=p=>fs.readFileSync(new URL('../'+p,import.meta.url)),json=p=>JSON.parse(read(p)),sha=b=>createHash('sha256').update(b).digest('hex'),frozen=json('tests/fixtures/wave6-tech-frozen.json');
+test('TECH7 retains every frozen lesson identity, enabling dependency, source flag and planned preview',()=>{
+ assert.equal(chapter.collection,'tech');assert.equal(chapter.chapter,7);assert.equal(chapter.title,frozen.title);assert.equal(chapter.items.length,14);const plans=syllabus.chapters.find(c=>c.n===7).items;
+ for(const[i,item]of chapter.items.entries()){const original=frozen.items[i];assert.equal('tech-'+item.num,original.id);for(const key of new Set([...Object.keys(original).filter(k=>!['id','refs','pic'].includes(k)),'verify','paper','introduces','see'])){assert.equal(Object.hasOwn(item,key),Object.hasOwn(original,key),item.num+' '+key+' presence');assert.deepEqual(item[key],original[key],item.num+' '+key);}assert.deepEqual(plans[i],Object.fromEntries(Object.entries(original).filter(([k])=>k!=='id')));for(const k of['statement','idea','scope','caption'])assert.ok(item[k].length>100,item.num+' complete '+k);assert.equal(typeof item.viz,'function');assert.ok(item.credit);assert.ok(item.refs.length);assert.ok(item.links.source.startsWith('https://'));}
+});
+test('TECH7 preserves all7277 older tracked raw files except the explicitly mutable handoff',()=>{
+ const p=json('docs/verification/wave6-tech-preimages.json');assert.equal(p.sourceCommit,'707b5336257049f743eae4dd70881bff1ff0176b');assert.equal(Object.keys(p.rawPins).length,7278);let count=0;for(const[path,hash]of Object.entries(p.rawPins))if(path!==p.mutableHandoff){assert.equal(sha(read(path)),hash,path);count++;}assert.equal(count,7277);
+});
+test('TECH7 source boundaries preserve actual prerequisites, source-image research and both binding access stops',()=>{
+ const s=json('docs/verification/wave6-tech-sources.json');assert.equal(s.sources.length,11);assert.equal(s.prerequisites.length,9);assert.equal(s.newAccessStops.length,2);assert.ok(s.originalBodiesNotRead.includes('Carnot1824 original'));const t=s.sources.find(x=>x.id==='Thurston1886');assert.equal(t.wholeWorkRead,false);assert.equal(t.sourceImages.length,4);for(const x of s.prerequisites){assert.equal(sha(read(x.path)),x.sha256);assert.match(x.readFields,/Complete written/);}for(const x of s.newAccessStops){assert.equal(x.bodyRead,false);assert.ok(x.recoveryForbidden);}
+});
