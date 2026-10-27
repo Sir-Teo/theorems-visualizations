@@ -1,0 +1,144 @@
+[
+  {
+    "id": "music-8.1",
+    "num": "8.1",
+    "kind": "Concept",
+    "name": "Pitch classes and ℤ/12",
+    "statement": "In twelve-tone equal temperament the notes are the MIDI numbers $m\\in\\Z$ (one per semitone). Two notes an octave apart, $m$ and $m+12$, are given the same **pitch class** $[m]=m \\bmod 12\\in\\Z/12=\\{0,1,\\dots,11\\}$ (0 = C, 1 = C♯/D♭, …, 11 = B). Pitch classes live on a **clock**: adding $n$ semitones is the rotation $x\\mapsto x+n \\pmod{12}$, so transposing a melody or chord rotates the whole picture rigidly, and everything that depends only on pitch classes (names of chords, scale types, interval content) is a statement about subsets of $\\Z/12$.",
+    "idea": "Octave equivalence (5.10 split pitch into *height* and *chroma*) is the quotient map $\\Z\\to\\Z/12$, $m\\mapsto m \\bmod 12$, and in 12-tone equal temperament (7.9) the quotient of the pitch line by the octave is exactly this group. Because $+n$ is a group operation, \"same shape, different starting note\" is the same as \"differ by a rotation\", which is why one chord shape names every transposition of it.",
+    "caption": "Click the clock to add or remove pitch classes of the chord, and slide $n$ to transpose it: the orange arcs show every note advancing $n$ hours. Below, the same notes are drawn in all octaves of a keyboard range; the transposed copy keeps the shape. The buttons play the chord and its transposition, or one pitch class in three octaves.",
+    "deps": [
+      "music-5.10",
+      "music-7.9"
+    ],
+    "see": [
+      "music-8.2",
+      "music-8.7"
+    ],
+    "refs": [
+      "Tymoczko ch. 2",
+      "Benson ch. 9"
+    ],
+    "tags": [
+      "pitch class",
+      "modular arithmetic"
+    ],
+    "scope": "Twelve-tone equal temperament, where the octave is divided into 12 equal steps; in a tuning that is not octave-periodic (e.g. stretched octaves, Bohlen–Pierce) the identification needs a different modulus.",
+    "links": {
+      "wikipedia": "https://en.wikipedia.org/wiki/Pitch_class"
+    }
+  },
+  {
+    "id": "music-6.1",
+    "num": "6.1",
+    "kind": "Phenomenon",
+    "name": "Consonance and simple ratios",
+    "statement": "Two tones sounded together may blend smoothly (**consonance**) or sound rough and tense (**dissonance**). For the tones of voices, strings and winds, whose partials are harmonic (2.6), the smoothest intervals are those whose frequencies stand in ratios of small whole numbers: the unison $1{:}1$, octave $2{:}1$, fifth $3{:}2$ and fourth $4{:}3$, then the major sixth $5{:}3$, major third $5{:}4$ and minor third $6{:}5$. Mistuning one of these intervals slightly makes it sound worse, not better. On a monochord the two parts of a string divided by a bridge sound frequencies in the inverse ratio of their lengths (2.5), so the consonances appear at simple division points: the observation that later Greek writers credited to Pythagoras.\n\nThree kinds of explanation compete:\n(a) **ratio simplicity**: the mind prefers simple numbers (the Pythagorean tradition; Euler's gradus, 6.8);\n(b) **sensory roughness**: nearby partials beat, and simple ratios are where partials coincide instead of beating (Helmholtz, 6.2; Plomp and Levelt, 6.3);\n(c) **harmonicity**: at a simple ratio all the partials of both tones fit one harmonic series, so the pair resembles a single tone with a low virtual pitch (Stumpf's tonal fusion; Terhardt, 1974).",
+    "idea": "For harmonic tones the three explanations agree, which is why the question stayed open for so long. At a ratio $p{:}q$ in lowest terms, the $q$-th partial of the upper tone coincides with the $p$-th of the lower, every other pair of partials is either coincident or far apart, and all the partials together are harmonics of $f/q$. Small $p$ and $q$ mean many coincidences, few close neighbours and a high common fundamental. The theories part company when the partials are not harmonic: with pure tones the roughness dips at ratios other than the unison vanish (6.3), and with stretched partials the dips move away from the simple ratios while the ratios themselves stay put (6.5). Experiments now weigh roughness and harmonicity separately; in one large study preference for consonant chords tracked preference for harmonic spectra and not aversion to beating (McDermott, Lehr and Oxenham, 2010).",
+    "caption": "Top: a monochord. Drag the bridge: the two segments sound together, and the ratio of their lengths, marked at the classical division points, is the inverse ratio of their frequencies. Bottom: what each theory predicts across two octaves of intervals, higher meaning more consonant: the roughness theory (one minus the summed Plomp–Levelt dissonance, blue), the harmonicity of the combined partials (a simple harmonic-template model, purple), and ratio simplicity (orange stems, taller for smaller $\\log_2 pq$); the gold line is your bridge. Click the lower panel to move the bridge there. Switch to pure tones or to stretched partials and watch the theories disagree. *Hold the sound* to hear it while you drag.",
+    "deps": [
+      "music-2.5",
+      "music-2.6"
+    ],
+    "see": [
+      "music-6.2",
+      "music-6.3",
+      "music-6.8",
+      "music-5.15",
+      "music-5.14"
+    ],
+    "refs": [
+      "Benson ch. 4",
+      "Sethares ch. 5"
+    ],
+    "tags": [
+      "consonance",
+      "ratios"
+    ],
+    "credit": "Pythagorean tradition (Greek, attributed to Pythagoras, 6th c. BCE); Helmholtz, 1863; Terhardt, 1974",
+    "scope": "The ranking holds for harmonic complex tones at moderate levels in the middle register, judged by listeners familiar with Western music. It changes with timbre (pure tones, inharmonic or stretched partials), with register (thirds are rough low down, 6.9), and with culture and period. In Hucbald's treatise (c. 900) the consonances were the octave, fifth, fourth and their compounds; thirds entered medieval theory only later, as imperfect consonances; the fourth above the bass was treated as a dissonance in Renaissance counterpoint; Bosnian *ganga* singing and the paired, deliberately detuned instruments of Balinese gamelan cultivate beating. The Tsimane' of the Bolivian Amazon, with little exposure to Western music, rated consonant and dissonant chords as equally pleasant although they could tell them apart (McDermott et al., *Nature* 535, 547–550, 2016). The harmonicity curve here is an illustrative toy model, not a calibrated one.",
+    "links": {
+      "wikipedia": "https://en.wikipedia.org/wiki/Consonance_and_dissonance"
+    }
+  },
+  {
+    "id": "music-8.4",
+    "num": "8.4",
+    "kind": "Theorem",
+    "name": "Maximal evenness",
+    "statement": "Place $d$ points on the $c$ positions of a circle ($0<d\\le c$, integers). Call the set **maximally even** if for every $k$ the $k$-step spans (the numbers of positions from a point to the point $k$ places further round) take at most two values, which differ by 1. Then maximally even sets exist, they are unique up to rotation, and one of them is $\\{\\lfloor ck/d\\rfloor : k=0,\\dots,d-1\\}$. They are also the sets that make the points as spread out as possible, in the sense that they maximise the sum of the chord lengths between all pairs of points. For $(c,d)=(12,7)$ and $(12,5)$ this is the diatonic and the pentatonic scale; for $(8,3)$ it is the tresillo rhythm.",
+    "idea": "Spacing the points at heights $ck/d$ and rounding down makes each gap $\\lfloor c/d\\rfloor$ or $\\lceil c/d\\rceil$ and distributes the larger gaps as evenly as the rounding permits; summing $k$ consecutive gaps then gives $\\lfloor kc/d\\rfloor$ or $\\lceil kc/d\\rceil$ up to the same bounded error. Uniqueness and the chord-sum maximum are proved in Clough and Douthett's paper; the picture below checks the chord-sum statement exhaustively for every $(c,d)$ offered, since the number of subsets is small.",
+    "caption": "Drag the points around the circle (they snap to the positions), or use the buttons. The score is the sum of all chord lengths; the brute-force maximum over every placement is computed once and the green hollow dots show the maximally even set. The lower panel shows, for each $k$, the smallest and largest $k$-step span: for a maximally even set the two values differ by at most 1.",
+    "deps": [
+      "music-8.3",
+      "music-8.2"
+    ],
+    "see": [
+      "music-8.5",
+      "music-8.14"
+    ],
+    "refs": [
+      "Tymoczko ch. 4"
+    ],
+    "tags": [
+      "scales",
+      "evenness"
+    ],
+    "credit": "John Clough and Jack Douthett, \"Maximally even sets\", Journal of Music Theory 35 (1991), 93–173",
+    "scope": "Finite circles of $c$ positions. The chord-sum maximum is verified by brute force here for the listed $(c,d)$; the general statement is Clough and Douthett's.",
+    "links": {
+      "wikipedia": "https://en.wikipedia.org/wiki/Maximal_evenness"
+    }
+  },
+  {
+    "id": "rca-8.13",
+    "num": "8.13",
+    "kind": "Definition",
+    "name": "Convolution on the line",
+    "statement": "For measurable functions $f$ and $g$ on $\\R$ (Lebesgue measure $m$), the **convolution** $f*g$ is\n$$(f*g)(x)=\\int_{-\\infty}^{\\infty}f(x-y)\\,g(y)\\,dy$$\nat every $x$ for which $\\int|f(x-y)g(y)|\\,dy<\\infty$. The substitution $y\\mapsto x-y$ shows that $f*g=g*f$ wherever either side is defined.",
+    "idea": "To compute $(f*g)(x)$, reflect $f$, slide the reflected copy so that its origin sits at $x$, multiply by $g$, and take the area. So $f*g$ is a moving weighted average of $g$ with weights given by $f$, which is why convolution smooths: a box convolved with a box is a tent, and a jump convolved with a narrow bump becomes a smooth ramp. For measurability one replaces $f,g$ by Borel functions equal to them a.e.; then $(x,y)\\mapsto f(x-y)g(y)$ is Borel on $\\R^2$ and the Fubini theorem can be applied, as in 8.14.",
+    "caption": "Top: $g(y)$ (blue), the reflected and shifted copy $y\\mapsto f(x-y)$ (orange), and their product (green), whose area is $(f*g)(x)$. Bottom: the graph of $f*g$, traced as $x$ moves. Play the animation or pause and drag $x$. The second example shows the reflection (a one-sided $f$ appears backwards); the third shows smoothing — a ragged step function convolved with a narrow bump.",
+    "deps": [
+      "rca-2.20",
+      "rca-1.30"
+    ],
+    "see": [
+      "fa-6.30"
+    ],
+    "tags": [
+      "convolution"
+    ],
+    "verify": true
+  },
+  {
+    "id": "music-5.6",
+    "num": "5.6",
+    "kind": "Phenomenon",
+    "name": "Beats",
+    "statement": "Two pure tones of nearly equal frequencies $f$ and $f+\\Delta$ sound as a single tone whose loudness swells and fades $\\Delta$ times per second: **beats**. For equal amplitudes,\n$$\\cos 2\\pi ft+\\cos 2\\pi(f+\\Delta)t = 2\\cos(\\pi\\Delta t)\\,\\cos\\!\\big(2\\pi(f+\\tfrac{\\Delta}{2})t\\big),$$\na tone at the mean frequency inside the slowly varying envelope $2|\\cos\\pi\\Delta t|$, which repeats $\\Delta$ times per second. With amplitudes $1$ and $a$ the envelope is $\\sqrt{1+a^2+2a\\cos 2\\pi\\Delta t}$, swinging between $1+a$ and $|1-a|$. Beats are clearly heard for $\\Delta$ up to about 10–15 Hz; musicians tune unisons and octaves by slowing them to zero.",
+    "idea": "It is superposition (1.11) and the sum-to-product identity (rca-0.1). In the phasor picture each tone is a rotating arrow; seen from a frame turning with the first, the second arrow turns slowly at $\\Delta$ revolutions per second, alternately adding to and cancelling the first. The resultant's length is the envelope. The ear hears beats rather than two tones because both frequencies fall in one auditory filter (5.4), whose output is just this slowly modulated sinusoid; the beating is real in the air, not an illusion.",
+    "caption": "Left: two phasors, drawn in a frame rotating with the first tone, so the second (orange) turns at exactly $\\Delta$ revolutions per second in real time; the resultant (green) is the envelope. Right: a 20 ms close-up of the actual waveform around the moving playhead. Bottom: two seconds of the envelope, with the playhead. Slide $\\Delta$ and count beats as you hear them; set the second amplitude below 1 and the fades no longer reach silence.",
+    "deps": [
+      "music-1.11",
+      "rca-0.1"
+    ],
+    "see": [
+      "music-5.7",
+      "music-2.12",
+      "music-3.12",
+      "sig-2.3"
+    ],
+    "refs": [
+      "Benson ch. 1",
+      "Sethares ch. 3"
+    ],
+    "tags": [
+      "beats",
+      "interference"
+    ],
+    "credit": "Joseph Sauveur, 1700 (beats used to measure frequency); Giuseppe Tartini, 1754",
+    "links": {
+      "wikipedia": "https://en.wikipedia.org/wiki/Beat_(acoustics)"
+    }
+  }
+]

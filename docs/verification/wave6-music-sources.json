@@ -1,0 +1,101 @@
+{
+  "status": "Research scope, actual reading and binding source stops; final chapter author gates pass separately",
+  "baseCommit": "59f1a5b9c85f789bcca1a331eb59cf0d629f75e0",
+  "sources": [
+    {
+      "file": "benson-music.pdf",
+      "url": "https://homepages.abdn.ac.uk/d.j.benson/pages/html/music.pdf",
+      "attempts": 1,
+      "status": 200,
+      "finalURL": "https://homepages.abdn.ac.uk/d.j.benson/pages/html/music.pdf",
+      "contentType": "application/pdf",
+      "bytes": 10147294,
+      "sha256": "6983deabf65460f5bfa01fdf3748963d2a4a8045c3fe8a4c42aa18a477da57a7",
+      "acquired": true,
+      "seconds": 9.937379599999986
+    },
+    {
+      "file": "toussaint-banff.pdf",
+      "url": "https://cgm.cs.mcgill.ca/~godfried/publications/banff.pdf",
+      "attempts": 1,
+      "status": 200,
+      "finalURL": "https://cgm.cs.mcgill.ca/~godfried/publications/banff.pdf",
+      "contentType": "application/pdf",
+      "bytes": 93398,
+      "sha256": "3065dc7354089117dc14207259675f4058457a61eed46b421490b51b0c75aaae",
+      "acquired": true,
+      "seconds": 0.5028019230012433
+    },
+    {
+      "file": "muller-tempo-beat.html",
+      "url": "https://www.audiolabs-erlangen.de/resources/MIR/FMP/C6/C6S1_TempoBeatTracking.html",
+      "attempts": 1,
+      "acquired": false,
+      "error": "HTTP Error 404: Not Found",
+      "bindingStop": "Do not recover this work via retry,mirror,alternate URL or tool.",
+      "seconds": 1.3949944769992726
+    },
+    {
+      "file": "omt-phrase-rhythm.html",
+      "url": "https://viva.pressbooks.pub/openmusictheory/chapter/phrase-rhythm/",
+      "attempts": 1,
+      "acquired": false,
+      "error": "HTTP Error 404: Not Found",
+      "bindingStop": "Do not recover this work via retry,mirror,alternate URL or tool.",
+      "seconds": 1.2343480220006313
+    },
+    {
+      "url": "https://archive.bridgesmathart.org/2002/bridges2002-157.pdf",
+      "attempts": 1,
+      "status": 200,
+      "finalURL": "https://archive.bridgesmathart.org/2002/bridges2002-157.pdf",
+      "acquired": true,
+      "bytes": 2224129,
+      "sha256": "aed712b6a0e825c7618964f4dc52b1bf003fb7b6ed55b61929595bf5d583e3a8"
+    }
+  ],
+  "actualReading": {
+    "toussaintBanff": "Complete ten-page paper text including references read. Original pages2and4 personally viewed. Actual grouping examples and E(3,8)/E(5,8), necklace and inter-onset definitions are used; ethnomusicological source claims remain attributed, not independently certified.",
+    "toussaintBridges2002": "Complete printed157\u2013163 read and printed164partly read through the beginning of4.2. Original printed159and163 personally viewed. Uses cyclic representations and the explicit16-step metricity construction, not its broad performance/popularity conclusions.",
+    "benson": "Title and selected contents, plus complete PDFpages32,33,77,78,310,311,339,340,452read. Original PDFpage77 personally viewed. Uses pulse-stream/Fourier and cyclic-symmetry context. Page452is bibliography only and does not mean the cited oddity paper body was read."
+  },
+  "originalPageImagesActuallyViewed": [
+    {
+      "path": "/workspace/scratch/wave6-music-research/toussaint-banff-page-2.png",
+      "sha256": "0e9262fe6905ee3901fe75621a0d0ec96c43ee0b61630b8f343e9b85aa80a11e"
+    },
+    {
+      "path": "/workspace/scratch/wave6-music-research/toussaint-banff-page-4.png",
+      "sha256": "b45a9e84150516f82233943ea7d2cc2d432cac6bc73a209f3e7d71c02c909810"
+    },
+    {
+      "path": "/workspace/scratch/wave6-music-research/benson-music-page-77.png",
+      "sha256": "9b919f514221625b5589138ef29856a018dd4b5ea51e77524c8282bcbaaf6d22"
+    },
+    {
+      "path": "/workspace/scratch/wave6-music-research/toussaint-bridges2002-page-3.png",
+      "sha256": "7baf5c27325fd283eab668c98654501ae6512aff54af7cc7abbb6a0e206ffdff"
+    },
+    {
+      "path": "/workspace/scratch/wave6-music-research/toussaint-bridges2002-page-7.png",
+      "sha256": "dac4d038f00b84843ee7a6727aa560c2afc9e5ed406cfff4e2fa5349188c583c"
+    }
+  ],
+  "sourceCautions": [
+    "Toussaint Banff page2has a final printed Euclidean-step/prose slip; derive the actual final2=2*1+0step locally rather than copy the slip.",
+    "The pulse-stream analytic line spectrum is distinct from a finite-window measured DFT. The sound model must retain audible click bandwidth at slow repetition rates and avoid aliasing at fast rates.",
+    "Original Loy, Toussaint book, Longuet-Higgins/Lee, Pressing, and Chemillier/Truchet bodies have not been read. Do not silently label an authored metric as their full original measure.",
+    "M\u00fcller tempo/beat tutorial URL and Open Music Theory phrase-rhythm URL returned404. Do not recover those works through alternate URLs, mirrors or tools. Other inherited source restrictions persist."
+  ],
+  "inheritedStops": "All prior source restrictions persist, including the DEMOArthur repository challenge. No alternate recovery of any blocked work.",
+  "unreadBodies": [
+    "Loy book",
+    "Toussaint Geometry of Musical Rhythm book",
+    "original Longuet-Higgins/Lee measure",
+    "Pressing original",
+    "Chemillier/Truchet oddity article",
+    "M\u00fcller tempo/beat tutorial body",
+    "Open Music Theory phrase-rhythm body"
+  ],
+  "authoredScope": "Rhythm patterns/signals, fixed statistical diagnostics, finite antipodal/rotation checks, elementary grouping/phase/count proofs and finite Fourier pulse construction. No supplied recording, cultural-authenticity test, universal rhythm/pitch threshold or human-listening certification."
+}

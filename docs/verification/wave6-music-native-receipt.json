@@ -1,0 +1,171 @@
+{
+  "status": "PASS; author browser consistency, not independent acceptance",
+  "effectiveCurrentLayouts": 52,
+  "effectiveTotals": {
+    "layouts": 52,
+    "actions": 1932,
+    "shares": 816,
+    "invalid": 132,
+    "raw": 0,
+    "critical": 416,
+    "checks": 3244,
+    "modelComparisons": 2256584,
+    "domRangeRounding": 0,
+    "audioBuffers": 52,
+    "audioSamples": 12277444,
+    "audioClocks": 52,
+    "audioStops": 156,
+    "audioNaturalEnds": 4,
+    "audioParameterStops": 52,
+    "customActions": 72
+  },
+  "retainedFull52AndBothSupplementalRuns": {
+    "layouts": 60,
+    "actions": 2248,
+    "shares": 956,
+    "invalid": 148,
+    "raw": 0,
+    "critical": 496,
+    "checks": 3780,
+    "modelComparisons": 2472660,
+    "domRangeRounding": 0,
+    "audioBuffers": 60,
+    "audioSamples": 14923444,
+    "audioClocks": 60,
+    "audioStops": 180,
+    "audioNaturalEnds": 8,
+    "audioParameterStops": 60,
+    "customActions": 72
+  },
+  "audioMaxNormalizedSampleError": 0,
+  "independentCasesAdded": 0,
+  "modelScope": "Actual registered slider/select/custom/clock state, complete browser model objects, every scientific primitive coordinate/style in39panels, painted axes/transforms, full marker/stroke/text-halo and rich/control/legend ink, true physical controls/canvas edits, fresh actual Share replay and whole-payload invalid fallback.",
+  "audioScope": "Actual backend mono Float32 AudioBuffers: complete samples, sample rate, gain/normalization policy, independently derived onset schedules, scheduled-source/audio-clock agreement, Stop/Pause/Restart/parameter changes, and natural end of the Fourier excerpt. Headless backend checks do not certify human listening or device output.",
+  "rawClockScope": "Scientific controls are integers. Fractional binary64 clocks and adjacent millisecond boundaries are covered by critical Share states; raw continuous-slider count is zero.",
+  "transition": {
+    "path": "/workspace/theorems-visualizations/docs/verification/wave6-music-native-transition.json",
+    "bytes": 3661,
+    "sha256": "0e6f7626b1a0e800138c6a37312f3b9284dcc88526f4c7f92f7296357f1c2946"
+  },
+  "parts": [
+    {
+      "path": "/workspace/scratch/wave6-music-research/native-final-a/summary.json",
+      "bytes": 17803,
+      "sha256": "f2457adecd7d12a4041a8bb4704c673498edb343c2d8e77ed344203a7cc95511"
+    },
+    {
+      "path": "/workspace/scratch/wave6-music-research/native-final-b/summary.json",
+      "bytes": 15662,
+      "sha256": "f9d6f7a6b5e0b4ebebe8a44b3ffc17e24241ac340d4b655437d28d9a593d0c82"
+    },
+    {
+      "path": "/workspace/scratch/wave6-music-research/native-copy-final/summary.json",
+      "bytes": 4728,
+      "sha256": "f48bfd7d966d01b29290f3224a98631a59afac730d1906035d56f6391deb5739"
+    },
+    {
+      "path": "/workspace/scratch/wave6-music-research/native-phase-final/summary.json",
+      "bytes": 4740,
+      "sha256": "0f75bb395e8abb054b12d4144780e7483b0ca65510400632faf314d81cba733d"
+    }
+  ],
+  "sourceHashesByRun": [
+    {
+      "native-final-a": {
+        "../content/music/ch10.audio.shared.js": "d301bebedbd8d633c23a4554f72187b6140ff4e9feb890e7c2db6adec25d98bb",
+        "../content/music/ch10.js": "d91d98050b28139f1ac1858c0f8b9414f51fe17a6ecfbbdadc19f2dbde92899f",
+        "../content/music/ch10.shared.js": "a32759e95fbd4c54a6fa1fd95c79bb67d3ead021679beeaa340c4c76ccf7fbc0",
+        "../content/music/ch10.viz.js": "89c8f90c80a1511babab29eef3b0f70e44e46c8fac09c841277c70dbd793e2f2",
+        "../content/music/syllabus.js": "ad3dac894262d526798423a443b9b4845e05d9b17d515c03e1eecaae826f9d73",
+        "../assets/js/viz/core.js": "a6fa1753d9d9e8b9a05a7161fffc58dfd53b27002d9d393a3266aeb96515fe73",
+        "../assets/js/viz/math.js": "439c335e1cc47907bc72bb76559216aa093be4710e0589f41c70192729eb223e",
+        "../assets/js/share-state.js": "13c6a9ac1237d566fc5d79c89e0f4d3029aa8c2817d2c08247a02b1b053a59b1",
+        "../assets/js/app.js": "2f5762e6bf80723a5cb8691f8b19c552dd1d731ab998d5bfcdb27828e2e9a6ce",
+        "../assets/css/style.css": "eef34e3d7aaf8b38233a78d9dc6545e5e0c9d00b09a3a6876d19f3e0e0af15b6",
+        "./fixtures/wave6-music-reference.json": "506671409d562148936658a4e781f6d5871d26696135a42aace8724f9c9334d0",
+        "./fixtures/wave6-music-audio-reference.json": "3be97b228d01ea13f83167f27b9103714257fbd96a3e9444de6d540f7444d911",
+        "./fixtures/wave6-music-source-facts.json": "b6c09dc0a860f79b39d1088eab9bdfdfdf48d409cca021c914ee02d851cf7284",
+        "../data/col/music.json": "664c76467f64b7e1bf9370cb8bc4660dfeb940eb54c953ea5f9df0e91c7c1052",
+        "../data/index.json": "d5a930e2b6be579ff00aba0ac2590d801f2828a142952ee35d43c4d0f116eb17",
+        "./wave6-music-native.mjs": "2a69227ab763213756621e7fed56a4c0b929532aedc57e609a6633b273c814a6",
+        "./wave6-music-native-science.mjs": "b1d1bcc5c5808b73e67e34df00189e55aee87be04e8b52d38a8b631ee4ebf186",
+        "./wave6-music-native-cases.mjs": "cdc6ae29df7d9a41075965a4e573b845551f983d986087304abdedb1d96d5504",
+        "./wave6-music-browser.shared.mjs": "c59eb75a4de47066f523fb8d2c382bd1f5b0c40028dff04efcfdcde4963aa465",
+        "./wave6-music-native-audio.mjs": "7c883e8e39d3e736f5b310b627cc4779fefa3b82ad8edb217dfe1484ba257600"
+      }
+    },
+    {
+      "native-final-b": {
+        "../content/music/ch10.audio.shared.js": "d301bebedbd8d633c23a4554f72187b6140ff4e9feb890e7c2db6adec25d98bb",
+        "../content/music/ch10.js": "d91d98050b28139f1ac1858c0f8b9414f51fe17a6ecfbbdadc19f2dbde92899f",
+        "../content/music/ch10.shared.js": "a32759e95fbd4c54a6fa1fd95c79bb67d3ead021679beeaa340c4c76ccf7fbc0",
+        "../content/music/ch10.viz.js": "89c8f90c80a1511babab29eef3b0f70e44e46c8fac09c841277c70dbd793e2f2",
+        "../content/music/syllabus.js": "ad3dac894262d526798423a443b9b4845e05d9b17d515c03e1eecaae826f9d73",
+        "../assets/js/viz/core.js": "a6fa1753d9d9e8b9a05a7161fffc58dfd53b27002d9d393a3266aeb96515fe73",
+        "../assets/js/viz/math.js": "439c335e1cc47907bc72bb76559216aa093be4710e0589f41c70192729eb223e",
+        "../assets/js/share-state.js": "13c6a9ac1237d566fc5d79c89e0f4d3029aa8c2817d2c08247a02b1b053a59b1",
+        "../assets/js/app.js": "2f5762e6bf80723a5cb8691f8b19c552dd1d731ab998d5bfcdb27828e2e9a6ce",
+        "../assets/css/style.css": "eef34e3d7aaf8b38233a78d9dc6545e5e0c9d00b09a3a6876d19f3e0e0af15b6",
+        "./fixtures/wave6-music-reference.json": "506671409d562148936658a4e781f6d5871d26696135a42aace8724f9c9334d0",
+        "./fixtures/wave6-music-audio-reference.json": "3be97b228d01ea13f83167f27b9103714257fbd96a3e9444de6d540f7444d911",
+        "./fixtures/wave6-music-source-facts.json": "b6c09dc0a860f79b39d1088eab9bdfdfdf48d409cca021c914ee02d851cf7284",
+        "../data/col/music.json": "664c76467f64b7e1bf9370cb8bc4660dfeb940eb54c953ea5f9df0e91c7c1052",
+        "../data/index.json": "d5a930e2b6be579ff00aba0ac2590d801f2828a142952ee35d43c4d0f116eb17",
+        "./wave6-music-native.mjs": "2a69227ab763213756621e7fed56a4c0b929532aedc57e609a6633b273c814a6",
+        "./wave6-music-native-science.mjs": "b1d1bcc5c5808b73e67e34df00189e55aee87be04e8b52d38a8b631ee4ebf186",
+        "./wave6-music-native-cases.mjs": "cdc6ae29df7d9a41075965a4e573b845551f983d986087304abdedb1d96d5504",
+        "./wave6-music-browser.shared.mjs": "c59eb75a4de47066f523fb8d2c382bd1f5b0c40028dff04efcfdcde4963aa465",
+        "./wave6-music-native-audio.mjs": "7c883e8e39d3e736f5b310b627cc4779fefa3b82ad8edb217dfe1484ba257600"
+      }
+    },
+    {
+      "native-copy-final": {
+        "../content/music/ch10.audio.shared.js": "d301bebedbd8d633c23a4554f72187b6140ff4e9feb890e7c2db6adec25d98bb",
+        "../content/music/ch10.js": "d91d98050b28139f1ac1858c0f8b9414f51fe17a6ecfbbdadc19f2dbde92899f",
+        "../content/music/ch10.shared.js": "a32759e95fbd4c54a6fa1fd95c79bb67d3ead021679beeaa340c4c76ccf7fbc0",
+        "../content/music/ch10.viz.js": "122fdcd029573358449cb931af73a863e04d8ab997cd373f025ab64bc8f4a7dc",
+        "../content/music/syllabus.js": "ad3dac894262d526798423a443b9b4845e05d9b17d515c03e1eecaae826f9d73",
+        "../assets/js/viz/core.js": "a6fa1753d9d9e8b9a05a7161fffc58dfd53b27002d9d393a3266aeb96515fe73",
+        "../assets/js/viz/math.js": "439c335e1cc47907bc72bb76559216aa093be4710e0589f41c70192729eb223e",
+        "../assets/js/share-state.js": "13c6a9ac1237d566fc5d79c89e0f4d3029aa8c2817d2c08247a02b1b053a59b1",
+        "../assets/js/app.js": "2f5762e6bf80723a5cb8691f8b19c552dd1d731ab998d5bfcdb27828e2e9a6ce",
+        "../assets/css/style.css": "eef34e3d7aaf8b38233a78d9dc6545e5e0c9d00b09a3a6876d19f3e0e0af15b6",
+        "./fixtures/wave6-music-reference.json": "506671409d562148936658a4e781f6d5871d26696135a42aace8724f9c9334d0",
+        "./fixtures/wave6-music-audio-reference.json": "3be97b228d01ea13f83167f27b9103714257fbd96a3e9444de6d540f7444d911",
+        "./fixtures/wave6-music-source-facts.json": "b6c09dc0a860f79b39d1088eab9bdfdfdf48d409cca021c914ee02d851cf7284",
+        "../data/col/music.json": "664c76467f64b7e1bf9370cb8bc4660dfeb940eb54c953ea5f9df0e91c7c1052",
+        "../data/index.json": "908b815c0f801f0609586c443c2777ccbd5597751230ef6c3b5a118ea7276d05",
+        "./wave6-music-native.mjs": "2a69227ab763213756621e7fed56a4c0b929532aedc57e609a6633b273c814a6",
+        "./wave6-music-native-science.mjs": "0d5d23a414208af0192173a70793ac9b3088d74cc88247bb3fc5f1bad3205528",
+        "./wave6-music-native-cases.mjs": "cdc6ae29df7d9a41075965a4e573b845551f983d986087304abdedb1d96d5504",
+        "./wave6-music-browser.shared.mjs": "c59eb75a4de47066f523fb8d2c382bd1f5b0c40028dff04efcfdcde4963aa465",
+        "./wave6-music-native-audio.mjs": "7c883e8e39d3e736f5b310b627cc4779fefa3b82ad8edb217dfe1484ba257600"
+      }
+    },
+    {
+      "native-phase-final": {
+        "../content/music/ch10.audio.shared.js": "d301bebedbd8d633c23a4554f72187b6140ff4e9feb890e7c2db6adec25d98bb",
+        "../content/music/ch10.js": "d91d98050b28139f1ac1858c0f8b9414f51fe17a6ecfbbdadc19f2dbde92899f",
+        "../content/music/ch10.shared.js": "a32759e95fbd4c54a6fa1fd95c79bb67d3ead021679beeaa340c4c76ccf7fbc0",
+        "../content/music/ch10.viz.js": "ce169873003a002d72baa211f9f212299d4fe7cc0c4cf104a594e59e45e708b9",
+        "../content/music/syllabus.js": "ad3dac894262d526798423a443b9b4845e05d9b17d515c03e1eecaae826f9d73",
+        "../assets/js/viz/core.js": "a6fa1753d9d9e8b9a05a7161fffc58dfd53b27002d9d393a3266aeb96515fe73",
+        "../assets/js/viz/math.js": "439c335e1cc47907bc72bb76559216aa093be4710e0589f41c70192729eb223e",
+        "../assets/js/share-state.js": "13c6a9ac1237d566fc5d79c89e0f4d3029aa8c2817d2c08247a02b1b053a59b1",
+        "../assets/js/app.js": "2f5762e6bf80723a5cb8691f8b19c552dd1d731ab998d5bfcdb27828e2e9a6ce",
+        "../assets/css/style.css": "eef34e3d7aaf8b38233a78d9dc6545e5e0c9d00b09a3a6876d19f3e0e0af15b6",
+        "./fixtures/wave6-music-reference.json": "506671409d562148936658a4e781f6d5871d26696135a42aace8724f9c9334d0",
+        "./fixtures/wave6-music-audio-reference.json": "3be97b228d01ea13f83167f27b9103714257fbd96a3e9444de6d540f7444d911",
+        "./fixtures/wave6-music-source-facts.json": "b6c09dc0a860f79b39d1088eab9bdfdfdf48d409cca021c914ee02d851cf7284",
+        "../data/col/music.json": "664c76467f64b7e1bf9370cb8bc4660dfeb940eb54c953ea5f9df0e91c7c1052",
+        "../data/index.json": "908b815c0f801f0609586c443c2777ccbd5597751230ef6c3b5a118ea7276d05",
+        "./wave6-music-native.mjs": "2a69227ab763213756621e7fed56a4c0b929532aedc57e609a6633b273c814a6",
+        "./wave6-music-native-science.mjs": "e8d2440b9e005db2647d8aeff7b8823c33876f3cb002bca9ec96bdec90b373f3",
+        "./wave6-music-native-cases.mjs": "cdc6ae29df7d9a41075965a4e573b845551f983d986087304abdedb1d96d5504",
+        "./wave6-music-browser.shared.mjs": "c59eb75a4de47066f523fb8d2c382bd1f5b0c40028dff04efcfdcde4963aa465",
+        "./wave6-music-native-audio.mjs": "7c883e8e39d3e736f5b310b627cc4779fefa3b82ad8edb217dfe1484ba257600"
+      }
+    }
+  ],
+  "ownedBrowsersAndServersExplicitlyClosed": true
+}

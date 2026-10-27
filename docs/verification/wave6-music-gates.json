@@ -1,0 +1,114 @@
+{
+  "status": "PASS; author verification only",
+  "newFrozenLessons": 13,
+  "purposeBuiltPanels": 39,
+  "authorAvailability": 939,
+  "historicalIndependentAccepted": 36,
+  "additionalAuthorVerified": 903,
+  "independentAcceptanceAdded": 0,
+  "model": {
+    "cases": 8204,
+    "families": 14,
+    "comparisons": 1617805,
+    "completePrecisionCorporaByteIdentical": true,
+    "freshInstalledGeneratorByteIdentical": true
+  },
+  "audioReference": {
+    "completeBuffers": 11,
+    "sampleComparisons": 13275,
+    "metadataComparisons": 49,
+    "completePrecisionCorporaByteIdentical": true,
+    "freshInstalledGeneratorByteIdentical": true
+  },
+  "focused": {
+    "passed": 41,
+    "newChapterGroups": 30,
+    "affectedHistoricalGroups": 11,
+    "failed": 0,
+    "skipped": 0,
+    "cancelled": 0,
+    "durationMs": 2048.52179,
+    "log": {
+      "path": "/workspace/scratch/wave6-music-research/focused-author-final.log",
+      "bytes": 9417,
+      "sha256": "6f9a9e0cdb321b749b440fdf6385aefc80e3610f101362c8f049c3c72a94c0db"
+    }
+  },
+  "strict": {
+    "items": 8654,
+    "planned": 4920,
+    "chapters": 597,
+    "collections": 85,
+    "errors": 0,
+    "warnings": 0,
+    "log": {
+      "path": "/workspace/scratch/wave6-music-research/strict-author-final.log",
+      "bytes": 217,
+      "sha256": "b6021e6a73ec515b5774cf1677329a43459e45af41366ad6cb37f9f9d82c4443"
+    }
+  },
+  "static": {
+    "items": 8591,
+    "errors": 0,
+    "warnings": 0,
+    "log": {
+      "path": "/workspace/scratch/wave6-music-research/static-author-final.log",
+      "bytes": 54,
+      "sha256": "9137f54d4648cb0e75f96d3888b37520b38e9ac0ac043401971f4681ad7a68e2"
+    }
+  },
+  "ordinaryProduction": {
+    "light": {
+      "items": 13,
+      "failed": 0,
+      "texBlankWarnings": 0,
+      "qualityWarnings": 0,
+      "log": {
+        "path": "/workspace/scratch/wave6-music-research/production-phase-final-light.log",
+        "bytes": 137,
+        "sha256": "7e9e92d180c83b075de8c13c561374ae3b091c507110df44a632b7515ffc1e3b"
+      }
+    },
+    "dark": {
+      "items": 13,
+      "failed": 0,
+      "texBlankWarnings": 0,
+      "qualityWarnings": 0,
+      "log": {
+        "path": "/workspace/scratch/wave6-music-research/production-phase-final-dark.log",
+        "bytes": 137,
+        "sha256": "7e9e92d180c83b075de8c13c561374ae3b091c507110df44a632b7515ffc1e3b"
+      }
+    }
+  },
+  "native": {
+    "layouts": 52,
+    "actions": 1932,
+    "shares": 816,
+    "invalid": 132,
+    "raw": 0,
+    "critical": 416,
+    "checks": 3244,
+    "modelComparisons": 2256584,
+    "domRangeRounding": 0,
+    "audioBuffers": 52,
+    "audioSamples": 12277444,
+    "audioClocks": 52,
+    "audioStops": 156,
+    "audioNaturalEnds": 4,
+    "audioParameterStops": 52,
+    "customActions": 72
+  },
+  "visual": {
+    "completeTargets": 528,
+    "actualOriginalResolutionViews": 151
+  },
+  "preservation": {
+    "previousRawFilesByteExact": 734,
+    "frozenMetadataAndPropertyAbsenceExact": true,
+    "wholeOldMusicTestByteExact": true,
+    "soleSyllabusException": "Chapter10refs/pic"
+  },
+  "fullGlobalSuite": "Latest completed global/reading export a71d15c0:5053tests,8629reading entries/76aliases. It predatesDEMO6andMUSIC10. Do not claim this chapter ran a new full suite. Run the full suite alone after the meaningful DEMO/MUSIC/ART integration batch.",
+  "ownedBrowsersAndServersExplicitlyClosed": true
+}
