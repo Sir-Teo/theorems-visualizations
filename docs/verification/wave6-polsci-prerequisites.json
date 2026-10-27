@@ -1,0 +1,58 @@
+[
+  {
+    "num": "1.1",
+    "kind": "Definition",
+    "name": "Preference profiles and social choice functions",
+    "statement": "Let $X$ be a finite set of $m$ candidates and $1, \\dots, n$ the voters. A **preference profile** is a list $(\\succ_1, \\dots, \\succ_n)$ of *rankings*: each $\\succ_i$ is a strict linear order on $X$ — a complete, transitive, asymmetric preference (micro-4.3) with no ties. There are $m!$ possible rankings. When voters are interchangeable, a profile is determined by how many voters hold each ranking: a vector of $m!$ non-negative integers summing to $n$, and there are $\\binom{n + m! - 1}{m! - 1}$ such **anonymous profiles**.\n\nA **social choice function** (voting rule) $F$ assigns to every profile a non-empty set $F(\\succ_1, \\dots, \\succ_n) \\subseteq X$ of winners; it is *resolute* if the set is always a single candidate (ties broken by a fixed rule). A **social welfare function** returns a ranking of $X$ instead.\n\nThe **pairwise tallies** $N(x, y) = \\#\\{i : x \\succ_i y\\}$ satisfy $N(x, y) + N(y, x) = n$, and $x$ **beats** $y$ by majority when $N(x, y) > N(y, x)$.",
+    "idea": "Every rule in this chapter reads the same object but a different part of it: plurality only the first places ($m$ numbers), Borda and the other positional rules the positions, Condorcet methods only the $\\binom m2$ pairwise tallies, instant runoff whole ballots in a particular order. The count of anonymous profiles is stars and bars (comb-1.11): $n$ voters distributed among $m! = 6$ rankings when $m = 3$ (comb-1.5). For three candidates, Saari’s representation triangle shows a profile at a glance: candidates at the vertices, the three altitudes cut the triangle into six small triangles — one per ranking, read as “closest vertex first, then the next closest” — and each pairwise tally is the sum of the three regions on one side of an altitude. In the spatial modes each voter ranks the candidates by distance from her own position. On a line only four of the six rankings can occur — the single-peaked domain of polsci-4.1, on which majority rule with an odd number of voters is transitive — but in a plane distance-based voters can still produce a majority cycle (polsci-4.5).",
+    "caption": "Drag the bars to set how many voters hold each of the six rankings, or switch to voters *on a line* or *in a plane* and drag the three candidates and the centres of the three voter groups: every voter then ranks the candidates by distance (dashed lines: where two candidates are equally far). On the right, Saari’s triangle shows the profile — each small triangle is a ranking, shaded by how many hold it — with the pairwise majorities beside the edges and every $N(x, y)$ in the matrix. The readout applies three social choice functions to the same profile; in the starting electorate they elect three different candidates, and the starting voters in the plane even produce a majority cycle.",
+    "deps": [
+      "micro-4.3",
+      "comb-1.5",
+      "comb-1.11"
+    ],
+    "see": [
+      "polsci-3.13",
+      "polsci-4.1"
+    ],
+    "refs": [
+      "T&P ch. 1",
+      "Saari, Chaotic Elections! ch. 1"
+    ],
+    "tags": [
+      "social choice",
+      "profiles"
+    ],
+    "links": {
+      "wikipedia": "https://en.wikipedia.org/wiki/Social_choice_theory"
+    }
+  },
+  {
+    "num": "5.3",
+    "kind": "Theorem",
+    "name": "The probability of a decisive vote",
+    "statement": "Let $n$ be even and let each of $n$ other voters vote for $A$ independently with probability $q$ and for $B$ otherwise. Your vote is decisive exactly when the others tie, which has probability\n$$P_n(q)=\\binom{n}{n/2}\\,\\bigl(q(1-q)\\bigr)^{n/2}.$$\n(a) If $q=\\tfrac12$ then $P_n \\sim \\sqrt{\\dfrac{2}{\\pi n}}$ as $n\\to\\infty$.\n(b) If $q\\neq\\tfrac12$ then $P_n \\le \\dfrac{(4q(1-q))^{n/2}}{\\sqrt{\\pi n/2}}$, which decays exponentially in $n$.\n(c) If $q$ is itself uncertain with a density $f$ that is continuous at $\\tfrac12$, then the probability of a tie, averaged over $q$, is asymptotically $f(\\tfrac12)/n$; for the uniform density it equals exactly $1/(n+1)$.",
+    "idea": "Stirling's formula (pma-8.22) turns $\\binom{n}{n/2}\\approx 2^n\\sqrt{2/(\\pi n)}$ into (a), and the bound in (b) is the same estimate multiplied by $(4q(1-q))^{n/2}<1$. For even $n=2k$, the beta integral (pma-8.20) evaluates the uniform-prior average exactly: $\\binom{2k}{k}B(k+1,k+1)=1/(2k+1)$. Its parameters $k+1$ are positive, including $n=0$. Part (c) is an integral of the binomial probability: the tie probability as a function of $q$ is a spike of height $\\sqrt{2/\\pi n}$ and width of order $1/\\sqrt n$ around $\\tfrac12$, whose area is exactly $1/(n+1)$, so a prior that is spread out over the width of the spike gives $f(\\tfrac12)/n$. The size of $p$ in the calculus of voting therefore depends on what the voter knows: certainty about a lean makes it vanish, honest uncertainty makes it merely small.",
+    "caption": "Left: the exact distribution of the number of votes for $A$ among $n$ voters; the green bar is the tie. Right (both axes logarithmic): the tie probability against $n$. Blue is the exact value for the lean you set, the dashed line is $\\sqrt{2/\\pi n}$ for a dead heat, orange is the tie probability when the lean itself is uncertain with the standard deviation $\\sigma$ you choose (a normal approximation, which falls like $1/n$ instead of exponentially).",
+    "deps": [
+      "polsci-5.1",
+      "pma-8.22",
+      "pma-8.20"
+    ],
+    "see": [
+      "polsci-5.2",
+      "polsci-7.6"
+    ],
+    "refs": [
+      "Shepsle: voting and turnout",
+      "Good and Mayer (1975), Behavioral Science 20: 25–33",
+      "Gelman, Silver and Edlin (2012), Economic Inquiry 50: 321–326"
+    ],
+    "tags": [
+      "pivotal voter",
+      "binomial"
+    ],
+    "scope": "Independent voters with a common $q$ (part c: a common $q$ drawn once from the prior). For (c) the orange curve uses the local normal approximation of the tie probability, $\\frac1n\\,N\\!\\bigl(q_0-\\tfrac12;\\,0,\\ \\sigma^2+\\tfrac1{4n}\\bigr)$, valid when $n$ is large and $q$ is not far from $\\tfrac12$.",
+    "links": {}
+  }
+]

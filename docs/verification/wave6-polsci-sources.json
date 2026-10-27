@@ -1,0 +1,184 @@
+{
+  "status": "POLSCI7source/design preparation only; no product/author-count promotion. Availability903; independent36.",
+  "baseCommit": "7ea2950c5eb34a5f7b864da2055af0555c68321e",
+  "preimages": 579,
+  "writtenPrerequisitesActuallyRead": [
+    "polsci1.1 complete teaching body/metadata",
+    "polsci5.3 complete teaching body/metadata includingcommon-qprioraveraging"
+  ],
+  "laterPrerequisitesNotClaimedReadOrAccepted": [
+    "game8.7",
+    "game8.11"
+  ],
+  "stops": [
+    {
+      "work": "Taylor/Zwicker1992 A Characterization of Weighted Voting",
+      "url": "https://www.math.hkust.edu.hk/~maykwok/courses/MATH392K/07Spring/trade%20robust.pdf",
+      "barrier": "First originalbody403; unread; no retry/mirror/cache/tool recovery."
+    },
+    {
+      "work": "Shapley/Shubik1954 historicalPaper",
+      "url": "https://www.cambridge.org/core/journals/american-political-science-review/article/abs/method-for-evaluating-the-distribution-of-power-in-a-committee-system/5C4948A19BD4138D855EDA0536496BCE",
+      "barrier": "PublisherGetaccess paywall. Only actualextract456\u2013461+metadata424\u2013478read; originalbody/figuresunread. No alternatePDF/mirror/cache/tool recovery. Frozenabsentverify remainsabsent."
+    },
+    {
+      "work": "Original1957EECTreatyArticle148",
+      "url": "https://eur-lex.europa.eu/legal-content/EN/ALL/?uri=CELEX%3A11957E148",
+      "barrier": "FirstbodyredirectedJavaScriptnot-a-robot challenge. No French/otherlanguage/PDF/mirror/cache/tool recovery. Searchmetadata notbodyverification."
+    },
+    {
+      "work": "EuropeanCommunity November1965BulletinA7472",
+      "url": "https://aei.pitt.edu/43729/1/A7472.pdf",
+      "barrier": "Firstoriginalbodytimeout. No retry/mirror/cache/tool recovery. Only searchsnippet read."
+    }
+  ],
+  "inheritedStops": "All earlier binding source stops, includingSOC/PSYCH/BEHAV and older chapters remain in force.",
+  "sources": [
+    {
+      "url": "https://www.fernuni-hagen.de/mi/fakultaet/emeriti/docs/kirsch/voting.pdf",
+      "status": 200,
+      "resolvedURL": "https://www.fernuni-hagen.de/mi/fakultaet/emeriti/docs/kirsch/voting.pdf",
+      "contentType": "application/pdf",
+      "bytes": 449151,
+      "sha256": "b794facb340c7821a1bec9171af63ceaecaae6424bd176d4763d725702efba0a",
+      "reading": "Selected web text0\u2013442 continuous,760\u2013943 continuous; find fragments around689\u2013707,985\u20131208 and references1599\u20131654. Local PDFpages13\u201315 fully read; actual full PDFpage21 image personally read. No full35page reading claimed. Use finite simple-game/trade definitions, absolute-versus-normalized Banzhaf, odd-majority proof and two-tier power caveat. DatedEU/IMF/currentpolitical descriptions not adopted as contemporary facts. Some text extraction loses negation or duplicates terms; own exact definitions/proofs supplied.",
+      "path": "/workspace/scratch/wave6-polsci-research/sources/kirsch-voting.pdf"
+    },
+    {
+      "url": "https://procaccia.info/wp-content/uploads/2020/03/comsoc.pdf",
+      "status": 200,
+      "resolvedURL": "https://procaccia.info/wp-content/uploads/2020/03/comsoc.pdf",
+      "contentType": "application/pdf",
+      "bytes": 4254139,
+      "sha256": "ef4f881e4e23add958c5ddf2e187086111dd67207d2b6071fc42824e129a875f",
+      "reading": "Chalkiadakis/Wooldridge2016 Chapter16: actual complete local PDFpages395\u2013400,407\u2013410 read; page399 actual full image viewed. Earlier web bookcover/contents0\u201388 and find fragments15937\u201316164,16445\u201316474,16617\u201316625,23199\u201323232 returned. Other554page text not claimed read. Source later-game prerequisites not claimed read. General trade definition uses overlapping balanced multisets from distinctKirsch; avoid loose source disjoint wording and unqualified nonmonotone-game claims. Own finite combinatorial derivations; no copied examples/figures beyond factual rules with attribution.",
+      "path": "/workspace/scratch/wave6-polsci-research/sources/handbook-comsoc.pdf"
+    },
+    {
+      "url": "https://sites.stat.columbia.edu/gelman/research/published/banzhaf_bjps_final.pdf",
+      "status": 200,
+      "resolvedURL": "https://sites.stat.columbia.edu/gelman/research/published/banzhaf_bjps_final.pdf",
+      "contentType": "application/pdf",
+      "bytes": 418527,
+      "sha256": "5ceff5d4a9776cd04abbd5d0d0e27d2a565beacb1c21168ab302069941ff727a",
+      "reading": "Nov16 2003 author manuscript, NOT claimed final journal-version verification. Actual web initial0\u201380 (title/abstract/introductionpartial); complete local PDFpages5\u201314 read (p13 includes scatter glyphs and actual Figure1 image); p17 actual full image and text read; p15 text output truncated by scatter glyphs, only visible fragments/caption read, no p15pixel view. Other body/appendix/figures unclaimed. Actual Figure1 uses1960\u20132000statepresidentialresults excludingDC; illustrative regressions reject universal iid size scaling in that sample. Source coin-toss ties and model differ from our threshold270 abstraction. No source forecasts, empirical observations or traced curves reused.",
+      "path": "/workspace/scratch/wave6-polsci-research/sources/gelman-banzhaf2003.pdf"
+    },
+    {
+      "url": "https://www.consilium.europa.eu/media/33261/qc0418220enn.pdf",
+      "status": 200,
+      "resolvedURL": "https://www.consilium.europa.eu/media/33261/qc0418220enn.pdf",
+      "contentType": "application/pdf",
+      "bytes": 3142879,
+      "sha256": "2398ccc4d7d0c01a414a90a1bad7904ea2b57ddd99d3c01fd9b2469420cfe4d0",
+      "reading": "Distinct Councilinstitutional history2016, actual complete text and full image of PDFpage53 only. Confirms historical1958\u20131972weightsG/F/I4,B/N2,L1,total17; quota12forCommissionproposals,12plus4countriesotherwise. Also1973\u20131980table returned/read but not needed. Remaining66page body unclaimed. This is NOT recovery/verification of stopped originalTreatyArticle148 or stopped1965Bulletin.",
+      "path": "/workspace/scratch/wave6-polsci-research/sources/council-through-time2016.pdf"
+    },
+    {
+      "url": "https://www.vwl4.uni-bayreuth.de/pool/Publikationen_Mayer/2018_games-09-00029.pdf",
+      "status": 200,
+      "resolvedURL": "https://www.vwl4.uni-bayreuth.de/pool/Publikationen_Mayer/2018_games-09-00029.pdf",
+      "contentType": "application/pdf",
+      "bytes": 367740,
+      "sha256": "b83760db4668ed664a2adabc372b820573b554158bb41444a90f78dc5d0d9f39",
+      "reading": "Mayer2018Games9:29 doi10.3390/g9020029. Actual complete main text local PDFpages1\u201310 plus concluding paragraph/acknowledgments/conflict on11 read. Page11references returned but not independently verified; p12references unread. Actual full page6/Table1 personally viewed. Pureweightedzero versus four-country-positive distinction; transitionveto/consensus, Beneluxcomposition and communication/bargaining are additional modeled context. Do not turn this into empirical measurement of all Luxembourg political influence. Tableindices not copied: recompute exact combinatorics independently.",
+      "path": "/workspace/scratch/wave6-polsci-research/sources/luxembourg2018.pdf"
+    },
+    {
+      "url": "https://www.cambridge.org/core/services/aop-cambridge-core/content/view/11F6490E178CD52C9FE2B5B3F68A4F9E/S1755773924000067a.pdf/div-class-title-gamson-going-global-cabinet-proportionality-in-comparative-perspective-div.pdf",
+      "status": 200,
+      "resolvedURL": "https://www.cambridge.org/core/services/aop-cambridge-core/content/view/11F6490E178CD52C9FE2B5B3F68A4F9E/S1755773924000067a.pdf/div-class-title-gamson-going-global-cabinet-proportionality-in-comparative-perspective-div.pdf",
+      "contentType": "application/pdf",
+      "bytes": 402466,
+      "sha256": "f13508c6c8cda84a9c3b05e908890eb64d1c66a49e543c90c09aabb045a0fd96",
+      "reading": "Chaisty/Power2024 EPSR16(4)630\u2013646 doi10.1017/S1755773924000067. Actualweb title/metadata/abstract464\u2013490,main498\u2013528,methods583\u2013608,613\u2013616,caption fragments819\u2013855; actual complete localPDFpages8\u201310read and full page10Figure1 personallyviewed. Mainrest/regressions/supplement not claimed read.1551country-years/97countries1966\u20132019,positivePolitycrosspartycoalitionswithcompletecabinetdata; threeformatNs697/478/376 andcorrelations.742/.618/.598. Source microdata/plots not copied/digitized; own authored allocation diagram separate from source aggregate summary; correlation doesnotmeasureexactproportionality or establishcausality.",
+      "path": "/workspace/scratch/wave6-polsci-research/sources/gamson-global2024.pdf"
+    }
+  ],
+  "additionalWebSource": {
+    "url": "https://www.archives.gov/electoral-college/allocation",
+    "scope": "Actualmain39\u201370read: all51allocationssum538,majority270,2020Censusbasis2024/2028;ME/NEdistrictsplitexceptions. As of2026-10-27. No actualpopulation/voter/electionoutcomes acquired. Own hypotheticalodd-electorates must be explicitly labeled."
+  },
+  "sourcePages": [
+    {
+      "path": "/workspace/scratch/wave6-polsci-research/source-pages/council-through-time2016-page53.png",
+      "sha256": "e696890ab459b3a81a299b8852a3c0c1fc1c25bff39b681ef9f27eaf9ffd269a",
+      "dimensions": [
+        699,
+        993
+      ],
+      "source": "/workspace/scratch/wave6-polsci-research/sources/council-through-time2016.pdf",
+      "PDFPage": 53,
+      "inspection": "Actual complete original-resolution source-page pixels personally viewed/read. No source plot/table/trajectory copied, traced or digitized."
+    },
+    {
+      "path": "/workspace/scratch/wave6-polsci-research/source-pages/luxembourg2018-page6.png",
+      "sha256": "323065401133f7eaf5dc081530234990822c3b336b8a0beec0d0b678adb5b43b",
+      "dimensions": [
+        834,
+        1179
+      ],
+      "source": "/workspace/scratch/wave6-polsci-research/sources/luxembourg2018.pdf",
+      "PDFPage": 6,
+      "inspection": "Actual complete original-resolution source-page pixels personally viewed/read. No source plot/table/trajectory copied, traced or digitized."
+    },
+    {
+      "path": "/workspace/scratch/wave6-polsci-research/source-pages/kirsch-voting-page21.png",
+      "sha256": "b363027165e0dd963dc4ad3134e26d9603fd86a1626b7118dec8d26d1fb4f31d",
+      "dimensions": [
+        834,
+        1179
+      ],
+      "source": "/workspace/scratch/wave6-polsci-research/sources/kirsch-voting.pdf",
+      "PDFPage": 21,
+      "inspection": "Actual complete original-resolution source-page pixels personally viewed/read. No source plot/table/trajectory copied, traced or digitized."
+    },
+    {
+      "path": "/workspace/scratch/wave6-polsci-research/source-pages/handbook-comsoc-page399.png",
+      "sha256": "eab403aed13a6a76421108c7146e5b16edacb338cbda9fea52489628e19fed8a",
+      "dimensions": [
+        706,
+        1008
+      ],
+      "source": "/workspace/scratch/wave6-polsci-research/sources/handbook-comsoc.pdf",
+      "PDFPage": 399,
+      "inspection": "Actual complete original-resolution source-page pixels personally viewed/read. No source plot/table/trajectory copied, traced or digitized."
+    },
+    {
+      "path": "/workspace/scratch/wave6-polsci-research/source-pages/gamson-global2024-page10.png",
+      "sha256": "5fbbaa1c768baa5413a0d2cd06f1c4b50b29e0ce0fc9766cb837cb89ebd2e922",
+      "dimensions": [
+        691,
+        981
+      ],
+      "source": "/workspace/scratch/wave6-polsci-research/sources/gamson-global2024.pdf",
+      "PDFPage": 10,
+      "inspection": "Actual complete original-resolution source-page pixels personally viewed/read. No source plot/table/trajectory copied, traced or digitized."
+    },
+    {
+      "path": "/workspace/scratch/wave6-polsci-research/source-pages/gelman-banzhaf2003-page17.png",
+      "sha256": "df22b36ae57827e84c8cd278994aa3e5c28a40de8a3eaaf4167e89953dd2a76d",
+      "dimensions": [
+        833,
+        1179
+      ],
+      "source": "/workspace/scratch/wave6-polsci-research/sources/gelman-banzhaf2003.pdf",
+      "PDFPage": 17,
+      "inspection": "Actual complete original-resolution source-page pixels personally viewed/read. No source plot/table/trajectory copied, traced or digitized."
+    },
+    {
+      "path": "/workspace/scratch/wave6-polsci-research/source-pages/gelman-banzhaf2003-page13.png",
+      "sha256": "92400fc9c938a8b0a1931e4aba870d7343c3bf4213a59b80506345522cdf3427",
+      "dimensions": [
+        833,
+        1179
+      ],
+      "source": "/workspace/scratch/wave6-polsci-research/sources/gelman-banzhaf2003.pdf",
+      "PDFPage": 13,
+      "inspection": "Actual complete original-resolution source-page pixels personally viewed/read. No source plot/table/trajectory copied, traced or digitized."
+    }
+  ],
+  "originalGraphicsOnly": true,
+  "sourceFigureTracingOrDigitizing": false,
+  "sourceOriginalPaperVerificationFlagsChanged": false
+}
