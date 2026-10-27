@@ -1,0 +1,66 @@
+{
+  "status": "PASS; current-source author visual gate complete",
+  "personalCompleteCoverageTargets": 728,
+  "completeDefaultWidgets": 56,
+  "completePhoneTeachingFields": 140,
+  "completeNativeStageLegendRegions": 266,
+  "completeNativeReadouts": 266,
+  "nativePhoneStates": {
+    "critical": 194,
+    "mode": 56,
+    "custom": 12,
+    "toggle": 4
+  },
+  "actualProductImageViews": 205,
+  "actualOriginalPixelViews": 197,
+  "draftDefaultDetailViewsExcluded": 8,
+  "actualViewedSheetsUsedForCurrentCoverage": {
+    "default": 57,
+    "native": 117
+  },
+  "currentDirectDefaultViews": 16,
+  "supplementaryUnscaledDetailViews": 2,
+  "earlierNativeSheetsRetainedButSuperseded": 5,
+  "actualSourcePageImageViews": 9,
+  "method": "Lossless original-pixel crops with source and crop SHA256, exact destination RGB equality and complete target coverage. Every qualifying sheet was actually personally viewed. No image resampling, perceptual similarity or unviewed prepared galleries qualify.",
+  "scopeLimits": "Every default widget, every complete phone statement/idea/caption/refs/scope field and all266phone critical/mode/custom/toggle stage+legend and readout regions are personally inspected. Native control labels are covered in complete defaults and automatically audited after actions; no personal inspection claim for every desktop critical/mode image or every native control state.",
+  "coverage": [
+    {
+      "path": "/workspace/scratch/wave6-art-research/current-default-visual-qualification.json",
+      "bytes": 56946,
+      "sha256": "ba11838106d6fb10956134cff58443b4af39b1cf9fcd7419f36f02590e0feb8c"
+    },
+    {
+      "path": "/workspace/scratch/wave6-art-research/native-visual-qualification.json",
+      "bytes": 203572,
+      "sha256": "955743f7132c242dd3135b22b340a6ae53e4f792836cbe7a33a78eb8846aab4f"
+    },
+    {
+      "path": "/workspace/scratch/wave6-art-research/default-v3-review-packed/manifest.json",
+      "bytes": 119763,
+      "sha256": "d09acc7423b8ea069421dd4126114e3494cfe4250abe8bbd4b8a7b7798abf0be"
+    },
+    {
+      "path": "/workspace/scratch/wave6-art-research/native-review-final/manifest.json",
+      "bytes": 284310,
+      "sha256": "75aceb619022b620a111d8607aee6184d3e740f1f15f675b84be6376ff37d3c4"
+    }
+  ],
+  "actualViews": {
+    "path": "/workspace/scratch/wave6-art-research/personal-image-views.json",
+    "bytes": 55054,
+    "sha256": "94294bee2f07a6d4fcc18f07bcbc40b5bab0ad71c901acf281e473eeafd961b6"
+  },
+  "displayArtifactCheck": "Packed image displays occasionally suppressed repeated identical targets. Actual PNG histograms, native RGBA checks and separately viewed unscaled details prove the target pixels exist, including14476gray128pixels in both light/dark3custom-bridge captures. No product defect inferred from tool-display repetition.",
+  "transitions": "Default-v3 to v5 has324of336exact RGB images; only twelve widgets for4/9/12 changed and received complete current direct views. Final lesson2 has4current direct views and exact unchanged teaching-field PNGs. Other13lesson bodies reconstruct byte-exact to earlier captures.",
+  "ownedBrowsersAndServersExplicitlyClosed": true,
+  "packedReviewFailureAndRepair": {
+    "failure": {
+      "path": "/workspace/scratch/wave6-art-research/native-packed-label-overlap-failure.json",
+      "bytes": 214,
+      "sha256": "4041d0733e245917178e8cb264cc12da0bc33dd2c4192680b9a1acdf78c11e16"
+    },
+    "replacement": "modes-readouts-001-repaired.png",
+    "scope": "One long filename header overlapped a neighbouring actual readout crop. The single affected source crop was repasted without resampling into a separately named replacement sheet; original sheet/manifest/failure retained. No browser source image or product changed."
+  }
+}

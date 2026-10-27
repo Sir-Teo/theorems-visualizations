@@ -1,0 +1,1173 @@
+{
+  "status": "PASS; effective current-source56layouts",
+  "effective": {
+    "layouts": 56,
+    "actions": 1512,
+    "shares": 756,
+    "invalid": 92,
+    "raw": 36,
+    "critical": 388,
+    "checks": 2852,
+    "modelComparisons": 924956,
+    "domRangeRounding": 356,
+    "pixelComparisons": 535984,
+    "customActions": 24
+  },
+  "rows": [
+    {
+      "id": 1,
+      "theme": "light",
+      "width": 320,
+      "criticalCases": 4,
+      "totals": {
+        "layouts": 1,
+        "actions": 29,
+        "shares": 12,
+        "invalid": 1,
+        "raw": 0,
+        "critical": 4,
+        "checks": 47,
+        "modelComparisons": 52419,
+        "domRangeRounding": 0,
+        "pixelComparisons": 14696,
+        "customActions": 0
+      },
+      "sourceRun": "native-final-a"
+    },
+    {
+      "id": 1,
+      "theme": "light",
+      "width": 1200,
+      "criticalCases": 4,
+      "totals": {
+        "layouts": 1,
+        "actions": 29,
+        "shares": 12,
+        "invalid": 1,
+        "raw": 0,
+        "critical": 4,
+        "checks": 47,
+        "modelComparisons": 52419,
+        "domRangeRounding": 0,
+        "pixelComparisons": 14760,
+        "customActions": 0
+      },
+      "sourceRun": "native-final-a"
+    },
+    {
+      "id": 1,
+      "theme": "dark",
+      "width": 320,
+      "criticalCases": 4,
+      "totals": {
+        "layouts": 1,
+        "actions": 29,
+        "shares": 12,
+        "invalid": 1,
+        "raw": 0,
+        "critical": 4,
+        "checks": 47,
+        "modelComparisons": 52419,
+        "domRangeRounding": 0,
+        "pixelComparisons": 14696,
+        "customActions": 0
+      },
+      "sourceRun": "native-final-a"
+    },
+    {
+      "id": 1,
+      "theme": "dark",
+      "width": 1200,
+      "criticalCases": 4,
+      "totals": {
+        "layouts": 1,
+        "actions": 29,
+        "shares": 12,
+        "invalid": 1,
+        "raw": 0,
+        "critical": 4,
+        "checks": 47,
+        "modelComparisons": 52419,
+        "domRangeRounding": 0,
+        "pixelComparisons": 14760,
+        "customActions": 0
+      },
+      "sourceRun": "native-final-a"
+    },
+    {
+      "id": 5,
+      "theme": "light",
+      "width": 320,
+      "criticalCases": 4,
+      "totals": {
+        "layouts": 1,
+        "actions": 16,
+        "shares": 7,
+        "invalid": 2,
+        "raw": 0,
+        "critical": 4,
+        "checks": 30,
+        "modelComparisons": 14988,
+        "domRangeRounding": 0,
+        "pixelComparisons": 19320,
+        "customActions": 0
+      },
+      "sourceRun": "native-final-a"
+    },
+    {
+      "id": 5,
+      "theme": "light",
+      "width": 1200,
+      "criticalCases": 4,
+      "totals": {
+        "layouts": 1,
+        "actions": 16,
+        "shares": 7,
+        "invalid": 2,
+        "raw": 0,
+        "critical": 4,
+        "checks": 30,
+        "modelComparisons": 14988,
+        "domRangeRounding": 0,
+        "pixelComparisons": 19320,
+        "customActions": 0
+      },
+      "sourceRun": "native-final-a"
+    },
+    {
+      "id": 5,
+      "theme": "dark",
+      "width": 320,
+      "criticalCases": 4,
+      "totals": {
+        "layouts": 1,
+        "actions": 16,
+        "shares": 7,
+        "invalid": 2,
+        "raw": 0,
+        "critical": 4,
+        "checks": 30,
+        "modelComparisons": 14988,
+        "domRangeRounding": 0,
+        "pixelComparisons": 19320,
+        "customActions": 0
+      },
+      "sourceRun": "native-final-a"
+    },
+    {
+      "id": 5,
+      "theme": "dark",
+      "width": 1200,
+      "criticalCases": 4,
+      "totals": {
+        "layouts": 1,
+        "actions": 16,
+        "shares": 7,
+        "invalid": 2,
+        "raw": 0,
+        "critical": 4,
+        "checks": 30,
+        "modelComparisons": 14988,
+        "domRangeRounding": 0,
+        "pixelComparisons": 19320,
+        "customActions": 0
+      },
+      "sourceRun": "native-final-a"
+    },
+    {
+      "id": 6,
+      "theme": "light",
+      "width": 320,
+      "criticalCases": 4,
+      "totals": {
+        "layouts": 1,
+        "actions": 13,
+        "shares": 7,
+        "invalid": 1,
+        "raw": 1,
+        "critical": 4,
+        "checks": 27,
+        "modelComparisons": 4131,
+        "domRangeRounding": 9,
+        "pixelComparisons": 17496,
+        "customActions": 0
+      },
+      "sourceRun": "native-final-a"
+    },
+    {
+      "id": 6,
+      "theme": "light",
+      "width": 1200,
+      "criticalCases": 4,
+      "totals": {
+        "layouts": 1,
+        "actions": 13,
+        "shares": 7,
+        "invalid": 1,
+        "raw": 1,
+        "critical": 4,
+        "checks": 27,
+        "modelComparisons": 4131,
+        "domRangeRounding": 9,
+        "pixelComparisons": 17496,
+        "customActions": 0
+      },
+      "sourceRun": "native-final-a"
+    },
+    {
+      "id": 6,
+      "theme": "dark",
+      "width": 320,
+      "criticalCases": 4,
+      "totals": {
+        "layouts": 1,
+        "actions": 13,
+        "shares": 7,
+        "invalid": 1,
+        "raw": 1,
+        "critical": 4,
+        "checks": 27,
+        "modelComparisons": 4131,
+        "domRangeRounding": 9,
+        "pixelComparisons": 17496,
+        "customActions": 0
+      },
+      "sourceRun": "native-final-a"
+    },
+    {
+      "id": 6,
+      "theme": "dark",
+      "width": 1200,
+      "criticalCases": 4,
+      "totals": {
+        "layouts": 1,
+        "actions": 13,
+        "shares": 7,
+        "invalid": 1,
+        "raw": 1,
+        "critical": 4,
+        "checks": 27,
+        "modelComparisons": 4131,
+        "domRangeRounding": 9,
+        "pixelComparisons": 17496,
+        "customActions": 0
+      },
+      "sourceRun": "native-final-a"
+    },
+    {
+      "id": 12,
+      "theme": "light",
+      "width": 320,
+      "criticalCases": 8,
+      "totals": {
+        "layouts": 1,
+        "actions": 21,
+        "shares": 13,
+        "invalid": 1,
+        "raw": 1,
+        "critical": 8,
+        "checks": 45,
+        "modelComparisons": 51345,
+        "domRangeRounding": 3,
+        "pixelComparisons": 720,
+        "customActions": 0
+      },
+      "sourceRun": "native-final-b"
+    },
+    {
+      "id": 12,
+      "theme": "light",
+      "width": 1200,
+      "criticalCases": 8,
+      "totals": {
+        "layouts": 1,
+        "actions": 21,
+        "shares": 13,
+        "invalid": 1,
+        "raw": 1,
+        "critical": 8,
+        "checks": 45,
+        "modelComparisons": 51345,
+        "domRangeRounding": 3,
+        "pixelComparisons": 720,
+        "customActions": 0
+      },
+      "sourceRun": "native-final-b"
+    },
+    {
+      "id": 12,
+      "theme": "dark",
+      "width": 320,
+      "criticalCases": 8,
+      "totals": {
+        "layouts": 1,
+        "actions": 21,
+        "shares": 13,
+        "invalid": 1,
+        "raw": 1,
+        "critical": 8,
+        "checks": 45,
+        "modelComparisons": 51345,
+        "domRangeRounding": 3,
+        "pixelComparisons": 720,
+        "customActions": 0
+      },
+      "sourceRun": "native-final-b"
+    },
+    {
+      "id": 12,
+      "theme": "dark",
+      "width": 1200,
+      "criticalCases": 8,
+      "totals": {
+        "layouts": 1,
+        "actions": 21,
+        "shares": 13,
+        "invalid": 1,
+        "raw": 1,
+        "critical": 8,
+        "checks": 45,
+        "modelComparisons": 51345,
+        "domRangeRounding": 3,
+        "pixelComparisons": 720,
+        "customActions": 0
+      },
+      "sourceRun": "native-final-b"
+    },
+    {
+      "id": 13,
+      "theme": "light",
+      "width": 320,
+      "criticalCases": 7,
+      "totals": {
+        "layouts": 1,
+        "actions": 34,
+        "shares": 14,
+        "invalid": 2,
+        "raw": 0,
+        "critical": 7,
+        "checks": 58,
+        "modelComparisons": 2436,
+        "domRangeRounding": 0,
+        "pixelComparisons": 52200,
+        "customActions": 1
+      },
+      "sourceRun": "native-final-b"
+    },
+    {
+      "id": 13,
+      "theme": "light",
+      "width": 1200,
+      "criticalCases": 7,
+      "totals": {
+        "layouts": 1,
+        "actions": 34,
+        "shares": 14,
+        "invalid": 2,
+        "raw": 0,
+        "critical": 7,
+        "checks": 58,
+        "modelComparisons": 2436,
+        "domRangeRounding": 0,
+        "pixelComparisons": 52200,
+        "customActions": 1
+      },
+      "sourceRun": "native-final-b"
+    },
+    {
+      "id": 13,
+      "theme": "dark",
+      "width": 320,
+      "criticalCases": 7,
+      "totals": {
+        "layouts": 1,
+        "actions": 34,
+        "shares": 14,
+        "invalid": 2,
+        "raw": 0,
+        "critical": 7,
+        "checks": 58,
+        "modelComparisons": 2436,
+        "domRangeRounding": 0,
+        "pixelComparisons": 52200,
+        "customActions": 1
+      },
+      "sourceRun": "native-final-b"
+    },
+    {
+      "id": 13,
+      "theme": "dark",
+      "width": 1200,
+      "criticalCases": 7,
+      "totals": {
+        "layouts": 1,
+        "actions": 34,
+        "shares": 14,
+        "invalid": 2,
+        "raw": 0,
+        "critical": 7,
+        "checks": 58,
+        "modelComparisons": 2436,
+        "domRangeRounding": 0,
+        "pixelComparisons": 52200,
+        "customActions": 1
+      },
+      "sourceRun": "native-final-b"
+    },
+    {
+      "id": 14,
+      "theme": "light",
+      "width": 320,
+      "criticalCases": 6,
+      "totals": {
+        "layouts": 1,
+        "actions": 25,
+        "shares": 12,
+        "invalid": 2,
+        "raw": 1,
+        "critical": 6,
+        "checks": 48,
+        "modelComparisons": 3984,
+        "domRangeRounding": 21,
+        "pixelComparisons": 1152,
+        "customActions": 1
+      },
+      "sourceRun": "native-final-b"
+    },
+    {
+      "id": 14,
+      "theme": "light",
+      "width": 1200,
+      "criticalCases": 6,
+      "totals": {
+        "layouts": 1,
+        "actions": 25,
+        "shares": 12,
+        "invalid": 2,
+        "raw": 1,
+        "critical": 6,
+        "checks": 48,
+        "modelComparisons": 3984,
+        "domRangeRounding": 21,
+        "pixelComparisons": 1152,
+        "customActions": 1
+      },
+      "sourceRun": "native-final-b"
+    },
+    {
+      "id": 14,
+      "theme": "dark",
+      "width": 320,
+      "criticalCases": 6,
+      "totals": {
+        "layouts": 1,
+        "actions": 25,
+        "shares": 12,
+        "invalid": 2,
+        "raw": 1,
+        "critical": 6,
+        "checks": 48,
+        "modelComparisons": 3984,
+        "domRangeRounding": 21,
+        "pixelComparisons": 1152,
+        "customActions": 1
+      },
+      "sourceRun": "native-final-b"
+    },
+    {
+      "id": 14,
+      "theme": "dark",
+      "width": 1200,
+      "criticalCases": 6,
+      "totals": {
+        "layouts": 1,
+        "actions": 25,
+        "shares": 12,
+        "invalid": 2,
+        "raw": 1,
+        "critical": 6,
+        "checks": 48,
+        "modelComparisons": 3984,
+        "domRangeRounding": 21,
+        "pixelComparisons": 1152,
+        "customActions": 1
+      },
+      "sourceRun": "native-final-b"
+    },
+    {
+      "id": 3,
+      "theme": "light",
+      "width": 320,
+      "criticalCases": 3,
+      "totals": {
+        "layouts": 1,
+        "actions": 31,
+        "shares": 12,
+        "invalid": 2,
+        "raw": 1,
+        "critical": 3,
+        "checks": 51,
+        "modelComparisons": 2448,
+        "domRangeRounding": 26,
+        "pixelComparisons": 1632,
+        "customActions": 1
+      },
+      "sourceRun": "native-extra-a"
+    },
+    {
+      "id": 3,
+      "theme": "light",
+      "width": 1200,
+      "criticalCases": 3,
+      "totals": {
+        "layouts": 1,
+        "actions": 31,
+        "shares": 12,
+        "invalid": 2,
+        "raw": 1,
+        "critical": 3,
+        "checks": 51,
+        "modelComparisons": 2448,
+        "domRangeRounding": 26,
+        "pixelComparisons": 1632,
+        "customActions": 1
+      },
+      "sourceRun": "native-extra-a"
+    },
+    {
+      "id": 3,
+      "theme": "dark",
+      "width": 320,
+      "criticalCases": 3,
+      "totals": {
+        "layouts": 1,
+        "actions": 31,
+        "shares": 12,
+        "invalid": 2,
+        "raw": 1,
+        "critical": 3,
+        "checks": 51,
+        "modelComparisons": 2448,
+        "domRangeRounding": 26,
+        "pixelComparisons": 1632,
+        "customActions": 1
+      },
+      "sourceRun": "native-extra-a"
+    },
+    {
+      "id": 3,
+      "theme": "dark",
+      "width": 1200,
+      "criticalCases": 3,
+      "totals": {
+        "layouts": 1,
+        "actions": 31,
+        "shares": 12,
+        "invalid": 2,
+        "raw": 1,
+        "critical": 3,
+        "checks": 51,
+        "modelComparisons": 2448,
+        "domRangeRounding": 26,
+        "pixelComparisons": 1632,
+        "customActions": 1
+      },
+      "sourceRun": "native-extra-a"
+    },
+    {
+      "id": 4,
+      "theme": "light",
+      "width": 320,
+      "criticalCases": 4,
+      "totals": {
+        "layouts": 1,
+        "actions": 29,
+        "shares": 13,
+        "invalid": 2,
+        "raw": 1,
+        "critical": 4,
+        "checks": 51,
+        "modelComparisons": 2550,
+        "domRangeRounding": 16,
+        "pixelComparisons": 1632,
+        "customActions": 1
+      },
+      "sourceRun": "native-extra-a"
+    },
+    {
+      "id": 4,
+      "theme": "light",
+      "width": 1200,
+      "criticalCases": 4,
+      "totals": {
+        "layouts": 1,
+        "actions": 29,
+        "shares": 13,
+        "invalid": 2,
+        "raw": 1,
+        "critical": 4,
+        "checks": 51,
+        "modelComparisons": 2550,
+        "domRangeRounding": 16,
+        "pixelComparisons": 1632,
+        "customActions": 1
+      },
+      "sourceRun": "native-extra-a"
+    },
+    {
+      "id": 4,
+      "theme": "dark",
+      "width": 320,
+      "criticalCases": 4,
+      "totals": {
+        "layouts": 1,
+        "actions": 29,
+        "shares": 13,
+        "invalid": 2,
+        "raw": 1,
+        "critical": 4,
+        "checks": 51,
+        "modelComparisons": 2550,
+        "domRangeRounding": 16,
+        "pixelComparisons": 1632,
+        "customActions": 1
+      },
+      "sourceRun": "native-extra-a"
+    },
+    {
+      "id": 4,
+      "theme": "dark",
+      "width": 1200,
+      "criticalCases": 4,
+      "totals": {
+        "layouts": 1,
+        "actions": 29,
+        "shares": 13,
+        "invalid": 2,
+        "raw": 1,
+        "critical": 4,
+        "checks": 51,
+        "modelComparisons": 2550,
+        "domRangeRounding": 16,
+        "pixelComparisons": 1632,
+        "customActions": 1
+      },
+      "sourceRun": "native-extra-a"
+    },
+    {
+      "id": 7,
+      "theme": "light",
+      "width": 320,
+      "criticalCases": 18,
+      "totals": {
+        "layouts": 1,
+        "actions": 53,
+        "shares": 31,
+        "invalid": 2,
+        "raw": 1,
+        "critical": 18,
+        "checks": 106,
+        "modelComparisons": 5500,
+        "domRangeRounding": 3,
+        "pixelComparisons": 848,
+        "customActions": 0
+      },
+      "sourceRun": "native-extra-a"
+    },
+    {
+      "id": 7,
+      "theme": "light",
+      "width": 1200,
+      "criticalCases": 18,
+      "totals": {
+        "layouts": 1,
+        "actions": 53,
+        "shares": 31,
+        "invalid": 2,
+        "raw": 1,
+        "critical": 18,
+        "checks": 106,
+        "modelComparisons": 5500,
+        "domRangeRounding": 3,
+        "pixelComparisons": 848,
+        "customActions": 0
+      },
+      "sourceRun": "native-extra-a"
+    },
+    {
+      "id": 7,
+      "theme": "dark",
+      "width": 320,
+      "criticalCases": 18,
+      "totals": {
+        "layouts": 1,
+        "actions": 53,
+        "shares": 31,
+        "invalid": 2,
+        "raw": 1,
+        "critical": 18,
+        "checks": 106,
+        "modelComparisons": 5500,
+        "domRangeRounding": 3,
+        "pixelComparisons": 848,
+        "customActions": 0
+      },
+      "sourceRun": "native-extra-a"
+    },
+    {
+      "id": 7,
+      "theme": "dark",
+      "width": 1200,
+      "criticalCases": 18,
+      "totals": {
+        "layouts": 1,
+        "actions": 53,
+        "shares": 31,
+        "invalid": 2,
+        "raw": 1,
+        "critical": 18,
+        "checks": 106,
+        "modelComparisons": 5500,
+        "domRangeRounding": 3,
+        "pixelComparisons": 848,
+        "customActions": 0
+      },
+      "sourceRun": "native-extra-a"
+    },
+    {
+      "id": 8,
+      "theme": "light",
+      "width": 320,
+      "criticalCases": 12,
+      "totals": {
+        "layouts": 1,
+        "actions": 31,
+        "shares": 18,
+        "invalid": 1,
+        "raw": 0,
+        "critical": 12,
+        "checks": 63,
+        "modelComparisons": 12159,
+        "domRangeRounding": 0,
+        "pixelComparisons": 6048,
+        "customActions": 1
+      },
+      "sourceRun": "native-extra-b"
+    },
+    {
+      "id": 8,
+      "theme": "light",
+      "width": 1200,
+      "criticalCases": 12,
+      "totals": {
+        "layouts": 1,
+        "actions": 31,
+        "shares": 18,
+        "invalid": 1,
+        "raw": 0,
+        "critical": 12,
+        "checks": 63,
+        "modelComparisons": 12159,
+        "domRangeRounding": 0,
+        "pixelComparisons": 6048,
+        "customActions": 1
+      },
+      "sourceRun": "native-extra-b"
+    },
+    {
+      "id": 8,
+      "theme": "dark",
+      "width": 320,
+      "criticalCases": 12,
+      "totals": {
+        "layouts": 1,
+        "actions": 31,
+        "shares": 18,
+        "invalid": 1,
+        "raw": 0,
+        "critical": 12,
+        "checks": 63,
+        "modelComparisons": 12159,
+        "domRangeRounding": 0,
+        "pixelComparisons": 6048,
+        "customActions": 1
+      },
+      "sourceRun": "native-extra-b"
+    },
+    {
+      "id": 8,
+      "theme": "dark",
+      "width": 1200,
+      "criticalCases": 12,
+      "totals": {
+        "layouts": 1,
+        "actions": 31,
+        "shares": 18,
+        "invalid": 1,
+        "raw": 0,
+        "critical": 12,
+        "checks": 63,
+        "modelComparisons": 12159,
+        "domRangeRounding": 0,
+        "pixelComparisons": 6048,
+        "customActions": 1
+      },
+      "sourceRun": "native-extra-b"
+    },
+    {
+      "id": 9,
+      "theme": "light",
+      "width": 320,
+      "criticalCases": 8,
+      "totals": {
+        "layouts": 1,
+        "actions": 22,
+        "shares": 14,
+        "invalid": 1,
+        "raw": 1,
+        "critical": 8,
+        "checks": 47,
+        "modelComparisons": 3149,
+        "domRangeRounding": 5,
+        "pixelComparisons": 6204,
+        "customActions": 0
+      },
+      "sourceRun": "native-extra-b"
+    },
+    {
+      "id": 9,
+      "theme": "light",
+      "width": 1200,
+      "criticalCases": 8,
+      "totals": {
+        "layouts": 1,
+        "actions": 22,
+        "shares": 14,
+        "invalid": 1,
+        "raw": 1,
+        "critical": 8,
+        "checks": 47,
+        "modelComparisons": 3149,
+        "domRangeRounding": 5,
+        "pixelComparisons": 6204,
+        "customActions": 0
+      },
+      "sourceRun": "native-extra-b"
+    },
+    {
+      "id": 9,
+      "theme": "dark",
+      "width": 320,
+      "criticalCases": 8,
+      "totals": {
+        "layouts": 1,
+        "actions": 22,
+        "shares": 14,
+        "invalid": 1,
+        "raw": 1,
+        "critical": 8,
+        "checks": 47,
+        "modelComparisons": 3149,
+        "domRangeRounding": 5,
+        "pixelComparisons": 6204,
+        "customActions": 0
+      },
+      "sourceRun": "native-extra-b"
+    },
+    {
+      "id": 9,
+      "theme": "dark",
+      "width": 1200,
+      "criticalCases": 8,
+      "totals": {
+        "layouts": 1,
+        "actions": 22,
+        "shares": 14,
+        "invalid": 1,
+        "raw": 1,
+        "critical": 8,
+        "checks": 47,
+        "modelComparisons": 3149,
+        "domRangeRounding": 5,
+        "pixelComparisons": 6204,
+        "customActions": 0
+      },
+      "sourceRun": "native-extra-b"
+    },
+    {
+      "id": 10,
+      "theme": "light",
+      "width": 320,
+      "criticalCases": 8,
+      "totals": {
+        "layouts": 1,
+        "actions": 26,
+        "shares": 14,
+        "invalid": 2,
+        "raw": 1,
+        "critical": 8,
+        "checks": 52,
+        "modelComparisons": 25866,
+        "domRangeRounding": 3,
+        "pixelComparisons": 624,
+        "customActions": 0
+      },
+      "sourceRun": "native-extra-b"
+    },
+    {
+      "id": 10,
+      "theme": "light",
+      "width": 1200,
+      "criticalCases": 8,
+      "totals": {
+        "layouts": 1,
+        "actions": 26,
+        "shares": 14,
+        "invalid": 2,
+        "raw": 1,
+        "critical": 8,
+        "checks": 52,
+        "modelComparisons": 25866,
+        "domRangeRounding": 3,
+        "pixelComparisons": 624,
+        "customActions": 0
+      },
+      "sourceRun": "native-extra-b"
+    },
+    {
+      "id": 10,
+      "theme": "dark",
+      "width": 320,
+      "criticalCases": 8,
+      "totals": {
+        "layouts": 1,
+        "actions": 26,
+        "shares": 14,
+        "invalid": 2,
+        "raw": 1,
+        "critical": 8,
+        "checks": 52,
+        "modelComparisons": 25866,
+        "domRangeRounding": 3,
+        "pixelComparisons": 624,
+        "customActions": 0
+      },
+      "sourceRun": "native-extra-b"
+    },
+    {
+      "id": 10,
+      "theme": "dark",
+      "width": 1200,
+      "criticalCases": 8,
+      "totals": {
+        "layouts": 1,
+        "actions": 26,
+        "shares": 14,
+        "invalid": 2,
+        "raw": 1,
+        "critical": 8,
+        "checks": 52,
+        "modelComparisons": 25866,
+        "domRangeRounding": 3,
+        "pixelComparisons": 624,
+        "customActions": 0
+      },
+      "sourceRun": "native-extra-b"
+    },
+    {
+      "id": 11,
+      "theme": "light",
+      "width": 320,
+      "criticalCases": 8,
+      "totals": {
+        "layouts": 1,
+        "actions": 28,
+        "shares": 14,
+        "invalid": 2,
+        "raw": 1,
+        "critical": 8,
+        "checks": 54,
+        "modelComparisons": 4806,
+        "domRangeRounding": 3,
+        "pixelComparisons": 648,
+        "customActions": 1
+      },
+      "sourceRun": "native-extra-b"
+    },
+    {
+      "id": 11,
+      "theme": "light",
+      "width": 1200,
+      "criticalCases": 8,
+      "totals": {
+        "layouts": 1,
+        "actions": 28,
+        "shares": 14,
+        "invalid": 2,
+        "raw": 1,
+        "critical": 8,
+        "checks": 54,
+        "modelComparisons": 4806,
+        "domRangeRounding": 3,
+        "pixelComparisons": 648,
+        "customActions": 1
+      },
+      "sourceRun": "native-extra-b"
+    },
+    {
+      "id": 11,
+      "theme": "dark",
+      "width": 320,
+      "criticalCases": 8,
+      "totals": {
+        "layouts": 1,
+        "actions": 28,
+        "shares": 14,
+        "invalid": 2,
+        "raw": 1,
+        "critical": 8,
+        "checks": 54,
+        "modelComparisons": 4806,
+        "domRangeRounding": 3,
+        "pixelComparisons": 648,
+        "customActions": 1
+      },
+      "sourceRun": "native-extra-b"
+    },
+    {
+      "id": 11,
+      "theme": "dark",
+      "width": 1200,
+      "criticalCases": 8,
+      "totals": {
+        "layouts": 1,
+        "actions": 28,
+        "shares": 14,
+        "invalid": 2,
+        "raw": 1,
+        "critical": 8,
+        "checks": 54,
+        "modelComparisons": 4806,
+        "domRangeRounding": 3,
+        "pixelComparisons": 648,
+        "customActions": 1
+      },
+      "sourceRun": "native-extra-b"
+    },
+    {
+      "id": 2,
+      "theme": "light",
+      "width": 320,
+      "criticalCases": 3,
+      "totals": {
+        "layouts": 1,
+        "actions": 20,
+        "shares": 8,
+        "invalid": 2,
+        "raw": 0,
+        "critical": 3,
+        "checks": 34,
+        "modelComparisons": 45458,
+        "domRangeRounding": 0,
+        "pixelComparisons": 10744,
+        "customActions": 0
+      },
+      "sourceRun": "native-knee-labels-final"
+    },
+    {
+      "id": 2,
+      "theme": "light",
+      "width": 1200,
+      "criticalCases": 3,
+      "totals": {
+        "layouts": 1,
+        "actions": 20,
+        "shares": 8,
+        "invalid": 2,
+        "raw": 0,
+        "critical": 3,
+        "checks": 34,
+        "modelComparisons": 45458,
+        "domRangeRounding": 0,
+        "pixelComparisons": 10744,
+        "customActions": 0
+      },
+      "sourceRun": "native-knee-labels-final"
+    },
+    {
+      "id": 2,
+      "theme": "dark",
+      "width": 320,
+      "criticalCases": 3,
+      "totals": {
+        "layouts": 1,
+        "actions": 20,
+        "shares": 8,
+        "invalid": 2,
+        "raw": 0,
+        "critical": 3,
+        "checks": 34,
+        "modelComparisons": 45458,
+        "domRangeRounding": 0,
+        "pixelComparisons": 10744,
+        "customActions": 0
+      },
+      "sourceRun": "native-knee-labels-final"
+    },
+    {
+      "id": 2,
+      "theme": "dark",
+      "width": 1200,
+      "criticalCases": 3,
+      "totals": {
+        "layouts": 1,
+        "actions": 20,
+        "shares": 8,
+        "invalid": 2,
+        "raw": 0,
+        "critical": 3,
+        "checks": 34,
+        "modelComparisons": 45458,
+        "domRangeRounding": 0,
+        "pixelComparisons": 10744,
+        "customActions": 0
+      },
+      "sourceRun": "native-knee-labels-final"
+    }
+  ],
+  "allRetainedSuccessfulRunTotals": {
+    "layouts": 92,
+    "actions": 2552,
+    "shares": 1284,
+    "invalid": 156,
+    "raw": 60,
+    "critical": 656,
+    "checks": 4820,
+    "modelComparisons": 1477604,
+    "domRangeRounding": 580,
+    "pixelComparisons": 692480,
+    "customActions": 40
+  },
+  "allRetainedSuccessfulRuns": [
+    "native-final-a",
+    "native-final-b",
+    "native-extra-a",
+    "native-extra-b",
+    "native-knee-final",
+    "native-knee-labels-final"
+  ],
+  "comparisonScope": "Complete browser render/model consistency and actual sampled RGBA channel comparisons; not additional independent numerical reference cases. pixelComparisons counts channels, not pixels.",
+  "domRangeRounding": "Observed DOM slider-thumb rounding is counted; complete restored binary64 state, model and readouts remain exact.",
+  "checks": [
+    "Every visible native slider Home/End/physical position and fresh actual Share URL",
+    "Every segmented option and toggle; invalid whole-payload fallback; fractional integer rejection; raw binary64 restoration",
+    "Physical drag bridge3/4/14, Mondrian click8 and matching buttons11/13",
+    "All97critical recipes in both themes at320/1200CSSpx",
+    "Complete finite traces, mathematical coordinates, selected markers and actual sampled RGBA values",
+    "All43panels: strokes/markers/glyph ink/halo/legend/control/rich field bounds",
+    "Actual optional clock advance moves stripe pixels; Restart restores phase/raster; common declared motion rate",
+    "Lesson2 actual input-change indices and at least3px between adjacent numeric annotation ink"
+  ],
+  "transitionReceipt": "wave6-art-native-transition.json",
+  "ownedBrowsersAndServersExplicitlyClosed": true
+}

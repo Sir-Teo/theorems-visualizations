@@ -1,0 +1,21 @@
+{
+  "status": "PASS",
+  "baseCommit": "0fd65d56f253601c0f02e0801b4a5c97ec3af089",
+  "rawPinsRecorded": 837,
+  "exactPriorFiles": 836,
+  "soleException": "content/art/syllabus.js chapter6 researched refs/pic only; complete restored syllabus deep-exact",
+  "wholeHistoricalArtTestSHA256": "998fed6ec9d2006b594fc0518f1d6b51568d4ae8637953d86c9cbf99fd4dcee3",
+  "frozenItems": 14,
+  "frozenPaper": {
+    "authors": "M. E. Chevreul",
+    "year": 1839,
+    "title": "De la loi du contraste simultané des couleurs",
+    "venue": "Paris: Pitois-Levrault, 1839",
+    "url": "https://archive.org/details/delaloiducontras00chev"
+  },
+  "frozenIntroduction": [
+    "art-6.3"
+  ],
+  "propertyAbsence": "All original fields, verify presence/absence, ordered dependencies and Paper fields checked in the final37focused groups",
+  "continuation": "All current native/scientific/personal gates complete. Author availability953=36historically independently accepted+917additional author-verified; no independent acceptance added."
+}
