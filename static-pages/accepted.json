@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
-  "acceptedCommit": "1e6a920246c75ceb1ee786c5c326108a0451fe5a",
-  "snapshotDigest": "876f44aa9fe754015b37d3f0dd8dd2ae0042aedcf5888f41af84fe3c7ddfa49e",
+  "acceptedCommit": "fcf3033f56195834800f6e492cb82e929a58c679",
+  "snapshotDigest": "2fbb8e2d22791d69962fff68a520710027c0230e59a7a117d10d4fcaf7dbcc07",
   "ids": [
     "aero-1.1",
     "aero-1.2",
@@ -479,6 +479,17 @@
     "arch-5.7",
     "arch-5.8",
     "arch-5.9",
+    "arch-6.1",
+    "arch-6.10",
+    "arch-6.11",
+    "arch-6.2",
+    "arch-6.3",
+    "arch-6.4",
+    "arch-6.5",
+    "arch-6.6",
+    "arch-6.7",
+    "arch-6.8",
+    "arch-6.9",
     "art-1.1",
     "art-1.10",
     "art-1.11",
@@ -3719,6 +3730,22 @@
     "ling-5.7",
     "ling-5.8",
     "ling-5.9",
+    "ling-6.1",
+    "ling-6.10",
+    "ling-6.11",
+    "ling-6.12",
+    "ling-6.13",
+    "ling-6.14",
+    "ling-6.15",
+    "ling-6.16",
+    "ling-6.2",
+    "ling-6.3",
+    "ling-6.4",
+    "ling-6.5",
+    "ling-6.6",
+    "ling-6.7",
+    "ling-6.8",
+    "ling-6.9",
     "logic-1.1",
     "logic-1.10",
     "logic-1.11",
@@ -8978,12 +9005,12 @@
       "to": "sig-4.4"
     }
   ],
-  "dataDigest": "f9d9e0dd7d8a94475834ffc729438652a956c687949f0a89ef605dc78b1b8df0",
+  "dataDigest": "aedfa503aa922feaa242be16af6f58dae961d7e5eb97ab95d73072ad3c6bd263",
   "sourceReconciliation": {
     "checkedOn": "2026-10-27",
-    "basis": "Source-backed author verification of DEMO6, MUSIC10 and ART6 under the continuous content goal; no additional independent review claimed",
-    "evidencePath": "docs/integration/wave6-demo-music-art-content.json",
-    "evidenceSha256": "6790d07ecfb2e692b3ceaa9ebddb9e417cfede6c2fe1bbcd74a72253ae87550b",
-    "verificationPath": "docs/verification/wave6-demo-music-art-integration.md"
+    "basis": "Source-backed author verification of ARCH6 and LING6 under the continuous content goal; no additional independent review claimed",
+    "evidencePath": "docs/integration/wave6-arch-ling-content.json",
+    "evidenceSha256": "65b94ac06807f5a2676b64d63a075ccbd0da8672764058476fdb35cea521c235",
+    "verificationPath": "docs/verification/wave6-arch-ling-integration.md"
   }
 }

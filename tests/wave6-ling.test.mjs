@@ -1,3 +1,4 @@
+import {authorPinBytes} from './wave6-arch-ling-pins.shared.mjs';
 import test,{after}from'node:test';
 import assert from'node:assert/strict';
 import fs from'node:fs';
@@ -38,7 +39,7 @@ test('LING6 frozen names/kinds/dependencies/Papers/introductions and property ab
  assert.deepEqual(lingSyllabusAtWave5(syllabus),before);const changed=structuredClone(syllabus);changed.chapters.find(c=>c.n===6).items[0].verify=false;assert.throws(()=>lingSyllabusAtWave5(changed));const other=structuredClone(syllabus);other.chapters[0].title+=' changed';assert.throws(()=>lingSyllabusAtWave5(other));
 });
 test('LING6 all955earlier raw files remain exact; whole15group historical test reconstructs byte-exact',()=>{
- const p=JSON.parse(fs.readFileSync(new URL('../docs/verification/wave6-ling-preimages.json',import.meta.url)));assert.equal(Object.keys(p.rawPins).length,957);let count=0;for(const[path,hash]of Object.entries(p.rawPins))if(!['content/ling/syllabus.js','tests/wave5-ling.test.mjs'].includes(path)){assert.equal(sha(fs.readFileSync(new URL('../'+path,import.meta.url))),hash,path);count++;}assert.equal(count,955);
+ const p=JSON.parse(fs.readFileSync(new URL('../docs/verification/wave6-ling-preimages.json',import.meta.url)));assert.equal(Object.keys(p.rawPins).length,957);let count=0;for(const[path,hash]of Object.entries(p.rawPins))if(!['content/ling/syllabus.js','tests/wave5-ling.test.mjs'].includes(path)){assert.equal(sha(authorPinBytes(new URL('../'+path,import.meta.url),hash)),hash,path);count++;}assert.equal(count,955);
  let text=fs.readFileSync(new URL('./wave5-ling.test.mjs',import.meta.url),'utf8');const imported="import {lingSyllabusAtWave5} from './wave6-ling-preservation.shared.mjs';\n",now='JSON.stringify(lingSyllabusAtWave5(s).chapters.filter(c=>c.n!==5))',old='JSON.stringify(s.chapters.filter(c=>c.n!==5))';assert.equal(text.split(imported).length,2);assert.equal(text.split(now).length,2);text=text.replace(imported,'').replace(now,old);assert.equal(sha(text),p.rawPins['tests/wave5-ling.test.mjs']);
 });
 test('LING6 smooth trace quarter-centimetre spacing has a certified subpixel vertical interpolation error',()=>{

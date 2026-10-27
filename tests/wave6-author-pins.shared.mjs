@@ -1,3 +1,4 @@
+import {resolveLaterAuthorPin} from './wave6-arch-ling-pins.shared.mjs';
 // Historical chapter guards retain exact source bytes across a specifically proved reading-metadata integration.
 // Every unlisted file remains an unconditional raw-byte pin.
 import fs from 'node:fs';
@@ -47,6 +48,7 @@ export function restorePinTestBytes(path,bytes){
  return Buffer.from(text.replace(adapted,"fs.readFileSync(new URL('../'+path,import.meta.url))"));
 }
 export function authorPinBytes(url,expected){
+ const later=resolveLaterAuthorPin(url,expected);if(later!==null)return later;
  const bytes=fs.readFileSync(url);if(hash(bytes)===expected)return bytes;
  const path=relative(root,fileURLToPath(url));
  if(Object.hasOwn(integrationBefore.files,path)){

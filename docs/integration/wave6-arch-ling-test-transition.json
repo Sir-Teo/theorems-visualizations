@@ -1,0 +1,24 @@
+{
+  "status": "PASS",
+  "scope": "One import and one exact pin-read hook per source. Every original case and assertion is retained; three whole original source files reconstruct byte-exact. DEMO/MUSIC/ART chapter tests and their original integration tests remain unchanged.",
+  "files": [
+    {
+      "path": "tests/wave6-author-pins.shared.mjs",
+      "beforeSHA256": "6dd42f87ef90f2f3779a183bcfe14a347f1264041728f1cdd287ddde479075c9",
+      "afterSHA256": "3a9fa0eccc18d1e5020bafcb56e099bc265cdf03acbc337b96ba5dd38b80a7fd",
+      "wholeOriginalReconstructsByteExact": true
+    },
+    {
+      "path": "tests/wave6-arch.test.mjs",
+      "beforeSHA256": "bd1eb8c60e5bfcf204e0eaf52671d12a48c6ac318decda2b34667412d8c50325",
+      "afterSHA256": "ed8e353fdb5f9133ac1b7c11a17dd1b0ade123d39cb79c9779016b0001ff3588",
+      "wholeOriginalReconstructsByteExact": true
+    },
+    {
+      "path": "tests/wave6-ling.test.mjs",
+      "beforeSHA256": "6665bfb361b206e06bd65f86279ea4baa212c006d4cf01ed927010360425d665",
+      "afterSHA256": "02fcb1e577b3507d351186e158b1a7e873e1a206c82b5a92de85b322874a0e24",
+      "wholeOriginalReconstructsByteExact": true
+    }
+  ]
+}

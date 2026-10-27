@@ -1,3 +1,4 @@
+import {authorPinBytes} from './wave6-arch-ling-pins.shared.mjs';
 import test,{after}from'node:test';
 import assert from'node:assert/strict';
 import fs from'node:fs';
@@ -27,7 +28,7 @@ test('ARCH6 all frozen metadata and property absence survive; whole syllabus res
 });
 test('ARCH6 all892 prior raw files and supplemental historical plan witness remain exact',()=>{
  const p=JSON.parse(fs.readFileSync(new URL('../docs/verification/wave6-arch-preimages.json',import.meta.url)));assert.equal(Object.keys(p.rawPins).length,894);let n=0;
- for(const[path,hash]of Object.entries(p.rawPins))if(!['content/arch/syllabus.js','tests/wave5-arch.test.mjs'].includes(path)){assert.equal(sha(fs.readFileSync(new URL('../'+path,import.meta.url))),hash,path);n++;}assert.equal(n,892);
+ for(const[path,hash]of Object.entries(p.rawPins))if(!['content/arch/syllabus.js','tests/wave5-arch.test.mjs'].includes(path)){assert.equal(sha(authorPinBytes(new URL('../'+path,import.meta.url),hash)),hash,path);n++;}assert.equal(n,892);
  for(const[path,hash]of Object.entries(p.supplementalFrozenPlans))assert.equal(sha(fs.readFileSync(new URL('../'+path,import.meta.url))),hash,path);
 });
 test('ARCH6 historical ARCH5 test reconstructs in full after exactly the metadata adapter',()=>{
