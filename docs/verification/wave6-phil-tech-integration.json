@@ -1,5 +1,5 @@
 {
-  "status": "Local candidate checks pass; immutable-export full suite and production smoke pending",
+  "status": "All local release gates pass on exact immutable export; publication status is recorded on PR25",
   "checkedOn": "2026-10-27",
   "chapterSourceCommit": "952469b156f0bb9a926ceb2f772aef2151191b56",
   "reading": {
@@ -113,6 +113,37 @@
       },
       "scope": "Local candidate only; no deployment or new acceptance. Local new-format previews and planning/review documents excluded.",
       "output": "/workspace/scratch/wave6-phil-tech-integration/static-candidate"
+    },
+    "fullSuite": {
+      "tests": 5269,
+      "suites": 0,
+      "pass": 5269,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "todo": 0,
+      "duration_ms": 901197.05478,
+      "nodeVersion": "22.23.3",
+      "fileConcurrency": 1,
+      "ranAlone": true,
+      "sourceCommit": "631b5e087c02493c7df56090021c2cb8f0145676",
+      "sourceRoot": "/workspace/scratch/wave6-phil-tech-integration/export-631b5e08",
+      "exitCode": 0,
+      "closed": true
+    },
+    "productionSmoke": {
+      "light": {
+        "routes": 272,
+        "routesWithErrors": 0,
+        "closed": true,
+        "exitCode": 0
+      },
+      "dark": {
+        "routes": 272,
+        "routesWithErrors": 0,
+        "closed": true,
+        "exitCode": 0
+      }
     }
   },
   "jobs": {
@@ -258,6 +289,60 @@
         "path": "/workspace/scratch/owned-jobs/philtech-reading-candidate.log",
         "sha256": "4414d99d9fa46c174f1ced6f8638e988481e5402e135c7a5e722a3ac4b002b1d"
       }
+    },
+    "philtech-full-suite": {
+      "status": {
+        "name": "philtech-full-suite",
+        "supervisorPID": 270982,
+        "processGroup": 270982,
+        "state": "closed",
+        "startedUTC": "2026-10-27T22:03:42Z",
+        "childPID": 270983,
+        "exitCode": 0,
+        "elapsedSeconds": 901.2321912649932,
+        "endedUTC": "2026-10-27T22:18:43Z"
+      },
+      "commandSHA256": "9cf3f3da3bb8a0a90d28540ea79b37b045bffa0dea1ddbcbf4cdf600fbd7074b",
+      "log": {
+        "path": "/workspace/scratch/owned-jobs/philtech-full-suite.log",
+        "sha256": "1c31ab13095cf9b9398395d39a6e1f977e253133fb19f7578b4c5ce81a3fe644"
+      }
+    },
+    "philtech-export-smoke-light": {
+      "status": {
+        "name": "philtech-export-smoke-light",
+        "supervisorPID": 288190,
+        "processGroup": 288190,
+        "state": "closed",
+        "startedUTC": "2026-10-27T22:19:12Z",
+        "childPID": 288191,
+        "exitCode": 0,
+        "elapsedSeconds": 394.3334813959955,
+        "endedUTC": "2026-10-27T22:25:46Z"
+      },
+      "commandSHA256": "18681137f54fb6b334542f220e1fdefa8e41c6e3bd28743b45ba1a946d49da28",
+      "log": {
+        "path": "/workspace/scratch/owned-jobs/philtech-export-smoke-light.log",
+        "sha256": "cc036ad2be5c310e4e9e65a8c6914b837f91e9627872eb733b75f1f6f724f0c0"
+      }
+    },
+    "philtech-export-smoke-dark": {
+      "status": {
+        "name": "philtech-export-smoke-dark",
+        "supervisorPID": 288202,
+        "processGroup": 288202,
+        "state": "closed",
+        "startedUTC": "2026-10-27T22:19:12Z",
+        "childPID": 288203,
+        "exitCode": 0,
+        "elapsedSeconds": 394.73073845201,
+        "endedUTC": "2026-10-27T22:25:47Z"
+      },
+      "commandSHA256": "9dde797b3b9b6a9c71d0fd54b86f220d1d28f9eb98b586c711d2e50d2b95268d",
+      "log": {
+        "path": "/workspace/scratch/owned-jobs/philtech-export-smoke-dark.log",
+        "sha256": "cc036ad2be5c310e4e9e65a8c6914b837f91e9627872eb733b75f1f6f724f0c0"
+      }
     }
   },
   "retainedDiagnostics": [
@@ -281,12 +366,53 @@
       "repair": "Use two explicit historical import aliases, with nonempty exact reversible replacements; validate all four complete sources in memory before writing any"
     }
   ],
-  "pending": [
-    "exact detached export/archive proof",
-    "full Node22suite ALONE/concurrency1",
-    "production smoke both themes",
-    "final source/export proof",
-    "user-authorized push/create and attach PR/checkCI/expected-head main merge"
-  ],
-  "historicalFullSuite": "5202pass at export427a7608585adaf1f70803da4cc34b342d1a2660 predates PHIL6/TECH7; no new full-suite claim yet."
+  "pending": [],
+  "historicalFullSuite": "The earlier5202-test export predates PHIL6/TECH7; it is not used as the current suite result.",
+  "immutableExport": {
+    "status": "PASS",
+    "exactExportCommit": "631b5e087c02493c7df56090021c2cb8f0145676",
+    "exportRoot": "/workspace/scratch/wave6-phil-tech-integration/export-631b5e08",
+    "archive": "/workspace/scratch/wave6-phil-tech-integration/exact-export-631b5e08.tar",
+    "archiveBytes": 344760320,
+    "archiveSHA256": "1eae2aa061a229f37157bc106bc70694cb91c0ef1c8e4405ca92224a0b6c1ebe",
+    "trackedRegularFiles": 7316,
+    "allTrackedRegularFilesEqualGitArchive": true,
+    "trackedPinMapSHA256": "568f1b944259846f966f27cd40d4bcf821f56866ecac8ff8352f5fc6487794e8"
+  },
+  "finalSourceProof": {
+    "testedCommit": "631b5e087c02493c7df56090021c2cb8f0145676",
+    "testedTrackedRegularFiles": 7316,
+    "unchangedTrackedRegularFiles": 7313,
+    "permittedReportOnlyChanges": [
+      "docs/verification/wave6-phil-tech-integration.json",
+      "docs/verification/wave6-phil-tech-integration.md",
+      "docs/wave-continuation.md"
+    ],
+    "allRuntimeContentTestsFixturesAndBindingsEqualTestedExport": true,
+    "all7296EarlierProtectedRawFilesUnchanged": true,
+    "scope": "Final documentation only. Both complete chapter author artifact manifests remain exact. Exact final head and main merge tree are recorded on PR25 and in the local publication receipt after publication."
+  },
+  "hostedCI": {
+    "observedHead": "631b5e087c02493c7df56090021c2cb8f0145676",
+    "checks": [
+      {
+        "checkRunID": 122497971096,
+        "conclusion": "failure",
+        "startedTestSteps": false,
+        "message": "The job was not started because recent account payments have failed or your spending limit needs to be increased. Please check the 'Billing & plans' section in your settings"
+      },
+      {
+        "checkRunID": 122497635352,
+        "conclusion": "failure",
+        "startedTestSteps": false,
+        "message": "The job was not started because recent account payments have failed or your spending limit needs to be increased. Please check the 'Billing & plans' section in your settings"
+      }
+    ],
+    "scope": "Hosted checks did not run tests. Final pushed head must be inspected on PR25. No account, workflow or branch-protection change, and no administrative merge bypass."
+  },
+  "publication": {
+    "pr": "https://github.com/Sir-Teo/theorems-visualizations/pull/25",
+    "userAuthorizedPushAndMainMerge": true,
+    "scope": "Publication status is tracked on the PR; this pre-merge source receipt does not claim an already completed merge or deployment."
+  }
 }
