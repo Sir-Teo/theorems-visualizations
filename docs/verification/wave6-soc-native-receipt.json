@@ -1,0 +1,665 @@
+{
+  "status": "PASS",
+  "scope": "Final complete native v2:8lessons, both themes,320/1200. All offered controls, actual Play/Pause/Restart2/4/7 and actual Create state link fresh-page replay. Independent arithmetic remains a separate756case gate.",
+  "totals": {
+    "layouts": 32,
+    "actions": 876,
+    "shares": 416,
+    "invalid": 32,
+    "raw": 12,
+    "critical": 160,
+    "checks": 1516,
+    "modelComparisons": 3307963,
+    "domRangeRounding": 48
+  },
+  "sourceHashes": {
+    "../content/soc/ch06.exact.shared.js": "a31e523d90b3d66b7d82bbe2983a8a4d00b5082625d7905f869813c4b1ea050e",
+    "../content/soc/ch06.js": "6eb1da914ca7e34a63de5ff650a3c9bfde3bcc91cce9edf19269a0e1ca2db161",
+    "../content/soc/ch06.shared.js": "3fdafdf835abbc89233bb1b317ee2797b24866f252a12c1ec5a7d969a6842038",
+    "../content/soc/ch06.viz.js": "c93a77c75984b4e289b44e013d437fc29428c278337d6a409f571ce3df72f095",
+    "../content/soc/syllabus.js": "ede78aab5bf6bbcffa5d706e3f203353ec4a7301d18bd8704c2ea7b034b2c98c",
+    "../assets/js/viz/core.js": "a6fa1753d9d9e8b9a05a7161fffc58dfd53b27002d9d393a3266aeb96515fe73",
+    "../assets/js/viz/math.js": "439c335e1cc47907bc72bb76559216aa093be4710e0589f41c70192729eb223e",
+    "../assets/js/share-state.js": "13c6a9ac1237d566fc5d79c89e0f4d3029aa8c2817d2c08247a02b1b053a59b1",
+    "../assets/js/app.js": "2f5762e6bf80723a5cb8691f8b19c552dd1d731ab998d5bfcdb27828e2e9a6ce",
+    "../assets/css/style.css": "eef34e3d7aaf8b38233a78d9dc6545e5e0c9d00b09a3a6876d19f3e0e0af15b6",
+    "./fixtures/wave6-soc-reference.json": "4c88dbfb1e2e8bd48c7ad12608386fc2936591a06f229b2a7732092cdc295526",
+    "../data/col/soc.json": "97543b9b76be9e5cd894c2aa8b01e10ed0ae9389004e5ba44ca5408657cc0a3e",
+    "../data/index.json": "c0b3c5d0aaf7741196d62b025657736fdd38897150d36f72f47fad458b4d9c3d",
+    "./wave6-soc-native.mjs": "4ceabdc507e6dfed74ee1a2c44df3a460c4407d9d59b74196ddc2474587090b4",
+    "./wave6-soc-native-science.mjs": "a8d04244ca32ac7410eb54c6e2fbb0a4bb98d315b0c801acbc18a6ef1ebcfd75",
+    "./wave6-soc-native-cases.mjs": "7674dcd645850896a68f4f28e02b9d413615c8c68c3fdb684c2d5d373d93dd99",
+    "./wave6-soc-browser.shared.mjs": "4328a26f09770b9a3ada83a6d420cc9d7f4a13db612a1507fa002baf81cac6a6"
+  },
+  "cohorts": [
+    {
+      "status": "PASS",
+      "totals": {
+        "layouts": 16,
+        "actions": 468,
+        "shares": 220,
+        "invalid": 16,
+        "raw": 4,
+        "critical": 80,
+        "checks": 796,
+        "modelComparisons": 2585214,
+        "domRangeRounding": 24
+      },
+      "rows": [
+        {
+          "id": 1,
+          "theme": "light",
+          "width": 320,
+          "criticalCases": 3,
+          "totals": {
+            "layouts": 1,
+            "actions": 30,
+            "shares": 15,
+            "invalid": 1,
+            "raw": 0,
+            "critical": 3,
+            "checks": 50,
+            "modelComparisons": 2996,
+            "domRangeRounding": 0
+          }
+        },
+        {
+          "id": 1,
+          "theme": "light",
+          "width": 1200,
+          "criticalCases": 3,
+          "totals": {
+            "layouts": 1,
+            "actions": 30,
+            "shares": 15,
+            "invalid": 1,
+            "raw": 0,
+            "critical": 3,
+            "checks": 50,
+            "modelComparisons": 2996,
+            "domRangeRounding": 0
+          }
+        },
+        {
+          "id": 1,
+          "theme": "dark",
+          "width": 320,
+          "criticalCases": 3,
+          "totals": {
+            "layouts": 1,
+            "actions": 30,
+            "shares": 15,
+            "invalid": 1,
+            "raw": 0,
+            "critical": 3,
+            "checks": 50,
+            "modelComparisons": 2996,
+            "domRangeRounding": 0
+          }
+        },
+        {
+          "id": 1,
+          "theme": "dark",
+          "width": 1200,
+          "criticalCases": 3,
+          "totals": {
+            "layouts": 1,
+            "actions": 30,
+            "shares": 15,
+            "invalid": 1,
+            "raw": 0,
+            "critical": 3,
+            "checks": 50,
+            "modelComparisons": 2996,
+            "domRangeRounding": 0
+          }
+        },
+        {
+          "id": 2,
+          "theme": "light",
+          "width": 320,
+          "criticalCases": 5,
+          "totals": {
+            "layouts": 1,
+            "actions": 33,
+            "shares": 15,
+            "invalid": 1,
+            "raw": 0,
+            "critical": 5,
+            "checks": 54,
+            "modelComparisons": 197374,
+            "domRangeRounding": 0
+          }
+        },
+        {
+          "id": 2,
+          "theme": "light",
+          "width": 1200,
+          "criticalCases": 5,
+          "totals": {
+            "layouts": 1,
+            "actions": 33,
+            "shares": 15,
+            "invalid": 1,
+            "raw": 0,
+            "critical": 5,
+            "checks": 54,
+            "modelComparisons": 203125,
+            "domRangeRounding": 0
+          }
+        },
+        {
+          "id": 2,
+          "theme": "dark",
+          "width": 320,
+          "criticalCases": 5,
+          "totals": {
+            "layouts": 1,
+            "actions": 33,
+            "shares": 15,
+            "invalid": 1,
+            "raw": 0,
+            "critical": 5,
+            "checks": 54,
+            "modelComparisons": 197374,
+            "domRangeRounding": 0
+          }
+        },
+        {
+          "id": 2,
+          "theme": "dark",
+          "width": 1200,
+          "criticalCases": 5,
+          "totals": {
+            "layouts": 1,
+            "actions": 33,
+            "shares": 15,
+            "invalid": 1,
+            "raw": 0,
+            "critical": 5,
+            "checks": 54,
+            "modelComparisons": 203044,
+            "domRangeRounding": 0
+          }
+        },
+        {
+          "id": 3,
+          "theme": "light",
+          "width": 320,
+          "criticalCases": 6,
+          "totals": {
+            "layouts": 1,
+            "actions": 28,
+            "shares": 14,
+            "invalid": 1,
+            "raw": 1,
+            "critical": 6,
+            "checks": 51,
+            "modelComparisons": 38199,
+            "domRangeRounding": 6
+          }
+        },
+        {
+          "id": 3,
+          "theme": "light",
+          "width": 1200,
+          "criticalCases": 6,
+          "totals": {
+            "layouts": 1,
+            "actions": 28,
+            "shares": 14,
+            "invalid": 1,
+            "raw": 1,
+            "critical": 6,
+            "checks": 51,
+            "modelComparisons": 39362,
+            "domRangeRounding": 6
+          }
+        },
+        {
+          "id": 3,
+          "theme": "dark",
+          "width": 320,
+          "criticalCases": 6,
+          "totals": {
+            "layouts": 1,
+            "actions": 28,
+            "shares": 14,
+            "invalid": 1,
+            "raw": 1,
+            "critical": 6,
+            "checks": 51,
+            "modelComparisons": 38199,
+            "domRangeRounding": 6
+          }
+        },
+        {
+          "id": 3,
+          "theme": "dark",
+          "width": 1200,
+          "criticalCases": 6,
+          "totals": {
+            "layouts": 1,
+            "actions": 28,
+            "shares": 14,
+            "invalid": 1,
+            "raw": 1,
+            "critical": 6,
+            "checks": 51,
+            "modelComparisons": 39362,
+            "domRangeRounding": 6
+          }
+        },
+        {
+          "id": 4,
+          "theme": "light",
+          "width": 320,
+          "criticalCases": 6,
+          "totals": {
+            "layouts": 1,
+            "actions": 26,
+            "shares": 11,
+            "invalid": 1,
+            "raw": 0,
+            "critical": 6,
+            "checks": 44,
+            "modelComparisons": 402939,
+            "domRangeRounding": 0
+          }
+        },
+        {
+          "id": 4,
+          "theme": "light",
+          "width": 1200,
+          "criticalCases": 6,
+          "totals": {
+            "layouts": 1,
+            "actions": 26,
+            "shares": 11,
+            "invalid": 1,
+            "raw": 0,
+            "critical": 6,
+            "checks": 44,
+            "modelComparisons": 405718,
+            "domRangeRounding": 0
+          }
+        },
+        {
+          "id": 4,
+          "theme": "dark",
+          "width": 320,
+          "criticalCases": 6,
+          "totals": {
+            "layouts": 1,
+            "actions": 26,
+            "shares": 11,
+            "invalid": 1,
+            "raw": 0,
+            "critical": 6,
+            "checks": 44,
+            "modelComparisons": 402855,
+            "domRangeRounding": 0
+          }
+        },
+        {
+          "id": 4,
+          "theme": "dark",
+          "width": 1200,
+          "criticalCases": 6,
+          "totals": {
+            "layouts": 1,
+            "actions": 26,
+            "shares": 11,
+            "invalid": 1,
+            "raw": 0,
+            "critical": 6,
+            "checks": 44,
+            "modelComparisons": 405679,
+            "domRangeRounding": 0
+          }
+        }
+      ],
+      "errors": [],
+      "sourceHashes": {
+        "../content/soc/ch06.exact.shared.js": "a31e523d90b3d66b7d82bbe2983a8a4d00b5082625d7905f869813c4b1ea050e",
+        "../content/soc/ch06.js": "6eb1da914ca7e34a63de5ff650a3c9bfde3bcc91cce9edf19269a0e1ca2db161",
+        "../content/soc/ch06.shared.js": "3fdafdf835abbc89233bb1b317ee2797b24866f252a12c1ec5a7d969a6842038",
+        "../content/soc/ch06.viz.js": "c93a77c75984b4e289b44e013d437fc29428c278337d6a409f571ce3df72f095",
+        "../content/soc/syllabus.js": "ede78aab5bf6bbcffa5d706e3f203353ec4a7301d18bd8704c2ea7b034b2c98c",
+        "../assets/js/viz/core.js": "a6fa1753d9d9e8b9a05a7161fffc58dfd53b27002d9d393a3266aeb96515fe73",
+        "../assets/js/viz/math.js": "439c335e1cc47907bc72bb76559216aa093be4710e0589f41c70192729eb223e",
+        "../assets/js/share-state.js": "13c6a9ac1237d566fc5d79c89e0f4d3029aa8c2817d2c08247a02b1b053a59b1",
+        "../assets/js/app.js": "2f5762e6bf80723a5cb8691f8b19c552dd1d731ab998d5bfcdb27828e2e9a6ce",
+        "../assets/css/style.css": "eef34e3d7aaf8b38233a78d9dc6545e5e0c9d00b09a3a6876d19f3e0e0af15b6",
+        "./fixtures/wave6-soc-reference.json": "4c88dbfb1e2e8bd48c7ad12608386fc2936591a06f229b2a7732092cdc295526",
+        "../data/col/soc.json": "97543b9b76be9e5cd894c2aa8b01e10ed0ae9389004e5ba44ca5408657cc0a3e",
+        "../data/index.json": "c0b3c5d0aaf7741196d62b025657736fdd38897150d36f72f47fad458b4d9c3d",
+        "./wave6-soc-native.mjs": "4ceabdc507e6dfed74ee1a2c44df3a460c4407d9d59b74196ddc2474587090b4",
+        "./wave6-soc-native-science.mjs": "a8d04244ca32ac7410eb54c6e2fbb0a4bb98d315b0c801acbc18a6ef1ebcfd75",
+        "./wave6-soc-native-cases.mjs": "7674dcd645850896a68f4f28e02b9d413615c8c68c3fdb684c2d5d373d93dd99",
+        "./wave6-soc-browser.shared.mjs": "4328a26f09770b9a3ada83a6d420cc9d7f4a13db612a1507fa002baf81cac6a6"
+      }
+    },
+    {
+      "status": "PASS",
+      "totals": {
+        "layouts": 16,
+        "actions": 408,
+        "shares": 196,
+        "invalid": 16,
+        "raw": 8,
+        "critical": 80,
+        "checks": 720,
+        "modelComparisons": 722749,
+        "domRangeRounding": 24
+      },
+      "rows": [
+        {
+          "id": 5,
+          "theme": "light",
+          "width": 320,
+          "criticalCases": 5,
+          "totals": {
+            "layouts": 1,
+            "actions": 30,
+            "shares": 14,
+            "invalid": 1,
+            "raw": 1,
+            "critical": 5,
+            "checks": 52,
+            "modelComparisons": 128056,
+            "domRangeRounding": 3
+          }
+        },
+        {
+          "id": 5,
+          "theme": "light",
+          "width": 1200,
+          "criticalCases": 5,
+          "totals": {
+            "layouts": 1,
+            "actions": 30,
+            "shares": 14,
+            "invalid": 1,
+            "raw": 1,
+            "critical": 5,
+            "checks": 52,
+            "modelComparisons": 128056,
+            "domRangeRounding": 3
+          }
+        },
+        {
+          "id": 5,
+          "theme": "dark",
+          "width": 320,
+          "criticalCases": 5,
+          "totals": {
+            "layouts": 1,
+            "actions": 30,
+            "shares": 14,
+            "invalid": 1,
+            "raw": 1,
+            "critical": 5,
+            "checks": 52,
+            "modelComparisons": 128056,
+            "domRangeRounding": 3
+          }
+        },
+        {
+          "id": 5,
+          "theme": "dark",
+          "width": 1200,
+          "criticalCases": 5,
+          "totals": {
+            "layouts": 1,
+            "actions": 30,
+            "shares": 14,
+            "invalid": 1,
+            "raw": 1,
+            "critical": 5,
+            "checks": 52,
+            "modelComparisons": 128056,
+            "domRangeRounding": 3
+          }
+        },
+        {
+          "id": 6,
+          "theme": "light",
+          "width": 320,
+          "criticalCases": 5,
+          "totals": {
+            "layouts": 1,
+            "actions": 28,
+            "shares": 13,
+            "invalid": 1,
+            "raw": 0,
+            "critical": 5,
+            "checks": 48,
+            "modelComparisons": 11132,
+            "domRangeRounding": 0
+          }
+        },
+        {
+          "id": 6,
+          "theme": "light",
+          "width": 1200,
+          "criticalCases": 5,
+          "totals": {
+            "layouts": 1,
+            "actions": 28,
+            "shares": 13,
+            "invalid": 1,
+            "raw": 0,
+            "critical": 5,
+            "checks": 48,
+            "modelComparisons": 11132,
+            "domRangeRounding": 0
+          }
+        },
+        {
+          "id": 6,
+          "theme": "dark",
+          "width": 320,
+          "criticalCases": 5,
+          "totals": {
+            "layouts": 1,
+            "actions": 28,
+            "shares": 13,
+            "invalid": 1,
+            "raw": 0,
+            "critical": 5,
+            "checks": 48,
+            "modelComparisons": 11132,
+            "domRangeRounding": 0
+          }
+        },
+        {
+          "id": 6,
+          "theme": "dark",
+          "width": 1200,
+          "criticalCases": 5,
+          "totals": {
+            "layouts": 1,
+            "actions": 28,
+            "shares": 13,
+            "invalid": 1,
+            "raw": 0,
+            "critical": 5,
+            "checks": 48,
+            "modelComparisons": 11132,
+            "domRangeRounding": 0
+          }
+        },
+        {
+          "id": 7,
+          "theme": "light",
+          "width": 320,
+          "criticalCases": 6,
+          "totals": {
+            "layouts": 1,
+            "actions": 27,
+            "shares": 12,
+            "invalid": 1,
+            "raw": 1,
+            "critical": 6,
+            "checks": 47,
+            "modelComparisons": 40771,
+            "domRangeRounding": 3
+          }
+        },
+        {
+          "id": 7,
+          "theme": "light",
+          "width": 1200,
+          "criticalCases": 6,
+          "totals": {
+            "layouts": 1,
+            "actions": 27,
+            "shares": 12,
+            "invalid": 1,
+            "raw": 1,
+            "critical": 6,
+            "checks": 47,
+            "modelComparisons": 40918,
+            "domRangeRounding": 3
+          }
+        },
+        {
+          "id": 7,
+          "theme": "dark",
+          "width": 320,
+          "criticalCases": 6,
+          "totals": {
+            "layouts": 1,
+            "actions": 27,
+            "shares": 12,
+            "invalid": 1,
+            "raw": 1,
+            "critical": 6,
+            "checks": 47,
+            "modelComparisons": 40750,
+            "domRangeRounding": 3
+          }
+        },
+        {
+          "id": 7,
+          "theme": "dark",
+          "width": 1200,
+          "criticalCases": 6,
+          "totals": {
+            "layouts": 1,
+            "actions": 27,
+            "shares": 12,
+            "invalid": 1,
+            "raw": 1,
+            "critical": 6,
+            "checks": 47,
+            "modelComparisons": 40918,
+            "domRangeRounding": 3
+          }
+        },
+        {
+          "id": 8,
+          "theme": "light",
+          "width": 320,
+          "criticalCases": 4,
+          "totals": {
+            "layouts": 1,
+            "actions": 17,
+            "shares": 10,
+            "invalid": 1,
+            "raw": 0,
+            "critical": 4,
+            "checks": 33,
+            "modelComparisons": 660,
+            "domRangeRounding": 0
+          }
+        },
+        {
+          "id": 8,
+          "theme": "light",
+          "width": 1200,
+          "criticalCases": 4,
+          "totals": {
+            "layouts": 1,
+            "actions": 17,
+            "shares": 10,
+            "invalid": 1,
+            "raw": 0,
+            "critical": 4,
+            "checks": 33,
+            "modelComparisons": 660,
+            "domRangeRounding": 0
+          }
+        },
+        {
+          "id": 8,
+          "theme": "dark",
+          "width": 320,
+          "criticalCases": 4,
+          "totals": {
+            "layouts": 1,
+            "actions": 17,
+            "shares": 10,
+            "invalid": 1,
+            "raw": 0,
+            "critical": 4,
+            "checks": 33,
+            "modelComparisons": 660,
+            "domRangeRounding": 0
+          }
+        },
+        {
+          "id": 8,
+          "theme": "dark",
+          "width": 1200,
+          "criticalCases": 4,
+          "totals": {
+            "layouts": 1,
+            "actions": 17,
+            "shares": 10,
+            "invalid": 1,
+            "raw": 0,
+            "critical": 4,
+            "checks": 33,
+            "modelComparisons": 660,
+            "domRangeRounding": 0
+          }
+        }
+      ],
+      "errors": [],
+      "sourceHashes": {
+        "../content/soc/ch06.exact.shared.js": "a31e523d90b3d66b7d82bbe2983a8a4d00b5082625d7905f869813c4b1ea050e",
+        "../content/soc/ch06.js": "6eb1da914ca7e34a63de5ff650a3c9bfde3bcc91cce9edf19269a0e1ca2db161",
+        "../content/soc/ch06.shared.js": "3fdafdf835abbc89233bb1b317ee2797b24866f252a12c1ec5a7d969a6842038",
+        "../content/soc/ch06.viz.js": "c93a77c75984b4e289b44e013d437fc29428c278337d6a409f571ce3df72f095",
+        "../content/soc/syllabus.js": "ede78aab5bf6bbcffa5d706e3f203353ec4a7301d18bd8704c2ea7b034b2c98c",
+        "../assets/js/viz/core.js": "a6fa1753d9d9e8b9a05a7161fffc58dfd53b27002d9d393a3266aeb96515fe73",
+        "../assets/js/viz/math.js": "439c335e1cc47907bc72bb76559216aa093be4710e0589f41c70192729eb223e",
+        "../assets/js/share-state.js": "13c6a9ac1237d566fc5d79c89e0f4d3029aa8c2817d2c08247a02b1b053a59b1",
+        "../assets/js/app.js": "2f5762e6bf80723a5cb8691f8b19c552dd1d731ab998d5bfcdb27828e2e9a6ce",
+        "../assets/css/style.css": "eef34e3d7aaf8b38233a78d9dc6545e5e0c9d00b09a3a6876d19f3e0e0af15b6",
+        "./fixtures/wave6-soc-reference.json": "4c88dbfb1e2e8bd48c7ad12608386fc2936591a06f229b2a7732092cdc295526",
+        "../data/col/soc.json": "97543b9b76be9e5cd894c2aa8b01e10ed0ae9389004e5ba44ca5408657cc0a3e",
+        "../data/index.json": "c0b3c5d0aaf7741196d62b025657736fdd38897150d36f72f47fad458b4d9c3d",
+        "./wave6-soc-native.mjs": "4ceabdc507e6dfed74ee1a2c44df3a460c4407d9d59b74196ddc2474587090b4",
+        "./wave6-soc-native-science.mjs": "a8d04244ca32ac7410eb54c6e2fbb0a4bb98d315b0c801acbc18a6ef1ebcfd75",
+        "./wave6-soc-native-cases.mjs": "7674dcd645850896a68f4f28e02b9d413615c8c68c3fdb684c2d5d373d93dd99",
+        "./wave6-soc-browser.shared.mjs": "4328a26f09770b9a3ada83a6d420cc9d7f4a13db612a1507fa002baf81cac6a6"
+      }
+    }
+  ],
+  "logs": [
+    {
+      "path": "/workspace/scratch/wave6-soc-research/native-full-v2-a.log",
+      "sha256": "2b3852c0116cfe4e56eec38fcc6d4b9c283cadf78014051af778e4cc8c262a7c"
+    },
+    {
+      "path": "/workspace/scratch/wave6-soc-research/native-full-v2-b.log",
+      "sha256": "f9376360eaa3e3bd834417f5bc3ceee7f40655c55e5833c170c7dd820c09fd41"
+    }
+  ],
+  "domRangeBudget": "Four ULPs only for DOM range-thumb serialization; saved original binary64 values and model inputs remain exact.48observations. No mathematical tolerance widened.",
+  "invalidStatePolicy": "Entire invalid saved component state falls back to fresh defaults.",
+  "allOwnedProcessesExplicitlyPolledClosed": true
+}

@@ -1,0 +1,105 @@
+{
+  "status": "author-verified; independent acceptance remains36",
+  "availability": {
+    "before": 895,
+    "after": 903,
+    "goal": 1057,
+    "historicalIndependentlyAccepted": 36,
+    "additionalAuthorVerified": 867
+  },
+  "lessonCount": 8,
+  "purposeBuiltPanels": 23,
+  "independentCases": 756,
+  "families": 7,
+  "totalReferenceComparisons": 536058,
+  "focused": {
+    "passed": 45,
+    "failed": 0,
+    "skipped": 0,
+    "cancelled": 0,
+    "durationMs": 1553.031434,
+    "log": {
+      "path": "/workspace/scratch/wave6-soc-research/focused-v4.log",
+      "sha256": "84626058493f750a6464343f150b51fa0b9b3072a035fb2e2a4a6709ed5cdb7c"
+    }
+  },
+  "strictBuild": {
+    "written": 8618,
+    "planned": 4956,
+    "chapters": 594,
+    "collections": 85,
+    "errors": 0,
+    "warnings": 0,
+    "log": {
+      "path": "/workspace/scratch/wave6-soc-research/draft-build-v4.log",
+      "sha256": "33b99b117685404fa239ac19ec4451126e824736b712d2d7d02d07dec59cc89c"
+    }
+  },
+  "globalStatic": {
+    "items": 8555,
+    "errors": 0,
+    "warnings": 0,
+    "log": {
+      "path": "/workspace/scratch/wave6-soc-research/draft-static-v4.log",
+      "sha256": "2bc035fdcb564d0d77a54bb5b68866c66237c19dd23d1fbdcdc483662d934f53"
+    }
+  },
+  "productionThemes": {
+    "light": {
+      "run": 8,
+      "failed": 0,
+      "texBlankWarnings": 0,
+      "qualityWarnings": 0,
+      "log": {
+        "path": "/workspace/scratch/wave6-soc-research/final-production-v4-light.log",
+        "sha256": "74078e313757dc286b4d149af28ae32cdd18071eb098d58985a38d771e40b99c"
+      }
+    },
+    "dark": {
+      "run": 8,
+      "failed": 0,
+      "texBlankWarnings": 0,
+      "qualityWarnings": 0,
+      "log": {
+        "path": "/workspace/scratch/wave6-soc-research/final-production-v4-dark.log",
+        "sha256": "74078e313757dc286b4d149af28ae32cdd18071eb098d58985a38d771e40b99c"
+      }
+    }
+  },
+  "native": {
+    "layouts": 32,
+    "actions": 876,
+    "shares": 416,
+    "invalid": 32,
+    "raw": 12,
+    "critical": 160,
+    "checks": 1516,
+    "modelComparisons": 3307963,
+    "domRangeRounding": 48
+  },
+  "visual": {
+    "targets": 284,
+    "excludingSeparateNativeDefaults": 268,
+    "personallyViewedSheets": 85,
+    "missing": 0
+  },
+  "preservation": {
+    "rawPinsExact": 520,
+    "syllabusOnlyChapter6RefsPic": true,
+    "frozenMetadataAndPropertyPresenceExact": true
+  },
+  "latestFullGlobalExport": {
+    "commit": "32b07974eb5c7cb9840459250c5c6d4febbaab0a",
+    "tests": 5006,
+    "productionRoutesPerTheme": 272,
+    "scope": "Completed BEHAV/PSYCH batch; predates SOC6. No fresh full-suite claim forSOC. Next meaningful chapter batch needs exact-export integration."
+  },
+  "readingSnapshot": {
+    "entries": 8610,
+    "aliases": 76,
+    "SOC6Reconciled": false
+  },
+  "allOwnedProcessesExplicitlyPolledClosed": true,
+  "continuousGoalActive": true,
+  "next": "POLSCI7 eleven; do not stop at a chapter, commit, integration or wave."
+}
