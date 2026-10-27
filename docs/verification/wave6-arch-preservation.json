@@ -1,0 +1,13 @@
+{
+  "status": "PASS",
+  "baseCommit": "bcd303dd9075ba4f74b561a9de9fa7eeda78f7df",
+  "rawPinsRecorded": 894,
+  "rawPriorFilesByteExact": 892,
+  "soleProductException": "ARCH syllabus chapter6 researched refs/pic; complete semantic restoration to whole baseline checked by focused tests",
+  "historicalGuard": "All23original ARCH5groups/assertions retained; sole metadata-restoration adapter; whole original file reconstructs byte-exact",
+  "wholeHistoricalTestSHA256": "bb9fc919bee831e0143bd64c81c9cba766285edcbb7ce6c94e6acf9ee1d541ca",
+  "frozenItems": 11,
+  "metadataAndPropertyAbsence": "Complete names/kinds/ordered dependencies/source flags/Paper metadata/introductions and absence exact in focused tests",
+  "readingSnapshots": "No edits during ARCH author chapter; integration remains pending after a meaningful chapter batch",
+  "allOwnedSessionsExplicitlyClosed": true
+}

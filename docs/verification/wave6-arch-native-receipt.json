@@ -1,0 +1,1055 @@
+{
+  "status": "PASS; effective current44layouts, each counted once",
+  "effective": {
+    "layouts": 44,
+    "actions": 1724,
+    "shares": 572,
+    "trustedShares": 572,
+    "invalid": 212,
+    "raw": 156,
+    "critical": 184,
+    "checks": 2360,
+    "modelComparisons": 3354704,
+    "geometryComparisons": 1815776,
+    "projectionComparisons": 1303288,
+    "paintedPixelAudits": 7080,
+    "domRangeRounding": 274,
+    "cameraActions": 40
+  },
+  "rows": [
+    {
+      "label": "arch-6.1-light-320",
+      "counts": {
+        "layouts": 1,
+        "actions": 32,
+        "shares": 11,
+        "trustedShares": 11,
+        "invalid": 4,
+        "raw": 3,
+        "critical": 4,
+        "checks": 45,
+        "modelComparisons": 7515,
+        "geometryComparisons": 6795,
+        "projectionComparisons": 12326,
+        "paintedPixelAudits": 135,
+        "domRangeRounding": 3,
+        "cameraActions": 1
+      },
+      "sourceRun": "native-polished-light"
+    },
+    {
+      "label": "arch-6.1-light-1200",
+      "counts": {
+        "layouts": 1,
+        "actions": 32,
+        "shares": 11,
+        "trustedShares": 11,
+        "invalid": 4,
+        "raw": 3,
+        "critical": 4,
+        "checks": 45,
+        "modelComparisons": 7515,
+        "geometryComparisons": 6795,
+        "projectionComparisons": 12326,
+        "paintedPixelAudits": 135,
+        "domRangeRounding": 8,
+        "cameraActions": 1
+      },
+      "sourceRun": "native-polished-light"
+    },
+    {
+      "label": "arch-6.2-light-320",
+      "counts": {
+        "layouts": 1,
+        "actions": 37,
+        "shares": 12,
+        "trustedShares": 12,
+        "invalid": 5,
+        "raw": 4,
+        "critical": 3,
+        "checks": 51,
+        "modelComparisons": 47940,
+        "geometryComparisons": 46767,
+        "projectionComparisons": 30294,
+        "paintedPixelAudits": 153,
+        "domRangeRounding": 9,
+        "cameraActions": 1
+      },
+      "sourceRun": "native-polished-light"
+    },
+    {
+      "label": "arch-6.2-light-1200",
+      "counts": {
+        "layouts": 1,
+        "actions": 37,
+        "shares": 12,
+        "trustedShares": 12,
+        "invalid": 5,
+        "raw": 4,
+        "critical": 3,
+        "checks": 51,
+        "modelComparisons": 47940,
+        "geometryComparisons": 46767,
+        "projectionComparisons": 30294,
+        "paintedPixelAudits": 153,
+        "domRangeRounding": 9,
+        "cameraActions": 1
+      },
+      "sourceRun": "native-polished-light"
+    },
+    {
+      "label": "arch-6.4-light-320",
+      "counts": {
+        "layouts": 1,
+        "actions": 41,
+        "shares": 14,
+        "trustedShares": 14,
+        "invalid": 5,
+        "raw": 4,
+        "critical": 5,
+        "checks": 57,
+        "modelComparisons": 49476,
+        "geometryComparisons": 47937,
+        "projectionComparisons": 50274,
+        "paintedPixelAudits": 171,
+        "domRangeRounding": 9,
+        "cameraActions": 1
+      },
+      "sourceRun": "native-polished-light"
+    },
+    {
+      "label": "arch-6.4-light-1200",
+      "counts": {
+        "layouts": 1,
+        "actions": 41,
+        "shares": 14,
+        "trustedShares": 14,
+        "invalid": 5,
+        "raw": 4,
+        "critical": 5,
+        "checks": 57,
+        "modelComparisons": 49476,
+        "geometryComparisons": 47937,
+        "projectionComparisons": 50274,
+        "paintedPixelAudits": 171,
+        "domRangeRounding": 9,
+        "cameraActions": 1
+      },
+      "sourceRun": "native-polished-light"
+    },
+    {
+      "label": "arch-6.5-light-320",
+      "counts": {
+        "layouts": 1,
+        "actions": 37,
+        "shares": 12,
+        "trustedShares": 12,
+        "invalid": 5,
+        "raw": 3,
+        "critical": 4,
+        "checks": 51,
+        "modelComparisons": 46053,
+        "geometryComparisons": 25398,
+        "projectionComparisons": 23112,
+        "paintedPixelAudits": 153,
+        "domRangeRounding": 3,
+        "cameraActions": 1
+      },
+      "sourceRun": "native-polished-light"
+    },
+    {
+      "label": "arch-6.5-light-1200",
+      "counts": {
+        "layouts": 1,
+        "actions": 37,
+        "shares": 12,
+        "trustedShares": 12,
+        "invalid": 5,
+        "raw": 3,
+        "critical": 4,
+        "checks": 51,
+        "modelComparisons": 46053,
+        "geometryComparisons": 25398,
+        "projectionComparisons": 23112,
+        "paintedPixelAudits": 153,
+        "domRangeRounding": 3,
+        "cameraActions": 1
+      },
+      "sourceRun": "native-polished-light"
+    },
+    {
+      "label": "arch-6.6-light-320",
+      "counts": {
+        "layouts": 1,
+        "actions": 40,
+        "shares": 12,
+        "trustedShares": 12,
+        "invalid": 6,
+        "raw": 4,
+        "critical": 2,
+        "checks": 54,
+        "modelComparisons": 35532,
+        "geometryComparisons": 18900,
+        "projectionComparisons": 12528,
+        "paintedPixelAudits": 162,
+        "domRangeRounding": 6,
+        "cameraActions": 1
+      },
+      "sourceRun": "native-polished-light"
+    },
+    {
+      "label": "arch-6.6-light-1200",
+      "counts": {
+        "layouts": 1,
+        "actions": 40,
+        "shares": 12,
+        "trustedShares": 12,
+        "invalid": 6,
+        "raw": 4,
+        "critical": 2,
+        "checks": 54,
+        "modelComparisons": 35532,
+        "geometryComparisons": 18900,
+        "projectionComparisons": 12528,
+        "paintedPixelAudits": 162,
+        "domRangeRounding": 6,
+        "cameraActions": 1
+      },
+      "sourceRun": "native-polished-light"
+    },
+    {
+      "label": "arch-6.8-light-320",
+      "counts": {
+        "layouts": 1,
+        "actions": 30,
+        "shares": 10,
+        "trustedShares": 10,
+        "invalid": 3,
+        "raw": 2,
+        "critical": 3,
+        "checks": 40,
+        "modelComparisons": 82600,
+        "geometryComparisons": 58880,
+        "projectionComparisons": 35520,
+        "paintedPixelAudits": 120,
+        "domRangeRounding": 3,
+        "cameraActions": 1
+      },
+      "sourceRun": "native-polished-light"
+    },
+    {
+      "label": "arch-6.8-light-1200",
+      "counts": {
+        "layouts": 1,
+        "actions": 30,
+        "shares": 10,
+        "trustedShares": 10,
+        "invalid": 3,
+        "raw": 2,
+        "critical": 3,
+        "checks": 40,
+        "modelComparisons": 82600,
+        "geometryComparisons": 58880,
+        "projectionComparisons": 35520,
+        "paintedPixelAudits": 120,
+        "domRangeRounding": 3,
+        "cameraActions": 1
+      },
+      "sourceRun": "native-polished-light"
+    },
+    {
+      "label": "arch-6.9-light-320",
+      "counts": {
+        "layouts": 1,
+        "actions": 41,
+        "shares": 14,
+        "trustedShares": 14,
+        "invalid": 5,
+        "raw": 4,
+        "critical": 5,
+        "checks": 57,
+        "modelComparisons": 16416,
+        "geometryComparisons": 14706,
+        "projectionComparisons": 3420,
+        "paintedPixelAudits": 171,
+        "domRangeRounding": 3,
+        "cameraActions": 1
+      },
+      "sourceRun": "native-polished-light"
+    },
+    {
+      "label": "arch-6.9-light-1200",
+      "counts": {
+        "layouts": 1,
+        "actions": 41,
+        "shares": 14,
+        "trustedShares": 14,
+        "invalid": 5,
+        "raw": 4,
+        "critical": 5,
+        "checks": 57,
+        "modelComparisons": 16416,
+        "geometryComparisons": 14706,
+        "projectionComparisons": 3420,
+        "paintedPixelAudits": 171,
+        "domRangeRounding": 3,
+        "cameraActions": 1
+      },
+      "sourceRun": "native-polished-light"
+    },
+    {
+      "label": "arch-6.10-light-320",
+      "counts": {
+        "layouts": 1,
+        "actions": 58,
+        "shares": 21,
+        "trustedShares": 21,
+        "invalid": 4,
+        "raw": 3,
+        "critical": 10,
+        "checks": 77,
+        "modelComparisons": 342564,
+        "geometryComparisons": 124607,
+        "projectionComparisons": 66578,
+        "paintedPixelAudits": 231,
+        "domRangeRounding": 6,
+        "cameraActions": 1
+      },
+      "sourceRun": "native-polished-light"
+    },
+    {
+      "label": "arch-6.10-light-1200",
+      "counts": {
+        "layouts": 1,
+        "actions": 58,
+        "shares": 21,
+        "trustedShares": 21,
+        "invalid": 4,
+        "raw": 3,
+        "critical": 10,
+        "checks": 77,
+        "modelComparisons": 342564,
+        "geometryComparisons": 124607,
+        "projectionComparisons": 66578,
+        "paintedPixelAudits": 231,
+        "domRangeRounding": 6,
+        "cameraActions": 1
+      },
+      "sourceRun": "native-polished-light"
+    },
+    {
+      "label": "arch-6.1-dark-320",
+      "counts": {
+        "layouts": 1,
+        "actions": 32,
+        "shares": 11,
+        "trustedShares": 11,
+        "invalid": 4,
+        "raw": 3,
+        "critical": 4,
+        "checks": 45,
+        "modelComparisons": 7515,
+        "geometryComparisons": 6795,
+        "projectionComparisons": 12326,
+        "paintedPixelAudits": 135,
+        "domRangeRounding": 3,
+        "cameraActions": 1
+      },
+      "sourceRun": "native-polished-dark"
+    },
+    {
+      "label": "arch-6.1-dark-1200",
+      "counts": {
+        "layouts": 1,
+        "actions": 32,
+        "shares": 11,
+        "trustedShares": 11,
+        "invalid": 4,
+        "raw": 3,
+        "critical": 4,
+        "checks": 45,
+        "modelComparisons": 7515,
+        "geometryComparisons": 6795,
+        "projectionComparisons": 12326,
+        "paintedPixelAudits": 135,
+        "domRangeRounding": 8,
+        "cameraActions": 1
+      },
+      "sourceRun": "native-polished-dark"
+    },
+    {
+      "label": "arch-6.2-dark-320",
+      "counts": {
+        "layouts": 1,
+        "actions": 37,
+        "shares": 12,
+        "trustedShares": 12,
+        "invalid": 5,
+        "raw": 4,
+        "critical": 3,
+        "checks": 51,
+        "modelComparisons": 47940,
+        "geometryComparisons": 46767,
+        "projectionComparisons": 30294,
+        "paintedPixelAudits": 153,
+        "domRangeRounding": 9,
+        "cameraActions": 1
+      },
+      "sourceRun": "native-polished-dark"
+    },
+    {
+      "label": "arch-6.2-dark-1200",
+      "counts": {
+        "layouts": 1,
+        "actions": 37,
+        "shares": 12,
+        "trustedShares": 12,
+        "invalid": 5,
+        "raw": 4,
+        "critical": 3,
+        "checks": 51,
+        "modelComparisons": 47940,
+        "geometryComparisons": 46767,
+        "projectionComparisons": 30294,
+        "paintedPixelAudits": 153,
+        "domRangeRounding": 9,
+        "cameraActions": 1
+      },
+      "sourceRun": "native-polished-dark"
+    },
+    {
+      "label": "arch-6.4-dark-320",
+      "counts": {
+        "layouts": 1,
+        "actions": 41,
+        "shares": 14,
+        "trustedShares": 14,
+        "invalid": 5,
+        "raw": 4,
+        "critical": 5,
+        "checks": 57,
+        "modelComparisons": 49476,
+        "geometryComparisons": 47937,
+        "projectionComparisons": 50274,
+        "paintedPixelAudits": 171,
+        "domRangeRounding": 9,
+        "cameraActions": 1
+      },
+      "sourceRun": "native-polished-dark"
+    },
+    {
+      "label": "arch-6.4-dark-1200",
+      "counts": {
+        "layouts": 1,
+        "actions": 41,
+        "shares": 14,
+        "trustedShares": 14,
+        "invalid": 5,
+        "raw": 4,
+        "critical": 5,
+        "checks": 57,
+        "modelComparisons": 49476,
+        "geometryComparisons": 47937,
+        "projectionComparisons": 50274,
+        "paintedPixelAudits": 171,
+        "domRangeRounding": 9,
+        "cameraActions": 1
+      },
+      "sourceRun": "native-polished-dark"
+    },
+    {
+      "label": "arch-6.5-dark-320",
+      "counts": {
+        "layouts": 1,
+        "actions": 37,
+        "shares": 12,
+        "trustedShares": 12,
+        "invalid": 5,
+        "raw": 3,
+        "critical": 4,
+        "checks": 51,
+        "modelComparisons": 46053,
+        "geometryComparisons": 25398,
+        "projectionComparisons": 23112,
+        "paintedPixelAudits": 153,
+        "domRangeRounding": 3,
+        "cameraActions": 1
+      },
+      "sourceRun": "native-polished-dark"
+    },
+    {
+      "label": "arch-6.5-dark-1200",
+      "counts": {
+        "layouts": 1,
+        "actions": 37,
+        "shares": 12,
+        "trustedShares": 12,
+        "invalid": 5,
+        "raw": 3,
+        "critical": 4,
+        "checks": 51,
+        "modelComparisons": 46053,
+        "geometryComparisons": 25398,
+        "projectionComparisons": 23112,
+        "paintedPixelAudits": 153,
+        "domRangeRounding": 3,
+        "cameraActions": 1
+      },
+      "sourceRun": "native-polished-dark"
+    },
+    {
+      "label": "arch-6.6-dark-320",
+      "counts": {
+        "layouts": 1,
+        "actions": 40,
+        "shares": 12,
+        "trustedShares": 12,
+        "invalid": 6,
+        "raw": 4,
+        "critical": 2,
+        "checks": 54,
+        "modelComparisons": 35532,
+        "geometryComparisons": 18900,
+        "projectionComparisons": 12528,
+        "paintedPixelAudits": 162,
+        "domRangeRounding": 6,
+        "cameraActions": 1
+      },
+      "sourceRun": "native-polished-dark"
+    },
+    {
+      "label": "arch-6.6-dark-1200",
+      "counts": {
+        "layouts": 1,
+        "actions": 40,
+        "shares": 12,
+        "trustedShares": 12,
+        "invalid": 6,
+        "raw": 4,
+        "critical": 2,
+        "checks": 54,
+        "modelComparisons": 35532,
+        "geometryComparisons": 18900,
+        "projectionComparisons": 12528,
+        "paintedPixelAudits": 162,
+        "domRangeRounding": 6,
+        "cameraActions": 1
+      },
+      "sourceRun": "native-polished-dark"
+    },
+    {
+      "label": "arch-6.8-dark-320",
+      "counts": {
+        "layouts": 1,
+        "actions": 30,
+        "shares": 10,
+        "trustedShares": 10,
+        "invalid": 3,
+        "raw": 2,
+        "critical": 3,
+        "checks": 40,
+        "modelComparisons": 82600,
+        "geometryComparisons": 58880,
+        "projectionComparisons": 35520,
+        "paintedPixelAudits": 120,
+        "domRangeRounding": 3,
+        "cameraActions": 1
+      },
+      "sourceRun": "native-polished-dark"
+    },
+    {
+      "label": "arch-6.8-dark-1200",
+      "counts": {
+        "layouts": 1,
+        "actions": 30,
+        "shares": 10,
+        "trustedShares": 10,
+        "invalid": 3,
+        "raw": 2,
+        "critical": 3,
+        "checks": 40,
+        "modelComparisons": 82600,
+        "geometryComparisons": 58880,
+        "projectionComparisons": 35520,
+        "paintedPixelAudits": 120,
+        "domRangeRounding": 3,
+        "cameraActions": 1
+      },
+      "sourceRun": "native-polished-dark"
+    },
+    {
+      "label": "arch-6.9-dark-320",
+      "counts": {
+        "layouts": 1,
+        "actions": 41,
+        "shares": 14,
+        "trustedShares": 14,
+        "invalid": 5,
+        "raw": 4,
+        "critical": 5,
+        "checks": 57,
+        "modelComparisons": 16416,
+        "geometryComparisons": 14706,
+        "projectionComparisons": 3420,
+        "paintedPixelAudits": 171,
+        "domRangeRounding": 3,
+        "cameraActions": 1
+      },
+      "sourceRun": "native-polished-dark"
+    },
+    {
+      "label": "arch-6.9-dark-1200",
+      "counts": {
+        "layouts": 1,
+        "actions": 41,
+        "shares": 14,
+        "trustedShares": 14,
+        "invalid": 5,
+        "raw": 4,
+        "critical": 5,
+        "checks": 57,
+        "modelComparisons": 16416,
+        "geometryComparisons": 14706,
+        "projectionComparisons": 3420,
+        "paintedPixelAudits": 171,
+        "domRangeRounding": 3,
+        "cameraActions": 1
+      },
+      "sourceRun": "native-polished-dark"
+    },
+    {
+      "label": "arch-6.10-dark-320",
+      "counts": {
+        "layouts": 1,
+        "actions": 58,
+        "shares": 21,
+        "trustedShares": 21,
+        "invalid": 4,
+        "raw": 3,
+        "critical": 10,
+        "checks": 77,
+        "modelComparisons": 342564,
+        "geometryComparisons": 124607,
+        "projectionComparisons": 66578,
+        "paintedPixelAudits": 231,
+        "domRangeRounding": 6,
+        "cameraActions": 1
+      },
+      "sourceRun": "native-polished-dark"
+    },
+    {
+      "label": "arch-6.10-dark-1200",
+      "counts": {
+        "layouts": 1,
+        "actions": 58,
+        "shares": 21,
+        "trustedShares": 21,
+        "invalid": 4,
+        "raw": 3,
+        "critical": 10,
+        "checks": 77,
+        "modelComparisons": 342564,
+        "geometryComparisons": 124607,
+        "projectionComparisons": 66578,
+        "paintedPixelAudits": 231,
+        "domRangeRounding": 6,
+        "cameraActions": 1
+      },
+      "sourceRun": "native-polished-dark"
+    },
+    {
+      "label": "arch-6.3-light-320",
+      "counts": {
+        "layouts": 1,
+        "actions": 44,
+        "shares": 14,
+        "trustedShares": 14,
+        "invalid": 6,
+        "raw": 5,
+        "critical": 3,
+        "checks": 60,
+        "modelComparisons": 47100,
+        "geometryComparisons": 46020,
+        "projectionComparisons": 70680,
+        "paintedPixelAudits": 180,
+        "domRangeRounding": 9,
+        "cameraActions": 1
+      },
+      "sourceRun": "native-pressure-v8"
+    },
+    {
+      "label": "arch-6.3-light-1200",
+      "counts": {
+        "layouts": 1,
+        "actions": 44,
+        "shares": 14,
+        "trustedShares": 14,
+        "invalid": 6,
+        "raw": 5,
+        "critical": 3,
+        "checks": 60,
+        "modelComparisons": 47100,
+        "geometryComparisons": 46020,
+        "projectionComparisons": 70680,
+        "paintedPixelAudits": 180,
+        "domRangeRounding": 9,
+        "cameraActions": 1
+      },
+      "sourceRun": "native-pressure-v8"
+    },
+    {
+      "label": "arch-6.3-dark-320",
+      "counts": {
+        "layouts": 1,
+        "actions": 44,
+        "shares": 14,
+        "trustedShares": 14,
+        "invalid": 6,
+        "raw": 5,
+        "critical": 3,
+        "checks": 60,
+        "modelComparisons": 47100,
+        "geometryComparisons": 46020,
+        "projectionComparisons": 70680,
+        "paintedPixelAudits": 180,
+        "domRangeRounding": 9,
+        "cameraActions": 1
+      },
+      "sourceRun": "native-pressure-v8"
+    },
+    {
+      "label": "arch-6.3-dark-1200",
+      "counts": {
+        "layouts": 1,
+        "actions": 44,
+        "shares": 14,
+        "trustedShares": 14,
+        "invalid": 6,
+        "raw": 5,
+        "critical": 3,
+        "checks": 60,
+        "modelComparisons": 47100,
+        "geometryComparisons": 46020,
+        "projectionComparisons": 70680,
+        "paintedPixelAudits": 180,
+        "domRangeRounding": 9,
+        "cameraActions": 1
+      },
+      "sourceRun": "native-pressure-v8"
+    },
+    {
+      "label": "arch-6.7-light-320",
+      "counts": {
+        "layouts": 1,
+        "actions": 42,
+        "shares": 13,
+        "trustedShares": 13,
+        "invalid": 6,
+        "raw": 4,
+        "critical": 3,
+        "checks": 57,
+        "modelComparisons": 145462,
+        "geometryComparisons": 46590,
+        "projectionComparisons": 21090,
+        "paintedPixelAudits": 171,
+        "domRangeRounding": 9,
+        "cameraActions": 1
+      },
+      "sourceRun": "native-relaxation-v12"
+    },
+    {
+      "label": "arch-6.7-light-1200",
+      "counts": {
+        "layouts": 1,
+        "actions": 42,
+        "shares": 13,
+        "trustedShares": 13,
+        "invalid": 6,
+        "raw": 4,
+        "critical": 3,
+        "checks": 57,
+        "modelComparisons": 145910,
+        "geometryComparisons": 46674,
+        "projectionComparisons": 21090,
+        "paintedPixelAudits": 171,
+        "domRangeRounding": 9,
+        "cameraActions": 1
+      },
+      "sourceRun": "native-relaxation-v12"
+    },
+    {
+      "label": "arch-6.7-dark-320",
+      "counts": {
+        "layouts": 1,
+        "actions": 42,
+        "shares": 13,
+        "trustedShares": 13,
+        "invalid": 6,
+        "raw": 4,
+        "critical": 3,
+        "checks": 57,
+        "modelComparisons": 145462,
+        "geometryComparisons": 46590,
+        "projectionComparisons": 21090,
+        "paintedPixelAudits": 171,
+        "domRangeRounding": 9,
+        "cameraActions": 1
+      },
+      "sourceRun": "native-relaxation-v12"
+    },
+    {
+      "label": "arch-6.7-dark-1200",
+      "counts": {
+        "layouts": 1,
+        "actions": 42,
+        "shares": 13,
+        "trustedShares": 13,
+        "invalid": 6,
+        "raw": 4,
+        "critical": 3,
+        "checks": 57,
+        "modelComparisons": 145910,
+        "geometryComparisons": 46674,
+        "projectionComparisons": 21090,
+        "paintedPixelAudits": 171,
+        "domRangeRounding": 9,
+        "cameraActions": 1
+      },
+      "sourceRun": "native-relaxation-v12"
+    },
+    {
+      "label": "arch-6.11-light-320",
+      "counts": {
+        "layouts": 1,
+        "actions": 29,
+        "shares": 10,
+        "trustedShares": 10,
+        "invalid": 4,
+        "raw": 3,
+        "critical": 4,
+        "checks": 41,
+        "modelComparisons": 17794,
+        "geometryComparisons": 17302,
+        "projectionComparisons": 0,
+        "paintedPixelAudits": 123,
+        "domRangeRounding": 6,
+        "cameraActions": 0
+      },
+      "sourceRun": "native-sampling-v10"
+    },
+    {
+      "label": "arch-6.11-light-1200",
+      "counts": {
+        "layouts": 1,
+        "actions": 29,
+        "shares": 10,
+        "trustedShares": 10,
+        "invalid": 4,
+        "raw": 3,
+        "critical": 4,
+        "checks": 41,
+        "modelComparisons": 17794,
+        "geometryComparisons": 17302,
+        "projectionComparisons": 0,
+        "paintedPixelAudits": 123,
+        "domRangeRounding": 6,
+        "cameraActions": 0
+      },
+      "sourceRun": "native-sampling-v10"
+    },
+    {
+      "label": "arch-6.11-dark-320",
+      "counts": {
+        "layouts": 1,
+        "actions": 29,
+        "shares": 10,
+        "trustedShares": 10,
+        "invalid": 4,
+        "raw": 3,
+        "critical": 4,
+        "checks": 41,
+        "modelComparisons": 17794,
+        "geometryComparisons": 17302,
+        "projectionComparisons": 0,
+        "paintedPixelAudits": 123,
+        "domRangeRounding": 6,
+        "cameraActions": 0
+      },
+      "sourceRun": "native-sampling-v10"
+    },
+    {
+      "label": "arch-6.11-dark-1200",
+      "counts": {
+        "layouts": 1,
+        "actions": 29,
+        "shares": 10,
+        "trustedShares": 10,
+        "invalid": 4,
+        "raw": 3,
+        "critical": 4,
+        "checks": 41,
+        "modelComparisons": 17794,
+        "geometryComparisons": 17302,
+        "projectionComparisons": 0,
+        "paintedPixelAudits": 123,
+        "domRangeRounding": 6,
+        "cameraActions": 0
+      },
+      "sourceRun": "native-sampling-v10"
+    }
+  ],
+  "retainedCompleteRuns": [
+    {
+      "run": "native-polished-light",
+      "receipt": {
+        "path": "/workspace/scratch/wave6-arch-research/native-polished-light/receipt.json",
+        "bytes": 13914,
+        "sha256": "4eb04bfaf82e4cc204f2ed73796c9a52a79cda757f67060876cd25cf2ac4804a"
+      },
+      "totals": {
+        "layouts": 22,
+        "actions": 858,
+        "shares": 284,
+        "trustedShares": 284,
+        "invalid": 106,
+        "raw": 78,
+        "critical": 90,
+        "checks": 1174,
+        "modelComparisons": 1674748,
+        "geometryComparisons": 904900,
+        "projectionComparisons": 651164,
+        "paintedPixelAudits": 3522,
+        "domRangeRounding": 131,
+        "cameraActions": 20
+      }
+    },
+    {
+      "run": "native-polished-dark",
+      "receipt": {
+        "path": "/workspace/scratch/wave6-arch-research/native-polished-dark/receipt.json",
+        "bytes": 13892,
+        "sha256": "f614fd725604970aadc9ff2c16f32ef82ebc37c99d4a7fdde3d065e35aa04e92"
+      },
+      "totals": {
+        "layouts": 22,
+        "actions": 858,
+        "shares": 284,
+        "trustedShares": 284,
+        "invalid": 106,
+        "raw": 78,
+        "critical": 90,
+        "checks": 1174,
+        "modelComparisons": 1674748,
+        "geometryComparisons": 904900,
+        "projectionComparisons": 651164,
+        "paintedPixelAudits": 3522,
+        "domRangeRounding": 131,
+        "cameraActions": 20
+      }
+    },
+    {
+      "run": "native-pressure-v8",
+      "receipt": {
+        "path": "/workspace/scratch/wave6-arch-research/native-pressure-v8/receipt.json",
+        "bytes": 5566,
+        "sha256": "0af0bd834c720febed6301ddf5fa5ff58d288df8b29c94007374740e01c9cbe6"
+      },
+      "totals": {
+        "layouts": 4,
+        "actions": 176,
+        "shares": 56,
+        "trustedShares": 56,
+        "invalid": 24,
+        "raw": 20,
+        "critical": 12,
+        "checks": 240,
+        "modelComparisons": 188400,
+        "geometryComparisons": 184080,
+        "projectionComparisons": 282720,
+        "paintedPixelAudits": 720,
+        "domRangeRounding": 36,
+        "cameraActions": 4
+      }
+    },
+    {
+      "run": "native-relaxation-v12",
+      "receipt": {
+        "path": "/workspace/scratch/wave6-arch-research/native-relaxation-v12/receipt.json",
+        "bytes": 5569,
+        "sha256": "8f9c6efce04b7e09737b73b09233dc66678387aaf3790ccabe0e5706df39bccc"
+      },
+      "totals": {
+        "layouts": 4,
+        "actions": 168,
+        "shares": 52,
+        "trustedShares": 52,
+        "invalid": 24,
+        "raw": 16,
+        "critical": 12,
+        "checks": 228,
+        "modelComparisons": 582744,
+        "geometryComparisons": 186528,
+        "projectionComparisons": 84360,
+        "paintedPixelAudits": 684,
+        "domRangeRounding": 36,
+        "cameraActions": 4
+      }
+    },
+    {
+      "run": "native-sampling-v10",
+      "receipt": {
+        "path": "/workspace/scratch/wave6-arch-research/native-sampling-v10/receipt.json",
+        "bytes": 5547,
+        "sha256": "342af8c96ba02d3c10808b3e96e52adadc7dc03208d6ea7a0c467ac0cdfab09d"
+      },
+      "totals": {
+        "layouts": 4,
+        "actions": 116,
+        "shares": 40,
+        "trustedShares": 40,
+        "invalid": 16,
+        "raw": 12,
+        "critical": 16,
+        "checks": 164,
+        "modelComparisons": 71176,
+        "geometryComparisons": 69208,
+        "projectionComparisons": 0,
+        "paintedPixelAudits": 492,
+        "domRangeRounding": 24,
+        "cameraActions": 0
+      }
+    }
+  ],
+  "secondaryCamera": {
+    "totals": {
+      "layouts": 8,
+      "drags": 16,
+      "shares": 16,
+      "trustedShares": 16,
+      "checks": 56,
+      "modelComparisons": 43708,
+      "geometryComparisons": 23744,
+      "projectionComparisons": 19264
+    },
+    "receipt": {
+      "path": "/workspace/scratch/wave6-arch-research/secondary-cameras/receipt.json",
+      "bytes": 2742,
+      "sha256": "829d2c91f9913a329201f86b559d4fe0d96c65cf45573941791445f71983c628"
+    }
+  },
+  "criticalReplaySources": [
+    {
+      "path": "/workspace/scratch/wave6-arch-research/critical-final-light/receipt.json",
+      "bytes": 207087,
+      "sha256": "b7779fbfaf405135a001d9632803b95ebf3d799d1228f744742058db448e7433"
+    },
+    {
+      "path": "/workspace/scratch/wave6-arch-research/critical-final-dark/receipt.json",
+      "bytes": 206907,
+      "sha256": "beeca043267b0d3bdd511b34f8c2518b7b4e100378c8d0cb01e0fd1284769488"
+    }
+  ],
+  "scope": "Every offered native range endpoint and pointer edit, option, malformed payload, raw binary64 and declared critical recipe; trusted Share click to actual fresh-document replay. Model/geometry/projection audits are render-consistency checks, not additional independent numerical references. DOM thumb rounding recorded; complete saved states/readouts/model remain exact.",
+  "transitions": "wave6-arch-native-transition.json",
+  "ownedBrowsersAndServersExplicitlyClosed": true
+}

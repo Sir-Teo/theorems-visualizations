@@ -1,0 +1,81 @@
+{
+  "status": "ARCH6 preparation only; no product authored and no availability count added",
+  "writtenPrerequisitesActuallyRead": [
+    "arch-4.3",
+    "arch-3.1",
+    "arch-2.1",
+    "arch-5.10",
+    "mech-5.9",
+    "fluid-2.7"
+  ],
+  "prerequisiteScope": "All six complete serialized statements, ideas, captions, scopes, source references, tags/credits/links and ordered dependencies actually read from their exact source modules; all six verify properties are absent. Full records/hashes in written-prerequisites.json. No inherited original-paper body reading claimed.",
+  "unwrittenPrerequisite": {
+    "id": "solid-10.10",
+    "status": "planned",
+    "scope": "Only placeholder picture/reference exists; do not cite as a read buckling argument. Supply source-scoped classical spherical-shell comparison and explicit own derivations."
+  },
+  "sources": [
+    {
+      "file": "miki-2011.pdf",
+      "readPDFPages": [
+        1,
+        2,
+        3,
+        4
+      ],
+      "scope": "Complete pages, including all2.1/2.2 and the beginning/most of3 through3.16; not complete whole paper or a complete3 section. Original1974Schek body remains unread. Actual arXiv identifier is1104.3801v1while PDF footer says28October2021; retain exact witness hash and do not assert a checked historical version."
+    },
+    {
+      "file": "naicu-harris-williams-2014.pdf",
+      "readPDFPages": [
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10
+      ],
+      "scope": "All nine paper pages including full captions/references actually read. Repository cover only partially seen. No numerical figure values transcribed; proposed roof geometry is newly authored and not any historical reconstruction. Source itself discloses dummy simulation values and no quantitative construction monitoring."
+    },
+    {
+      "file": "nasa-sp8032-1969.pdf",
+      "readPDFPages": [
+        2,
+        4,
+        6,
+        8,
+        9,
+        10
+      ],
+      "scope": "Complete personally viewed image pages: foreword, second contents page, printed2,4,5,6. Classical complete-sphere p_cl formula and the1969clamped-cap correlation0.14+3.2/lambda^2, lambda>2, are source-read. Not a full monograph/current design standard; other geometries and test-data bodies unread. Public original-page witness fromVibrationdata; no NASA-host provenance claim."
+    },
+    {
+      "file": "barnes-thesis-1977.pdf",
+      "readPDFPages": [
+        47,
+        48,
+        49,
+        50,
+        51,
+        56,
+        57
+      ],
+      "scope": "Complete text pages47\u201351(printed48\u201352) and images48,49,56,57(printed49,50,57,58) actually read; selected initial contents/abstract fragments only. Latter stability section is partial. Distinct1977thesis, not a recovered1999article. No whole thesis or full nonlinear/kinetic-damping implementation claim."
+    }
+  ],
+  "actualSourcePageImages": 14,
+  "sourceStops": "Connelly/Guest2009original BODY502; Schek1974publisher purchase/organization access; Barnes1999publisher restricted access. No alternate same-body recovery. Every inherited stop remains binding.",
+  "historyPagesActuallyRead": [
+    {
+      "url": "https://arch.ethz.ch/en/news-und-veranstaltungen/news-kanal/2024/08/heinz-isler-has-been-the-most-prolific-shell-builder-in-the-world.html",
+      "scope": "Complete web-tool lines0\u2013116, including entire interview of archival researcherGiuliaBoller; supports qualitative hanging/pneumatic modelling and iterative tests, not a reconstruction or universal compression/stability certificate."
+    },
+    {
+      "url": "https://www.pritzkerprize.com/biography-frei-otto",
+      "scope": "Complete web-tool lines0\u201330; official prize biography supports physical models and collaborative Munich project context. No original1962/1966book body or actual project geometry read."
+    }
+  ]
+}
